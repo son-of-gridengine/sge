@@ -1178,7 +1178,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
 
    pre_args_ptr = &pre_args[0];
    
-#if 1
+#if 0
    sprintf(err_str, "childname = %s", childname? childname : "NULL" );  shepherd_trace(err_str);
    sprintf(err_str, "shell_path = %s", shell_path ? shell_path : "NULL" );  shepherd_trace(err_str);
    sprintf(err_str, "script_file = %s", script_file ? script_file : "NULL" );  shepherd_trace(err_str);
@@ -1203,7 +1203,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
       char *cp;
       unsigned long i;
 
-#if 1
+#if 0
       shepherd_trace("CASE 1: handle_as_binary, shell, no rsh, no qlogin");
 #endif
 
@@ -1233,7 +1233,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
    /* No need to test for binary since this option excludes binary */
    } else if (!strcasecmp("script_from_stdin", shell_start_mode)) {
 
-#if 1
+#if 0
       shepherd_trace("Case 2: script_from_stdin");
 #endif
 
@@ -1251,7 +1251,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
    } else if (!strcasecmp("posix_compliant", shell_start_mode) &&
               (atoi(get_conf_val("handle_as_binary")) == 0)) {
                  
-#if 1
+#if 0
       shepherd_trace("Case 3: posix_compliant, no binary" );
 #endif
 
@@ -1262,7 +1262,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
    /* No need to test for binary since this option excludes binary */
    } else if (!strcasecmp("start_as_command", shell_start_mode)) {
       
-#if 1
+#if 0
       shepherd_trace("Case 4: start_as_command" );
 #endif
 
@@ -1277,7 +1277,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
    } else if (is_interactive) {
       int njob_args;
       
-#if 1
+#if 0
       shepherd_trace("Case 5: interactive");
 #endif
 
@@ -1295,7 +1295,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
    /* No need to test for binary since qlogin handles that itself */
    } else if (is_qlogin) {
       
-#if 1
+#if 0
      shepherd_trace("Case 6: qlogin");
 #endif
       pre_args_ptr[0] = script_file;
@@ -1314,7 +1314,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
    /* Here we finally deal with binary, noshell jobs */
    } else {
       
-#if 1
+#if 0
      shepherd_trace("Case 7: unix_behaviour/raw_exec" );
 #endif
       /*
@@ -1323,7 +1323,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
       if (!strcmp(childname, "job")) {
          
          int arg_id = 0;
-#if 1
+#if 0
          shepherd_trace("Case 7.1: job" );
 #endif
          if( use_starter_method ) {
@@ -1334,7 +1334,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
          
          args = read_job_args(pre_args, 0);
       } else {
-#if 1
+#if 0
          shepherd_trace("Case 7.2: no job" );
 #endif
          
@@ -1359,6 +1359,15 @@ int use_starter_method /* If this flag is set the shellpath contains the
       /* build trace string */
       sprintf(err_str, "calling qlogin_starter(%s, %s);", shepherd_job_dir, args[1]);
       shepherd_trace(err_str);
+#if defined (SOLARIS)
+      if (is_rlogin) {
+         if (strstr(args[1], "sshd") != NULL) {
+            /* workaround for CR 6215730 */ 
+            shepherd_trace("staring an sshd on SOLARIS, do a SETPGRP to be able to kill it (qdel)");
+            SETPGRP;
+         }
+      }
+#endif
       qlogin_starter(shepherd_job_dir, args[1], sge_get_environment ());
    } else {
       char *filename = NULL;
