@@ -48,7 +48,7 @@
 #define MSG_IGNORE_ORDER_RETRY_I      _MESSAGE(33012, _("ignoring retry of recent order #%d\n"))
 #define MSG_UNKNOWN_ERROR_NL          _MESSAGE(33013, _("unknown error\n"))
 #define MSG_JOB_NOJOBID               _MESSAGE(33014, _("can't get job id\n"))
-#define MSG_JOB_NOTASKID              _MESSAGE(33015, _("can't get task id\n"))
+#define MSG_JOB_NOORDERTASK_US        _MESSAGE(33015, _("invalid task number 0 for job "U32CFormat" in "SFQ" order\n"))
 #define MSG_JOB_FINDJOB_U             _MESSAGE(33016, _("unable to find job "U32CFormat"\n"))
 #define MSG_JOB_FINDJOBTASK_UU        _MESSAGE(33017, _("unable to find task "U32CFormat" of job "U32CFormat"\n"))
 
@@ -629,7 +629,7 @@
 #define MSG_CONFIG_CANTWRITEMANAGERLIST               _MESSAGE(33621, _("can't write manager list\n"))
 #define MSG_CONFIG_CANTWRITEOPERATORLIST              _MESSAGE(33622, _("can't write operator list\n"))
 #define MSG_CONFIG_NOLOCAL_S                          _MESSAGE(33623, _("local configuration "SFN" not defined - using global configuration"))
-#define MSG_CONFIG_NOGLOBAL                           _MESSAGE(33623, _("global configuration not defined"))
+#define MSG_CONFIG_NOGLOBAL                           _MESSAGE(33624, _("global configuration not defined"))
 #define MSG_CONFIG_CANTFINDQUEUEXREFERENCEDINJOBY_SU  _MESSAGE(33648, _("can't find queue "SFQ" referenced in job "U32CFormat))
 
 /*
