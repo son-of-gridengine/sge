@@ -312,7 +312,7 @@
 #define MSG_GDI_ARGUMENTSYNTAX_OA_MAIL_ADDRESS         "mail_address            username[@host]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_MAIL_LIST            "mail_list               mail_address[,mail_address,...]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_MAIL_OPTIONS         "mail_options            `e' `b' `a' `n' `s'"
-#define MSG_GDI_ARGUMENTSYNTAX_OA_MAIL_OPTIONS_AR      "mail_options            `e' `b' `a' `n' (begin, end, error, no)"
+#define MSG_GDI_ARGUMENTSYNTAX_OA_MAIL_OPTIONS_AR      "mail_options            `e' `b' `a' `n' (end, begin, error, no)"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_NODE_LIST            "node_list               node_path[,node_path,...]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_NODE_PATH            "node_path               [/]node_name[[/.]node_name...]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_NODE_SHARES_LIST     "node_shares_list        node_path=shares[,node_path=shares,...]"
@@ -1070,7 +1070,7 @@
 #define MSG_GDI_UTEXT_wd_OPT               _MESSAGE(60624, _("use working_directory"))
 
 #define MSG_GDI_UTEXT_u_OPT_USERLISTORUALL_QDEL _MESSAGE(60625, _("delete all jobs of users specified in list"))
-#define MSG_GDI_UTEXT_u_OPT_USERLISTORUALL_QRSTAT _MESSAGE(60626, _("show all advance reservations of users specified in list"))
+#define MSG_GDI_UTEXT_u_OPT_USERLISTORUALL_QRSTAT _MESSAGE(60626, _("all advance reservations of users specified in list"))
 
 #define MSG_OBJ_AR                         _MESSAGE(60630, _("advance reservation"))
 
