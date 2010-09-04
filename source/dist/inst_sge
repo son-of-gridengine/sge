@@ -311,6 +311,7 @@ while [ $ARGC != 0 ]; do
    -copycerts)
      if [ "$2" = "" ]; then
         ErrUsage
+        exit 1
      fi
      #copy ca certs to the given hosts
      COPY_CA="true"
