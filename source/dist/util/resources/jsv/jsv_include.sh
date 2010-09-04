@@ -73,7 +73,7 @@ __jsv_cli_params="a ar A b ckpt cwd C display dl e hard h hold_jid\
 #     binding_socket: binding socket (-binding [<type>] <strategy>:<amount>:<socket>:<core>)
 #     binding_core: binding core (-binding [<type>] <strategy>:<amount>:<socket>:<core>)
 #     binding_step: binding step (-binding [<type>] "striding":<amount>:<step>)
-#     binding_exp_n: length of explicit list (-binding [<type>] "explisit":<socket0>,<core0>:...)
+#     binding_exp_n: length of explicit list (-binding [<type>] "explicit":<socket0>,<core0>:...)
 __jsv_mod_params="ac l_hard l_soft q_hard q_soft pe_min pe_max pe_name\
                   binding_strategy binding_type binding_amount binding_socket\
                   binding_core binding_step binding_exp_n"
@@ -92,7 +92,7 @@ __jsv_add_params="CLIENT CONTEXT GROUP VERSION JOB_ID SCRIPT CMDARGS USER"
 __jsv_all_params="$__jsv_add_params $__jsv_cli_params $__jsv_mod_params"
 
 # This is a space separated list of environment variable names which
-# will built up during runtime, when this script receives the job env.
+# will be built up during runtime, when this script receives the job env.
 __jsv_all_envs=""
 
 __jsv_undef="variable_is_undefined"
@@ -181,7 +181,7 @@ jsv_clear_envs()
 #
 #  FUNCTION
 #     A call of this function reports all known job parameters to the
-#     counterpart of this script (client or master daemon thread). This
+#     counterpart of this script (client or master daemon thread). These
 #     parameters will be reported as info messages and appear
 #     either in the stdout stream of the client or in the message file of 
 #     the master process.
@@ -252,7 +252,7 @@ jsv_show_envs()
 ###### jsv/jsv_is_env() ######################################################
 #  NAME
 #     jsv_is_env() -- Returns whether or not a specific job environment 
-#                     variable exists in the job currently beeing verified.
+#                     variable exists in the job currently being verified.
 #
 #  SYNOPSIS
 #     jsv_is_env(variable_name) 
@@ -266,7 +266,7 @@ jsv_show_envs()
 #     the name "variable_name" does not exist.
 #
 #  INPUTS
-#     varibale_name - e.g "HOME", "LD_LIBRARAY_PATH" ...
+#     variable_name - e.g "HOME", "LD_LIBRARY_PATH" ...
 #
 #  RESULT
 #     "true" or "false" as string 
@@ -312,7 +312,7 @@ jsv_is_env()
 #     information is not available then an empty string will be returned. 
 #    
 #  INPUTS
-#     variable_name - e.g "HOME", "LD_LIBRARAY_PATH" ...
+#     variable_name - e.g "HOME", "LD_LIBRARY_PATH" ...
 #
 #  RESULT
 #     value of the variable as string
@@ -357,13 +357,13 @@ jsv_get_env()
 #     If "variable_name" already exists in the set of job environment 
 #     variables, then the corresponding value will be replaced by
 #     "variable_value", as if the function jsv_mod_env() was used. 
-#     If an emty string is passed then the old value will be deleted.
+#     If an empty string is passed then the old value will be deleted.
 #
 #     To delete a environment variable the function jsv_del_env()
 #     has to be used.
 #
 #  INPUTS
-#     variable_name  - e.g "HOME", "LD_LIBRARAY_PATH" ...
+#     variable_name  - e.g "HOME", "LD_LIBRARY_PATH" ...
 #     variable_value - e.g "/home/user", "", ...
 #
 #  RESULT
@@ -400,7 +400,7 @@ jsv_add_env()
 #     available as if the -v or -V was specified during job submission.
 #
 #     "variable_value" is optional. If there is an empty string passed 
-#     then the variable is defined without value.
+#     then the variable is defined without a value.
 #
 #     If "variable_name" does not already exist in the set of job 
 #     environment variables, then the corresponding name and value will 
@@ -409,7 +409,7 @@ jsv_add_env()
 #     To delete a environment variable, use the function jsv_del_env().
 #
 #  INPUTS
-#     varibale_name  - e.g "HOME", "LD_LIBRARAY_PATH" ...
+#     variable_name  - e.g "HOME", "LD_LIBRARY_PATH" ...
 #     variable_value - e.g. "/home/user", "" ...
 #
 #  RESULT
@@ -451,7 +451,7 @@ jsv_mod_env()
 #     to add a new value, call the function jsv_add_env().
 #
 #  INPUTS
-#     variable_name - e.g "HOME", "LD_LIBRARAY_PATH" ...
+#     variable_name - e.g "HOME", "LD_LIBRARY_PATH" ...
 #
 #  RESULT
 #     none
@@ -498,9 +498,9 @@ jsv_del_env()
 #                  qsub/qrsh/qsh/... switches are mentioned in parenthesis 
 #                  next to the parameter name if they are different. 
 #                  Find additional information in qsub(1) man page where
-#                  addtional notes can be found describing the availability 
+#                  additional notes can be found describing the availability 
 #                  and value format.
-#                  Job parameters written in capital letters
+#                  Multi-letter job parameters written in capital letters
 #                  are pseudo parameters. These parameters describe
 #                  either the context where this JSV is executed or
 #                  additional values describing the job submission
@@ -743,7 +743,7 @@ jsv_del_param()
 #
 #        qsub -ac a=1,b,d=7 -l h_vmem=5G,lic=1 -M user@domain script.sh 
 #
-#     For this jon, the following function calls will return the 
+#     For this job, the following function calls will return the 
 #     following values:
 #  
 #        function call                             value
@@ -807,7 +807,7 @@ jsv_sub_is_param() {
 #     jsv_sub_del_param(param_name, variable_name) 
 #
 #  FUNCTION
-#     Some job parameters are lists which can contain muliple variables with
+#     Some job parameters are lists which can contain multiple variables with
 #     an optional value. 
 #
 #     This function deletes a variable with the name "variable_name" and 
@@ -1014,7 +1014,7 @@ jsv_sub_get_param()
 #     jsv_sub_add_param(param_name, variable_name, variable_value) 
 #
 #  FUNCTION
-#     Some job parameters are list that can contain muliple variables 
+#     Some job parameters are list that can contain multiple variables 
 #     with an optional value. 
 #
 #     This function either adds a new variable with a new value or it
@@ -1155,7 +1155,7 @@ jsv_sub_add_param()
 #     jsv_is_env(), jsv_get_env(), jsv_add_env() and jsv_mod_env() to
 #     behave correctly. 
 #
-#     Job environmets might become very big (10K and more). This
+#     Job environments might become very big (10K and more). This
 #     will slow down the executing component (submit client or
 #     master daemon thread). For this reason, job environment information 
 #     is not passed to JSV scripts by default.
@@ -1286,7 +1286,7 @@ jsv_correct()
 #     to stdout to inform the user that the submission has failed.
 #
 #     jsv_reject_wait() should be called if the user may try to submit
-#     the job again. jsv_reject_wait() indicates ther verification process
+#     the job again. jsv_reject_wait() indicates the verification process
 #     might be successful in the future.
 #
 #     Instead of calling jsv_reject() in jsv_on_verify() also the
@@ -1591,7 +1591,7 @@ jsv_script_log()
 #
 #     The following functions send messages to the calling component of a JSV
 #     that will either appear on the stdout stream of the client or in the
-#     master message file. This is especially usefull when new JSV scripts 
+#     master message file. This is especially useful when new JSV scripts 
 #     should be tested
 #
 #        jsv_show_params() 
