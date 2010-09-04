@@ -1396,11 +1396,7 @@ case LINUXSPARC64:
 
    set CFLAGS = "$CFLAGS"
 
-   if ( $BUILDARCH == LINUXSPARC ) then
-      set COMPILE_DC = 0
-   else
-      set COMPILE_DC = 1
-   endif
+   set COMPILE_DC = 1
 
    # Optimization on LINUXIA64 is broken, qmon dumps
    if ($OPTIMIZATION == 1 && $BUILDARCH != LINUXIA64) then
