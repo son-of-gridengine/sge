@@ -614,8 +614,8 @@ jsv_is_param()
 jsv_get_param() 
 {
    __jsv_name="jsv_param_$1"
-   __jsv_command=`eval "echo \$\{$__jsv_name\:\-$__jsv_undef\}"`
-   __jsv_isdef=`eval "echo $__jsv_command"`
+   __jsv_command=`eval "echo \"\$\{$__jsv_name\:\-$__jsv_undef\}\""`
+   __jsv_isdef=`eval "echo \"$__jsv_command\""`
    if [ "$__jsv_isdef" != "$__jsv_undef" ]; then
       eval "echo \${$__jsv_name}" 
    fi
