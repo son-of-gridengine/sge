@@ -561,7 +561,12 @@ time_t last_time
          
          lSetPosUlong(pr, pos_utime, utime);
          lSetPosUlong(pr, pos_stime, stime);
+
+#ifdef TARGET_64BIT
+         lSetPosLong(pr, pos_vsize, vsize);
+#else
          lSetPosUlong(pr, pos_vsize, vsize);
+#endif
          
          close(fd);
       }
@@ -775,7 +780,12 @@ time_t last_time
    proc_elem->proc.pd_utime  = ((double)lGetPosUlong(pr, pos_utime))/HZ;
    proc_elem->proc.pd_stime  = ((double)lGetPosUlong(pr, pos_stime))/HZ;
    /* could retrieve uid/gid using stat() on stat file */
+
+  #ifdef TARGET_64BIT
+   proc_elem->vmem           = lGetPosLong(pr, pos_vsize);
+  #else
    proc_elem->vmem           = lGetPosUlong(pr, pos_vsize);
+  #endif
 
    /*
     * I/O accounting
