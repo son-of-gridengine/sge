@@ -54,6 +54,7 @@
 #undef NeedWidePrototypes
 #endif
 
+#ifndef LESSTIF_VERSION
 #ifndef SOLARIS
 #if XmVersion >= 2000
 extern void _XmResizeObject(
@@ -97,6 +98,7 @@ extern void _XmDrawHighlight(
 
 #endif
 #endif
+#endif	/* LESSTIF_VERSION */
 
 #include "DumbClip.h"
 #include "IconListP.h"
