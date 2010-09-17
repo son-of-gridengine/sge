@@ -8,3 +8,4 @@ allocation_rule  $round_robin
 control_slaves   TRUE
 job_is_first_task FALSE
 urgency_slots     min
+accounting_summary FALSE

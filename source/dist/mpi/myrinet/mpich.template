@@ -8,3 +8,5 @@ stop_proc_args   <your_sge_root>/mpi/myrinet/stopmpi.sh
 allocation_rule  $fill_up
 control_slaves   TRUE
 job_is_first_task FALSE
+urgency_slots     min
+accounting_summary FALSE
