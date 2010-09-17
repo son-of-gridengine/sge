@@ -213,6 +213,7 @@ usage:
    echo "-spool-classic    -> use classic flatfile spooling"
    echo "-spool-targets    -> only create qmaster, spooldefaults and spoolinit"
    echo "-sunman           -> create man pages for Sun branded man pages (with -man[kv])"
+   echo "-system-libs      -> use dynamic system libraries (specifically libssl)"
    echo "-tight-ssh        -> compile SSH daemon with tight SGE integration"
    echo "-umap             -> compile with usermapping and hostgroup feature"
    echo "-with-jemalloc    -> build SGE with the jemalloc library"
@@ -888,6 +889,9 @@ while ($#argv >= 1 && $?found)
       breaksw
    case "-sunman":
       set SGE_PRODUCT_MODE=sge
+      breaksw
+   case "-system-libs":
+      set SECLIBS_STATIC="-lssl -lcrypto"
       breaksw
    case  "-umap"
       set WITH_USERMAPPING = 1
