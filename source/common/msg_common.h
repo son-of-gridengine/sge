@@ -524,7 +524,7 @@
 #define MSG_GDI_UTEXT_f_OPT_FORCE_ACTION                 _MESSAGE(23354, _("force action"                              ))
 
 #define MSG_GDI_USAGE_h_OPT_HOLD_LIST                    "[-h hold_list]"
-#define MSG_GDI_UTEXT_h_OPT_HOLD_LIST                    _MESSAGE(23355, _("assign holds for jobs or tasks"))
+#define MSG_GDI_UTEXT_h_OPT_HOLD_LIST                    _MESSAGE(23355, _("states to use"))
 
 #define MSG_GDI_USAGE_h_OPT                              "[-h]"
 #define MSG_GDI_UTEXT_h_OPT                              _MESSAGE(23356, _("place user hold on job"))
