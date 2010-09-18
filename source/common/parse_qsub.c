@@ -2094,7 +2094,8 @@ static int var_list_parse_from_environment(lList **lpp, char **envp)
       SGE_ASSERT((env_name));
       lSetString(ep, VA_variable, env_name);
 
-      env_description = sge_strtok_r((char *) 0, "\n", &context);
+      /* Chop at any null, on the assumption nulls lose elsewhere.  */
+      env_description = sge_strtok_r((char *) 0, "\0", &context);
       if (env_description)
          lSetString(ep, VA_value, env_description);
       FREE(env_entry);
