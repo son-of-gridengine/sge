@@ -915,7 +915,8 @@ count_running_jobs_in_slotwise_sos_tree(sge_sl_list_t *qinstances_in_slotwise_so
                    ISSET(state, JSUSPENDED_ON_THRESHOLD) == false &&
                    ISSET(state, JSUSPENDED_ON_SUBORDINATE) == false &&
                    ISSET(state, JSUSPENDED_ON_SLOTWISE_SUBORDINATE) == false &&
-                   ISSET(state, JEXITING) == false &&
+                   ISSET(lGetUlong(task, JAT_status), JEXITING) == false &&
+                   ISSET(lGetUlong(task, JAT_status), JFINISHED) == false &&
                    ISSET(state, JDELETED) == false) {
                   /* The current task is in state JRUNNING and not suspended in
                    * any way. 
