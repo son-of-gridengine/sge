@@ -64,6 +64,7 @@
 #define MSG_FILE_CANNOT_WRITE_SS                                     _MESSAGE(23030, _("unable to write to file "SFN": "SFN))
 #define MSG_FILE_CANNOT_FLUSH_SS                                     _MESSAGE(23031, _("unable to flush file "SFN": "SFN))
 #define MSG_CONF_THEPATHGIVENFORXMUSTSTARTWITHANY_S                  _MESSAGE(23032, _("denied: the path given for "SFQ" must start with a \"/\""))
+#define MSG_FILE_CANNOT_CHOWN                                     _MESSAGE(23033, _("unable to chown file "SFN": "SFN))
 
 /*
 ** parse_job_cull.c
