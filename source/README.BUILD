@@ -121,7 +121,7 @@ Content
 
    To build 'sge_depend' enter:
 
-      % aimk -only-depend
+      % ./aimk -only-depend
 
    The result is the binary
 
@@ -144,7 +144,7 @@ Content
 
    Now create your dependencies:
 
-      % aimk depend
+      % ./aimk depend
 
    Depending on actual compiler flags for a specific OS 'sge_depend' may
    print out some warnings about unrecognized command line options. These
@@ -165,7 +165,7 @@ Content
 
    Enter
 
-      % aimk -help' 
+      % ./aimk -help' 
 
    to see a list of all aimk options. Not all options actually may work,
    esp. not in all combinations. Some options like the security related
@@ -182,7 +182,7 @@ Content
    To compile the core system (daemons, command line clients, no interactive
    commands (qsh only), no qmon) you'll enter:
 
-      % aimk -only-core
+      % ./aimk -only-core
 
    When compilation begins a subdirectory named as an uppercase architecture
    string will be created and the system is compiled.
@@ -208,17 +208,17 @@ Content
 
    Man pages in nroff format are created with
 
-      % aimk -man
+      % ./aimk -man
 
    or
 
-      % aimk -mankv    (the man pages are checked out with the CVS "-kv"
+      % ./aimk -mankv    (the man pages are checked out with the CVS "-kv"
                         flag" - needs access to the CVS repository)
 
    To create man pages in the "catman" format (e.g. used on SGI systems)
    after creating the nroff man pages enter
 
-      % aimk -catman
+      % ./aimk -catman
 
 8) Staging for Installation
 ---------------------------
