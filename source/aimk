@@ -1480,20 +1480,20 @@ case LINUXSPARC64:
    set NOERR_CFLAG = "-Wno-error"
    set NOERR_PROTO = "-Wno-strict-prototypes"
 
-   if ( $DUMP == 1 ) then
-      if ( -f $CORE_HOME/libcore.so ) then
-         set LFLAGS   = "$LFLAGS -L$CORE_HOME"
-         set CORELIB  = "-lcore"
-      else
-         echo "error: couldn't find  $CORE_HOME/libcore.so"
-         echo "error: please"
-         echo "error: (a) get you a libcore.so for $buildarch from"
-         echo "error: http://gridengine.sunsource.net/issues/show_bug.cgi?id=2552"
-         echo "error: update CORE_HOME in aimk.site or aimk.private accordingly"
-         echo "error: (b) use aimk option -no-dump to build without libcore.so "
-         exit 1
-      endif
-   endif
+#    if ( $DUMP == 1 ) then
+#       if ( -f $CORE_HOME/libcore.so ) then
+#          set LFLAGS   = "$LFLAGS -L$CORE_HOME"
+#          set CORELIB  = "-lcore"
+#       else
+#          echo "error: couldn't find  $CORE_HOME/libcore.so"
+#          echo "error: please"
+#          echo "error: (a) get you a libcore.so for $buildarch from"
+#          echo "error: http://gridengine.sunsource.net/issues/show_bug.cgi?id=2552"
+#          echo "error: update CORE_HOME in aimk.site or aimk.private accordingly"
+#          echo "error: (b) use aimk option -no-dump to build without libcore.so "
+#          exit 1
+#       endif
+#    endif
 
    set XMTDEF   = ""
 
