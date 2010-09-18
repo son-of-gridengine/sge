@@ -64,7 +64,11 @@ int sge_edit(const char *fname, uid_t myuid, gid_t mygid)
       return -1;
    }
 
-   chown(fname, myuid, mygid);
+   if (chown(fname, myuid, mygid) != 0) {
+      ERROR((SGE_EVENT, MSG_FILE_CANNOT_CHOWN, fname));
+      DEXIT;
+      return -1;
+   }
 
    pid = fork();
    if (pid) {
