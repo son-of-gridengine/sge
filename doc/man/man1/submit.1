@@ -438,7 +438,7 @@ attribute \fBm_topology\fP.
 job to core binding. If the value for \fBbinding_instance\fP is
 not specified then \fBset\fP will be used.
 .sp
-\fBenv\fP means that the environment variable \fBSGE_BINDING\fP will be
+\fBenv\fP means that the environment variable \fBxxQS_NAME_Sxx_BINDING\fP will be
 exported to the job environment of the job. This variable contains the
 selected operating system internal processor numbers.
 They might be more than selected cores in presence of SMT or CMT
@@ -2091,7 +2091,7 @@ submitting client.
 Furthermore, xxQS_NAMExx sets additional variables into the
 job's environment, as listed below.
 .IP "ARC"
-.IP "SGE_ARCH" 1.5i
+.IP "\fBxxQS_NAME_Sxx_ARCH\fP" 1.5i
 The xxQS_NAMExx architecture name of the node on which the job is
 running. The name is compiled-in into the
 .M xxqs_name_sxx_execd 8
@@ -2184,12 +2184,12 @@ A default shell search path of:
 .br
 .ta 5i
 /usr/local/bin:/usr/ucb:/bin:/usr/bin
-.IP "SGE_BINARY_PATH" 1.5i
+.IP "xxQS_NAME_Sxx_BINARY_PATH" 1.5i
 The path where the xxQS_NAMExx binaries are installed. The value is the
 concatenation of the cluster configuration value
 .B binary_path 
 and the architecture name
-.B $SGE_ARCH
+.B $xxQS_NAME_Sxx_ARCH
 environment variable.
 .IP "PE" 1.5i
 The parallel environment under which the job executes (for parallel
@@ -2231,13 +2231,13 @@ if set.
 The user's login name from the
 .M passwd 5
 file.
-.IP "SGE_JSV_TIMEOUT" 1.5i
+.IP "xxQS_NAME_Sxx_JSV_TIMEOUT" 1.5i
 If the response time of the client JSV is greater than this timeout value, then the
 JSV will attempt to be re-started. The default value is 10 seconds, and this value 
 must be greater than 0. If the timeout has been reached, the JSV will only try to 
 re-start once, if the timeout is reached again an error will occur.
-.IP "SGE_COMPLEX_\fIcomplex\fP" 1.5i
-Passing a name of the form \fBSGE_COMPLEX_\fIcomplex\fP to a job with
+.IP "xxQS_NAME_Sxx_COMPLEX_\fIcomplex\fP" 1.5i
+Passing a name of the form \fBxxQS_NAME_Sxx_COMPLEX_\fIcomplex\fP to a job with
 the \fB-v\fP switch, where
 .I complex
 is the name of a defined
@@ -2266,7 +2266,7 @@ would put
 in the submitted job's environment.
 .RE
 .RE
-.IP "SGE_BINDING" 1.5i
+.IP "xxQS_NAME_Sxx_BINDING" 1.5i
 The selected operating system internal processor numbers (see above).
 .\"
 .\"
