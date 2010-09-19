@@ -13,7 +13,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -83,28 +83,27 @@ qstat \- show the status of xxQS_NAMExx jobs and queues
 shows the current status of the available xxQS_NAMExx queues and the
 jobs associated with the queues. Selection options allow you
 to get information about specific jobs, queues or users.
-If multiple selections are done a queue is only displayed if all
+If multiple selections are done, a queue is only displayed if all
 selection criteria for a queue instance are met.
 Without any option
 .I qstat
-will display only a list of jobs with no queue status
+will display only a list of jobs, with no queue status
 information.
 .PP
 The administrator and the user may define files (see
 .M sge_qstat 5 ),
 which can contain any of the options described below. A cluster-wide sge_qstat
 file may be  placed under
-$xxQS_NAME_Sxx_ROOT/$xxQS_NAME_Sxx_CELL/common/sge_qstat
-The user private  file is searched at the location
+$xxQS_NAME_Sxx_ROOT/$xxQS_NAME_Sxx_CELL/common/sge_qstat.
+The user private file is searched for at the location
 $HOME/.sge_qstat.
-The home directory request file has the highest precedence over
+The home directory request file has higher precedence than
 the cluster global file.
-Command line can be used to override the flags contained in the files.
+The command line can be used to override the flags contained in the files.
 .\"
 .SH OPTIONS
 .IP "\fB\-cb\fP"
-In combination with \fB\-cb\fP the output of this command will additionally
-contain the information of a requested binding and
+Additionally displays information about a requested binding and
 the changes that have been applied to the topology string (real
 binding) for the host where this job is running. This additional 
 information will appear in combination with the parameters 
@@ -114,12 +113,12 @@ Please note that this command line switch will be removed with
 the next major release.
 .\"
 .IP "\fB\-explain a|A|c|E\fP"
-\'c' displays the reason for the c(onfiguration ambiguous) state of a queue
+\[cq]c\[cq] displays the reason for the c(onfiguration ambiguous) state of a queue
 instance. 'a' shows the reason for the alarm state. Suspend alarm state
 reasons will be displayed by 'A'. 'E' displays the reason for a queue
 instance error state.
 .sp
-The output format for the alarm reasons is one line per reason containing
+The output format for the alarm reasons is one line per reason, containing
 the resource value and threshold. For details about the resource value please
 refer to the description of the \fBFull Format\fP in section \fBOUTPUT FORMATS\fP below.
 .IP "\fB\-ext\fP"
@@ -133,7 +132,7 @@ information on all queues to be displayed along with the
 queued job list.
 .\"
 .IP "\fB\-F\fP [ \fBresource_name,...\fP ]"
-Like in the case of \fB\-f\fP information is displayed on all jobs as well as 
+As for \fB\-f\fP, information is displayed on all jobs as well as
 queues. In addition,
 .I qstat
 will present a detailed listing of the current 
