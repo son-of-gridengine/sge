@@ -26,24 +26,18 @@
 .if n \&''\c
 \\$2
 ..
-.\"
+.\" "
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
 .TH SUBMIT 1 "$Date: 2010-01-12 14:41:02 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
-.IP "qsub   \-" 1i
-submit a batch job to xxQS_NAMExx.
-.IP "qsh    \-" 1i
-submit an interactive X-windows session to xxQS_NAMExx.
-.IP "qlogin \-" 1i
-submit an interactive login session to xxQS_NAMExx.
-.IP "qrsh   \-" 1i
-submit an interactive rsh session to xxQS_NAMExx.
-.IP "qalter \-" 1i
-modify a pending or running batch job of xxQS_NAMExx.
-.IP "qresub \-" 1i
-submit a copy of an existing xxQS_NAMExx job.
+qsub   \- submit a batch job to xxQS_NAMExx.
+qsh    \- submit an interactive X-windows session to xxQS_NAMExx.
+qlogin \- submit an interactive login session to xxQS_NAMExx.
+qrsh   \- submit an interactive rsh session to xxQS_NAMExx.
+qalter \- modify a pending or running batch job of xxQS_NAMExx.
+qresub \- submit a copy of an existing xxQS_NAMExx job.
 .\"
 .\"
 .SH SYNTAX
@@ -51,10 +45,9 @@ submit a copy of an existing xxQS_NAMExx job.
 [
 .B options
 ] [
-.B command | --
-[
-.B command_args
-]]
+.BR command [ command_args ]
+|
+.BR -- [ command_args ]]
 .PP
 .B qsh
 [
@@ -221,7 +214,7 @@ facilities supplied with the operating system.
 .I Qrsh
 jobs can only run in INTERACTIVE queues unless the option \fB-now no\fP is
 used (see below).
-They can also only be run, if the 
+They can also only be run if the
 .M xxqs_name_sxx_execd 8
 is running under the root account.
 .PP
@@ -297,7 +290,7 @@ may be placed under $xxQS_NAME_Sxx_ROOT/$xxQS_NAME_Sxx_CELL/common/xxqs_name_sxx
 User private default request files are processed under the
 locations $HOME/.xxqs_name_sxx_request and $cwd/.xxqs_name_sxx_request. The working
 directory local default request file has the highest precedence,
-then the home directory located file and then the cluster global
+then the home directory file and then the cluster global
 file.
 The option arguments, the embedded script flags and the options
 in the default request files are
@@ -436,7 +429,7 @@ resource  selection  within  xxQS_NAMExx.  As a result an execution host
 might be selected where xxQS_NAMExx does not even know the hardware topology
 and therefore is not able to apply the requested binding.
 .sp
-To enforce xxQS_NAMExx to select hardware on which the binding can be applied
+To make xxQS_NAMExx select hardware on which the binding can be applied,
 please use the \fB-l\fP switch in combination with the complex
 attribute \fBm_topology\fP.
 .sp
@@ -465,9 +458,9 @@ hardware architecture of the execution host where the submitted job
 will be started.
 .sp
 On Solaris 10 hosts a processor set will be created
-where the job can exclusively run in.
+where the job can run exclusively.
 Because of operating system limitations at least one core
-must remain unbound. This resource could of course
+must remain unbound. This resource could, of course, be
 used by an unbound job.
 .sp
 On Linux hosts a processor affinity mask will be set to
@@ -475,13 +468,13 @@ restrict  the job to run exclusively on the selected cores.
 The operating system allows other unbound processes
 to use these cores.
 Please note that on Linux the binding requires a Linux kernel
-version of 2.6.16 or greater. It might be even possible to use
-a kernel with lower version number but in that case additional
+version of 2.6.16 or greater. It might be possible to use
+a kernel with lower version number, but in that case additional
 kernel patches have to be applied. The \fBloadcheck\fP tool in the
-utilbin directory can be used to check if the hosts capabilities.
-You can also use the \fB-sep\fP in combination with \fB-cb\fP of
+utilbin directory can be used to check the host's capabilities.
+You can also use \fB-sep\fP in combination with \fB-cb\fP of
 .M qconf 5
-command to identify if xxQS_NAMExx is able to recognize the
+command to find whether xxQS_NAMExx is able to recognize the
 hardware topology.
 .sp
 Possible values for \fBbinding_strategy\fP are as follows:
@@ -494,22 +487,22 @@ Possible values for \fBbinding_strategy\fP are as follows:
 .fi
 .sp
 For the binding strategy linear and striding there is an optional
-socket and core pair attached. These denotes the mandatory
+socket and core pair attached. These denote the mandatory
 starting point for the first core to bind on.
 .sp
 \fBlinear\fP means that xxQS_NAMExx tries to bind the job on \fBamount\fP
-successive cores. If \fBsocket\fP and \fBcore\fP is omitted then xxQS_NAMExx
+successive cores. If \fBsocket\fP and \fBcore\fP are omitted then xxQS_NAMExx
 first allocates successive cores on the first empty socket found.
 Empty means that there are no jobs bound to the socket by xxQS_NAMExx.
-If this is not  possible or is not sufficient xxQS_NAMExx tries to find
-(further) cores on the socket with the most unbound cores and so on.
-If the amount of allocated cores is lower than requested cores, no
-binding is done for the job. If \fBsocket\fP and \fBcore\fP is specified
-then xxQS_NAMExx tries to find amount of empty cores beginning with this
+If this is not  possible, or is not sufficient, xxQS_NAMExx tries to find
+(further) cores on the socket with the most unbound cores, and so on.
+If the number of allocated cores is lower than requested cores, no
+binding is done for the job. If \fBsocket\fP and \fBcore\fP are specified,
+then xxQS_NAMExx tries to find empty cores with this
 starting point. If this is not possible then binding is not done.
 .sp
 \fBstriding\fP means that xxQS_NAMExx tries to find cores with a certain offset.
-It will select \fBamount\fP of empty cores with a offset of \fBn\fP -1 cores
+It will select \fBamount\fP of empty cores with an offset of \fBn\fP-1 cores
 in between. Start point for the search algorithm is socket 0 core 0. As soon as
 \fBamount\fP cores are found they will be used to do the job binding.
 If there are not enough empty cores or if correct offset cannot
@@ -524,7 +517,7 @@ will be ignored.
 modified parameter will only be in effect after a restart or migration
 of the job, however.
 .sp
-If this option or a corresponding value in qmon is specified then these 
+If this option, or a corresponding value in qmon, is specified then these
 values will be passed to defined JSV instances as parameters with the names 
 \fBbinding_strategy\fP, \fBbinding_type\fP, \fBbinding_amount\fP,
 \fBbinding_step\fP, \fBbinding_socket\fP, \fBbinding_core\fP,
@@ -1824,14 +1817,14 @@ with the name \fBt_min\fP, \fBt_max\fP and \fBt_step\fP
 .IP "\fB\-tc max_running_tasks\fP"
 Available for \fIqsub\fP and \fIqalter\fP only.
 .sp 1
--Can be used in conjunction with array jobs (see -t option) to set a
+Used in conjunction with array jobs (see \-t option) to set a
 self-imposed limit on the maximum number of concurrently running tasks
 per job.
 .\"
 .IP "\fB\-terse\fP"
 Available for \fIqsub\fP only.
 .sp 1
--terse causes the \fIqsub\fP to display only the job-id of the job being
+Causes \fIqsub\fP to display only the job-id of the job being
 submitted rather than the regular "Your job ..." string.
 In case of an error the error is reported on stderr as usual.
 .br
@@ -2243,6 +2236,38 @@ If the response time of the client JSV is greater than this timeout value, then 
 JSV will attempt to be re-started. The default value is 10 seconds, and this value 
 must be greater than 0. If the timeout has been reached, the JSV will only try to 
 re-start once, if the timeout is reached again an error will occur.
+.IP "SGE_COMPLEX_\fIcomplex\fP" 1.5i
+Passing a name of the form \fBSGE_COMPLEX_\fIcomplex\fP to a job with
+the \fB-v\fP switch, where
+.I complex
+is the name of a defined
+.M complex 5 ,
+causes environment variable
+.I complex
+to be defined in the job's environment with the value of that complex
+which was requested by the job explicitly with
+.B \-l
+or implicitly via
+.M sge_request 4 ,
+for instance.  E.g.
+.PP
+.nf
+.RS
+.RS
+qsub \-l arch=sol-amd64 \-v SGE_COMPLEX_arch
+.RE
+.RE
+.fi
+.PP
+.RS
+.RS
+would put
+.B arch=sol-amd64
+in the submitted job's environment.
+.RE
+.RE
+.IP "SGE_BINDING" 1.5i
+The selected operating system internal processor numbers (see above).
 .\"
 .\"
 .SH RESTRICTIONS
@@ -2263,6 +2288,19 @@ echo "xxQS_NAMExx spooled job"
 exit 0
 .RE
 endif
+.RE
+.fi
+.PP
+or in your .profile:
+.PP
+.nf
+.RS
+if [ ! -z "$JOB_NAME" ] then
+.RS
+echo "xxQS_NAMExx spooled job"
+exit 0
+.RE
+fi
 .RE
 .fi
 .PP
@@ -2293,8 +2331,8 @@ The following is the simplest form of a xxQS_NAMExx script file.
 =====================================================
 
 
-#!/bin/csh
-   a.out
+#!/bin/sh
+   ./a.out
 
 
 =====================================================
@@ -2305,7 +2343,7 @@ The next example is a more complex xxQS_NAMExx script.
 
 =====================================================
 
-#!/bin/csh                           
+#!/bin/sh
                         
 # Which account to be charged cpu time 
 #$ -A santa_claus
@@ -2335,7 +2373,7 @@ The next example is a more complex xxQS_NAMExx script.
 # working directory.
 #$ -cwd
 
-a.out
+./a.out
 
 ==========================================================
 
