@@ -25,7 +25,7 @@
 .if n \&''\c
 \\$2
 ..
-.\"
+.\" "
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
@@ -341,12 +341,12 @@ and after actual job start and finish. Among the delays before job start is the 
 until the end of a \fBschedule_interval\fP, the time it takes to deliver a job to 
 .M sge_execd 8
 and the delays caused by \fBprolog\fP in
-.M queue_conf 5
-, \fBstart_proc_args\fP in
+.M queue_conf 5 ,
+\fBstart_proc_args\fP in
 .M sge_pe 5
 and \fBstarter_method\fP in
-.M queue_conf 5 
-. The delays after job finish include delays due to a forced job termination 
+.M queue_conf 5 .
+The delays after job finish include delays due to a forced job termination 
 (\fBnotify\fP, \fBterminate_method\fP or \fBcheckpointing\fP), procedures run 
 after actual job 
 finish, such as \fBstop_proc_args\fP in
