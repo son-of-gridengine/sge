@@ -12,7 +12,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -62,8 +62,8 @@ Prints a listing of all options.
 If a \fBload sensor\fP is configured for
 .I xxqs_name_sxx_execd
 via either the global host configuration or the 
-execution-host-specific cluster configuration (See
-.M xxqs_name_sxx_conf 5 .),
+execution-host-specific cluster configuration (see
+.M xxqs_name_sxx_conf 5 ),
 the executable path of the load sensor is invoked by
 .I xxqs_name_sxx_execd
 on a regular basis 
@@ -157,10 +157,10 @@ by that same user are handled correctly by the system.
 .\"
 .\"
 .SH FILES
-\fBsgepasswd\fB  contains  a  list  of  user  names   and   their
+\fBsgepasswd\fP  contains  a  list  of  user  names   and   their
 corresponding encrypted passwords. If available, the
-password  file  will  be   used   by  \fBsge_execd\fB. To change the contents 
-of this file please use the \fBsgepasswd\fB command. It is not advised to  change  
+password  file  will  be   used   by  \fBsge_execd\fP. To change the contents 
+of this file please use the \fBsgepasswd\fP command. It is not advised to  change  
 that file manually.
 .nf
 .ta \w'<xxqs_name_sxx_root>/     'u
