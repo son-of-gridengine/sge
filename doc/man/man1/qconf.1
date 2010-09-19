@@ -49,7 +49,9 @@ for existing queues.
 .I Qconf
 allows the use of the backslash, '\\', character at the end of a line to
 indicate that the next line is a continuation of the current line.  When
-displaying settings, such as the output of one of the -s* options,
+displaying settings, such as the output of one of the 
+.BI \-s *
+options,
 .I qconf
 will break up long lines (lines greater than 80 characters) into smaller lines
 using backslash line continuation where possible.  Lines will only be broken up
@@ -70,12 +72,12 @@ operations are available to all users with a valid account.
 Similar to \fB\-aattr\fP (see below) but takes specifications for the object
 attributes to be enhanced from file named \fBfname\fP. As opposed to
 \fB\-aattr\fP,
-multiple attributes can be enhanced. Their specification has to be enlisted
+multiple attributes can be enhanced. Their specification has to be listed
 in \fBfname\fP following the file format of the corresponding object (see
 .M queue_conf 5
 for the queue, for example).
 .br
-Requires root/manager privileges.
+Requires root or manager privileges.
 .\"
 .IP "\fB\-Acal fname\fP	\fI<add calendar>\fP"
 Adds a new calendar definition to the xxQS_NAMExx environment. 
@@ -84,7 +86,7 @@ unavailability schedules of queues. The format of a calendar definition is
 described in
 .M calendar_conf 5 .
 .sp 1
-The calendar definition is taken from the file \fBfname\fP. Requires root/
+The calendar definition is taken from the file \fBfname\fP. Requires root or
 manager privileges. 
 .\"
 .IP "\fB\-Ackpt fname\fP	\fI<add ckpt. environment>\fP"
@@ -97,7 +99,7 @@ Requires root or manager privileges.
 Add the configurations (see
 .M xxqs_name_sxx_conf 5 )
 specified in the files
-enlisted in the comma separated \fBfile_list\fP. The configuration
+in the comma separated \fBfile_list\fP. The configuration
 is added for the host that is identical to the file name.
 .br
 Requires root or manager privileges.
@@ -112,11 +114,11 @@ Requires root or manager privileges.
 .IP "\fB\-Ahgrp file\fP		\fI<add host group config>\fP"
 Add the host group configuration defined in \fBfile\fP. 
 The file format of \fBfile\fP must comply
-to the format specified in 
+with the format specified in 
 .M hostgroup 5 .
 Requires root or manager privileges. 
 .\"
-.IP "\fB\-Arqs fname\fP \fI<add RQS configuration>\fP"
+.IP "\fB\-Arqs fname\fP	\fI<add RQS configuration>\fP"
 Add the resource quota set (RQS) defined in the
 file named \fBfname\fP to the xxQS_NAMExx
 cluster. Requires root or manager privileges.
@@ -145,11 +147,11 @@ Add the queue defined in \fBfname\fP to the xxQS_NAMExx
 cluster. Requires root or manager privileges.
 .\"
 .IP "\fB\-Au fname\fP	\fI<add an ACL>\fP"
-Add the user access list (ACL) defined in
+Add the user access list (ACL) defined in file
 .B fname
 to xxQS_NAMExx. User lists
 are used for queue usage authentication. Requires
-root/manager/operator privileges.
+root, manager, or operator privileges.
 .\"
 .IP "\fB\-cb\fP"
 This parameter can be used since xxQS_NAMExx version 6.2u5 in combination
@@ -171,12 +173,12 @@ the next major release.
 Similar to \fB\-dattr\fP (see below) but the definition of the list
 attributes from which entries are to be deleted is contained in the
 file named \fBfname\fP. As opposed to \fB\-dattr\fP, multiple
-attributes can be modified. Their specification has to be enlisted in
+attributes can be modified. Their specification has to be listed in
 \fBfname\fP following the file format of the corresponding object (see
 .M queue_conf 5
 for the queue, for example).
 .br
-Requires root/manager privileges.
+Requires root or manager privileges.
 .\"
 .IP "\fB\-Mattr obj_spec fname obj_instance,...\fP"
 .ta 2.3i
@@ -186,25 +188,25 @@ Requires root/manager privileges.
 Similar to \fB\-mattr\fP (see below) but takes specifications for the object
 attributes to be modified from file named \fBfname\fP. As opposed to
 \fB\-mattr\fP,
-multiple attributes can be modified. Their specification has to be enlisted
+multiple attributes can be modified. Their specification has to be listed
 in \fBfname\fP following the file format of the corresponding object
 (see
 .M queue_conf 5
 for the queue, for example).
 .br
-Requires root/manager privileges.
+Requires root or manager privileges.
 .\"
 .IP "\fB\-Mc fname\fP	\fI<modify complex>\fP"
-Overwrites the complex configuration by the contents of \fBfname\fP. 
-The argument file must comply to the format specified in
+Overwrites the complex configuration with the contents of \fBfname\fP.
+The argument file must comply with the format specified in
 .M complex 5 .
-Requires root or manager privilege.
+Requires root or manager privileges.
 .\"
 .IP "\fB\-Mcal fname\fP	\fI<modify calendar>\fP"
 Overwrites the calendar definition as specified in \fBfname\fP. The argument 
-file must comply to the format described in
+file must comply with the format described in
 .M calendar_conf 5 .
-Requires root or manager privilege. 
+Requires root or manager privileges.
 .\"
 .IP "\fB\-Mckpt fname\fP	\fI<modify ckpt. environment>\fP"
 Overwrite an existing checkpointing environment with the definitions in 
@@ -217,7 +219,7 @@ existing checkpointing environment. Requires root or manager privileges.
 Modify the configurations (see
 .M xxqs_name_sxx_conf 5 )
 specified in the files
-enlisted in the comma separated \fBfile_list\fP. The configuration
+in the comma separated \fBfile_list\fP. The configuration
 is modified for the host that is identical to the file name.
 .br
 Requires root or manager privileges.
@@ -225,19 +227,20 @@ Requires root or manager privileges.
 .IP "\fB\-Me fname\fP	\fI<modify execution host>\fP"
 Overwrites the execution host configuration for the
 specified host with the contents of \fBfname\fP, which must
-comply to the format defines in
+comply with the format defined in
 .M host_conf 5 .
 Requires root or manager privilege.
 .\"
 .IP "\fB\-Mhgrp file\fP		\fI<modify host group config.>\fP"
-Allows changing of host group configuration with a single command. 
+Allows changing the host group configuration with a single command.
 All host group configuration entries contained in
 .B file
 will be applied. Configuration entries not contained in
 .B file
 will be deleted. The file format of \fBfile\fP must comply
 to the format specified in 
-.M hostgroup 5 . Requires root or manager privilege.
+.M hostgroup 5 .
+Requires root or manager privileges.
 .\" 
 .IP "\fB\-Mrqs fname [mrqs_name]\fP	\fI<modify RQS configuration>\fP"
 Same as \fB\-mrqs\fP (see below) but
@@ -245,12 +248,12 @@ instead of invoking an editor to modify the
 RQS configuration, the file \fBfname\fP
 is considered to
 contain a changed configuration. The name of the rule set in \fBfname\fP
-must be the same as rqs_name. If rqs_name is not set, all rule sets
+must be the same as \fBrqs_name\fP. If \fBrqs_name\fR is not set, all rule sets
 are overwritten by the rule sets in \fBfname\fP
 Refer to
 .M xxqs_name_sxx_resource_quota 5
 for details on the RQS configuration format.
-Requires root or manager privilege.
+Requires root or manager privileges.
 .\"
 .IP "\fB\-Mp fname\fP	\fI<modify PE configuration>\fP"
 Same as \fB\-mp\fP (see below) but
@@ -330,9 +333,9 @@ Requires root or manager privileges.
 .ta 3i
 .br
 Similar to \fB\-rattr\fP (see below) but the definition of the list
-attributes whose content is to be replace is contained in the file
+attributes whose content is to be replaced is contained in the file
 named \fBfname\fP. As opposed to \fB\-rattr\fP, multiple attributes can
-be modified. Their specification has to be enlisted in \fBfname\fP
+be modified. Their specification has to be listed in \fBfname\fP
 following the file format of the corresponding object (see
 .M queue_conf 5
 for the queue, for example).
@@ -350,15 +353,11 @@ of an object with a single command. Currently
 supported objects are the queue, the host, the host group, 
 the parallel environment, the resource quota sets
 and the checkpointing interface configuration being specified as
-.I queue
-,
-.I exechost
-,
-.I hostgroup
-,
-.I pe
-,
-.I rqs
+.IR queue ,
+.IR exechost ,
+.IR hostgroup ,
+.IR pe ,
+.IR rqs ,
 or
 .I ckpt
 in \fBobj_spec\fP. 
@@ -367,8 +366,8 @@ For the obj_spec
 the obj_instance can be a cluster queue name, a queue domain name or a queue
 instance name. Find more information concerning different queue names in 
 .M sge_types 1 .
-Depending on the type of the obj_instance this adds to the cluster queues
-attribute sublist the cluster queues implicit default configuration value or
+Depending on the type of the obj_instance, this adds to the cluster queues
+attribute sublist the cluster queue's implicit default configuration value or
 the queue domain configuration value or queue instance configuration value.
 The queue
 .B load_thresholds
@@ -381,7 +380,7 @@ For the obj_spec
 .I rqs
 the obj_instance is a unique identifier for a specific rule. The identifier
 consists of a rule-set name and either the number of the rule in the list,
-or the name of the rule, separated by a /
+or the name of the rule, separated by a "/".
 .br
 The name of the configuration attribute to be enhanced is specified with
 .B attr_name
@@ -409,11 +408,11 @@ unavailability schedules of queues. The format of a calendar definition is
 described in
 .M calendar_conf 5 .
 .sp 1
-With the calendar name given in the option argument
+With the calendar name given in the option argument,
 .I qconf
 will open a 
 temporary file and start up the text editor indicated by the environment 
-variable EDITOR (default editor is
+variable EDITOR (default
 .M vi 1
 if EDITOR is not set). After 
 entering the calendar definition and closing the editor the new calendar is 
@@ -443,7 +442,7 @@ Successively adds configurations (see
 .M xxqs_name_sxx_conf 5 )
 For the hosts in the
 comma separated \fIfile_list\fP.
-For each host, an editor ($EDITOR indicated or
+For each host, an editor ($EDITOR, if defined, or
 .M vi 1 )
 is invoked and the configuration for the host
 can be entered. The configuration is registered with
@@ -512,9 +511,9 @@ Adds one or more \fIResource Quota Set\fP (RQS) description
 under the names
 .B rqs_name
 to the list
-of RQSs maintained by xxQS_NAMExx (see
+of RQSs maintained by xxQS_NAMExx. (See
 .M xxqs_name_sxx_resource_quota 5
-for details on the format of a RQS definition).
+for details on the format of an RQS definition.)
 .I Qconf
 retrieves a default RQS configuration
 and executes
@@ -649,6 +648,13 @@ This command invokes an editor (either
 or the editor indicated by the EDITOR environment variable) for a
 template user. The new user is registered after changing the entry and
 exiting the editor. Requires root or manager privileges.
+.\"
+.IP "\fB\-bonsai\fP	\fI<human-readable sharetree>\fP"
+Shows a textual tree layout of the share tree analogous to the
+graphical view in
+.M qmon 1 .
+.B \-sstree
+shows the same information in a less-readable (linearized) form.
 .\"
 .IP "\fB\-clearusage\fP	\fI<clear sharetree usage>\fP"
 Clears all user and project usage from the sharetree.  All usage will be initialized
@@ -862,7 +868,7 @@ and the changed configuration is registered with
 .M xxqs_name_sxx_qmaster 8
 upon exit of the editor.
 If the optional host argument is omitted or if the
-special host name \fBglobal\fB is specified, the
+special host name \fBglobal\fP is specified, the
 global configuration is modified.
 The  format of the configuration is 
 described in 
@@ -1009,7 +1015,7 @@ modified data is registered. Requires root or manager privileges.
 Delete the values of the attributes defined in \fBattr_nm\fP from the 
 object defined in \fBobj_spec\fP. Obj_spec can be "queue_instance"
 or "queue_domain".  The names of the attributes are described in 
-.M queue_conf 1 .
+.M queue_conf 5 .
 .br
 This operation only works on a single queue instance or domain.  It cannot be
 used on a cluster queue.  In the case where the \fBobj_spec\fP is
@@ -1076,7 +1082,7 @@ described in
 .\"
 .IP "\fB\-sconfl\fP	\fI<show configuration list>\fP"
 Display a list of hosts for which configurations are
-available. The special host name \fBglobal\fB refers to the
+available. The special host name \fBglobal\fP refers to the
 global configuration.
 .\"
 .IP "\fB\-sds\fP	\fI<show detached settings>\fP"
@@ -1199,6 +1205,8 @@ specifying the location of a node in the share tree.
 .IP "\fB\-sstree\fP	\fI<show share tree>\fP"
 Shows the definition of the share tree (see
 .M share_tree 5 ).
+A different view is provided by
+.BR \-bonsai .
 .\"
 .IP "\fB\-sst\fP	\fI<show formatted share tree>\fP"
 Shows the definition of the share tree in a tree view (see
