@@ -12,7 +12,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -61,7 +61,7 @@ files.
 If set, specifies the default xxQS_NAMExx cell. To address a xxQS_NAMExx
 cell
 .I xxqs_name_sxx_qmaster
-uses (in the order of precedence):
+uses (in order of precedence):
 .sp 1
 .RS
 .RS
@@ -75,8 +75,12 @@ The name of the default cell, i.e. \fBdefault\fP.
 .\"
 .IP "\fBxxQS_NAME_Sxx_DEBUG_LEVEL\fP" 1.5i
 If set, specifies that debug information
-should be written to stderr. In addition the level of
-detail in which debug information is generated is defined.
+should be written to stderr. In addition, the level of
+detail in which debug information is generated is defined by the
+defined value.
+.\"
+.IP "\fBxxQS_NAME_Sxx_DEBUG_LEVEL\fP" 1.5i
+If set, the qmaster will not daemonize.
 .\"
 .IP "\fBxxQS_NAME_Sxx_QMASTER_PORT\fP" 1.5i
 If set, specifies the tcp port on which
