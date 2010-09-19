@@ -462,7 +462,7 @@ the information and print it to the stdout stream. Server JSVs
 will print that message as an info message to the master daemon
 message file.
 .PP
-If \fImessage\fP is missing then and empty line will be printed.
+If \fImessage\fP is missing then an empty line will be printed.
 .\"
 .SS "jsv_log_warning()"
 This function sends a warning \fImessage\fP to the client or
@@ -473,7 +473,7 @@ the information and print it to the stdout stream. Server JSVs
 will print that message as an warning message to the master daemon
 message file.
 .PP
-If \fImessage\fP is missing then and empty line will be printed.
+If \fImessage\fP is missing then an empty line will be printed.
 .\"
 .SS "jsv_log_error()"
 This function sends an error \fImessage\fP to the client or
@@ -484,7 +484,7 @@ the information and print it to the stdout stream. Server JSVs
 will print that message as an error message to the master daemon
 message file.
 .PP
-If \fImessage\fP is missing then and empty line will be printed.
+If \fImessage\fP is missing then an empty line will be printed.
 .\"
 .SS "jsv_send_env()"
 This function can only be used in \fBjsv_on_start\fP(). If it is used
@@ -512,7 +512,7 @@ the JSV protocol and performs the communication with client and server
 components which might start JSV scripts.
 .PP    
 This function does not return immediately. It returns only when
-the "QUIT" command is send by the client or server component.
+the "QUIT" command is sent by the client or server component.
 .PP
 During the communication with client and server components, this
 function triggers two callback functions for each job that 
@@ -556,10 +556,10 @@ information for the next job is scheduled to be verified.
 .\"
 .PP
 After this function returns \fBjsv_on_verify\fP() will be called. This function does
-there verification process itself.
+the verification process itself.
 .SS "jsv_on_verify()"
 This is a callback function that has to be defined by the creator of a JSV script.
-It is called for every job and when it returns a the job will either be accepted
+It is called for every job, and when it returns the job will either be accepted
 or rejected. Find implementation examples in the directory $SGE_ROOT/util/resources/jsv.
 .PP
 The logic of this function completely depends on the creator of this function. The creator
