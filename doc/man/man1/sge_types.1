@@ -102,7 +102,7 @@ A host identifier can be either a host name or a host group name.
 .SS "\fBhostgroup_name\fP"
 A host group name is the name of a xxQS_NAMExx host group described in
 .M hostgroup 5 .
-Note, to allow host group names easily be differed from host names 
+Note, to allow host group names to be distinguished easily from host names,
 a "@" prefix is used.
 .PP
 \fIhostgroup_name\fP := @\fIobject_name\fP
@@ -112,10 +112,10 @@ a "@" prefix is used.
 .SS "\fBhost_name\fP"
 A host name is the official name of a host node. Host names with a domain 
 specification such as "gridmaster.sun.com" are called fully-qualified host names, 
-whereas host names like "gridmaster" are called short host names. Note, there 
-are the install time parameters default_domain and ignore_fqdn (see 
+whereas host names like "gridmaster" are called short host names. Note that
+the install time parameters default_domain and ignore_fqdn (see
 .M bootstrap 5 )
-which affect how xxQS_NAMExx deals with host names in general. 
+affect how xxQS_NAMExx deals with host names in general.
 .fi
 .SS "\fBjsv_url\fP"
 The \fBjsv_url\fP has following format:
@@ -129,14 +129,14 @@ The \fBjsv_url\fP has following format:
 .PP
 \fItype\fP := '\fBscript\fP'
 .PP
-In the moment only the \fItype\fP \fBscript\fP is allowed. This means
+At the moment only the \fItype\fP \fBscript\fP is allowed. This means
 that \fIpath\fP is either the path to a script or to a binary application
-which will be used to instantiate a JSV process. The \fItype\fP is optional till
+which will be used to instantiate a JSV process. The \fItype\fP is optional until
 other \fItypes\fP are supported by xxQS_NAMExx. 
 .PP
-Specifying a \fIuser\fP is only allowed for server JSV's. Client JSV's 
-will automatically be started as submit user and server JSV's as admin 
-user if not other specified.
+Specifying a \fIuser\fP is only allowed for server JSVs. Client JSVs
+will automatically be started as the submit user, and server JSVs as the admin
+user if not otherwise specified.
 .PP
 The \fIpath\fP has always to be the absolute path to a binary or application.
 .PP
@@ -176,10 +176,10 @@ A queue name is the name of a xxQS_NAMExx queue described in
 .SS "\fBtime_specifier\fP"
 A time specifier either consists of a positive decimal, hexadecimal or 
 octal integer constant, in which case the value is interpreted to be in 
-seconds, or is built by 3 decimal integer numbers separated by colon 
-signs where the first number counts the hours, the second the minutes 
-and the third the seconds. If a number would be zero it can be left 
-out but the separating colon must remain (e.g. 1:0:1 = 1::1 means 1 
+seconds, or is built from 3 decimal integer numbers separated by colon
+signs, where the first number counts the hours, the second the minutes
+and the third the seconds. If a number would be zero it can be left
+out but the separating colon must remain (e.g. 1:0:1 = 1::1 means 1
 hours and 1 second).
 .\"
 .SS "\fBuser_name\fP"
@@ -230,7 +230,7 @@ where:
 "|"	or operator -- logically or with the following expression
 "("	open bracket -- begin an inner expression.
 ")"	close bracket -- end an inner expression. 
-"pattern"	see the \fIpattern\fP definition that's follow
+"pattern"	see the \fIpattern\fP definition that follows
 .fi
 .PP
 .\"
@@ -256,7 +256,7 @@ When patterns are used the following definitions apply:
 .ta \w'XXXXXXXX'u
 "*"	matches any character and any number of characters 
 	(between 0 and inv).
-"?"	matches any character. It cannot be no character
+"?"	matches any character. It cannot be no character.
 "."	is the character ".". It has no other meaning
 "\\"	escape character. "\\\\" = "\\", "\\*" = "*", "\\?" = "?"
 "[...]"	specifies an array or a range of allowed 
@@ -340,14 +340,14 @@ job, while the name and pattern might reference multiple jobs.
 wc_job := job-id | job-name | pattern
 .PP
 .SS "\fBwc_job_range\fP"
-The wildcard job range specification allows to reference specific array
+The wildcard job range specification allows referencing specific array
 tasks for one or multiple jobs. The job is referenced via wc_job and in
 addition gets a range specifier for the array tasks.
 .sp 1
 wc_job_range := wc_job [ -t range]
 .PP
 .SS "\fBwc_job_list\fP"
-The wildcard job list specification allows to reference multiple jobs 
+The wildcard job list specification allows referencing multiple jobs
 with one command.
 .PP
 wc_job_list := wc_job [ , wc_job , ...]
@@ -361,10 +361,10 @@ one of the following forms:
 .ta 0.0i
 .sp 1
 If present, the \fItask_range\fP restricts the effect of the \fIqmod\fP
-operation to the array job task range specified as suffix to the job id
-(see the \fB\-t\fP option to
+operation to the array job task range specified as a suffix to the job id.
+(See the \fB\-t\fP option to
 .M qsub 1
-for further details on array jobs).
+for further details on array jobs.)
 .PP
 .SS "\fBwc_qdomain\fP"
 \fIwc_qdomain\fP := \fIwc_cqueue\fP "@" \fIwc_hostgroup\fP
@@ -374,7 +374,7 @@ expression cluster queue name (\fIwc_cqueue\fP) followed by an at-character '@'
 and a wildcard expression hostgroup specification (\fIwc_hostgroup\fP).
 .PP
 \fIwc_qdomain\fP are used to address a group of queue instances.
-All queue instances residing on a hosts which is part of matching hostgroups
+All queue instances residing on a host which is part of matching hostgroups
 will be addressed. Please note, that \fIwc_hostgroup\fP always begins with
 an at-character.
 .PP
@@ -385,9 +385,9 @@ e.g.
 .ta \w'XXXXXXXXXXXXX'u
 *@@*	all queue instances whose underlying
 	host is part of at least one hostgroup
-a*@@e*	all queue instances begins with a whose underlying
-	host is part of at least one hostgroup begin with e
-*@@solaris	all queue instances on hosts part of
+a*@@e*	all queue instances beginning with a whose underlying
+	host is part of at least one hostgroup beginning with e
+*@@solaris	all queue instances on hosts in
 	the @solaris hostgroup
 .fi
 .\"
@@ -405,7 +405,7 @@ e.g.
 .ta \w'XXXXXXXXXXXXX'u
 *	all cluster queues
 a*	all cluster queues beginning with an 'a'
-a*&!adam	all cluster queues beginning with an 'a',but not adam
+a*&!adam	all cluster queues beginning with an 'a', but not adam
 .fi
 .\"
 .SS "\fBwc_qinstance\fP"
@@ -417,7 +417,7 @@ at-character '@' and a wildcard expression hostname (\fIwc_host\fP).
 .PP
 \fIwc_qinstance\fP expressions are used to address a group
 of queue instances whose underlying hostname matches the given expression.
-Please note that the first character of \fIwc_host\fP does never match 
+Please note that the first character of \fIwc_host\fP never matches
 the at-character '@'. 
 .PP
 .nf
@@ -448,7 +448,7 @@ e.g.
 big_*1	cluster queues which begin with 
 	"big_" and end with "1" 
 big_*&!*1	cluster queues which begin with 
-	"big_" ,but does not end with "1" 
+	"big_", but do not end with "1"
 *@fangorn	all qinstances residing on host 
 	fangorn
 .fi
@@ -537,7 +537,7 @@ e.g.
 hh denotes the hour in 2 digits.
 mm denotes the minute in 2 digits.
 ss denotes the seconds in 2 digits (default 00).
-seconds  is a number of seconds (is used for duration values)
+seconds  is a number of seconds (used for duration values)
 .fi
 .sp 1
 If any of the optional date fields are omitted, the corresponding value of
