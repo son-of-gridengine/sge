@@ -25,7 +25,7 @@
 .if n \&''\c
 \\$2
 ..
-.\"
+.\" "
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
@@ -36,7 +36,7 @@ accounting \- xxQS_NAMExx accounting file format
 .\"
 .SH DESCRIPTION
 An accounting record is written to the xxQS_NAMExx
-accounting file for each job having finished. The accounting file is
+accounting file for each finished job. The accounting file is
 processed by
 .M qacct 1
 to derive accounting statistics.
@@ -46,7 +46,7 @@ to derive accounting statistics.
 Each job is represented by a line in the accounting file. Empty lines
 and lines which contain one character or less are ignored.
 Accounting record entries are
-separated by colon (':') signs. The entries denote in their order
+separated by colon (':') characters. The entries denote in their order
 of appearance:
 .SS "\fBqname\fP"
 Name of the cluster queue in which the job has run.
@@ -59,15 +59,15 @@ Owner of the xxQS_NAMExx job.
 .SS "\fBjob_name\fP"
 Job name.
 .SS "\fBjob_number\fP"
-Job identifier - job number.
+Job identifier (job number).
 .SS "\fBaccount\fP"
 An account string as specified by the
 .M qsub 1
 or
 .M qalter 1
 \fB\-A\fP option.
-.IP "\fBpriority\fP"
-Priority value assigned to the job corresponding to the \fBpriority\fP
+.SS "\fBpriority\fP"
+The priority value assigned to the job corresponding to the \fBpriority\fP
 parameter in the queue configuration (see
 .M queue_conf 5 ).
 .SS "\fBsubmission_time\fP"
@@ -100,7 +100,7 @@ Difference between \fBend_time\fP and \fBstart_time\fP (see above).
 The remainder of the accounting entries follows the contents of the
 standard UNIX rusage structure as described in
 .M getrusage 2 .
-Depending on the operating system where the job was executed some of the
+Depending on the operating system where the job was executed, some of the
 fields may be 0.  The following entries are provided:
 .PP
 .nf
@@ -147,16 +147,18 @@ A string specifying the job category.
 .SS "\fBiow\fP"
 The io wait time in seconds.
 .SS "\fBpe_taskid\fP"
-If this identifier is set the task was part of a parallel job and was 
-passed to xxQS_NAMExx via the qrsh -inherit interface.
+If this identifier is set, the task was part of a parallel job and was 
+passed to xxQS_NAMExx via the qrsh \-inherit interface.
 .SS "\fBmaxvmem\fP"
 The maximum vmem size in bytes.
 .SS "\fBarid\fP"
-Advance reservation identifier. If the job used resources of an advance
-reservation then this field contains a positive integer identifier otherwise the
-value is "\fB0\fP" .
+Advance reservation identifier. If the job used resources from an
+advance reservation then this field contains a positive integer
+identifier; otherwise the value is "\fB0\fP".
 .SS "\fBar_submission_time\fP"
-If the job used resources of an advance reservation then this field contains the submission time (GMT unix time stamp) of the advance reservation, otherwise the value is "\fB0\fP" .
+If the job used resources from an advance reservation then this field
+contains the submission time (GMT unix time stamp) of the advance
+reservation; otherwise the value is "\fB0\fP".
 .fi
 .\"
 .\"
