@@ -1,0 +1,3 @@
+# This file can contain csh variable definitions to override those in
+# aimk and aimk.site.  It may be necessary for building other than on
+# a Debian- or RedHat-derived system.
