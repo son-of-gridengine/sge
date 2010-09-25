@@ -191,30 +191,42 @@ static void lWriteListXML_(const lList *lp, int nesting_level, FILE *fp, int ign
       
       if (is_XML_elem && (lGetBool(ep, XMLE_Print)))  {
          lListElem *elem = lGetObject(ep, XMLE_Element);
+	 const char *tag = lGetString(elem, XMLA_Name);
+	 int tag_ok = tag && strlen(tag);
          if (!fp){
             if (lGetString(elem, XMLA_Value) != NULL){
-               DPRINTF(("%s<%s%s>", indent, lGetString(elem, XMLA_Name), (is_attr?sge_dstring_get_string(&attr):"")));
-               DPRINTF(("%s", lGetString(elem, XMLA_Value))); 
+	       if (tag_ok) {
+		  DPRINTF(("%s<%s%s>", indent, tag, (is_attr?sge_dstring_get_string(&attr):"")));
+		  DPRINTF(("%s", lGetString(elem, XMLA_Value)));
+	       }
                lWriteListXML_(lGetList(ep, XMLE_List), nesting_level+1, fp, ignore_cull_name);
-               DPRINTF(("</%s>\n", lGetString(elem, XMLA_Name)));
+	       if (tag_ok)
+		 DPRINTF(("</%s>\n", tag));
             }
             else{
-               DPRINTF(("%s<%s%s>\n", indent, lGetString(elem, XMLA_Name), (is_attr?sge_dstring_get_string(&attr):"")));
+	       if (tag_ok)
+		  DPRINTF(("%s<%s%s>\n", indent, tag, (is_attr?sge_dstring_get_string(&attr):"")));
                lWriteListXML_(lGetList(ep, XMLE_List), nesting_level+1, fp, ignore_cull_name);
-               DPRINTF(("%s</%s>\n", indent,lGetString(elem, XMLA_Name)));
+	       if (tag_ok)
+		  DPRINTF(("%s</%s>\n", indent, tag));
             }
          }
          else {
             if (lGetString(elem, XMLA_Value) != NULL){
-               fprintf(fp, "%s<%s%s>", indent, lGetString(elem, XMLA_Name), (is_attr?sge_dstring_get_string(&attr):""));
-               fprintf(fp, "%s", lGetString(elem, XMLA_Value));
+	       if (tag_ok) {
+		  fprintf(fp, "%s<%s%s>", indent, tag, (is_attr?sge_dstring_get_string(&attr):""));
+		  fprintf(fp, "%s", lGetString(elem, XMLA_Value));
+	       }
                lWriteListXML_(lGetList(ep, XMLE_List), nesting_level+1, fp, ignore_cull_name);
-               fprintf(fp, "</%s>\n", lGetString(elem, XMLA_Name));
+	       if (tag_ok)
+		  fprintf(fp, "</%s>\n", tag);
             }
             else{
-               fprintf(fp, "%s<%s%s>\n", indent, lGetString(elem, XMLA_Name), (is_attr?sge_dstring_get_string(&attr):""));
+	       if (tag_ok)
+		  fprintf(fp, "%s<%s%s>\n", indent, tag, (is_attr?sge_dstring_get_string(&attr):""));
                lWriteListXML_(lGetList(ep, XMLE_List), nesting_level+1, fp, ignore_cull_name);
-               fprintf(fp, "%s</%s>\n", indent, lGetString(elem, XMLA_Name));
+	       if (tag_ok)
+		 fprintf(fp, "%s</%s>\n", indent, tag);
             }
          }
       }
