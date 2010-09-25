@@ -834,7 +834,7 @@ CheckWinAdminUser()
             read SECRET
             stty $stty_orig
             $INFOTEXT "Creating admin user %s, now ...\n" $win_admin_user
-            eval net user $win_admin_user $SECRET /add < /dev/null
+            eval net user $win_admin_user \"$SECRET\" /add < /dev/null
             ret=$?
             unset SECRET
          done
