@@ -256,7 +256,7 @@ SetPermissions()
       else
          if [ "$WINDOWS_SUPPORT" = true ]; then
             $INFOTEXT -auto $AUTO -ask "y" "n" -def "n" -n \
-                      "Did you install this version with >pkgadd< or did you already\n" \
+                      "Did you either install this version with a package manager, or otherwise\n" \
                       "verify and set the file permissions of your distribution (enter: y)\n\n" \
                       "In some cases, eg: the binaries are stored on a NTFS or on any other\n" \
                       "filesystem, which provides additional file permissions, the UNIX file\n" \
@@ -264,8 +264,9 @@ SetPermissions()
                       "to set the file permissions (enter: n) (y/n) [n] >> "
          else
             $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n \
-                      "Did you install this version with >pkgadd< or did you already verify\n" \
-                      "and set the file permissions of your distribution (enter: y) (y/n) [y] >> "
+                      "Did you either install this version with a package manager,\n"
+                      "or otherwise verify and set the file permissions of your\n"
+		      "distribution (enter: y) (y/n) [y] >> "
          fi
          if [ $? = 0 ]; then
             $INFOTEXT -wait -auto $AUTO -n "We do not verify file permissions. Hit <RETURN> to continue >> "
@@ -625,7 +626,7 @@ SelectHostNameResolving()
    if [ $AUTO = "true" ]; then
      IGNORE_FQDN_DEFAULT=$HOSTNAME_RESOLVING
      $INFOTEXT -log "Using >%s< as IGNORE_FQDN_DEFAULT." "$IGNORE_FQDN_DEFAULT"
-     $INFOTEXT -log "If it's >true<, the domain name will be ignored."
+     $INFOTEXT -log "If it is >true<, the domain name will be ignored."
      
    else
      $CLEAR
