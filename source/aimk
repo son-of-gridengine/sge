@@ -2301,6 +2301,12 @@ if ( "$SGE_DEPEND" == 1 ) then
       exit 1
    endif
 
+   # Kludge: I'm not sure why re-runs of autotools get triggered,
+   # though the timestamps of files checked out from the repo are
+   # apparently the same.
+   cd $SOURCE/3rdparty/plpa/plpa-1.3.1
+   touch aclocal.m4 Makefile.in configure
+
    cd $SOURCE
 endif
 
@@ -2440,7 +2446,10 @@ if ( "$PLPA" == 1 ) then
       
       cd $SOURCE/3rdparty/plpa/plpa-1.3.1/$COMPILE_ARCH
 
-      $MAKE $MAKEOPT -f Makefile "MAKE=$MAKE" "COMPILE_ARCH=$COMPILE_ARCH" $argv
+#      $MAKE $MAKEOPT -f Makefile "MAKE=$MAKE" "COMPILE_ARCH=$COMPILE_ARCH" $argv
+      if ( "$argv" != depend ) then
+	../configure --enable-static --disable-shared --with-pic && $MAKE $MAKEOPT $argv
+      endif
 
       if ( $status != 0 ) then
          echo not done
