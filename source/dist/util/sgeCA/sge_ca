@@ -928,6 +928,8 @@ MakeKeystore()
       return 1
    fi
 
+   # Fixme:  Change this (per Fedora) if the jars are installed outside
+   # ROOT_PATH.
    JVM_ARGS="-cp $ROOT_PATH/lib/juti.jar"
    JVM_ARGS="$JVM_ARGS -Djava.util.logging.config.file=$ROOT_PATH/util/sgeCA/logging.properties"
 
@@ -1723,7 +1725,7 @@ if [ ! -f "$ARCHSCRIPT" ]; then
 fi
 
 ARCH=`$ARCHSCRIPT`
-V5UTILBIN=$ROOT_PATH/utilbin/$ARCH              # adminrun, infotext, openssl, uidgid
+V5UTILBIN=$ROOT_PATH/utilbin/$ARCH              # adminrun, infotext, uidgid
 
 if [ ! -d "$V5UTILBIN" ]; then
    echo
@@ -1732,6 +1734,8 @@ if [ ! -d "$V5UTILBIN" ]; then
    exit 1
 fi
 
+# Fixme:  Change this (per Fedora) if the jars are installed outside
+# ROOT_PATH.
 if [ ! -d "$ROOT_PATH/lib/$ARCH" ]; then
     echo
     echo "Error: The lib directory \"$ROOT_PATH/lib/$ARCH\" does not exist"
@@ -1786,7 +1790,7 @@ SGE_INFOTEXT_MAX_COLUMN=5000; export SGE_INFOTEXT_MAX_COLUMN
 #
 #  Check wether all needed binaries are exists
 #
-for i in adminrun openssl uidgid; do
+for i in adminrun uidgid; do
    if [ ! -x $V5UTILBIN/$i ]; then
       PrintErrorAndExit 1 "Error: Can't find binary \"%s\"" $V5UTILBIN/$i
    fi
@@ -1815,7 +1819,7 @@ fi
 
 CAKEY=cakey.pem
 CACERT=cacert.pem
-OPENSSL=$V5UTILBIN/openssl
+OPENSSL=openssl
 
 AUTO="false"
 #-----------------------------
