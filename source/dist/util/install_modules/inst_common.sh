@@ -574,16 +574,14 @@ GetConfigFromFile()
   SGE_ENABLE_SMF_LAST=$SGE_ENABLE_SMF
   SGE_ENABLE_SMF=""
 
-  IFS="
-"
   if [ $FILE != "undef" ]; then
      $INFOTEXT "Reading configuration from file %s" $FILE
-     . $FILE
+     IFS="
+" . $FILE
   else
      $INFOTEXT "No config file. Please, start the installation with\n a valid configuration file"
   fi
-  IFS="   
-"
+
    #-nosmf takes precedence over the value in the autoinstall template
    if [ "$SGE_ENABLE_SMF_LAST" = false ]; then
       SGE_ENABLE_SMF=false
