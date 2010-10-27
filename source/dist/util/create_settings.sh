@@ -66,7 +66,8 @@ SP_SH=$1/settings.sh
 
 echo "setenv SGE_ROOT $SGE_ROOT"                         >  $SP_CSH
 echo ""                                                  >> $SP_CSH
-echo "set ARCH = \`\$SGE_ROOT/util/arch\`"               >> $SP_CSH
+echo 'if ( -x $SGE_ROOT/util/arch ) then'                >> $SP_CSH
+echo "setenv SGE_ARCH = \`\$SGE_ROOT/util/arch\`"        >> $SP_CSH
 echo "set DEFAULTMANPATH = \`\$SGE_ROOT/util/arch -m\`"  >> $SP_CSH
 echo "set MANTYPE = \`\$SGE_ROOT/util/arch -mt\`"        >> $SP_CSH
 echo ""                                                  >> $SP_CSH
@@ -100,9 +101,9 @@ echo "else"                                                      >> $SP_CSH
 echo "   setenv MANPATH \$SGE_ROOT/"'${MANTYPE}:$DEFAULTMANPATH' >> $SP_CSH
 echo "endif"                                                     >> $SP_CSH
 echo ""                                                          >> $SP_CSH
-echo "set path = ( \$SGE_ROOT/bin/"'$ARCH $path )'               >> $SP_CSH
+echo "set path = ( \$SGE_ROOT/bin/"'$SGE_ARCH $path )'           >> $SP_CSH
 
-echo 'switch ($ARCH)'                                            >> $SP_CSH
+echo 'switch ($SGE_ARCH)'                                        >> $SP_CSH
 #ENFORCE_SHLIBPATH#echo 'case "sol*":'                           >> $SP_CSH
 #ENFORCE_SHLIBPATH#echo 'case "lx*":'                            >> $SP_CSH
 #ENFORCE_SHLIBPATH#echo 'case "hp11-64":'                        >> $SP_CSH
@@ -111,13 +112,16 @@ echo 'case "*":'                                                 >> $SP_CSH
 echo "   set shlib_path_name = \`\$SGE_ROOT/util/arch -lib\`"       >> $SP_CSH
 echo "   if ( \`eval echo '\$?'\$shlib_path_name\` ) then"          >> $SP_CSH
 echo "      set old_value = \`eval echo '\$'\$shlib_path_name\`"    >> $SP_CSH
-echo "      setenv \$shlib_path_name \"\$SGE_ROOT/lib/\$ARCH\":\"\$old_value\""   >> $SP_CSH
+echo "      setenv \$shlib_path_name \"\$SGE_ROOT/lib/\$SGE_ARCH\":\"\$old_value\""   >> $SP_CSH
 echo "   else"                                                      >> $SP_CSH
-echo "      setenv \$shlib_path_name \$SGE_ROOT/lib/\$ARCH"         >> $SP_CSH
+echo "      setenv \$shlib_path_name \$SGE_ROOT/lib/\$SGE_ARCH"     >> $SP_CSH
 echo "   endif"                                                     >> $SP_CSH
 echo "   unset shlib_path_name  old_value"                          >> $SP_CSH
 echo "endsw"                                                        >> $SP_CSH
-echo "unset ARCH DEFAULTMANPATH MANTYPE"                            >> $SP_CSH
+echo "unset DEFAULTMANPATH MANTYPE"                                 >> $SP_CSH
+echo 'else'                                                         >> $SP_CSH
+echo 'unsetenv SGE_ROOT'                                            >> $SP_CSH
+echo 'endif'                                                        >> $SP_CSH
 
 #
 # bourne shell settings file
@@ -125,7 +129,8 @@ echo "unset ARCH DEFAULTMANPATH MANTYPE"                            >> $SP_CSH
 
 echo "SGE_ROOT=$SGE_ROOT; export SGE_ROOT"                        > $SP_SH
 echo ""                                                          >> $SP_SH
-echo "ARCH=\`\$SGE_ROOT/util/arch\`"                             >> $SP_SH
+echo 'if [ -x $SGE_ROOT/util/arch ]; then'                       >> $SP_SH
+echo "SGE_ARCH=\`\$SGE_ROOT/util/arch\`; export SGE_ARCH"        >> $SP_SH
 echo "DEFAULTMANPATH=\`\$SGE_ROOT/util/arch -m\`"                >> $SP_SH
 echo "MANTYPE=\`\$SGE_ROOT/util/arch -mt\`"                      >> $SP_SH
 echo ""                                                          >> $SP_SH
@@ -156,23 +161,25 @@ echo "   MANPATH=\$DEFAULTMANPATH"                               >> $SP_SH
 echo "fi"                                                        >> $SP_SH
 echo "MANPATH=\$SGE_ROOT/\$MANTYPE:\$MANPATH; export MANPATH"    >> $SP_SH
 echo ""                                                          >> $SP_SH
-echo "PATH=\$SGE_ROOT/bin/\$ARCH:\$PATH; export PATH"            >> $SP_SH
+echo "PATH=\$SGE_ROOT/bin/\$SGE_ARCH:\$PATH; export PATH"        >> $SP_SH
 
 echo '# library path setting required only for architectures where RUNPATH is not supported' >> $SP_SH
-echo 'case $ARCH in'                                                >> $SP_SH
+echo 'case $SGE_ARCH in'                                            >> $SP_SH
 #ENFORCE_SHLIBPATH#echo 'sol*|lx*|hp11-64)'                         >> $SP_SH
 #ENFORCE_SHLIBPATH#echo '   ;;'                                     >> $SP_SH
 echo '*)'                                                           >> $SP_SH
 echo "   shlib_path_name=\`\$SGE_ROOT/util/arch -lib\`"             >> $SP_SH
 echo "   old_value=\`eval echo '\$'\$shlib_path_name\`"             >> $SP_SH
 echo "   if [ x\$old_value = "x" ]; then"                           >> $SP_SH
-echo "      eval \$shlib_path_name=\$SGE_ROOT/lib/\$ARCH"           >> $SP_SH
+echo "      eval \$shlib_path_name=\$SGE_ROOT/lib/\$SGE_ARCH"       >> $SP_SH
 echo "   else"                                                      >> $SP_SH
-echo "      eval \$shlib_path_name=\$SGE_ROOT/lib/\$ARCH:\$old_value" >> $SP_SH
+echo "      eval \$shlib_path_name=\$SGE_ROOT/lib/\$SGE_ARCH:\$old_value" >> $SP_SH
 echo "   fi"                                                        >> $SP_SH
 echo "   export \$shlib_path_name"                                  >> $SP_SH
 echo '   unset shlib_path_name old_value'                           >> $SP_SH
 echo '   ;;'                                                        >> $SP_SH
 echo 'esac'                                                         >> $SP_SH
-echo "unset ARCH DEFAULTMANPATH MANTYPE"                            >> $SP_SH
-
+echo 'unset DEFAULTMANPATH MANTYPE'                                 >> $SP_SH
+echo 'else'                                                         >> $SP_SH
+echo 'unset SGE_ROOT'                                               >> $SP_SH
+echo 'fi'                                                           >> $SP_SH
