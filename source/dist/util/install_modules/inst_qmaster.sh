@@ -676,13 +676,22 @@ SetProductMode()
       aix* | hp11*)
           SEC_COUNT=`strings -a $SGE_BIN/sge_qmaster | grep "AIMK_SECURE_OPTION_ENABLED" | wc -l`
           ;;
-         *)
-          SEC_COUNT=`strings $SGE_BIN/sge_qmaster | grep "AIMK_SECURE_OPTION_ENABLED" | wc -l`
+      *)
+	  # strings(1) may not be installed (e.g. IZ2506).
+	  if type strings >/dev/null 2>&1; then
+              SEC_COUNT=`strings $SGE_BIN/sge_qmaster | grep "AIMK_SECURE_OPTION_ENABLED" | wc -l`
+	  else
+	      # Do our best, but the results of grep on a binary are
+	      # unspecified generally.
+	      SEC_COUNT=0
+	      grep AIMK_SECURE_OPTION_ENABLED $SGE_BIN/sge_qmaster >/dev/null 2>&1 &&
+	        SEC_COUNT=1
+	  fi
           ;;
       esac
 
       if [ $SEC_COUNT -ne 1 ]; then
-         $INFOTEXT "\n>sge_qmaster< binary is not compiled with >-secure< option!\n"
+         $INFOTEXT "\n>sge_qmaster< binary not compiled with >-secure< option (or strings(1) missing)!\n"
          $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to cancel the installation >> "
          exit 1
       else
