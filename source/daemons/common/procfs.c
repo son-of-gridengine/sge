@@ -70,7 +70,6 @@ int verydummyprocfs;
 #endif
 
 #if defined(LINUX)
-#include <sys/param.h>          /* for HZ (jiffies -> seconds ) */
 #include "sge_proc.h"
 #endif
 
@@ -752,8 +751,8 @@ time_t last_time
       {
          double utime, stime;
 #if defined(LINUX)
-         utime = ((double)lGetPosUlong(pr, pos_utime))/HZ;
-         stime = ((double)lGetPosUlong(pr, pos_stime))/HZ;
+         utime = ((double)lGetPosUlong(pr, pos_utime))/sysconf(_SC_CLK_TCK);
+	 stime = ((double)lGetPosUlong(pr, pos_stime))/sysconf(_SC_CLK_TCK);
 
          INFO((SGE_EVENT, "new process "sge_u32" for job "pid_t_fmt" (utime = %f stime = %f)\n", 
                lGetPosUlong(pr, pos_pid), job_elem->job.jd_jid, utime, stime)); 
@@ -777,8 +776,10 @@ time_t last_time
 
 #if defined(LINUX)
    proc_elem->proc.pd_pid = lGetPosUlong(pr, pos_pid);
-   proc_elem->proc.pd_utime  = ((double)lGetPosUlong(pr, pos_utime))/HZ;
-   proc_elem->proc.pd_stime  = ((double)lGetPosUlong(pr, pos_stime))/HZ;
+   proc_elem->proc.pd_utime  = ((double)lGetPosUlong(pr, pos_utime)) /
+     sysconf(_SC_CLK_TCK);
+   proc_elem->proc.pd_stime  = ((double)lGetPosUlong(pr, pos_stime)) /
+     sysconf(_SC_CLK_TCK);
    /* could retrieve uid/gid using stat() on stat file */
 
   #ifdef TARGET_64BIT
