@@ -240,7 +240,7 @@ static int                  (*cl_com_ssl_func__SSL_CTX_set_ex_data)             
 #define STACK _STACK
 #define SKVAL_RTYPE char
 #else
-#define SKVAL_RTYPE void
+#define SKVAL_RTYPE char
 #endif
 static int                  (*cl_com_ssl_func__sk_num)                              (const STACK *);
 static SKVAL_RTYPE*         (*cl_com_ssl_func__sk_value)                            (const STACK *, int);
