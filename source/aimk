@@ -409,6 +409,10 @@ set AUTHUSER_OBJ  = authuser.o
 set LOADCHECK_OBJ = loadcheck.o
 set JUTI_OBJ      = 
 
+# libcore
+set CORELIB =
+set CORELIB_CLEAN =
+
 # Compile with gettext and libintl - we have platform dependent defaults
 switch ($BUILDARCH) 
    case LINUXAMD64:
@@ -1404,6 +1408,9 @@ case LINUXSPARC64:
 
    set COMPILE_DC = 1
 
+   set CORELIB = "corelib"
+   set CORELIB_CLEAN = "corelib_clean"
+
    # Optimization on LINUXIA64 is broken, qmon dumps
    if ($OPTIMIZATION == 1 && $BUILDARCH != LINUXIA64) then
       set OFLAG = "-O3"
@@ -1532,6 +1539,10 @@ case LINUXSPARC64:
    set JAVA_ARCH = "linux"
 
    # due to -rpath relative_path the LD_LIBRARY_PATH not needed anymore
+   # Fixme:  Should we use rpath, or remove it (per Fedora/Debian patch)?
+   # Since it hinders relocation of the shared distribution, and is
+   # irrelevant on the unshared one, I think it should go and be replaced
+   # by an /etc/ld.so.conf rule for the few libraries involved.
    set RUNPATH       = -Wl,-rpath,'\$$ORIGIN'/../../lib/$buildarch
    set LFLAGS        = "$LFLAGS $RUNPATH"
    set SHARED_LFLAGS = "$SHARED_LFLAGS $RUNPATH"
@@ -2645,6 +2656,7 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
          "JUTI_OBJ=$JUTI_OBJ" \
          "WINCC=$WINCC" "WINCFLAGS=$WINCFLAGS" "WINLFLAGS=$WINLFLAGS" \
          "WINLIBS=$WINLIBS" "LIBRARY_LIBS=$LIBRARY_LIBS" \
+	 "CORELIB=$CORELIB" "CORELIB_CLEAN=$CORELIB_CLEAN"
          $argv
    if ( $status != 0 ) then
       echo not done
@@ -2829,6 +2841,7 @@ if ( "$QMAKE" == 1) then
 endif
 
 
+# Fixme: Replace this with the DESY PAM module?
 if ( "$SGESSH" == 1) then
    echo _________3_r_d_p_a_r_t_y__SSH_____________
 
