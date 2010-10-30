@@ -160,7 +160,7 @@ if ( ! $?JAVA_HOME ) then
 
    # Resolve any symbolic links to find true absolute path to the executable,
    # assuming we have readlink(1).
-   if ( -l "$JAVAC_BIN" ) then
+   if ( { test -L "$JAVAC_BIN" } ) then
        if ( -f /usr/bin/readlink || -f /bin/readlink ) then
 	   set JAVAC_BIN = `readlink -f "$JAVAC_BIN"`
        endif
