@@ -51,7 +51,7 @@ cd $tmpdir
 # create log file
 
 #F=$tmpdir/checkpoint.log
-F=~/$REQNAME.co$1
+F=~/$REQUEST.co$1
 touch $F
 
 print -------------------------------------------------------------  >> $F 2>&1

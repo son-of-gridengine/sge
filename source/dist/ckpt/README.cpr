@@ -55,7 +55,7 @@ $ckpt_dir/ckpt.log
 
 4. The checkpoint files are placed in $ckpt_dir/ckpt.$job_id.  A detailed
 log is available in  the user's home directory under the name 
-$REQNAME.co$JOD_ID.
+$REQUEST.co$JOD_ID.
 
 5. These scripts are designed to handle a system failure during checkpointing.
 That is, the latest checkpoint file will not be used for a restart until the

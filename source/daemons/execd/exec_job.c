@@ -636,6 +636,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       }   
 
       {
+	 /* REQNAME is obsolete, but kept for compatibi;ity (see
+	    IZ3287).  */
          const char *reqname = petep == NULL ? lGetString(jep, JB_job_name) : lGetString(petep, PET_name);
          if (reqname != NULL) {
             var_list_set_string(&environmentList, "REQNAME", reqname);
@@ -777,7 +779,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       sprintf(fname, "%s/%s", binary_path, arch);
       var_list_set_string(&environmentList, "SGE_BINARY_PATH", fname);
       
-      /* JG: TODO (ENV): do we need REQNAME and REQUEST? */
+      /* JG: TODO (ENV): do we need REQNAME and REQUEST?
+         See REQNAME below.  */
       var_list_set_string(&environmentList, "REQUEST", petep == NULL ? lGetString(jep, JB_job_name) : lGetString(petep, PET_name));
       var_list_set_string(&environmentList, "HOSTNAME", lGetHost(master_q, QU_qhostname));
       var_list_set_string(&environmentList, "QUEUE", lGetString(master_q, QU_qname));
@@ -1934,12 +1937,14 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
    /*---------------------------------------------------*/
    /* exec() failed - do what shepherd does if it fails */
 
+   /* Fixme:  This is created world-writable.  */
    fp = fopen("error", "w");
    if (fp) {
       fprintf(fp, "failed to exec shepherd for job" sge_u32"\n", job_id);
       FCLOSE(fp);
    }
 
+   /* Fixme:  This is created world-writable.  */
    fp = fopen("exit_status", "w");
    if (fp) {
       fprintf(fp, "1\n");
