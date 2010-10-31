@@ -190,7 +190,7 @@ GetQmasterSpoolDir()
       $CLEAR
       $INFOTEXT -u "\nGrid Engine qmaster spool directory"
       $INFOTEXT "\nThe qmaster spool directory is the place where the qmaster daemon stores\n" \
-                "the configuration and the state of the queuing system.\n\n"
+                "the configuration and the state of the queueing system.\n\n"
 
       if [ $euid = 0 ]; then
          if [ $ADMINUSER = default ]; then
@@ -258,8 +258,8 @@ SetPermissions()
             $INFOTEXT -auto $AUTO -ask "y" "n" -def "n" -n \
                       "Did you either install this version with a package manager, or otherwise\n" \
                       "verify and set the file permissions of your distribution (enter: y)\n\n" \
-                      "In some cases, eg: the binaries are stored on a NTFS or on any other\n" \
-                      "filesystem, which provides additional file permissions, the UNIX file\n" \
+                      "In some cases, e.g. the binaries are stored on a NTFS or on any other\n" \
+                      "filesystem which provides additional file permissions, the UNIX file\n" \
                       "permissions can be wrong. In this case we would advise to verify and\n" \
                       "to set the file permissions (enter: n) (y/n) [n] >> "
          else
@@ -301,7 +301,7 @@ SetPermissions()
       $INFOTEXT "\nWe may now verify and set the file permissions of your Grid Engine\n" \
                 "distribution.\n\n" \
                  "This may be useful since due to unpacking and copying of your distribution\n" \
-                 "your files may be unaccessible to other users.\n\n" \
+                 "your files may be inaccessible to other users.\n\n" \
                  "We will set the permissions of directories and binaries to\n\n" \
                  "   755 - that means executable are accessible for the world\n\n" \
                  "and for ordinary files to\n\n" \
@@ -472,14 +472,14 @@ SetSpoolingOptionsBerkeleyDB()
       fi
       if [ $ret -gt 1 ]; then
          $INFOTEXT -u "Berkeley DB RPC Server installation"
-         $INFOTEXT "\nWe found a running berkeley db server on this host!"
+         $INFOTEXT "\nWe found a running Berkeley db server on this host!"
          if [ "$AUTO" = "true" ]; then
                if [ $SPOOLING_SERVER = "none" ]; then
                   $ECHO
                   Makedir $SPOOLING_DIR
                   SPOOLING_ARGS="$SPOOLING_DIR"
                else
-                  $INFOTEXT -log "We found a running berkeley db server on this host!"
+                  $INFOTEXT -log "We found a running Berkeley db server on this host!"
                   $INFOTEXT -log "Please, check this first! Exiting Installation!"
                   MoveLog
                   exit 1
@@ -1266,9 +1266,9 @@ StartQmaster()
    if [ "$SGE_ENABLE_SMF" = "true" ]; then
       $SVCADM enable -s "svc:/application/sge/qmaster:$SGE_CLUSTER_NAME"
       if [ $? -ne 0 ]; then
-         $INFOTEXT "\nFailed to start qmaster deamon over SMF. Check service by issuing "\
+         $INFOTEXT "\nFailed to start qmaster daemon over SMF. Check service by issuing "\
                    "svcs -l svc:/application/sge/qmaster:%s" $SGE_CLUSTER_NAME
-         $INFOTEXT -log "\nFailed to start qmaster deamon over SMF. Check service by issuing "\
+         $INFOTEXT -log "\nFailed to start qmaster daemon over SMF. Check service by issuing "\
                         "svcs -l svc:/application/sge/qmaster:%s" $SGE_CLUSTER_NAME
          MoveLog
          exit 1
@@ -1564,7 +1564,7 @@ AddHostsFromTerminal()
       else
          $INFOTEXT -u "\nAdding admin hosts"
       fi
-      $INFOTEXT "\nPlease enter a blank seperated list of hosts.\n\n" \
+      $INFOTEXT "\nPlease enter a blank separated list of hosts.\n\n" \
                 "Stop by entering <RETURN>. You may repeat this step until you are\n" \
                 "entering an empty list. You will see messages from Grid Engine\n" \
                 "when the hosts are added.\n"
@@ -1873,7 +1873,7 @@ JavaVersionString2Num () {
 
    underscore=`echo $micro | grep "_"`
    if [ $? -eq 0 ]; then
-      # Extract the seperate micro and patch numbers, ignoring anything
+      # Extract the separate micro and patch numbers, ignoring anything
       # after the 2-digit patch.
       # we ensure we return 2 characters as patch
       patch=`echo $micro | awk -F_ '{print substr($2, 1, 2)}' | awk '{if (length($0) < 2) print 0$0; else print $0}'`
@@ -2058,7 +2058,7 @@ HaveSuitableJavaBin() {
    if [ -z "$res" ]; then
       list=""
       #Arch specific methods to look for a bin/java
-      #Breakdown the detection for each plaform since same tools might behave differently
+      #Breakdown the detection for each platform since same tools might behave differently
       #Solaris
       if [ x`echo $SGE_ARCH| grep "sol-"` != x ]; then
          #TODO: How to do it on Solaris 9/10?
@@ -2667,7 +2667,7 @@ SetScheddConfig()
 
 GiveBerkelyHints()
 {
-  $INFOTEXT "If you are using a Berkely DB Server, please add the bdb_checkpoint.sh\n" \
+  $INFOTEXT "If you are using a Berkeley DB Server, please add the bdb_checkpoint.sh\n" \
             "script to your crontab. This script is used for transaction\n" \
             "checkpointing and cleanup in SGE installations with a\n" \
             "Berkeley DB RPC Server. You will find this script in:\n" \
@@ -2758,7 +2758,7 @@ PortCollision()
       ;;
 
       services_env)
-         $INFOTEXT "\nThe port for %s is curently set BOTH as service and by the\nshell environment\n" $service
+         $INFOTEXT "\nThe port for %s is currently set BOTH as service and by the\nshell environment\n" $service
          if [ "$service" = "sge_qmaster" ]; then
             $INFOTEXT "   SGE_QMASTER_PORT = %s" $SGE_QMASTER_PORT
             $INFOTEXT "   sge_qmaster service set to port %s" `$SGE_UTILBIN/getservbyname $service | cut -d" " -f2` 
