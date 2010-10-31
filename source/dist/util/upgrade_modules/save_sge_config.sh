@@ -55,9 +55,10 @@ Usage()
 {
    myname=`basename $0`
    $INFOTEXT \
-             "Usage: $myname <backup_dir>|[-help]\n" \
-             "\n<backup_dir> ... Directory in which to store the backup.\n" \
-             "                The directory must either be empty or not exists at all."
+             "Usage: $myname <backup_dir>|[-help]
+
+<backup_dir> ... Directory in which to store the backup.
+                The directory must either be empty or not exists at all."
 }
 
 #Dump list to dir

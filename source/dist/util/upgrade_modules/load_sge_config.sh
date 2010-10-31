@@ -56,15 +56,17 @@ SUCCEEDED_LOADLOC=""
 Usage()
 {
    myname=`basename $0`
-   $INFOTEXT "Usage: $myname [-log I|W|C] [-mode upgrade|copy] [-newijs true|false] [-execd_spool_dir <value>] [-admin_mail <value>] [-gid_range <integer_range_value>] [-help]\n" \
-             "\nExample:\n" \
-             "   $myname -log C -mode copy -newijs true -execd_spool_dir /sge/real_execd_spool -admin_mail user@host.com -gid_range 23000-24000\nLoads the configuration according to the following rules:\n" \
-             "   Shows only critical errors\n" \
-             "   Uses copy upgrade mode (local execd spool dirs will be changed)\n" \
-             "   Enables new interactive job support\n" \
-             "   Changes the global execution daemon spooling directory\n" \
-             "   Sets the address to which to send mail\n" \
-             "   Sets the group ID range"
+   $INFOTEXT "Usage: $myname [-log I|W|C] [-mode upgrade|copy] [-newijs true|false] [-execd_spool_dir <value>] [-admin_mail <value>] [-gid_range <integer_range_value>] [-help]
+
+Example:
+   $myname -log C -mode copy -newijs true -execd_spool_dir /sge/real_execd_spool -admin_mail user@host.com -gid_range 23000-24000
+Loads the configuration according to the following rules:
+   Shows only critical errors
+   Uses copy upgrade mode (local execd spool dirs will be changed)
+   Enables new interactive job support
+   Changes the global execution daemon spooling directory
+   Sets the address to which to send mail
+   Sets the group ID range"
 }
 
 
