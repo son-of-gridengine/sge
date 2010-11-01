@@ -56,10 +56,21 @@ SUCCEEDED_LOADLOC=""
 Usage()
 {
    myname=`basename $0`
-   $INFOTEXT "Usage: $myname [-log I|W|C] [-mode upgrade|copy] [-newijs true|false] [-execd_spool_dir <value>] [-admin_mail <value>] [-gid_range <integer_range_value>] [-help]
+   $INFOTEXT "Usage: $myname <backup_dir> [-log I|W|C] [-mode upgrade|copy] [-newijs true|false] [-execd_spool_dir <value>] [-admin_mail <value>] [-gid_range <integer_range_value>] [-help]
+
+<backup_dir>            Directory from which to read the backup
+-log I|W|C              Show only Info, Warning, or Critical messages
+-mode upgrade|copy      Copy means local execd spool directoriess will be
+                        changed (default upgrade)
+-newijs true|false      Whether to use new interactive job support
+                        (default false)
+-execd_spool_dir <dir>  Changes the global execution daemon spooling directory
+-admin_mail <address>   Change address for admin mail
+-gid_range <min>-<max>  Change the group ID range used
+
 
 Example:
-   $myname -log C -mode copy -newijs true -execd_spool_dir /sge/real_execd_spool -admin_mail user@host.com -gid_range 23000-24000
+   $myname config_dir -log C -mode copy -newijs true -execd_spool_dir /sge/real_execd_spool -admin_mail user@host.com -gid_range 23000-24000
 Loads the configuration according to the following rules:
    Shows only critical errors
    Uses copy upgrade mode (local execd spool dirs will be changed)
@@ -737,12 +748,15 @@ EXIT() {
 ########
 # MAIN #
 ########
-if [ "$1" = -help -o $# -eq 0 ]; then
-   Usage
-   exit 0
+case $1 in
+    -help) Usage; exit 0;;
+    "" | -* ) Usage 1>&2; exit 1;;
+esac
+DIR=$1
+if [ ! -d "$DIR" ]; then
+    echo "Not a directory: $DIR" 1>&2
+    exit 1
 fi
-
-DIR="${1:?The load directory is required}"
 shift
 
 LOGGER_LEVEL="W"
