@@ -738,6 +738,7 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
    sge_strlcpy(g_shepherd_file_path[shepherd_file], tmppath, SGE_PATH_MAX);
 
 	/* If the file does not exist, create it. Otherwise just open it. */
+   /* Fixme:  It's open world-writable.  */
 	if (SGE_STAT(tmppath, &statbuf)) {
 	  fd = SGE_OPEN3(tmppath, O_RDWR | O_CREAT | O_APPEND, 0644);
       if (fd<0) {
