@@ -362,6 +362,7 @@ set SECLIBS_STATIC    = "$OPENSSL_HOME/lib/libssl.a $OPENSSL_HOME/lib/libcrypto.
 set KLFLAGS           = "-L$OPENSSL_HOME/lib"
 
 set CORELIB           = ""
+set LIBCORE           = ""
 
 # WIN
 set WINGRIDLIB        = ""
@@ -408,10 +409,6 @@ set LOADCHECK_ALL = loadcheck
 set AUTHUSER_OBJ  = authuser.o
 set LOADCHECK_OBJ = loadcheck.o
 set JUTI_OBJ      = 
-
-# libcore
-set CORELIB =
-set CORELIB_CLEAN =
 
 # Compile with gettext and libintl - we have platform dependent defaults
 switch ($BUILDARCH) 
@@ -920,6 +917,11 @@ while ($#argv >= 1 && $?found)
    endif
 end
 
+if ( "$argv" == depend ) then
+    set MAKEJEMALLOCLIB = 0
+    set PLPA = 0
+endif
+
 if ( $DEBUGGED && $USE_QMAKE ) then
    set MAKEOPT = "-verbose $MAKEOPT"
 endif
@@ -1408,9 +1410,6 @@ case LINUXSPARC64:
 
    set COMPILE_DC = 1
 
-   set CORELIB = "corelib"
-   set CORELIB_CLEAN = "corelib_clean"
-
    # Optimization on LINUXIA64 is broken, qmon dumps
    if ($OPTIMIZATION == 1 && $BUILDARCH != LINUXIA64) then
       set OFLAG = "-O3"
@@ -1489,20 +1488,10 @@ case LINUXSPARC64:
    set NOERR_CFLAG = "-Wno-error"
    set NOERR_PROTO = "-Wno-strict-prototypes"
 
-#    if ( $DUMP == 1 ) then
-#       if ( -f $CORE_HOME/libcore.so ) then
-#          set LFLAGS   = "$LFLAGS -L$CORE_HOME"
-#          set CORELIB  = "-lcore"
-#       else
-#          echo "error: couldn't find  $CORE_HOME/libcore.so"
-#          echo "error: please"
-#          echo "error: (a) get you a libcore.so for $buildarch from"
-#          echo "error: http://gridengine.sunsource.net/issues/show_bug.cgi?id=2552"
-#          echo "error: update CORE_HOME in aimk.site or aimk.private accordingly"
-#          echo "error: (b) use aimk option -no-dump to build without libcore.so "
-#          exit 1
-#       endif
-#    endif
+   if ( $DUMP == 1 ) then
+      set CORELIB = "-lcore"
+      set LIBCORE = "libcore.so"
+   endif
 
    set XMTDEF   = ""
 
@@ -2457,10 +2446,8 @@ if ( "$PLPA" == 1 ) then
       
       cd $SOURCE/3rdparty/plpa/plpa-1.3.1/$COMPILE_ARCH
 
-#      $MAKE $MAKEOPT -f Makefile "MAKE=$MAKE" "COMPILE_ARCH=$COMPILE_ARCH" $argv
-      if ( "$argv" != depend ) then
-	../configure --enable-static --disable-shared --with-pic && $MAKE $MAKEOPT $argv
-      endif
+      [ -f Makefile ] || ../configure --enable-static --disable-shared --with-pic "CC=$CC" "CFLAGS=$CFLAGS"
+      $MAKE $MAKEOPT $argv
 
       if ( $status != 0 ) then
          echo not done
@@ -2617,7 +2604,7 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
    $MAKE $MAKEOPT -f $MAKEFILE "MAKE=$MAKE" "CC=$CC" \
          "LD_WRAPPER=$LD_WRAPPER" \
          "CFLAGS=$CFLAGS $CORE_INCLUDE" \
-         "CORELIB=$CORELIB" \
+         "CORELIB=$CORELIB" "LIBCORE=$LIBCORE" \
          "DEPEND_FLAGS=$DEPEND_FLAGS $CORE_INCLUDE" \
          "SDIR=$SDIR" "SOURCE=$SOURCE" "COMPILE_ARCH=$COMPILE_ARCH" \
          "SECLIB=$SECLIB" \
@@ -2656,7 +2643,6 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
          "JUTI_OBJ=$JUTI_OBJ" \
          "WINCC=$WINCC" "WINCFLAGS=$WINCFLAGS" "WINLFLAGS=$WINLFLAGS" \
          "WINLIBS=$WINLIBS" "LIBRARY_LIBS=$LIBRARY_LIBS" \
-	 "CORELIB=$CORELIB" "CORELIB_CLEAN=$CORELIB_CLEAN"
          $argv
    if ( $status != 0 ) then
       echo not done
