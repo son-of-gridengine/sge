@@ -92,6 +92,7 @@ done
 
 ARCH=`$SGE_ROOT/util/arch`
 # library path setting required only for architectures where RUNPATH is not supported
+[ -d $SGE_ROOT/lib/$ARCH ] &&
 case $ARCH in
 #ENFORCE_SHLIBPATH#sol*|lx*)
 #ENFORCE_SHLIBPATH#   ;;

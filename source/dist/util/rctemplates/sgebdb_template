@@ -87,6 +87,7 @@ unset CODINE_ROOT GRD_ROOT COD_CELL GRD_CELL
 
 # library path setting required only for architectures where RUNPATH is not supported
 arch=`$SGE_ROOT/util/arch`
+[ -d $SGE_ROOT/lib/$arch ] &&
 case $arch in
 #ENFORCE_SHLIBPATH#sol*|lx*)
 #ENFORCE_SHLIBPATH#   ;;
