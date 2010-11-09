@@ -176,12 +176,7 @@ Content
 
       % ./aimk -man
 
-   or
-
-      % ./aimk -mankv    (the man pages are checked out with the CVS "-kv"
-                        flag" - needs access to the CVS repository)
-
-   To create man pages in the "catman" format (e.g. used on SGI systems)
+   To create man pages in the "catman" format (e.g. used on Irix systems)
    after creating the nroff man pages enter
 
       % ./aimk -catman

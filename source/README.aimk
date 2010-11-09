@@ -199,7 +199,6 @@ Content
    To create man pages you enter
 
       % aimk -man       create man pages in nroff format
-      % aimk -mankv     dto. but check out from CVS with "-kv flag"
       % aimk -htmlman   create man pages in nroff and html format
       % aimk -catman    create man pages in catman format (e.g. for Irix)
 

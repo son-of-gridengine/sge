@@ -53,7 +53,6 @@ set MANBUILDDIR = $1/MANSBUILD_$2
 set MANMODE = $2
 set MANASC  = $3
 set MANHTML = $4
-set KVMAN   = $5
 
 if ( $#argv > 5 ) then
   set CVS_MODULE = $6
@@ -69,30 +68,7 @@ echo "Removing old manpages in $MANBUILDDIR"
 \rm -rf $MANBUILDDIR
 mkdir -p $MANBUILDDIR
 
-# Take CVSROOT from current CVS direcotry
-#
-setenv CVSROOT `cat CVS/Root`
-
-setenv CVSBRANCH ""
-setenv REVISION ""
-if ( $KVMAN == 1 ) then
-   if ( -f CVS/Tag ) then
-      setenv CVSBRANCH `sed 's/^[TN]//' CVS/Tag`
-      echo "==> Using CVS branch: ${CVSBRANCH}"
-      #setenv CVSBRANCH "-r $CVSBRANCH"
-      setenv REVISION "-r $CVSBRANCH"
-   endif
-endif
-
 cd $MANBUILDDIR
-
-if ( $KVMAN == 1 ) then
-   set MANSRCDIR = $MANBUILDDIR/MANSRC
-   echo "Checking out manpage sources"
-   cvs -q co $REVISION -P -kv -d MANSRC $CVS_MODULE
-else
-   set MANSRCDIR = $1/../doc/man
-endif
 
 # 
 # Changes magic strings in the checked-in man page versions into SGE

@@ -167,13 +167,11 @@ usage:
    echo "-gss              -> enable gss security"
    echo "-help             -> show this help"
    echo "-htmlman          -> generate man and html pages"
-   echo "-htmlmankv        -> generate man and html pages checked out with '-kv' flag"
    echo "-insure           -> compile in debug mode and detect memory leaks"
    echo "-intl             -> compile with internationalization library (libintl)"
    echo "-javadoc          -> create source code documentation in Javadoc[TM] tool format"
    echo "-kerberos         -> enable kerberos authentication"
    echo "-man              -> generate man pages"
-   echo "-mankv            -> generate man pages checked out with '-kv' flag"
    echo "-mo               -> generate the message catalogues (Solaris only)"
    echo "-no-core          -> don't compile the core system"
    echo "-no-dump          -> build binaries without libcore.so (Linux only)"
@@ -214,7 +212,7 @@ usage:
    echo "-spool-berkeleydb -> use berkeleydb spooling"
    echo "-spool-classic    -> use classic flatfile spooling"
    echo "-spool-targets    -> only create qmaster, spooldefaults and spoolinit"
-   echo "-sunman           -> create man pages for Sun branded man pages (with -man[kv])"
+   echo "-sunman           -> create man pages for Sun branded man pages (with -man)"
    echo "-system-libs      -> use dynamic system libraries (specifically libssl)"
    echo "-tight-ssh        -> compile SSH daemon with tight SGE integration"
    echo "-umap             -> compile with usermapping and hostgroup feature (currently broken)"
@@ -559,13 +557,7 @@ while ($#argv >= 1 && $?found)
    case "-htmlman":
       set BUILDMAN = "1"
       set BUILDHTMLMAN = "1"
-      set KVMAN = 0
       breaksw      
-   case "-htmlmankv":
-      set BUILDMAN = "1"
-      set BUILDHTMLMAN = "1"
-      set KVMAN = 1
-      breaksw
    case "-insure"
       set USE_INSURE = 1
       set INSURE_FLAG = "-Zsl"
@@ -596,11 +588,6 @@ while ($#argv >= 1 && $?found)
       breaksw
    case "-man":
       set BUILDMAN   = 1
-      set KVMAN      = 0
-      breaksw
-   case "-mankv":
-      set BUILDMAN   = 1
-      set KVMAN      = 1
       breaksw
    case  "-mo"
       echo "BUILDARCH=$BUILDARCH"
@@ -2224,7 +2211,7 @@ if ( "$BUILDMAN" == 1 ) then
       exit 1
    endif   
 
-   $SOURCE/scripts/mk_ascman $SOURCE $SGE_PRODUCT_MODE $BUILDMAN $BUILDHTMLMAN $KVMAN
+   $SOURCE/scripts/mk_ascman $SOURCE $SGE_PRODUCT_MODE $BUILDMAN $BUILDHTMLMAN
 
    if ( $status != 0 ) then
       echo not done
