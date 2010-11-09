@@ -70,6 +70,7 @@ mkdir -p $MANBUILDDIR
 
 cd $MANBUILDDIR
 
+set MANSRCDIR = $1/../doc/man
 # 
 # Changes magic strings in the checked-in man page versions into SGE
 # SGEEE, etc. as appropriate.
