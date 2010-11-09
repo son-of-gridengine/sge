@@ -208,4 +208,5 @@ switch($buildarch)
       breaksw
 endsw
 
-
+# Name it SGE, not GE
+set SGE_PRODUCT_MODE=sge
