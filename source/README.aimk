@@ -139,7 +139,7 @@ Content
    To compile the complete SGE system, including the DRMAA Java language
    binding, use:
 
-      % aimk -java
+      % aimk
 
    Note that in order to compile the DRMAA Java language binding, ant 1.5 or
    better must be in the classpath, and JAVA_HOME must point to JDK 1.4 or
@@ -153,13 +153,13 @@ Content
    4.4 'cc' or 'gcc'
    -----------------
 
-   By default the system compiler is used (cc, gcc on Linux). The flags:
+   By default the system compiler is used (cc, gcc on GNU/Linux). The flags:
 
       -cc
       -gcc
 
    override this default. Note, that this option often does not work since
-   it has not been tested and ported wit gcc yet. The use of "gcc" on
+   it has not been tested and ported with gcc yet. The use of "gcc" on
    operating systems where this compiler is not installed by default will
    usually require changes to aimk.
 
@@ -201,31 +201,30 @@ Content
       % aimk -man       create man pages in nroff format
       % aimk -mankv     dto. but check out from CVS with "-kv flag"
       % aimk -htmlman   create man pages in nroff and html format
-      % aimk -catman    create man pages in catman format (e.g. for SGI)
+      % aimk -catman    create man pages in catman format (e.g. for Irix)
 
    To build man pages in nroff format you need to define the variable
    GROFFPATH in 'aimk.site'. This is where 'groff' is installed. For html
    man pages you need the tool 'man2html'. The path is defined with the
    MAN2HTMLPATH variable in 'aimk.site'. To create man pages in catman
-   format you need to first create the nroff man pages and then on a SGI
-   system the catman pages (only on SGI the 'pack -f' command forces
+   format you need to first create the nroff man pages and then on an Irix
+   system the catman pages (only on Irix, the 'pack -f' command forces
    compression of all pages regardless of their size).
 
    4.8 Creating JavaDoc documentation
    ----------------------------------
 
-   The JavaDocs in CVS contain information that is not useful to the average
-   end user.  To create JavaDocs appropriate for the end user, enter
+   To create JavaDocs appropriate for the end user, enter
 
       % aimk -javadoc
 
    This creates documentation of only the public fields and methods.
 
-   To create the full documentation, such as what is checked into CVS, enter
+   To create the full documentation, enter
 
       % aimk -javadoc -protected
 
-   This create documentation of all protected and public fields and methods.
+   This creates documentation of all protected and public fields and methods.
 
 
 5) Copyright
