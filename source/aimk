@@ -217,8 +217,8 @@ usage:
    echo "-sunman           -> create man pages for Sun branded man pages (with -man[kv])"
    echo "-system-libs      -> use dynamic system libraries (specifically libssl)"
    echo "-tight-ssh        -> compile SSH daemon with tight SGE integration"
-   echo "-umap             -> compile with usermapping and hostgroup feature"
-   echo "-with-jemalloc    -> build SGE with the jemalloc library"
+   echo "-umap             -> compile with usermapping and hostgroup feature (currently broken)"
+   echo "-with-jemalloc    -> build SGE with the jemalloc library (default on GNU/Linux)"
   exit
 }
 
@@ -481,6 +481,7 @@ while ($#argv >= 1 && $?found)
       set QMON   = 0
       set QTCSH  = 0
       set REMOTE = 0
+      set JAVA   = 0
       set ADOC = 1
       breaksw
    case "-catman":
@@ -897,6 +898,7 @@ while ($#argv >= 1 && $?found)
       set SECLIBS_STATIC="-lssl -lcrypto"
       breaksw
    case  "-umap"
+      echo "The -map option is currently broken"; exit 1
       set WITH_USERMAPPING = 1
       breaksw
    case "-tight-ssh":
@@ -1532,6 +1534,8 @@ case LINUXSPARC64:
    # Since it hinders relocation of the shared distribution, and is
    # irrelevant on the unshared one, I think it should go and be replaced
    # by an /etc/ld.so.conf rule for the few libraries involved.
+   # Actually, this should probably just be conditionalized; see
+   # also the enforce_shlib stuff in distinst and the templates.
    set RUNPATH       = -Wl,-rpath,'\$$ORIGIN'/../../lib/$buildarch
    set LFLAGS        = "$LFLAGS $RUNPATH"
    set SHARED_LFLAGS = "$SHARED_LFLAGS $RUNPATH"
@@ -2395,6 +2399,7 @@ if ( "$MAKEWINGRIDLIB" == 1 ) then
 endif
 
 if ( "$MAKEJEMALLOCLIB" == 1 ) then
+   if ( CORE != 0 || QMAKE != 0 || QMON != 0 || QTCSH != 0 || REMOTE != 0 ) then
    echo _________3_r_d_p_a_r_t_y__J_E_M_A_L_L_O_C_
 
    cd $COMPILE_ARCH
@@ -2436,6 +2441,7 @@ if ( "$MAKEJEMALLOCLIB" == 1 ) then
    endif
 
    cd $SOURCE
+   endif
 endif
 if ( "$PLPA" == 1 ) then
    echo _________3_r_d_p_a_r_t_y__P_L_P_A_______
@@ -2806,12 +2812,14 @@ endif
 if ( "$QMAKE" == 1) then
    echo _________3_r_d_p_a_r_t_y__Q_M_A_K_E_______
 
+   # Fixme:  It should be possible to build qmake out of the tree, not
+   # making the ARCH directory here.
    if ( ! -d $SOURCE/3rdparty/qmake/$COMPILE_ARCH || \
 	! -r $SOURCE/3rdparty/qmake/$COMPILE_ARCH/Makefile ) then
       mkdir -p $SOURCE/3rdparty/qmake/$COMPILE_ARCH
       cd $SOURCE/3rdparty/qmake/$COMPILE_ARCH
       env REMOTE=sge CFLAGS="${CFLAGS} ${NOERR_CFLAG}" SGE_ARCH=$buildarch \
-       ../configure --with-grd=${COMPILE_ARCH} --srcdir=..
+       ../configure --srcdir=..
    endif
 
    cd $SOURCE/3rdparty/qmake/$COMPILE_ARCH
