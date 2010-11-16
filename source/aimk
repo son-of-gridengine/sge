@@ -44,6 +44,10 @@ set noglob
 unsetenv buildarch BUILDARCH COMPILE_ARCH COMPILE_DIR LD_LIBRARY_PATH RMONLIB
 unsetenv AIMK_INSURE AIMK_TARGET_BITS aimk_buildarch
 
+# We may have a checkout without executable permissions on the scripts,
+# and have been invoked as "csh aimk".
+test -x aimk || sh scripts/chmodx
+
 set COMPILE_ARCH = ""
 set COMPILE_DIR  = ""
 set buildarch    = UNKNOWN

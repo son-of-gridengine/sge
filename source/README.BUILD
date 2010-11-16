@@ -73,6 +73,11 @@ Content
 
       sge/source
 
+   A checkout from the source repository may not have made necessary
+   scripts, such as "aimk" executable.  To fix that before continuing, run
+
+     % scripts/chmodx
+
 3) Building the dependency tool 'sge_depend'
 --------------------------------------------
 
