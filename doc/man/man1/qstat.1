@@ -508,12 +508,16 @@ has been disabled or suspended automatically via the calendar facility of
 xxQS_NAMExx (see
 .M calendar_conf 5 ),
 while the S(ubordinate) state 
-indicates, that the queue has been suspend via subordination to another 
+indicates, that the queue has been suspended via subordination to another
 queue (see
 .M queue_conf 5
 for details). When suspending a queue 
 (regardless of the cause) all jobs executing in that queue are suspended 
 too.
+.PP
+The state P(reempted) indicates that the queue has been disabled via
+slotwise subordination to another queue, preventing it getting jobs
+which would simply be suspended.
 .PP
 If an E(rror) state is displayed for a queue,
 .M xxqs_name_sxx_execd 8
