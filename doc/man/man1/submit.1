@@ -245,9 +245,18 @@ only affects the pending tasks.
 can change most of the 
 characteristics of a job (see the corresponding statements in the OPTIONS 
 section below), including those which were defined as embedded flags in the 
-script file (see above).  Some submit options, such as the job script, cannot
+script file (see above).  An option specified with
+.I qalter
+completely replaces any parameters previously specified for the job by
+that option, e.g. if the job has a resource requirement corresponding to
+.BR "\-l h_rt=3600,h_vmem=2G" ,
+then after a \fbqalter -l h_rt=7200\fP, the resource requirement is
+simply \fBh_rt=7200\fP; it is not currently possible to override one
+or more value.
+.PP
+Some submit options, such as the job script, cannot
 be changed with
-I. qalter.
+.I qalter .
 .PP
 .I Qresub
 allows the user to create jobs as copies of existing pending or running
