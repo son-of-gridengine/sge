@@ -1501,37 +1501,162 @@ overwritten by the execution host local configuration.
 .\"
 .\"
 .SS "\fBqlogin_daemon\fP"
+This parameter specifies the mechanism that is to be started on the
+server side of a
+.M qlogin 1 
+request. Usually this is the builtin mechanism. It's also possible to
+configure an external executable by specifying the full qualified
+pathname, e.g. of the system's telnet daemon.
+.PP
+Changing \fBqlogin_daemon\fP will take immediate effect.
+The default value for \fBqlogin_daemon\fP is builtin.
+.PP
+The global configuration entry for this value
+may be overwritten by the execution host local configuration.
+.PP
+Examples for the two allowed kinds of attributes are:
+.br
+qlogin_daemon    builtin
+.br
+or
+.br
+qlogin_daemon    /usr/sbin/in.telnetd
+.\"
+.\"
 .SS "\fBqlogin_command\fP"
+This is the command to be executed on the client side of a 
+.M qlogin 1
+request.
+Usually this is the builtin qlogin mechanism.
+It's also possible to configure an external mechanism, usually the absolute
+pathname of the system's telnet client program. It is automatically started
+with the target host and port number as parameters.
+.PP
+Changing \fBqlogin_command\fP will take immediate effect.
+The default value for \fBqlogin_command\fP is builtin.
+.PP
+The global configuration entry for this value
+may be overwritten by the execution host local configuration.
+.PP
+Examples for the two allowed kinds of attributes are:
+.br
+qlogin_command   builtin
+.br
+or
+.br
+qlogin_command   /usr/bin/telnet
+.\"
+.\"
 .SS "\fBrlogin_daemon\fP"
-.SS "\fBrlogin_command\fP"
-.SS "\fBrsh_daemon\fP"
-.SS "\fBrsh_command\fP"
-These three pairs of entries are responsible for defining a remote startup method for either
-interactive jobs by 
-.M qlogin 1 ,
-.M qrsh 1
-\fBwithout\fR a command,
-or an interactive
+This parameter specifies the mechanism that is to be started on the server
+side of a
 .M qrsh 1
 request
-\fBwith\fR a command. The last startup method is also used to startup tasks on a slave exechost of
-a tightly integrated parallel job.
-Each pair for one startup method must contain matching communication methods. All
-entries can contain the value \fBbuiltin\fR (which is the default) or a full path to
-a binary which should be used, and additional arguments to this command if necessary.
+.B without
+a command argument to be executed remotely. 
+Usually this is the builtin mechanism. It's also possible to
+configure an external executable by specifying the absolute pathname,
+e.g. of the system's rlogin daemon. 
 .sp 1
-The entries for the three \fB..._command\fR definitions can, in
-addition, contain the value \fBNONE\fP
-in case a particular startup method should be disabled.
+Changing
+.B rlogin_daemon
+will take immediate effect. The default for
+.B rlogin_daemon
+is builtin.
 .sp 1
-Changing any of these entries will take immediate effect.
-.sp 1
-The global configuration entries for these values may be overwritten by a
+The global configuration entry for this value may be overwritten by the
 execution host local configuration.
+.PP
+The allowed values are similar to the ones of the examples of
+.B qlogin_daemon.
+.\"
+.\"
+.SS "\fBrlogin_command\fP"
+This is the mechanism to be executed on the client side of a
+.M qrsh 1
+request
+.B without
+a command argument to be executed remotely.
+Usually this is the builtin mechanism. If no value is given,
+a specialized xxQS_NAMExx component is used.
+The command is automatically started with the target host and port number 
+as parameters.
+The xxQS_NAMExx rlogin client has been extended
+to accept and use the port number argument. You can only use clients, such
+as \fIssh\fP, which also understand this syntax.
 .sp 1
-See
-.M remote_startup 5
-for a detailed explanation of these settings.
+Changing
+.B rlogin_command
+will take immediate effect. The default value for
+.B rlogin_command
+is builtin.
+.sp 1
+The global configuration entry for this value may be overwritten by the
+execution host local configuration.
+.PP
+In addition to the examples of 
+.B qlogin_command
+, this value is allowed:
+.br
+rsh_daemon      none
+.\"
+.\"
+.SS "\fBrsh_daemon\fP"
+This parameter specifies the mechanism that is to be started on the server
+side of a
+.M qrsh 1
+request
+.B with
+a command argument to be executed remotely.
+Usually this is the builtin mechanism. If no value is given,
+a specialized xxQS_NAMExx component is used.
+.sp 1
+Changing
+.B rsh_daemon
+will take immediate effect. The default value for
+.B rsh_daemon
+is builtin.
+.sp 1
+The global configuration entry for this value may be overwritten by the
+execution host local configuration.
+.PP
+In addition to the examples of 
+.BR qlogin_daemon ,
+this value is allowed: 
+.br
+rsh_daemon      none
+.\"
+.\"
+.SS "\fBrsh_command\fP"
+This is the mechanism to be executed on the client side of a
+.M qrsh 1
+request
+.B with
+a command argument to be executed remotely.
+Usually this is the builtin mechanism.  If no value is given,
+a specialized xxQS_NAMExx component is used. The command is
+automatically started with the target host and port number as parameters
+like required for
+.M telnet 1
+plus the command with its arguments to be
+executed remotely. The xxQS_NAMExx rsh client has been extended to accept
+and use the port number argument. You can only use clients, such as
+\fIssh\fP, which also understand this syntax.
+.sp 1
+Changing
+.B rsh_command
+will take immediate effect. The default value for
+.B rsh_command
+is builtin.
+.sp 1
+The global configuration entry for this value may be overwritten by the
+execution host local configuration.
+.PP
+In addition to the examples of 
+.BR qlogin_command ,
+this value is allowed:
+.br
+rsh_command     none
 .\"
 .\"
 .SS "\fBdelegated_file_staging\fP"
@@ -1633,7 +1758,6 @@ execution host local configuration.
 .M xxqs_name_sxx_qmaster 8 ,
 .M xxqs_name_sxx_shepherd 8 ,
 .M cron 8 ,
-.M remote_startup 5 ,
 .I xxQS_NAMExx Installation and Administration Guide.
 .\"
 .SH "COPYRIGHT"
