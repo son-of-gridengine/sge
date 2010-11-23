@@ -692,9 +692,9 @@ static void qmonPEResetAsk(void)
     
    UpdateXmListFromCull(pe_xacl_w, XmFONTLIST_DEFAULT_TAG, NULL, US_name);
       
-   XmtInputFieldSetString(pe_start_w, "/bin/true");
+   XmtInputFieldSetString(pe_start_w, "NONE");
 
-   XmtInputFieldSetString(pe_stop_w, "/bin/true");
+   XmtInputFieldSetString(pe_stop_w, "NONE");
 
    XmtInputFieldSetString(pe_alloc_w, "$pe_slots");
 
