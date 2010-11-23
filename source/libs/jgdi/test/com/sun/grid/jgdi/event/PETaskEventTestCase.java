@@ -73,8 +73,8 @@ public class PETaskEventTestCase extends BaseTestCase {
         pe = new ParallelEnvironmentImpl();
         pe.setName(peName);
         pe.setSlots(999);
-        pe.setStartProcArgs("/bin/true");
-        pe.setStopProcArgs("/bin/true");
+        pe.setStartProcArgs("NONE");
+        pe.setStopProcArgs("NONE");
         pe.setAllocationRule("$pe_slots");
         pe.setControlSlaves(true);
         pe.setJobIsFirstTask(true);
