@@ -32,10 +32,12 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#ifdef WIN32
-#   define DEFAULT_EDITOR     "notepad.exe"
-#else
-#   define DEFAULT_EDITOR     "vi"
+#ifndef DEFAULT_EDITOR
+#   ifdef WIN32
+#      define DEFAULT_EDITOR     "notepad.exe"
+#   else
+#      define DEFAULT_EDITOR     "vi"
+#   endif
 #endif
 
 #define MAX_SEQNUM        9999999
@@ -169,7 +171,6 @@
 
 #define QMASTER_PID_FILE          "qmaster.pid"
 #define EXECD_PID_FILE            "execd.pid"
-#define SCHEDD_PID_FILE           "schedd.pid"
 #define SHADOWD_PID_FILE          "shadowd_%s.pid"
 
 #define DEFAULT_ACCOUNT           "sge"
