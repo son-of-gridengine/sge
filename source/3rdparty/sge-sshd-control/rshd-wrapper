@@ -1,0 +1,16 @@
+#!/usr/bin/perl
+
+# check for orphaned setting files
+foreach my $file ( </var/run/sge-qrsh-setup.*> ) {
+	$file =~ /\.(\d+)$/;
+	unlink $file unless kill(-0, $1);
+}
+
+my $settings_file = "/var/run/sge-qrsh-setup.$$";
+open SETTINGS, ">$settings_file" or die "Couldn't create $settings_file";
+print SETTINGS "$ENV{'PWD'}\n";
+close SETTINGS;
+
+system '/usr/sbin/sshd', '-i';
+
+unlink $settings_file;
