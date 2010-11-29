@@ -1,3 +1,20 @@
+/* Copyright (C) 2006 by Andreas Haupt <andreas.haupt@desy.de>
+
+ * This module is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this module.  If not, see
+ * `http://www.gnu.org/licenses/'.'
+ */
+
 #define SERVICENAME "pam_sge-qrsh-setup"
 
 #define PAM_SM_AUTH
@@ -8,12 +25,17 @@
 #define MAX_STRLEN 1024
 
 #include <pwd.h>
+#include <security/pam_appl.h>	/* necessary for Solaris */
 #include <security/pam_modules.h>
 
-#include <sys/syslog.h>
+#ifndef PAM_EXTERN		/* e.g. Solaris */
+#define PAM_EXTERN
+#endif
+
+#include <syslog.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <linux/limits.h>
+#include <limits.h>
 #include <grp.h>
 
 #include <stdio.h>
@@ -135,10 +157,12 @@ int getpppid()
 	FILE *pipe;
 	char buffer[MAX_STRLEN];
 	int proc_pid, proc_ppid, ppid = getppid();
+	char *r;
 
+	/* Fixme:  make more portable, at least to Solaris */
 	pipe = popen("/bin/ps axeo '\%p \%P'", "r");
-	fgets(buffer, MAX_STRLEN, pipe);
-	while ( fgets(buffer, MAX_STRLEN, pipe) ) {
+	r = fgets(buffer, MAX_STRLEN, pipe);
+	while ( r && fgets(buffer, MAX_STRLEN, pipe) ) {
 		sscanf(buffer, "%5d %5d", &proc_pid, &proc_ppid);
 		if ( proc_pid == ppid ) break;
 	}
@@ -155,7 +179,7 @@ void pam_sge_log(int priority, const char *msg, ...)
 	vsnprintf(buf, sizeof(buf), msg, plist);
 	va_end(plist);
 	openlog(SERVICENAME, LOG_PID | LOG_CONS | LOG_NOWAIT, LOG_AUTH);
-	syslog(priority, buf);
+	syslog(priority, "%s", buf);
 	closelog();
 }
 
