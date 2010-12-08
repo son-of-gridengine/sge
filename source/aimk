@@ -205,6 +205,7 @@ usage:
    echo "-only-qtcsh       -> build only qtcsh"
    echo "-only-remote      -> build only 3rdparty remote module (rsh, rshd, rlogin)"
    echo "-only-64          -> build only 64 bit shared libraries for SOLARIS64, don't build 32 bit shared libraries"
+   echo "-pam              -> build PAM modules (probably only on GNU/linux currently)"
    echo "-parallel n       -> spawn multiple make processes by passing option -j n to make"
    echo "-perlgui          -> build the experimental perlgui"
    echo "-po               -> merge gridengine .pot with translations (Linux)"
@@ -267,6 +268,8 @@ set WINGRIDLIB_A_DEP = ""
 
 set WITH_USERMAPPING = 0 # Compile without usermapping feature
 set SGESSH           = 0
+
+set MAKEPAM          = 0
 
 # Default Flags and Libraries
 set OPTIMIZATION     = 1
@@ -786,8 +789,11 @@ while ($#argv >= 1 && $?found)
       set MAKEWINGRIDLIB = 0
       set ONLY_PARAM_SPEC = 1
       breaksw
-   case "-only-64"
+   case "-only-64":
       set SOLARIS_ONLY_64 = 1
+      breaksw
+   case "-pam":
+      set MAKEPAM = 1
       breaksw
    case "-parallel":
       set argv     = ($argv[2-])
@@ -2825,6 +2831,14 @@ if ( "$QMAKE" == 1) then
    cd $SOURCE
 endif
 
+if ( "$MAKEPAM" == 1 ) then
+   echo _________3_r_d_p_a_r_t_y__P_A_M
+   cd $COMPILE_ARCH
+   $MAKE $MAKEOPT -f $SOURCE/3rdparty/sge-sshd-control/Makefile \
+      "CC=$CC" "CFLAGS=$CFLAGS" "SOURCE=$SOURCE" \
+      "SHARED_CFLAGS=$SHARED_CFLAGS" "SHARED_LFLAGS=$SHARED_LFLAGS" \
+      "SHAREDLD=$SHAREDLD" "SHAREDEXT=$SHAREDEXT" $argv
+endif
 
 # Fixme: Replace this with the DESY PAM module?
 if ( "$SGESSH" == 1) then
