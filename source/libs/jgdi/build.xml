@@ -131,6 +131,7 @@ ___INFO__MARK_END__-->
         <property name="src.dir"      location="src" />
         <property name="gensrc.dir"   location="${build.dir}/gensrc" />
         <property name="test.src.dir" location="test"/>
+        <property name="test.classes.dir"  location="${build.dir}/test"/>
         <property name="javadoc.dir" location="${build.dir}/doc/api"/>
         <property name="example.dir" location="examples"/>
         <property name="example.src.dir" location="examples/src"/>
