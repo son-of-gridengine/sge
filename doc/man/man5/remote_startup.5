@@ -27,6 +27,11 @@
 \\$2
 ..
 .\"
+.de URL
+\\$2 \(laURL: \\$1 \(ra\\$3
+..
+.if \n[.g] .mso www.tmac
+.\"
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
@@ -94,8 +99,8 @@ particular submit machines. To achieve this:
 .sp 1
 must be defined in
 .M sge_conf 5 .
-The defined \fBqlogin_command\fR will then be called with two additional parameters: \[oq]HOST\[cq] and \[oq]PORT\[cq] in
-exactly this order, which refer to the machine the
+The defined \fBqlogin_command\fR will then be called with two additional parameters: \[oq]HOST\[cq], and \[oq]PORT\[cq] in
+exactly that order, which refer to the machine the
 \fBqlogin_command\fR should address and the port to be used.
 .SP 1
 This can also be used to set up secure communication using \fBSSH\fR.
@@ -170,7 +175,7 @@ particular submit machines. To achieve this:
 .PD 0
 .TP 20
 .B rlogin_command
-/usr/sge/utilbin/\fI$ARC\fR/rlogin
+$SGE_ROOT/utilbin/\fI$ARC\fR/rlogin
 .TP
 .B rlogin_daemon
 /usr/sbin/in.rlogind
@@ -179,13 +184,16 @@ particular submit machines. To achieve this:
 .sp 1
 must be defined in
 .M sge_conf 5 .
-The value of \fI$ARC\fR must be replaced by the particular platform, as use of environment variables is
+The value of \fI$SGE_ROOT\fR must be replaced by the root of the
+installation, and
+\fI$ARC\fR must be replaced by the particular platform architecture, as use of environment variables is
 not implemented for these entries. When the cluster is homogeneous, it can be set to e.g. \[oq]lx24-amd64\[cq] or
 \[oq]lx24-x86\[cq]. In a heterogeneous cluster local configurations need to be defined, where preferably the
 minority of machines will get local configurations.
 .sp 1
-The defined \fBrlogin_command\fR will then be called with three additional parameters: \[oq]-p\[cq], \[oq]HOST\[cq] and \[oq]PORT\[cq] in
-exactly this order, which refer to the machine the
+The defined \fBrlogin_command\fR will then be called with three
+additional parameters: \[oq]-p\[cq],\[oq]PORT\[cq], and \[oq]HOST\[cq]\[oq]PORT\[cq] in
+exactly that order, which refer to the machine the
 \fBrlogin_command\fR should address and the port to be used.
 .sp 1
 This can also be used to set up a secure communication using \fBSSH\fR:
@@ -246,22 +254,25 @@ particular submit machines. To achieve this:
 .PD 0
 .TP 20
 .B rsh_command
-/usr/sge/utilbin/\fI$ARC\fR/rsh
+$SGE_ROOT/utilbin/\fI$ARC\fR/rsh
 .TP
 .B rsh_daemon
-/usr/sge/utilbin/\fI$ARC\fR/rshd -l
+$SGE_ROOT/utilbin/\fI$ARC\fR/rshd -l
 .PD
 .RE
 .sp 1
 must be defined in
 .M sge_conf 5 .
-The value of \fI$ARC\fR must be replaced by the particular platform, as use of environment variables is
+The value of \fI$SGE_ROOT\fR must be replaced by the root of the
+installation, and
+\fI$ARC\fR must be replaced by the particular platform architecture, as use of environment variables is
 not implemented for these entries. When the cluster is homogeneous, it can be set to e.g. \[oq]lx24-amd64\[cq] or
 \[oq]lx24-x86\[cq]. In a heterogeneous cluster local configurations need to be defined, where preferably the
 minority of machines will get local configurations.
 .sp 1
-The defined \fBrsh_command\fR will then be called with four additional parameters: \[oq]-n\[cq], \[oq]-p\[cq], \[oq]HOST\[cq] and \[oq]PORT\[cq] in
-exactly this order, which refer to the machine the \fBrsh_command\fR should address and the port to be used.
+The defined \fBrsh_command\fR will then be called with four additional
+parameters: \[oq]-n\[cq], \[oq]-p\[cq], \[oq]PORT\[cq], and \[oq]HOST\[cq] in
+exactly that order, which refer to the machine the \fBrsh_command\fR should address and the port to be used.
 .sp 1
 This can also be used to set up a secure communication using \fBSSH\fR:
 .sp 1
@@ -278,7 +289,7 @@ This can also be used to set up a secure communication using \fBSSH\fR:
 .PP
 .\"
 .\"
-.SH LOCAL CONFIGURATIONS of exechosts
+.SH LOCAL CONFIGURATIONS OF EXECHOSTS
 It is important to note that the communication method set up for one
 particular startup method must match at each end. This can either
 be achieved by using only a global configuration, or carefully setting up local configurations for the exechosts
@@ -317,8 +328,9 @@ forwarding, but will usually fail if one machine is behind \fBNAT\fR which will 
 machines' addresses.
 .PP
 The \fBbuiltin\fR method does not support forwarding of X graphics
-from the compute nodes.  If you need that for any of the remote
-methods, you will want to set up SSH communication instead.
+from the compute nodes, or GSSAPI tokens to them.  If you need that
+for any of the remote methods, you will want to set up SSH
+communication instead.
 .\"
 .\"
 .SH SSH AUTHENTICATION
@@ -328,11 +340,9 @@ it will fail in case of a tightly integrated parallel job, where the master proc
 a slave process on another exechost.
 .sp 1
 You can set up \fIpassphraseless\fR \fBSSH keys\fR, although this is discouraged. A simpler and
-global working setup is to use host-based authentication for the
-machines inside the cluster, as outlined in:
-.sp 1
-http://gridengine.sunsource.net/howto/hostbased-ssh.html
-.PP
+global working setup is to use 
+.URL http://gridengine.sunsource.net/howto/hostbased-ssh.html "host-based authentication"
+for the machines inside the cluster.
 .\"
 .\"
 .SH SSH TIGHT INTEGRATION
@@ -378,9 +388,8 @@ do_setusercontext(authctxt->pw);
 #endif
 .RE
 .sp 1
-\fRThe original documentation can be found at:
-.br
-http://gridengine.sunsource.net/download/workshop10-12_09_07/SGE-WS2007-openSSHTightIntegration_RonChen.pdf
+\fRsee the
+.URL http://gridengine.sunsource.net/download/workshop10-12_09_07/SGE-WS2007-openSSHTightIntegration_RonChen.pdf "original documentation" .
 .RE
 .TP
 .B Use of PAM
@@ -390,15 +399,72 @@ module
 .M pam_sge-qrsh-setup 8
 is available which attaches the
 necessary additional group ID to the started process to provide tight
-integration.
+integration.  See also
+.URL http://gridengine.sunsource.net/download/workshop10-12_09_07/SGE-WS2007-SGEAndGridAtDESY_DESY_AndreasHaupt.pdf "workshop paper" .
 .\"
+.SH RESTRICTING ACCESS
+With the builtin method in use, there is no need to allow direct
+access for normal users to compute nodes with ssh etc.  However, you
+may want to allow users to access the nodes for debugging.  If you
+don't want to over-subscribe the nodes, so that qrsh etc. can be used
+for access, you can use PAM to restrict access for a user only to the
+nodes on which they have a running job, so as to minimize interference
+with other others.
+.PP
+There are two possible ways.  The cleanest uses
+.M pam_sge_authorize 8 .
+Otherwise you can use generic PAM modules, such as
+.M pam_limits 8
+or
+.M pam_access 8 ,
+with modifications to their configuration set up and taken down in the
+job prolog and epilog respectively.  See, for instance, a
+.URL http://gridengine.sunsource.net/ds/viewMessage.do?dsForumId=38&dsMessageId=282211 "user list message" ,
+and other examples of similar prolog/epilog scripts with lokcing in
+the pam_authuser contribution in the Torque distribution.
+.\"
+.SH EXAMPLES
+.\"
+Using SSH with the PAM module, forcing tty allocation, and preventing
+the delegation of GSSAPI credentials to the compute nodes:
+.T
+.RS
+rsh_daemon     /opt/sge/util/rshdwrapper
+.br
+rsh_command    ssh -tt -o GSSAPIDelegateCredentials=no
+.br
+qlogin_daemon  /opt/sge/util/rshdwrapper
+.br
+qlogin_command ssh -tt -o GSSAPIDelegateCredentials=no
+.br
+rlogin_daemon  /opt/sge/util/rshdwrapper
+.br
+rlogin_command ssh -tt -o GSSAPIDelegateCredentials=no
+.RE
+.PP
+Old-style method, using telnet and rlogin:
+.T
+.RS
+qlogin_command /usr/bin/telnet
+.br
+qlogin_daemon  /usr/sbin/in.telnetd
+.br
+rlogin_command /opt/sge/utilbin/lx24-x86/rlogin
+.br
+rlogin_daemon  /usr/sbin/in.rlogind
+.br
+rsh_command    /opt/sge/utilbin/lx24-x86/rsh
+.br
+rsh_daemon     /opt/sge/utilbin/lx24-x86/rshd -l
+.RE
 .\"
 .SH "SEE ALSO"
 .M qlogin 1 ,
 .M qrsh 1 ,
 .M sge_conf 5 ,
+.M pam_sge_authorize 8 ,
 .M pam_sge-qrsh-setup 8 ,
-http://gridengine.sunsource.net/howto/qrsh_qlogin_ssh.html
+.URL http://gridengine.sunsource.net/howto/qrsh_qlogin_ssh.html "SGE SSH howto" .
 .\"
 .SH "COPYRIGHT"
 See
