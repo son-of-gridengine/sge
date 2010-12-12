@@ -65,6 +65,8 @@ SHARED_LIBRARIES="libcom libcull libgdi librmon libsched libsge libuti \
                   libevc libevm libmir \
                   libjuti libjgdi"
 
+SHARED_MODULES="libcore pam_sge-qrsh-setup"
+
 QMON_SHARED_LIBRARIES="libXbae libXicon libXmt libXspin libXtab"
 QMON_NEED_SHARED_LIBRARIES="libXltree"
 OPENSSL_SHARED_LIBRARIES="libcrypto libssl"
@@ -1631,9 +1633,12 @@ for i in $ARCH; do
                fi
             done
 
-            if [ -f $CORE_HOME/$DSTARCH/libcore.$shlibext ]; then
-               InstallProg $CORE_HOME/$DSTARCH/libcore.$shlibext
-            fi
+	    for lib in $SHARED_MODULES; do
+		libname=$lib.$shlibext
+		if [ -f $libname ]; then
+		    InstallProg $libname
+		fi
+	    done
          fi
       fi
       cd ..
