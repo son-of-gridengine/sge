@@ -34,9 +34,9 @@
 
 #include "gdi/version.h"
 
-const char GDI_VERSION[] = "6.2u5";
+const char GDI_VERSION[] = "6.2u5.1"
 
-const gdi_ulong32 GRM_GDI_VERSION = 0x100020F8;
+const gdi_ulong32 GRM_GDI_VERSION = 0x10010000;
 
 vdict_t GRM_GDI_VERSION_ARRAY[] = 
 {
@@ -64,6 +64,7 @@ vdict_t GRM_GDI_VERSION_ARRAY[] =
       { 0x100020F6, "6.2u5beta1" },
       { 0x100020F7, "6.2u5beta2" },
       { 0x100020F8, "6.2u5beta2" },
+      { 0x100020F8, "6.2u5"},
       { 0, NULL}
 };
 
@@ -72,7 +73,7 @@ const char GE_LONGNAME[] = "Sun Grid Engine";
 const char GE_SHORTNAME[] = "SGE";
 #else
 const char GE_LONGNAME[] = "Grid Engine";
-const char GE_SHORTNAME[] = "GE";
+const char GE_SHORTNAME[] = "SGE";
 #endif
 
 #ifdef ADD_COPYRIGHT
@@ -84,7 +85,7 @@ const char SFLN_ELN[] = "\n\
    Grid Engine is based on code donated by Sun Microsystems.\n\
    The copyright is owned by Sun Microsystems and other contributors.\n\
    It has been made available to the open source community under the SISSL license.\n\
-   For further information and the latest news visit: @fBhttp://gridengine.sunsource.net\n\n";
+   For further information and the latest news visit: @fBhttp://arc.liv.ac.uk/trac/SGE\n\n";
 
 const char DQS_ACK[] = "\n\
 We would like to acknowledge and thank the efforts of the\n\
