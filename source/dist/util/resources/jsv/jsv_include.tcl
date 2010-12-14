@@ -47,7 +47,7 @@ set jsv_mod_params [list ac l_hard l_soft q_hard q_soft pe_min pe_max pe_name \
                          binding_strategy binding_type binding_amount binding_socket \
                          binding_core binding_step binding_exp_n]
 
-set jsv_add_params [list CLIENT CONTEXT VERSION JOB_ID SCRIPT SCRIPT_ARGS USER]
+set jsv_add_params [list CLIENT CONTEXT GROUP VERSION JOB_ID CMDNAME CMDARGS USER]
 
 set jsv_all_params [concat $jsv_cli_params $jsv_mod_params $jsv_add_params]
 
@@ -515,7 +515,7 @@ proc jsv_main {} {
    set date_time [clock format [clock seconds]]
    jsv_script_log "$argv0 started on $date_time"
    jsv_script_log ""
-   jsv_script_log "This file contains logging output from a GE JSV script. Lines beginning"
+   jsv_script_log "This file contains logging output from an SGE JSV script. Lines beginning"
    jsv_script_log "with >>> contain the data which was send by a command line client or"
    jsv_script_log "sge_qmaster to the JSV script. Lines beginning with <<< contain data"
    jsv_script_log "which is send from this JSV script to the client or sge_qmaster"
