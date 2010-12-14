@@ -83,7 +83,7 @@ __jsv_mod_params="ac l_hard l_soft q_hard q_soft pe_min pe_max pe_name\
 #     CLIENT: submit client which was used
 #     CONTEXT: in which context is this script executed
 #     ...
-__jsv_add_params="CLIENT CONTEXT GROUP VERSION JOB_ID SCRIPT CMDARGS USER"
+__jsv_add_params="CLIENT CONTEXT GROUP VERSION JOB_ID CMDNAME CMDARGS USER"
 
 # Values specified with the list below will be available in this script 
 # as variables with the name "jsv_param_<name>". If a corresponding value
@@ -1612,7 +1612,7 @@ jsv_main()
 {
    jsv_script_log "$0 started on `date`"
    jsv_script_log ""
-   jsv_script_log "This file contains logging output from a GE JSV script. Lines beginning"
+   jsv_script_log "This file contains logging output from an SGE JSV script. Lines beginning"
    jsv_script_log "with >>> contain the data which was send by a command line client or"
    jsv_script_log "sge_qmaster to the JSV script. Lines beginning with <<< contain data"
    jsv_script_log "which is send for this JSV script to the client or sge_qmaster"
