@@ -1488,8 +1488,8 @@ case LINUXSPARC64:
    set NOERR_PROTO = "-Wno-strict-prototypes"
 
    if ( $DUMP == 1 ) then
-      set CORELIB = "-lcore"
-      set LIBCORE = "libcore.so"
+      set CORELIB = "libcore.o"
+      set LIBCORE = "libcore.o"
    endif
 
    set XMTDEF   = ""

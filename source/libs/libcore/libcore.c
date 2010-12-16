@@ -4,9 +4,10 @@
    under the new BSD licence according to the sunsource.net terms at
    http://www.sunsource.net/TUPPCP.html.
 
-   It is intended to be used as an LD_PRELOADed shared object to allow
+   It was intended to be used as an LD_PRELOADed shared object to allow
    core dumps from daemons under Linux if the SGE admin user isn't
    root (and is obviously applicable to daemons other than SGE's).
+   IT's currently linked statically into the daemons.
 
    Dave Love <d.love@liverpool.ac.uk>  2010-06.  */
 
