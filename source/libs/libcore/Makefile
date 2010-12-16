@@ -3,7 +3,7 @@
 
 CORELIB_DIR  = $(SDIR)/libs/libcore
 
-corelib: libcore.so
+corelib: libcore.o
 
 corelib_clean: 
 	$(RM) libcore.so libcore.o
