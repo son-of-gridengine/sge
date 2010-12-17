@@ -41,7 +41,7 @@
 #
 
 PATH=/bin:/usr/bin
-ARCH=`$SGE_ROOT/util/arch`
+ARCH=`"$SGE_ROOT/util/arch"`
 
 __jsv_logging_enabled="false" # is logging enabled?
 __jsv_logfile="/tmp/jsv_$$.log"  # logfile
@@ -1523,6 +1523,50 @@ jsv_send_command()
 }
 
 # private function
+# Whether or not echo does backslash-processing is implementation-defined.
+if [ "`echo -E '\n'`" = '\n' ]; then
+jsv_echo_raw() {
+    if [ "x$1" = x-n ]; then
+	"$SGE_ROOT/utilbin/$ARCH/echo_raw" "$@"
+    else
+	echo -E "$@"
+    fi
+}
+else
+jsv_echo_raw() {
+    "$SGE_ROOT/utilbin/$ARCH/echo_raw" "$@"
+}
+fi
+
+# private function
+
+# Simple read can't be used generally because it does backslash
+# escaping, and read -r (raw mode) may not be available.  Therefore we
+# may have to use our own implementation.
+if [ -n "$BASH_VERSION" -o "$ARCH" = "darwin-x86" ]; then
+jsv_read_raw() {
+    read -r __jsv_input
+}
+else
+jsv_read_raw() {
+    __jsv_input=`"$SGE_ROOT/utilbin/$ARCH/read_raw"`
+}
+fi
+if [ -n "$BASH_VERSION" ]; then
+jsv_echo_raw() {
+    if [ "x$1" = x-n ]; then
+	"$SGE_ROOT/utilbin/$ARCH/echo_raw" "$@"
+    else
+	echo -E "$@"
+    fi
+}
+else
+jsv_echo_raw() {
+    "$SGE_ROOT/utilbin/$ARCH/echo_raw" "$@"
+}
+fi
+
+# private function
 jsv_script_log()
 {
    if [ $__jsv_logging_enabled = true ]; then
@@ -1619,32 +1663,25 @@ jsv_main()
    jsv_script_log ""
 
    while [ $__jsv_quit = false ]; do
-      # simple read can't be used here because it does backslash escaping
-      # read -r (raw mode) is not available on all platforms
-      # therefore we have to use our own implementation 
-      if [ "$ARCH" = "darwin-x86" ]; then
-         read -r __jsv_input
-      else
-         __jsv_input=`$SGE_ROOT/utilbin/$ARCH/read_raw`
-      fi 
+      jsv_read_raw
       __jsv_result=$?
 
       if [ $__jsv_result != 0 ]; then
          __jsv_quit=true
       else
          if [ "$__jsv_input" != "" ]; then
-            jsv_script_log ">>> $__jsv_input"     
-            __jsv_first=`$SGE_ROOT/utilbin/$ARCH/echo_raw $__jsv_input | cut -d' ' -f 1`
-            __jsv_second=`$SGE_ROOT/utilbin/$ARCH/echo_raw $__jsv_input | cut -d' ' -f 2`
-            __jsv_remaining=`$SGE_ROOT/utilbin/$ARCH/echo_raw $__jsv_input | cut -d' ' -f 3-`
+            jsv_script_log ">>> $__jsv_input"
+            __jsv_first=`jsv_echo_raw $__jsv_input | cut -d' ' -f 1`
+            __jsv_second=`jsv_echo_raw $__jsv_input | cut -d' ' -f 2`
+            __jsv_remaining=`jsv_echo_raw $__jsv_input | cut -d' ' -f 3-`
             if [ "$__jsv_first" = "QUIT" ]; then
                __jsv_quit=true
             elif [ "$__jsv_first" = "PARAM" ]; then
                jsv_handle_param_command "$__jsv_second" "$__jsv_remaining"
             elif [ "$__jsv_first" = "ENV" ]; then
-               __jsv_third=`$SGE_ROOT/utilbin/$ARCH/echo_raw $__jsv_input | cut -d' ' -f 3`
-               __jsv_len=`$SGE_ROOT/utilbin/$ARCH/echo_raw "$__jsv_first $__jsv_second $__jsv_third " | wc -c`
-               __jsv_data=`$SGE_ROOT/utilbin/$ARCH/echo_raw $__jsv_input | cut -c ${__jsv_len}-`
+               __jsv_third=`jsv_echo_raw $__jsv_input | cut -d' ' -f 3`
+               __jsv_len=`jsv_echo_raw "$__jsv_first $__jsv_second $__jsv_third " | wc -c`
+               __jsv_data=`jsv_echo_raw $__jsv_input | cut -c ${__jsv_len}-`
                jsv_handle_env_command "$__jsv_second" "$__jsv_third" "$__jsv_data"
             elif [ "$__jsv_first" = "START" ]; then
                jsv_handle_start_command 
