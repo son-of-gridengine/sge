@@ -11,7 +11,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -135,6 +135,15 @@ These script functions are available in Bourne shell, TCL or Perl scripts after
 sourcing/including the files jsv_inlcude.sh, jsv_include.tcl or JSV.pm.
 The files and corresponding JSV script templates are located in the directory
 $SGE_ROOT/util/resources/jsv.
+.PP
+Note that Bourne shell server JSVs are discouraged because any
+problems with unintended expansion of job parameters represent a
+security hazard (with the qmaster running as the sgeadmin user).  Also
+they may be relatively slow, and constitute a bottleneck in
+high-throughput clusters.  Shell JSVs may be faster using
+.M bash 1 ,
+even compared to a generally faster shell, since fewer external
+commands will be invoked.
 .\"
 .SS "jsv_clear_params()"
 This function clears all received job parameters that were stored 
@@ -221,7 +230,7 @@ be found in
    GROUP
    VERSION
    JOB_ID
-   SCRIPT   
+   CMDNAME
    CMDARGS
    CMDARG<i>               where <i> is a nonnegative number  
    USER

@@ -60,7 +60,7 @@ All defined JSV instances will be executed in following order:
    4) $SGE_ROOT/$SGE_CELL/common/sge_request
    5) Global configuration 
 .PP
-The Client JSVs (1-3) can be defined by xxQS_NAMExx end users, whereas the
+The Client JSVs (1\-3) can be defined by xxQS_NAMExx end users, whereas the
 client JSV defined in the global sge_request file (4) and the server JSV (5)
 can only be defined by the xxQS_NAMExx administrators.
 .PP
@@ -302,8 +302,8 @@ then the missing parameters will be automatically
 passed as empty parameters to the job script.
 .\"
 .IP "\fBCMDNAME\fP"
-Either the path to the script, or the command name
-in case of binary submission. 
+Either the path to the script, the command name
+for binary submission, or "NONE" for standard input.
 .\" TODO something else?
 It will always be sent as part of a job verification.
 .\"
@@ -342,6 +342,11 @@ the format <major>.<minor>. In version 6.2u2 and higher
 the value will be '\fB1.0\fP', or higher if the protocol is changed in
 the future.
 The value of this parameter can't be changed.
+.\"
+.SH CAVEATS
+See
+.M jsv_script_interface 3
+for advice concerning shell script JSVs.
 .\"
 .SH "EXAMPLE"
 Here is an example for the communication of a client with a JSV instance
@@ -391,7 +396,8 @@ which terminate each line in the communication protocol are omitted.
 .M qrsh 1 ,
 .M qsh 1 ,
 .M qsub 1 ,
-.M qtcsh 1 .
+.M qtcsh 1 ,
+.M jsv_script_interface 3 .
 .\"
 .SH "COPYRIGHT"
 See
