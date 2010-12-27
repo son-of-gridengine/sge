@@ -12,7 +12,7 @@ Content
 1) What 'mk_dist' is and what it does 
 -------------------------------------
 
-   After creating a distribution repository with 'scripts/distinst' you can
+   After creating a distribution repository with 'scripts/distinst', you can
    create Grid Engine distributions for further distribution. Currently
    distributions in 'tar.gz' format are supported.
 
@@ -45,17 +45,15 @@ Content
     -basedir dir       directory where tar.gz files will be created
                        (default "/tmp/sge_dist")
 
-    -cdrom             create in ISO CDROM image with "mkisofs"
-                       in current directory.
-
-    -sgeee             create a SGEEE distribution
-
     -bin               created binary tar.gz files from given "binarchs"
 
     -common            created tar.gz of architecture independent files
+
+    -arco              create tar.gz file of "arco" files
    
     -doc               reated tar.gz of documentation
 
+    -rpm               create RPM packages instead of tar files
 
     -tar tarcmd        use "tarcmd" instead of default "tar". Must support
                        "z" option
