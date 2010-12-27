@@ -1,0 +1,7 @@
+# Customization of distinst
+
+# Use system openssl and bdb
+instopenssl=false
+instbdb=false
+# Haven't built GUI installer, at least
+exit_on_error=false 
