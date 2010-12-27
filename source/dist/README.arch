@@ -19,7 +19,8 @@ Content
    for making the compilation process generic, for installing across
    different platforms via the same procedures and for locating the
    appropriate binaries.  The architecture string is generated and returned
-   by the script 'dist/util/arch' by printing it to STDOUT.
+   by the script 'dist/util/arch' by printing it to STDOUT.  The compile
+   architecture string is printed by 'scripts/compilearch -c'.
 
    'aimk', for instance, uses the architecture string to define the names of
    subdirectories where the binaries of a Grid Engine distribution later
@@ -32,22 +33,25 @@ Content
    Engine source code distribution for compilation on a variety of different
    operating systems.
 
-   Currently the 'arch' script returns the following strings. This list may
-   be incomplete.
+   Currently the 'arch' and 'compilearch' scripts return the following
+   strings. This list is incomplete.
 
-   arch	compile arch		description
+   arch		compile arch	description
    ----------------------------------------------------------------------
    aix43	AIX43		IBM AIX 4.3.x, 32bit
    aix51        AIX51 	        IBM AIX 5.1.x, 64bit kernel
    cray		UNICOS		Cray Unicos 10.0.x XMP, YMP, J90, C90, SV1
    crayts	UNICOS_TS	Cray Unicos 10.0.x T90
    craytsieee	UNICOS_TS_IEEE	Cray Unicos 10.0.x T90 with IEEE hardware
+   darwin-x64	DARWIN_X64	Apple Darwin, 64bit
+   fsb-amd64	FREEBSD_AMD64	FreeBSD, AMD/Intel 64bit
+   nbsd-x86_64	NETBSD_X86_64	NetBSD, AMD/Intel 64bit
    hp11		HP11		HP HP-UX 11 32bit
    hp11-64	HP1164	        HP HP-UX 11.00 64bit
    irix65	IRIX65		SGI Irix 6.5,
-   lx22-axp	ALINUX		GNU/Linux for Alpha AXP, glibc
-   lx24-amd64   LINUXAMD64_24   GNU/Linux AMD64, 2.4 kernel
-   lx24-x86	LINUX86_24	GNU/Linux x86, 2.4 kernel
+   lx26-alpha	ALINUX_26	GNU/Linux for Alpha AXP, glibc, Linux 2.6
+   lx26-amd64   LINUXAMD64_26   GNU/Linux AMD64, Linux 2.6
+   lx26-x86	LINUX86_26	GNU/Linux x86, Linux 2.6
    necsx4	NECSX4		NEC SX4, SUPER-UX
    necsx5	NECSX5		NEC SX5, SUPER-UX
    sol-sparc	SOLARIS		Sun, Sparc Solaris 7, 8, 9 32bit
