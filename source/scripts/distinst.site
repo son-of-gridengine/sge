@@ -40,4 +40,21 @@ BERKELEYDBBASE=/off_home/gridengine/db-4.4.20
 # sgeinspect home
 SGE_INSPECT_SRC_DIR="../nbgui"
 
-TAR=gtar
+if type gtar 2>/dev/null >/dev/null; then TAR=gtar
+else TAR=tar
+fi
+
+instqmon=true
+instcommon=true
+instsharedlibs=true
+instdrmaa=true
+instguiinst=false
+instbdb=false
+instopenssl=false
+insthadoop=false
+# no hadoop currently
+TOPFILES="3rd_party bin catman ckpt doc examples include inst_sge \
+          install_execd install_qmaster lib man mpi pvm qmon util utilbin"
+QMON_NEED_SHARED_LIBRARIES=""
+SHARED_LIBRARIES="libdrmaa libjgdi libjuti libspoolb libspoolc \
+                  pam_sge-qrsh-setup"
