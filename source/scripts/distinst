@@ -120,6 +120,9 @@ SECFILES="security/gss/get_cred.c security/gss/put_cred.c \
 SECURITYBINARIES="get_cred put_cred delete_cred renew_cred \
                   starter_cred get_cred.sh put_cred.sh k5dcelogin"
 
+USERSCRIPTS="status sge-disable-submits sge-enable-submits dead-nodes \
+             busy-nodes idle-nodes nodes-in-job qselect-node-list"
+
 GE_SOURCEDIR=`pwd`
 
 #-------------------------------------------------------------------------
@@ -168,6 +171,7 @@ ErrUsage()
    echo "       \"secbin\"     = DCE/Kerberos security binaries"
    echo "       \"sgeinspect\" = SGE Inspect binaries"
    echo "       \"txtdoc\"     = doc/ directory tree without PS and PDF files"
+   echo "       \"userscripts\" = user-level scripts in bin"
    echo "       \"utilbin\"    = utilbin/\$ARCH/*"
    echo "       \"utiltree\"   = util/ directory tree"
    exit 0
@@ -434,6 +438,7 @@ instarco=false
 instguiinst=true
 instsgeinspect=false
 enforce_shlibpath=false
+userscripts=false
 
 cmdname=`basename $0`
 
@@ -721,6 +726,7 @@ for prog in $PROG; do
          insthadoop=true
          instqmon=true
          instutiltree=true
+	 userscripts=true
          case $prog in
          distcommon)
             instman=true
@@ -788,6 +794,9 @@ for prog in $PROG; do
          insttxtdoc=true
          instcommon=true
          ;;
+      userscripts)
+	 userscripts=true
+	 ;;
       utilbin) 
          instutilbin=true 
          ;;
@@ -857,6 +866,14 @@ if [ $instcommon = true ]; then
       elif [ $exit_on_error = true ]; then
          echo "\"libs/jjsv/java/com/sun/grid/jsv/examples/SimpleJsv.java\" not found. Installation failed."
          exit 1
+      fi
+
+      # User-level scripts
+      if [ $userscripts = true ]; then
+	  for script in ;do
+	      mv $DEST_SGE_ROOT/util/resources/$script $DEST_SGE_ROOT/bin
+	      Execute chmod 755 $DEST_SGE_ROOT/bin/$script
+	  done
       fi
 
       Cleanup util
@@ -1289,7 +1306,7 @@ for i in $ARCH; do
 
       for prog in $PROG; do
          case $prog in
-            jobs|ckpt|doc|inst_sge|utiltree|examples|man|mpi|pvm|hadoop|qmontree|common|distcommon|utilbin|arco)
+            jobs|ckpt|doc|inst_sge|utiltree|examples|man|mpi|pvm|hadoop|qmontree|common|distcommon|utilbin|arco|userscripts)
                : 
                ;;
             qmake)
