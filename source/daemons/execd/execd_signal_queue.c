@@ -532,11 +532,11 @@ int sge_kill(int pid, u_long32 sge_signal, u_long32 job_id, u_long32 ja_task_id,
    ** execd.uid==0 && execd.euid==admin_user
    **    => kill does neither send SIGCONT-signals nor return an error
    */
-#if defined(NECSX4) || defined(NECSX5) || defined(DARWIN)
+#if defined(NECSX4) || defined(NECSX5) || defined(DARWIN) || defined(FREEBSD)
    sge_switch2start_user();
 #endif    
    if (kill(pid, direct_signal?sig:SIGTTIN)) {
-#if defined(NECSX4) || defined(NECSX5) || defined(DARWIN)
+#if defined(NECSX4) || defined(NECSX5) || defined(DARWIN) || defined(FREEBSD)
       sge_switch2admin_user();
 #endif   
       if (errno == ESRCH)
@@ -544,7 +544,7 @@ int sge_kill(int pid, u_long32 sge_signal, u_long32 job_id, u_long32 ja_task_id,
       DEXIT; 
       return -1;
    }
-#if defined(NECSX4) || defined(NECSX5)
+#if defined(NECSX4) || defined(NECSX5) || defined(FREEBSD)
    sge_switch2admin_user();
 #endif 
    

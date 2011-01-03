@@ -6,3 +6,6 @@ set argv = ( -system-libs -no-gui-inst $* )
 
 # This is appropriate for a Debian distribution:
 # set argv = ( -DDEFAULT_EDITOR="sensible-editor" $argv )
+
+# FreeBSD will use this in ports:
+# set LOCALBASE = %%LOCALBASE%%
