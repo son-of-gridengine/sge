@@ -1561,8 +1561,6 @@ for i in $ARCH; do
                   libname="$lib.$shlibext"
                elif [ $DSTARCH = darwin-ppc -o $DSTARCH = darwin-x86 ];  then
                   libname="$lib.$OPENSSLSOVERSION.$shlibext"
-               elif [  ${DSTARCH%%-*} = fbsd ]; then
-                  libname="$OPENSSLBASE/lib/$lib.$shlibext"
                else
                   libname="$lib.$shlibext.$OPENSSLSOVERSION"
                fi
@@ -1577,7 +1575,7 @@ for i in $ARCH; do
                   InstallProg $libname
                   if [ $DSTARCH = tru64 ]; then
                      :
-                  elif [ $DSTARCH = darwin-ppc -o $DSTARCH = darwin-x86 -o ${DSTARCH%%-*} = fbsd ]; then
+                  elif [ $DSTARCH = darwin-ppc -o $DSTARCH = darwin-x86 ]; then
                      (cd $DEST_SGE_ROOT/${UTILPREFIX}/$DSTARCH; \
                       ln -s $lib.$OPENSSLSOVERSION.$shlibext $lib.$shlibext)
                   else

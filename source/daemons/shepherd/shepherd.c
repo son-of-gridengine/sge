@@ -111,7 +111,7 @@ struct rusage {
 #include "windows_gui.h"
 #endif
 
-#if defined(DARWIN) || defined(FREEBSD)
+#if defined(DARWIN)
 #  include <termios.h>
 #  include <sys/ttycom.h>
 #  include <sys/ioctl.h>    
@@ -233,13 +233,7 @@ static int wait_until_parent_has_registered_to_server(int fd_pipe_to_child[])
    memset(tmpbuf, 0, sizeof(tmpbuf));
 
    /* TODO: Why do we ingore SIGWINCH here? Why do we ignore only SIGWINCH here?*/
-   /* Fixme:  Is the conditional necessary on this import from the
-      FreeBSD port?  */
-#ifdef FREEBSD
-   signal(SIGWINCH, SIG_IGN);
-#else
    sigignore(SIGWINCH);
-#endif
 
    /* close parents end of our copy of the pipe */
    shepherd_trace("child: closing parents end of the pipe");

@@ -45,7 +45,7 @@
 #include <sys/timeb.h>
 #include <sys/resource.h>
 
-#if defined(DARWIN) || defined(FREEBSD)
+#if defined(DARWIN)
 #  include <termios.h>
 #  include <sys/ttycom.h>
 #  include <sys/ioctl.h>

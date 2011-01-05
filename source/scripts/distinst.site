@@ -53,7 +53,7 @@ instbdb=false
 instopenssl=false
 insthadoop=false
 # no hadoop currently
-TOPFILES="3rd_party bin ckpt doc examples include inst_sge \
+TOPFILES="3rd_party bin catman ckpt doc examples include inst_sge \
           install_execd install_qmaster lib man mpi pvm qmon util utilbin"
 QMON_NEED_SHARED_LIBRARIES=""
 SHARED_LIBRARIES="libdrmaa libjgdi libjuti libspoolb libspoolc \
