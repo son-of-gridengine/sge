@@ -205,10 +205,6 @@ case $ARCH in
    RSH_DAEMON=undef
    ROOTGROUP=wheel
    LOADSENSOR_COMMAND=undef
-   # Port as of end 2010 uses these:
-#    RC_PREFIX=%%LOCALBASE%%/etc/rc.d
-#    XTERM=%%LOCALBASE%%/bin/xterm
-#    GETTEXT=%%LOCALBASE%%/bin/gettext
    ;;
  nbsd-*)
    AWK=/usr/bin/awk
