@@ -178,13 +178,6 @@ case lx24-x86:
    set DTOR = "/usr/lib/crtend.o /usr/lib/crtn.o"
    breaksw
 
-case fbsd-*:
-    set CC = gcc
-    set CFLAGS = "-Wall -Wstrict-prototypes $DEBUG_FLAG $CFLAGS"
-    set LFLAGS = "$DEBUG_FLAG $LFLAGS"
-    set LIBS = "$LIBS"
-    set START_FILE = "/usr/lib/crti.o /usr/lib/crtbegin.o"
-
 case tru64:
    if ( $CC == gcc ) then
       set CFLAGS = "-Wall -Wstrict-prototypes -D_BSD -DALPHA $DEBUG_FLAG $CFLAGS"
