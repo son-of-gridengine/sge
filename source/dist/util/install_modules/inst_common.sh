@@ -1571,18 +1571,37 @@ CheckWhoInstallsSGE()
 #-------------------------------------------------------------------------
 # CheckForLocalHostResolving
 #   "localhost", localhost.localdomain and 127.0.x.x are not supported
+#   if there are no other names or no other ip addresses
 #
 #
 CheckForLocalHostResolving()
 {
-   output=`$SGE_UTILBIN/gethostname| cut -f2 -d:`
+   output=`$SGE_UTILBIN/gethostname| grep "^Host" | cut -f2 -d:`
 
-   notok=false
+   notok=true
+   hostok=false
+   ipok=false
+
    for cmp in $output; do
       case "$cmp" in
       localhost*|127.0*)
-         notok=true
          ;;
+      *)
+         isIp=`IsIpAddress $cmp `
+         if [ $? -eq 1 ]; then
+	    if [ $hostok = true ]; then
+	       notok=false
+	       break
+	    fi
+	    ipok=true
+         else
+	    if [ $ipok = true ]; then
+	       notok=false
+	       break
+	    fi
+	    hostok=true
+         fi
+	 ;;
       esac
    done
 
