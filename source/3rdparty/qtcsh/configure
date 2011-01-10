@@ -2691,7 +2691,7 @@ else
 fi;
 if test "$sge" != no; then
    GRDDEF="-I../../../libs/gdi"
-   GRDLIB="-L../../../$sge -R${SGE_ROOT}/lib/${SGE_ARCH} \$(SGE_LIBS) ${LDFLAGS}"
+   GRDLIB="-L../../../$sge \$(SGE_LIBS) ${LDFLAGS}"
    CFLAGS="$CFLAGS -DPROG_NAME='\"qtcsh\"' -D$sge"
 fi
 
