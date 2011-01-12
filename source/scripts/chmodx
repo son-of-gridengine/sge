@@ -29,7 +29,6 @@ cat <<EOF | xargs chmod +x
 ./scripts/mk_ascman
 ./scripts/nonreentrant.sh
 ./scripts/msgmerge.csh
-./scripts/snapshot.csh
 ./scripts/test_spooling_performance.sh
 ./dist/ckpt/migration_command
 ./dist/ckpt/sx6_migration_command
