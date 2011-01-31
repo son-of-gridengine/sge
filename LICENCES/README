@@ -1,20 +1,30 @@
 Most of this distribution is licensed under the terms of the Sun
-Industry Standards Source License; see the file SISSL.  It is unclear
-what the effect is of its the `Standards' language.  At the time of
-writing (January 2011) the reference to the "Reference Build binaries"
-from the relevant page on the gridengine.sunsource.net site (dumped as
-file "standards" in this directory) is a broken link to what appears
-to have been a (long-obsolete) version 5.3, and an announcement has
-been made of the imminent closure of gridengine.sunsource.net.  This
-version hasn't yet been checked against a Sun-released version with
-the procedure described in doc/compatibility_test.html, but presumably
-a positive compatibility test result against any such version is
-sufficient to justify the naming, which is a requirement of the SISSL
-EXHIBIT B.  This version is likely not compatible on the wire with any
-Sun-released version -- many (most?) of which were incompatible with
-each other -- so it will probably be necessary to maintain a
-compatibility mode against 6.2u5.  However, the code which changes the
-qmaster communication is from the original gridengine repository.
+Industry Standards Source License; see the file SISSL.  If copyright
+notices are missing, Fritz Ferstl says at
+http://lists.alioth.debian.org/pipermail/pkg-gridengine-devel/2007-June/000021.html
+"Yes, you can assume that everything not explicitly licensed is
+copyrighted by Sun and is under the SISSL."
+
+It is unclear what the effect is of its the `Standards' language.  At
+the time of writing (January 2011) the reference to the "Reference
+Build binaries" from the relevant page on the gridengine.sunsource.net
+site (dumped as file "standards" in this directory) is a broken link
+to what appears to have been a (long-obsolete) version 5.3, and an
+announcement has been made of the imminent closure of
+gridengine.sunsource.net.  This version hasn't yet been checked
+against a Sun-released version with the procedure described in
+doc/compatibility_test.html, but presumably a positive compatibility
+test result against any such version is sufficient to justify the
+naming, which is a requirement of the SISSL EXHIBIT B.  This version
+is likely not compatible on the wire with any Sun-released version --
+many (most?) of which were incompatible with each other -- so it will
+probably be necessary to maintain a compatibility mode against 6.2u5.
+However, the code which changes the qmaster communication is from the
+original gridengine repository.
+
+Update:  Legal advice is that the requirements of Exhibit B only apply
+if you don't fulfil the requirements set out in section 3.1 of the
+SISSL.
 
 Other relevant licences included in this directory are the GNU GPL
 (GPL-3), the GNU LGPL (LGPL-3), and an adaptation of the FreeBSD
