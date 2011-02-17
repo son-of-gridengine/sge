@@ -943,6 +943,11 @@ a job dependency on multiple jobs satisfying the regular pattern
 or on all jobs with the requested name. The name dependencies are
 resolved at submit time and can only be changed via qalter. New
 jobs or name changes of other jobs will not be taken into account.
+To remove a job dependency list with
+.I qalter ,
+use a null \fBwc_job_list\fP, i.e. use
+.br
+.B "   qalter -hold_jid '' ..."
 .sp 1
 .I Qalter
 allows changing this option even while the job executes. The modified
@@ -1765,7 +1770,7 @@ environment variable \fBxxQS_NAME_Sxx_TASK_ID\fP. The option arguments n, m and 
 .sp 1
 .nf
 .RS
-Following restrictions apply to the values n and m:
+The following restrictions apply to the values n and m:
 .sp 1
 .RS
 1 <= n <= MIN(2^31-1, max_aj_tasks)
@@ -2221,9 +2226,10 @@ The request name of a job as specified with the
 \fB\-N\fP switch (see above) or taken as the name of the job
 script file.
 .IP "RESTARTED" 1.5i
-This variable is set to 1 if a job was restarted either after a system
-crash or after a migration in case of a checkpointing job. The variable has
-the value 0 otherwise.
+This variable is set to 1 if a job was restarted after a system crash,
+or after migration of a non-application-level checkpointing job.  It s
+set to 2 when a job with application-level checkpointing is restarted
+with a checkpoint available.  Otherwise its value is 0.
 .IP "SHELL" 1.5i
 The user's login shell from the
 .M passwd 5
