@@ -32,9 +32,9 @@
 #
 ##########################################################################
 #___INFO__MARK_END__
-TACCLIB_DIR = $(SDIR)/libs/tacc
+TACCLIB_DIR = $(SDIR)/3rdparty/tacc_pam_sge
 
-TACCLIB = pam_TACC_SGE
+TACCLIB = pam_sge_authorize
 
 TACCLIB_SRC = pam_sge_authorize.c
 
@@ -50,12 +50,12 @@ TACCLIB_OBJS = $(TACCLIB_SRC:.c=.o)
 # global rules: all, clean, depend, messages
 ###############################################################################
 
-tacclib: $(TACCLIB).a foo
+tacclib: tacclib_so foo
 
-tacclib_so:	$(TACCLIB).so
+tacclib_so:	$(TACCLIB)$(SHAREDEXT)
 
 tacclib_clean:
-		$(RM) $(TACCLIB_OBJS) $(TACCLIB).a $(TACCLIB).so
+		$(RM) $(TACCLIB_OBJS) $(TACCLIB).a $(TACCLIB)$(SHAREDEXT)
 
 tacclib_depend:
 		$(DEPEND) -f$(TACCLIB_DIR)/tacc_dependencies $(TACCLIB_DIR)/*.c
@@ -71,14 +71,10 @@ tacclib_messages:
 ###############################################################################
 
 $(TACCFOO): $(TACCFOO_OBJS)
-	$(CC) -o $(TACCFOO) $(TACCFOO_OBJS) libsge.a libsched.a libevc.a libgdi.a libsgeobj.a libsgeobjd.a libcull.a libcomm.a libcommlists.a libuti.a liblck.a librmon.a -lc -ldl  -lm -lpthread
+	$(CC) $(CFLAGS) -o $(TACCFOO) $(TACCFOO_OBJS) libsge.a libsched.a libevc.a libgdi.a libsgeobj.a libsgeobjd.a libcull.a libcomm.a libcommlists.a libuti.a liblck.a librmon.a -lc -ldl  -lm -lpthread
 
-$(TACCLIB).a:	$(TACCLIB_OBJS) 
-	$(AR) $(ARFLAGS) $(TACCLIB).a $(TACCLIB_OBJS)
-	$(RANLIB) $(TACCLIB).a
-
-$(TACCLIB).so: $(TACCLIB_OBJS) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(UTILIB) $(RMONLIB)
-	$(SHAREDLD)  -fPIC -shared -o $(TACCLIB).so $(TACCLIB_OBJS) libsge.a libsched.a libevc.a libgdi.a libsgeobj.a libsgeobjd.a libcull.a libcomm.a libcommlists.a  libuti.a liblck.a librmon.a -lc -ldl  -lm -lpthread 
+$(TACCLIB)$(SHAREDEXT): $(TACCLIB_OBJS) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(UTILIB) $(RMONLIB)
+	$(SHAREDLD) $(SHARED_LFLAGS) -o $(TACCLIB)$(SHAREDEXT) $(TACCLIB_OBJS) libsge.a libsched.a libevc.a libgdi.a libsgeobj.a libsgeobjd.a libcull.a libcomm.a libcommlists.a  libuti.a liblck.a librmon.a -lc -ldl  -lm -lpthread 
 
 
 ###############################################################################
