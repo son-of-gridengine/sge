@@ -48,6 +48,7 @@
 #
 #       start       starts the RPC server
 #       stop        Terminates the RPC server
+#       restart     restarts the RPC server
 #
 # Unix commands which may be used in this script:
 #    cat cut tr ls grep awk sed basename
@@ -156,7 +157,7 @@ Shutdown()
 #---------------------------------------------------------------------------
 # GetPathToBinaries
 #    echo the name of the bin_dir on this system
-#    The check is fullfilled if we can access the qstat binary
+#    The check is fulfilled if we can access the qstat binary
 #    echo "none" if we can't determine the binary path
 GetPathToBinaries()
 {
@@ -191,8 +192,8 @@ GetAdminUser()
 
 #---------------------------------------------------------------------------
 # GetPathToUtilbin
-#    echo the path to the binaires in utilbin
-#    The check is fullfilled if we can access the "gethostname" binary
+#    echo the path to the binaries in utilbin
+#    The check is fulfilled if we can access the "gethostname" binary
 #    echo "none" if we can't determine the binary path
 #
 GetPathToUtilbin()
@@ -215,7 +216,7 @@ GetPathToUtilbin()
 # Execute command as user $ADMINUSER and exit if exit status != 0
 # if ADMINUSER = default then execute command unchanged
 #
-# uses binary "adminrun" form SGE distribution
+# uses binary "adminrun" from SGE distribution
 #
 # USES: variables "$verbose"    (if set to "true" print arguments)
 #                  $ADMINUSER   (if set to "default" do not use "adminrun)
@@ -232,7 +233,7 @@ ExecuteAsAdmin()
    if [ $ADMINUSER = default ]; then
       $*
    else
-      $utilbin_dir/adminrun $ADMINUSER "$@" &
+      $utilbin_dir/adminrun $ADMINUSER "$@"
    fi
 
    return 0
@@ -290,7 +291,7 @@ CheckIfLocal()
 }
 
 #---------------------------------------------------------------------------
-# DetectSMFService - sets service to a mask maching the name
+# DetectSMFService - sets service to a mask matching the name
 # $1 ... name
 #
 DetectSMFService()
@@ -338,6 +339,7 @@ usage()
    echo ""
    echo "   \"start\"        startup Grid Engine RPC Server"
    echo "   \"stop\"         shutdown Grid Engine RPC Server"
+   echo "   \"restart\"      equivalent to stop followed by start"
    echo "   \"-nosmf\"       force no SMF"
    echo
    exit 1
@@ -357,8 +359,13 @@ noSMF=false
 for i in $*; do
    if [ "$i" = start ]; then
       startup=true
+      stop=false
    elif [ "$i" = stop ]; then
       startup=false
+      stop=true
+   elif [ "$i" = restart ]; then
+      startup=true
+      stop=true
    elif [ "$i" = -nosmf ]; then
       noSMF=true
    else
@@ -372,6 +379,10 @@ if [ "$utilbin_dir" = "none" ]; then
    exit 1
 fi
 
+if [ "$stop" = true ]; then
+   echo Stopping Berkeley DB
+   Shutdown
+fi
 if [ "$startup" = true ]; then
    DetectSMFService bdb
    if [ \( -z "$SMF_FMRI" -o "$SMF_FMRI" != "$service" \) -a -n "$service" ]; then
@@ -381,7 +392,4 @@ if [ "$startup" = true ]; then
    #CheckSpoolDir
    #CheckIfLocal SPOOLING_DIR
    ExecuteAsAdmin $utilbin_dir/berkeley_db_svc -L SPOOLING_DIR/bdb_messages $BDBHOMES
-else
-   echo Stopping Berkeley DB
-   Shutdown
 fi
