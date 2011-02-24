@@ -12,7 +12,7 @@
 # $3 = 0 or 1 - flag if man pages in ASCII format should be created
 # $4 = 0 or 1 - flag if man pages in HTML format  should be created
 # $5 = 0 or 1 - checkout man pages with "-kv" flag
-# $6 = name of the cvs module which will be checked out (default gridengine/doc/man)
+# $6 = name of the cvs module which will be checked out (default gridengine/doc/man) (not used)
 # $7 = directory where the man pages will be built (default  <source dir>/MANSBUILD_<product name>)
 #
 #___INFO__MARK_BEGIN__
@@ -54,11 +54,11 @@ set MANMODE = $2
 set MANASC  = $3
 set MANHTML = $4
 
-if ( $#argv > 5 ) then
-  set CVS_MODULE = $6
-else
-  set CVS_MODULE = gridengine/doc/man
-endif
+# if ( $#argv > 5 ) then
+#   set CVS_MODULE = $6
+# else
+#   set CVS_MODULE = gridengine/doc/man
+# endif
 
 if ( $#argv > 6 ) then
   set MANBUILDDIR = $7
@@ -150,9 +150,6 @@ endif
 #
 if ( "$MANHTML" == 1 ) then
    set PATHREV = ""
-   if ( "$CVSBRANCH" != "" ) then
-      set PATHREV = "?pathrev=$CVSBRANCH"
-   endif
 
    echo "Building HTML from sedman pages"
    foreach n ( $SECTION_LIST )
