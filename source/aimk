@@ -168,17 +168,17 @@ usage:
    echo "-gcc              -> use gcc instead of system compiler (where supported)"
    echo "-gettext          -> build the gettext libraries"
    echo "-gprof            -> enable gprof profiling"
-   echo "-gss              -> enable gss security"
+   echo "-gss              -> enable gss security (currently broken)"
    echo "-help             -> show this help"
    echo "-htmlman          -> generate man and html pages"
    echo "-insure           -> compile in debug mode and detect memory leaks"
    echo "-intl             -> compile with internationalization library (libintl)"
    echo "-javadoc          -> create source code documentation in Javadoc[TM] tool format"
-   echo "-kerberos         -> enable kerberos authentication"
+   echo "-kerberos         -> enable kerberos authentication (currently broken)"
    echo "-man              -> generate man pages"
    echo "-mo               -> generate the message catalogues (Solaris only)"
    echo "-no-core          -> don't compile the core system"
-   echo "-no-dump          -> build binaries without libcore.so (Linux only)"
+   echo "-no-dump          -> build binaries without libcore (Linux only)"
    echo "-no-java          -> don't compile Java[TM] class files"
    echo "-no-gui-inst      -> don't compile Java[TM] GUI installer"
    echo "-no-jni           -> don't compile JNI library"
@@ -1459,9 +1459,10 @@ case LINUXSPARC64:
       endif
    endif
 
-   if ($buildarch == "lx24-x86" || $buildarch == "lx26-amd64" || $buildarch == "lx26-x86" || $buildarch == "lx26-sparc" || $buildarch == "lx26-mips" || $buildarch == "lx26-mips64" || $buildarch == "lx26-s390" || $buildarch == "lx26-s390x") then
-      set CFLAGS = "$CFLAGS -Wno-strict-aliasing"
-   endif
+# Fixme:  Why would we want to suppress the warning?
+#    if ($buildarch == "lx24-x86" || $buildarch == "lx26-amd64" || $buildarch == "lx26-x86" || $buildarch == "lx26-sparc" || $buildarch == "lx26-mips" || $buildarch == "lx26-mips64" || $buildarch == "lx26-s390" || $buildarch == "lx26-s390x") then
+#       set CFLAGS = "$CFLAGS -Wno-strict-aliasing"
+#    endif
 
    set CFLAGS = "$OFLAG -Wall -Wstrict-prototypes -DUSE_POLL -DLINUX -D$BUILDARCH -D$COMPILE_ARCH -D_GNU_SOURCE -DGETHOSTBYNAME_R6 -DGETHOSTBYADDR_R8 $DEBUG_FLAG $CFLAGS"
 
@@ -1736,6 +1737,7 @@ case SOLARISAMD64:
 
    set ERR_WARN_NONE = "-errwarn=%none" # is set in XCFLAGS and for R_E_M_O_T_E target to switch off -errwarn=%all
    set ERR_WARN_ALL = "-errwarn=%all"  # is set in cc specific section below
+   set NOERR_CFLAG = "$ERR_WARN_NONE"
    set CFLAGS = "$CFLAGS -DSOLARIS -D$BUILDARCH -D__EXTENSIONS__ -D_POSIX_C_SOURCE=199506L -DGETHOSTBYNAME_R5 -DGETHOSTBYADDR_R7 -DUSE_POLL"
    set SHAREDLD = $CC
 
@@ -2815,7 +2817,8 @@ if ( "$QMAKE" == 1) then
 	! -r $SOURCE/3rdparty/qmake/$COMPILE_ARCH/Makefile ) then
       mkdir -p $SOURCE/3rdparty/qmake/$COMPILE_ARCH
       cd $SOURCE/3rdparty/qmake/$COMPILE_ARCH
-      env REMOTE=sge CFLAGS="${CFLAGS} ${NOERR_CFLAG}" SGE_ARCH=$buildarch \
+      env REMOTE=sge CC="$CC" CFLAGS="${CFLAGS} ${NOERR_CFLAG}" \
+       SGE_ARCH=$buildarch LDFLAGS="$LFLAGS" LIBS="$LIBS" \
        ../configure --srcdir=..
    endif
 
@@ -2916,7 +2919,7 @@ if ( "$QTCSH" == 1) then
 	! -r $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH/Makefile ) then
       mkdir -p $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH
       cd $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH
-      env REMOTE=sge CFLAGS="${CFLAGS} ${NOERR_CFLAG}" SGE_ARCH=$buildarch \
+      env REMOTE=sge CC="$CC" CFLAGS="${CFLAGS} ${NOERR_CFLAG}" SGE_ARCH=$buildarch \
        ../configure --with-sge=${COMPILE_ARCH} --srcdir=..
    endif
 
@@ -3009,6 +3012,8 @@ echo done.
 # On SOLARIS64, if there was no special target (i.e. $argv = "") 
 # and no "-only-*" parameter specified, the shared libraries for
 # SOLARIS are also built.
+# Fixme:  This fails if you do something like "./aimk -no-jni -no-java"
+# without Java stuff accessible.
 if ( $BUILDARCH == SOLARIS64 && $ONLY_PARAM_SPEC == 0 && "${SOLARIS_ONLY_64}" != 1 ) then
       if ( "$argv" == "" ) then 
          echo ""
