@@ -373,7 +373,7 @@ sub contract_suffix {
     my($value, $base) = @_;
 
     my $new_value = $value / $base;
-    if ($new_value == POSIX::floor($value / $base)) {
+    if ($new_value != 0 && $new_value == POSIX::floor($value / $base)) {
         my($value, $nbase) = contract_suffix($new_value, $base);
         return ($value, $nbase+1);
     } else {
