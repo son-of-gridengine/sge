@@ -28,11 +28,12 @@ use IO::Seekable;
 use File::stat;
 use Getopt::Long;
 use File::Basename;
+use Env qw(SGE_ROOT SGE_CELL);
 
 $0 = "process-scheduler-log";
 
 my $poll_interval = 60;
-my $sge_common    = "/services/sge/default/common";
+my $sge_common    = "${SGE_ROOT}/${SGE_CELL}/common";
 #
 my $schedule_info = "$sge_common/schedule";
 my $schedule_out  = "$sge_common/schedule.last";
