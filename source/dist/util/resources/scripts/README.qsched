@@ -33,9 +33,11 @@ INSTALLATION
 
 2) Start the schedule logfile processing program
 
-  Near the top of process-scheduler-log, is a definition for variable
-  $sge_common. Set it to the $SGE_ROOT/$SGE_CELL/common directory
-  for your installation of Grid Engine.
+  If you don't start it with the SGE_ROOT and SGE_CELL set suitably in
+  the environment, look near the top of process-scheduler-log for the
+  definition for variable $sge_common. Set it to the
+  $SGE_ROOT/$SGE_CELL/common directory for your installation of Grid
+  Engine.
 
   Execute the program from an account with write access to that
   directory.
