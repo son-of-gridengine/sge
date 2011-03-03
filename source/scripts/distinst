@@ -121,7 +121,8 @@ SECURITYBINARIES="get_cred put_cred delete_cred renew_cred \
                   starter_cred get_cred.sh put_cred.sh k5dcelogin"
 
 USERSCRIPTS="status sge-disable-submits sge-enable-submits dead-nodes \
-             busy-nodes idle-nodes nodes-in-job qselect-node-list"
+             busy-nodes idle-nodes nodes-in-job qselect-node-list \
+	     process-scheduler-log qsched"
 
 GE_SOURCEDIR=`pwd`
 
