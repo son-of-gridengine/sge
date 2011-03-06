@@ -317,7 +317,7 @@ for i in $*; do
       noSMF=true
    elif [ "$i" = restart ]; then
       startup=true
-      stop=true
+      softstop=true
    else
       usage
    fi
