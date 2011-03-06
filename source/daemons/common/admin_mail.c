@@ -289,11 +289,11 @@ void job_related_adminmail(u_long32 progid, lListElem *jr, int is_array, const c
       
       strcpy(sge_mail_body_total, sge_mail_body);
 
-      
+      start = strlen(sge_mail_body_total);
       for (i=0; i<num_files; i++) {
          if (shepherd_files[i].exists) {
-            sprintf(sge_mail_body_total, "%s\nShepherd %s:\n", 
-                      sge_mail_body_total, shepherd_filenames[i]);
+            sprintf(sge_mail_body_total+start, "\nShepherd %s:\n", 
+		    shepherd_filenames[i]);
             start = strlen(sge_mail_body_total);
             if ((fp = fopen(shepherd_files[i].filepath, "r"))) {
                int n;
