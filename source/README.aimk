@@ -194,7 +194,7 @@ Content
    4.7 Creating man pages
    ----------------------
 
-   The man pages in CVS contain a few macros 
+   The man pages in the repository contain a few macros 
    
    To create man pages you enter
 
@@ -204,11 +204,13 @@ Content
 
    To build man pages in nroff format you need to define the variable
    GROFFPATH in 'aimk.site'. This is where 'groff' is installed. For html
-   man pages you need the tool 'man2html'. The path is defined with the
-   MAN2HTMLPATH variable in 'aimk.site'. To create man pages in catman
-   format you need to first create the nroff man pages and then on an Irix
-   system the catman pages (only on Irix, the 'pack -f' command forces
-   compression of all pages regardless of their size).
+   man pages you need the tool 'man2html'. This is the one from
+   http://www.nongnu.org/man2html/, not the one in Debian, for instance.
+   The path is defined with the MAN2HTMLPATH variable in
+   'aimk.site'. To create man pages in catman format you need to first
+   create the nroff man pages and then on an Irix system the catman
+   pages (only on Irix, the 'pack -f' command forces compression of
+   all pages regardless of their size).
 
    4.8 Creating JavaDoc documentation
    ----------------------------------

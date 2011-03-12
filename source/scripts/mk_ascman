@@ -146,7 +146,9 @@ if ( "$MANASC" == 1 ) then
 endif
 
 #
-# build html man pages from sedman with man2html 
+# build html man pages from sedman with man2html
+# NB, this is the html2man from http://www.nongnu.org/man2html/, not
+# the one in Debian, for instance.
 #
 if ( "$MANHTML" == 1 ) then
    set PATHREV = ""
@@ -194,7 +196,7 @@ if ( "$MANHTML" == 1 ) then
    echo "   index.html$PATHREV" >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo '   marginwidth="0" marginheight=0 name="TOC" noresize>' >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo '  <frame src=' >> $MANBUILDDIR/HTMLMAN/manuals.html
-   echo "   htmlman1/qacct.html$PATHREV" >> $MANBUILDDIR/HTMLMAN/manuals.html
+   echo "   htmlman1/sge_intro.html$PATHREV" >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo '   marginwidth="0" marginheight=0 name="PAGE" noresize>' >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo ' </frameset>' >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo '</HTML>' >> $MANBUILDDIR/HTMLMAN/manuals.html
