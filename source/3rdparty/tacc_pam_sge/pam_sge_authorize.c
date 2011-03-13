@@ -30,7 +30,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 #define MAX_SLEEP_DEFAULT 0 /* Max sleep default (micro-secs) */
-#define EXECD_SPOOL_DIR_DEFAULT "/opt/sge6.2/execd_spool"
+#define EXECD_SPOOL_DIR_DEFAULT "/opt/sge/default/spool"
 #define MAX_BYPASS_USERS 30
 #define BYPASS_USER_STRING_LENGTH 512
 
