@@ -13,7 +13,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -168,14 +168,15 @@ the queue name.
 the queue type \- one of B(atch), I(nteractive), C(heckpointing),
 P(arallel), or combinations thereof,
 .IP "\(bu" 3n
-the number of reserved, used and available job slots,
+the number of reserved (by advance reservation, not resource
+reservation), used and, available job slots,
 .IP "\(bu" 3n
 the state of the queue \- one of
 u(nknown) if the corresponding
 .M xxqs_name_sxx_execd 8
 cannot be contacted, a(larm), A(larm), C(alendar suspended), s(uspended),
-S(ubordinate), d(isabled), D(isabled), E(rror) or 
-combinations thereof.
+S(ubordinate), d(isabled), D(isabled), E(rror), (c)configuration
+ambiguous, or combinations thereof.
 .PP
 If the state is a(alarm) at least one of the load thresholds defined in the 
 \fIload_thresholds\fP list of the queue configuration (see
@@ -220,6 +221,14 @@ for leads on how to resolve the problem. Please enable the
 queue afterwards via the \fB-c\fP option of the
 .M qmod 1
 command manually.
+.PP
+The c(onfiguration ambiguous) state indicates a problem with
+overlapping hosts groups (see
+.M queue_conf 5 ).
+Use
+.M qstat 1 's
+.B "-explain c"
+to diagnose it.
 .PP
 If the \fB\-F\fP option was used, resource availability information is printed 
 following the host status line. For each resource (as selected in an option 
