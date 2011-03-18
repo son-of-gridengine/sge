@@ -4,7 +4,7 @@
 .\" Copyright: 2008 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: jsv.1,v $     Last Update: $Date: 2009-08-25 19:39:34 $     Revision: $Revision: 1.7 $
+.\" $RCSfile: jsv.1,v $     Last Update: $Date: 2009-08-25 19:39:34 $     Revision: $Revision: 1.8 $
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -297,13 +297,22 @@ It will always be sent as part of a job verification.
 If no arguments should be passed to the job script
 or command it will have the value 0. This parameter can be changed
 by JSV instances. If the value of \fBCMDARGS\fP is bigger
-than the number of available \fBCMDARG<id>\fP parameters,
+than the number of available \fBCMDARG\fP\fIn\fP parameters,
 then the missing parameters will be automatically
 passed as empty parameters to the job script.
 .\"
+.IP "\fBCMDARG\fIn\fP"
+Individual command arguments, where
+.I n
+is an integer between 0 and \fBCMDARGS\fP\-1.
+.\"
 .IP "\fBCMDNAME\fP"
 Either the path to the script, the command name
-for binary submission, or "NONE" for standard input.
+for binary submission, 
+.B STDIN
+for standard input, or
+.B NONE
+in the case of an interactive job.
 .\" TODO something else?
 It will always be sent as part of a job verification.
 .\"
