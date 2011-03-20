@@ -12,7 +12,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -43,8 +43,8 @@ The current share tree can be displayed via the
 .M qconf 1
 \fB\-sstree\fP option. The 
 output follows the \fIshare_tree\fP format description. A share tree can be
-created and an existing can be modified via the \fB\-astree\fP and
-\fB\-mstree\fP options to 
+created and an existing one can be modified via the \fB\-astree\fP and
+\fB\-mstree\fP options to
 .M qconf 1 .
 The \fB\-sst\fP option shows a formatted share tree (tree view).
 Individual share tree nodes can be created, modified, deleted, or shown
@@ -61,23 +61,23 @@ space (" ") character before any interpretation.
 .\"
 The format of a share tree file is defined as follows:
 .IP "\(bu" 3n
-A new node starts with the attribute \fBid\fP, and equal sign and the
+A new node starts with the attribute \fBid\fP, an equal sign and the
 numeric identification number of the node. Further attributes of that
-node follow until another \fBid\fP-keyword is encountered.
+node follow until another \fBid\fP keyword is encountered.
 .IP "\(bu" 3n
-The attribute \fBtype\fP defines, if a sharetree node references
+The attribute \fBtype\fP defines whether a sharetree node references
 a user (type=0), or a project (type=1)
 .IP "\(bu" 3n
-The attribute \fBchildnodes\fP contains a comma separated list of child
+The attribute \fBchildnodes\fP contains a comma-separated list of child
 nodes to this node.
 .IP "\(bu" 3n
-The parameter \fBname\fP refers to an arbitrary name for the node or to a
+The parameter \fBname\fP refers to an arbitrary name for the node, or to a
 corresponding user (see
 .M user 5 )
 or project (see
 .M project 5 )
 if the
-node is a leaf node of the share tree. The name for the root node of
+node is a leaf node of the share tree. The name of the root node of
 the tree is "Root" by convention.
 .IP "\(bu" 3n
 The parameter \fBshares\fP defines the share of the node among the nodes
@@ -86,7 +86,7 @@ with the same parent node.
 A user leaf node named 'default' can be defined as a descendant of a
 .M project 5 )
 node in the share tree. The default node defines the number
-of shares for users  who are running in the project, but who do not have
+of shares for users who are running in the project, but who do not have
 a user node defined under the project. The default user node is a
 convenient way of specifying a single node for all users which should
 receive an equal share of the project resources. The default node may be
@@ -94,7 +94,7 @@ specified by itself or with other
 .M user 5 )
 nodes at the same level below
 a project. All users, whether explicitly specified as a user node or
-those which map to the 'default' user node must have a corresponding
+those which map to the 'default' user node, must have a corresponding
 .M user 5 )
 object defined in order to get shares. Do not configure a
 .M user 5 )

@@ -171,7 +171,7 @@ This entry cannot be configured but is only displayed in case of a
 .M qconf 1
 \fB\-se\fP command. All load values are displayed as reported by the
 .M xxqs_name_sxx_execd 8
-on the host. The load values are enlisted in a comma separated list. Each
+on the host. The load values are shown in a comma separated list. Each
 load value start with its name, followed by an equal sign and the reported
 value.
 .SS "\fBprocessors\fP"
@@ -199,20 +199,20 @@ for data transferred via any I/O devices. The default NONE means
 The \fBuser_lists\fP parameter contains a comma separated list of so called
 user access lists as described in
 .M access_list 5 .
-Each user contained in at least one of the enlisted access lists has
+Each user contained in at least one of the listed access lists has
 access to the host. If the \fBuser_lists\fP parameter is set to
 NONE (the default) any user has access being not explicitly excluded
 via the \fBxuser_lists\fP parameter described below.
-If a user is contained both in an access list enlisted in \fBxuser_lists\fP
+If a user is contained both in an access list in \fBxuser_lists\fP
 and \fBuser_lists\fP the user is denied access to the host.
 .SS "\fBxuser_lists\fP"
 The \fBxuser_lists\fP parameter contains a comma separated list of so called
 user access lists as described in
 .M access_list 5 .
-Each user contained in at least one of the enlisted access lists is not
+Each user contained in at least one of the access lists is not
 allowed to access the host. If the \fBxuser_lists\fP parameter is set to
 NONE (the default) any user has access.
-If a user is contained both in an access list enlisted in \fBxuser_lists\fP
+If a user is contained both in an access list \fBxuser_lists\fP
 and \fBuser_lists\fP the user is denied access to the host.
 .SS "\fBprojects\fP"
 The \fBprojects\fP parameter contains a comma separated list of projects
