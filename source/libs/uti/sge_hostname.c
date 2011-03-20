@@ -292,7 +292,6 @@ static int matches_addr(struct hostent *he, char *addr);
 static host *sge_host_search_pred_alias(host *h);
 
 static int matches_name(struct hostent *he, const char *name);    
-static void sge_host_delete(host *h);
 
 /* this globals are used for profiling */
 unsigned long gethostbyname_calls = 0;
@@ -861,7 +860,7 @@ struct hostent *sge_gethostbyaddr(const struct in_addr *addr, int* system_error_
    return he;
 }
 
-
+#if UNUSED
 /****** uti/hostname/sge_host_delete() *****************************************
 *  NAME
 *     sge_host_delete() -- delete host in host list with all aliases 
@@ -904,6 +903,7 @@ static void sge_host_delete(host *h)
    sge_host_delete(predalias);
    sge_host_delete(nextalias);
 }
+#endif
 
 /****** uti/hostname/sge_host_search_pred_alias() ******************************
 *  NAME

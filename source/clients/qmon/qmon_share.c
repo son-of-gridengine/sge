@@ -240,10 +240,10 @@ static double node_share(XtPointer data);
 static double node_usage(XtPointer data);
 /* static String node_targetted_resource_share(XtPointer data); */
 /* static String node_actual_resource_share(XtPointer data); */
-static double calculate_usage(ListTreeItem *item);
+/* static double calculate_usage(ListTreeItem *item); */
 static double calculate_simple_share(ListTreeItem *item);
 static double calculate_share(ListTreeItem *item);
-static lList *buildShac(lListElem *parent, int depth);
+/* static lList *buildShac(lListElem *parent, int depth); */
 static ListTreeItem* CullToTree(Widget tree, ListTreeItem *parent, lList *shac);
 static lList* TreeToCull(Widget tree, ListTreeItem *item);
 static void CullToParameters(tSTREntry *data, const lListElem *sep);
@@ -1412,6 +1412,7 @@ static void qmonShareTreeActivate(Widget w, XtPointer cld, XtPointer cad)
    DEXIT;
 }
 
+#if 0
 /*-------------------------------------------------------------------------*/
 static lList *buildShac(lListElem *parent, int depth)
 {
@@ -1442,7 +1443,6 @@ static lList *buildShac(lListElem *parent, int depth)
    return shac;
 }
       
-#if 0
 
 /*-------------------------------------------------------------------------*/
 static void qmonShareTreeCreateItem(Widget w, XtPointer cld, XtPointer cad)
@@ -1901,6 +1901,7 @@ ListTreeItem *item
    return share;
 }
 
+#if 0
 /*-------------------------------------------------------------------------*/
 static double calculate_usage(
 ListTreeItem *item 
@@ -1931,7 +1932,6 @@ ListTreeItem *item
 
 
 
-#if 0
 /*-------------------------------------------------------------------------*/
 static void showtree(Widget w, XtPointer cld, XtPointer cad)
 {
