@@ -1373,7 +1373,7 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
       return;
    }
 
-   if (!(statbuf.st_mode && S_IFDIR)) {
+   if (!S_ISDIR(statbuf.st_mode)) {
       ERROR((SGE_EVENT, MSG_FILE_XISNOTADIRECTORY_S, dir));
       DEXIT;
       return;
