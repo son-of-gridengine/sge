@@ -4583,37 +4583,12 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
       }
 
 /*----------------------------------------------------------------------------*/
-      /* "-bonsai" This is the undocumented switch of showing the share tree
-         we keep this switch  for compatibility reasons */
+      /* "-sst" This is the documented switch for showing the share
+         tree.  "-bonsai" is an undocumented alternative, kept for
+         compatibility.  */
 
-      if (strcmp("-bonsai", *spp) == 0) {
-         /* get the sharetree .. */
-         what = lWhat("%T(ALL)", STN_Type);
-         alp = ctx->gdi(ctx, SGE_STN_LIST, SGE_GDI_GET, &lp, NULL, what);
-         lFreeWhat(&what);
-
-         aep = lFirst(alp);
-         answer_exit_if_not_recoverable(aep);
-         if (answer_get_status(aep) != STATUS_OK) {
-            fprintf(stderr, "%s\n", lGetString(aep, AN_text));
-            spp++;
-            continue;
-         }
-         lFreeList(&alp);
- 
-         ep = lFirst(lp);
-
-         show_sharetree(ep, NULL);
-
-         lFreeList(&lp);
-         spp++;
-         continue;
-      }
-
-/*----------------------------------------------------------------------------*/
-      /* "-sst" This is the documented switch of showing the share tree */
-
-      if (strcmp("-sst", *spp) == 0) {
+      if (strcmp("-sst", *spp) == 0 ||
+	  strcmp("-bonsai", *spp) == 0) {
          /* get the sharetree .. */
          what = lWhat("%T(ALL)", STN_Type);
          alp = ctx->gdi(ctx, SGE_STN_LIST, SGE_GDI_GET, &lp, NULL, what);
