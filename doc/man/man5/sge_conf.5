@@ -474,11 +474,11 @@ overwritten by the execution host local configuration.
 The \fBuser_lists\fP parameter contains a comma separated list of 
 user access lists as described in
 .M access_list 5 .
-Each user contained in at least one of the enlisted access lists has
+Each user contained in at least one of the access lists has
 access to the cluster. If the \fBuser_lists\fP parameter is set to
 NONE (the default) any user has access not explicitly excluded
 via the \fBxuser_lists\fP parameter described below.
-If a user is contained both in an access list enlisted in \fBxuser_lists\fP
+If a user is contained both in an access list \fBxuser_lists\fP
 and \fBuser_lists\fP the user is denied access to the cluster.
 .PP
 Changes to \fBuser_lists\fP will take immediate effect
@@ -491,10 +491,10 @@ overwritten by the execution host local configuration.
 The \fBxuser_lists\fP parameter contains a comma separated list of 
 user access lists as described in
 .M access_list 5 .
-Each user contained in at least one of the enlisted access lists is denied
+Each user contained in at least one of the access lists is denied
 access to the cluster. If the \fBxuser_lists\fP parameter is set to
 NONE (the default) any user has access.
-If a user is contained both in an access list enlisted in \fBxuser_lists\fP
+If a user is contained both in an access list in \fBxuser_lists\fP
 and \fBuser_lists\fP (see above) the user is denied access to the cluster.
 .PP
 Changes to \fBxuser_lists\fP will take immediate effect
