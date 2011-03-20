@@ -47,8 +47,8 @@ The checkpointing environment described here is a means to configure
 the different types of checkpointing in use for your xxQS_NAMExx cluster or
 parts thereof. For that purpose you can define the operations which
 have to be executed in initiating a checkpoint generation, a migration
-of a checkpoint to another host or a restart of a checkpointed
-application as well as the list of queues which are eligible for a
+of a checkpoint to another host, or a restart of a checkpointed
+application, as well as the list of queues which are eligible for a
 checkpointing method.
 .PP
 Supporting different operating systems may easily force xxQS_NAMExx to 
@@ -95,7 +95,7 @@ The Cray kernel level checkpointing is assumed.
 .IP "\fItransparent\fP"
 xxQS_NAMExx assumes that the jobs submitted with reference to this checkpointing
 interface use a checkpointing library such as provided by 
-the public domain package \fICondor\fP.
+the free package \fICondor\fP.
 .IP "\fIuserdefined\fP"
 xxQS_NAMExx assumes that the jobs submitted with reference to this checkpointing
 interface perform their private checkpointing method.
@@ -152,29 +152,29 @@ interval defined by the queue (see
 .M queue_conf 5 )
 in which a job executes.
 .IP "\fIx\fP"
-A job is checkpointed, aborted and if possible migrated as soon as the job
+A job is checkpointed, aborted and, if possible, migrated as soon as the job
 gets suspended (manually as well as automatically).
 .IP "\fIr\fP"
 A job will be rescheduled (not checkpointed) when the host on which the job
-currently runs went into unknown state and the time interval
+currently runs went into the "unknown" state and the time interval
 \fIreschedule_unknown\fP (see
 .M xxqs_name_sxx_conf 5 )
-defined in the global/local cluster configuration will be exceeded.
+defined in the global/local cluster configuration is exceeded.
 
 .\"
 .\"
 .SH RESTRICTIONS
 \fBNote\fP, that the functionality of any checkpointing,
 migration or restart procedures provided by default with
-the xxQS_NAMExx distribution as well as the way how they are invoked in
+the xxQS_NAMExx distribution, as well as the way how they are invoked in
 the \fIckpt_command\fP, \fImigr_command\fP or \fIrestart_command\fP
-parameters of any default checkpointing environments should not be
-changed or otherwise the functionality remains the full responsibility
+parameters of any default checkpointing environments, should not be
+changed; otherwise the functionality remains the full responsibility
 of the administrator configuring the checkpointing environment.
 xxQS_NAMExx will just invoke these procedures and evaluate their
 exit status. If the procedures do not perform their tasks
-properly or are not invoked in a proper fashion, the checkpointing
-mechanism may behave unexpectedly, xxQS_NAMExx has no means to detect this.
+properly, or are not invoked in a proper fashion, the checkpointing
+mechanism may behave unexpectedly; xxQS_NAMExx has no means to detect this.
 .\"
 .\"
 .SH "SEE ALSO"

@@ -86,11 +86,11 @@ Type is number, valid values are 0 to 9999999.
 .SS "\fBuser_lists\fP"
 A comma separated list of user access list names (see
 .M access_list 5 ).
-Each user contained in at least one of the enlisted access lists has
+Each user contained in at least one of the access lists has
 access to the parallel environment. If the \fBuser_lists\fP parameter is set to
 NONE (the default) any user has access being not explicitly excluded
 via the \fBxuser_lists\fP parameter described below.
-If a user is contained both in an access list enlisted in \fBxuser_lists\fP
+If a user is contained both in an access list in \fBxuser_lists\fP
 and \fBuser_lists\fP the user is denied access to the parallel environment.
 .\"
 .\"
@@ -98,10 +98,10 @@ and \fBuser_lists\fP the user is denied access to the parallel environment.
 The \fBxuser_lists\fP parameter contains a comma separated list of so called
 user access lists as described in
 .M access_list 5 .
-Each user contained in at least one of the enlisted access lists is not
+Each user contained in at least one of the access lists is not
 allowed to access the parallel environment. If the \fBxuser_lists\fP
 parameter is set to NONE (the default) any user has access. If a user
-is contained both in an access list enlisted in \fBxuser_lists\fP and
+is contained both in an access list in \fBxuser_lists\fP and
 \fBuser_lists\fP the user is denied access to the parallel environment.
 .\"
 .\"

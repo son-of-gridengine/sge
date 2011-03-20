@@ -12,7 +12,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -43,7 +43,7 @@ or parallel environments (see
 A list of currently configured 
 access lists can be displayed via the
 .M qconf 1
-\fB\-sul\fP option. The contents of each enlisted access list can
+\fB\-sul\fP option. The contents of each access list can
 shown via the \fB\-su\fP switch. The output follows the
 .I access_list
 format description. New access lists can be created and existing can be
@@ -84,13 +84,16 @@ or those primary UNIX groups that are assigned to the access list
 or the department. Only a user's primary UNIX group is used; secondary groups
 are ignored. Only symbolic names are allowed.  A group
 is differentiated from a user name by prefixing the group name with a '@' sign. 
-Pure access lists allow enlisting any user or group in any access list.  
+Pure access lists allow listing any user or group in any access list.
 .PP
-When using departments, each user or group enlisted may only be enlisted 
-in one department, in order to ensure a unique assignment of jobs to departments. 
-To jobs whose users do not match with any of the users or groups enlisted under entries the 
-.I defaultdepartment 
-is assigned, if existing. 
+When using departments, each user or group may only be listed
+in one department, in order to ensure a unique assignment of jobs to
+departments.
+If the
+.I defaultdepartment
+is defined, it is assigned to jobs whose users do not match with any of
+the users or groups listed under
+.IR entries .
 .\"
 .\"
 .SH "SEE ALSO"
