@@ -2010,6 +2010,10 @@ GetDefaultJavaForPlatform()
          java_homes="/Library/Java/Home
 /System/Library/Frameworks/JavaVM.framework/Home"
          ;;
+      darwin-x64)  
+         java_homes="/Library/Java/Home
+/System/Library/Frameworks/JavaVM.framework/Home"
+         ;;
    #TODO: Missing HP, AIX platforms
    esac
    for java_home in $java_homes; do
@@ -2124,6 +2128,9 @@ GetJvmLibFromJavaHome() {
          suffix=../Libraries/libjvm.dylib
          ;;
       darwin-x86)  
+         suffix=../Libraries/libjvm.dylib
+         ;;
+      darwin-x64)  
          suffix=../Libraries/libjvm.dylib
          ;;
       darwin-x64)  
