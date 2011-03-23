@@ -1543,7 +1543,7 @@ fi
 # Simple read can't be used generally because it does backslash
 # escaping, and read -r (raw mode) may not be available.  Therefore we
 # may have to use our own implementation.
-if [ -n "$BASH_VERSION" -o "$ARCH" = "darwin-x86" ]; then
+if [ -n "$BASH_VERSION" -o "$ARCH" = "darwin-x86" -o "$ARCH" = "darwin-x64" ]; then
 jsv_read_raw() {
     read -r __jsv_input
 }
