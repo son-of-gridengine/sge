@@ -32,6 +32,8 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+#include "uti/sge_binding_hlp.h"
+
 #if defined(BINDING_SOLARIS)
 #  include <sys/processor.h>
 #  include <sys/types.h>
@@ -44,9 +46,7 @@
 
 #include "rmon/sgermon.h"
 
-#include "uti/sge_binding_hlp.h"
 #include "uti/sge_log.h"
-#include "uti/sge_binding_hlp.h"
 
 #include "sgeobj/sge_binding.h" 
 #include "sgeobj/sge_answer.h"
