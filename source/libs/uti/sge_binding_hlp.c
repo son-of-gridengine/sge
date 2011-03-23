@@ -36,14 +36,17 @@
 
 /* this code is used by shepherd */
 #include <ctype.h>
-#include "sgermon.h"
-#include "sge_string.h"
 
 #include <pthread.h>
-#include "sge_mtutil.h"
-#include "sge_log.h"
+
+#include "rmon/sgermon.h"
+
+#include "uti/sge_string.h"
+#include "uti/sge_log.h"
 #include "uti/sge_binding_hlp.h"
 #include "uti/msg_utilib.h" 
+
+#include "lck/sge_mtutil.h"
 
 #if defined(BINDING_SOLARIS)
 #  include <sys/processor.h>
