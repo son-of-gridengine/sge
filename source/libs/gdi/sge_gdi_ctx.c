@@ -160,7 +160,7 @@ typedef struct {
 } gdi_state_t;
 
 static void gdi_state_destroy(void* state) {
-   free(state);
+   sge_free(&state);
 }
 
 void gdi_once_init(void) {
@@ -235,7 +235,7 @@ static void sge_gdi_thread_local_ctx_once_init(void)
 static void sge_gdi_thread_local_ctx_destroy(void* theState) {
    sge_gdi_ctx_thread_local_t *tl = (sge_gdi_ctx_thread_local_t*)theState;
    tl->ctx = NULL;
-   free(theState);
+   sge_free(&theState);
 }
 
 static void sge_gdi_thread_local_ctx_init(sge_gdi_ctx_thread_local_t* theState)

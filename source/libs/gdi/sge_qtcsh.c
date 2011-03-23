@@ -229,7 +229,7 @@ print_func_t ostream
          lAppendElem(clp_cluster, cep); 
       }
 
-      free(ro_task_name);
+      sge_free(&ro_task_name);
    }
    lFreeList(&clp_user);
 
@@ -244,7 +244,7 @@ print_func_t ostream
          char *t = (char *)malloc(strlen(task_name));
          strcpy(t, &task_name[1]);
          lSetString(cep, CF_name, t);
-         free(t);
+         sge_free(&t);
       }
    }
 
