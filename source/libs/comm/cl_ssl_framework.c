@@ -2029,16 +2029,16 @@ static int cl_com_ssl_transform_ssl_error(unsigned long ssl_error, char* buffer,
          if (counter == 2) {
             module = strdup(help);
             if (module == NULL) {
-               free(buffer_copy);
+               sge_free(&buffer_copy);
                return CL_RETVAL_MALLOC;
             }
          }
          if (counter == 4) {
             error_text = strdup(help);
             if (error_text == NULL) {
-               free(buffer_copy);
+               sge_free(&buffer_copy);
                if (module != NULL) {
-                  free(module);
+                  sge_free(&module);
                }
                return CL_RETVAL_MALLOC;
             }
@@ -2047,14 +2047,13 @@ static int cl_com_ssl_transform_ssl_error(unsigned long ssl_error, char* buffer,
    }
 
    /* buffer copy is malloc()ed here and != NULL , free buffer_copy ...*/
-   free(buffer_copy);
-   buffer_copy = NULL;
+   sge_free(&buffer_copy);
 
    if (module == NULL) {
       module = strdup("???");
       if (module == NULL) {
          if (error_text != NULL) {
-            free(error_text);
+            sge_free(&error_text);
          }
          return CL_RETVAL_MALLOC;
       }
@@ -2063,7 +2062,7 @@ static int cl_com_ssl_transform_ssl_error(unsigned long ssl_error, char* buffer,
    if (error_text == NULL) {
       error_text = (char*) malloc(sizeof(char)*buflen);
       if (error_text == NULL) {
-         free(module);
+         sge_free(&module);
          return CL_RETVAL_MALLOC;
       }
       sge_strlcpy(error_text, buffer, buflen);
@@ -2107,10 +2106,8 @@ static int cl_com_ssl_transform_ssl_error(unsigned long ssl_error, char* buffer,
    }
 
    /* both variables are malloc()ed and != NULL at this point */
-   free(module);
-   module = NULL;
-   free(error_text);
-   error_text = NULL;
+   sge_free(&module);
+   sge_free(&error_text);
 
    if (do_ignore == CL_TRUE) {
       CL_LOG_STR_STR_INT(CL_LOG_WARNING, "will not report ssl error text to application:", buffer, "ssl id", (int) ssl_error);
@@ -2154,8 +2151,7 @@ static int cl_com_ssl_log_ssl_errors(const char* function_name) {
 
       if (transformed_ssl_error != NULL) {
          sge_strlcpy(help_buf, transformed_ssl_error, 1024);
-         free(transformed_ssl_error);
-         transformed_ssl_error = NULL;
+         sge_free(&transformed_ssl_error);
       } else {
          sge_strlcpy(help_buf, buffer, 1024);
       }
@@ -2199,8 +2195,7 @@ static int cl_com_ssl_free_com_private(cl_com_connection_t* connection) {
          private->ssl_crl_data->store = NULL;
       }
       cl_com_ssl_log_ssl_errors(__CL_FUNCTION__);
-      free(private->ssl_crl_data);
-      private->ssl_crl_data = NULL;
+      sge_free(&(private->ssl_crl_data));
    }
 
    /* SSL Specific shutdown */
@@ -2249,11 +2244,10 @@ static int cl_com_ssl_free_com_private(cl_com_connection_t* connection) {
    cl_com_ssl_log_ssl_errors(__CL_FUNCTION__);
 
    if (private->ssl_unique_id != NULL) {
-      free(private->ssl_unique_id);
-      private->ssl_unique_id = NULL;
+      sge_free(&(private->ssl_unique_id));
    }
    /* free struct cl_com_ssl_private_t */
-   free(private);
+   sge_free(&private);
    connection->com_private = NULL;
    return CL_RETVAL_OK;
 }
@@ -2484,14 +2478,13 @@ int cl_com_ssl_framework_cleanup(void) {
          /* free mutex array */
          CL_LOG(CL_LOG_INFO,"free mutex array");
          if (cl_com_ssl_global_config_object->ssl_lib_lock_mutex_array != NULL) {
-            free(cl_com_ssl_global_config_object->ssl_lib_lock_mutex_array);
+            sge_free(&(cl_com_ssl_global_config_object->ssl_lib_lock_mutex_array));
          }
 
          /* free config object */
          CL_LOG(CL_LOG_INFO,"free ssl configuration object");
 
-         free(cl_com_ssl_global_config_object);
-         cl_com_ssl_global_config_object = NULL;
+         sge_free(&cl_com_ssl_global_config_object);
 
          CL_LOG(CL_LOG_INFO,"shutting down ssl framework done");
       } else {
@@ -2499,8 +2492,7 @@ int cl_com_ssl_framework_cleanup(void) {
          /* free config object */
          CL_LOG(CL_LOG_INFO,"free ssl configuration object");
 
-         free(cl_com_ssl_global_config_object);
-         cl_com_ssl_global_config_object = NULL;
+         sge_free(&cl_com_ssl_global_config_object);
 
          ret_val = CL_RETVAL_OK;
       }
@@ -3244,7 +3236,7 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
    
          shutdown(private->sockfd, 2);
          close(private->sockfd);
-         free(unique_host);
+         sge_free(&unique_host);
          CL_LOG(CL_LOG_ERROR,"could not get hostname");
          private->sockfd = -1;
          
@@ -3256,7 +3248,7 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
          cl_commlib_push_application_error(CL_LOG_ERROR, tmp_error, tmp_buffer);
          return tmp_error; 
       } 
-      free(unique_host);
+      sge_free(&unique_host);
 
       /* connect */
       gettimeofday(&now,NULL);
@@ -3849,7 +3841,7 @@ int cl_com_ssl_connection_request_handler(cl_com_connection_t* connection,cl_com
                                                private->ssl_setup)) != CL_RETVAL_OK) {
          cl_com_ssl_close_connection(&tmp_connection); 
          if (resolved_host_name != NULL) {
-            free(resolved_host_name);
+            sge_free(&resolved_host_name);
          }
          shutdown(new_sfd, 2);
          close(new_sfd);
@@ -5018,8 +5010,7 @@ int cl_com_ssl_get_unique_id(cl_com_handle_t* handle,
 
    /* unlock handle connection list */
    cl_raw_list_unlock(handle->connection_list);
-   free(unique_hostname);
-   unique_hostname = NULL;
+   sge_free(&unique_hostname);
    return function_return_value;
 }
 
