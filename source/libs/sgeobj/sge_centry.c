@@ -27,6 +27,8 @@
  * 
  *   All Rights Reserved.
  * 
+ *  Portions of this code are Copyright 2011 Univa Inc.
+ * 
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
@@ -67,7 +69,7 @@
 
 /* EB: ADOC: add commets */
 
-const int max_host_resources=28;/* specifies the number of elements in the host_resource array */
+const int max_host_resources=29;/* specifies the number of elements in the host_resource array */
 const struct queue2cmplx host_resource[] = {
    {"arch",           0, 0, 0, TYPE_STR},
    {"cpu",            0, 0, 0, TYPE_DOUBLE},
@@ -95,6 +97,7 @@ const struct queue2cmplx host_resource[] = {
    {"display_win_gui",0, 0, 0, TYPE_BOO},
    {"m_core",         0, 0, 0, TYPE_INT},
    {"m_socket",       0, 0, 0, TYPE_INT},
+   {"m_thread",       0, 0, 0, TYPE_INT},
    {"m_topology",     0, 0, 0, TYPE_STR},
    {"m_topology_inuse",0,0, 0, TYPE_STR}
 };
