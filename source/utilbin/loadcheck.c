@@ -39,8 +39,7 @@
 #ifndef WINDOWS
 #include <unistd.h>
 
-#include "rmon/sgermon.h"
-
+#include "uti/sge_rmon.h"
 #include "uti/sge_os.h"
 #include "uti/sge_language.h"
 #include "uti/sge_prog.h"
