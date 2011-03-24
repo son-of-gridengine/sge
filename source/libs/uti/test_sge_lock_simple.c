@@ -30,30 +30,31 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#include "lck/test_sge_lock_main.h"
 
 #include <unistd.h>
 #include <stdio.h>
-#include "lck/sge_lock.h"
 
+#include "test_sge_lock_main.h"
 
-static void *thread_function_1(void *anArg);
-static void *thread_function_2(void *anArg);
-static void lock_recursive(void);
+#include "uti/sge_lock.h"
+#include "uti/sge_time.h"
 
+static void *thread_function(void *anArg);
 
 int get_thrd_demand(void)
 {
    long p = 2;  /* min num of threads */
+
+#if defined(SOLARIS)
+   p = sysconf(_SC_NPROCESSORS_ONLN);
+#endif
 
    return (int)p;
 }
 
 void *(*get_thrd_func(void))(void *anArg)
 {
-   static int i = 0;
-
-   return ((i++ % 2) ? thread_function_1 : thread_function_2) ;
+   return thread_function;
 }
 
 void *get_thrd_func_arg(void)
@@ -61,57 +62,47 @@ void *get_thrd_func_arg(void)
    return NULL;
 }
 
-static void *thread_function_1(void *anArg)
-{
-   DENTER(TOP_LAYER, "thread_function_1");
-
-   SGE_LOCK(LOCK_GLOBAL, LOCK_WRITE);
-
-   sleep(3);
-
-   lock_recursive();
-
-   SGE_UNLOCK(LOCK_GLOBAL, LOCK_WRITE);
-
-   DEXIT;
-   return (void *)NULL;
-}
-
-static void lock_recursive(void)
-{
-   DENTER(TOP_LAYER, "lock_recursive");
-
-   SGE_LOCK(LOCK_GLOBAL, LOCK_WRITE);
-
-   sleep(15);
-
-   SGE_UNLOCK(LOCK_GLOBAL, LOCK_WRITE);
-
-   DEXIT;
-   return;
-}
-
-static void *thread_function_2(void *anArg)
-{
-   DENTER(TOP_LAYER, "thread_function_2");
-
-   sleep(6);
-
-   SGE_LOCK(LOCK_GLOBAL, LOCK_WRITE);
-
-   sleep(2);
-
-   SGE_UNLOCK(LOCK_GLOBAL, LOCK_WRITE);
-
-   DEXIT;
-   return (void *)NULL;
-} /* thread_function_2 */
-
-int validate(int thread_count) {
-   return 0;
-}
-
 void set_thread_count(int count) 
 {
    return;
+}
+
+/****** test_sge_lock_simple/thread_function() *********************************
+*  NAME
+*     thread_function() -- Thread function to execute 
+*
+*  SYNOPSIS
+*     static void* thread_function(void *anArg) 
+*
+*  FUNCTION
+*     Lock the global lock in read mode and sleep. Unlock the global lock. 
+*
+*  INPUTS
+*     void *anArg - thread function arguments 
+*
+*  RESULT
+*     static void* - none
+*
+*  SEE ALSO
+*     test_sge_lock_simple/get_thrd_func()
+*******************************************************************************/
+static void *thread_function(void *anArg)
+{
+   DENTER(TOP_LAYER, "thread_function");
+   
+   SGE_LOCK(LOCK_GLOBAL, LOCK_READ);
+
+#if 1
+   DPRINTF(("Thread %u sleeping at %d\n", sge_locker_id(), sge_get_gmt()));
+#endif
+   sleep(5);
+
+   SGE_UNLOCK(LOCK_GLOBAL, LOCK_READ);
+
+   DEXIT;
+   return (void *)NULL;
+} /* thread_function */
+
+int validate(int thread_count) {
+   return 0;
 }
