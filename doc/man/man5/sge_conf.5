@@ -365,8 +365,8 @@ starting jobs if \fIunix_behavior\fP is defined as \fBshell_start_mode\fP.
 .\"
 .IP \fIposix_compliant\fP
 POSIX does not consider first script line comments such a `#!/bin/csh'
-as significant. The POSIX standard for batch queuing systems
-(P1003.2d) therefore requires a compliant queuing system to ignore
+as significant. The POSIX standard for batch queueing systems
+(P1003.2d) therefore requires a compliant queueing system to ignore
 such lines but to use user specified or configured default command
 interpreters instead. Thus, if \fBshell_start_mode\fP is set to
 \fIposix_compliant\fP xxQS_NAMExx will either use the command interpreter
@@ -1007,7 +1007,7 @@ the limit enforcement will at first be triggered after the double of the
 biggest \fBload_report_interval\fP interval defined in 
 .M sge_conf 5
 has been elapsed. This will give the execution daemons enough time to 
-reregister at master daemon. 
+re-register with the master daemon. 
 .\"
 .IP "\fIENABLE_FORCED_QDEL_IF_UNKNOWN\fP"
 If this parameter is set then a deletion request for a job is automatically interpreted 
@@ -1031,7 +1031,7 @@ is executed first, and deletion is forced only if the normal cancellation
 was unsuccessful.
 .\"
 .IP "\fIFORBID_RESCHEDULE\fP"
-If this parameter is set, re-queuing of jobs cannot
+If this parameter is set, re-queueing of jobs cannot
 be initiated by the job script which is under control
 of the user. Without this parameter jobs returning the
 value 99 are rescheduled. This can be used to cause the
@@ -1124,10 +1124,10 @@ Enables the profiling for qmaster event deliver thread.
 Enables the profiling for qmaster timed event thread.
 (e.g. PROF_TEVENT=true)
 .PP
-Please note, that the cpu utime and stime values contained in the profiling output
-are not per thread cpu times.
-These cpu usage statistics are per process statistics.
-So the printed profiling values for cpu mean "cpu time consumed by sge_qmaster (all threads) while the reported profiling level was active".
+Please note, that the CPU utime and stime values contained in the profiling output
+are not per thread CPU times.
+These CPU usage statistics are per process statistics.
+So the printed profiling values for CPU mean "CPU time consumed by sge_qmaster (all threads) while the reported profiling level was active".
 .IP "\fISTREE_SPOOL_INTERVAL\fP"
 Sets the time interval for spooling the sharetree usage. The
 default is set to 00:04:00. The setting accepts colon-separated
@@ -1135,14 +1135,14 @@ string or seconds. There is no setting to turn the sharetree spooling
 off. 
 (e.g. STREE_SPOOL_INTERVAL=00:02:00)
 .PP
-.IP "\fIMAX_JOB_DELETION_TIME\fp
+.IP "\fIMAX_JOB_DELETION_TIME\fp"
 Sets the value of how long the qmaster will spend deleting jobs. After this time,
 the qmaster will continue with other tasks and schedule the deletion of remaining
 jobs at a later time. The default value is 3 seconds, and will be used if no value
 is entered. The range of valid values is > 0 and <= 5.
 (e.g. MAX_JOB_DELETION_TIME=1)
 .PP
-.IP "\fIgdi_timeout\fp
+.IP "\fIgdi_timeout\fp"
 Sets how long the communication will wait for gdi send/receive operations.
 The default value is set to 60 seconds. After this time, the communication library will
 retry, if "gdi_retries" is configured, receiving the gdi request. In case of not configured
@@ -1150,53 +1150,53 @@ retry, if "gdi_retries" is configured, receiving the gdi request. In case of not
 (e.g. gdi_timeout=120 will set the timeout time to 120 sec)
 Configuring no gdi_timeout value, the value defaults to 60 sec.
 .PP
-.IP "\fIgdi_retries\fp
+.IP "\fIgdi_retries\fp"
 Sets how often the gdi receive call will be repeated until the gdi receive
 error appears. The default is set to 0. In this case the call will be done 1 time with no retry.
 Setting the value to -1 the call will be done permanently. In combination with gdi_timeout parameter
 it is possible to configure a system with eg. slow NFS, to make sure that all jobs will be submitted.
 (e.g. gdi_retries=4)
 .PP
-.IP "\fIcl_ping\fp
+.IP "\fIcl_ping\fp"
 Turns on/off a communication library ping. This parameter will create additional debug output. 
 This output shows information about the error messages which are returned by communication
-and it will give information about the application status of the qmaster. eg, if it's unclear what's the
+and it will give information about the application status of the qmaster.
+For example, if it's unclear what's the
 reason for gdi timeouts, this may show you some useful messages. The default value is false (off) 
-(e.g cl_ping=false)
+(i.e. cl_ping=false).
 .PP
-.IP "\fISCHEDULER_TIMEOUT\fp
+.IP "\fISCHEDULER_TIMEOUT\fp"
 Setting this parameter allows the scheduler GDI event acknowledge timeout to be manually configured to a
 specific value. Currently the default value is 10 minutes with the default scheduler configuration and limited
 between 600 and 1200 seconds. Value is limited only in case of default value. The default value depends
 on the current scheduler configuration. The \fISCHEDULER_TIMEOUT\fP value is specified in seconds.
 .PP
-.IP "\fIjsv_timeout\fp
+.IP "\fIjsv_timeout\fp"
 This parameter measures the response time of the server JSV. In the event that the response time of the JSV 
 is longer than the timeout value specified, this will cause the JSV to be re-started. The default value for the
 timeout is 10 seconds and if modified, must be greater than 0. If the timeout has been reach, the JSV will only
 try to re-start once, if the timeout is reached again an error will occur.
 .PP
-.IP "\fIjsv_threshold\fp
+.IP "\fIjsv_threshold\fp"
 The threshold of a JSV is measured as the time it takes to perform a server job verification. If this value is 
 greater than the user defined value, it will cause logging to appear in the qmaster messages file at the INFO 
 level. By setting this value to 0, all jobs will be logged in the qmaster messages file. This value is specified
 in milliseconds and has a default value of 5000.
-.IP "\fIOLD_RESCHEDULE_BEHAVIOR\fp
+.IP "\fIOLD_RESCHEDULE_BEHAVIOR\fp"
 Beginning with version 8.0.0 of Univa Grid Engine the scheduling behavior changed
 for jobs that are rescheduled by users. Rescheduled jobs will not be put at the
 beginning of the pending job list anymore. The submit time of those jobs is set
 to the end time of the previous run. Due to that those rescheduled jobs will be 
-appended at the end of the pending job list as if a new job would have been 
-submitted. To achive the old behaviour the paramter \fIOLD_RESCHEDULE_BEHAVIOR\fP
-has to be set. Please note that this parameter is declared as deprecated.
-So it might be removed with next minor release.
-.IP "\fIOLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB\fp
+appended to the pending job list as if a new job had been 
+submitted. To achieve the old behaviour set the parameter \fIOLD_RESCHEDULE_BEHAVIOR\fP. Please note that this parameter is deprecated,
+so it might be removed with the next minor release.
+.IP "\fIOLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB\fp"
 Beginning with version 8.0.0 of Univa Grid Engine the scheduling behavior changed
-for array job tasks that are rescheduled by users. As soon as a array job task 
-gets scheduled all remaining pending tasks of that job will be put at the end of 
-the pending job list. To achive the old scheduling behaviour the paramter 
-\fIOLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB\fP has to be set. Please note that this 
-parameter is declared as deprecated. So it might be removed with next minor release.
+for array job tasks that are rescheduled by users. As soon as an array job task 
+gets rescheduled, all remaining pending tasks of that job will be put at the end of 
+the pending job list. To achieve the old scheduling behaviour set the parameter 
+\fIOLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB\fP. Please note that this 
+parameter is deprecated, so it might be removed with the next minor release.
 .PP
 Changing \fBqmaster_params\fP will take immediate effect, except gdi_timeout, gdi_retries, cl_ping, these
 will take effect only for new connections.
