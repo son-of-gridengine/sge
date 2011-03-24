@@ -57,6 +57,8 @@
 
 #include "uti/sge_stdlib.h"
 
+#include "uti/sge_stdlib.h"
+
 static bool wl_enable_windomacc = false;
 
 /* ============================================================================
