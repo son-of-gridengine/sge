@@ -43,8 +43,7 @@
 #include "uti/sge_stdio.h"
 #include "uti/sge_time.h"
 #include "uti/sge_binding_hlp.h"
-
-#include "lck/sge_mtutil.h"
+#include "uti/sge_mtutil.h"
 
 #include "gdi/sge_gdi_ctx.h"
 #include "gdi/sge_gdi_packet.h"
@@ -205,8 +204,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
          /* verify if binding parameters are consistent (bugster 6903956) */ 
          if (check_binding_param_consistency(binding_elem) == false) {
             /* TODO add to answer list */
-	    answer_list_add(alpp, SGE_EVENT, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR);
-            ERROR((SGE_EVENT, SFNMAX, MSG_JSV_BINDING_REJECTED));
+            answer_list_add(alpp, SGE_EVENT, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR);
             ret = STATUS_EUNKNOWN;
          } 
       }

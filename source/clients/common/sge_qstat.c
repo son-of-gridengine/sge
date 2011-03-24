@@ -44,6 +44,8 @@
 
 #include "cull/cull_sort.h"
 
+#include "cull/cull_sort.h"
+
 #include "sgeobj/sge_all_listsL.h"
 #include "sgeobj/sge_host.h"
 #include "sgeobj/parse.h"
