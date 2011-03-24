@@ -770,5 +770,4 @@ if [ "$startup" = true ]; then
    if [ $exit_val -ne 0 ]; then
       exit $exit_val
    fi
-
 fi

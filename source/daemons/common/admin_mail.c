@@ -326,9 +326,8 @@ FCLOSE_ERROR:
    return;
 }
 
-int adm_mail_reset(
-int state 
-) {
+int adm_mail_reset(int state)
+{
    int i;
 
    DENTER(TOP_LAYER, "adm_mail_reset");
@@ -336,7 +335,7 @@ int state
    /*
    ** let 0 be a reset all
    */
-   if (!state) {
+   if (state == 0) {
       memset(admail_times, 0, sizeof(admail_times));
       return 0;
    }

@@ -344,7 +344,7 @@ size_t sge_strlcat(char *dst, const char *src, size_t dstsize) {
    }
 
    /* find end of dst */
-   for (dst_idx = 0; (dst[dst_idx] != '\0') && (dst_idx < dstsize - 1); dst_idx++) {
+   for (dst_idx = 0; dst[dst_idx] != '\0'; dst_idx++) {
       ;
    }
 
@@ -386,13 +386,13 @@ size_t sge_strlcat(char *dst, const char *src, size_t dstsize) {
 *     size_t - strlen of src, not dst !!!
 *
 *  NOTES
-*     MT-NOTE: sge_strlcpy() is MT safe 
+*     MT-NOTE: sge_strlcpy() is MT safe
 *******************************************************************************/
 size_t sge_strlcpy(char *dst, const char *src, size_t dstsize) {
    size_t index = 0;
    if (dst == NULL) {
       return 0;
-   } 
+   }
    if (src == NULL) {
       dst[0] = '\0';
       return 0;
@@ -1603,13 +1603,13 @@ sge_strerror(int errnum, dstring *buffer)
 
 /****** uti/string/sge_str_is_number() *****************************************
 *  NAME
-*     sge_str_is_number() -- represents the given string a number 
+*     sge_str_is_number() -- represents the given string a number
 *
 *  SYNOPSIS
-*     bool sge_str_is_number(const char *string) 
+*     bool sge_str_is_number(const char *string)
 *
 *  FUNCTION
-*     This function returns true if the given string represents a number. 
+*     This function returns true if the given string represents a number.
 *
 *  INPUTS
 *     const char *string - string to parse
@@ -1617,7 +1617,7 @@ sge_strerror(int errnum, dstring *buffer)
 *  RESULT
 *     bool - result
 *        true  - string represents a number
-*        false - string is not a number 
+*        false - string is not a number
 *
 *  NOTES
 *     MT-NOTE: sge_str_is_number() is MT safe
