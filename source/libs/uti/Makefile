@@ -297,7 +297,7 @@ test_sge_dstring.o: $(UTILIB_DIR)/test_sge_dstring.c
 	$(CC) $(CFLAGS) -c $(UTILIB_DIR)/test_sge_dstring.c
 
 test_sge_string: test_sge_string.o $(UTILIB) $(COMMLISTSLIB) $(LCKLIB)
-	$(LD_WRAPPER) $(CC) $(CFLAGS) -o test_sge_string $(LFLAGS) test_sge_string.o -luti -lcommlists -llck -lrmon $(LIBS)
+	$(LD_WRAPPER) $(CC) $(CFLAGS) -o test_sge_string $(LFLAGS) test_sge_string.o -luti -lcommlists -llck $(LIBS)
 
 test_sge_string.o: $(UTILIB_DIR)/test_sge_string.c
 	$(CC) $(CFLAGS) -c $(UTILIB_DIR)/test_sge_string.c
