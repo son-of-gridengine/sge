@@ -115,7 +115,7 @@ int schedd_log_list(lList **monitor_alpp, bool monitor_next_run, const char *log
 
 #ifndef WIN32NATIVE
 
-   if (!monitor_next_run) {
+   if (monitor_alpp == NULL && !monitor_next_run) {
       DRETURN(0);
    }
 
