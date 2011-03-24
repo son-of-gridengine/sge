@@ -69,6 +69,7 @@
 #include "uti/msg_utilib.h"
 
 #include "sig_handlers.h"
+#include "uti/sge_string.h"
 
 #include "msg_common.h"
 
