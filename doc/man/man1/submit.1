@@ -1498,23 +1498,23 @@ will be expanded as value 9999999 in JSV scripts and it represents the value inf
 .
 .\"
 .IP "\fB\-pty y[es]|n[o]\fP"
-Available for \fIqrsh\fP and \fIqlogin\fP only.
+Available for \fIqrsh\fP, \fIqsub\fP and \fIqlogin\fP only.
 .sp 1
-\-pty yes enforces the job to be started in a pseudo terminal (pty). If no pty is 
+\-pty yes starts the job in a pseudo terminal (pty). If no pty is 
 available, the job start fails.
 \-pty no
-enforces the job to be started without a pty.
+starts the job without a pty.
 By default,
 .I qrsh without a command
 and
 .I qlogin
-start the job in a pty,
-.I qrsh with a command
+starts the job in a pty, and
+.I qrsh or qsub with a command
 starts the job without a pty.
 .sp 1
 This parameter is not available in the JSV context.
-(see \fB\-jsv\fP option above or find more information concerning JSV in
-.M jsv 1 )
+(See \fB\-jsv\fP option above or find more information concerning JSV in
+.M jsv 1 .)
 .\"
 .IP "\fB\-q wc_queue_list\fP"
 Available for \fIqsub\fP, \fIqrsh\fP, \fIqsh\fP, \fIqlogin\fP and \fIqalter\fP.
