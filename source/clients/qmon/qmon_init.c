@@ -75,6 +75,7 @@
 #include "gdi/sge_gdiP.h"
 #include "gdi/sge_gdi_ctx.h"
 #include "gdi/msg_gdilib.h"
+#include "gdi/sge_gdi2.h"
 
 #include "comm/commlib.h" 
 
