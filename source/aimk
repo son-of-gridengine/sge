@@ -2886,7 +2886,8 @@ if ( "$MAKEPAM" == 1 ) then
    $MAKE $MAKEOPT -f $SOURCE/3rdparty/tacc_pam_sge/Makefile \
       "SDIR=$SDIR" "CC=$CC" "CFLAGS=$CFLAGS $CORE_INCLUDE" "SOURCE=$SOURCE" \
       "SHARED_CFLAGS=$SHARED_CFLAGS" "SHARED_LFLAGS=$SHARED_LFLAGS" \
-      "SHAREDLD=$SHAREDLD" "SHAREDEXT=$SHAREDEXT" $argv
+      "SHAREDLD=$SHAREDLD" "SHAREDEXT=$SHAREDEXT" \
+      "DEPEND=$SDIR/3rdparty/sge_depend/$COMPILE_ARCH/sge_depend $CORE_INCLUDE -l -S -Y" $argv
 endif
 
 # Fixme: Replace this with the DESY PAM module?
