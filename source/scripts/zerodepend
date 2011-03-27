@@ -82,7 +82,8 @@ files=" \
        security/krb/krb_dependencies \
        security/gss/gss_dependencies \
        3rdparty/strptime/strptime_dependencies \
-       3rdparty/fnmatch/fnmatch_dependencies
+       3rdparty/fnmatch/fnmatch_dependencies \
+       3rdparty/tacc_pam_sge/tacc_dependencies
 "
 echo deleting and truncating: $files
 

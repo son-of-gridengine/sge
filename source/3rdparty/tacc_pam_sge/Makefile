@@ -50,17 +50,17 @@ TACCLIB_OBJS = $(TACCLIB_SRC:.c=.o)
 # global rules: all, clean, depend, messages
 ###############################################################################
 
-tacclib: tacclib_so foo
+tacclib: tacclib_so
 
 tacclib_so:	$(TACCLIB)$(SHAREDEXT)
 
-tacclib_clean:
-		$(RM) $(TACCLIB_OBJS) $(TACCLIB).a $(TACCLIB)$(SHAREDEXT)
+clean:
+		$(RM) $(TACCLIB_OBJS) $(TACCLIB)$(SHAREDEXT)
 
-tacclib_depend:
+depend:
 		$(DEPEND) -f$(TACCLIB_DIR)/tacc_dependencies $(TACCLIB_DIR)/*.c
 
-tacclib_messages:
+messages:
 	@echo Creating $@
 	@for i in `ls $(TACCLIB_DIR)/*.c`; do \
 	   $(CC) $(CFLAGS) -DEXTRACT_MESSAGES -E $$i | $(XGETTEXT) - ;\
@@ -71,10 +71,10 @@ tacclib_messages:
 ###############################################################################
 
 $(TACCFOO): $(TACCFOO_OBJS)
-	$(CC) $(CFLAGS) -o $(TACCFOO) $(TACCFOO_OBJS) libsge.a libsched.a libevc.a libgdi.a libsgeobj.a libsgeobjd.a libcull.a libcomm.a libcommlists.a libuti.a liblck.a librmon.a -lc -ldl  -lm -lpthread
+	$(CC) $(CFLAGS) -o $(TACCFOO) $(TACCFOO_OBJS) libsge.a libsched.a libevc.a libgdi.a libsgeobj.a libsgeobjd.a libcull.a libcomm.a libcommlists.a libuti.a -lc -ldl  -lm -lpthread
 
-$(TACCLIB)$(SHAREDEXT): $(TACCLIB_OBJS) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(UTILIB) $(RMONLIB)
-	$(SHAREDLD) $(SHARED_LFLAGS) -o $(TACCLIB)$(SHAREDEXT) $(TACCLIB_OBJS) libsge.a libsched.a libevc.a libgdi.a libsgeobj.a libsgeobjd.a libcull.a libcomm.a libcommlists.a  libuti.a liblck.a librmon.a -lc -ldl  -lm -lpthread 
+$(TACCLIB)$(SHAREDEXT): $(TACCLIB_OBJS) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(UTILIB)
+	$(SHAREDLD) $(SHARED_LFLAGS) -o $(TACCLIB)$(SHAREDEXT) $(TACCLIB_OBJS) libsge.a libsched.a libevc.a libgdi.a libsgeobj.a libsgeobjd.a libcull.a libcomm.a libcommlists.a  libuti.a -lc -ldl  -lm -lpthread
 
 
 ###############################################################################
