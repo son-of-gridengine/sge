@@ -65,7 +65,7 @@ SHARED_LIBRARIES="libcom libcull libgdi librmon libsched libsge libuti \
                   libevc libevm libmir \
                   libjuti libjgdi"
 
-SHARED_MODULES="libcore pam_sge-qrsh-setup"
+SHARED_MODULES="libcore pam_sge-qrsh-setup pam_sge_authorize"
 
 QMON_SHARED_LIBRARIES="libXbae libXicon libXmt libXspin libXtab"
 QMON_NEED_SHARED_LIBRARIES="libXltree"
@@ -395,7 +395,7 @@ fi
 BASEDIR=undefined
 VERSIONDIR=undefined
 localinst=false
-MANSRCDIR=ge
+MANSRCDIR=sge
 ARCH=""
 PROG=""
 
@@ -1633,7 +1633,7 @@ for i in $ARCH; do
             done
 
             ( cd $DEST_SGE_ROOT/lib/$DSTARCH
-            ln -s $libname $lib.$shlibext )
+            ln -sf $libname $lib.$shlibext )
 
             if [ "$DSTARCH" = "sol-sparc64" ]; then
                ( cd $DEST_SGE_ROOT/lib/sol-sparc

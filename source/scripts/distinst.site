@@ -48,13 +48,8 @@ instqmon=true
 instcommon=true
 instsharedlibs=true
 instdrmaa=true
-instguiinst=false
+instguiinst=true
 instbdb=false
 instopenssl=false
-insthadoop=false
-# no hadoop currently
-TOPFILES="3rd_party bin catman ckpt doc examples include inst_sge \
-          install_execd install_qmaster lib man mpi pvm qmon util utilbin"
+insthadoop=true
 QMON_NEED_SHARED_LIBRARIES=""
-SHARED_LIBRARIES="libdrmaa libjgdi libjuti libspoolb libspoolc \
-                  pam_sge-qrsh-setup"
