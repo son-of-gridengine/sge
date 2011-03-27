@@ -49,7 +49,7 @@
 #include <unistd.h>
 
 #include "basis_types.h"
-#include "sgermon.h"
+#include "uti/sge_rmon.h"
 #include "symbols.h"
 #include "sge.h"
 #include "sge_gdi.h"
