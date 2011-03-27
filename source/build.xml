@@ -15,6 +15,9 @@
       <condition property="skip.gui.inst" value="${env.BUILD_NO_GUI_INSTALLER}">
             <isset property="env.BUILD_NO_GUI_INSTALLER"/>
       </condition>
+      <condition property="skip.herd" value="${env.BUILD_NO_HERD}">
+            <isset property="env.BUILD_NO_HERD"/>
+      </condition>
       
       <macrodef name="myant">
          <attribute name="target" default=""/>
@@ -37,11 +40,11 @@
       </macrodef>
    </target>
     
-   <target name="all" depends="detect_jvm_lib, drmaa, juti, jgdi, gui_inst, jjsv"/>
+   <target name="all" depends="detect_jvm_lib, drmaa, juti, jgdi, gui_inst, jjsv, herd"/>
    <target name="depend" depends="init"/>
-   <target name="clean" depends="detect_jvm_lib.clean, drmaa.clean, juti.clean, jgdi.clean, gui_inst.clean, jjsv.clean"/>
-   <target name="javadoc" depends="drmaa.javadoc, juti.javadoc, jgdi.javadoc, gui_inst.javadoc, jjsv.javadoc"/>
-   <target name="test" depends="drmaa.test, juti.test, jgdi.test, gui_inst.test, jjsv.test"/>
+   <target name="clean" depends="detect_jvm_lib.clean, drmaa.clean, juti.clean, jgdi.clean, gui_inst.clean, jjsv.clean, herd.clean"/>
+   <target name="javadoc" depends="drmaa.javadoc, juti.javadoc, jgdi.javadoc, gui_inst.javadoc, jjsv.javadoc, herd.javadoc"/>
+   <target name="test" depends="drmaa.test, juti.test, jgdi.test, gui_inst.test, jjsv.test, herd.test"/>
     
    <!-- DRMAA -->
    <target name="drmaa" depends="init">
@@ -129,19 +132,19 @@
    </target>
 
    <!-- Hadoop integration -->
-   <target name="herd" depends="init">
+   <target name="herd" depends="init" unless="skip.herd">
       <myant dir="libs/herd"/>
    </target>
 
-   <target name="herd.clean" depends="init">
+   <target name="herd.clean" depends="init" unless="skip.herd">
      <myant dir="libs/herd" target="clean"/>
    </target>
 
-   <target name="herd.javadoc" depends="init">
+   <target name="herd.javadoc" depends="init" unless="skip.herd">
      <myant dir="libs/herd" target="javadoc"/>
    </target>
 
-   <target name="herd.test" depends="init">
+   <target name="herd.test" depends="init" unless="skip.herd">
       <myant dir="libs/herd" target="test"/>
    </target>
 
