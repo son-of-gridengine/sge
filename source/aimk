@@ -181,6 +181,7 @@ usage:
    echo "-no-dump          -> build binaries without libcore (Linux only)"
    echo "-no-java          -> don't compile Java[TM] class files"
    echo "-no-gui-inst      -> don't compile Java[TM] GUI installer"
+   echo "-no-herd          -> don't compile herd (Haddop support)"
    echo "-no-jni           -> don't compile JNI library"
    echo "-no-intl          -> do not compile with internationalization library"
    echo "-no-mk            -> only return the specific architecture string"
@@ -296,6 +297,7 @@ set JAVA_BINDIR      = "bin"
 set JAVA_INCL        = "include"
 set JAVA_SHAREDEXT   = ""
 set JAVA_GUI_INST    = 1
+set JAVA_HERD        = 1
 set JNI              = 1
 set JNI_TARGET       = "ALL"
 set PROTECTED        = 0
@@ -617,6 +619,9 @@ while ($#argv >= 1 && $?found)
    case  "-no-gui-inst"
       set JAVA_GUI_INST = 0
       breaksw
+   case  "-no-herd"
+      set JAVA_HERD = 0
+      breaksw
    case  "-no-jni"
       set JNI = 0
       breaksw
@@ -665,6 +670,7 @@ while ($#argv >= 1 && $?found)
       set CORE   = 1
       set JAVA   = 0
       set JAVA_GUI_INST = 0
+      set JAVA_HERD = 0
       set QMAKE  = 0
       set PLPA   = 0
       set QMON   = 0
@@ -678,6 +684,7 @@ while ($#argv >= 1 && $?found)
       set CORE       = 0
       set JAVA       = 0
       set JAVA_GUI_INST = 0
+      set JAVA_HERD = 0
       set QMAKE      = 0
       set PLPA       = 0
       set QMON       = 0
@@ -701,6 +708,7 @@ while ($#argv >= 1 && $?found)
       set CORE   = 0
       set JAVA   = 0
       set JAVA_GUI_INST = 0
+      set JAVA_HERD = 0
       set QMAKE  = 0
       set PLPA   = 0
       set QMON   = 0
@@ -715,6 +723,7 @@ while ($#argv >= 1 && $?found)
       set CORE   = 0
       set JAVA   = 0
       set JAVA_GUI_INST = 0
+      set JAVA_HERD = 0
       set QMAKE  = 1
       set PLPA   = 0
       set QMON   = 0
@@ -729,6 +738,7 @@ while ($#argv >= 1 && $?found)
       set CORE   = 0
       set JAVA   = 0
       set JAVA_GUI_INST = 0
+      set JAVA_HERD = 0
       set QMAKE  = 0 
       set QMON   = 0
       set QTCSH  = 0
@@ -741,6 +751,7 @@ while ($#argv >= 1 && $?found)
       set CORE   = 0
       set JAVA   = 0
       set JAVA_GUI_INST = 0
+      set JAVA_HERD = 0
       set QMAKE  = 0
       set PLPA   = 0
       set QMON   = 1
@@ -754,6 +765,7 @@ while ($#argv >= 1 && $?found)
       set CORE   = 0
       set JAVA   = 0
       set JAVA_GUI_INST = 0
+      set JAVA_HERD = 0
       set QMAKE  = 0
       set PLPA   = 0
       set QMON   = 0
@@ -767,6 +779,7 @@ while ($#argv >= 1 && $?found)
       set CORE   = 0
       set JAVA   = 0
       set JAVA_GUI_INST = 0
+      set JAVA_HERD = 0
       set QMAKE  = 0
       set PLPA   = 0
       set QMON   = 0
@@ -780,6 +793,7 @@ while ($#argv >= 1 && $?found)
       set CORE   = 0
       set JAVA   = 0
       set JAVA_GUI_INST = 0
+      set JAVA_HERD = 0
       set QMAKE  = 0
       set PLPA   = 0
       set QMON   = 0
@@ -2689,6 +2703,10 @@ if ( "$JAVA" > 0 ) then
    # -no-gui-inst option
    if ( "$JAVA_GUI_INST" == 0 ) then
       setenv BUILD_NO_GUI_INSTALLER 1
+   endif
+   # -no-gui-inst option
+   if ( "$JAVA_HERD" == 0 ) then
+      setenv BUILD_NO_HERD 1
    endif
    ant -f build.xml $argv
    # how to propagate ant opts to first and then second build.xml
