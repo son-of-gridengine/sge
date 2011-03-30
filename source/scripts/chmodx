@@ -75,7 +75,6 @@ cat <<EOF | xargs chmod +x
 ./dist/examples/jobs/simple.sh
 ./dist/inst_sge
 ./dist/util/logchecker.sh
-./dist/util/sgeST/sge_st
 ./dist/util/create_settings.sh
 ./dist/util/arch
 ./dist/util/resources/starter_methods/settaskid.sh
