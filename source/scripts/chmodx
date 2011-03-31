@@ -93,7 +93,6 @@ cat <<EOF | xargs chmod +x
 ./dist/util/resources/jsv/jsv.tcl
 ./dist/util/bdb_checkpoint.sh
 ./dist/util/setfileperm.sh
-./dist/util/arch.dist
 ./dist/util/arch_variables
 ./dist/util/sgeCA/renew_all_certs.csh
 ./dist/util/sgeCA/sge_ca
