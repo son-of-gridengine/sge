@@ -103,7 +103,7 @@ case $ARCH in
       RC_PREFIX=/etc/rc.d
       RC_DIR=rc3.d
    fi
-   XTERM=/usr/bin/X11/xterm
+   XTERM=/usr/bin/xterm
    MAILER=/bin/mail
    QLOGIN_COMMAND=telnet
    QLOGIN_DAEMON=/usr/sbin/in.telnetd
