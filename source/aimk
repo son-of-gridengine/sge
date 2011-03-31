@@ -61,6 +61,7 @@ set ERR_WARN_NONE = ""
 set ERR_WARN_ALL = ""
 set UNMODIFIED_ARGUMENTS = ( $argv )
 set FORCE_32BIT = 0
+set SYSTEM_LIBS = 0
 
 if ( -f dist/util/arch ) then
    set buildarch = `dist/util/arch`
@@ -914,6 +915,7 @@ while ($#argv >= 1 && $?found)
       set SGE_PRODUCT_MODE=sge
       breaksw
    case "-system-libs":
+      set SYSTEM_LIBS = 1
       set SECLIBS_STATIC="-lssl -lcrypto"
       breaksw
    case  "-umap"
@@ -2171,7 +2173,11 @@ endif
 # for gettext
 #
 if ( $WITH_GETTEXT == 1 ) then
-   set   XGETTEXT    = "$GETTEXTBASE/$BUILDARCH/bin/xgettext --strict --foreign-user -k -k'sge_gettext' --language=C -j -o $MESSAGES"
+   if ( $SYSTEM_LIBS == 1 ) then
+      set   XGETTEXT    = "xgettext --strict --foreign-user -k -k'sge_gettext' --language=C -j -o $MESSAGES"
+   else
+      set   XGETTEXT    = "$GETTEXTBASE/$BUILDARCH/bin/xgettext --strict --foreign-user -k -k'sge_gettext' --language=C -j -o $MESSAGES"
+   endif
    if ( "$?MYILIB" ) then
       set LFLAGS = "-L $MYILIB"
       echo "Using $MYILIB path for i18n support"
@@ -2180,9 +2186,14 @@ if ( $WITH_GETTEXT == 1 ) then
          set LIBINTL = ""
          set HFLAGS = ""
       else
+         if ( $SYSTEM_LIBS == 1 ) then
+             set LIBINTL = ""
+	     set HFLAGS = ""
+	 else
          set HFLAGS = "-I$GETTEXTBASE/$BUILDARCH/include"
          set LFLAGS = "-L$GETTEXTBASE/$BUILDARCH/lib $LFLAGS"
          set LIBINTL = "-lintl -lnlsut"
+	 endif
       endif
    endif
    set LIBS = "$LIBINTL $LIBS"
