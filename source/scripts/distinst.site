@@ -40,6 +40,14 @@ BERKELEYDBBASE=/off_home/gridengine/db-4.4.20
 # sgeinspect home
 SGE_INSPECT_SRC_DIR="../nbgui"
 
+# Location of a license file
+LICENSE_FILE="$SRCDIR/doc/LICENCE.txt"
+SRCDIR=`pwd`
+SRCDIR=`dirname $SRCDIR`
+if [ -d $SRCDIR/uge-extensions ]; then
+   LICENSE_FILE="$SRCDIR/uge-extensions/copyright/License/LICENSE.txt"
+fi
+
 if type gtar 2>/dev/null >/dev/null; then TAR=gtar
 else TAR=tar
 fi
