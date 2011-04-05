@@ -341,7 +341,7 @@ a slave process on another exechost.
 .sp 1
 You can set up \fIpassphraseless\fR \fBSSH keys\fR, although this is discouraged. A simpler and
 global working setup is to use 
-.URL http://gridengine.sunsource.net/howto/hostbased-ssh.html "host-based authentication"
+.URL http://arc.liv.ac.uk/SGE/howto/hostbased-ssh.html "host-based authentication"
 for the machines inside the cluster.
 .\"
 .\"
@@ -389,7 +389,7 @@ do_setusercontext(authctxt->pw);
 .RE
 .sp 1
 \fRsee the
-.URL http://gridengine.sunsource.net/download/workshop10-12_09_07/SGE-WS2007-openSSHTightIntegration_RonChen.pdf "original documentation" .
+.URL http://gridengine.org/assets/static/ws2007/SGE-openSSHTightIntegration.RonChen.pdf "original documentation" .
 .RE
 .TP
 .B Use of PAM
@@ -399,8 +399,8 @@ module
 .M pam_sge-qrsh-setup 8
 is available which attaches the
 necessary additional group ID to the started process to provide tight
-integration.  See also
-.URL http://gridengine.sunsource.net/download/workshop10-12_09_07/SGE-WS2007-SGEAndGridAtDESY_DESY_AndreasHaupt.pdf "workshop paper" .
+integration.  See also the
+.URL http://gridengine.org/assets/static/ws2007/K5SGE.pdf "workshop paper" .
 .\"
 .SH RESTRICTING ACCESS
 With the builtin method in use, there is no need to allow direct
@@ -419,8 +419,8 @@ or
 .M pam_access 8 ,
 with modifications to their configuration set up and taken down in the
 job prolog and epilog respectively.  See, for instance, a
-.URL http://gridengine.sunsource.net/ds/viewMessage.do?dsForumId=38&dsMessageId=282211 "user list message" ,
-and other examples of similar prolog/epilog scripts with lokcing in
+.URL http://gridengine.markmail.org/message/mu3i7haeshlevu6q?q=282211 "user list message" ,
+and other examples of similar prolog/epilog scripts provided with locking in
 the pam_authuser contribution in the Torque distribution.
 .\"
 .SH EXAMPLES
@@ -464,7 +464,7 @@ rsh_daemon     /opt/sge/utilbin/lx24-x86/rshd -l
 .M sge_conf 5 ,
 .M pam_sge_authorize 8 ,
 .M pam_sge-qrsh-setup 8 ,
-.URL http://gridengine.sunsource.net/howto/qrsh_qlogin_ssh.html "SGE SSH howto" .
+.URL http://arc.liv.ac.UK/SGE/howto/qrsh_qlogin_ssh.html "SGE SSH howto" .
 .\"
 .SH "COPYRIGHT"
 See
