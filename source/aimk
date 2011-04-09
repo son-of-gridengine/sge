@@ -160,7 +160,6 @@ usage:
    echo "-64               -> create 64 bit binaries (where supported)"
    echo "-D*               -> include a macro definition in CFLAGS"
    echo "-add-copyright    -> insert a special copyright string in each binary"
-   echo "-add-sun-copyright-> insert a Sun copyright string in each binary" 
    echo "-adoc             -> create source code documentation in adoc format"
    echo "-catman           -> generate man pages in catman format"
    echo "-cc               -> use cc/CC to compile c/c++ code"
@@ -214,7 +213,7 @@ usage:
    echo "-only-64          -> build only 64 bit shared libraries for SOLARIS64, don't build 32 bit shared libraries"
    echo "-pam              -> build PAM modules (probably only on GNU/linux currently)"
    echo "-parallel n       -> spawn multiple make processes by passing option -j n to make"
-   echo "-perlgui          -> build the experimental perlgui"
+   echo "-perlgui          -> build the experimental perlgui (probably broken)"
    echo "-po               -> merge gridengine .pot with translations (Linux)"
    echo "-pot              -> extract message template to gridengine .pot file (Linux)"
    echo "-protected        -> create complete class file documentation"
@@ -343,7 +342,6 @@ set BUILDHTMLMAN      = 0
 set BUILDJAVADOC      = 0
 set SGE_PRODUCT_MODE  = sge
 set ADD_COPYRIGHT     = 0
-set ADD_SUN_COPYRIGHT = 0
 set ADOC              = 0
 
 # Default name and command line flags for some build commands
@@ -483,9 +481,6 @@ while ($#argv >= 1 && $?found)
       breaksw
    case "-add-copyright"
       set ADD_COPYRIGHT = 1
-      breaksw
-   case "-add-sun-copyright"
-      set ADD_SUN_COPYRIGHT = 1
       breaksw
    case "-adoc":
       set CORE   = 0
@@ -2231,9 +2226,6 @@ if ( "$JAVA_GUI_INST" == 2 ) then
    if ( "$ADD_COPYRIGHT" == 1 ) then
       setenv AIMK_COPYRIGHT_DIR "$COPYRIGHT_DIR"
       setenv AIMK_COPYRIGHT "courtesy"
-   else if ( "$ADD_SUN_COPYRIGHT" == 1 ) then
-      setenv AIMK_COPYRIGHT_DIR "$SUN_COPYRIGHT_DIR"
-      setenv AIMK_COPYRIGHT "sun"
    else
       setenv AIMK_COPYRIGHT_DIR ""
       setenv AIMK_COPYRIGHT ""
@@ -2595,8 +2587,6 @@ endif
 
 if ( "$ADD_COPYRIGHT" == 1 ) then
    set CFLAGS = "-DADD_COPYRIGHT -I$COPYRIGHT_DIR $CFLAGS"
-else if ( "$ADD_SUN_COPYRIGHT" == 1 ) then
-   set CFLAGS = "-DADD_COPYRIGHT -DADD_SUN_COPYRIGHT -I$SUN_COPYRIGHT_DIR $CFLAGS"
 endif
 
 if ( "$CORE" == 1 && "$JAVA" != 2 ) then
@@ -2719,9 +2709,6 @@ if ( "$JAVA" > 0 ) then
    if ( "$ADD_COPYRIGHT" == 1 ) then
       setenv AIMK_COPYRIGHT_DIR "$COPYRIGHT_DIR"
       setenv AIMK_COPYRIGHT "courtesy"
-   else if ( "$ADD_SUN_COPYRIGHT" == 1 ) then
-      setenv AIMK_COPYRIGHT_DIR "$SUN_COPYRIGHT_DIR"
-      setenv AIMK_COPYRIGHT "sun"
    else
       setenv AIMK_COPYRIGHT_DIR ""
       setenv AIMK_COPYRIGHT ""
