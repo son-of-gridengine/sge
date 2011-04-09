@@ -12,7 +12,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -51,24 +51,24 @@ command being used by
 .I qtcsh
 to submit the commands.
 .PP
-A cluster global
+Both a cluster global
 .I qtask
-file defining cluster wide defaults and a user specific
+file defining cluster wide defaults, and a user specific
 .I qtask
-file eventually overriding and enhancing those definitions are
+file eventually overriding and enhancing those definitions, are
 supported. The cluster global file resides at
 <xxqs_name_sxx_root>/<cell/common/qtask, while the user specific file
 can be found at ~/.qtask. An exclamation mark preceding command
-definitions in the cluster global can be used by the administrator to
+definitions in the cluster global file can be used by the administrator to
 deny overriding of such commands by users.
 .\"
 .\"
 .SH FORMAT
-The principle format of the
+The overall format of the
 .I qtask
 file is that of
 a tabulated list. Each line starting with a '#' character
-is a comment line. Each line despite comment lines defines
+is a comment line. Each non-comment line defines
 a command to be started remotely.
 .sp 1
 Definition starts with the command name that must match exactly the name as
@@ -78,10 +78,10 @@ command-line. Pathnames are not allowed in
 .I qtask
 files. Hence absolute or relative pathnames in
 .M qtcsh 1
-command-lines always lead to local execution even if the commands itself
-are the same as defined in the
+command-lines always lead to local execution, even if the command itself
+is the same as defined in the
 .I qtask
-files.
+file.
 .sp 1
 The command name can be followed by an arbitrary number of
 .M qrsh 1
@@ -106,16 +106,16 @@ file
 .sp 1
 .nf
 .RS
-netscape -l a=sol-sparc64 -v DISPLAY=myhost:0
+firefox -l a=sol-sparc64 -v DISPLAY=myhost:0
 grep -l h=filesurfer
 verilog -l veri_lic=1
 .RE
 .fi
 .sp 1
-designates the applications netscape, grep and verilog for interactive
-remote execution through xxQS_NAMExx. Netscape is requested to run only
+designates the applications firefox, grep and verilog for interactive
+remote execution through xxQS_NAMExx. Firefox is requested to run only
 on Solaris64 architectures with the DISPLAY environment variable set
-to 'myhost:0', grep only runs on the host named 'filesurfer' and verilog
+to 'myhost:0', grep only runs on the host named 'filesurfer', and verilog
 requests availability of a verilog license in order to get executed
 remotely.
 .\"

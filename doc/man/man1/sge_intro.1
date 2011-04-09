@@ -13,7 +13,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -33,24 +33,24 @@
 .TH xxQS_NAME_Sxx_INTRO 1 "$Date: 2008-05-02 08:53:44 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .\"
 .SH NAME
-sge_intro \- xxQS_NAMExx, a facility for executing UNIX jobs on remote machines
+sge_intro \- xxQS_NAMExx, a facility for executing jobs on remote machines
 .\"
 .SH DESCRIPTION
 .\"
-xxQS_NAMExx
-is a facility for executing UNIX batch jobs (shell scripts) on a pool
-of cooperating workstations. Jobs are queued and executed remotely on
-workstations at times when those workstations would otherwise be idle
-or only lightly loaded. The work load is distributed among the
-workstations in the cluster corresponding to the load situation of each
+xxQS_NAMExx is a facility for executing Unix-like batch jobs (shell
+scripts or binaries) on a pool of cooperating CPUs. Jobs are queued
+and executed remotely according to defined policies.  The CPUs may be
+in desktop systems, with jobs run on them at times when they would
+otherwise be idle or only lightly loaded. The work load may be
+distributed according to the (generalized) load situation of each
 machine and the resource requirements of the jobs.
 .PP
 .\"
 User level checkpointing programs are supported and a transparent
 checkpointing mechanism is provided (see
 .M xxqs_name_sxx_ckpt 1 ).
-Checkpointing jobs migrate from workstation to workstation without user
-intervention on load demand. In addition to batch jobs, interactive
+Checkpointing jobs migrate from system to system without user
+intervention on load demand. In addition to simple batch jobs, interactive
 jobs and parallel jobs can also be submitted to xxQS_NAMExx.
 .PP
 .\"
@@ -94,29 +94,28 @@ displays status information about xxQS_NAMExx execution hosts.
 .M qlogin 1
 .I qlogin
 initiates a telnet or similar login session with automatic selection of a
-low loaded and suitable host.
+suitable host.
 .\"
 .TP
 .M qmake 1
 .I qmake
 is a replacement for the standard Unix
 .I make
-facility. It extends make by
-its ability to distribute independent make steps across a cluster of
+facility. It extends make with
+an ability to distribute independent make steps across a cluster of
 suitable machines.
 .TP
 .M qmod 1
 .I qmod
-allows the owner(s) of a queue to suspend and enable all queues 
+allows the owner(s) of a queue to suspend and enable queues, e.g. all queues
 associated with his machine (all currently active processes in this queue 
-are also signaled) or to suspend and enable jobs executing in the owned 
-queues.
+are also signaled) or to suspend and enable jobs executing in the queues.
 .\"
 .TP
 .M qmon 1
 .I qmon
 provides a Motif command interface to all xxQS_NAMExx
-functions. The status of all or a private selection of the configured
+functions. The status of all, or a private selection of, the configured
 queues is displayed on-line by changing colors at corresponding queue
 icons.
 .\"
@@ -162,7 +161,7 @@ provides a status listing of all advance reservations in the cluster.
 .TP
 .M qrsub 1
 .I qrsub
-is the user interface for submitting a advance reservation to xxQS_NAMExx.
+is the user interface for submitting an advance reservation to xxQS_NAMExx.
 .\"
 .TP
 .M qselect 1
@@ -179,7 +178,7 @@ commands to apply actions on a selected set of queues.
 opens an interactive shell (in an
 .M xterm 1 )
 on a low loaded host. Any kind of
-interactive jobs can be run in this shell.
+interactive job can be run in this shell.
 .\"
 .TP
 .M qstat 1
@@ -220,10 +219,7 @@ is the user interface for submitting a job to xxQS_NAMExx.
 .M qsh 1 ,
 .M qstat 1 ,
 .M qsub 1 ,
-.M qtcsh 1 ,
-.I xxQS_NAMExx Installation Guide,
-.I xxQS_NAMExx Administration Guide,
-.I xxQS_NAMExx User's Guide.
+.M qtcsh 1 .
 .\"
 .SH COPYRIGHT
 Copyright: 2008 by Sun Microsystems, Inc.
