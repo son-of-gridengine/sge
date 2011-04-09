@@ -136,6 +136,7 @@ end
 
 # Initialize extern variables from aimk.*
 set UGE_LIBS         = 0   # Path to Univa Extensions
+set UGE_EXT          = 0   # Trigger if Univa Extensions should be built
 
 # Source variables for definition of site dependent paths of software here
 #
@@ -226,7 +227,6 @@ usage:
    echo "-sunman           -> create man pages for Sun branded man pages (with -man)"
    echo "-system-libs      -> use dynamic system libraries (specifically libssl)"
    echo "-tight-ssh        -> compile SSH daemon with tight SGE integration"
-   echo "-uge-ext          -> build binaries with Univa Extensions"
    echo "-umap             -> compile with usermapping and hostgroup feature (currently broken)"
    echo "-with-jemalloc    -> build SGE with the jemalloc library (default on GNU/Linux)"
   exit
@@ -323,7 +323,6 @@ set TPLIB            = ""  # 3rdparty libs
 set SLIBS            = ""
 set FLAGS_OUT        = "false"
 set DUMP             = 1
-set UGE_EXT          = 0   # Univa Extensions
 
 # Default settings for shared library creation
 set SHAREDLIBS       = 0
@@ -619,9 +618,6 @@ while ($#argv >= 1 && $?found)
       breaksw
    case "-no-dump":
       set DUMP = 0
-      breaksw
-   case "-uge-ext":
-      set UGE_EXT = 1
       breaksw
    case  "-no-java"
       set JAVA = 0
