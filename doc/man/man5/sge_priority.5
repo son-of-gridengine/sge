@@ -12,7 +12,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -36,11 +36,12 @@ sge_priority \- xxQS_NAMExx job priorities
 .\"
 .\"
 .SH DESCRIPTION
-xxQS_NAMExx provide means for controlling 
+xxQS_NAMExx provides a means for controlling 
 job dispatch and run-time priorities. The dispatch priority indicates
-the importance of pending jobs compared with each other and 
+the relative importance of pending jobs and 
 determines the order in which xxQS_NAMExx dispatches jobs to 
-queue instances. The run-time priority determines the CPU allocation
+queue instances, if the relevant resources are available. The run-time
+priority determines the CPU allocation
 that the operating system assigns to jobs.
 .\"
 .\"
@@ -80,7 +81,7 @@ between 0 and 1.
    nurg    = normalized(urg)
    ntckts  = normalized(tckts)
 
-   prio    = weight_priority * pprio +
+   prio    = weight_priority * npprio +
              weight_urgency  * nurg + 
              weight_ticket   * ntckts
 
@@ -103,10 +104,10 @@ requirements of a job into a single numeric value.
    rrcontr = Sum over all(hrr)
 
 with an "hrr" for each hard resource request.
-Depending on the resource type two different methods are used to 
+Depending on the resource type, two different methods are used to 
 determine the value to be used for "hrr" here. For numeric type resource
 requests, the "hrr" represents how much of a resource a job requests (on a
-per-slot basis for pe jobs) and how "important" this resource is
+per-slot basis for PE jobs) and how "important" this resource is
 considered in comparison to other resources. This is expressed by the
 formula:
 
@@ -121,13 +122,13 @@ specified using the -l
 .M qsub 1
 option. For string type requests the formula is simply
 
-   hrr      = "rurg"
+   hrr      = rurg
 
 and directly assigns the resource urgency value
 as specified under \fBurgency\fP in 
 .M complex 5 . 
 .PP
-The waiting time contribution represents a weighted weighting time of the
+The waiting time contribution represents a weighted waiting time of the
 jobs
 
    wtcontr = waiting_time * weight_waiting_time
@@ -154,7 +155,7 @@ the value is static and equal to weight_deadline.
 .PP
 .\" ticket policy
 The ticket policy unites functional, override and share tree 
-policies in the ticket value ("tckts"), as is defined as the sum of the
+policies in the ticket value ("tckts"), defined as the sum of the
 specific ticket values ("ftckt"/"otckt"/"stckt") for each sub-policy
 (functional, override, share):
 
@@ -171,13 +172,13 @@ The run-time priority can be dynamically adjusted
 in order to meet the goals set with the ticket policy. Dynamic run-time
 priority adjustment can be turned off (default) globally using
 \fBreprioritize_interval\fP in
-.M sched_conf 5
+.M sched_conf 5 .
 If no dynamic run-time priority adjustment is done 
 at a host level, the \fBpriority\fP specification in 
 .M queue_conf 5
 is in effect.
 .PP
-Note that urgency and POSIX priorities do \fBNOT\fP affect runtime
+Note that urgency and POSIX priorities do \fBnot\fP affect runtime
 priority.
 .PP
 .SH "SEE ALSO"

@@ -64,7 +64,7 @@ types is explained in this page.
 .\" wc_user_list      := wc_user[,wc_user,...]
 .\" wc_project        := project|pattern
 .\" wc_pe_name        := pe_name|pattern
-.\" parallel_env      := parallel_env \fBn\fP[\fB-\fP[\fBm\fP]]|[\fB-\fP]\fBm\fP,...\fP
+.\" parallel_env      := wc_pe_name \fBn\fP[\fB-\fP[\fBm\fP]]|[\fB-\fP]\fBm\fP,...\fP
 .\" date_time         := [[CC]]YY]MMDDhhmm[.SS]
 .\" time              := hh:mm:ss|seconds   
 .\" name              := ASCII alphanumeric string   
@@ -486,7 +486,7 @@ or a full pe name.
 wc_pe_name := pe_name | pattern
 .PP
 .SS "\fBparallel_env\fP \fBn\fP[\fB-\fP[\fBm\fP]]|[\fB-\fP]\fBm\fP,...\fP"
-Parallel programming environment (PE) to select for an AR. The
+Parallel programming environment (PE) to select for a job to run or an AR. The
 range descriptor behind the PE name specifies the number of
 parallel processes to be run. xxQS_NAMExx will allocate the
 appropriate resources as available. The
