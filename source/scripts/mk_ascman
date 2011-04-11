@@ -164,7 +164,7 @@ if ( "$MANHTML" == 1 ) then
          if ( Linux == `uname` ) then
             set secopt = ""
          endif   
-         man -M$MANBUILDDIR/SEDMAN/man/ $secopt $n $bn | man2html -cgiurl "../htmlman"'$section/$title'".html$PATHREV" -solaris | sed '2s/BODY/BODY BGCOLOR=white/' > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
+         man -M$MANBUILDDIR/SEDMAN/man/ $secopt $n $bn | man2html -botm 4 -topm 4 -pgsize 999999 -cgiurl "../htmlman"'$section/$title'".html$PATHREV" | sed '2s/BODY/BODY BGCOLOR=white/' > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
       end
    end   
 
