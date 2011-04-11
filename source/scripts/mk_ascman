@@ -163,8 +163,10 @@ if ( "$MANHTML" == 1 ) then
          set secopt = -s
          if ( Linux == `uname` ) then
             set secopt = ""
-         endif   
-         man -M$MANBUILDDIR/SEDMAN/man/ $secopt $n $bn | man2html -botm 4 -topm 4 -pgsize 999999 -cgiurl "../htmlman"'$section/$title'".html$PATHREV" | sed '2s/BODY/BODY BGCOLOR=white/' > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
+         endif
+	 # This used to use `man' on the SEDMAN files, but that loses
+	 # the overstriking.
+         groff -man -t -Tascii $MANBUILDDIR/SEDMAN/man/man$n/$bn.$n | man2html -botm 4 -topm 4 -pgsize 999999 -cgiurl "../htmlman"'$section/$title'".html$PATHREV" | sed '2s/BODY/BODY BGCOLOR=white/' > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
       end
    end   
 
