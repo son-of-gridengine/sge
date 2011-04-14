@@ -35,30 +35,32 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH remote_startup 5 "2010/11/22 20:58:24" "GE 6.2u5" "Grid Engine User Commands"
+.TH remote_startup 5 "2010/11/22 20:58:24" "xxRELxx" "xxQS_NAMExx User Commands"
 .\"
 .SH NAME
-Remote startup \- the Grid Engine remote startup mechanism
+Remote startup \- the xxQS_NAMExx remote startup mechanism
 .\"
 .SH DESCRIPTION
-Grid Engine
+xxQS_NAMExx
 supports several commands to facilitate interactive commands or remote startup of a tightly
-integrated parallel job. Each command can be set up to use different daemons and commands to
+integrated parallel job. Each command can be set up with
+.M qconf 1
+to use different daemons and commands to
 start the final session. Different startup methods can therefore contain different daemons and
-commands and are not related to other startup methods in any way, although it is often desirable to have the same
-communication method setup for all startup methods.
+commands, and are not related to other startup methods in any way, although it is often desirable to have the same
+communication method for all startup methods.
 .SH QLOGIN
-An interactive \fBQLOGIN\fR session invoked by
+An interactive \fBqlogin\fR session invoked by
 .M qlogin 1
 will show up in \fBqstat\fR with the default name \fBQLOGIN\fR unless changed by the \fB-N name\fR
 option.  The two entries \fBqlogin_daemon\fR and
 \fBqlogin_command\fR are responsible for establishing the communication
 to start such a session.
 .sp 1
-The defined \fBqlogin_daemon\fR will use a randomly chosen port for this session, to have
+The defined \fBqlogin_daemon\fR will use a randomly chosen port, to have
 a unique port for each session. The \fBqlogin_command\fR will try to connect to this port.
 .sp 1
-The default is the value \fBbuiltin\fR, which will trigger an SGE internal communication method:
+The default is the value \fBbuiltin\fR, which will trigger an xxQS_NAME_Sxx internal communication method:
 .sp 1
 .RS
 .PD 0
@@ -76,14 +78,14 @@ can also be set up for the formerly-used communication
 method based on \fBtelnet\fR. Despite the fact that \fBtelnet\fR is
 used, and so the traffic is not encrypted (which might still be
 reasonable on a private subnet for the cluster, especially if it
-doesn't use SGE's CSP security), there is no need to have
-\fBtelnetd\fR running all the time, as SGE will start a unique one for
+doesn't use xxQS_NAME_Sxx's CSP security), there is no need to have
+\fBtelnetd\fR running all the time \- xxQS_NAME_Sxx will start a unique one for
 each job, even when it's from the same user. Entries in
 /etc/xinted.d/telnet can stay disabled for \fBtelnet\fR. Only the file
 /etc/hosts.equiv needs to contain the name of the machines from where
 a
 .M qlogin 1
-should be allowed. This is often the head node of a cluster or
+should be allowed. This is often the head node of a cluster, or
 particular submit machines. To achieve this:
 .sp 1
 .RS
@@ -102,10 +104,13 @@ must be defined in
 The defined \fBqlogin_command\fR will then be called with two additional parameters: \[oq]HOST\[cq], and \[oq]PORT\[cq] in
 exactly that order, which refer to the machine the
 \fBqlogin_command\fR should address and the port to be used.
-.SP 1
-This can also be used to set up secure communication using \fBSSH\fR.
-In this case small wrapper must be implemented,
-whose sole purpose is to swap the two given arguments and prepend the argument to port with \fB\-p\fR:
+.sp 1
+This can also be used to set up secure communication using \fBSSH\fR
+(which can also provide X and credential forwarding, as well as compression).
+In this case a small wrapper must be implemented,
+whose sole purpose is to swap the two given arguments and prepend
+.B -p
+to the port argument:
 .sp 1
 .RS
 .PD 0
@@ -128,22 +133,22 @@ HOST=$1
 .br
 PORT=$2
 .br
-/usr/bin/ssh -X -p $PORT $HOST
+exec /usr/bin/ssh -X -p $PORT $HOST
 .RE
 .PP
 .\"
 .\"
 .SH QRLOGIN
-An interactive \fBQRLOGIN\fR session invoked by
+An interactive \fBqrlogin\fR session invoked by
 .M qrsh 1
 \fBwithout\fR a command will show up in \fBqstat\fR having the default name \fBQRLOGIN\fR unless changed by the \fB-N name\fR option. 
 The two entries \fBrlogin_daemon\fR and \fBrlogin_command\fR are
 responsible for establishing the command to start such a session.
 .sp 1
-The defined \fBrlogin_daemon\fR will use a randomly chosen port for this session to have
+The defined \fBrlogin_daemon\fR will use a randomly chosen port, to have
 a unique port for each session. The \fBrlogin_command\fR will try to connect to this port.
 .sp 1
-The default is the value \fBbuiltin\fR, which will trigger an SGE internal communication method:
+The default is the value \fBbuiltin\fR, which will trigger an xxQS_NAME_Sxx internal communication method:
 .sp 1
 .RS
 .PD 0
@@ -156,19 +161,19 @@ builtin
 .PD
 .RE
 .sp 1
-In cases where you want to setup a different communication method, it
+In cases where you want to set up a different communication method, it
 can also be set up for the formerly-used communication
 method based on \fBrlogin\fR. Despite the fact that \fBrlogin\fR is
 used, and so the traffic is not encrypted (which might still be
 reasonable on a private subnet for the cluster, especially if it
-doesn't use SGE's CSP security), there is no need to have
-\fBrlogind\fR running all the time, as SGE will start a unique one for
+doesn't use xxQS_NAME_Sxx's CSP security), there is no need to have
+\fBrlogind\fR running all the time \- xxQS_NAME_Sxx will start a unique one for
 each job, even when it's from the same user. Entries in
 /etc/xinted.d/rlogin can stay disabled for \fBrlogin\fR. Only the file
 /etc/hosts.equiv needs to contain the name of the machines from where
 a
 .M qrsh 1
-should be allowed. This is often the head node of a cluster or
+should be allowed. This is often the head node of a cluster, or
 particular submit machines. To achieve this:
 .sp 1
 .RS
@@ -214,16 +219,17 @@ This can also be used to set up a secure communication using \fBSSH\fR:
 .SH QRSH
 An interactive session for a remote command invoked by
 .M qrsh 1
-\fBwith\fR a command will show up in \fBqstat\fR having the default name of the command issued unless changed by the \fB-N name\fR option. 
+\fBwith\fR a command will show up in \fBqstat\fR by default with name
+of the command issued, unless changed by the \fB-N name\fR option.
 The two entries \fBrsh_daemon\fR and \fBrsh_command\fR are
 responsible for establishing the communication to start such a session.
 This startup method will also be used by the master task of
 a tightly integrated parallel job to start slave processes on other granted exechosts.
 .sp 1
-The defined \fBrsh_daemon\fR will use a randomly chosen port for this session to have
-a unique port for each session. The \fBrsh_command\fR then try to connect to this port.
+The defined \fBrsh_daemon\fR will use a randomly chosen port, to have
+a unique port for each session. The \fBrsh_command\fR will then try to connect to this port.
 .sp 1
-The default is the value \fBbuiltin\fR, which will trigger an SGE internal communication method:
+The default is the value \fBbuiltin\fR, which will trigger an xxQS_NAME_Sxx internal communication method:
 .sp 1
 .RS
 .PD 0
@@ -236,18 +242,18 @@ builtin
 .PD
 .RE
 .sp 1
-In cases where you want to setup a different communication method, it
+In cases where you want to set up a different communication method, it
 can also be set up for the formerly-used communication
 method based on \fBrsh\fR. Despite the fact that \fBrsh\fR is used,
 and so the traffic is not encrypted (which might still be reasonable
 on a private subnet for the cluster, especially if it doesn't use
-SGE's CSP security), there is no need to have \fBrshd\fR running all
-the time, as SGE will start a unique one for each job, even when it's
+xxQS_NAME_Sxx's CSP security), there is no need to have \fBrshd\fR running all
+the time, as xxQS_NAME_Sxx will start a unique one for each job, even when it's
 from the same user. Entries in /etc/xinted.d/rlogin can stay disabled
 for \fBrsh\fR. Only the file /etc/hosts.equiv needs to contain the
 name of the machines from where a
 .M qrsh 1
-should be allowed. This is often the head node of a cluster or
+should be allowed. This is often the head node of a cluster, or
 particular submit machines. To achieve this:
 .sp 1
 .RS
@@ -346,14 +352,15 @@ for the machines inside the cluster.
 .\"
 .\"
 .SH SSH TIGHT INTEGRATION
-To have a tight integration of \fBSSH\fR into SGE, the started \fBsshd\fR needs an additional group ID to be attached.
-With this additional group ID, SGE is able to record the resource consumption and computing time in a correct way.
-Also a \fBqdel\fR of such a job will have the ability to succeed.
+To have a tight integration of \fBSSH\fR into xxQS_NAME_Sxx, the started \fBsshd\fR needs an additional group ID to be attached.
+With this additional group ID, xxQS_NAME_Sxx is able to record the resource consumption and computing time in a correct way.
+Also a \fBqdel\fR of such a job will be able to succeed.
+(Using the builtin method, or the )
 .sp 1
 Such a tight SSH integration can be achieved by two means:
 .TP
-.B Recompile Grid Engine with \fB./aimk -tight-ssh ...\fR
-The source of Grid Engine contains the necessary additions, which will compile a modified \fIsshd\fR, which will honor the
+.B Recompile xxQS_NAMExx with \fB./aimk -tight-ssh ...\fR
+The source of xxQS_NAMExx contains the necessary additions to compile a modified \fIsshd\fR, which will honor the
 additional group ID and attach it also to the started process. It's necessary to provide the source of \fIOpenSSH\fR
 in the directory \fI3rd_party\fR inside \fI$SGE_ROOT\fR having a plain name \[oq]openssh\[cq]. Inside this
 directory the file \fIsshd.c\fR needs to be patched:
@@ -370,7 +377,6 @@ sgessh_readconfig();
 .br
 #endif
 .RE
-\fR
 .sp 1
 in privsep_postauth():
 .RS
@@ -388,7 +394,7 @@ do_setusercontext(authctxt->pw);
 #endif
 .RE
 .sp 1
-\fRsee the
+See the
 .URL http://gridengine.org/assets/static/ws2007/SGE-openSSHTightIntegration.RonChen.pdf "original documentation" .
 .RE
 .TP
@@ -459,12 +465,16 @@ rsh_daemon     /opt/sge/utilbin/lx24-x86/rshd -l
 .RE
 .\"
 .SH "SEE ALSO"
+.M qconf 1 ,
 .M qlogin 1 ,
 .M qrsh 1 ,
 .M sge_conf 5 ,
 .M pam_sge_authorize 8 ,
-.M pam_sge-qrsh-setup 8 ,
-.URL http://arc.liv.ac.UK/SGE/howto/qrsh_qlogin_ssh.html "SGE SSH howto" .
+.M pam_sge-qrsh-setup 8 .
+.\"
+.SH AUTHOR
+Man page written by Reuti, partly based on Sun material.  Some
+additions by Dave Love.
 .\"
 .SH "COPYRIGHT"
 See
