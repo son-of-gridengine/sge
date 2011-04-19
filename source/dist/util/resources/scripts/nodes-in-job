@@ -50,6 +50,5 @@ qhost -j |
 	printf ("%s%s", sep, node)	# from previous line
        'sep=$sep'			# shell substitution!
     }
-    node=""
 }'
 [ $sep = '"\n"' ] && echo
