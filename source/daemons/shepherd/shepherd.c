@@ -2666,9 +2666,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
       SGE_CLOSE(fdin);
    }
 
-   if (pty_fds != NULL) {
-      FREE(pty_fds);
-   }
+   sge_free(&pty_fds);
    return job_status;
 }
 
