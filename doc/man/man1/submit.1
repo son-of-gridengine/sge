@@ -1839,6 +1839,12 @@ Available for \fIqsub\fP and \fIqalter\fP only.
 Used in conjunction with array jobs (see \-t option) to set a
 self-imposed limit on the maximum number of concurrently running tasks
 per job.
+.sp 1
+If this option, or a corresponding value in qmon is specified,
+then this value will be passed to defined JSV instances as
+a parameter with the name \fBtc\fP. (See the \fB\-jsv\fP option above or
+find more information concerning JSV in
+.M jsv 1 .)
 .\"
 .IP "\fB\-terse\fP"
 Available for \fIqsub\fP only.
