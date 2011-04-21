@@ -76,11 +76,7 @@ LISTDEF( PRO_Type )
    SGE_ULONG     ( PRO_pid, CULL_PRIMARY_KEY | CULL_HASH | CULL_UNIQUE )
    SGE_ULONG     ( PRO_utime, CULL_DEFAULT )
    SGE_ULONG     ( PRO_stime, CULL_DEFAULT )
-#ifdef TARGET_64BIT
-   SGE_LONG     ( PRO_vsize, CULL_DEFAULT )
-#else
    SGE_ULONG     ( PRO_vsize, CULL_DEFAULT )
-#endif
    SGE_LIST      ( PRO_groups, GR_Type, CULL_DEFAULT )
    SGE_BOOL      ( PRO_rel, CULL_DEFAULT )
    SGE_BOOL      ( PRO_run, CULL_DEFAULT )
