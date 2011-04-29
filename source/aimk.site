@@ -89,11 +89,6 @@ set BDB_INCLUDE_SUBDIR =
 set BDB_LIB_SUBDIR =
 set BDB_LIB_SUFFIX =
 
-# Directory where libcore.so's reside
-# Relevant for Linux only:
-# http://gridengine.sunsource.net/issues/show_bug.cgi?id=2552
-set CORE_HOME = lib/libcore
-
 # 
 # KRB_HOME the directory where the include and lib directory of kerberos is
 # installed
