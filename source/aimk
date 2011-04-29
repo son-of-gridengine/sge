@@ -405,10 +405,6 @@ set PERLGUI_CLEAN     = ""
 set SPOOLING_METHOD = "dynamic"
 set SPOOLING_LIBS   = "-lspoolloader -lspoold -lspool"
 set SPOOLING_DEPS   = "spoolloaderlib spooldlib spoollib spoolclib spoolblib"
-# we generate a berkeley db shared lib, so we need bdb include and lib path
-set CFLAGS            = "-I$BERKELEYDB_HOME/include/${BDB_INCLUDE_SUBDIR} $CFLAGS"
-set LFLAGS            = "-L$BERKELEYDB_HOME/lib/${BDB_LIB_SUBDIR} $LFLAGS"
-set SHARED_LFLAGS    = "$SHARED_LFLAGS -L$BERKELEYDB_HOME/lib/${BDB_LIB_SUBDIR}"
 
 # JUTI Targets
 set JUTI_ALL  = juti_all
@@ -940,6 +936,12 @@ if ( $DEBUGGED && $USE_QMAKE ) then
    set MAKEOPT = "-verbose $MAKEOPT"
 endif
 
+if ( $SYSTEM_LIBS == 1 ) then
+   # we generate a berkeley db shared lib, so we need bdb include and lib path
+   set CFLAGS        = "-I$BERKELEYDB_HOME/include/${BDB_INCLUDE_SUBDIR} $CFLAGS"
+   set LFLAGS        = "-L$BERKELEYDB_HOME/lib/${BDB_LIB_SUBDIR} $LFLAGS"
+   set SHARED_LFLAGS = "$SHARED_LFLAGS -L$BERKELEYDB_HOME/lib/${BDB_LIB_SUBDIR}"
+endif
 set CFLAGS = "$CFLAGS -DSPOOLING_$SPOOLING_METHOD $SECFLAGS"
 
 #---------------------------------------------------------------------------

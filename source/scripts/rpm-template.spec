@@ -47,7 +47,7 @@ Requires:      openmotif
 Version:       #version#
 Release:       0
 Copyright:     SISSL
-URL:           http://gridengine.sunsource.net/ 
+URL:           https://arc.liv.ac.uk/trac/SGE
 Group:         Applications/System
 Vendor:        #vendor#
 Packager:      #packager#
