@@ -16,3 +16,7 @@ Compilation of qtcsh:
    [% make      for testing otherwise see step 4]
 4. Go to the  rootdir of the source tree and do:
    % aimk qtcsh
+
+At least the following files were noted by Sun as modified for Grid Engine:
+config.sub,Makefile.in,configure,ed.h,sh.c,sh.err.c,sh.exec.c,sh.h,
+sh.init.c,tc.alloc.c,tc.os.h,tc.sig.h,tc.vers.c
