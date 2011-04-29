@@ -109,7 +109,8 @@ Content
    To compile Grid Engine without one or more default targets use the flags:
 
       -no-core
-      -no-java
+      -no-java  (or "-no-gui-inst -no-herd", avoiding the most
+      		 troublesome targets)
       -no-jni
       -no-qmake 
       -no-qmon
