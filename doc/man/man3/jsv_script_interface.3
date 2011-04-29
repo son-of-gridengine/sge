@@ -124,13 +124,15 @@ jsv_is_param, jsv_get_param, jsv_add_param, jsv_mod_param, jsv_del_param, jsv_su
 .fi
 .\"
 .SH DESCRIPTION
-The functions documented here implement the server side of the JSV protocol as it is
-described in the man page 
+The functions documented here implement the server side of the JSV protocol as
+described in the man page
 .M jsv 1 .
 These script functions are available in Bourne shell, TCL or Perl scripts after 
 sourcing/including the files jsv_inlcude.sh, jsv_include.tcl or JSV.pm.
 The files and corresponding JSV script templates are located in the directory
-$SGE_ROOT/util/resources/jsv.
+$SGE_ROOT/util/resources/jsv.  There is also a Java implementation,
+with Javadoc documentation in $SGE_ROOT/doc/javadocs/jjsv, and example
+files SimpleJsv.java and jjsv.sh the resources directory.
 .PP
 Note that Bourne shell server JSVs are discouraged because any
 problems with unintended expansion of job parameters represent a
@@ -138,8 +140,17 @@ security hazard (with the qmaster running as the sgeadmin user).  Also
 they may be relatively slow, and constitute a bottleneck in
 high-throughput clusters.  Shell JSVs may be faster using
 .M bash 1 ,
-even compared to a generally faster shell, since fewer external
-commands will be invoked.
+even compared with a generally faster shell, since fewer external
+commands may be invoked.
+.PP
+In the descriptions of routines here, a calling sequence like
+.RS
+\fBfunction\fP(\fIarg1\fP, \fIarg2\fP)
+.RE
+should be interpreted for Bourne shell and Tcl scripts as
+.RS
+\fBfunction\fP \fIarg1\fP \fIarg2\fP
+.RE
 .\"
 .SS "jsv_clear_params()"
 This function clears all received job parameters that were stored 
@@ -151,105 +162,212 @@ were stored during the last job verification process.
 .\"
 .SS "jsv_show_params()"
 A call of this function reports all known job parameters to the
-counterpart of this script (client or master daemon thread). This
+counterpart of this script (client or master daemon thread). These
 parameters will be reported as info messages and appear
 either in the stdout stream of the client or in the message file of 
 the master process.
 .\"
 .SS "jsv_show_envs()"
-A call of this function reports all known job environment variables
+This function reports all known job environment variables
 to the counterpart of this script (client or master daemon thread). 
 They will be reported as info messages and appear in the stdout 
 stream of the client or in the message file of the master process. 
 .\"
-.SS "jsv_is_param()"
-This function returns whether or not a specific job parameters is 
+.SS "jsv_is_param(\fIparam_name\fP)"
+This function returns whether or not a specific job parameter is
 available for the job which is currently being verified. Either the 
 string \fItrue\fP or \fIfalse\fP will be returned. The availability/absence 
 of a job parameter does not mean that the corresponding command line 
 switch was used/not used. 
 .PP
-The following values are allowed for \fIparam_name\fP. Corresponding 
-\fIqsub\fP/\fIqrsh\fP/\fIqsh\fP/... switches next to the parameter name 
-are mentioned only if they are different from the command line switches.
-.PP
+The values allowed for \fIparam_name\fP are listed below.
 Find additional information in 
 .M qsub 1
-man page describing the availability and value format. Job parameters written 
+describing the availability and value format. Job parameters written
 in capital letters are pseudo parameters. A detailed description for them can
 be found in
+.M jsv 1 .
+Note that
+.PP
+The following parameters directly reflect arguments of the same name
+supplied to the submission command
+.RI ( qsub
+etc.) or corresponding values specified with
+.IR qmon :
+.br
+.BR A ,
+.BR a ,
+.BR ar ,
+.BR b ,
+.BR ckpt ,
+.BR dl ,
+.BR e ,
+.BR h ,
+.BR hold_jid ,
+.BR hold_jid_ad ,
+.BR i ,
+.BR j ,
+.BR js ,
+.BR M ,
+.BR m ,
+.BR masterq ,
+.BR N ,
+.BR notify ,
+.BR o ,
+.BR P ,
+.BR p ,
+.BR R ,
+.BR r ,
+.BR S ,
+.BR shell ,
+.BR tc ,
+.BR w
+.br
+Other parameters are related to the submission command arguments as follows:
+.TP
+.B ac
+The the job context.  The outcome of the evaluation of all
+.BR \-ac ,
+.BR \-dc ,
+and
+.B \-sc
+options is passed as a parameter with
+the name
+.BR ac ,
+whose value is a comma-separated list of variable/value pairs;
+.TP
+.BR binding_strategy ", " binding_type ", " binding_amount
+.TP
+.BR binding_step ", " binding_socket ", " binding_core
+.TP
+.BR binding_exp_n ", " binding_exp_socket\fIid\fP ", " binding_exp_core\fIid\fP
+The values passed to the
+.B \-binding
+parameter are passed as multiple parameters to JSV
+instances.
+.B binding_strategy
+represents the strategy to be used and is one of:
+.BR linear ,
+.B striding
+or
+.BR explicit .
+.B binding_type
+is the instance that should do the binding, one of:
+.BR env ,
+.B set
+or
+.BR pe .
+.B binding_socket
+and
+.B binding_core
+are socket/core values whereas
+.B binding_step
+is the step size (used only for striding binding).  The length of the
+socket/core value list of the explicit binding is reported as
+.BR binding_exp_n .
+The
+.I id
+part of
+.BI binding_exp_socket id
+and
+.BI binding_exp_core id
+will be replaced by the position of the socket/core pair within the
+explicit binding list (0 <=
+.I id
+< \fBbinding_exp\fI_n\fR).  The first socket/core pair of the explicit
+binding will be reported with the parameter names
+.B binding_exp_socket0
+and
+.BR binding_exp_core0 .
+Values that do not apply for the specified binding will not be
+reported to JSV. E.g.
+.B binding_step
+will only be reported for the striding binding and all
+.B binding_exp_...
+values will only be passed if explicit binding was specified.
+.TP
+.B c_interval
+Checkpoint interval, specified as a numeric value with
+.BR \-c ;
+.TP
+.B c_occasion
+Checkpoint "occasion_specifier"
+.BR \-c .
+.BR "" ( n ,
+.BR s ,
+.BR m ,
+or
+.BR x )
+specified with
+.BR \-c ;
+.TP
+.B cwd
+Working directory, possibly specified with
+.B \-cwd
+or
+.BR \-wd ;
+.TP
+.B display
+Reflects the
+.B \-display
+submit argument and also sets job environment variable DISPLAY to the
+same value;
+.TP
+.B l_hard
+.B \-l
+or
+.B \-hard
+followed by
+.BR \-l ;
+.TP
+.B l_soft
+.B \-soft
+followed by
+.BR \-l ;
+.TP
+.BR pe_name ", " pe_min ", " pe_max
+The PE name and range limits specified with
+.BR \-pe ;
+.TP
+.B q_hard
+.BR \-q ,
+or
+.B \-hard
+followed by
+.BR \-q ;
+.TP
+.B q_soft
+.B \-soft
+followed by
+.BR \-q .
+.PP
+See
 .M jsv 1
-.PP
-.nf
-   \fBparam_name\fP              \fBcommand line switch/description\fP
-   a
-   ac                      combination of -ac, -sc, -dc
-   ar
-   A
-   b
-   c
-   ckpt
-   cwd
-   display
-   dl
-   e
-   h
-   hold_jid
-   hold_jid_ad
-   i
-   l_hard                  -l or -hard followed by -l
-   l_soft                  -soft followed by -l
-   j
-   js
-   m
-   M
-   masterq
-   N
-   notify
-   now
-   N
-   o
-   ot
-   P
-   pe
-   q_hard                  -q or -hard followed by -q
-   q_soft                  -soft followed by -q
-   R
-   r
-   shell
-   S
-   t
-   w
-   wd
-   CLIENT
-   CONTEXT
-   GROUP
-   VERSION
-   JOB_ID
-   CMDNAME
-   CMDARGS
-   CMDARG<i>               where <i> is a nonnegative number  
-   USER
-.fi
-.PP
-The function returns the string \fItrue\fP if the parameter (\fIparam_name\fP) 
-exists in the job currently being verified. If it does not exist \fIfalse\fP will be
-returned.
+for explanation of the following pseudo parameters:
+.BR CLIENT ,
+.BR CMDNAME ,
+.BR CMDARGS ,
+.BR CMDARG\fIi ,
+.BR CONTEXT ,
+.BR GROUP ,
+.BR JOB_ID ,
+.BR USER ,
+.BR VERSION .
 .\"
-.SS "jsv_get_param()"
-This function returns the value of a specific job parameter (\fIparam_name\fP). 
+.SS "jsv_get_param(\fIparam_name\fP)"
+This function returns the value of a specific job parameter \fIparam_name\fP. 
 .PP
 This value is only available if the function \fBjsv_is_param\fP()
 returns \fItrue\fP. Otherwise an empty string is returned.
 .PP
 Find a list of allowed parameter names in the section for the function \fBjsv_is_param\fP().
 .\"
-.SS "jsv_set_param()"
-This function changes the job parameter (\fIparam_name\fP) to the value \fIparam_value\fI.
+.SS "jsv_set_param(\fIparam_name\fP, \fIparam_value\fP)"
+This function changes the job parameter \fIparam_name\fP to the value \fIparam_value\fP.
 .PP
 If \fIparam_value\fP is an empty string then the corresponding
-job parameter will be deleted similar to the function \fBjsv_del_param\fP(). 
-As a result the job parameter is not available as if
+job parameter will be deleted, similarly to the function \fBjsv_del_param\fP(). 
+As a result, the job parameter is not available, as if
 the corresponding command line switch was not specified during job submission.
 .PP
 For boolean parameters that only accept the values \fIyes\fP or \fIno\fP it is not
@@ -259,47 +377,52 @@ Also for the parameters \fIc\fP and \fIm\fP it is not allowed to use empty strin
 Details can be found in
 .M qsub 1 .
 .\"
-.SS "jsv_del_param()"
+.SS "jsv_del_param(\fIparam_name\fP)"
 This function deletes the job parameter \fIparam_name\fP.
 .PP
 Find a list of allowed parameter names in the section for the function \fBjsv_is_param\fP().
 .\"
-.SS "jsv_sub_is_param()"
-Some job parameters are lists that can contain multiple variables with
-an optional value.
-.PP
-This function returns \fItrue\fP if a job parameters list contains a 
-variable and \fIfalse\fP otherwise. \fIfalse\fP might also indicate that
-the parameter list itself is not available. Use the function \fBjsv_is_param\fP()
-to check if the parameter list is not available.
-.PP
-The following parameters are list parameters. The second columns describes
-corresponding variable names to be used. The third column contains 
-a dash (-) if there is no value (\fIvariable_value\fP) allowed  when the functions
-\fBjsv_sub_add_param\fP() or it indicated that \fBjsv_sub_get_param\fP()
-will return always an empty string. A question mark (?) shows that the value is
-optional.
-.PP
-.nf
-   \fBparam_name\fP        \fBvariable_name\fP              \fBvariable_value\fP
-   ac                job context variable name  
-   hold_jid          job identifier             -
-   l_hard            complex attribute name     ?
-   l_soft            complex attribute name     ?
-   M                 mail address               -
-   masterq           cluster queue name or      -
-                     queue instance name
-   q_hard            cluster queue name or      -
-                     queue instance name
-   q_soft            cluster queue name or      -
-                     queue instance name
-.fi
-.\"
-.SS "jsv_sub_get_param()"
+.SS "jsv_sub_is_param(\fIparam_name\fP, \fIvariable_name\fP)"
 Some job parameters are lists that can contain multiple variables 
 with an optional value. 
 .PP
-This function returns the value of a variable (\fIvariable_name\fP).
+This function returns \fItrue\fP if a job's parameters contain the
+list-valued \fIparam_name\fP, with \fIvariable_name\fP in the list;
+otherwise it returns \fIfalse\fP. \fIfalse\fP might also indicate that
+the parameter list itself is not available. Use the function \fBjsv_is_param\fP()
+to check if the parameter list is not available.
+.PP
+The following parameters are list parameters. The second column
+describes the corresponding variable names to be used. The third column contains
+a dash (\-) if there is no value (\fIvariable_value\fP) allowed with the function
+\fBjsv_sub_add_param\fP() or \fBjsv_sub_get_param\fP()
+will return always an empty string. A question mark (?) shows that the value is
+optional.
+.PP
+.TS
+tab(@),box;
+l l l.
+\fBparam_name\fP @ \fBdescription of variable_name\fP @ \fBvariable_value\fP
+_
+ac @ job context variable name @ 
+hold_jid @ job identifier @ \-
+l_hard @ complex attribute name @ ?
+l_soft @ complex attribute name @ ?
+M @ mail address @ \-
+masterq @ cluster queue name or @ \-
+ @ queue instance name @ 
+q_hard @ cluster queue name or @ \-
+ @ queue instance name	 @ 
+q_soft @ cluster queue name or @ \-
+ @ queue instance name @ 
+.TE
+.\"
+.SS "jsv_sub_get_param(\fIparam_name\fP, \fIvariable_name\fP)"
+Some job parameters are lists that can contain multiple variables 
+with an optional value. 
+.PP
+This function returns the value of a variable \fIvariable_name\fP
+in the parameter list \fIparam_name\fP.
 For sub list elements that have no value an empty string will be 
 returned.
 .PP
@@ -307,75 +430,84 @@ Find a list of allowed parameter names (\fIparam_name\fP) and
 variable names (\fIvariable_name\fP) in the section for the 
 function \fBjsv_sub_is_param\fP().
 .\"
-.SS "jsv_sub_add_param()"
-Some job parameters are list that can contain multiple variables 
+.SS "jsv_sub_add_param(\fIparam_name\fP, \fIvariable_name\fP, \fIvariable_value\fP)"
+Some job parameters are lists that can contain multiple variables 
 with an optional value. 
 .PP
 This function either adds a new variable with a new value or it
-modifies the value if the variable is already in the list parameter.
-\fIvariable_value\fP is optional. In that case, the variable has no value.
+modifies the value if the variable is already in the list.
+\fIvariable_value\fP is optional, and if it is not supplied the
+variable has no value.
 .PP
 Find a list of allowed parameter names (\fIparam_name\fP) and 
 variable names (\fIvariable_name\fP) in the section for the 
 function \fBjsv_sub_is_param\fP().
 .\"
-.SS "jsv_sub_del_param()"
+.SS "jsv_sub_del_param(\fIparam_name\fP, \fIvariable_name\fP)"
 Some job parameters are lists which can contain multiple variables with
 an optional value. 
 .PP
-This function deletes a variable (\fIvariable_name\fP) and 
-if available the corresponding value. If (\fIvariable_name\fP) is not
+This function deletes a variable \fIvariable_name\fP and,
+if available, the corresponding value. If \fIvariable_name\fP is not
 available in the job parameter then the command will be ignored.
 .PP
 Find a list of allowed parameter names (\fIparam_name\fP) and 
 variable names (\fIvariable_name \fP) in the section for the 
 function \fBjsv_sub_is_param\fP().
 .\"
-.SS "jsv_is_env()"
+.SS "jsv_is_env(\fIvariable_name\fP)"
 If the function returns \fItrue\fP, then the job environment variable with 
-the name \fIvariable_name\fP exists in the job currently being verified and
+the name \fIvariable_name\fP exists in the job currently being verified, and
 \fBjsv_get_env\fP() can be used to retrieve the value of that variable.
-If the function returns \fIfalse\fP, then the job environment variable (\fIvariable_name\fP) does not exist.
+If the function returns \fIfalse\fP, then the job environment variable does not exist.
 .\"
-.SS "jsv_get_env()"
+.SS "jsv_get_env(\fIvariable_name\fP)"
 This function returns the value of a job environment variable
-(\fIvariable_name\fP). 
+\fIvariable_name\fP.
 .PP
 This variable has to be passed with the \fIqsub\fP command line switch 
-\fI-v\fP or \fI-V\fP and it has to be enabled that environment variable data is 
-passed to JSV scripts. Environment variable data is passed when the 
+\fI-v\fP or \fI-V\fP, and passing of environment variable data to JSV
+scripts has to be enabled. Environment variable data are passed when the 
 function \fBjsv_send_env\fP() is called in the callback function 
 \fBjsv_on_start\fP().
 .PP
-If the variable does not exist or if environment variable 
-information is not available then an empty string will be returned. 
+If the variable does not exist, or if environment variable 
+information is not available, then an empty string will be returned. 
 .\"
-.SS "jsv_add_env()"
+.SS "jsv_add_env(\fIvariable_name\fP, \fIvariable_value\fP)"
 This function adds an additional environment variable to the set 
-of variables that will exported to the job, when it is started.
+of variables that will exported to the job when it is started.
 As a result the \fIvariable_name\fP and \fIvariable_value\fP become 
-available, as if the -v or -V was specified during job submission.
+available, as if 
+.B \-v
+Or
+.B \-V
+was specified during job submission.
 .PP
-\fIvariable_value\fP is optional. If there is an empty string passed 
-then the variable is defined without value.
+\fIvariable_value\fP is optional. If an empty string is passed,
+then the variable is defined without a value.
 .PP
 If \fIvariable_name\fP already exists in the set of job environment 
-variables, then the corresponding value will be replaced by
+variables, the corresponding value will be replaced by
 \fIvariable_value\fP, as if the function \fBjsv_mod_env\fP() was used. 
 If an empty string is passed then the old value will be deleted.
 .PP
-To delete a environment variable the function \fBjsv_del_env\fP()
+To delete an environment variable, the function \fBjsv_del_env\fP()
 has to be used.
 .\"
-.SS "jsv_mod_env()"
+.SS "jsv_mod_env(\fIvariable_name\fP, \fIvariable_value\fP)"
 This function modifies an existing environment variable that is 
-in the set of variables which will exported to the job, when it 
+in the set of variables which will exported to the job when it 
 is started.
 As a result, the \fIvariable_name\fP and \fIvariable_value\fP will be
-available as if the -v or -V was specified during job submission.
+available as if
+.B \-v
+Or
+.B \-V
+was specified during job submission.
 .PP
-\fIvariable_value\fP is optional. If there is an empty string passed 
-then the variable is defined without value.
+\fIvariable_value\fP is optional. If an empty string is passed,
+then the variable is defined without a value.
 .PP
 If \fIvariable_name\fP does not already exist in the set of job 
 environment variables, then the corresponding name and value will 
@@ -383,18 +515,18 @@ be added as if the function \fBjsv_add_env\fP() was used.
 .PP
 To delete a environment variable, use the function \fBjsv_del_env\fP().
 .\"
-.SS "jsv_del_env()"
-This function removes a job environment variable (\fIvariable_name\fP)
+.SS "jsv_del_env(\fIvariable_name\fP)"
+This function removes job environment variable \fIvariable_name\fP
 from the set of variables that will be exported
-to the job, when it is started.
+to the job when it is started.
 .PP
-If \fIvariable_name\fP does not already exists in the set of job 
+If \fIvariable_name\fP does not already exist in the set of job 
 environment variables then the command is ignored.
 .PP
-To change the value of a variable use the function \fBjsv_mod_env\fP()
+To change the value of a variable use the function \fBjsv_mod_env\fP();
 to add a new value, call the function \fBjsv_add_env\fP().
 .\"
-.SS "jsv_accept()"
+.SS "jsv_accept(\fImessage\fP)"
 This function can only be used in \fBjsv_on_verify\fP(). After it has been
 called, the function \fBjsv_on_verify\fP() has to return immediately. 
 .PP
@@ -403,11 +535,11 @@ currently being verified should be accepted as it was initially
 provided. All job  modifications that might have been applied 
 in \fBjsv_on_verify\fP() before this function was called, are then ignored.
 .PP
-Instead of calling \fBjsv_accept\fP() in \fBjsv_on_verify\fP() also the
+Instead of calling \fBjsv_accept\fP() in \fBjsv_on_verify\fP(), the
 functions \fBjsv_correct\fP(), \fBjsv_reject\fP() or \fBjsv_reject_wait\fP() can
 be called, but only one of these functions can be used at a time.
 .\"
-.SS "jsv_correct()"
+.SS "jsv_correct(\fImessage\fP)"
 This function can only be used in \fBjsv_on_verify\fP(). After it has been
 called, the function \fBjsv_on_verify\fP() has to return immediately. 
 .PP
@@ -419,12 +551,12 @@ the job will either be passed to the next JSV instance for
 modification or that it is passed to that component in the master 
 daemon that adds it to the master data store when the
 last JSV instance has verified the job.
-.PP     
+.PP
 Instead of calling \fBjsv_correct\fP() in \fBjsv_on_verify\fP(), the
 functions \fBjsv_accept\fP(), \fBjsv_reject\fP() or \fBjsv_reject_wait\fP() can
 be called, but only one of these functions can be used.
 .\"
-.SS "jsv_reject()"
+.SS "jsv_reject(\fImessage\fP)"
 This function can only be used in \fBjsv_on_verify\fP(). After it has been
 called the function \fBjsv_on_verify\fP() has to return immediately. 
 .PP
@@ -437,11 +569,11 @@ to stdout to inform the user that the submission has failed.
 the job again. \fBjsv_reject_wait\fP() indicates that the verification process
 might be successful in the future.
 .PP
-Instead of calling \fBjsv_reject\fP() in \fBjsv_on_verify\fP() also the
+Instead of calling \fBjsv_reject\fP() in \fBjsv_on_verify\fP(), the
 functions \fBjsv_accept()\fP, \fBjsv_correct\fP() or \fBjsv_reject_wait\fP() can
-be also called, but only one of these functions can be used.
+be called, but only one of these functions can be used.
 .\"
-.SS "jsv_reject_wait()"
+.SS "jsv_reject_wait(\fImessage\fP)"
 This function can only be used in \fBjsv_on_verify\fP(). After it has been
 called the function \fBjsv_on_verify\fP() has to return immediately. 
 .PP
@@ -456,9 +588,9 @@ indicates that the verified job will also be rejected in future.
 .PP
 Instead of calling \fBjsv_reject_wait\fP() in \fBjsv_on_verify\fP() the
 functions \fBjsv_accept\fP(), \fBjsv_correct\fP() or \fBjsv_reject\fP() can 
-be also called, but only one of these functions can be used.
+be called, but only one of these functions can be used.
 .\"
-.SS "jsv_log_info()"
+.SS "jsv_log_info(\fImessage\fP)"
 This function sends an info \fImessage\fP to the client or
 master daemon instance that started the JSV script.
 .PP
@@ -469,18 +601,18 @@ message file.
 .PP
 If \fImessage\fP is missing then an empty line will be printed.
 .\"
-.SS "jsv_log_warning()"
+.SS "jsv_log_warning(\fImessage\fP)"
 This function sends a warning \fImessage\fP to the client or
 master daemon instance that started the JSV script.
 .PP
 For client JSVs, this means that the command line client will get
 the information and print it to the stdout stream. Server JSVs
-will print that message as an warning message to the master daemon
+will print that message as a warning message to the master daemon
 message file.
 .PP
 If \fImessage\fP is missing then an empty line will be printed.
 .\"
-.SS "jsv_log_error()"
+.SS "jsv_log_error(\fImessage\fP)"
 This function sends an error \fImessage\fP to the client or
 master daemon instance that started the JSV script.
 .PP
@@ -507,12 +639,12 @@ master daemon thread). For this reason, job environment information
 is not passed to JSV scripts by default.
 .PP
 Please note also that the data in the job environment can't be
-verified by Grid Engine and might therefore contain data which
+verified by Grid Engine and might therefore contain values which
 could be misinterpreted in the script environment
 and cause security issues. 
 .\"
 .SS "jsv_main()"
-This function has to be called an main function in JSV scripts. It implements
+This function has to be called in the main function in JSV scripts. It implements
 the JSV protocol and performs the communication with client and server
 components which might start JSV scripts.
 .PP    
@@ -530,17 +662,17 @@ verification process itself.
 The function \fBjsv_send_env\fP() can be called in \fBjsv_on_start\fP() so that
 the job environment is available in \fBjsv_on_verify\fP(). 
 .PP
-The following function can only be used in \fBjsv_on_verify\fP().
+The following functions can only be used in \fBjsv_on_verify\fP().
 Simple job parameters can be accessed/modified with: \fBjsv_is_param\fP, 
 \fBjsv_get_param\fP, \fBjsv_set_param\fP and \fBjsv_del_param\fP.
 .PP
 List based job parameters can be accessed with: \fBjsv_sub_is_param\fP, 
-\fBjsv_sub_get_param\fP, \fBjsv_sub_add_param\fP and \fBjsv_sub_del_param\fP
+\fBjsv_sub_get_param\fP, \fBjsv_sub_add_param\fP and \fBjsv_sub_del_param\fP.
 .PP
 If the environment was requested with \fBjsv_send_env\fP() in \fBjsv_on_start\fP() 
 then the environment can be accessed/modified with the following
 commands: \fBjsv_is_env\fP, \fBjsv_get_env\fP, \fBjsv_add_env\fP, \fBjsv_mod_env\fP 
-and \fBjsv_del_env\fP
+and \fBjsv_del_env\fP.
 .PP
 Jobs can be accepted/rejected with the following: \fBjsv_accept\fP, \fBjsv_correct\fP, 
 \fBjsv_reject\fP and \fBjsv_reject_wait\fP.
@@ -549,15 +681,15 @@ The following functions send messages to the calling component of a JSV
 that will either appear on the stdout stream of the client or in the
 master message file. This is especially useful when new JSV scripts 
 should be tested: \fPjsv_show_params\fB, \fPjsv_show_envs\fB, \fPjsv_log_info\fB, 
-\fPjsv_log_warning\fB and \fPjsv_log_error\fB
+\fPjsv_log_warning\fB and \fPjsv_log_error\fB.
 .\"
 .SS "jsv_on_start()"
 This is a callback function that has to be defined by the creator of a JSV script.
-It is called for every job short time before the verification process of a
+It is called for every job a short time before the verification process of a
 job starts.
 .PP
 Within this function \fBjsv_send_env\fP can be called to request job environment
-information for the next job is scheduled to be verified.
+information for the next job scheduled to be verified.
 .\"
 .PP
 After this function returns \fBjsv_on_verify\fP() will be called. This function does
@@ -567,7 +699,7 @@ This is a callback function that has to be defined by the creator of a JSV scrip
 It is called for every job, and when it returns the job will either be accepted
 or rejected. Find implementation examples in the directory $SGE_ROOT/util/resources/jsv.
 .PP
-The logic of this function completely depends on the creator of this function. The creator
+The logic of this function completely depends on its creator. The creator
 has only to take care that one of the functions \fBjsv_accept\fP(), \fBjsv_reject\fP(), 
 \fBjsv_reject_wait\fP() or \fBjsv_correct\fP() is called before the function returns.
 .\"
@@ -576,23 +708,41 @@ has only to take care that one of the functions \fBjsv_accept\fP(), \fBjsv_rejec
 .SH "EXAMPLES"
 Find in the table below the returned values for the "*is*" and "*get*" functions when
 following job is submitted:
+.RS
 .nf
 
-      qsub -l mem=1G,mem2=200M ...
-
-      function call                    returned value 
-      -----------------------------    -----------------
-      jsv_is_param(l_hard)             "true"
-      jsv_get_param(l_hard)            "mem=1G,mem2=200M"
-      jsv_sub_is_param(l_hard,mem)     "true"
-      jsv_sub_get_param(l_hard,mem)    "1G"
-      jsv_sub_get_param(l_hard,mem3)   "false"
-      jsv_sub_get_param(l_hard,mem3)   "" 
+qsub -l mem=1G,mem2=200M ...
 
 .fi
+.TS
+tab(@);
+l l.
+function call @ returned value 
+_@_
+jsv_is_param(l_hard) @ "true"
+jsv_get_param(l_hard) @ "mem=1G,mem2=200M"
+jsv_sub_is_param(l_hard,mem) @ "true"
+jsv_sub_get_param(l_hard,mem) @ "1G"
+jsv_sub_get_param(l_hard,mem3) @ "false"
+jsv_sub_get_param(l_hard,mem3) @ "" 
+.TE
+.RE
 .\"
 .\"
-.PP
+.SH FILES
+.nf
+Include files:
+.I $SGE_ROOT/util/resources/jsv/jsv_inlcude.sh
+.I $SGE_ROOT/util/resources/jsv/jsv_include.tcl
+.I $SGE_ROOT/util/resources/jsv/JSV.pm
+.I $SGE_ROOT/util/resources/jsv/Simplejsv.java
+Example files:
+.I $SGE_ROOT/util/resources/jsv/jsv.sh
+.I $SGE_ROOT/util/resources/jsv/jsv.tcl
+.I $SGE_ROOT/util/resources/jsv/jsv.pl
+.I $SGE_ROOT/util/resources/jsv/jjsv.sh
+.fi
+.\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
 .M jsv 1 ,
