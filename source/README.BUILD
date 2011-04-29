@@ -52,9 +52,14 @@ Content
       - get and compile openSSL library (optional); actually, it is
 	recommended to use the system's shared library, which means
 	installing the openssl development package against which to
-	build
-      - build and install the Berkeleydb library, preferably as your
-	OS's development package of it
+	build (openssl-devel on RedHat, libssl-dev on Debian)
+      - install the Berkeleydb library (optional), preferably as your
+	OS's development package of it (openssl-devel on RedHat,
+	libdb-dev on Debian)
+      - You may also need development packages of ncurses and (on
+	GNU/Linux) pam.  For building the qmon GUI, you need
+	development packages of lesstif or openmotif (non-free
+	software), libXmu, and libXpm.
       - create dependency tool and dependencies with 'aimk'
       - compile binaries with 'aimk'
       - create a distribution repository with 'distinst'

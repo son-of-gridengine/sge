@@ -1,11 +1,10 @@
 This source is extracted from the original distribution
 http://www-zeuthen.desy.de/~ahaupt/downloads/sge-sshd-control-1.2-1.src.rpm,
-written up in
-http://gridengine.sunsource.net/download/workshop10-12_09_07/SGE-WS2007-SGEAndGridAtDESY_DESY_AndreasHaupt.pdf.
+written up in http://gridengine.org/assets/static/ws2007/K5SGE.pdf.
 
 The licence has been changed from the original GPL of unspecified
-version to LGPL, which is more appropriate for a PAM module which
-might be used with a daemon with an incompatible licence following
+version to LGPL (which is more appropriate for a PAM module which
+might be used with a daemon with an incompatible licence) following
 mail from the author:
 
   From: Andreas Haupt <andreas.haupt@desy.de>
