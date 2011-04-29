@@ -1182,6 +1182,7 @@ if [ $instcommon = true ]; then
          MakeDir doc/javadocs
 
          Execute cp -R JAVADOCS/* $DEST_SGE_ROOT/doc/javadocs
+	 Execute cp ../doc/javadoc-index.html $DEST_SGE_ROOT/doc/javadocs/index.html
 
          Execute find $DEST_SGE_ROOT/doc/javadocs -type d | xargs chmod 755
          Execute find $DEST_SGE_ROOT/doc/javadocs -type f | xargs chmod 644
