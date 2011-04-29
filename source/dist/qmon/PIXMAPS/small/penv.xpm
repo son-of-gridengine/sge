@@ -34,9 +34,9 @@ static char *penv[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 5 1",
 "  c black",
-". c #2F5E9A",
-"X c #9EBBE0",
-"o c #B9CEE9",
+". c #2A368C",
+"X c #828CD6",
+"o c #99A1DF",
 "O s mask c None",
 /* pixels */
 "OOOOOOOOOOOOOOOO",
