@@ -1183,7 +1183,7 @@ greater than the user defined value, it will cause logging to appear in the qmas
 level. By setting this value to 0, all jobs will be logged in the qmaster messages file. This value is specified
 in milliseconds and has a default value of 5000.
 .IP "\fIOLD_RESCHEDULE_BEHAVIOR\fp"
-Beginning with version 8.0.0 of Univa Grid Engine the scheduling behavior changed
+Beginning with version 8.0.0 of xxQS_NAMExx the scheduling behavior changed
 for jobs that are rescheduled by users. Rescheduled jobs will not be put at the
 beginning of the pending job list anymore. The submit time of those jobs is set
 to the end time of the previous run. Due to that those rescheduled jobs will be 
@@ -1191,7 +1191,7 @@ appended to the pending job list as if a new job had been
 submitted. To achieve the old behaviour set the parameter \fIOLD_RESCHEDULE_BEHAVIOR\fP. Please note that this parameter is deprecated,
 so it might be removed with the next minor release.
 .IP "\fIOLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB\fp"
-Beginning with version 8.0.0 of Univa Grid Engine the scheduling behavior changed
+Beginning with version 8.0.0 of xxQS_NAMExx the scheduling behavior changed
 for array job tasks that are rescheduled by users. As soon as an array job task 
 gets rescheduled, all remaining pending tasks of that job will be put at the end of 
 the pending job list. To achieve the old scheduling behaviour set the parameter 
