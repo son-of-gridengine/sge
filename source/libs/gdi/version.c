@@ -34,9 +34,9 @@
 
 #include "gdi/version.h"
 
-const char GDI_VERSION[] = "6.2u5.1";
+const char GDI_VERSION[] = "8.0.0 beta";
 
-const gdi_ulong32 GRM_GDI_VERSION = 0x10010000;
+const gdi_ulong32 GRM_GDI_VERSION = 0x10003000;
 
 vdict_t GRM_GDI_VERSION_ARRAY[] = 
 {
@@ -64,12 +64,13 @@ vdict_t GRM_GDI_VERSION_ARRAY[] =
       { 0x100020F6, "6.2u5beta1" },
       { 0x100020F7, "6.2u5beta2" },
       { 0x100020F8, "6.2u5beta2" },
-      { 0x100020F8, "6.2u5"},
+      { 0x100020F8, "6.2u5" },
+      { 0x10010000, "6.2u5.1" },
       { 0, NULL}
 };
 
-#ifdef ADD_SUN_COPYRIGHT
-const char GE_LONGNAME[] = "Sun Grid Engine";
+#ifdef ADD_UNIVA_COPYRIGHT
+const char GE_LONGNAME[] = "Son of Grid Engine";
 const char GE_SHORTNAME[] = "SGE";
 #else
 const char GE_LONGNAME[] = "Grid Engine";
@@ -80,7 +81,7 @@ const char GE_SHORTNAME[] = "SGE";
 #  include "copyright.h"
 #endif
 
-#if !(ADD_COPYRIGHT || ADD_SUN_COPYRIGHT)
+#if !(ADD_COPYRIGHT || ADD_UNIVA_COPYRIGHT)
 const char SFLN_ELN[] = "\n\
    Grid Engine is based on code donated by Sun Microsystems.\n\
    The copyright is owned by Sun Microsystems and other contributors.\n\
@@ -93,7 +94,7 @@ Florida State University in creating the DQS program.\n";
 
 #endif
 
-#ifndef ADD_SUN_COPYRIGHT
+#ifndef ADD_UNIVA_COPYRIGHT
 
 const char SISSL[] = "\n\
 The Contents of this file are made available subject to the terms of\n\
@@ -122,4 +123,4 @@ Copyright: 2001 by Sun Microsystems, Inc.\n\
 \n\
 All Rights Reserved.\n"; 
 
-#endif /* ADD_SUN_COPYRIGHT */
+#endif /* ADD_UNIVA_COPYRIGHT */
