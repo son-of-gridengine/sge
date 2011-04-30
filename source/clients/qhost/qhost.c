@@ -103,7 +103,7 @@ static int xml_report_started(qhost_report_handler_t* handler, lList **alpp)
    DENTER(TOP_LAYER, "xml_report_started");
 
    printf("<?xml version='1.0'?>\n");
-   printf("<qhost xmlns:xsd=\"http://gridengine.sunsource.net/source/browse/*checkout*/gridengine/source/dist/util/resources/schemas/qhost/qhost.xsd?revision=1.2\">\n");
+   printf("<qhost xmlns:xsd=\"http://arc.liv.ac.uk/repos/darcs/sge/source/dist/util/resources/schemas/qhost/qhost.xsd\">\n");
    
    DRETURN(QHOST_SUCCESS);
 }

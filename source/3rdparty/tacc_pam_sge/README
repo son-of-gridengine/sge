@@ -14,7 +14,7 @@ Torque and SLURM respectively.  For a different approach, see the
 pam_authuser module distributed with torque (though you can use
 pam_access with similar prolog and epilog scripts, rather than the
 separate authuser module), or you can use pam_limits
-e.g. <http://gridengine.sunsource.net/ds/viewMessage.do?dsForumId=38&dsMessageId=282211>.
+e.g. <http://gridengine.markmail.org/thread/mu3i7haeshlevu6q>.
 
 ----------
 

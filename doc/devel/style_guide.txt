@@ -31,7 +31,7 @@ DRAFT of a Coding Styleguide
 
                   Each developer has to stick to such rules. A violation
                   against one of these rules has to be discussed on
-                  'dev@gridengine.sunsource.net'.
+                  'dev@gridengineorg.
 
       S           SHOULD
 
@@ -56,7 +56,7 @@ DRAFT of a Coding Styleguide
       (M)   This styleguide will be maintained by all developers of SGE. Each
             developer can suggest the addition/modification/removal of
             rules in this styleguide. All modifications of this guide are
-            discussed on 'dev@gridengine.sunsource.net'.
+            discussed on 'dev@gridengine.org'.
 
    1.4 Version
    -----------

@@ -39,7 +39,7 @@ ___INFO__MARK_END__-->
         <authors>
            <author name="Sun Microsystems, Inc." email="www.sun.com"/>
         </authors>
-        <url>http://gridengine.sunsource.net/</url>
+        <url>http://gridengine.org/</url>
         <uninstaller write="no" />
     </info>
     <guiprefs width="940" height="720" resizable="yes">
