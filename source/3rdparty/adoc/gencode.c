@@ -527,7 +527,7 @@ int gen_texinfo(FILE *fp, int tabsize, int flags, char *body_environment, char *
     char *last_chapter = (char *)0;  /* last printed chapter */
     char *last_section = (char *)0;  /* last printed section */
 
-    fprintf(fp,"@menu\n");
+    fprintf(fp,"@ifnotinfo\n@node Top\n@end ifnotinfo\n@menu\n");
 
     for(fun= stepfun(0); fun && (err==0); fun= stepfun(1))
     {

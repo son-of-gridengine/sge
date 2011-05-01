@@ -3010,34 +3010,41 @@ if ( "$ADOC" == 1) then
    set EDITION = "1.0"
    set REVISION = `grep GDI_VERSION libs/gdi/version.* | cut -f 2 -d '"'`
 
-   echo "Creating documentation for libs: libcomm.texi"
+   echo "Creating documentation for libs: libcomm.texi, libcomm.html"
    3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine Communication Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/comm/*.h libs/comm/*.c -o $COMPILE_ARCH/libcomm.texi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libcomm.html  $COMPILE_ARCH/libcomm.texi
 
-   echo "Creating documentation for libs: libcull.texi"
+   echo "Creating documentation for libs: libcull.texi, libcull.html"
    3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine CULL Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/cull/*.h libs/cull/*.c -o $COMPILE_ARCH/libcull.texi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libcull.html  $COMPILE_ARCH/libcull.texi
 
-   echo "Creating documentation for libs: eventclient.texi"
+   echo "Creating documentation for libs: eventclient.texi, eventclient.html"
    3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Event Client Interface" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/evc/*.h libs/evc/*.c libs/evm/*.h libs/evm/*.c -o $COMPILE_ARCH/eventclient.texi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/eventclient.html  $COMPILE_ARCH/eventclient.texi
 
-   echo "Creating documentation for libs: libgdi.texi"
+   echo "Creating documentation for libs: libgdi.texi, libgdi.html"
    3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine GDI Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/gdi/*.h libs/gdi/*.c -o $COMPILE_ARCH/libgdi.texi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libgdi.html  $COMPILE_ARCH/libgdi.texi
 
-   echo "Creating documentation for libs: libmir.texi"
+   echo "Creating documentation for libs: libmir.texi, libmir.html"
    3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine Mirror Interface" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/mir/*.h libs/mir/*.c -o $COMPILE_ARCH/libmir.texi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libmir.html  $COMPILE_ARCH/libmir.texi
 
-   echo "Creating documentation for libs: libsched.texi"
+   echo "Creating documentation for libs: libsched.texi, libsched.html"
    3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine SCHED Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/sched/*.h libs/sched/*.c -o $COMPILE_ARCH/libsched.texi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libsched.html  $COMPILE_ARCH/libsched.texi
 
-   echo "Creating documentation for libs: libsgeobj.texi"
+   echo "Creating documentation for libs: libsgeobj.texi, libsgeobj.html"
    3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine SGEOBJ Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/sgeobj/*.h libs/sgeobj/*.c -o $COMPILE_ARCH/libsgeobj.texi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libsgeobj.html  $COMPILE_ARCH/libsgeobj.texi
 
-   echo "Creating documentation for libs: libjapi.texi"
+   echo "Creating documentation for libs: libjapi.texi, libjapi.html"
    3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine Job API Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/japi/japi.h libs/japi/japi.c -o $COMPILE_ARCH/libjapi.texi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libjapi.html  $COMPILE_ARCH/libjapi.texi
 
-   echo "Creating documentation for libs: libuti.texi"
+   echo "Creating documentation for libs: libuti.texi, libuti.html"
    3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine Utility Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/uti/*.h libs/uti/*.c -o $COMPILE_ARCH/libuti.texi
-
-   echo "Creating documentation for libs: libdrmaa.texi"
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libuti.html  $COMPILE_ARCH/libuti.texi
 endif
 echo done.
 
