@@ -397,10 +397,14 @@ jobs to be started afterwards. An optional prefix "user@" specifies the
 user under which this procedure is to be started. The procedure's standard
 output and error output stream are written to the same file used for
 the standard output and error output of the job.
+.PP
 This procedure is intended as a means
 for the xxQS_NAMExx administrator to automate the execution of general
 site-specific tasks, like the preparation of temporary file systems
-in the same context as the job. This queue configuration 
+in the same context as the job.
+For a parallel job, only a single instance of the prolog is run on the
+master node.
+This queue configuration
 entry overwrites cluster global or execution host specific
 .B prolog
 definitions (see
@@ -433,10 +437,15 @@ job that has just completed.
 An optional prefix "user@" specifies the user under which this procedure
 is to be started. The procedure's standard output and the error output 
 stream are written to the same file used for the standard output 
-and error output of the job. This procedure is intended as a means
+and error output of the job.
+.PP
+This procedure is intended as a means
 for the xxQS_NAMExx administrator to automate the execution of general
 site-specific tasks like the cleaning up of temporary file systems
-in the same context as the job. This queue configuration 
+in the same context as the job.
+For a parallel job, only a single instance of the epilog is run on the
+master node.
+This queue configuration
 entry overwrites cluster global or execution host specific
 .B epilog
 definitions (see
@@ -489,21 +498,20 @@ xxQS_NAMExx for suspension, release of a suspension and for termination
 of a job. Per default, the signals SIGSTOP, SIGCONT and SIGKILL are
 delivered to the job to perform these actions. However, for some
 applications this is not appropriate.
-
+.PP
 If no executable path is given, xxQS_NAMExx takes the specified
 parameter entries as the signal to be delivered instead of the default
 signal. A signal must be either a positive number or a signal name with
 \fB"SIG"\fP as prefix and the signal name as printed by
 .I kill -l
-(e.g.  SIGTERM).
-
+(e.g. SIGTERM).
+.PP
 If an executable path is given (it must be an \fIabsolute path\fP starting
 with a "/") then this command, together with its arguments, is started by
 xxQS_NAMExx to perform the appropriate action. The following special
 variables are expanded at runtime and can be used (besides any other
 strings which have to be interpreted by the procedures) to compose a
 command line:
-
 .IP "\fI$host\fP"
 The name of the host on which the procedure is started.
 .IP "\fI$job_owner\fP"
@@ -516,7 +524,20 @@ The name of the job.
 The name of the queue.
 .IP "\fI$job_pid\fP"
 The pid of the job.
-
+.PP
+Note that a method is only executed on the master node of a parallel
+job, so it may be necessary to propagate the necessary action to slave
+nodes explicitly.  (However, MPI implementations may, for instance,
+respond to SIGTSTP sent to the master process by stopping all the
+distributed processes.)  If an executable is used for a method, it is
+started the same environment setting as that for the job concerned (see
+.M qsub 1 ).
+.PP
+The normal xxQS_NAMExx-defined environment variables are exported to
+the prolog (see
+.M qsub 1 );
+thus, say, it could choose the appropriate method according to
+.BR $PE .
 .SS "\fBnotify\fP"
 The time to wait between delivery of SIGUSR1/SIGUSR2 
 notification signals and suspend/kill signals if the job was submitted with
