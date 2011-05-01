@@ -49,16 +49,22 @@ to use different daemons and commands to
 start the final session. Different startup methods can therefore contain different daemons and
 commands, and are not related to other startup methods in any way, although it is often desirable to have the same
 communication method for all startup methods.
+.PP
+Each method requires a separate instance of the communication daemon
+to be started by
+.M sge_shepherd 8
+for each job, which thus must use a randomly-chosen port, to which the
+client will try to connect.  This is necessary to support tight
+integration, ensuring that everything for a given job stays in the
+same process tree and can be properly controlled and accounted by
+xxQS_NAMExx.
 .SH QLOGIN
 An interactive \fBqlogin\fR session invoked by
 .M qlogin 1
-will show up in \fBqstat\fR with the default name \fBQLOGIN\fR unless changed by the \fB-N name\fR
+will show up in \fBqstat\fR with the default name \fBQLOGIN\fR unless changed by the \fB\-N \fIname\fR
 option.  The two entries \fBqlogin_daemon\fR and
 \fBqlogin_command\fR are responsible for establishing the communication
 to start such a session.
-.sp 1
-The defined \fBqlogin_daemon\fR will use a randomly chosen port, to have
-a unique port for each session. The \fBqlogin_command\fR will try to connect to this port.
 .sp 1
 The default is the value \fBbuiltin\fR, which will trigger an xxQS_NAME_Sxx internal communication method:
 .sp 1
@@ -73,20 +79,22 @@ builtin
 .PD
 .RE
 .sp 1
-In cases where you want to set up a different communication method, it
+In cases where you want a different communication method, it
 can also be set up for the formerly-used communication
 method based on \fBtelnet\fR. Despite the fact that \fBtelnet\fR is
-used, and so the traffic is not encrypted (which might still be
-reasonable on a private subnet for the cluster, especially if it
-doesn't use xxQS_NAME_Sxx's CSP security), there is no need to have
+used, there is no need to have
 \fBtelnetd\fR running all the time \- xxQS_NAME_Sxx will start a unique one for
-each job, even when it's from the same user. Entries in
-/etc/xinted.d/telnet can stay disabled for \fBtelnet\fR. Only the file
-/etc/hosts.equiv needs to contain the name of the machines from where
-a
+each job, even when it's from the same user, and telnet can stay disabled
+as a system service (whether under init or inetd).  Only the file
+/etc/hosts.equiv needs to contain the name of the machines from where a
 .M qlogin 1
 should be allowed. This is often the head node of a cluster, or
-particular submit machines. To achieve this:
+particular submit machines.
+Using telnet, the traffic is not encrypted, but that may be
+reasonable on a private subnet for the cluster, especially if
+xxQS_NAME_Sxx's CSP security isn't used to secure the system generally.
+.PP
+To achieve this:
 .sp 1
 .RS
 .PD 0
@@ -109,7 +117,7 @@ This can also be used to set up secure communication using \fBSSH\fR
 (which can also provide X and credential forwarding, as well as compression).
 In this case a small wrapper must be implemented,
 whose sole purpose is to swap the two given arguments and prepend
-.B -p
+.B \-p
 to the port argument:
 .sp 1
 .RS
@@ -119,7 +127,7 @@ to the port argument:
 \fIpath_to_qlogin_wrapper\fR
 .TP
 .B qlogin_daemon
-/usr/sbin/sshd -i
+/usr/sbin/sshd \-i
 .PD
 .RE
 .sp 1
@@ -133,7 +141,7 @@ HOST=$1
 .br
 PORT=$2
 .br
-exec /usr/bin/ssh -X -p $PORT $HOST
+exec /usr/bin/ssh \-X \-p $PORT $HOST
 .RE
 .PP
 .\"
@@ -141,12 +149,9 @@ exec /usr/bin/ssh -X -p $PORT $HOST
 .SH QRLOGIN
 An interactive \fBqrlogin\fR session invoked by
 .M qrsh 1
-\fBwithout\fR a command will show up in \fBqstat\fR having the default name \fBQRLOGIN\fR unless changed by the \fB-N name\fR option. 
+\fBwithout\fR a command will show up in \fBqstat\fR having the default name \fBQRLOGIN\fR unless changed by the \fB\-N \fIname\fR option. 
 The two entries \fBrlogin_daemon\fR and \fBrlogin_command\fR are
 responsible for establishing the command to start such a session.
-.sp 1
-The defined \fBrlogin_daemon\fR will use a randomly chosen port, to have
-a unique port for each session. The \fBrlogin_command\fR will try to connect to this port.
 .sp 1
 The default is the value \fBbuiltin\fR, which will trigger an xxQS_NAME_Sxx internal communication method:
 .sp 1
@@ -161,20 +166,19 @@ builtin
 .PD
 .RE
 .sp 1
-In cases where you want to set up a different communication method, it
-can also be set up for the formerly-used communication
-method based on \fBrlogin\fR. Despite the fact that \fBrlogin\fR is
-used, and so the traffic is not encrypted (which might still be
-reasonable on a private subnet for the cluster, especially if it
-doesn't use xxQS_NAME_Sxx's CSP security), there is no need to have
-\fBrlogind\fR running all the time \- xxQS_NAME_Sxx will start a unique one for
-each job, even when it's from the same user. Entries in
-/etc/xinted.d/rlogin can stay disabled for \fBrlogin\fR. Only the file
-/etc/hosts.equiv needs to contain the name of the machines from where
-a
+In cases where you want a different communication method, it
+can follow the formerly-used communication
+method based on \fBrlogin\fR.  As for telnet, rlogin can stay disabled
+as a system service (whether under init or inetd).  Only the file
+/etc/hosts.equiv needs to contain the name of the machines from where a
 .M qrsh 1
 should be allowed. This is often the head node of a cluster, or
-particular submit machines. To achieve this:
+particular submit machines.  Using \fBrlogin\fR, the traffic is not
+encrypted, but that may be reasonable on a private subnet for the
+cluster, especially if xxQS_NAME_Sxx's CSP security isn't used to
+secure the system generally.
+.PP
+To achieve this:
 .sp 1
 .RS
 .PD 0
@@ -197,7 +201,7 @@ not implemented for these entries. When the cluster is homogeneous, it can be se
 minority of machines will get local configurations.
 .sp 1
 The defined \fBrlogin_command\fR will then be called with three
-additional parameters: \[oq]-p\[cq],\[oq]PORT\[cq], and \[oq]HOST\[cq]\[oq]PORT\[cq] in
+additional parameters: \[oq]\-p\[cq],\[oq]PORT\[cq], and \[oq]HOST\[cq]\[oq]PORT\[cq] in
 exactly that order, which refer to the machine the
 \fBrlogin_command\fR should address and the port to be used.
 .sp 1
@@ -210,7 +214,7 @@ This can also be used to set up a secure communication using \fBSSH\fR:
 /usr/bin/ssh
 .TP
 .B rlogin_daemon
-/usr/sbin/sshd -i
+/usr/sbin/sshd \-i
 .PD 
 .RE
 .PP
@@ -220,14 +224,11 @@ This can also be used to set up a secure communication using \fBSSH\fR:
 An interactive session for a remote command invoked by
 .M qrsh 1
 \fBwith\fR a command will show up in \fBqstat\fR by default with name
-of the command issued, unless changed by the \fB-N name\fR option.
+of the command issued, unless changed by the \fB\-N \fIname\fR option.
 The two entries \fBrsh_daemon\fR and \fBrsh_command\fR are
 responsible for establishing the communication to start such a session.
 This startup method will also be used by the master task of
 a tightly integrated parallel job to start slave processes on other granted exechosts.
-.sp 1
-The defined \fBrsh_daemon\fR will use a randomly chosen port, to have
-a unique port for each session. The \fBrsh_command\fR will then try to connect to this port.
 .sp 1
 The default is the value \fBbuiltin\fR, which will trigger an xxQS_NAME_Sxx internal communication method:
 .sp 1
@@ -242,19 +243,19 @@ builtin
 .PD
 .RE
 .sp 1
-In cases where you want to set up a different communication method, it
+In cases where you want a different communication method, it
 can also be set up for the formerly-used communication
-method based on \fBrsh\fR. Despite the fact that \fBrsh\fR is used,
-and so the traffic is not encrypted (which might still be reasonable
-on a private subnet for the cluster, especially if it doesn't use
-xxQS_NAME_Sxx's CSP security), there is no need to have \fBrshd\fR running all
-the time, as xxQS_NAME_Sxx will start a unique one for each job, even when it's
-from the same user. Entries in /etc/xinted.d/rlogin can stay disabled
-for \fBrsh\fR. Only the file /etc/hosts.equiv needs to contain the
-name of the machines from where a
+method based on \fBrsh\fR.  As for telnet, rsh can stay disabled as a system service
+(whether under init or inetd).  Only the file /etc/hosts.equiv needs
+to contain the name of the machines from where a
 .M qrsh 1
 should be allowed. This is often the head node of a cluster, or
-particular submit machines. To achieve this:
+particular submit machines.  Using \fBrsh\fR, the traffic is not
+encrypted, but that may be reasonable on a private subnet for the
+cluster, especially if xxQS_NAME_Sxx's CSP security isn't used to
+secure the system generally.
+.PP
+To achieve this:
 .sp 1
 .RS
 .PD 0
@@ -263,7 +264,7 @@ particular submit machines. To achieve this:
 $SGE_ROOT/utilbin/\fI$ARC\fR/rsh
 .TP
 .B rsh_daemon
-$SGE_ROOT/utilbin/\fI$ARC\fR/rshd -l
+$SGE_ROOT/utilbin/\fI$ARC\fR/rshd \-l
 .PD
 .RE
 .sp 1
@@ -277,7 +278,7 @@ not implemented for these entries. When the cluster is homogeneous, it can be se
 minority of machines will get local configurations.
 .sp 1
 The defined \fBrsh_command\fR will then be called with four additional
-parameters: \[oq]-n\[cq], \[oq]-p\[cq], \[oq]PORT\[cq], and \[oq]HOST\[cq] in
+parameters: \[oq]\-n\[cq], \[oq]\-p\[cq], \[oq]PORT\[cq], and \[oq]HOST\[cq] in
 exactly that order, which refer to the machine the \fBrsh_command\fR should address and the port to be used.
 .sp 1
 This can also be used to set up a secure communication using \fBSSH\fR:
@@ -289,10 +290,11 @@ This can also be used to set up a secure communication using \fBSSH\fR:
 /usr/bin/ssh
 .TP
 .B rsh_daemon
-/usr/sbin/sshd -i
+/usr/sbin/sshd \-i
 .PD
 .RE
-.PP
+Again, this is independent of SSH as a system service, which can
+remain disabled.
 .\"
 .\"
 .SH LOCAL CONFIGURATIONS OF EXECHOSTS
@@ -328,10 +330,15 @@ from A to B is invoked, or from B to A.
 .\"
 .\"
 .SH RESTRICTIONS
-For all three communication methods, a direct connection between the target and the source machine
-where the particular command was issued must exist. This can also be implemented using TCP/IP
-forwarding, but will usually fail if one machine is behind \fBNAT\fR which will mangle the
-machines' addresses.
+For all three communication methods, a direct connection between the
+target and the source machine where the particular command was issued
+must exist. This can also be implemented using TCP/IP forwarding, but
+will usually fail if one machine is behind \fBNAT\fR which will mangle
+the machines' addresses.  The communication methods won't work with
+simple firewalling of the exec hosts since the methods use a random
+port.  It may be possible to set up application-specific firewalling,
+if necessary, or to wrap the methods and start an SSH tunnel on the
+port specified for each communication instance.
 .PP
 The \fBbuiltin\fR method does not support forwarding of X graphics
 from the compute nodes, or GSSAPI tokens to them.  If you need that
@@ -355,7 +362,6 @@ for the machines inside the cluster.
 To have a tight integration of \fBSSH\fR into xxQS_NAME_Sxx, the started \fBsshd\fR needs an additional group ID to be attached.
 With this additional group ID, xxQS_NAME_Sxx is able to record the resource consumption and computing time in a correct way.
 Also a \fBqdel\fR of such a job will be able to succeed.
-(Using the builtin method, or the )
 .sp 1
 Such a tight SSH integration can be achieved by two means:
 .TP
@@ -470,7 +476,8 @@ rsh_daemon     /opt/sge/utilbin/lx24-x86/rshd -l
 .M qrsh 1 ,
 .M sge_conf 5 ,
 .M pam_sge_authorize 8 ,
-.M pam_sge-qrsh-setup 8 .
+.M pam_sge-qrsh-setup 8 ,
+.URL http://arc.liv.ac.uk/repos/darcs/sge/source/3rdparty/remote/remote.html "xxQS_NAMExx-specific remote programs".
 .\"
 .SH AUTHOR
 Man page written by Reuti, partly based on Sun material.  Some
