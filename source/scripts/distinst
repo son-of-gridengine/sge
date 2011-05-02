@@ -875,6 +875,9 @@ if [ $instcommon = true ]; then
          exit 1
       fi
 
+      # Ruby DRMAA binding.  Fixme:  Is this the best place for it?
+      Execute cp -r dist/util/resources/drmaa4ruby $DEST_SGE_ROOT/util/resources
+
       # User-level scripts
       if [ $userscripts = true ]; then
 	  for script in ;do
@@ -904,6 +907,7 @@ if [ $instcommon = true ]; then
                         $DEST_SGE_ROOT/util/resources/schemas/qrstat \
                         $DEST_SGE_ROOT/util/resources/schemas/qstat \
                         $DEST_SGE_ROOT/util/resources/starter_methods \
+                        $DEST_SGE_ROOT/util/resources/drmaa4ruby \
                         $DEST_SGE_ROOT/util/resources/usersets
       
       Execute chmod 755 $DEST_SGE_ROOT/util/arch \
@@ -942,6 +946,9 @@ if [ $instcommon = true ]; then
       MakeDir examples/drmaa
       Execute cp libs/japi/example.c $DEST_SGE_ROOT/examples/drmaa
       Execute cp libs/japi/howto/*.c $DEST_SGE_ROOT/examples/drmaa
+      MakeDir examples/drmaa/ruby
+      Execute mv $DEST_SGE_ROOT/util/resources/drmaa4ruby/samples/* $DEST_SGE_ROOT/examples/drmaa/ruby
+      Execute rmdir $DEST_SGE_ROOT/util/resources/drmaa4ruby/samples
       Cleanup examples
    fi
 

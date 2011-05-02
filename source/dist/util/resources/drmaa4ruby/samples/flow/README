@@ -1,0 +1,39 @@
+== Workflow interpreter and processor
+
+   flow.rb is a utility for running job workflows in 
+   DRMAA-compliant DRM systems. Workflows are specified in 
+   flowfiles that allow expression of
+
+     * concurrent and sequencial execution of sub-flows
+     * multiple runs of sub-flows with varying parameter sets
+     * acutal jobs are defined in terms of DRMAA attributes
+   
+   in addition any subflow or sets of subflows can be run
+   as used with make(1) by specifying it as target.
+
+=== Job defaults
+
+   To minimize the extend attributes necessarily to be 
+   specified in flowfiles, flow.rb provides defaults for 
+   jobs command path, stdout/stdin path, current working 
+   directory and job name.
+
+=== Workflow verification
+
+	The -verify option can be used to print dependencies and 
+   job attributes for diagnosis purposes and to ensure each 
+   workflow job can be run, a number of verifications is 
+   performed before the first job gets submitted.
+
+=== Job streaming
+
+   Large workflows are automatically run in job streaming
+   mode upon DRM saturation and a job maximum can be used
+   to set in .flowrc.rb an upper limit of job concurrently 
+   be kept in the DRM for each workflow.
+
+=== Pre-submission plug-in
+
+   Enforcement of site-specific policies can easily be 
+   achieved through pre-submission procedures that allow
+   any job attribute freely be modified.
