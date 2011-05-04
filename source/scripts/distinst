@@ -973,10 +973,10 @@ if [ $instcommon = true ]; then
 
       ( echo changing to $DEST_SGE_ROOT/qmon/PIXMAPS ; \
         cd $DEST_SGE_ROOT/qmon/PIXMAPS; \
-        echo ln -s intro-sge.xpm intro.xpm; \
-        ln -s intro-sge.xpm intro.xpm; \
-        echo ln -s logo-sge.xpm logo.xpm; \
-        ln -s logo-sge.xpm logo.xpm \
+        echo ln -sf intro-sge.xpm intro.xpm; \
+        ln -sf intro-sge.xpm intro.xpm; \
+        echo ln -sf logo-sge.xpm logo.xpm; \
+        ln -sf logo-sge.xpm logo.xpm \
       )
       Cleanup qmon
    fi 
@@ -1150,11 +1150,15 @@ if [ $instcommon = true ]; then
          Execute rm -f $DEST_SGE_ROOT/man/man$dir_num/$excluded_file
       done
 
-      Execute find $DEST_SGE_ROOT/man -type d | xargs chmod 755
-      Execute find $DEST_SGE_ROOT/man -type f | xargs chmod 644
+      if [ -d $DEST_SGE_ROOT/man ]; then
+	 Execute find $DEST_SGE_ROOT/man -type d | xargs chmod 755
+	 Execute find $DEST_SGE_ROOT/man -type f | xargs chmod 644
+      fi
 
-      Execute find $DEST_SGE_ROOT/catman -type d | xargs chmod 755
-      Execute find $DEST_SGE_ROOT/catman -type f | xargs chmod 644
+      if [ -d $DEST_SGE_ROOT/catman ]; then
+	 Execute find $DEST_SGE_ROOT/catman -type d | xargs chmod 755
+	 Execute find $DEST_SGE_ROOT/catman -type f | xargs chmod 644
+      fi
 
       Cleanup man catman
    fi
