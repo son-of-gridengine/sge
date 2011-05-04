@@ -46,7 +46,7 @@ Name:          #product#
 Requires:      openmotif
 Version:       #version#
 Release:       0
-Copyright:     SISSL
+License: (BSD and LGPLv2+ and MIT and SISSL) and GPLv2+ and BSD with advertising
 URL:           https://arc.liv.ac.uk/trac/SGE
 Group:         Applications/System
 Vendor:        #vendor#
