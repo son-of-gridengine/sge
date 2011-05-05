@@ -52,9 +52,10 @@ __jsv_state="initialized"
 
 # Following strings are switch names of command line clients (qsub, qrsh, ...) 
 # and these strings will also be used as variable suffixes in this script
-__jsv_cli_params="a ar A b ckpt cwd display\
-                dl e h hold_jid hold_jid_ad i j js m M masterq notify\
-                N o P p R r shell S tc w"
+__jsv_cli_params="a ar A b ckpt cwd C display dl e hard h hold_jid\
+                hold_jid_ad i inherit j js m M masterq notify\
+                now N noshell nostdin o ot P p pty R r shell sync S t\
+                tc terse u w wd"
 
 # These names are the suffixes of variable names which will contain
 # the information of following submit client switches:
