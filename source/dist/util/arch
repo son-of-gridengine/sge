@@ -35,7 +35,7 @@
 #___INFO__MARK_END__
 #
 #  The original idea of "aimk" where this script is based on came from the
-#  PVM 3.x distribution, 22 Jul 1991 Robert Manchek manchek@CS.UTK.EDU. 
+#  PVM 3.x distribution, 22 Jul 1991 Robert Manchek manchek@CS.UTK.EDU.
 #
 #  call:   arch       (print SGEEE architecture string)
 #          arch -m    (print default MANPATH of system)
@@ -245,16 +245,24 @@ Linux)
          # >= 2.3 - this is our supported lx-* platform
          # == 2.2 - unsupported but known to build and work: ulx-* platform
          # <= 2.2 - not accepted as build or execution platform
-         case $lxmachine in
-         amd64)
-            libc=/lib64/libc.so.6
-            ;;
-         ia64)
-            libc=/lib/libc.so.6.1
-            ;;
-         *)
-            libc=/lib/libc.so.6
-            ;;
+
+	 # This should account for, say /lib64/x86_64-linux-gnu/libc.so.6
+	 # in Ubuntu 11.04.
+	 libc=$(ldd /bin/date 2>/dev/null | awk '/[ \t]+libc\.so/ {print $3}')
+	 case $libc in
+	 */libc.*) ;;
+	 *)			# fallbacks
+            case $lxmachine in
+            amd64)
+               libc=/lib64/libc.so.6
+               ;;
+            ia64)
+               libc=/lib/libc.so.6.1
+               ;;
+            *)
+               libc=/lib/libc.so.6
+               ;;
+   	    esac ;;
          esac
 
          libc_string=`$libc | head -n 1`
