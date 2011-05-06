@@ -475,7 +475,8 @@ char *wl_strip_hostname(char *user_name)
          ret = strdup(token);
       }
    }
-   sge_free(&user_name);
+   free(user_name);
+   user_name = NULL;
    return ret;
 }
 
