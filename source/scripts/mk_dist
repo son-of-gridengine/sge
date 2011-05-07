@@ -34,7 +34,9 @@
 
 umask  022
 
-TAR=tar
+if type gtar 2>/dev/null >/dev/null; then TAR=gtar
+else TAR=tar
+fi
 BASEDIR=/tmp/sge6_dist
 
 RPMSPECFILE=sge.spec
