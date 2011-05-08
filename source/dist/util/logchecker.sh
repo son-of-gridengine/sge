@@ -259,7 +259,6 @@ fi
 
 if [ $ACTION_ON = 1 -o $ACTION_ON = 4 ]; then
    sge_logcheck 1 $qma_spool_dir
-   sge_logcheck 1 $qma_spool_dir/schedd
 
    if [ $ACCT = yes ]; then
       sge_logcheck 2 $SGE_ROOT/$SGE_CELL/common/accounting
