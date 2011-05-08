@@ -12,7 +12,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -42,7 +42,7 @@ If available, the default sge_qstat file is read and processed by
 .M qstat 1 .
 .PP
 There is a cluster global and a user private sge_qstat file. The user private
-file has the highest precedence and is  followed by the cluster global 
+file has the highest precedence and is followed by the cluster global 
 sge_qstat file. Command line switches used with 
 .M qstat 1
 override all switches contained in the user private or cluster global 
@@ -56,7 +56,7 @@ The format of the default files is:
 .\"
 .IP "\(bu" 3n
 The default sge_qstat file may contain an arbitrary number of lines.
-Blank lines and lines with a '#' sign at the first column are skipped.
+Blank lines and lines with a '#' sign in the first column are skipped.
 .\"
 .\"
 Each line not to be skipped may contain any
@@ -75,7 +75,7 @@ The following is a simple example of a default sge_qstat file:
 
 =====================================================
 # Just show me my own running and suspended jobs
--s rs -u $user
+\-s rs \-u $user
 =====================================================
 
 .fi
@@ -90,9 +90,9 @@ qstat
 has the same effect as if qstat was executed with:
 .PP
 .nf
-qstat -s rs -u <current_user>
+qstat \-s rs \-u <current_user>
 .fi
-.PP
+(Note that \-u $user is now the default behaviour.)
 .\"
 .\"
 .\"
