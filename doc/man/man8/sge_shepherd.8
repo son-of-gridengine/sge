@@ -31,7 +31,7 @@
 ..
 .TH xxQS_NAME_Sxx_SHEPHERD 8 "$Date: 2007-07-19 09:04:33 $" "xxRELxx" "xxQS_NAMExx Administrative Commands"
 .SH NAME
-xxqs_name_sxx_shepherd \- xxQS_NAMExx single job controlling agent
+xxqs_name_sxx_shepherd \- xxQS_NAMExx single job-controlling agent
 .\"
 .\"
 .SH SYNOPSIS
@@ -50,6 +50,8 @@ after a job has finished. In addition, the
 forwards signals to the job, such as the signals for suspension,
 enabling, termination and the xxQS_NAMExx checkpointing signal (see
 .M xxqs_name_sxx_ckpt 1
+and
+.M queue_conf 5
 for details).
 .PP
 The
@@ -68,8 +70,8 @@ After that, the job itself is run, followed by a parallel environment shutdown
 procedure for parallel jobs,
 and finally an epilog script if requested by
 the \fBepilog\fP parameter in the cluster configuration. The prolog
-and epilog scripts as well as the parallel environment startup and shutdown
-procedures are to be provided by the xxQS_NAMExx administrator
+and epilog scripts, as well as the parallel environment startup and shutdown
+procedures, are to be provided by the xxQS_NAMExx administrator
 and are intended for site-specific actions to be taken before and
 after execution of the actual user job.
 .PP
@@ -79,18 +81,18 @@ retrieves resource usage statistics about
 the job, places them in a job specific subdirectory of the
 .M xxqs_name_sxx_execd 8
 spool directory for reporting through
-.M xxqs_name_sxx_execd 8
+.M xxqs_name_sxx_execd 8 ,
 and finishes.
 
 .I xxqs_name_sxx_shepherd
 also places an exit status file in the spool directory. This exit status can
-be viewed with qacct -j JobId (see
+be viewed with qacct \-j JobId (see
 .M qacct 1 );
 it is not the exit status of 
 .I xxqs_name_sxx_shepherd
 itself but of one of the methods executed by 
 .I xxqs_name_sxx_shepherd.
-This exit status can have several meanings, depending on in which method
+This exit status can have several meanings, depending on the method in which
 an error occurred (if any).
 The possible methods are: prolog, parallel start, job, parallel stop,
 epilog, suspend, restart, terminate, clean, migrate, and checkpoint.
@@ -139,11 +141,11 @@ should not be invoked manually, but only by
 .\"
 .\"
 .SH FILES
-\fBsgepasswd\fp  contains  a  list  of  user  names   and   their
-corresponding encrypted passwords. If available, the
-password  file  will  be   used   by  \fBsge_shepherd\fB. To change the contents 
-of this file please use the \fBsgepasswd\fB command. It is not advised to  change  
-that file manually.
+\fBsgepasswd\fP contains a list of user names and their corresponding
+encrypted passwords. If available, the password file will be used by
+\fBsge_shepherd\fB. To change the contents of this file please use the
+\fBsgepasswd\fB command. It is not advised to change that file
+manually.
 .nf
 .ta \w'<execd_spool>/job_dir/<job_id>     'u
 \fI<execd_spool>/job_dir/<job_id>\fR	job specific directory
@@ -153,6 +155,7 @@ that file manually.
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
 .M xxqs_name_sxx_conf 5 ,
+.M remote_startup 5 ,
 .M xxqs_name_sxx_execd 8 .
 .\"
 .SH "COPYRIGHT"
