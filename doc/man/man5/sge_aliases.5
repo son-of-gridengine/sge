@@ -16,7 +16,7 @@
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
-.\"
+.\" "
 .de TY		\" put $1 in typewriter font
 .if t .T
 .if n ``\c
@@ -37,41 +37,42 @@ xxqs_name_sxx_aliases \- xxQS_NAMExx path aliases file format
 .\"
 .SH DESCRIPTION
 The xxQS_NAMExx path aliasing facility provides administrators and users with
-the means to reflect complicated and in-homogeneous file system structures
+the means to reflect complicated and inhomogeneous file system structures
 in distributed environments (such as user home directories mounted under
 different paths on different hosts) and to ensure that xxQS_NAMExx is able to
 locate the appropriate working directories for executing batch jobs.
 .PP
-There is a system global path aliasing file and a user local file.
+There is a system global path aliasing file and a user-local file.
 .I xxqs_name_sxx_aliases
 defines the format of both:
 .\"
 .\"
 .\"
 .IP "\(bu" 3n
-Blank lines and lines with a '#' sign in the first column are skipped.
+Blank lines, and lines with a '#' sign in the first column, are skipped.
 .\"
 .\"
 .IP "\(bu" 3n
-Each line other than a blank line or a line lead by '#' has to contain
+Each line other than a blank line or a line with a leading '#' has to contain
 four strings separated by any number of blanks or tabs.
 .\"
 .\"
 .IP "\(bu" 3n
-The first string specifies a source-path, the second a submit-host, the
-third an execution-host and the fourth the source-path replacement.
+The first string specifies a source path, the second a submit host, the
+third an execution host, and the fourth the source path replacement.
 .\"
 .\"
 .IP "\(bu" 3n
-Both the submit- and the execution-host entries may consist of only a '*' 
+Both the submit and the execution host entries may consist of only a '*' 
 sign which matches any host.
 .PP
 .\"
 .\"
-If the \fI-cwd\fP flag (and only if \- otherwise the user's
-home directory on the execution host is selected to execute the job) to
+If the
 .M qsub 1
-was specified, the path aliasing mechanism is activated and the files are
+ \fI-cwd\fP flag is specified (and only if \- otherwise the user's
+home directory on the execution host is selected to execute the job),
+the path aliasing mechanism is activated, and the files are
 processed as follows:
 .\"
 .\"
@@ -79,7 +80,7 @@ processed as follows:
 After
 .M qsub 1
 has retrieved the physical current working directory path,
-the cluster global path aliasing file is read if present. The user path
+the cluster global path aliasing file is read, if present. The user path
 aliases file is read afterwards as if it were appended to the global
 file.
 .\"
@@ -91,15 +92,15 @@ necessary.
 .\"
 .\"
 .IP "\(bu" 3n
-A translation is stored only if the submit-host entry matches the host
+A translation is stored only if the submit host entry matches the host
 .M qsub 1
-is executed on and if the source-path forms the initial part
-either of the current working directory or of the source-path
+is executed on and if the source path forms the initial part of either
+the current working directory or of the source path
 replacements already stored.
 .\"
 .\"
 .IP "\(bu" 3n
-As soon as both files are read the stored path aliasing information is
+As soon as both files are read the stored, path aliasing information is
 passed along with the submitted job.
 .\"
 .\"
@@ -108,7 +109,7 @@ On the execution host, the aliasing information will be evaluated. The
 leading part of the current working directory will be replaced by the
 source-path replacement if the execution-host entry of the path alias
 matches the executing host. \fBNote:\fP The current working directory
-string will be changed in this case and subsequent path aliases
+string will be changed in this case, and subsequent path aliases
 must match the replaced working directory path to be applied.
 .\"
 .\"
@@ -116,7 +117,7 @@ must match the replaced working directory path to be applied.
 .SH "EXAMPLES"
 .PP
 The following is a simple example of a path aliasing file resolving
-problems with in-homogeneous paths if
+problems with inhomogeneous paths if
 .M automount 8
 is used:
 .PP

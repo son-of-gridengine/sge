@@ -447,7 +447,7 @@ Shells in this list are only started as login shells if the parameter
 \fBshell_start_mode\fP (see above) is set to \fIposix_compliant\fP.
 .PP
 Changes to \fBlogin_shells\fP will take immediate effect.
-The default for \fBlogin_shells\fP is sh,csh,tcsh,ksh.
+The default for \fBlogin_shells\fP is sh,bash,csh,tcsh,ksh.
 .PP
 This value is a global configuration parameter only. It cannot be
 overwritten by the execution host local configuration.
@@ -490,7 +490,7 @@ via the \fBxuser_lists\fP parameter described below.
 If a user is contained both in an access list \fBxuser_lists\fP
 and \fBuser_lists\fP the user is denied access to the cluster.
 .PP
-Changes to \fBuser_lists\fP will take immediate effect
+Changes to \fBuser_lists\fP will take immediate effect.
 .PP
 This value is a global configuration parameter only. It cannot be
 overwritten by the execution host local configuration.
@@ -506,7 +506,7 @@ NONE (the default) any user has access.
 If a user is contained both in an access list in \fBxuser_lists\fP
 and \fBuser_lists\fP (see above) the user is denied access to the cluster.
 .PP
-Changes to \fBxuser_lists\fP will take immediate effect
+Changes to \fBxuser_lists\fP will take immediate effect.
 .PP
 This value is a global configuration parameter only. It cannot be
 overwritten by the execution host local configuration.
@@ -767,7 +767,7 @@ overwritten by the execution host local configuration.
 .\"
 .\"
 .SS "\fBenforce_project\fP"
-If set to \fItrue\fB, users are required to request a project whenever
+If set to \fItrue\fP, users are required to request a project whenever
 submitting a job. See the \fB\-P\fP option to
 .M qsub 1
 for details.
@@ -923,7 +923,7 @@ may be overwritten by the execution host local configuration.
 .\"
 .\"
 .SS "\fBpag_cmd\fP"
-The path to your \fIpagsh\fB is specified via this parameter.
+The path to your \fIpagsh\fP is specified via this parameter.
 The
 .M xxqs_name_sxx_shepherd 8
 process and the job run in a \fIpagsh\fP. Please ask your AFS administrator
@@ -989,14 +989,14 @@ may be overwritten by the execution host local configuration.
 A list of additional parameters can be passed to the 
 xxQS_NAMExx qmaster. The following values are recognized:
 .IP "\fIENABLE_ENFORCE_MASTER_LIMIT\fP"
-If this parameter is set then the \fBs_rt\fP, \fBh_rt\fP limit of a running job 
+If this parameter is set then the \fBs_rt\fP, \fBh_rt\fP limits of a running job 
 are tested and executed by the 
 .M xxqs_name_sxx_qmaster 8
 when the 
 .M xxqs_name_sxx_execd 8
-where the job is in unknown state.
+where the job was run is in an unknown state.
 .sp 1
-After \fBs_rt\fB or \fBh_rt\fP limit of a job is expired then the master daemon will 
+After the \fBs_rt\fP or \fBh_rt\fP limit of a job is expired, the master daemon will 
 wait additional time defined by \fBDURATION_OFFSET\fP (see 
 .M sched_conf 5 ). 
 If the execution daemon still cannot be contacted when this 
@@ -1004,25 +1004,25 @@ additional time is elapsed, then the master daemon will force
 the deletion of the job (see \fB-f\fP of 
 .M qdel 1 ).
 .sp 1
-For jobs which will be deleted that way an accounting record will be created. 
-As usage the record will contain the last reported online usage, when the 
+For jobs which will be deleted that way, an accounting record will be created.
+For usage, the record will contain the last reported online value when the 
 execution daemon could contact qmaster. The \fBfailed\fP state in the record 
-will be set to 37 to indicate that the job was terminated by a limit enforcement 
-of master daemon.
+will be set to 37 to indicate that the job was terminated by a limit
+enforced by the master daemon.
 .sp 1
 After the restart of 
 .M xxqs_name_sxx_qmaster 8
-the limit enforcement will at first be triggered after the double of the 
+the limit enforcement will at first be triggered after twice the 
 biggest \fBload_report_interval\fP interval defined in 
 .M sge_conf 5
-has been elapsed. This will give the execution daemons enough time to 
+has elapsed. This will give the execution daemons enough time to 
 re-register with the master daemon. 
 .\"
 .IP "\fIENABLE_FORCED_QDEL_IF_UNKNOWN\fP"
 If this parameter is set then a deletion request for a job is automatically interpreted 
-as a forced deletion request (see \fB-f\fP of 
+as a forced deletion request (see \fB\-f\fP of 
 .M qdel 1 ) 
-if the host, where the job is running is in unknown state.
+if the host where the job is running is in an unknown state.
 .\"
 .IP "\fIENABLE_FORCED_QDEL\fP"
 If this parameter is set, non-administrative users can force deletion of
@@ -1031,8 +1031,8 @@ their own jobs via the \fI\-f\fP option of
 Without this parameter, forced deletion of jobs is only allowed by the
 xxQS_NAMExx manager or operator.
 .sp 1
-\fBNote:\fP Forced deletion for jobs is executed differently depending
-on whether users are xxQS_NAMExx administrators or not. In case of
+\fBNote:\fP Forced deletion for jobs is executed differently, depending
+on whether users are xxQS_NAMExx administrators or not. In the case of
 administrative users, the jobs are removed from the internal database of
 xxQS_NAMExx immediately. For regular users, the equivalent of a normal
 .M qdel 1
@@ -1042,19 +1042,19 @@ was unsuccessful.
 .IP "\fIFORBID_RESCHEDULE\fP"
 If this parameter is set, re-queueing of jobs cannot
 be initiated by the job script which is under control
-of the user. Without this parameter jobs returning the
+of the user. Without this parameter, jobs returning the
 value 99 are rescheduled. This can be used to cause the
-job to be restarted at a different machine, for instance if there
+job to be restarted on a different machine, for instance if there
 are not enough resources on the current one.
 .PP
 .IP "\fIFORBID_APPERROR\fP"
-If this parameter is set, the application cannot set itself to error state.
-Without this parameter jobs returning the value 100 are set to error state 
+If this parameter is set, the application cannot set itself to the error state.
+Without this parameter jobs returning the value 100 are set to the error state 
 (and therefore can be manually rescheduled by clearing the error state).
-This can be used to set the job to error state when a starting condition
+This can be used to set the job to the error state when a starting condition
 of the application is not fulfilled before the application itself has been 
 started, or when a clean up procedure (e.g. in the epilog) decides that it is
-necessary to run the job again, by returning 100 in the prolog, pe_start, 
+necessary to run the job again.  To do so, return 100 in the prolog, pe_start, 
 job script, pe_stop or epilog script.
 .PP
 .IP "\fIDISABLE_AUTO_RESCHEDULING\fP"
@@ -1329,8 +1329,7 @@ if rsh and rshd components are used which are provided with xxQS_NAMExx
 (i.e., the \fBrsh_daemon\fP and \fBrsh_command\fP parameters may
 not be changed from the default).
 .PP
-.IP "\fIS_DESCRIPTORS\fP, \fIH_DESCRIPTORS\fP, \fIS_MAXPROC\fP, \fIH_MAXPROC\fP,"
-.IP "\fIS_MEMORYLOCKED\fP, \fIH_MEMORYLOCKED\fP, \fIS_LOCKS\fP, \fIH_LOCKS\fP"
+.IP "\fIS_DESCRIPTORS\fP, \fIH_DESCRIPTORS\fP, \fIS_MAXPROC\fP, \fIH_MAXPROC\fP, \fIS_MEMORYLOCKED\fP, \fIH_MEMORYLOCKED\fP, \fIS_LOCKS\fP, \fIH_LOCKS\fP"
 Specifies soft and hard resource limits as implemented by the
 .M setrlimit 2
 system call. See this manual page on your system for more information. These

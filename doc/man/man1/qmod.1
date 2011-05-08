@@ -13,7 +13,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -49,11 +49,11 @@ qmod \- modify a xxQS_NAMExx queue and running job
 enables users classified as \fIowners\fP (see
 .M queue_conf 5
 for details) of a workstation to modify
-the state of xxQS_NAMExx queues for his/her machine as well
-as the state of his/her own jobs.
-A manager/operator or root can execute
+the state of xxQS_NAMExx queues for their machine as well
+as the state of their own jobs.
+A manager/operator, or root, can execute
 .I qmod
-for any queue and job in a cluster but only from administrative hosts.
+for any queue and job in a cluster, but only from administrative hosts.
 Find additional information concerning
 \fIwc_queue_list\fP and \fIwc_job_list\fP in
 .M sge_types 1 .
@@ -61,36 +61,44 @@ Find additional information concerning
 .SH OPTIONS
 .\"
 .IP "\fB\-c\fP"
+.IP "\fB\-\-clear\fP"
 .B Note:
 Deprecated, may be removed in future release.
 Please use the \fB\-cj\fP or \fB\-cq\fP switch instead.
 .br
 Clears the error state of the specified jobs(s)/queue(s).
 .IP "\fB\-cj\fP"
+.IP "\fB\-\-clearjob\fP"
 Clears the error state of the specified jobs(s).
 .IP "\fB\-cq\fP"
+.IP "\fB\-\-clearqueue\fP"
 Clears the error state of the specified queue(s).
 .IP "\fB\-d\fP"
+.IP "\fB\-\-disable\fP"
 Disables the queue(s), i.e. no further jobs are dispatched to
 disabled queues while jobs already executing in these queues
 are allowed to finish.
 .IP "\fB\-e\fP"
+.IP "\fB\-\-enable\fP"
 Enables the queue(s).
 .IP "\fB\-f\fP"
+.IP "\fB\-\-force\fP"
 Force the modification action for the queue despite the
 apparent current state of the queue. For example if a queue
 appears to be suspended but the job execution seems to be
-continuing the manager/operator can force a suspend operation which
-will send a SIGSTOP to the jobs. In any case, the queue or
-job status will be set even if the
+continuing, the manager/operator can force a suspend operation on
+the jobs. In any case, the queue or
+job status will be set, even if the
 .M xxqs_name_sxx_execd 8
 controlling the queues/jobs cannot be reached. Requires
 manager/operator privileges.
 .\"
 .IP "\fB\-help\fP"
+.IP "\fB\-\-help\fP"
 Prints a listing of all options.
 .\"
 .IP "\fB\-r\fP"
+.IP "\fB\-\-reschedule\fP"
 .B Note:
 Deprecated, may be removed in future release.
 Please use the \fB\-rj\fP or \fB\-rq\fP switch instead.
@@ -98,7 +106,7 @@ Please use the \fB\-rj\fP or \fB\-rq\fP switch instead.
 If applied to queues,
 reschedules all jobs currently running in this queue.
 If applied to running jobs, reschedules the jobs. Requires root or 
-manager privileges.  In order for a job to be rescheduled, it or the queue in
+manager privileges.  In order for a job to be rescheduled, it, or the queue in
 which it is executing must have the rerun flag activated.  (See -r
 option in the
 .M qsub 1
@@ -112,53 +120,58 @@ restrictions apply for parallel and checkpointing jobs.  (See the
 man page for details).
 .\"
 .IP "\fB\-rj\fP"
+.IP "\fB\-\-reschedulejob\fP"
 If applied to running jobs, reschedules the jobs. Requires root or 
 manager privileges.
 .\"
 .IP "\fB\-rq\fP"
-If applied to queues,
-reschedules all jobs currently running in this queue.
+.IP "\fB\-\-reschedulequeue\fP"
+Reschedules all jobs currently running in the specified queues.
 Requires root or manager privileges.
 .\"
 .IP "\fB\-s\fP"
+.IP "\fB\-\-suspend\fP"
 .B Note:
 Deprecated, may be removed in future release.
 Please use the \fB\-sj\fP or \fB\-sq\fP switch instead.
 .br
 If applied to queues,
 suspends the queues and any jobs which might
-be active. If applied to running jobs, suspends the jobs. 
+be active in them. If applied to running jobs, suspends the jobs. 
 .\"
 .IP "\fB\-sj\fP"
+.IP "\fB\-\-suspendjob\fP"
 If applied to running jobs, suspends the jobs. If a job is
 both suspended explicitly and via suspension of its queue, a
-following unsuspend of the queue will not release the suspension
+subsequent unsuspend of the queue will not release the suspension
 state on the job.
 .\"
 .IP "\fB\-sq\fP"
-If applied to queues,
-suspends the queues and any jobs which might
-be active. 
+.IP "\fB\-\-suspendqueue\fP"
+Suspends the specified queues and any jobs which might
+be active in them. 
 .\"
 .IP "\fB\-us\fP"
+.IP "\fB\-\-unsuspend\fP"
 .B Note:
 Deprecated, may be removed in future release.
 Please use the \fB\-usj\fP or \fB\-usq\fP switch instead.
 .br
 If applied to queues,
 unsuspends the queues and any jobs which might
-be active. If applied to jobs, unsuspends the jobs.
+be active in them. If applied to jobs, unsuspends the jobs.
 .\"
 .IP "\fB\-usj\fP"
-If applied to jobs, unsuspends the jobs. If a job is
+.IP "\fB\-\-unsuspendjob\fP"
+Unsuspends the specified jobs. If a job is
 both suspended explicitly and via suspension of its queue, a
-following unsuspend of the queue will not release the suspension
+subsequent unsuspend of the queue will not release the suspension
 state on the job.
 .\"
 .IP "\fB\-usq\fP"
-If applied to queues,
-unsuspends the queues and any jobs which might
-be active. 
+.IP "\fB\-\-unsuspendqueue\fP"
+Unsuspends the specified queues and any jobs which might
+be active in them.
 .\"
 .SH "ENVIRONMENTAL VARIABLES"
 .\" 
