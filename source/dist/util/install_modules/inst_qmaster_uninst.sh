@@ -40,10 +40,10 @@
 RemoveQmaster()
 {
    $INFOTEXT -u "Uninstalling qmaster host"
-   $INFOTEXT -n "You're going to uninstall the qmaster host now. If you are not sure,\n" \
-                "what you are doing, please stop with <CTRL-C>. This procedure will, remove\n" \
+   $INFOTEXT -n "You're going to uninstall the qmaster host now. If you are not sure\n" \
+                "what you are doing, please stop with <CTRL-C>. This procedure will remove\n" \
                 "the complete cluster configuration and all spool directories!\n" \
-                "Please make a backup from your cluster configuration!\n\n"
+                "Please make a backup of your cluster configuration!\n\n"
    if [ $AUTO = "false" ]; then
       $INFOTEXT -n -ask "y" "n" -def "n" "Do you want to uninstall the master host? [n] >> "
    fi
@@ -74,8 +74,8 @@ CheckRegisteredExecd()
         exit 1 
      fi
 
-   $INFOTEXT "There are no running execution host registered!\n"
-   $INFOTEXT -log "There are no running execution host registered!\n"
+   $INFOTEXT "There are no running execution hosts registered!\n"
+   $INFOTEXT -log "There are no running execution hosts registered!\n"
    ShutdownMaster
    
 

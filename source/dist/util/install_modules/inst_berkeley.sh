@@ -56,6 +56,7 @@ SpoolingQueryChange()
       default_domain=$CFG_DEFAULT_DOMAIN
    fi
 
+   # fixme:  eliminate rpc stuff
    if [ "$BERKELEY" = "install" ]; then
       $INFOTEXT -u "\nBerkeley Database spooling parameters"
       $INFOTEXT "\nYou are going to install a RPC Client/Server mechanism!" \
@@ -115,7 +116,7 @@ SpoolingCheckParams()
                    "is not on a local filesystem.\nPlease choose a local filesystem or configure the RPC Client/Server mechanism" $SPOOLING_DIR
       if [ "$AUTO" = "true" ]; then
          $INFOTEXT -log "\nThe database directory >%s<\n" \
-                   "is not on a local filesystem.\nPlease choose a local filesystem or configure the RPC Client/Server mechanism" $SPOOLING_DIR
+                   "is not on a local filesystem.\nPlease choose a local filesystem" $SPOOLING_DIR
          MoveLog
          exit 1
       fi

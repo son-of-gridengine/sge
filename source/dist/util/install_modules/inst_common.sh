@@ -514,12 +514,12 @@ ErrUsage()
              "   -rst       restore configuration from backup\n" \
              "   -copycerts copy local certificates to given hosts\n" \
              "   -v         print version\n" \
-             "   -upd       upgrade cluster from 6.0 or higher to 6.2\n" \
+             "   -upd       upgrade cluster from 6.0 or higher\n" \
              "   -upd-execd delete/initialize all execd spool directories\n" \
              "   -upd-rc    create new autostart scripts for the whole cluster\n" \
-             "   -upd-win   update/install windows helper service on all Windows hosts\n" \
+             "   -upd-win   update/install Windows helper service on all Windows hosts\n" \
              "   -post-upd  finish the upgrade procedure (initialize execd spool directories,\n" \
-             "              create autostart scripts and update windows helper service)\n" \
+             "              create autostart scripts and update Windows helper service)\n" \
              "   -start-all start whole cluster\n" \
              "   -rccreate  create startup scripts from templates\n" \
              "   -host      hostname for shadow master installation or uninstallation \n" \
@@ -529,9 +529,9 @@ ErrUsage()
              "   -rsh       use rsh instead of ssh (default is ssh)\n" \
              "   -auto      full automatic installation (qmaster and exec hosts)\n" \
              "   -nr        set reschedule to false\n" \
-             "   -winupdate update to add GUI features to a existing execd installation\n" \
-             "   -winsvc    install windows helper service\n" \
-             "   -uwinsvc   uninstall windows helper service\n" \
+             "   -winupdate update to add GUI features to a existing Windows execd installation\n" \
+             "   -winsvc    install Windows helper service\n" \
+             "   -uwinsvc   uninstall Windows helper service\n" \
              "   -csp       install system with security framework protocol\n" \
              "              functionality\n" \
              "   -jmx       install qmaster with JMX server thread enabled \n" \
@@ -540,7 +540,6 @@ ErrUsage()
              "   -afs       install system with AFS functionality\n" \
              "   -noremote  suppress remote installation during autoinstall\n" \
              "   -nosmf     disable SMF for Solaris 10+ machines (RC scripts are used)\n" \
-             "   -nost      do not use Sun Service Tags\n" \
              "   -help      show this help text\n\n" \
              "   Examples:\n" \
              "   inst_sge -m -x   or   inst_sge -m -jmx -x\n" \
@@ -562,7 +561,7 @@ ErrUsage()
       $INFOTEXT -e "   The option %s is not valid!" $option
    fi
 
-   $INFOTEXT -log "It seems, that you have entered a wrong option, please check the usage!"
+   $INFOTEXT -log "It seems that you have entered a wrong option. Please check the usage!"
 
    MoveLog
    exit 2
@@ -1420,7 +1419,7 @@ WelcomeTheUserWinSvc()
              "     The term >Ctrl-C< is used during the %s if you\n" \
              "     have the possibility to abort the %s\n\n" \
              "The %s procedure will take approximately 1-2 minutes.\n" \
-             "After this %s you will get a enhanced windows execd\n" \
+             "After this %s you will get a enhanced Windows execd\n" \
              "installation, with GUI support." $installation_id $install_id $installation_id $install_id $install_id
    $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to continue >> "
    $CLEAR
@@ -1513,7 +1512,7 @@ CheckWhoInstallsSGE()
 
    $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n \
              "Do you want to install Grid Engine\n" \
-             "under an user id other than >root< (y/n) [y] >> "
+             "under a user ID other than >root< (y/n) [y] >> "
 
    if [ $? = 0 ]; then
       done=false
@@ -2685,7 +2684,7 @@ MoveLog()
 
    GetAdminUser
 
-   #due to problems with adminrun and ADMINUSER permissions, on windows systems
+   #due to problems with adminrun and ADMINUSER permissions, on Windows systems
    #the auto install log files couldn't be copied to qmaster_spool_dir
    # leaving log file in /tmp dir. There is a need for a better solution
    if [ "$SGE_ARCH" = "win32-x86" ]; then
@@ -4300,14 +4299,14 @@ DoRemoteActionForHosts()
         host_uqdn=`echo $host | sed -e "s%[.].*$%%"`
         cat $SGE_ROOT/$SGE_CELL/win_hosts_to_update | grep $host > /dev/null 2>&1
 	if [ "$?" -eq 0 -a $HOST != $host ]; then
-	   #We want to connect to a windows host only if not already there (but as who?)
+	   #We want to connect to a Windows host only if not already there (but as who?)
 	   host_str=`echo $host_uqdn | tr "[a-z]" "[A-Z]"`
 	   if [ -n "$SGE_WIN_ADMIN" ]; then
 	      user="${host_str}+$SGE_WIN_ADMIN"
 	   else
 	      #We need to ask
 	      AUTO=false
-	      $INFOTEXT -n "Provide a valid windows administrator user name for host %s \n[%s] >> "  "$host" "$host_str+Administrator"
+	      $INFOTEXT -n "Provide a valid Windows administrator user name for host %s \n[%s] >> "  "$host" "$host_str+Administrator"
 	      eval user=`Enter "$host_str+Administrator"`
 	      AUTO=true
 	   fi
@@ -4425,7 +4424,7 @@ cd $SGE_ROOT && RemoteExecSpoolDirDelete"
    if [ "$UPDATE_WIN" = true ]; then                   #UPDATE WINDOWS HELPER SERVICE ON ALL WINDOWS EXECDs
       cmd=". $SGE_ROOT/$SGE_CELL/common/settings.sh ; . $SGE_ROOT/util/arch_variables ; . $SGE_ROOT/util/install_modules/inst_common.sh ; \
 . $SGE_ROOT/util/install_modules/inst_execd.sh ; cd $SGE_ROOT ; AUTO=true ; ECHO=echo ;BasicSettings ; SetUpInfoText ; SAVED_PATH=$PATH ; SetupWinSvc update"
-      $INFOTEXT -u "Updating windows helper service on all windows hosts:"
+      $INFOTEXT -u "Updating Windows helper service on all Windows hosts:"
       DoRemoteActionForHosts "$list" $ADMINUSER "$cmd"
    fi
 
