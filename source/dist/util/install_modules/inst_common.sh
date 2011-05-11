@@ -4196,7 +4196,7 @@ IsMailAddress() {
    case $1 in
       [A-Za-z0-9._-]*)  #valid
          return 0;;
-      [A-Za-z0-9._-]*@[a-zA-Z0-9_-]) #valid
+      [A-Za-z0-9._-]*@[a-zA-Z0-9._-]) #valid
          return 0;;
       *)
          return 1;;
