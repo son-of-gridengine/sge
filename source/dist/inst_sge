@@ -74,7 +74,7 @@ AUTOGUI=false
 RESCHEDULE=true
 RESPORT=false
 CSP=false
-SGE_ENABLE_JMX=true
+SGE_ENABLE_JMX=false
 AFS=false
 NOREMOTE=false
 START_RPC_SERVICE=false
@@ -86,6 +86,7 @@ UPDATE_WIN=false
 DEL_EXECD_SPOOL=false
 POST_UPDATE=false
 WIN_UPDATE=false
+SGE_SKIP_JMX_SETTING="true"
 COPY_CA="false"
 RECREATE_SETTINGS="false"
 USE_OLD_IJS="false"
@@ -304,7 +305,8 @@ while [ $ARGC != 0 ]; do
      CSP=true
      ;;
    -jmx)
-     :
+     SGE_ENABLE_JMX=true
+     SGE_SKIP_JMX_SETTING="false"
      ;;
    -copycerts)
      if [ "$2" = "" ]; then
@@ -461,9 +463,13 @@ if [ $ONLY_ENABLE_JMX = "true" ]; then
    
    #Source the settings file
    . "$SGE_ROOT/$SGE_CELL/common/settings.sh"   
-   GetJMXPort
+   if [ "$SGE_SKIP_JMX_SETTING" != "true" ]; then
+      GetJMXPort
+   fi
    COMMONDIR="$SGE_ROOT/$SGE_CELL/common"
-   AddJMXFiles
+   if [ "$SGE_SKIP_JMX_SETTING" != "true" ]; then
+      AddJMXFiles
+   fi
    ReplaceOrAddLine "$SGE_ROOT/$SGE_CELL/common/bootstrap" 666 'jvm_threads.*' "jvm_threads             1"
    ExecuteAsAdmin $CHMOD 644 "$SGE_ROOT/$SGE_CELL/common/bootstrap"
    # Do InitCA only when no CSP mode
@@ -1364,7 +1370,9 @@ if [ $SHADOW = "install" ]; then
       fi
       
       #Detect if JMX needs to be setup
-      GetJMXPort "shadowd"
+      if [ "$SGE_SKIP_JMX_SETTING" != "true" ]; then
+	 GetJMXPort "shadowd"
+      fi
       
       #check if spooling is supported!
       spooling_method=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap 2>/dev/null | grep "spooling_method" | awk '{ print $2 }'`
