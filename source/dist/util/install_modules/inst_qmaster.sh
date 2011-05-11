@@ -73,9 +73,9 @@ GetCell()
 
     if [ -f $SGE_ROOT/$SGE_CELL/common/bootstrap -a "$QMASTER" = "install" ]; then
        $INFOTEXT -log "The cell name you have used and the bootstrap already exists!"
-       $INFOTEXT -log "It seems that you have already a installed system."
-       $INFOTEXT -log "A installation may cause, that data can be lost!"
-       $INFOTEXT -log "Please, check this directory and remove it, or use any other cell name"
+       $INFOTEXT -log "It seems that you already have an installed system."
+       $INFOTEXT -log "An installation may cause that data loss!"
+       $INFOTEXT -log "Please check this directory and remove it, or use any other cell name"
        $INFOTEXT -log "Exiting installation now!"
        MoveLog
        exit 1
@@ -90,7 +90,7 @@ GetCell()
       fi
       $INFOTEXT -n "\nGrid Engine supports multiple cells.\n\n" \
                    "If you are not planning to run multiple Grid Engine clusters or if you don't\n" \
-                   "know yet what is a Grid Engine cell it is safe to keep the default cell name\n\n" \
+                   "know yet what a Grid Engine cell is, it is safe to keep the default cell name\n\n" \
                    "   default\n\n" \
                    "If you want to install multiple cells you can enter a cell name now.\n\n" \
                    "The environment variable\n\n" \
@@ -175,7 +175,7 @@ GetQmasterSpoolDir()
       if [ -d "$QMDIR" ]; then
          if [ `ls -1 "$QMDIR" | wc -l` -gt 0 ]; then
             $INFOTEXT -log "Specified qmaster spool directory \"$QMDIR\" is not empty!"
-            $INFOTEXT -log "Maybe different system is using it. Check this directory"
+            $INFOTEXT -log "Maybe a different system is using it. Check this directory"
             $INFOTEXT -log "and remove it, or use any other qmaster spool directory."
             $INFOTEXT -log "Exiting installation now!"
             MoveLog
@@ -260,7 +260,7 @@ SetPermissions()
                       "verify and set the file permissions of your distribution (enter: y)\n\n" \
                       "In some cases, e.g. the binaries are stored on a NTFS or on any other\n" \
                       "filesystem which provides additional file permissions, the UNIX file\n" \
-                      "permissions can be wrong. In this case we would advise to verify and\n" \
+                      "permissions can be wrong. In this case we would advise verifying and\n" \
                       "to set the file permissions (enter: n) (y/n) [n] >> "
          else
             $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n \
@@ -284,7 +284,7 @@ SetPermissions()
       $INFOTEXT -u "\nVerifying and setting file permissions (continued)"
 
       $INFOTEXT "\nWe can't set file permissions on this machine, because user root\n" \
-                  "has not the necessary privileges to change file permissions\n" \
+                  "doesn't have the necessary privileges to change file permissions\n" \
                   "on this file system.\n\n" \
                   "Probably this file system is an NFS mount where user root is\n" \
                   "mapped to user >nobody<.\n\n" \
@@ -412,8 +412,7 @@ SetSpoolingOptionsBerkeleyDB()
           if [ $ret -eq 0 -a "$AUTO" = "false" ]; then
              $INFOTEXT "\nThe database directory\n\n" \
                        "   %s\n\n" \
-                       "is not on a local filesystem. Please choose a local filesystem or\n" \
-                       "configure the RPC Client/Server mechanism." $SPOOLING_DIR
+                       "is not on a local filesystem. Please choose a local filesystem." $SPOOLING_DIR
              $INFOTEXT -wait -auto $AUTO -n "\nHit <RETURN> to continue >> "
           else
              done="true" 
@@ -528,7 +527,7 @@ SetSpoolingOptionsDynamic()
       else
          $INFOTEXT -n "Your SGE binaries are compiled to link the spooling libraries\n" \
                       "during runtime (dynamically). So you can choose between Berkeley DB \n" \
-                      "spooling and Classic spooling method."
+                      "spooling and Classic spooling methods."
          $INFOTEXT -n "\nPlease choose a spooling method (berkeleydb|classic) [%s] >> " "$suggested_method"
          SPOOLING_METHOD=`Enter $suggested_method`
       fi
@@ -977,16 +976,17 @@ GetGidRange()
    while [ $done = false ]; do
       $CLEAR
       $INFOTEXT -u "\nGrid Engine group id range"
+      # fixme: what should `support jobs' be?`
       $INFOTEXT "\nWhen jobs are started under the control of Grid Engine an additional group id\n" \
                 "is set on platforms which do not support jobs. This is done to provide maximum\n" \
                 "control for Grid Engine jobs.\n\n" \
-                "This additional UNIX group id range must be unused group id's in your system.\n" \
+                "This additional UNIX group id range must be unused group ids in your system.\n" \
                 "Each job will be assigned a unique id during the time it is running.\n" \
-                "Therefore you need to provide a range of id's which will be assigned\n" \
+                "Therefore you need to provide a range of ids which will be assigned\n" \
                 "dynamically for jobs.\n\n" \
                 "The range must be big enough to provide enough numbers for the maximum number\n" \
                 "of Grid Engine jobs running at a single moment on a single host. E.g. a range\n" \
-                "like >20000-20100< means, that Grid Engine will use the group ids from\n" \
+                "like >20000-20100< means that Grid Engine will use the group ids from\n" \
                 "20000-20100 and provides a range for 100 Grid Engine jobs at the same time\n" \
                 "on a single host.\n\n" \
                 "You can change at any time the group id range in your cluster configuration.\n"
@@ -1310,9 +1310,9 @@ AddHosts()
   
    else
       $INFOTEXT -u "\nAdding Grid Engine hosts"
-      $INFOTEXT "\nPlease now add the list of hosts, where you will later install your execution\n" \
+      $INFOTEXT "\nPlease now add the list of hosts where you will later install your execution\n" \
                 "daemons. These hosts will be also added as valid submit hosts.\n\n" \
-                "Please enter a blank separated list of your execution hosts. You may\n" \
+                "Please enter a blank-separated list of your execution hosts. You may\n" \
                 "press <RETURN> if the line is getting too long. Once you are finished\n" \
                 "simply press <RETURN> without entering a name.\n\n" \
                 "You also may prepare a file with the hostnames of the machines where you plan\n" \
@@ -1347,9 +1347,9 @@ AddHosts()
       if [ "$ret" = 0 ]; then
          $CLEAR
          $INFOTEXT -u "\nAdding Grid Engine shadow hosts"
-         $INFOTEXT "\nPlease now add the list of hosts, where you will later install your shadow\n" \
+         $INFOTEXT "\nPlease now add the list of hosts where you will later install your shadow\n" \
                    "daemon.\n\n" \
-                   "Please enter a blank separated list of your execution hosts. You may\n" \
+                   "Please enter a blank-separated list of your execution hosts. You may\n" \
                    "press <RETURN> if the line is getting too long. Once you are finished\n" \
                    "simply press <RETURN> without entering a name.\n\n" \
                    "You also may prepare a file with the hostnames of the machines where you plan\n" \
@@ -1436,8 +1436,8 @@ AddSubmitHosts()
       done  
    else
       $INFOTEXT -u "\nAdding Grid Engine submit hosts"
-      $INFOTEXT "\nPlease now add the list of hosts, which should become submit hosts.\n" \
-                "Please enter a blank separated list of your submit hosts. You may\n" \
+      $INFOTEXT "\nPlease now add the list of hosts which should become submit hosts.\n" \
+                "Please enter a blank-separated list of your submit hosts. You may\n" \
                 "press <RETURN> if the line is getting too long. Once you are finished\n" \
                 "simply press <RETURN> without entering a name.\n\n" \
                 "You also may prepare a file with the hostnames of the machines where you plan\n" \
@@ -1527,7 +1527,7 @@ AddHostsFromTerminal()
       else
          $INFOTEXT -u "\nAdding admin hosts"
       fi
-      $INFOTEXT "\nPlease enter a blank separated list of hosts.\n\n" \
+      $INFOTEXT "\nPlease enter a blank-separated list of hosts.\n\n" \
                 "Stop by entering <RETURN>. You may repeat this step until you are\n" \
                 "entering an empty list. You will see messages from Grid Engine\n" \
                 "when the hosts are added.\n"
@@ -2511,8 +2511,8 @@ GetExecdPort()
       $INFOTEXT -u "\nGrid Engine TCP/IP communication service "
    if [ "$port_source" = "env" ]; then
 
-         $INFOTEXT "Make sure to use a different port number for the execution host\n" \
-                   "as on the qmaster machine\n"
+         $INFOTEXT "Make sure you use a different port number for the execution host\n" \
+                   "to the qmaster machine\n"
          if [ `$SGE_UTILBIN/getservbyname $SGE_QMASTER_SRV 2>/dev/null | wc -w` = 0 -a "$SGE_QMASTER_PORT" != "" ]; then
             $INFOTEXT "The qmaster port SGE_QMASTER_PORT = %s\n" $SGE_QMASTER_PORT
          elif [ `$SGE_UTILBIN/getservbyname sge_qmaster 2>/dev/null | wc -w` != 0 -a "$SGE_QMASTER_PORT" = "" ]; then
@@ -2560,8 +2560,8 @@ GetDefaultDomain()
       $INFOTEXT "\nSometimes the primary hostname of machines returns the short hostname\n" \
                   "without a domain suffix like >foo.com<.\n\n" \
                   "This can cause problems with getting load values of your execution hosts.\n" \
-                  "If you are using DNS or you are using domains in your >/etc/hosts< file or\n" \
-                  "your NIS configuration it is usually safe to define a default domain\n" \
+                  "If you are using DNS, or you are using domains in your >/etc/hosts< file or\n" \
+                  "your NIS configuration, it is usually safe to define a default domain\n" \
                   "because it is only used if your execution hosts return the short hostname\n" \
                   "as their primary name.\n\n" \
                   "If your execution hosts reside in more than one domain, the default domain\n" \
@@ -2705,7 +2705,7 @@ AddWindowsAdmin()
 }
 
 #-------------------------------------------------------------------------
-# PortCollision: Is there port collison for service, SGE_QMASTER or
+# PortCollision: Is there port collision for service, SGE_QMASTER or
 #                  SGE_EXECD
 PortCollision()
 {

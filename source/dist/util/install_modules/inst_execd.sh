@@ -53,8 +53,8 @@ WelcomeTheUserExecHost()
    $INFOTEXT -u "\nWelcome to the Grid Engine execution host installation"
    $INFOTEXT "\nIf you haven't installed the Grid Engine qmaster host yet, you must execute\n" \
              "this step (with >install_qmaster<) prior the execution host installation.\n\n" \
-             "For a sucessful installation you need a running Grid Engine qmaster. It is\n" \
-             "also neccesary that this host is an administrative host.\n\n" \
+             "For a successful installation you need a running Grid Engine qmaster. It is\n" \
+             "also necessary that this host is an administrative host.\n\n" \
              "You can verify your current list of administrative hosts with\n" \
              "the command:\n\n" \
              "   # qconf -sh\n\n" \
@@ -79,7 +79,7 @@ WelcomeTheUserSubmitHost()
    $INFOTEXT -u "\nWelcome to the Grid Engine submit host installation"
    $INFOTEXT "\nIf you haven't installed the Grid Engine qmaster host yet, you must execute\n" \
              "this step (with >install_qmaster<) prior the submit host installation.\n\n" \
-             "For a sucessful installation you need a running Grid Engine qmaster. It is\n" \
+             "For a successful installation you need a running Grid Engine qmaster. It is\n" \
              "also necessary that this host is an administrative host.\n\n" \
              "The script will check this in a later step or use the following command:\n\n" \
              "   # qconf -sh\n\n" \
@@ -105,7 +105,7 @@ CheckQmasterInstallation()
     if [ "$SGE_CELL" = "" ]; then
        SGE_CELL="default"
     fi
-    $INFOTEXT -n "\nPlease enter cell name which you used for the qmaster\n" \
+    $INFOTEXT -n "\nPlease enter the cell name which you used for the qmaster\n" \
                  "installation or press <RETURN> to use [%s] >> " $SGE_CELL
     INP=`Enter $SGE_CELL`
     if [ "$INP" = "" ]; then
@@ -120,9 +120,9 @@ CheckQmasterInstallation()
 
    if [ ! -f $COMMONDIR/act_qmaster -o ! -f $COMMONDIR/bootstrap ]; then
       $INFOTEXT "\nObviously there was no qmaster installation yet!\nCall >install_qmaster<\n" \
-                  "on the machine which shall run the Grid Engine qmaster\n"
+                  "on the machine which should run the Grid Engine qmaster\n"
       $INFOTEXT -log "\nObviously there was no qmaster installation yet!\nCall >install_qmaster<\n" \
-                  "on the machine which shall run the Grid Engine qmaster\n"
+                  "on the machine which should run the Grid Engine qmaster\n"
 
       MoveLog
       exit 1
@@ -282,7 +282,7 @@ CheckHostNameResolving()
                      "$SGE_BIN/qconf -sh" "$errmsg"
 
          $INFOTEXT "You can fix the problem now or abort the $mode procedure.\n" \
-                   "The problem can be:\n\n" \
+                   "The problem could be:\n\n" \
                    "   - the qmaster is not running\n" \
                    "   - the qmaster host is down\n" \
                    "   - an active firewall blocks your request\n"
@@ -362,7 +362,7 @@ CheckHostNameResolving()
            
             $INFOTEXT "Please check and correct your >/etc/hosts< file and >/etc/nsswitch.conf<\n" \
                       "file on this host and on the qmaster machine.\n\n" \
-                      "You can now add this host as an administrative host in a seperate\n" \
+                      "You can now add this host as an administrative host in a separate\n" \
                       "terminal window and then continue with the $mode procedure.\n" 
                          
             $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n "Check again (y/n) ('n' will abort) [y] >> "
@@ -388,7 +388,7 @@ CheckHostNameResolving()
 
 
 #-------------------------------------------------------------------------
-# UpdateConfiguration - will update $1 with entries from $2, keeping the onces that
+# UpdateConfiguration - will update $1 with entries from $2, keeping the Ice's that
 #                       are not specified in $1
 # $1 - old config file
 # $2 - new config file
@@ -414,8 +414,8 @@ AddLocalConfiguration_With_Qconf()
    TMPL=/tmp/$$/${HOST}
    rm -f $TMPL
    if [ -f $TMPL ]; then
-      $INFOTEXT "\nCan't create local configuration. Can't delete file >%s<" "$TMPL"
-      $INFOTEXT -log "\nCan't create local configuration. Can't delete file >%s<" "$TMPL"
+      $INFOTEXT "\nCan't create local configuration. Can't delete file >%s<" "$TEMPT"
+      $INFOTEXT -log "\nCan't create local configuration. Can't delete file >%s<" "$TEMPS"
    else
       $INFOTEXT -log "\nCreating local configuration for host >%s<" $HOST
       $SGE_BIN/qconf -sconf $HOST > $TMPL 2>/dev/null
@@ -450,9 +450,9 @@ StartExecd()
       fi
       $SVCADM enable -s "svc:/application/sge/execd:$SGE_CLUSTER_NAME"
       if [ $? -ne 0 ]; then
-         $INFOTEXT "\nFailed to start execution deamon over SMF.\n" \
+         $INFOTEXT "\nFailed to start execution daemon over SMF.\n" \
                    "Check service by issuing svcs -l svc:/application/sge/execd:%s" $SGE_CLUSTER_NAME
-         $INFOTEXT -log "\nFailed to start execution deamon over SMF.\n" \
+         $INFOTEXT -log "\nFailed to start execution daemon over SMF.\n" \
                         "Check service by issuing svcs -l svc:/application/sge/execd:%s" $SGE_CLUSTER_NAME
          if [ $AUTO = true ]; then
             MoveLog
@@ -784,7 +784,7 @@ ExecdAlreadyInstalled()
    load=`qhost -h $hostname | tail -1 | awk '{ print $4 }'`
    memuse=`qhost -h $hostname | tail -1 | awk '{ print $6 }'`
    if [ "$load" != "-" -a "$memuse" != "-" ]; then
-      $INFOTEXT -log "Execd return load and memuse values: LOAD: %s, MEMUSE: %s!\nExecution host %s is already installed!" $load $memuse $hostname
+      $INFOTEXT -log "Execd returns load and memuse values: LOAD: %s, MEMUSE: %s!\nExecution host %s is already installed!" $load $memuse $hostname
       return 1 
    else
       return 0 
@@ -804,7 +804,7 @@ CheckWinAdminUser()
          ADMINUSER=default
       fi
    else
-      $INFOTEXT "bootstrap file could not be found, please check your installation! Exiting now ..."
+      $INFOTEXT "bootstrap file could not be found. Please check your installation! Exiting now ..."
       exit 1
    fi
 
@@ -846,8 +846,8 @@ CheckWinAdminUser()
          is_nis=`mapadmin.exe | grep "UNIX Users and Groups Source" | cut -d ":" -f2 | cut -d " " -f2`
          if [ "$is_nis" = "NIS" ]; then
             $INFOTEXT "Your system is using NIS Domain setup. To setup the right Windows Domain\n" \
-                      "Unix Domain mapping we need your Unix Nis Domain.\n\n"
-            $INFOTEXT -n "Please enter your Unix Nis Domain now >> "
+                      "Unix Domain mapping we need your Unix NIS Domain.\n\n"
+            $INFOTEXT -n "Please enter your Unix NIS Domain now >> "
             NIS_DOMAIN=`Enter`
          else
             NIS_DOMAIN="PCNFS"
@@ -874,8 +874,8 @@ InstWinHelperSvc()
    WIN_SVC="SGE_Helper_Service.exe"
    WIN_DIR=`winpath2unix $SYSTEMROOT`
 
-   $INFOTEXT " Testing, if a service is already installed!\n"
-   $INFOTEXT -log " Testing, if a service is already installed!\n"
+   $INFOTEXT " Testing whether a service is already installed!\n"
+   $INFOTEXT -log " Testing whether a service is already installed!\n"
    
    if [ -f "$WIN_DIR"/SGE_Helper_Service.exe ]; then
       #Try to stop
@@ -950,8 +950,8 @@ UnInstWinHelperSvc()
    WIN_SVC="Sun Grid Engine Helper Service"
    WIN_DIR=`winpath2unix $SYSTEMROOT`
 
-   $INFOTEXT " Testing, if service is installed!\n"
-   $INFOTEXT -log " Testing, if service is installed!\n"
+   $INFOTEXT " Testing whether service is installed!\n"
+   $INFOTEXT -log " Testing whether service is installed!\n"
    eval "net pause \"$WIN_SVC\"" < /dev/null > /dev/null 2>&1
    ret=$?
    if [ "$ret" = 0 ]; then
@@ -1049,7 +1049,7 @@ SetupWinSvc()
 
    if [ "$1" = "execinst" ]; then #execinst param is used for service installation during execd install
       $INFOTEXT -u "SGE Windows Helper Service Installation"
-      $INFOTEXT "\nIf you're going to run Windows job's using GUI support, you have\n to install the" \
+      $INFOTEXT "\nIf you're going to run Windows jobs using GUI support, you have\n to install the" \
                 " Windows Helper Service"
       $INFOTEXT -n -auto $AUTO -ask "y" "n" -def "n" "Do you want to install the Windows Helper Service? (y/n) [n] >> "
       if [ "$?" = "1" ]; then
@@ -1058,7 +1058,7 @@ SetupWinSvc()
       InstWinHelperSvc
    elif [ "$1" = "install" ]; then #install param is used, if service is installed with -winsvc switch
       $INFOTEXT -u "SGE Windows Helper Service Installation"
-      $INFOTEXT "\nIf you're going to run Windows job's using GUI support, you have\n to install the" \
+      $INFOTEXT "\nIf you're going to run Windows jobs using GUI support, you have\n to install the" \
                 " Windows Helper Service"
       $INFOTEXT -n -auto $AUTO -ask "y" "n" -def "y" "Do you want to install the Windows Helper Service? (y/n) [y] >> "
       if [ "$?" = "1" ]; then
@@ -1080,3 +1080,6 @@ SetupWinSvc()
    fi
    $CLEAR
 }
+
+#  LocalWords:  hasdot nThis seperate expr UpdateConfiguration config libjvm
+#  LocalWords:  AddLocalConfiguration nCreating nCan't
