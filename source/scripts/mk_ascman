@@ -8,7 +8,7 @@
 # Requires groff to be installed and accessible.
 #
 # $1 = directory where aimk is installed
-# $2 = "ge" "geee" "sge" or "sgeee"
+# $2 = "ge" or "uge"
 # $3 = 0 or 1 - flag if man pages in ASCII format should be created
 # $4 = 0 or 1 - flag if man pages in HTML format  should be created
 # $5 = 0 or 1 - checkout man pages with "-kv" flag
@@ -72,22 +72,22 @@ cd $MANBUILDDIR
 
 set MANSRCDIR = $1/../doc/man
 # 
-# Changes magic strings in the checked-in man page versions into SGE
-# SGEEE, etc. as appropriate.
+# Changes magic strings in the checked-in man page versions into SGE,
+# etc. as appropriate.
 # Creates the changed man pages in SEDMAN/man/man{1,...} subdirectories,
 # which are created if they do not exist.
 #
 # Requires sed to be installed and accessible.
-if ( $MANMODE == "ge" ) then
+if ( $MANMODE == "ge" || $MANMODE == "sge") then
    set xxQS_NAMExx = "Grid Engine" 
-   set xxQS_NAME_Sxx = "GE" 
-   set xxqs_name_sxx = "ge" 
-   set xxRELxx = "GE 6.2u5.1"
-else if ( $MANMODE == "sge" ) then
-   set xxQS_NAMExx = "Grid Engine"
    set xxQS_NAME_Sxx = "SGE"
    set xxqs_name_sxx = "sge"
    set xxRELxx = "SGE 8.0.0"
+else if ( $MANMODE == "uge" ) then
+   set xxQS_NAMExx = "Univa Grid Engine"
+   set xxQS_NAME_Sxx = "SGE"
+   set xxqs_name_sxx = "sge"
+   set xxRELxx = "UGE 8.0.0"
 else
    echo error wrong MANMODE=$MANMODE. Exit
    exit 1
@@ -192,7 +192,7 @@ if ( "$MANHTML" == 1 ) then
    # generate the manual.html file
    #
    echo '<HTML>' > $MANBUILDDIR/HTMLMAN/manuals.html
-   echo ' <HEAD><TITLE>SGE Manual Pages</TITLE></HEAD>' >> $MANBUILDDIR/HTMLMAN/manuals.html
+   echo " <HEAD><TITLE>$xxQS_NAME_Sxx Manual Pages</TITLE></HEAD>" >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo ' <frameset cols="230,*" frameborder="NO" framespacing="0" border="3">' >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo '  <frame src=' >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo "   index.html$PATHREV" >> $MANBUILDDIR/HTMLMAN/manuals.html
