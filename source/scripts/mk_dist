@@ -32,6 +32,13 @@
 ##########################################################################
 #___INFO__MARK_END__
 
+# fixme: check on univa change:
+# commit 71876bf962d851ddd8806d4ce9803ec4a99ca516
+# Author: Joachim Gabler <JGabler@univa.com>
+# Date:   Thu Mar 31 10:15:57 2011 +0200
+
+#     JG-2011-03-31-0: Enhancem.:   Make sure the LICENSE file is copied by distin
+
 umask  022
 
 if type gtar 2>/dev/null >/dev/null; then TAR=gtar
