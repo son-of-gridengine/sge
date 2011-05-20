@@ -5,7 +5,7 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: qmon.1,v $     Last Update: $Date: 2008-05-05 09:03:33 $     Revision: $Revision: 1.11 $
+.\" $RCSfile: qmon.1,v $     Last Update: $Date: 2011-05-18 19:21:21 $     Revision: $Revision: 1.11 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -13,7 +13,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -30,9 +30,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QMON 1 "$Date: 2008-05-05 09:03:33 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QMON 1 "$Date: 2011-05-18 19:21:21 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
-qmon \- X-Windows OSF/Motif graphical user's interface for xxQS_NAMExx
+qmon \- X-Windows OSF/Motif graphical user interface for xxQS_NAMExx
 .\"
 .SH SYNTAX
 .B "qmon"
@@ -66,12 +66,12 @@ tasks. Selecting one of them opens the corresponding dialogue.
 .IP "\(bu" 3n
 The \fBTask\fP pulldown menu also contains the key accelerators
 which can be used to invoke the task dialogues directly from the
-main window by pressing a certain button sequence on the
+main window by pressing a certain sequence on the
 keyboard.
 .\"
 .IP "\(bu" 3n
 While navigating through a certain dialogue and its dialogue
-subhierarchy, links to other dialogues occur whenever a
+sub-hierarchy, links to other dialogues occur whenever a
 connection between both dialogues is obvious. Pushing
 the buttons that identify the links opens up the
 other dialogues.
@@ -87,11 +87,11 @@ supports:
 .\"
 .IP "\fB\-cmap\fP"
 Installs a private color map for
-.I qmon.
+.IR qmon .
 This is sometimes useful if other applications have already
 allocated lots of colors and if
-.I qmon,
-therefore, prints corresponding error messages. \fBNote\fP, however,
+.IR qmon ,
+therefore prints corresponding error messages. \fBNote\fP, however,
 that using a private color map will result in color map switches
 whenever you enter or leave
 .I qmon
@@ -99,7 +99,7 @@ windows.
 .IP "\fB\-fontFamily {big|medium|small}\fP"
 Notifies
 .I qmon
-to use different sized font families for different resolution
+to use different size font families for different resolution
 sizes.
 .IP "\fB\-help\fP"
 Displays usage information.
@@ -115,18 +115,18 @@ The dialogue allows for detailed information on the jobs as well as for
 the deletion and suspension of jobs being selected. 
 In addition the job control dialogue offers links to the \fBSubmit\fP 
 dialogue in order to submit new jobs or to change attributes of pending 
-jobs (\fBQalter\fP button). The shown displayed fields in the tabular display
+jobs (\fBQalter\fP button). The fields displayed in the tabular display
 and the jobs displayed can be customized by pressing the \fBCustomize\fP 
 button. This customization can be saved to the \fI~/.qmon_preferences\fP file
-and is used on following startups for the initial configuration of the 
+and is used on following startup for the initial configuration of the
 \fBJob Control\fP dialogue.
 
 .\"
 .SS "\fBQueue Control\fP"
 The \fBQueue Control\fP dialogue with its sub-dialogue hierarchy enables the
-user to control the status of the xxQS_NAMExx queues being actually configured
+user to control the status of the xxQS_NAMExx queues actually configured
 in the system and allows the administrator to add new queues or to modify
-or delete already existing ones. The \fBQueue Control\fP dialogue shows a
+or delete existing ones. The \fBQueue Control\fP dialogue shows a
 tabbed view of Cluster Queues or their corresponding Queue Instances in a tabular way.
 .sp 1
 By pushing the \fBAdd\fP, \fBClone\fP or \fBModify\fP button, a sub-dialogue 
@@ -138,13 +138,13 @@ The lower section contains a list of hosts or hostgroups at the left, where the 
 These default attributes can be overruled on a hostgroup or host basis by enabling attributes and changing their values after this hostgroup or host entry has been added in the "Attributes for Host/Hostgroup" listbox. 
 The queue configuration parameters (see
 .M queue_conf 5 )
-are subdivided in different categories (\fBGeneral Configuration\fP,
+are subdivided into different categories (\fBGeneral Configuration\fP,
 \fBExecution Methods\fP, \fBCheckpointing\fP, \fBLoad/Suspend Thresholds\fP,
 \fBLimits\fP, \fBComplexes\fP, \fBUser Access\fP, 
 \fBProject Access, \fBSubordinate Queues\fP, \fBOwners\fP)
 which are selectable by the tab widget area presented in the lower region 
 of the queue configuration sub-dialogue. 
-The administrator may select previously configured settings from 
+The administrator may select previously-configured settings from
 already existing queues (\fBClone\fP button). By pushing the \fBOk\fP
 button, the definitions are registered with
 .M xxqs_name_sxx_qmaster 8 .
@@ -167,7 +167,7 @@ of the button column on the right side of the
 screen.
 .sp 1
 The dialogue consists of a folder containing two job preparation dialogue pages. The most frequently used parameters in the course of a job submission are offered on the \fBGeneral\fP page. A job script has to be
-defined, all other fields are optional. If the job demands for specification
+defined; all other fields are optional. If the job demands specification
 of advanced requirements, the \fBAdvanced\fP tab can be used to
 switch to an enhanced parameter display.
 .sp 1
@@ -176,12 +176,12 @@ mandatory for the job, the \fBRequest Resources\fP icon button has to
 be used to pop up the \fBRequested Resources\fP sub-dialogue. 
 This sub-dialogue allows for selection of the required resources of the job
 and for definition of the quantities in which this resources are to be
-provided. The \fBAvailable Resources\fP are constituted by those
-complex attributes being declared \fIrequestable\fP (see
+provided. The \fBAvailable Resources\fP are constituted from those
+complex attributes declared \fIrequestable\fP (see
 .M complex 5
 for details). Resource requirements can be made \fBHard\fP, i.e. they
 must be met before a job can be started in a queue, or \fBSoft\fP,
-i.e. they are granted on an as available basis.
+i.e. they are granted on an as-available basis.
 .sp 1
 Closing the \fBRequested Resources\fP sub-dialogue with the done button
 books the specified requirement for the job. Pushing the \fBSubmit\fP
@@ -236,7 +236,7 @@ sensors, consumable complex attributes and access attributes
 (access, xaccess and projects, xprojects) as described in
 .M complex 5 .
 CPU, memory and I/O usage reported for running jobs can be 
-scaled in addition and the relative performance of a host can be define with 
+scaled in addition and the relative performance of a host can be defined with
 the
 .B Resource Capability Factor
 (see
@@ -268,7 +268,7 @@ described in
 It is subdivided in the two sections
 .B General Parameters
 and
-.B Load Adjustments
+.BR "Load Adjustments" ,
 which can be selected via the corresponding tabs.
 The
 .B Ok
@@ -324,9 +324,9 @@ and
 to control access of users to hosts, queues, projects and the entire cluster.
 A userset is just a
 collection of user names and UNIX group names. Group names are
-identified by prefixing them with a "@" sign. The already defined
+identified by prefixing them with a "@" sign. The already-defined
 usersets are displayed in a selection list. These lists can be
-modified and new lists can be created using the
+modified, and new lists can be created, using the
 .B Userset
 definition dialogue.
 .sp 1
@@ -343,7 +343,8 @@ and
 below).
 .sp 1
 User names can be added to the system as entries to the xxQS_NAMExx user database (see
-.M user 5 ), here a default project can be attached to the user too.
+.M user 5 );
+here a default project can be attached to the user too.
 This can be done with the 
 .B User
 sub-dialogue.
@@ -356,16 +357,16 @@ dialogue (see below).
 .\"
 .SS "\fBPE Config\fP"
 Parallel environment (PE) interfaces can be configured with this dialogue.
-PE interfaces are necessary to describe the way how parallel programming
+PE interfaces are necessary to describe how parallel programming
 environments like PVM (Parallel Virtual Machine), MPI (Message Passing
-Interface) or shared memory parallel systems are to be instantiated and
+Interface), or shared memory parallel systems, are to be instantiated and
 to impose access restrictions onto the PEs. When the dialogue is opened a
-list of the already configured PEs is displayed together with the current
+list of the configured PEs is displayed, together with the current
 configuration (see
 .M xxqs_name_sxx_pe 5 )
 of the selected PE interface.
-To add new PE interfaces or to modify existing ones, an \fBAdd\fP and a
-\fBModify\fP button is available which opens a PE interface configuration
+To add new PE interfaces, or to modify existing ones, an \fBAdd\fP and a
+\fBModify\fP button are available which open a PE interface configuration
 sub-dialogue. After applying the changes and quitting this sub-dialogue
 with the \fBOK\fP button, the new or modified PE interface is registered
 with
@@ -380,7 +381,7 @@ is opened a list of the already configured checkpointing environments is
 displayed together with the current configuration (see
 .M checkpoint 5 )
 of the 
-selected checkpointing environment. To add new checkpointing environment 
+selected checkpointing environment. To add new checkpointing environments,
 or to modify existing ones, an \fBAdd\fP and a \fBModify\fP button
 is available which 
 opens a checkpointing environment configuration sub-dialogue. After 
@@ -433,8 +434,8 @@ configuration of the one being selected. By pushing the
 .B Delete
 button, the selected project is deleted from the configuration. Pushing the
 \fBAdd\fP/\fBModify\fP 
-button will open a project configuration dialogue, which allows to create new 
-projects or which provides the means to change the existing ones. Project
+button will open a project configuration dialogue, which allows creating new 
+projects changing existing ones. Project
 configuration in essence means giving or denying access to a project for
 usersets (see
 .B User Conf
@@ -448,8 +449,8 @@ The Ok button registers the additional or modified project with
 The \fBObject Browser\fP dialogue's purpose is manifold: First of all,
 xxQS_NAMExx and
 .I qmon
-messages such as notification of error or success concerning a previously
-taken action can be displayed in the dialogue's output window.
+Messages, such as notification of error or success concerning a previously
+taken action, can be displayed in the dialogue's output window.
 Also the standard output and the standard error output of
 .I qmon
 can be diverted to the \fBObject Browser\fP output window.
@@ -470,10 +471,10 @@ dialogue (see above). This facility is activated by pushing the
 .IP "\(bu" 3n
 Detailed job information is printed as soon as the user
 moves the mouse pointer over a line in the \fBJob Control\fP
-dialogue (see above) being assigned to a running or pending job.
+dialogue (see above) assigned to a running or pending job.
 .IP "\(bu" 3n
 Additionally job scheduling information is displayed in the browser
-if the \fBWhy ?\fP button in the \fBJob Control\fP dialogue is
+if the \fBWhy?\fP button in the \fBJob Control\fP dialogue is
 pressed. In this case the Browser dialogue is opened implicitly and
 any scheduling related information is displayed.
 .\"
