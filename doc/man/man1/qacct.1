@@ -5,7 +5,7 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: qacct.1,v $     Last Update: $Date: 2009-02-12 14:32:28 $     Revision: $Revision: 1.17 $
+.\" $RCSfile: qacct.1,v $     Last Update: $Date: 2011-05-20 22:00:11 $     Revision: $Revision: 1.17 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -13,7 +13,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -30,49 +30,46 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QACCT 1 "$Date: 2009-02-12 14:32:28 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QACCT 1 "$Date: 2011-05-20 22:00:11 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qacct \- report and account for xxQS_NAMExx usage
 .SH SYNOPSIS
 .B qacct
-[
-.B \-ar [ar_id] 
-] [
-.B \-A Account
-] [
-.B \-b BeginTime
-] [
-.B \-d Days
-] [
-.B \-e EndTime
-] [
-.B \-g [GroupId|GroupName]
-] [
-.B \-h [HostName]
-] [
-.B \-help
-] [
-.B \-j [job_id|job_name|pattern]
-] [
-.B \-l attr=val,...
-] [
-.B \-o [Owner]
-] [
-.B \-pe [PEname]
-] [
-.B \-q [wc_queue]
-] [
-.B \-slots [SlotNumber]
-] [
-.B \-t task_id_range_list
-] [
-.B \-P [Project]
-] [
-.B \-D [Department]
-] [
-.B \-f
-.I AcctFileName
-]
+.RB [ \-ar
+.IR ar_id ] 
+.RB [ \-A
+.IR Account ]
+.RB [ \-b
+.IR BeginTime ]
+.RB [ \-d
+.IR Days ]
+.RB [ \-e
+.IR EndTime ]
+.RB [ \-g 
+.IR GroupId | GroupName ]
+.RB [ \-h
+.IR HostName ]
+.RB [ \-help ]
+.RB [ \-j
+.IR job_id | job_name | pattern ]
+.RB [ \-l
+.IR attr = val ,...]
+.RB [ \-o
+.IR Owner ]
+.RB [ \-pe
+.IR PEname ]
+.RB [ \-q
+.IR wc_queue ]
+.RB [ \-slots
+.IR SlotNumber ]
+.RB [ \-t
+.IR task_id_range_list ]
+.RB [ \-P
+.IR Project ]
+.RI [ \-D
+.IR Department ]
+.RB [ \-f
+.IR AcctFileName ]
 .\"
 .\"
 .SH DESCRIPTION
@@ -81,9 +78,9 @@ The
 utility scans the accounting data file (see
 .M accounting 5 )
 and produces a summary
-of information for wall-clock time, cpu-time, and system time
-for the categories of hostname, queue-name, group-name,
-owner-name, job-name, job-ID and for the queues meeting the resource
+of information for wall-clock time, CPU time, and system time
+for the categories of host name, queue name, group name,
+owner name, job name, job ID, and for the queues meeting the resource
 requirements as specified with the \fB\-l\fP switch.
 Combinations of each category are permitted. Alternatively, all
 or specific jobs can be listed with the \fB\-j\fP switch.
@@ -95,7 +92,7 @@ owner, but not for two queues in the same request.
 .SH OPTIONS
 .IP "\fB\-ar\fP [\fBar_id\fP]"
 The ID of the advance reservation for which usage is summarized.
-If \fBar_id\fP is not given, accounting data is
+If \fBar_id\fP is not given, accounting data are
 listed for each advance reservation separately.
 .\"
 .IP "\fB\-A Account\fP"
@@ -103,15 +100,15 @@ The account for jobs to be summarized.
 .\"
 .IP "\fB\-b BeginTime\fP"
 The earliest start time for jobs to be summarized, in the format
-[[CC]YY]MMDDhhmm[.SS]. See also \fB\-d\fP option. If CC is not
+[[CC]YY]MMDDhhmm[.SS]. See also the \fB\-d\fP option. If CC is not
 specified, a YY of < 70 means 20YY.
 .\"
 .IP "\fB\-d Days\fP"
-The number of days to summarize and print accounting information on. If
-used together with the \fB\-b BeginTime\fP option (see above), jobs
+The number of days for which to summarize and print accounting information. If
+used together with the \fB\-b \fIBeginTime\fP option (see above), jobs
 started within \fBBeginTime\fP to \fBBeginTime\fP + \fBDays\fP are
-counted. If used together with the \fB\-e EndTime\fP (see below)
-option, count starts at \fBEndTime\fP - \fBDays\fP.
+counted. If used together with \fB\-e \fIEndTime\fP (see below)
+option, count starts at \fBEndTime\fP \- \fBDays\fP.
 .\"
 .IP "\fB\-e EndTime\fP"
 The latest start time for jobs to be summarized, in the format
@@ -139,7 +136,7 @@ Display help information for the
 command.
 .\"
 .IP "\fB\-j\fP [\fBjob_id|job_name|pattern\fP]"
-The name, a expression for matching names, or ID of the job during execution 
+The name, an expression for matching names, or ID of the job during execution 
 for which accounting information is printed. If neither a name nor an ID 
 is given, all jobs are listed.
 .br
@@ -159,26 +156,26 @@ is very similar to the one described in
 .IP "\fB\-o\fP [\fBOwner\fP]"
 The name of the owner of the jobs for which accounting statistics
 are assembled. If the optional \fBOwner\fP argument is omitted,
-a listing of the accounting statistics of all job owners being
+a listing of the accounting statistics of all job owners
 present in the accounting file is produced.
 .\"
 .IP "\fB\-pe\fP [\fBPEname\fP]"
 The name of the parallel environment for which usage is summarized.
-If \fBPEname\fP is not given, accounting data is
+If \fBPEname\fP is not given, accounting data are
 listed for each parallel environment separately.
 .\"
 .IP "\fB\-q\fP [\fBwc_queue_name\fP]"
-A expression for queues for which usage is summarized. All
+An expression for queues for which usage is summarized. All
 queue instances matching the expression will be listed. If
 no expression is specified, a cluster queue summary will be 
 given.
 .\"
 .IP "\fB\-slots\fP [\fBSlotNumber\fP]"
 The number of queue slots for which usage is summarized.
-If \fBSlotNumber\fP is not given, accounting data is
+If \fBSlotNumber\fP is not given, accounting data are
 listed for each number of queue slots separately.
 .\"
-.IP "\fB\-t task_id_range_list\fP
+.IP "\fB\-t task_id_range_list\fP"
 Only available together with the \fB\-j\fP option described above.
 .sp 1
 The \fB\-t\fP switch specifies the array job task range, for which
@@ -188,15 +185,15 @@ accounting information should be printed. Syntax and semantics of
 .M qsub 1 .
 Please see there also for further information on array jobs.
 .\"
-.IP "\fB\-P\fP [\fBProject\fP]"
+.IP "\fB\-P\fP [\fBProject\fP"
 The name of the project for which usage is summarized.
-If \fBProject\fP is not given, accounting data is
-listed for each owning project separately.
+If \fBProject\fP is not given, accounting data are
+listed for each relevant project separately.
 .\"
 .IP "\fB\-D\fP [\fBDepartment\fP]"
 The name of the department for which usage is summarized.
-If \fBDepartment\fP is not given, accounting data is
-listed for each owning department separately.
+If \fBDepartment\fP is not given, accounting data are
+listed for each relevant department separately.
 .\"
 .\"
 .SH "ENVIRONMENTAL VARIABLES"
