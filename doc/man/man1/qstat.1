@@ -5,7 +5,7 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: qstat.1,v $     Last Update: $Date: 2009-11-05 13:18:36 $     Revision: $Revision: 1.41 $
+.\" $RCSfile: qstat.1,v $     Last Update: $Date: 2011-05-20 23:00:47 $     Revision: $Revision: 1.41 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -30,53 +30,43 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QSTAT 1 "$Date: 2009-11-05 13:18:36 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QSTAT 1 "$Date: 2011-05-20 23:00:47 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qstat \- show the status of xxQS_NAMExx jobs and queues
 .\"
 .\"
 .SH SYNTAX
 .B qstat
-[
-.B -ext
-] [
-.B -f
-] [ \fB\-F\fP [\fBresource_name,...\fP]
-] [
-.B -g {c|d|t}[+]
-] [
-.B -help
-] [
-.B -j [job_list]
-] [
-.B -l resource=val,...
-] [
-.B -ne
-] [
-.B -pe pe_name,...
-] [
-.B -ncb
-] [
-.B -pri 
-] [
-.B -q wc_queue_list
-] [
-.B -qs {a|c|d|o|s|u|A|C|D|E|S}
-] [
-.B -r
-] [
-.B -s {r|p|s|z|hu|ho|hs|hd|hj|ha|h|a}[+]
-] [
-.B -t
-] [
-.B -U user,...
-] [
-.B -u user,...
-] [
-.B -urg
-] [
-.B -xml
-]
+.RB [ \-ext ]
+.RB [ \-f ]
+.RB [ \-F
+.RI [ resource_name ,...]]
+.RB [ \-g
+.BR c | d | t [ + ]]
+.RB [ \-help ]
+.RB [ \-j
+.RI [ job_list ]]
+.RB [ \-l
+.IR resource = val ,... ]
+.RB [ \-ne ]
+.RB [ \-pe
+.IR pe_name ,...]
+.RB [ \-ncb ]
+.RB [ \-pri ]
+.RB [ \-q
+.IR wc_queue_list ]
+.RB [ \-qs
+.BR a | c | d | o | s | u | A | C | D | E | S ]
+.RB [ \-r ]
+.RB [ \-s
+.RB { r | p | s | z | hu | ho | hs | hd | hj | ha | h | a }[+]]
+.RB [ \-t ]
+.RB [ \-U
+.IR user ,...]
+.RB [ \-u
+.IR user ,...]
+.RB [ \-urg ]
+.RB [ \-xml ]
 .\"
 .SH DESCRIPTION
 .I qstat
