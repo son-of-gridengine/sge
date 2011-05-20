@@ -166,7 +166,10 @@ if ( "$MANHTML" == 1 ) then
          endif
 	 # This used to use `man' on the SEDMAN files, but that loses
 	 # the overstriking.
-         groff -man -t -Tascii $MANBUILDDIR/SEDMAN/man/man$n/$bn.$n | man2html -botm 4 -topm 4 -pgsize 999999 -cgiurl "../htmlman"'$section/$title'".html$PATHREV" | sed '2s/BODY/BODY BGCOLOR=white/' > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
+         groff -man -t -M$MANBUILDDIR/../scripts -my -Tascii $MANBUILDDIR/SEDMAN/man/man$n/$bn.$n | man2html -title $bn.$n -botm 4 -topm 4 -pgsize 999999 -cgiurl "../htmlman"'$section/$title'".html$PATHREV" | sed '2s/BODY/BODY BGCOLOR=white/' > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
+# This works, but the backend doesn't do .IP right, at least
+#          sed -e 's;\\\\fI\\\\\$1\\\\fR\\\\|(\\\\\$2)\\\\\$3;.URL ../htmlman\\\\$2/\\\\$1 \\\\fI\\\\$1\\\\fP(\\\\$2) \\\\$3;' $MANBUILDDIR/SEDMAN/man/man$n/$bn.$n | \
+#          groff -man -t -Thtml > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
       end
    end   
 
