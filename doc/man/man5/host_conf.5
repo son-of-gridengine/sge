@@ -4,7 +4,7 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: host_conf.5,v $     Last Update: $Date: 2008-07-08 09:10:05 $     Revision: $Revision: 1.15 $
+.\" $RCSfile: host_conf.5,v $     Last Update: $Date: 2011-05-18 01:57:34 $     Revision: $Revision: 1.15 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -12,7 +12,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -29,7 +29,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH HOST_CONF 5 "$Date: 2008-07-08 09:10:05 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH HOST_CONF 5 "$Date: 2011-05-18 01:57:34 $" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 host_conf \- xxQS_NAMExx execution host configuration file format
@@ -48,7 +48,7 @@ registers to
 .M xxqs_name_sxx_qmaster 8
 for the very first time from a certain host. The
 .M qconf 1
-\fB\-sel\fP switch can be used to display a list of execution host being
+\fB\-sel\fP switch can be used to display a list of execution hosts
 currently configured in your xxQS_NAMExx system. Via the \fB\-se\fP
 option you can print the execution host configuration of a
 specified host.
@@ -56,9 +56,9 @@ specified host.
 The special hostname "global" can be used to define cluster global 
 characteristics.
 .PP
-Note, xxQS_NAMExx allows backslashes (\\) be used to escape newline
-(\\newline) characters. The backslash and the newline are replaced with a
-space (" ") character before any interpretation.
+Note xxQS_NAMExx allows backslashes (\\) be used to escape newline
+characters. The backslash and the newline are replaced with a space
+character before any interpretation.
 .\"
 .\"
 .SH FORMAT
@@ -66,22 +66,22 @@ The format of a
 .I host_conf
 file is defined as follows:
 .SS "\fBhostname\fP"
-The execution hosts name as defined for \fIhost_name\fP in
+The execution host's name in the format for \fIhost_name\fP in
 .M sge_types 1 .
 .SS "\fBload_scaling\fP"
-A comma separated list of scaling values to be applied to each or part
+A comma-separated list of scaling values to be applied to each or part
 of the load values being reported by the
 .M xxqs_name_sxx_execd 8
-on the host and being defined in the cluster global "host" complex
+on the host and defined in the cluster global "host" complex
 (see
 .M complex 5 ).
 The load scaling factors are intended to level hardware or operating
-system specific differences between execution hosts. 
+system-specific differences between execution hosts.
 .sp 1
 The syntax of a load factor specification is as follows: First the name of
 the load value (as defined in the "host" complex) is given and, separated
 by an equal sign, the load scaling value is provided. No blanks are
-allowed in between the load_scaling value string.
+allowed in the load_scaling value string.
 .sp 1
 The parameter
 .B load_scaling
@@ -98,13 +98,13 @@ The quotas are related to the resource consumption of all jobs on a host in
 the case of consumable resources (see
 .M complex 5
 for details on 
-consumable resources) or they are interpreted on a per job slot basis in the 
+consumable resources), or they are interpreted on a per-job slot basis in the
 case of non-consumable resources. Consumable resource attributes are 
 commonly used to manage free memory, free disk space or available 
-floating software licenses while non-consumable attributes usually define 
+floating software licenses, while non-consumable attributes usually define
 distinctive characteristics like type of hardware installed.
 .sp 1
-For consumable resource attributes an available resource amount is 
+For consumable resource attributes, an available resource amount is
 determined by subtracting the current resource consumption of all 
 running jobs on the host from the quota in the
 .B complex_values
@@ -130,6 +130,7 @@ The \fI\-F\fP option of
 and the load display in the
 .M qmon 1
 queue control dialog (activated by 
+.\" fixme: ??
 clicking on a queue icon while the "Shift" key is pressed) provide 
 detailed information on the actual availability of consumable 
 resources and on the origin of the values taken into account currently.
@@ -171,8 +172,8 @@ This entry cannot be configured but is only displayed in case of a
 .M qconf 1
 \fB\-se\fP command. All load values are displayed as reported by the
 .M xxqs_name_sxx_execd 8
-on the host. The load values are shown in a comma separated list. Each
-load value start with its name, followed by an equal sign and the reported
+on the host. The load values are shown in a comma-separated list. Each
+load value starts with its name, followed by an equal sign and the reported
 value.
 .SS "\fBprocessors\fP"
 .B Note:
@@ -180,61 +181,62 @@ Deprecated, may be removed in future release.
 .br
 This entry cannot be configured but is only displayed in case of a
 .M qconf 1
-\fB\-se\fP command. Its value is the number of processors which has been
+\fB\-se\fP command. Its value is the number of "processors" which has been
 detected by
 .M xxqs_name_sxx_execd 8
-on the corresponding host.
+on the corresponding host.  This may include "hardware threads"
+reported by the operating system.
 .SS "\fBusage_scaling\fP"
 The format is equivalent to
 .B load_scaling
 (see above), the only valid attributes to be scaled however are
 .B cpu
 for CPU time consumption,
-.B mem 
-for Memory consumption aggregated over the life-time of jobs and
+.B mem
+for memory consumption aggregated over the lifetime of jobs and
 .B io
 for data transferred via any I/O devices. The default NONE means
 "no scaling", i.e. all scaling factors are 1.
 .SS "\fBuser_lists\fP"
-The \fBuser_lists\fP parameter contains a comma separated list of so called
+The \fBuser_lists\fP parameter contains a comma-separated list of so called
 user access lists as described in
 .M access_list 5 .
 Each user contained in at least one of the listed access lists has
 access to the host. If the \fBuser_lists\fP parameter is set to
-NONE (the default) any user has access being not explicitly excluded
+NONE (the default), any user has access if not explicitly excluded
 via the \fBxuser_lists\fP parameter described below.
 If a user is contained both in an access list in \fBxuser_lists\fP
 and \fBuser_lists\fP the user is denied access to the host.
 .SS "\fBxuser_lists\fP"
-The \fBxuser_lists\fP parameter contains a comma separated list of so called
+The \fBxuser_lists\fP parameter contains a comma-separated list of so called
 user access lists as described in
 .M access_list 5 .
 Each user contained in at least one of the access lists is not
 allowed to access the host. If the \fBxuser_lists\fP parameter is set to
-NONE (the default) any user has access.
-If a user is contained both in an access list \fBxuser_lists\fP
-and \fBuser_lists\fP the user is denied access to the host.
+NONE (the default), any user has access.
+If a user is contained both in \fBxuser_lists\fP
+and \fBuser_lists\fP, the user is denied access to the host.
 .SS "\fBprojects\fP"
-The \fBprojects\fP parameter contains a comma separated list of projects
+The \fBprojects\fP parameter contains a comma-separated list of projects
 that have access to the host. Any projects not in this list are denied
 access to the host. If set to NONE (the default), any project
-has access that is not specifically excluded via the \fBxprojects\fP
-parameter described below. If a project is in both the \fBprojects\fP and
-\fBxprojects\fP parameters, the project is denied access to the host.
+has access if not specifically excluded via the \fBxprojects\fP
+parameter described below. If a project is in both \fBprojects\fP and
+\fBxprojects\fP, the project is denied access to the host.
 .SS "\fBxprojects\fP"
-The \fBxprojects\fP parameter contains a comma separated list of projects
+The \fBxprojects\fP parameter contains a comma-separated list of projects
 that are denied access to the host. If set to NONE (the default), no
 projects are denied access other than those denied access based on the
-\fBprojects\fP parameter described above.  If a project is in both the
-\fBprojects\fP and \fBxprojects\fP parameters, the project is denied
+\fBprojects\fP parameter described above.  If a project is in both
+\fBprojects\fP and \fBxprojects\fP, the project is denied
 access to the host.
 .\"
 .SS "\fBreport_variables\fP"
-The \fBreport_variables\fP parameter contains a comma separated list of 
-variables that shall be written to the reporting file.
+The \fBreport_variables\fP parameter contains a comma-separated list of
+variables that should be written to the reporting file.
 The variables listed here will be written to the reporting file when a load report arrives from an execution host.
 .sp 1
-Default settings can be done in the global host. Host specific settings for 
+Default settings can be done in the global host. Host-specific settings for
 report_variables will override settings from the global host.
 .\"
 .\"
