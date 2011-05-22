@@ -36,7 +36,7 @@ project \- xxQS_NAMExx project entry file format
 .\"
 .SH DESCRIPTION
 Jobs can be submitted to projects, and a project can be assigned
-with a certain level of importance via the functional or the override
+with a certain level of importance, via the functional or the override
 policy. This level of importance is then inherited by the jobs executing
 under that project.
 .PP
@@ -45,8 +45,8 @@ A list of currently configured projects can be displayed via the
 \fB\-sprjl\fP option. The contents of each listed project definition
 can be shown via the \fB\-sprj\fP switch. The output follows the
 .I project
-format description. New projects can be created and existing can be
-modified via the \fB\-aprj\fP, \fB\-mprj\fP and \fB\-dprj\fP options to
+format description. New projects can be created, and existing ones can be
+modified, via the \fB\-aprj\fP, \fB\-mprj\fP and \fB\-dprj\fP options to
 .M qconf 1 .
 .PP
 Note, xxQS_NAMExx allows backslashes (\\) be used to escape newline
@@ -57,23 +57,23 @@ character before any interpretation.
 .SH FORMAT
 A project definition contains the following parameters:
 .SS "\fBname\fP"
-The project name as defined for \fIproject_name\fP in
+The project name in the format for \fIproject_name\fP in
 .M sge_types 1 .
 .SS "\fBoticket\fP"
-The amount of override tickets currently assigned to the project.
+The number of override tickets currently assigned to the project.
 .SS "\fBfshare\fP"
 The current functional share of the project.
 .SS "\fBacl\fP"
-A list of user access lists (ACLs - see
+A list of user access lists (ACLs \- see
 .M access_list 5 )
-referring to those users being allowed to submit jobs to the project.
+referring to those users allowed to submit jobs to the project.
 .PP
 If the \fBacl\fP parameter is set to NONE, all users are allowed to submit jobs
-to the project except for those listed in \fBxacl\fP parameter described below.
+to the project except for those listed in the \fBxacl\fP parameter described below.
 .SS "\fBxacl\fP"
-A list of user access lists (ACLs - see
+A list of user access lists (ACLs \- see
 .M access_list 5 )
-referring to those users being not allowed to submit jobs to the project.
+referring to those users not allowed to submit jobs to the project.
 .\"
 .\"
 .SH "SEE ALSO"
