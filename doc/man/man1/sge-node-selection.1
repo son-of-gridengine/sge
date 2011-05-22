@@ -6,15 +6,7 @@
 ..
 .TH sge\-node\-selection 1 2011-01-01 
 .SH NAME
-busy\-nodes \- List nodes currently running xxQS_NAMExx jobs
-.br
-idle\-nodes \- List nodes currently not running xxQS_NAMExx jobs
-.br
-dead\-nodes \- List nodes whose xxQS_NAMExx execd is not responding
-.br
-nodes\-in\-job \- List nodes running a given xxQS_NAMExx job
-.br
-qselect\-node\-list \- Run qselect(1), producing pdsh-compatible host list
+busy\-nodes, idle\-nodes, dead\-nodes, nodes\-in\-job, qselect\-node\-list \- List xxQS_NAMExx node names by various criteria
 .SH SYNOPSIS
 .B busy\-nodes
 .RB [ \-w ]
@@ -42,9 +34,13 @@ qselect\-node\-list \- Run qselect(1), producing pdsh-compatible host list
 .BR idle\-nodes ,
 and
 .BR dead\-nodes
-respectively list xxQS_NAMExx nodes which are:  busy with one or more jobs,
-idle (without a job running), and dead (their xxQS_NAMExx exec daemon not
-responding).
+respectively list xxQS_NAMExx nodes which are:  busy with one or more
+jobs, idle (without a job running), and "dead" (their xxQS_NAMExx exec
+daemon is not responding).
+.B nodes-in-job
+list nodes which are running the given
+.I jobid
+(presumably a parallel one).
 .B qselect\-node\-list
 runs
 .M qselect 1
@@ -54,7 +50,7 @@ unless the
 option is used.
 .SH OPTIONS
 .TP
-.BR \- , \-\-help
+.BR \-h , \-\-help
 Print usage information.
 .TP
 .B \-w
@@ -78,7 +74,7 @@ selecting only nodes in job number "123".
 .RE
 .SH "SEE ALSO"
 .M qhost 1 ,
-.M qselect ,
+.M qselect 1 ,
 .M pdsh 1 .
 .SH AUTHOR
 Dave Love <d.love@liverpool.ac.uk>
