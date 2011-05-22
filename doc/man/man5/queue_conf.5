@@ -58,11 +58,11 @@ space character before any interpretation.
 The following list of parameters specifies the queue configuration 
 file content:
 .SS "\fBqname\fP"
-The name of the cluster queue as defined for \fIqueue_name\fP in
+The name of the cluster queue in the format for \fIqueue_name\fP in
 .M sge_types 1 .
 As template default "template" is used.
 .SS "\fBhostlist\fP"
-A list of host identifiers as defined for \fIhost_identifier\fP in 
+A list of host identifiers in the format for \fIhost_identifier\fP in 
 .M sge_types 1 . 
 For each host xxQS_NAMExx maintains a queue instance for running jobs
 on that particular host. Large numbers of hosts can easily be managed 
@@ -600,7 +600,7 @@ There are two different types of subordination:
 .PP
 .B 1. Queuewise subordination
 .PP
-A list of xxQS_NAMExx queue names as defined for \fIqueue_name\fP in
+A list of xxQS_NAMExx queue names in the format for \fIqueue_name\fP in
 .M sge_types 1 .
 Subordinate relationships are in effect
 only between queue instances residing at the same host. 
@@ -647,7 +647,7 @@ where
 .HP
 \fIqueue_def\fP =\fIqueue\fP[:\fIseq_no\fP][:\fIaction\fP]
 .HP
-\fIqueue\fP     =a xxQS_NAMExx queue name as defined for
+\fIqueue\fP     =a xxQS_NAMExx queue name in the format for
 \fIqueue_name\fP in
 .M sge_types 1 .
 .HP
