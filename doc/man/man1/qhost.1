@@ -30,30 +30,26 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QHOST 1 "$Date: 2009-11-05 13:18:36 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QHOST 1 "$Date: 2011-05-20 22:12:32 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qhost \- show the status of xxQS_NAMExx hosts, queues, jobs
 .\"
 .\"
 .SH SYNTAX
 .B qhost
-[
-\fB\-F\fP [\fBresource_name,...\fP]
-] [
-.B -help
-] [
-.B -h host_list
-] [
-.B -j
-] [
-.B -l resource=val,...
-] [
-.B -ncb
-] [
-.B -u user,...
-] [
-.B -xml
-].\"
+.RB [ \-F
+.RI [ resource_name ,...]]
+.RB [ \-help ]
+.RB [ \-h
+.RI host_list ]
+.RB [ \-j ]
+.RB [ \-l
+.IR resource = val ,...]
+.RB [ \-ncb ]
+.RB [ \-u
+.IR user ,...]
+.RB [ \-xml ]
+.\"
 .SH DESCRIPTION
 .I qhost
 shows the current status of the available xxQS_NAMExx hosts, queues and the
@@ -146,6 +142,9 @@ the Used Memory.
 the Total Swapspace.
 .IP "\(bu" 3n
 the Used Swapspace.
+.PP
+More details can be found in the file
+.IR $SGE_ROOT/doc/load_parameters.asc .
 .\"
 .PP
 If the \fB\-q\fP option is supplied, each host status line also contains
@@ -160,6 +159,7 @@ the number of reserved (by advance reservation, not resource
 reservation), used and, available job slots,
 .IP "\(bu" 3n
 the state of the queue \- one of
+.\" Fixme:  `orphaned' occurs in sge_qinstance_state.c -- what does it mean?
 u(nknown) if the corresponding
 .M xxqs_name_sxx_execd 8
 cannot be contacted, a(larm), A(larm), C(alendar suspended), s(uspended),
