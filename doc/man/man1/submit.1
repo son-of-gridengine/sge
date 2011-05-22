@@ -2,10 +2,11 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
+.\" Copyright (C), 2011 Dave Love
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: submit.1,v $     Last Update: $Date: 2010-01-12 14:41:02 $     Revision: $Revision: 1.103 $
+.\" $RCSfile: submit.1,v $     Last Update: $Date: 2011-05-22 13:58:39 $     Revision: $Revision: 1.103 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -30,78 +31,50 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH SUBMIT 1 "$Date: 2010-01-12 14:41:02 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH SUBMIT 1 "$Date: 2011-05-22 13:58:39 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
-qsub   \- submit a batch job to xxQS_NAMExx
-.br
-qsh    \- submit an interactive X-windows session to xxQS_NAMExx
-.br
-qlogin \- submit an interactive login session to xxQS_NAMExx
-.br
-qrsh   \- submit an interactive rsh session to xxQS_NAMExx
-.br
-qalter \- modify a pending or running batch job of xxQS_NAMExx
-.br
-qresub \- submit a copy of an existing xxQS_NAMExx job
-.\"
+qsub, qsh, qlogin, qrsh, qalter, qresub \- submit jobs to xxQS_NAMExx
 .\"
 .SH SYNTAX
 .B qsub
-[
-.B options
-] [
-.BR command [ command_args ]
+.RI [ options ]
+.RI [ command
+.RI [ command_args ]
 |
-.BR -- [ command_args ]]
+.B \-\-
+.RI [ command_args ]]
 .PP
 .B qsh
-[
-.B options
-] [
-.B -- xterm_args
-]
+.RI [ options ]
+.RB [ \-\-
+.IR xterm_args ]
 .PP
 .B qlogin
-[
-.B options
-]
+.RI [ options ]
 .PP
 .B qrsh
-[
-.B options
-] [
-.B command
-[
-.B command_args
-]]
+.RI [ options ]
+.RI [ command
+.RI [ command_args ]]
 .PP
 .B qalter
-[
-.B options
-]
-.B wc_job_range_list 
-[
-.B --
-[
-.B command_args
-]]
+.RI [ options ]
+.I wc_job_range_list
+.RB [ \-\-
+.RI [ command_args ]]
 .PP
 .B qalter
-[
-.B options
-]
-.B \-u user_list | \-uall
-[
-.B --
-[
-.B command_args
-]]   
+.RI [ options ]
+.B \-u 
+.I user_list
+|
+.B \-u *
+.RB [ \-\-
+.RI [ command_args ]]   
 .PP
 .B qresub
-[
-.B options
-]
-.B job_id_list
+.RI [ options ]
+.I job_id_list
 .\"
 .\"
 .SH DESCRIPTION
@@ -136,7 +109,7 @@ that appropriate resources to execute the job are not available.
 .M xterm 1
 executable.  Note, however, that the \fI\-e\fP and \fI\-ls\fP xterm options
 do not work with
-.I qsh .
+.IR qsh .
 .PP
 .I Qlogin
 is similar to
@@ -255,13 +228,21 @@ script file (see above).  An option specified with
 completely replaces any parameters previously specified for the job by
 that option, e.g. if the job has a resource requirement corresponding to
 .BR "\-l h_rt=3600,h_vmem=2G" ,
-then after a \fbqalter \-l h_rt=7200\fP, the resource requirement is
+then after a \fBqalter \-l h_rt=7200\fP, the resource requirement is
 simply \fBh_rt=7200\fP; it is not currently possible to override one
 or more value.
 .PP
 Some submit options, such as the job script, cannot
 be changed with
 .I qalter .
+.PP
+If a server JSV is defined, modifications are forbidden unless they
+are explicitly allowed by the
+.M sge_conf 5
+parameter
+.BR jsv_allowed_mod .
+(See also
+.M jsv 1 .)
 .PP
 .I Qresub
 allows the user to create jobs as copies of existing pending or running
@@ -506,10 +487,15 @@ pairs (e.g. "0,0:1,0", which means core 0 on socket 0 and core 0 on socket 1).
 For more information about the $pe_hostfile check
 .M xxqs_name_sxx_pe 5 .
 .sp
-\fBset\fP (default if nothing else is specified). The binding strategy is
-applied by xxQS_NAMExx. How this is achieved depends on the underlying
-hardware architecture of the execution host where the submitted job
-will be started.
+\fBset\fP (the default if nothing else is specified) means that the
+binding strategy is applied by xxQS_NAMExx.  Each shepherd (on the
+master host, or those connected to with qrsh \-inherit) is bound to
+the relevant cores.  The binding is inherited by the task that is
+started, so that processes or threads it spawns are confined to those
+cores, but it is up to the task to make any more specific bindings of
+its sub-tasks within the set of bound cores it inherits.  How
+xxQS_NAMExx does this depends on the underlying hardware architecture
+of the execution host where the submitted job will be started.
 .sp
 On Solaris 10 hosts a processor set will be created
 where the job can run exclusively.
@@ -553,19 +539,34 @@ If this is not  possible, or is not sufficient, xxQS_NAMExx tries to find
 If the number of allocated cores is lower than requested cores, no
 binding is done for the job. If \fBsocket\fP and \fBcore\fP are specified,
 then xxQS_NAMExx tries to find empty cores with this
-starting point. If this is not possible then binding is not done.
+starting point. If this is not possible then binding is not done on
+the host concerned.
 .sp
 \fBstriding\fP means that xxQS_NAMExx tries to find cores with a certain offset.
 It will select \fBamount\fP of empty cores with an offset of \fBn\fP-1 cores
 in between. Start point for the search algorithm is socket 0 core 0. As soon as
 \fBamount\fP cores are found they will be used to do the job binding.
 If there are not enough empty cores, or if correct offset cannot
-be achieved, then there will be no binding done.
+be achieved, then no binding will be done on the host concerned.
 .sp
 \fBexplicit\fP binds the specified sockets and cores that are mentioned in the
 provided socket/core list. Each socket/core pair has to be specified only once. If a
 socket/core pair is already in use by a different job, the whole binding request
 will be ignored.
+.sp
+.\" Discussion following http://markmail.org/message/lffc44tyo25wbhk2
+Note that a binding like
+.BR "pe linear" ...
+is only useful if the job has exclusive access to its multiple compute
+nodes, they all have the same topology, and the PE has a fixed
+allocation rule
+.RB ( allocation_rule
+.IR n ).
+(The pe_hostfile content is created on the job's master host, with the
+same <socket,core> specification for each.)  This method can't be used
+for job isolation.  Similarly,
+.B set
+requires a fixed allocation per host for distributed parallel jobs.
 .sp
 \fBQalter\fP allows changing this option even while the job executes. The
 modified parameter will only be in effect after a restart or migration
@@ -1155,7 +1156,7 @@ and
 .M xxqs_name_sxx_request 5 .
 .sp 1
 The syntax of the \fBjsv_url\fP is specified in 
-.M sge_types(1).
+.M sge_types 1 .
 .\"
 .IP "\fB\-l resource=value\fP,..."
 Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
@@ -2082,6 +2083,11 @@ The xxQS_NAMExx architecture name of the node on which the job is
 running. The name is compiled-in into the
 .M xxqs_name_sxx_execd 8
 binary.
+.IP "xxQS_NAME_Sxx_BINDING" 1.5i
+Contains the selected operating system internal processor numbers.
+There might be more than the number of selected cores in the presence
+of SMT or CMT because each core could be represented by multiple
+processor identifiers.  The processor numbers are space-separated.
 .IP \fBxxQS_NAME_Sxx_CKPT_ENV\fP 1.5i
 Specifies the checkpointing environment (as selected with the \fB\-ckpt\fP
 option) under which a checkpointing job executes. Only set for checkpointing
@@ -2091,17 +2097,19 @@ Only set for checkpointing jobs. Contains path \fIckpt_dir\fP
 (see
 .M checkpoint 5 )
 of the checkpoint interface.
+.IP xxQS_NAME_Sxx_CWD_PATH 1.5i
+Specifies the current working directory where the job was started.
 .IP \fBxxQS_NAME_Sxx_STDERR_PATH\fP 1.5i
-the pathname of the file to which the standard error stream of the job is
+The pathname of the file to which the standard error stream of the job is
 diverted. Commonly used for enhancing the output with error messages
 from prolog, epilog, parallel environment start/stop or checkpointing
 scripts.
 .IP \fBxxQS_NAME_Sxx_STDOUT_PATH\fP 1.5i
-the pathname of the file to which the standard output stream of the job is
+The pathname of the file to which the standard output stream of the job is
 diverted. Commonly used for enhancing the output with messages from
 prolog, epilog, parallel environment start/stop or checkpointing scripts.
 .IP \fBxxQS_NAME_Sxx_STDIN_PATH\fP 1.5i
-the pathname of the file from which the standard input stream of the job
+The pathname of the file from which the standard input stream of the job
 is taken. This variable might be used in combination with xxQS_NAME_Sxx_O_HOST
 in prolog/epilog scripts to transfer the input file from the submit
 to the execution host.
@@ -2113,7 +2121,7 @@ execution. This directory is owned by root or by a xxQS_NAMExx administrative
 account and commonly is not open for read or write access to regular users.
 .IP \fBxxQS_NAME_Sxx_TASK_ID\fP 1.5i
 The index number of the current array job task (see \fB\-t\fP option
-above). This is an unique number in each array job and can be used to
+above). This is a unique number in each array job and can be used to
 reference different input data records, for example. This environment
 variable is set to "undefined" for non-array jobs. It is possible to
 change the predefined value of this variable with \fB\-v\fP or \fB\-V\fP
@@ -2136,7 +2144,7 @@ executed under xxQS_NAMExx control.
 .IP "\fBHOME\fP" 1.5i
 The user's home directory path from the
 .M passwd 5
-file.
+database.
 .IP "\fBHOSTNAME\fP" 1.5i
 The hostname of the node on which the job is running.
 .IP "\fBJOB_ID\fP" 1.5i
