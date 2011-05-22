@@ -4,7 +4,7 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: sge_conf.5,v $     Last Update: $Date: 2011-05-14 13:06:38 $     Revision: $Revision: 1.91 $
+.\" $RCSfile: sge_conf.5,v $     Last Update: $Date: 2011-05-20 14:05:13 $     Revision: $Revision: 1.91 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -29,7 +29,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH xxQS_NAME_Sxx_CONF 5 "$Date: 2011-05-14 13:06:38 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH xxQS_NAME_Sxx_CONF 5 "$Date: 2011-05-20 14:05:13 $" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 xxqs_name_sxx_conf \- xxQS_NAMExx configuration files
@@ -1145,14 +1145,14 @@ string or seconds. There is no setting to turn the sharetree spooling
 off. 
 (e.g. STREE_SPOOL_INTERVAL=00:02:00)
 .PP
-.IP "\fIMAX_JOB_DELETION_TIME\fp"
+.IP "\fIMAX_JOB_DELETION_TIME\fP"
 Sets the value of how long the qmaster will spend deleting jobs. After this time,
 the qmaster will continue with other tasks and schedule the deletion of remaining
 jobs at a later time. The default value is 3 seconds, and will be used if no value
 is entered. The range of valid values is > 0 and <= 5.
 (e.g. MAX_JOB_DELETION_TIME=1)
 .PP
-.IP "\fIgdi_timeout\fp"
+.IP "\fIgdi_timeout\fP'"
 Sets how long the communication will wait for GDI send/receive operations.
 (GDI is the Grid Engine Database Interface for interacting with
 objects managed by the qmaster.)
@@ -1161,7 +1161,7 @@ retry, if "gdi_retries" is configured, receiving the GDI request. If not configu
 (e.g. gdi_timeout=120 will set the timeout time to 120 sec).
 Configuring no gdi_timeout value, the value defaults to 60 sec.
 .PP
-.IP "\fIgdi_retries\fp"
+.IP "\fIgdi_retries\fP"
 Sets how often the GDI receive call will be repeated until the GDI receive
 error appears. The default is set to 0. In this case the call will be done 1 time with no retry.
 Setting the value to -1 the call will be done permanently. In
@@ -1169,7 +1169,7 @@ combination with the gdi_timeout parameter
 it is possible to configure a system with, e.g. slow NFS, to make sure that all jobs will be submitted.
 (E.g. gdi_retries=4.)
 .PP
-.IP "\fIcl_ping\fp"
+.IP "\fIcl_ping\fP"
 Turns on/off a communication library ping. This parameter will create additional debug output. 
 This output shows information about the error messages which are returned by communication
 and it will give information about the application status of the qmaster.
@@ -1177,7 +1177,7 @@ For example, if it's unclear what's the
 reason for gdi timeouts, this may show you some useful messages. The default value is false (off) 
 (i.e. cl_ping=false).
 .PP
-.IP "\fISCHEDULER_TIMEOUT\fp"
+.IP "\fISCHEDULER_TIMEOUT\fP"
 Setting this parameter allows the scheduler GDI event acknowledge timeout to be manually configured to a
 specific value. Currently the default value is 10 minutes with the default scheduler configuration and limited
 between 600 and 1200 seconds.
@@ -1186,18 +1186,18 @@ Value is limited only in case of default value.
 The default value depends
 on the current scheduler configuration. The \fISCHEDULER_TIMEOUT\fP value is specified in seconds.
 .PP
-.IP "\fIjsv_timeout\fp"
+.IP "\fIjsv_timeout\fP"
 This parameter measures the response time of the server JSV. In the event that the response time of the JSV 
 is longer than the timeout value specified, this will cause the JSV to be re-started. The default value for the
 timeout is 10 seconds and if modified, must be greater than 0. If the timeout is reached, the JSV will only
 try to re-start once; if the timeout is reached again, an error will occur.
 .PP
-.IP "\fIjsv_threshold\fp"
+.IP "\fIjsv_threshold\fP"
 The threshold of a JSV is measured as the time it takes to perform a server job verification. If this value is 
 greater than the user-defined value, it will cause logging to appear in the qmaster messages file at the INFO
 level. By setting this value to 0, all jobs will be logged in the qmaster messages file. This value is specified
 in milliseconds and has a default value of 5000.
-.IP "\fIOLD_RESCHEDULE_BEHAVIOR\fp"
+.IP "\fIOLD_RESCHEDULE_BEHAVIOR\fP"
 Beginning with version 8.0.0 of xxQS_NAMExx the scheduling behavior changed
 for jobs that are rescheduled by users. Rescheduled jobs will not be put at the
 beginning of the pending job list anymore. The submit time of those jobs is set
@@ -1205,7 +1205,7 @@ to the end time of the previous run. Due to that, those rescheduled jobs will be
 appended to the pending job list as if a new job had been 
 submitted. To achieve the old behaviour, set the parameter \fIOLD_RESCHEDULE_BEHAVIOR\fP. Please note that this parameter is deprecated,
 so it might be removed with the next minor release.
-.IP "\fIOLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB\fp"
+.IP "\fIOLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB\fP"
 Beginning with version 8.0.0 of xxQS_NAMExx the scheduling behavior changed
 for array job tasks that are rescheduled by users. As soon as an array job task 
 gets rescheduled, all remaining pending tasks of that job will be put at the end of 
