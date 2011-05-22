@@ -38,11 +38,11 @@ hostgroup \- host group entry file format
 .PP
 A host group entry is used to merge host names to groups.
 Each  host  group  entry  file defines one group. Inside a
-group definition file you can also reference to groups. These
+group definition file you can also reference groups. These
 groups are called subgroups. A subgroup is referenced by the
 sign "@" as first character of the name.
 .PP
-A list of currently configured host group entries can be displayed 
+A list of currently-configured host group entries can be displayed
 via the
 .M qconf 1
 \fB\-shgrpl\fP option. The contents of each listed host group entry 
@@ -60,22 +60,22 @@ character before any interpretation.
 .\"
 .\"
 .SH FORMAT
-A host group entry contains following parameters:
+A host group entry contains the following parameters:
 .SS "\fBgroup_name\fP"
 The group_name defines the host group name. Host group names have to
 begin with an '@' character as explained for \fIhostgroup_name\fP in
 .M sge_types 5 .
 .SS "\fBhostlist\fP"
-The name of all hosts and host groups (see 
+The names of all hosts and host groups (see
 \fIhost_identifier\fP in 
 .M sge_types 1 )
-which are member of the group. As list separators white-spaces are 
-supported only. Default value for this parameter is NONE.
+which are members of the group.  Only whitespace is allowed as list
+separators. The default value for this parameter is NONE.
 .PP
 Note, if the first character of the \fIhost_identifier\fP is an "@" sign the name 
 is used to reference a 
 .M hostgroup 5 
-which is taken as sub group of this group. 
+which is taken as a subgroup of this group.
 .\"
 .\"
 
