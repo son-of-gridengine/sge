@@ -5,7 +5,7 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: qrdel.1,v $     Last Update: $Date: 2008-04-07 08:41:45 $     Revision: $Revision: 1.4 $
+.\" $RCSfile: qrdel.1,v $     Last Update: $Date: 2011-05-20 22:19:19 $     Revision: $Revision: 1.4 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -13,7 +13,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -30,15 +30,16 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QRDEL 1 "$Date: 2008-04-07 08:41:45 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QRDEL 1 "$Date: 2011-05-20 22:19:19 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qrdel \- delete xxQS_NAMExx Advance Reservations (AR)
 .SH SYNTAX
 .B qrdel
-.B [\-f]
-.B [\-help
-.B [\-u wc_user_list]
-.B wc_ar_list
+.RB [ \-f ]
+.RB [ \-help ]
+.RB [ \-u
+.IR wc_user_list ]
+.I wc_ar_list
 .\"
 .\" 
 .SH DESCRIPTION
