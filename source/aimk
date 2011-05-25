@@ -369,6 +369,7 @@ set INTERACTTARGETS   = "qmake qtcsh"
 
 # SECURE
 set SEC               = 1
+# LIBSSL_VER can be defined to link against libssl.soLIBSSL_VER at runtime.
 set SECFLAGS          = "-DSECURE -I$OPENSSL_HOME/include"
 set SECLIB            = ""
 set SECLIBS_STATIC    = "$OPENSSL_HOME/lib/libssl.a $OPENSSL_HOME/lib/libcrypto.a"

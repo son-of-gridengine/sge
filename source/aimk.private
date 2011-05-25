@@ -2,7 +2,16 @@
 # aimk and aimk.site.  It may be necessary for building other than on
 # a Debian- or RedHat-derived system.
 
-set argv = ( -system-libs -no-gui-inst $* )
+# Default to not requiring the tricky Java bits and using system libs
+set argv = ( -system-libs -no-gui-inst -no-herd $* )
+# Might as well do PAM on GNU/Linux
+switch ($BUILDARCH)
+   case LINUX*:
+      set argv = ( -pam $argv )
+      # fixme: use something like
+      # objdump -p /usr/lib/libssl.so | awk '/SONAME/ {print substr($2,10)}'
+      # to define LIBSSL_VER
+endsw
 
 # This is appropriate for a Debian distribution:
 # set argv = ( -DDEFAULT_EDITOR="sensible-editor" $argv )
