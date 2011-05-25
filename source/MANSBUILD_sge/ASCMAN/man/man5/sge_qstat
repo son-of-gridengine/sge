@@ -1,0 +1,59 @@
+SGE_QSTAT(5)               Grid Engine File Formats               SGE_QSTAT(5)
+
+
+
+NNAAMMEE
+       sge_qstat - Grid Engine default qstat file format
+
+DDEESSCCRRIIPPTTIIOONN
+       _s_g_e___q_s_t_a_t  defines the command line switches that will be used by qstat
+       by default.  If available, the default sge_qstat file is read and  pro-
+       cessed by _q_s_t_a_t(1).
+
+       There  is  a cluster global and a user private sge_qstat file. The user
+       private file has the highest precedence and is followed by the  cluster
+       global  sge_qstat  file. Command line switches used with _q_s_t_a_t(1) over-
+       ride all switches contained in  the  user  private  or  cluster  global
+       sge_qstat file.
+
+       The format of the default files is:
+
+       +o  The default sge_qstat file may contain an arbitrary number of lines.
+          Blank lines and lines with a  '#'  sign  in  the  first  column  are
+          skipped.   Each  line  not  to  be  skipped may contain any _q_s_t_a_t(1)
+          option as described in the Grid Engine Reference Manual.  More  than
+          one option per line is allowed.
+
+EEXXAAMMPPLLEESS
+       The following is a simple example of a default sge_qstat file:
+
+       =====================================================
+       # Just show me my own running and suspended jobs
+       -s rs -u $user
+       =====================================================
+
+
+       Having  defined  a  default sge_qstat file like this and using qstat as
+       follows:
+
+       qstat
+
+       has the same effect as if qstat was executed with:
+
+       qstat -s rs -u <current_user>
+       (Note that -u $user is now the default behaviour.)
+
+FFIILLEESS
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_s_g_e___q_s_t_a_t global defaults file
+       _$_H_O_M_E_/_._s_g_e___q_s_t_a_tuser private defaults file
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _q_s_t_a_t(1), _G_r_i_d  _E_n_g_i_n_e  _I_n_s_t_a_l_l_a_t_i_o_n  _a_n_d  _A_d_m_i_n_i_s_t_r_a_t_i_o_n
+       _G_u_i_d_e
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2007-03-23 09:41:42 $             SGE_QSTAT(5)

@@ -1,0 +1,90 @@
+<HTML>
+<HEAD>
+<TITLE>access_list.5</TITLE>
+</HEAD>
+<BODY>
+<H1>access_list.5</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       access_list - Grid Engine access list file format
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Access lists are used in Grid Engine to define access permissions of
+       users to queues (see <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B>) or parallel environments (see
+       <B><A HREF="../htmlman5/sge_pe.html">sge_pe(5)</A></B>).  A list of currently configured access lists can be
+       displayed via the <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B> <B>-sul</B> option. The contents of each access
+       list can shown via the <B>-su</B> switch. The output follows the <I>access</I><B>_</B><I>list</I>
+       format description. New access lists can be created and existing can be
+       modified via the <B>-au</B> and <B>-du</B> options to <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>.
+
+       Departments are a special form of access list that additionally allow
+       assignment of functional shares and override tickets.
+
+       Note, Grid Engine allows backslashes (\) be used to escape newline
+       characters. The backslash and the newline are replaced with a space
+       character before any interpretation.
+
+
+</PRE>
+<H2>FORMAT</H2><PRE>
+       The following list of <I>access</I><B>_</B><I>list</I> parameters specifies the <I>access</I><B>_</B><I>list</I>
+       content:
+
+   <B>name</B>
+       The name of the access list in the format for <I>userset</I><B>_</B><I>name</I> in
+       <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+   <B>type</B>
+       The type of the access list, currently  one  of <I>ACL,</I> or <I>DEPT</I> or a
+       combination of both in a comma separated list. Depending on this
+       parameter the access list can be used as access list only or as a
+       department.
+
+   <B>oticket</B>
+       The amount of override tickets currently assigned to the department.
+
+   <B>fshare</B>
+       The current functional share of the department.
+
+   <B>entries</B>
+       The entries parameter contains the comma separated list of those UNIX
+       users (see <I>user</I><B>_</B><I>name</I> in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>) or those primary UNIX groups that
+       are assigned to the access list or the department. Only a user's
+       primary UNIX group is used; secondary groups are ignored. Only symbolic
+       names are allowed.  A group is differentiated from a user name by
+       prefixing the group name with a '@' sign.  Pure access lists allow
+       listing any user or group in any access list.
+
+       When using departments, each user or group may only be listed in one
+       department, in order to ensure a unique assignment of jobs to
+       departments.  If the <I>defaultdepartment</I> is defined, it is assigned to
+       jobs whose users do not match with any of the users or groups listed
+       under <I>entries</I>.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>, <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>, <B><A HREF="../htmlman5/sge_pe.html">sge_pe(5)</A></B>, <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-19 00:16:38 $           <B><A HREF="../htmlman5/ACCESS_LIST.html">ACCESS_LIST(5)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

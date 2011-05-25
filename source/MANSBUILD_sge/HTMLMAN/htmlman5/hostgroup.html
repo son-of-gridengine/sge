@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<TITLE>hostgroup.5</TITLE>
+</HEAD>
+<BODY>
+<H1>hostgroup.5</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       hostgroup - host group entry file format
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A host group entry is used to merge host names to groups.  Each  host
+       group  entry  file defines one group. Inside a group definition file
+       you can also reference groups. These groups are called subgroups. A
+       subgroup is referenced by the sign "@" as first character of the name.
+
+       A list of currently-configured host group entries can be displayed via
+       the <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B> <B>-shgrpl</B> option. The contents of each listed host group
+       entry can be shown via the <B>-shgrp</B> switch. The output follows the
+       <I>hostgroup</I> format description. New host group entries can be created and
+       existing can be modified via the <B>-ahgrp</B>, <B>-mhgrp</B>, <B>-dhgrp</B> and <B>-?attr</B>
+       options to <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>.
+
+       Note, Grid Engine allows backslashes (\) be used to escape newline
+       characters. The backslash and the newline are replaced with a space
+       character before any interpretation.
+
+
+</PRE>
+<H2>FORMAT</H2><PRE>
+       A host group entry contains the following parameters:
+
+   <B>group_name</B>
+       The group_name defines the host group name. Host group names have to
+       begin with an '@' character as explained for <I>hostgroup</I><B>_</B><I>name</I> in
+       <B><A HREF="../htmlman5/sge_types.html">sge_types(5)</A></B>.
+
+   <B>hostlist</B>
+       The names of all hosts and host groups (see <I>host</I><B>_</B><I>identifier</I> in
+       <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>) which are members of the group.  Only whitespace is
+       allowed as list separators. The default value for this parameter is
+       NONE.
+
+       Note, if the first character of the <I>host</I><B>_</B><I>identifier</I> is an "@" sign the
+       name is used to reference a <B><A HREF="../htmlman5/hostgroup.html">hostgroup(5)</A></B> which is taken as a subgroup
+       of this group.
+
+
+
+</PRE>
+<H2>EXAMPLE</H2><PRE>
+       This is a typical host group entry:
+
+
+       group_name @bigMachines
+
+       hostlist @solaris64 @solaris32 fangorn balrog
+
+       The entry will define a new host group called <B>@bigMachines</B>. In this
+       host group are the host <B>fangorn</B>, <B>balrog</B> and all members of the host
+       groups <B>@solaris64</B> and <B>@solaris32</B>.
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge__types.html">sge__types(1)</A></B>, <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-22 12:20:04 $             <B><A HREF="../htmlman5/HOSTGROUP.html">HOSTGROUP(5)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

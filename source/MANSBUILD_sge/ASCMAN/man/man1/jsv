@@ -1,0 +1,350 @@
+JSV(1)                     Grid Engine File Formats                     JSV(1)
+
+
+
+NNAAMMEE
+       JSV - Grid Engine Job Submission Verifier
+
+DDEESSCCRRIIPPTTIIOONN
+       JSV  is  an abbreviation for Job Submission Verifier. A JSV is a script
+       or binary that can be used to verify, modify or reject a job during job
+       submission.
+
+       JSVs  will be triggered by submit clients like _q_s_u_b, _q_r_s_h, _q_s_h and _q_m_o_n
+       on submit hosts (Client JSV), or they verify incoming jobs on the  mas-
+       ter host (Server JSV), or both.
+
+CCOONNFFIIGGUURRAATTIIOONN
+       JSVs  can  be  configured in various locations. Either a jjssvv__uurrll can be
+       provided with the --jjssvv submit parameter during job submission, a corre-
+       sponding  switch  can  be  added  to one of the ssggee__rreeqquueesstt files, or a
+       jjssvv__uurrll can be configured in the global cluster  configuration  of  the
+       Grid Engine installation.
+
+       All defined JSV instances will be executed in following order:
+
+          1) qsub -jsv ...
+          2) $cwd/.sge_request
+          3) $HOME/.sge_request
+          4) $SGE_ROOT/$SGE_CELL/common/sge_request
+          5) Global configuration
+
+       The  Client JSVs (1-3) can be defined by Grid Engine end users, whereas
+       the client JSV defined in the  global  sge_request  file  (4)  and  the
+       server JSV (5) can only be defined by the Grid Engine administrators.
+
+       Due  to  the  fact  that (4) and (5) are defined and configured by Grid
+       Engine administrators and executed as the last  JSV  instances  in  the
+       sequence  of JSV scripts, an administrator has a way to enforce certain
+       policies for a cluster.
+
+       As soon as one JSV instance rejects a job the whole process of  verifi-
+       cation  is stopped and the end user will get a corresponding error mes-
+       sage that the submission of the job has failed.
+
+       If a JSV accepts a job, or accepts a job after it applied several modi-
+       fications,  then the following JSV instance will get the job parameters
+       including all modifications as  input  for  the  verification  process.
+       This is done as long as either the job is accepted or rejected.
+
+       Find  more  information  on  how to use Client JSVs in _q_s_u_b(1), and for
+       Server JSVs in _s_g_e___c_o_n_f(5).
+
+LLIIFFEETTIIMMEE
+       A Client or Server JSV is started as own  UNIX  process.  This  process
+       communicates  either  with  a  Grid Engine client process or the master
+       daemon by exchanging commands,  job  parameters,  and  other  data  via
+       ssttddiinn/ssttddoouutt channels.
+
+       Client JSV instances are started by client applications before a job is
+       sent to qmaster. This instance does the job verification for the job to
+       be submitted. After that verification the JSV process is stopped.
+
+       Server  JSV  instances  are  started for each worker thread part of the
+       qmaster process.  (For version 6.2 of Grid Engine this means  that  two
+       processes  are  started.)   Each  of  those processes has to verify job
+       parameters for multiple jobs as long as  the  master  is  running,  the
+       underlying JSV configuration is not changed, and no error occurs.
+
+TTIIMMEEOOUUTT
+       The  timeout  is a modifiable value that will measure the response time
+       of either the client or server JSV. In the event that the response time
+       of  the JSV is longer than timeout value specified, this will result in
+       the JSV being re-started. The server JSV  timeout  value  is  specified
+       through  the  qmaster  parameter  jjssvv__ttiimmeeoouutt.   The client JSV timeout
+       value is set through  the  environment  variable  SSGGEE__JJSSVV__TTIIMMEEOOUUTT.  The
+       default  value is 10 seconds, and this value must be greater than 0. If
+       the timeout has been reached, the JSV will only try to  re-start  once,
+       and if the timeout is reached again, an error will occur.
+
+TTHHRREESSHHOOLLDD
+       The  threshold  value  is defined as a qmaster parameter jjssvv__tthhrreesshhoolldd.
+       This value measures the time for a server  job  verification.  If  this
+       time  exceeds the defined threshold then additional logging will appear
+       in the master message file at the INFO level. This value  is  specified
+       in  milliseconds  and  has  a default value of 5000. If a value of 0 is
+       defined then this means all jobs will be logged in the message file.
+
+PPRROOTTOOCCOOLL
+       After a JSV script or binary is started it will  get  commands  through
+       its  ssttddiinn  stream,  and it has to respond with certain commands on the
+       ssttddoouutt stream. Data sent via the ssttddeerrrr stream of  a  JSV  instance  is
+       ignored. Each command which is sent to/by a JSV script has to be termi-
+       nated by a new line character ('\\nn'), whereas new line  characters  are
+       not allowed in the whole command string itself.
+
+       In general, commands which are exchanged between a JSV and client/qmas-
+       ter have following format. Commands and arguments are  case  sensitive.
+       Find the EBNF command description below.
+
+             ccoommmmaanndd := ccoommmmaanndd__nnaammee ' ' { aarrgguummeenntt ' ' } ;
+
+       A ccoommmmaanndd starts with a ccoommmmaanndd__nnaammee followed by a space character  and
+       a space separated list of aarrgguummeennttss.
+
+PPRROOTTOOCCOOLL ((JJSSVV ssiiddee))
+       The following ccoommmmaannddss have to be implemented by a JSV script  so  that
+       it  conforms to version 1.0 of the JSV protocol, which was first imple-
+       mented in Grid Engine 6.2u2:
+
+       bbeeggiinn__ccoommmmaanndd := 'BBEEGGIINN' ;
+              After a JSV instance  has  received  all  the  eennvv__ccoommmmaannddss  and
+              ppaarraamm__ccoommmmaannddss   of   a   job  which  should  be  verified,  the
+              client/qmaster will trigger the verification process by  sending
+              one  bbeeggiinn__ccoommmmaanndd.  After  that it will wait for ppaarraamm__ccoommmmaannddss
+              and eennvv__ccoommmmaannddss which are sent back from the  JSV  instance  to
+              modify  the  job  specification.  As  part  of  the verification
+              process a JSV script or binary has to use the rreessuulltt__ccoommmmaanndd  to
+              indicate that the verification process is finished for a job.
+
+       eennvv__ccoommmmaanndd := EENNVV ' ' mmooddiiffiieerr ' ' nnaammee ' ' vvaalluuee ;
+
+       mmooddiiffiieerr := 'AADDDD' | 'MMOODD' | 'DDEELL' ;
+              The  eennvv__ccoommmmaanndd  is  an  optional  command which has only to be
+              implemented by a JSV instance if the sseenndd__ddaattaa__ccoommmmaanndd  is  sent
+              by  this  JSV  before  a  ssttaarrtteedd__ccoommmmaanndd was sent. Only in that
+              case, the client or master will use one or multiple eennvv__ccoommmmaannddss
+              to  pass  the  environment variables (nnaammee and vvaalluuee) to the JSV
+              instance to be exported to the job environment when the  job  is
+              started. Client and qmaster will only send eennvv__ccoommmmaannddss with the
+              modifier 'AADDDD'.
+
+              JSV instances modify the set of environment variables by sending
+              back eennvv__ccoommmmaannddss, and by using the mmooddiiffiieerrss AADDDD, MMOODD and DDEELL.
+
+       ppaarraamm__ccoommmmaanndd := 'PPAARRAAMM' ' ' ppaarraamm__ppaarraammeetteerr ' ' vvaalluuee ;
+
+       ppaarraamm__ppaarraammeetteerr := ssuubbmmiitt__ppaarraammeetteerr | ppsseeuuddoo__ppaarraammeetteerr ;
+              The  ppaarraamm__ccoommmmaanndd  has two additional arguments which are sepa-
+              rated by space characters. The first argument is either  a  ssuubb--
+              mmiitt__ppaarraammeetteerr as specified in _q_s_u_b(1), or it is a ppsseeuuddoo__ppaarraammee--
+              tteerrss as documented below.  The second parameter is the vvaalluuee  of
+              the corresponding ppaarraamm__ppaarraammeetteerr.
+
+              Multiple ppaarraamm__ccoommmmaannddss will be sent to a JSV instance after the
+              JSV has sent a ssttaarrtteedd__ccoommmmaanndd. The sum  of  all  ppaarraamm__ccoommmmaannddss
+              sent  represents  a job specification of the job which should be
+              verified.
+
+              ssuubbmmiitt__ppaarraammeetteerrss are, for example, bb (similar to  the  qqssuubb  --bb
+              switch),  or  mmaasstteerrqq  (similar to qqssuubb --mmaasstteerrqq switch). Find a
+              complete list of ssuubbmmiitt__ppaarraammeetteerrss  in  the  _q_s_u_b(1)  man  page.
+              Please  note that the ppaarraamm__ppaarraammeetteerr name and the corresponding
+              vvaalluuee format is not equivalent to the qsub switch name  and  its
+              argument format in all cases.  E.g. the qqssuubb --ppee parameters will
+              by available as a set  of  parameters  with  the  name  ppee__nnaammee,
+              ppee__mmiinn,  ppee__mmaaxx  and  the  switch  combination  --ssoofftt --ll will be
+              passed to JSV scripts as ll__ssoofftt parameter. For details  concern-
+              ing this differences consult also the _q_s_u_b(1) man page.
+
+       ssttaarrtt__ccoommmmaanndd := 'SSTTAARRTT' ;
+              The  ssttaarrtt__ccoommmmaanndd  has  no  additional  arguments. This command
+              indicates that a new job verification should be started.  It  is
+              the  first command which will be sent to JSV script after it has
+              been started and it will initiate each new job  verification.  A
+              JSV  instance  might  trash cached values which are still stored
+              due to a previous job verification. The application which  sends
+              the ssttaarrtt__ccoommmmaanndd will wait for a ssttaarrtteedd__ccoommmmaanndd before it con-
+              tinues.
+
+       qquuiitt__ccoommmmaanndd := 'QQUUIITT' ;
+              The qquuiitt__ccoommmmaanndd has no additional arguments. If this command is
+              sent  to  a JSV instance then it should terminate itself immedi-
+              ately.
+
+PPRROOTTOOCCOOLL ((cclliieenntt//qqmmaasstteerr ssiiddee))
+       A JSV script or binary can send a set of commands to  a  client/qmaster
+       process  to  indicate its state in the communication process, to change
+       the job specification of a job which should be verified, and to  report
+       messages  or  errors.  Below you can find the commands which are under-
+       stood by the client/qmaster which implements version 1.0 of the  commu-
+       nication protocol introduced in Grid Engine 6.2u2:
+
+       eerrrroorr__ccoommmmaanndd := 'EERRRROORR' mmeessssaaggee ;
+              Any  time a JSV script encounters an error it might report it to
+              the client/qmaster. If the error happens during a job  verifica-
+              tion  the  job which is currently verified will be rejected. The
+              JSV binary or script will also be restarted before it gets a new
+              verification task.
+
+       lloogg__ccoommmmaanndd := 'LLOOGG' lloogg__lleevveell ;
+
+       lloogg__lleevveell := 'IINNFFOO' | 'WWAARRNNIINNGG' | 'EERRRROORR'
+              lloogg__ccoommmmaannddss  can be used whenever the client or qmaster expects
+              input from a JSV instance. This command can be  used  in  client
+              JSVs  to  send  information  to  the user submitting the job. In
+              client JSVs all messages, independent of the lloogg__lleevveell, will  be
+              printed  to  the ssttddoouutt stream of the submit client. If a server
+              JSV receives a lloogg__ccoommmmaanndd it will add the received  message  to
+              the  message  file,  respecting  the specified lloogg__lleevveell. Please
+              note that mmeessssaaggee might contain spaces, but no new line  charac-
+              ters.
+
+       ppaarraamm__ccoommmmaanndd (find definition above)
+              By sending ppaarraamm__ccoommmmaannddss, a JSV script can change the job spec-
+              ification of the job which should be verified. If a JSV instance
+              later  on  sends  a  rreessuulltt__ccoommmmaanndd  which  indicates that a JSV
+              instance should be accepted with corrections,  then  the  values
+              provided  with  these  ppaarraamm__ccoommmmaannddss will be used to modify the
+              job before it is accepted by the Grid Engine system.
+
+       rreessuulltt__ccoommmmaanndd := 'RREESSUULLTT' rreessuulltt__ttyyppee [ mmeessssaaggee ] ;
+
+       rreessuulltt__ttyyppee := 'AACCCCEEPPTT' | 'CCOORRRREECCTT' | 'RREEJJEECCTT' | 'RREEJJEECCTT__WWAAIITT' ;
+              After the verification of a job is done, a JSV script or  binary
+              has  to send a rreessuulltt__ccoommmmaanndd which indicates what should happen
+              with the job.  If the rreessuulltt__ttyyppee is AACCCCEEPPTTEEDD the  job  will  be
+              accepted  as  it  was  initially  submitted by the end user. All
+              ppaarraamm__ccoommmmaannddss and  eennvv__ccoommmmaannddss  which  might  have  been  sent
+              before  the  rreessuulltt__ccoommmmaanndd  are  ignored  in  this  case.   The
+              rreessuulltt__ttyyppee CCOORRRREECCTT indicates that the job  should  be  accepted
+              after all modifications sent via ppaarraamm__ccoommmmaannddss and eennvv__ccoommmmaannddss
+              are applied to the job.  RREEJJEECCTT and RREEJJEECCTT__WWAAIITT cause the client
+              or qmaster instance to reject the job.
+
+       sseenndd__ddaattaa__ccoommmmaanndd := 'SSEENNDD' ddaattaa__nnaammee ;
+
+       ddaattaa__nnaammee := 'EENNVV';
+              If  a  client/qmaster  receives  a  sseenndd__eennvv__ccoommmmaanndd  from a JSV
+              instance before a ssttaarrtteedd__ccoommmmaanndd is sent, then it will not only
+              pass  job  parameters with ppaarraamm__ccoommmmaannddss, but also eennvv__ccoommmmaannddss
+              which provide the JSV with the information about which  environ-
+              ment  variables  will  be exported to the job environment if the
+              job is accepted and started later on.
+
+              The job environment is not passed to JSV  instances  by  default
+              because  the  job environment of the end user might contain data
+              which might be interpreted wrongly in the JSV context, and might
+              therefore cause errors or security issues.
+
+       ssttaarrtteedd__ccoommmmaanndd := 'SSTTAARRTTEEDD' ;
+              By  sending the ssttaarrtteedd__ccoommmmaanndd a JSV instance indicates that it
+              is ready to receive ppaarraamm__ccoommmmaannddss and eennvv__ccoommmmaannddss  for  a  new
+              job  verification. It will only receive eennvv__ccoommmmaannddss if it sends
+              a sseenndd__ddaattaa__ccoommmmaanndd before the ssttaarrtteedd__ccoommmmaanndd.
+
+PPSSEEUUDDOO PPAARRAAMMEETTEERRSS
+       CCLLIIEENNTT The corresponding value  for  the  CCLLIIEENNTT  parameter  is  either
+              'qqmmaasstteerr'  or  the  name  of  a  submit client like 'qqssuubb', This
+              parameter value can't be changed  by  JSV  instances.   It  will
+              always be sent as part of a job verification.
+
+       CCMMDDAARRGGSS
+              Number  of  arguments  which will be passed to the job script or
+              command  when the job execution is started.  It will  always  be
+              sent  as  part of a job verification.  If no arguments should be
+              passed to the job script or command it will have  the  value  0.
+              This  parameter can be changed by JSV instances. If the value of
+              CCMMDDAARRGGSS is bigger than the number of available  CCMMDDAARRGG_n  parame-
+              ters,  then  the missing parameters will be automatically passed
+              as empty parameters to the job script.
+
+       CCMMDDAARRGG_n
+              Individual command arguments, where _n is an  integer  between  0
+              and CCMMDDAARRGGSS-1.
+
+       CCMMDDNNAAMMEE
+              Either  the path to the script, the command name for binary sub-
+              mission, SSTTDDIINN for standard input, or NNOONNEE in  the  case  of  an
+              interactive  job.  It will always be sent as part of a job veri-
+              fication.
+
+       CCOONNTTEEXXTT
+              Either 'cclliieenntt', if the JSV which  receives  this  ppaarraamm__ccoommmmaanndd
+              was started by a command-line client like _q_s_u_b, or _q_s_h, or 'mmaass--
+              tteerr' if it was started by  the  _s_g_e___q_m_a_s_t_e_r  process.   It  will
+              always  be  sent  as part of a job verification.  This parameter
+              value can't be changed by JSV instances.
+
+       GGRROOUUPP  Defines the primary group of the user who tries  to  submit  the
+              job  which  should be verified. This parameter cannot be changed
+              but is always sent as part of the verification process. The user
+              name is passed as a parameter with the name UUSSEERR.
+
+       JJOOBB__IIDD Not  available in the client context (see CCOONNTTEEXXTT). Otherwise it
+              contains the job number of the job which will  be  submitted  to
+              Grid  Engine when the verification process is successful. JJOOBB__IIDD
+              is  an  optional  parameter  which  can't  be  changed  by   JSV
+              instances.
+
+       UUSSEERR   User  name  of the user who tries to submit the job which should
+              be verified. Cannot be changed but is always sent as part of the
+              verification  process.  The  group name is passed as a parameter
+              with the name GGRROOUUPP
+
+       VVEERRSSIIOONN
+              VVEERRSSIIOONN will always be  sent  as  part  of  a  job  verification
+              process and it will always be the first parameter which is sent.
+              It will contain a version number of the format  <major>.<minor>.
+              In  version  6.2u2 and higher the value will be '11..00', or higher
+              if the protocol is changed in the future.   The  value  of  this
+              parameter can't be changed.
+
+CCAAVVEEAATTSS
+       See _j_s_v___s_c_r_i_p_t___i_n_t_e_r_f_a_c_e(3) for advice concerning shell script JSVs.
+
+EEXXAAMMPPLLEE
+       Here  is  an  example  for  the  communication  of  a client with a JSV
+       instance when the following job is submitted:
+
+       > qsub -pe p 3 -hard -l a=1,b=5 -soft -l q=all.q $SGE_ROOT/examples/jobs/sleeper.sh
+
+       Data in the first column are sent from the client/qmaster  to  the  JSV
+       instance.  Data  contained  in  the second column are sent from the JSV
+       script to the client/qmaster. Newline characters which  terminate  each
+       line in the communication protocol are omitted.
+
+          START
+                                SEND ENV
+                                STARTED
+          PARAM VERSION 1.0
+          PARAM CONTEXT client
+          PARAM CLIENT qsub
+          PARAM USER ernst
+          PARAM GROUP staff
+          PARAM CMDNAME /sge_root/examples/jobs/sleeper.sh
+          PARAM CMDARGS 1
+          PARAM CMDARG0 12
+          PARAM l_hard a=1,b=5
+          PARAM l_soft q=all.q
+          PARAM M user@hostname
+          PARAM N Sleeper
+          PARAM o /dev/null
+          PARAM pe_name pe1
+          PARAM pe_min 3
+          PARAM pe_max 3
+          PARAM S /bin/sh
+          BEGIN
+                                RESULT STATE ACCEPT
+
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _q_a_l_t_e_r(1), _q_l_o_g_i_n(1), _q_m_a_k_e(1), _q_r_s_h(1), _q_s_h(1), _q_s_u_b(1),
+       _q_t_c_s_h(1), _j_s_v___s_c_r_i_p_t___i_n_t_e_r_f_a_c_e(3).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2009-08-25 19:39:34 $                   JSV(1)

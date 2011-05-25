@@ -1,0 +1,145 @@
+'\" t
+.\"___INFO__MARK_BEGIN__
+.\"
+.\" Copyright: 2004 by Sun Microsystems, Inc.
+.\"
+.\"___INFO__MARK_END__
+.\" $RCSfile: sge_shadowd.8,v $     Last Update: $Date: 2007-11-08 23:04:23 $     Revision: $Revision: 1.11 $
+.\"
+.\"
+.\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
+.\"
+.de SB		\" small and bold
+.if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
+..
+.\"
+.de T		\" switch to typewriter font
+.ft CW		\" probably want CW if you don't have TA font
+..
+.\"
+.de TY		\" put $1 in typewriter font
+.if t .T
+.if n ``\c
+\\$1\c
+.if t .ft P
+.if n \&''\c
+\\$2
+..
+.\"
+.de M		\" man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
+.TH SGE_SHADOWD 8 "$Date: 2007-11-08 23:04:23 $" "SGE 8.0.0" "Grid Engine Administrative Commands"
+.SH NAME
+sge_shadowd \- Grid Engine shadow master daemon
+.\"
+.\"
+.SH SYNOPSIS
+.B sge_shadowd
+.\"
+.\"
+.SH DESCRIPTION
+.I sge_shadowd
+is a "light weight" process which can be run on so-called shadow
+master hosts in a Grid Engine cluster to detect failure of the current
+Grid Engine master daemon,
+.M sge_qmaster 8 ,
+and to start-up a new
+.M sge_qmaster 8
+on the host on which the
+.I sge_shadowd
+runs. If multiple shadow daemons are active in a cluster, they
+run a protocol which ensures that only one of them will start-up
+a new master daemon.
+.PP
+The  hosts suitable for being used as shadow master hosts must have
+shared root read/write access to the directory $SGE_ROOT/$SGE_CELL/common
+as well as to the master daemon spool directory
+(by default $SGE_ROOT/$SGE_CELL/spool/qmaster).
+The names of the shadow master hosts need to be contained in the file 
+$SGE_ROOT/$xQS_NAME_Sxx_CELL/common/shadow_masters.
+.\"
+.\"
+.SH RESTRICTIONS
+.I sge_shadowd
+may only be started by root.
+.\"
+.\"
+.SH "ENVIRONMENT VARIABLES"
+.\" 
+.IP "\fBSGE_ROOT\fP" 1.5i
+Specifies the location of the Grid Engine standard configuration
+files.
+.\"
+.IP "\fBSGE_CELL\fP" 1.5i
+If set, specifies the default Grid Engine cell. To address a Grid Engine
+cell
+.I sge_shadowd
+uses (in the order of precedence):
+.sp 1
+.RS
+.RS
+The name of the cell specified in the environment 
+variable SGE_CELL, if it is set.
+.sp 1
+The name of the default cell, i.e. \fBdefault\fP.
+.sp 1
+.RE
+.RE
+.\"
+.IP "\fBSGE_DEBUG_LEVEL\fP" 1.5i
+If set, specifies that debug information
+should be written to stderr. In addition the level of
+detail in which debug information is generated is defined.
+.\"
+.IP "\fBSGE_QMASTER_PORT\fP" 1.5i
+If set, specifies the tcp port on which
+.M sge_qmaster 8
+is expected to listen for communication requests.
+Most installations will use a services map entry for the
+service "sge_qmaster" instead to define that port.
+.\"
+.IP "\fBSGE_DELAY_TIME\fP" 1.5i
+This variable controls the interval in which
+.I sge_shadowd
+pauses if a takeover bid fails. This value is used only when there are multiple
+.I sge_shadowd
+instances and they are contending to be the master.
+The default is 600 seconds.
+.\"
+.IP "\fBSGE_CHECK_INTERVAL\fP" 1.5i
+This variable controls the interval in which the
+.I sge_shadowd
+checks the heartbeat file (60 seconds by default).
+.\"
+.IP "\fBSGE_GET_ACTIVE_INTERVAL\fP" 1.5i
+This variable controls the interval when a
+.I sge_shadowd
+instance tries to take over when the heartbeat file has not changed.
+The default is 240 seconds.
+.\"
+.\"
+.SH "FILES"
+.nf
+.ta \w'<sge_root>/     'u
+\fI<sge_root>/<cell>/common\fP
+	Default configuration directory
+\fI<sge_root>/<cell>/common/shadow_masters\fP
+	Shadow master hostname file.
+\fI<sge_root>/<cell>/spool/qmaster\fP
+	Default master daemon spool directory
+\fI<sge_root>/<cell>/spool/qmaster/heartbeat\fP
+	The heartbeat file.
+.fi
+.\"
+.\"
+.SH "SEE ALSO"
+.M sge_intro 1 ,
+.M sge_conf 5 ,
+.M sge_qmaster 8 ,
+.I Grid Engine Installation and Administration Guide.
+.\"
+.SH "COPYRIGHT"
+See
+.M sge_intro 1
+for a full statement of rights and permissions.

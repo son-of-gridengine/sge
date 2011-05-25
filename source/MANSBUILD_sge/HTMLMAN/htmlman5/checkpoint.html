@@ -1,0 +1,176 @@
+<HTML>
+<HEAD>
+<TITLE>checkpoint.5</TITLE>
+</HEAD>
+<BODY>
+<H1>checkpoint.5</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       checkpoint - Grid Engine checkpointing environment configuration file
+       format
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Checkpointing is a facility to save the complete status of an executing
+       program or job and to restore and restart from this so-called
+       checkpoint at a later point of time if the original program or job was
+       halted, e.g.  through a system crash.
+
+       Grid Engine provides various levels of checkpointing support (see
+       <B><A HREF="../htmlman1/sge_ckpt.html">sge_ckpt(1)</A></B>).  The checkpointing environment described here is a means
+       to configure the different types of checkpointing in use for your Grid
+       Engine cluster or parts thereof. For that purpose you can define the
+       operations which have to be executed in initiating a checkpoint
+       generation, a migration of a checkpoint to another host, or a restart
+       of a checkpointed application, as well as the list of queues which are
+       eligible for a checkpointing method.
+
+       Supporting different operating systems may easily force Grid Engine to
+       introduce operating system dependencies for the configuration of the
+       checkpointing configuration file and updates of the supported operating
+       system versions may lead to frequently changing implementation details.
+       Please refer to the &lt;sge_root&gt;/ckpt directory for more information.
+
+       Please use the <I>-ackpt</I>, <I>-dckpt</I>, <I>-mckpt</I> or <I>-sckpt</I> options to the <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>
+       command to manipulate checkpointing environments from the command-line
+       or use the corresponding <B><A HREF="../htmlman1/qmon.html">qmon(1)</A></B> dialogue for X-Windows based
+       interactive configuration.
+
+       Note, Grid Engine allows backslashes (\) be used to escape newline
+       characters. The backslash and the newline are replaced with a space
+       character before any interpretation.
+
+
+</PRE>
+<H2>FORMAT</H2><PRE>
+       The format of a <I>checkpoint</I> file is defined as follows:
+
+   <B>ckpt_name</B>
+       The name of the checkpointing environment in the format for <I>ckpt</I><B>_</B><I>name</I>
+       in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.  To be used in the <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B> <B>-ckpt</B> switch or for the
+       <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B> options mentioned above.
+
+   <B>interface</B>
+       The type of checkpointing to be used. Currently, the following types
+       are valid:
+
+       <I>hibernator</I>
+              The Hibernator kernel level checkpointing is interfaced.
+
+       <I>cpr</I>    The SGI kernel level checkpointing is used.
+
+       <I>cray-ckpt</I>
+              The Cray kernel level checkpointing is assumed.
+
+       <I>transparent</I>
+              Grid Engine assumes that the jobs submitted with reference to
+              this checkpointing interface use a checkpointing library such as
+              provided by the free package <I>Condor</I>.
+
+       <I>userdefined</I>
+              Grid Engine assumes that the jobs submitted with reference to
+              this checkpointing interface perform their private checkpointing
+              method.
+
+       <I>application-level</I>
+              Uses all of the interface commands configured in the
+              checkpointing object like in the case of one of the kernel level
+              checkpointing interfaces (<I>cpr</I>, <I>cray-ckpt</I>, etc.) except for the
+              <B>restart_command</B> (see below), which is not used (even if it is
+              configured) but the job script is invoked in case of a restart
+              instead.
+
+   <B>ckpt_command</B>
+       A command-line type command string to be executed by Grid Engine in
+       order to initiate a checkpoint.
+
+   <B>migr_command</B>
+       A command-line type command string to be executed by Grid Engine during
+       a migration of a checkpointing job from one host to another.
+
+   <B>restart_command</B>
+       A command-line type command string to be executed by Grid Engine when
+       restarting a previously checkpointed application.
+
+   <B>clean_command</B>
+       A command-line type command string to be executed by Grid Engine in
+       order to cleanup after a checkpointed application has finished.
+
+   <B>ckpt_dir</B>
+       A file system location to which checkpoints of potentially considerable
+       size should be stored.
+
+   <B>ckpt_signal</B>
+       A Unix signal to be sent to a job by Grid Engine to initiate checkpoint
+       generation. The value for this field can either be a symbolic name from
+       the list produced by the <I>-l</I> option of the <B><A HREF="../htmlman1/kill.html">kill(1)</A></B> command or an integer
+       number which must be a valid signal on the systems used for
+       checkpointing.
+
+   <B>when</B>
+       The points of time when checkpoints are expected to be generated.
+       Valid values for this parameter are composed from the letters <I>s</I>, <I>m</I>, <I>x</I>,
+       <I>r</I> and any combinations thereof without any separating character in
+       between. The same letters are allowed for the <I>-c</I> option of the <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>
+       command which will overwrite the definitions in the used checkpointing
+       environment.  The meaning of the letters is defined as follows:
+
+       <I>s</I>      A job is checkpointed, aborted and if possible migrated if the
+              corresponding <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B> is shut down on the job's machine.
+
+       <I>m</I>      Checkpoints are generated periodically at the <I>min</I><B>_</B><I>cpu</I><B>_</B><I>interval</I>
+              interval defined by the queue (see <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B>) in which a job
+              executes.
+
+       <I>x</I>      A job is checkpointed, aborted and, if possible, migrated as
+              soon as the job gets suspended (manually as well as
+              automatically).
+
+       <I>r</I>      A job will be rescheduled (not checkpointed) when the host on
+              which the job currently runs went into the "unknown" state and
+              the time interval <I>reschedule</I><B>_</B><I>unknown</I> (see <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>) defined
+              in the global/local cluster configuration is exceeded.
+
+
+
+</PRE>
+<H2>RESTRICTIONS</H2><PRE>
+       <B>Note</B> that the functionality of any checkpointing, migration or restart
+       procedures provided by default with the Grid Engine distribution, as
+       well as the way how they are invoked in the <I>ckpt</I><B>_</B><I>command</I>, <I>migr</I><B>_</B><I>command</I>
+       or <I>restart</I><B>_</B><I>command</I> parameters of any default checkpointing
+       environments, should not be changed; otherwise the functionality
+       remains the full responsibility of the administrator configuring the
+       checkpointing environment.  Grid Engine will just invoke these
+       procedures and evaluate their exit status. If the procedures do not
+       perform their tasks properly, or are not invoked in a proper fashion,
+       the checkpointing mechanism may behave unexpectedly; Grid Engine has no
+       means to detect this.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/sge_ckpt.html">sge_ckpt(1)</A></B>, <B><A HREF="../htmlman1/sge__types.html">sge__types(1)</A></B>, <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>, <B><A HREF="../htmlman1/qmod.html">qmod(1)</A></B>, <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>,
+       <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-17 21:16:09 $            <B><A HREF="../htmlman5/CHECKPOINT.html">CHECKPOINT(5)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

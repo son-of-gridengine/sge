@@ -1,0 +1,140 @@
+drmaa_session(3)               Grid Engine DRMAA              drmaa_session(3)
+
+
+
+NNAAMMEE
+       drmaa_init, drmaa_exit - Start/finish Grid Engine DRMAA session
+
+SSYYNNOOPPSSIISS
+       ##iinncclluuddee ""ddrrmmaaaa..hh""
+
+       iinntt ddrrmmaaaa__iinniitt((
+              ccoonnsstt cchhaarr **ccoonnttaacctt,,
+              cchhaarr **eerrrroorr__ddiiaaggnnoossiiss,,
+              ssiizzee__tt eerrrroorr__ddiiaagg__lleenn
+       ));;
+
+       iinntt ddrrmmaaaa__eexxiitt((
+              cchhaarr **eerrrroorr__ddiiaaggnnoossiiss,,
+              ssiizzee__tt eerrrroorr__ddiiaagg__lleenn
+       ));;
+
+DDEESSCCRRIIPPTTIIOONN
+   ddrrmmaaaa__iinniitt(())
+       The drmaa_init() function initializes the Grid Engine DRMAA API library
+       for all threads of the process and creates a new  DRMAA  session.  This
+       routine  must  be  called  once before any other DRMAA call, except for
+       _d_r_m_a_a___v_e_r_s_i_o_n(3), _d_r_m_a_a___g_e_t___D_R_M___s_y_s_t_e_m(3),  and  _d_r_m_a_a___g_e_t___D_R_M_A_A___i_m_p_l_e_-
+       _m_e_n_t_a_t_i_o_n(3).   Except  for  the above listed functions, no DRMAA func-
+       tions may be called before the drmaa_init()  function  _c_o_m_p_l_e_t_e_s.   Any
+       DRMAA  function  which  is called before the drmaa_init() function com-
+       pletes will return a DRMAA_ERRNO_NO_ACTIVE_SESSION error.   _C_o_n_t_a_c_t  is
+       an  implementation  dependent string which may be used to specify which
+       Grid Engine cell to use. If _c_o_n_t_a_c_t is NULL, the  default  Grid  Engine
+       cell  will be used. In the 1.0 implementation _c_o_n_t_a_c_t may have the fol-
+       lowing value: _s_e_s_s_i_o_n_=_<_s_e_s_s_i_o_n___i_d_>.  To determine the  session_id,  the
+       _d_r_m_a_a___g_e_t___c_o_n_t_a_c_t(3)  function  should  be called after the session has
+       already been initialized.  By passing the  _s_e_s_s_i_o_n_=_<_s_e_s_s_i_o_n___i_d_>  string
+       to  the drmaa_init() function, instead of creating a new session, DRMAA
+       will attempt to reconnect to the session indicated by  the  _s_e_s_s_i_o_n___i_d.
+       The  result of reconnecting to a previous session is that all jobs pre-
+       viously submitted in that session tthhaatt aarree ssttiillll rruunnnniinngg will be avail-
+       able in the DRMAA session.  Note, however, that jobs which ended before
+       the call to drmaa_init() may not be available or may have no associated
+       exit information or resource usage data.
+
+   ddrrmmaaaa__eexxiitt(())
+       The  drmaa_exit() function closes the DRMAA session for all threads and
+       must be called before process termination.  The  drmaa_exit()  function
+       may  be called only once by a single thread in the process and may only
+       be called after the drmaa_init() function  has  completed.   Any  DRMAA
+       function,   other   than  _d_r_m_a_a___i_n_i_t(3),  which  is  called  after  the
+       drmaa_exit()      function      completes      will      return       a
+       DRMAA_ERRNO_NO_ACTIVE_SESSION error.
+
+       The  drmaa_exit() function does necessary clean up of the DRMAA session
+       state,  including  unregistering   from   the   _q_m_a_s_t_e_r(8).    If   the
+       drmaa_exit()  function is not called, the qmaster will store events for
+       the DRMAA client until the connection times out, causing extra work for
+       the qmaster and consuming system resources.
+
+       Submitted jobs are not affected by the drmaa_exit() function.
+
+EENNVVIIRROONNMMEENNTTAALL VVAARRIIAABBLLEESS
+       SSGGEE__RROOOOTT       Specifies  the location of the Grid Engine standard con-
+                      figuration files.
+
+       SSGGEE__CCEELLLL       If set, specifies the default Grid  Engine  cell  to  be
+                      used. To address a Grid Engine cell Grid Engine uses (in
+                      the order of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. ddeeffaauulltt.
+
+
+       SSGGEE__DDEEBBUUGG__LLEEVVEELL
+                      If set, specifies that debug information should be writ-
+                      ten to stderr. In addition the level of detail in  which
+                      debug information is generated is defined.
+
+       SSGGEE__QQMMAASSTTEERR__PPOORRTT
+                      If  set, specifies the tcp port on which the sge_qmaster
+                      is expected to listen for communication requests.   Most
+                      installations  will  use a services map entry instead to
+                      define that port.
+
+RREETTUURRNN VVAALLUUEESS
+       Upon  successful  completion,  drmaa_init()  and  drmaa_exit()   return
+       DRMAA_ERRNO_SUCCESS.    Other   values   indicate   an  error.   Up  to
+       _e_r_r_o_r___d_i_a_g___l_e_n characters of error  related  diagnosis  information  is
+       then provided in the buffer _e_r_r_o_r___d_i_a_g_n_o_s_i_s.
+
+EERRRROORRSS
+       The drmaa_init() and drmaa_exit() functions will fail if:
+
+   DDRRMMAAAA__EERRRRNNOO__IINNTTEERRNNAALL__EERRRROORR
+       Unexpected or internal DRMAA error, like system call failure, etc.
+
+   DDRRMMAAAA__EERRRRNNOO__DDRRMM__CCOOMMMMUUNNIICCAATTIIOONN__FFAAIILLUURREE
+       Could not contact DRM system for this request.
+
+   DDRRMMAAAA__EERRRRNNOO__AAUUTTHH__FFAAIILLUURREE
+       The  specified  request is not processed successfully due to authoriza-
+       tion failure.
+
+   DDRRMMAAAA__EERRRRNNOO__IINNVVAALLIIDD__AARRGGUUMMEENNTT
+       The input value for an argument is invalid.
+
+       The drmaa_init() will fail if:
+
+   DDRRMMAAAA__EERRRRNNOO__IINNVVAALLIIDD__CCOONNTTAACCTT__SSTTRRIINNGG
+       Initialization failed due to invalid contact string.
+
+   DDRRMMAAAA__EERRRRNNOO__DDEEFFAAUULLTT__CCOONNTTAACCTT__SSTTRRIINNGG__EERRRROORR
+       Could not use the default contact string to connect to DRM system.
+
+   DDRRMMAAAA__EERRRRNNOO__DDRRMMSS__IINNIITT__FFAAIILLEEDD
+       Initialization failed due to failure to init DRM system.
+
+   DDRRMMAAAA__EERRRRNNOO__AALLRREEAADDYY__AACCTTIIVVEE__SSEESSSSIIOONN
+       Initialization failed due to existing DRMAA session.
+
+   DDRRMMAAAA__EERRRRNNOO__NNOO__MMEEMMOORRYY
+       Failed allocating memory.
+
+       The drmaa_exit() will fail if:
+
+   DDRRMMAAAA__EERRRRNNOO__NNOO__AACCTTIIVVEE__SSEESSSSIIOONN
+       Failed because there is no active session.
+
+   DDRRMMAAAA__EERRRRNNOO__DDRRMMSS__EEXXIITT__EERRRROORR
+       DRM system disengagement failed.
+
+SSEEEE AALLSSOO
+       _d_r_m_a_a___s_u_b_m_i_t(3).
+
+
+
+SGE 8.0.0                $Date: 2008-07-08 09:10:04 $         drmaa_session(3)

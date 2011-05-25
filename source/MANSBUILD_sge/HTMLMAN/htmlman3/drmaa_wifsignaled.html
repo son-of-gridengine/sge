@@ -1,0 +1,292 @@
+<HTML>
+<HEAD>
+<TITLE>drmaa_wifsignaled.3</TITLE>
+</HEAD>
+<BODY>
+<H1>drmaa_wifsignaled.3</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       drmaa_synchronize, drmaa_wait, drmaa_wifexited, drmaa_wexitstatus,
+       drmaa_wifsignaled, drmaa_wtermsig, drmaa_wcoredump, drmaa_wifaborted -
+       Waiting for jobs to finish
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>#include</B> <B>"drmaa.h"</B>
+
+       <B>int</B> <B>drmaa_synchronize(</B>
+              <B>const</B> <B>char</B> <B>*job_ids[],</B>
+              <B>signed</B> <B>long</B> <B>timeout,</B>
+              <B>int</B> <B>dispose,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_wait(</B>
+              <B>const</B> <B>char</B> <B>*job_id,</B>
+              <B>char</B> <B>*job_id_out,</B>
+              <B>size_t</B> <B>job_id_out_len,</B>
+              <B>int</B> <B>*stat,</B>
+              <B>signed</B> <B>long</B> <B>timeout,</B>
+              <B>drmaa_attr_values_t</B> <B>**rusage,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diagnois_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_wifaborted(</B>
+              <B>int</B> <B>*aborted,</B>
+              <B>int</B> <B>stat,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_wifexited(</B>
+              <B>int</B> <B>*exited,</B>
+              <B>int</B> <B>stat,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_wifsignaled(</B>
+              <B>int</B> <B>*signaled,</B>
+              <B>int</B> <B>stat,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_wcoredump(</B>
+              <B>int</B> <B>*core_dumped,</B>
+              <B>int</B> <B>stat,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_wexitstatus(</B>
+              <B>int</B> <B>*exit_status,</B>
+              <B>int</B> <B>stat,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_wtermsig(</B>
+              <B>char</B> <B>*signal,</B>
+              <B>size_t</B> <B>signal_len,</B>
+              <B>int</B> <B>stat,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The drmaa_synchronize() function blocks the calling thread until all
+       jobs specified in <I>job</I><B>_</B><I>ids</I> have failed or finished execution. If <I>job</I><B>_</B><I>ids</I>
+       contains 'DRMAA_JOB_IDS_SESSION_ALL', then this function waits for all
+       jobs submitted during this DRMAA session. The <I>job</I><B>_</B><I>ids</I> pointer array
+       must be <I>NULL</I> terminated.
+
+       To prevent blocking indefinitely in this call, the caller may use the
+       <I>timeout</I>, specifying how many seconds to wait for this call to complete
+       before timing out. The special value DRMAA_TIMEOUT_WAIT_FOREVER can be
+       used to wait indefinitely for a result. The special value
+       DRMAA_TIMEOUT_NO_WAIT can be used to return immediately.  If the call
+       exits before <I>timeout</I> seconds, all the specified jobs have completed or
+       the calling thread received an interrupt.  In both cases, the return
+       code is DRMAA_ERRNO_EXIT_TIMEOUT.
+
+       The <I>dispose</I> parameter specifies how to treat reaping information.  If
+       '0' is passed to this parameter, job finish information will still be
+       available when <B><A HREF="../htmlman3/drmaa_wait.html">drmaa_wait(3)</A></B> is used. If '1' is passed, <B><A HREF="../htmlman3/drmaa_wait.html">drmaa_wait(3)</A></B>
+       will be unable to access this job's finish information.
+
+   <B>drmaa_wait()</B>
+       The drmaa_wait() function blocks the calling thread until a job fails
+       or finishes execution.  This routine is modeled on the <B><A HREF="../htmlman3/wait4.html">wait4(3)</A></B>
+       routine.  If the special string 'DRMAA_JOB_IDS_SESSION_ANY' is passed
+       as <I>job</I><B>_</B><I>id</I>, this routine will wait for any job from the session.
+       Otherwise the <I>job</I><B>_</B><I>id</I> must be the job identifier of a job or array job
+       task that was submitted during the session.
+
+       To prevent blocking indefinitely in this call, the caller may use
+       <I>timeout</I>, specifying how many seconds to wait for this call to complete
+       before timing out. The special value DRMAA_TIMEOUT_WAIT_FOREVER can be
+       to wait indefinitely for a result. The special value
+       DRMAA_TIMEOUT_NO_WAIT can be used to return immediately.  If the call
+       exits before <I>timeout</I> seconds have passed, all the specified jobs have
+       completed or the calling thread received an interrupt.  In both cases,
+       the return code is DRMAA_ERRNO_EXIT_TIMEOUT.
+
+       The routine reaps jobs on a successful call, so any subsequent calls to
+       <B><A HREF="../htmlman3/drmaa_wait.html">drmaa_wait(3)</A></B> will fail returning a DRMAA_ERRNO_INVALID_JOB error,
+       meaning that the job has already been reaped.  This error is the same
+       as if the job were unknown. Returning due to an elapsed timeout or an
+       interrupt does not cause the job information to be reaped.  This means
+       that, in this case, it is possible to issue <B><A HREF="../htmlman3/drmaa_wait.html">drmaa_wait(3)</A></B> multiple
+       times for the same <I>job</I><B>_</B><I>id</I>.
+
+       If <I>job</I><B>_</B><I>id</I><B>_</B><I>out</I> is not a null pointer, then on return from a successful
+       <B><A HREF="../htmlman3/drmaa_wait.html">drmaa_wait(3)</A></B> call, up to <I>job</I><B>_</B><I>id</I><B>_</B><I>out</I><B>_</B><I>len</I> characters from the job id of
+       the failed or finished job are returned.
+
+       If <I>stat</I> is not a null pointer, then on return from a successful
+       <B><A HREF="../htmlman3/drmaa_wait.html">drmaa_wait(3)</A></B> call, the status of the job is stored in the integer
+       pointed to by <I>stat</I>.  <I>stat</I> indicates whether job failed or finished and
+       other information. The information encoded in the integer value can be
+       accessed via <B><A HREF="../htmlman3/drmaa_wifaborted.html">drmaa_wifaborted(3)</A></B> <B><A HREF="../htmlman3/drmaa_wifexited.html">drmaa_wifexited(3)</A></B>
+       <B><A HREF="../htmlman3/drmaa_wifsignaled.html">drmaa_wifsignaled(3)</A></B> <B><A HREF="../htmlman3/drmaa_wcoredump.html">drmaa_wcoredump(3)</A></B> <B><A HREF="../htmlman3/drmaa_wexitstatus.html">drmaa_wexitstatus(3)</A></B>
+       <B><A HREF="../htmlman3/drmaa_wtermsig.html">drmaa_wtermsig(3)</A></B>.
+
+       If <I>rusage</I> is not a null pointer, then on return from a successful
+       <B><A HREF="../htmlman3/drmaa_wait.html">drmaa_wait(3)</A></B> call, a summary of the  resources used by the terminated
+       job is returned in form of a DRMAA  values  string  vector. The entries
+       in the DRMAA values string vector can be extracted using
+       <B><A HREF="../htmlman3/drmaa_get_next_attr_value.html">drmaa_get_next_attr_value(3)</A></B>.  Each string returned by
+       <B><A HREF="../htmlman3/drmaa_get_next_attr_value.html">drmaa_get_next_attr_value(3)</A></B> will be of the format &lt;name&gt;=&lt;value&gt;,
+       where &lt;name&gt; and &lt;value&gt; specify name and amount of resources consumed
+       by the job, respectively.  See <B><A HREF="../htmlman5/accounting.html">accounting(5)</A></B> for an explanation of the
+       resource information.
+
+   <B>drmaa_wifaborted()</B>
+       The drmaa_wifaborted() function evaluates into the integer pointed to
+       by <I>aborted</I> a non-zero value if <I>stat</I> was returned from a job that ended
+       before entering the running state.
+
+   <B>drmaa_wifexited()</B>
+       The drmaa_wifexited() function evaluates into the integer pointed to by
+       <I>exited</I> a non-zero value if <I>stat</I> was returned from a job that terminated
+       normally. A zero value can also indicate that although the job has
+       terminated normally, an exit status is not available, or that it is not
+       known whether the job terminated normally.  In both cases
+       <B><A HREF="../htmlman3/drmaa_wexitstatus.html">drmaa_wexitstatus(3)</A></B> will not provide exit status information. A non-
+       zero value returned in <I>exited</I> indicates more detailed diagnosis can be
+       provided by means of <B><A HREF="../htmlman3/drmaa_wifsignaled.html">drmaa_wifsignaled(3)</A></B>, <B><A HREF="../htmlman3/drmaa_wtermsig.html">drmaa_wtermsig(3)</A></B> and
+       <B><A HREF="../htmlman3/drmaa_wcoredump.html">drmaa_wcoredump(3)</A></B>.
+
+   <B>drmaa_wifsignaled()</B>
+       The drmaa_wifsignaled() function evaluates into the integer pointed to
+       by <I>signaled</I> a non-zero value if <I>stat</I> was returned for a job that
+       terminated due to the receipt of a signal. A zero value can also
+       indicate that although the job has terminated due to the receipt of a
+       signal, the signal is not available, or it is not known whether the job
+       terminated due to the receipt of a signal. In both cases
+       <B><A HREF="../htmlman3/drmaa_wtermsig.html">drmaa_wtermsig(3)</A></B> will not provide signal information. A non-zero value
+       returned in <I>signaled</I> indicates signal information can be retrieved by
+       means of <B><A HREF="../htmlman3/drmaa_wtermsig.html">drmaa_wtermsig(3)</A></B>.
+
+   <B>drmaa_wcoredump()</B>
+       If <B><A HREF="../htmlman3/drmaa_wifsignaled.html">drmaa_wifsignaled(3)</A></B> returned a non-zero value in the <I>signaled</I>
+       parameter, the drmaa_wcoredump() function evaluates into the integer
+       pointed to by <I>core</I><B>_</B><I>dumped</I> a non-zero value if a core image of the
+       terminated job was created.
+
+   <B>drmaa_wexitstatus()</B>
+       If <B><A HREF="../htmlman3/drmaa_wifexited.html">drmaa_wifexited(3)</A></B> returned a non-zero value in the <I>exited</I>
+       parameter, the drmaa_wexitstatus() function evaluates into the integer
+       pointed to by <I>exit</I><B>_</B><I>code</I> the exit code that the job passed to <B><A HREF="../htmlman2/exit.html">exit(2)</A></B> or
+       the value that the child process returned from main.
+
+   <B>drmaa_wtermsig()</B>
+       If <B><A HREF="../htmlman3/drmaa_wifsignaled.html">drmaa_wifsignaled(3)</A></B> returned a non-zero value in the <I>signaled</I>
+       parameter, the drmaa_wtermsig() function evaluates into <I>signal</I> up to
+       <I>signal</I><B>_</B><I>len</I> characters of a string representation of the signal that
+       caused the termination of the job. For signals declared by POSIX.1, the
+       symbolic names are returned (e.g., SIGABRT, SIGALRM). For signals not
+       declared by POSIX, any other string may be returned.
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell to be
+                      used. To address a Grid Engine cell Grid Engine uses (in
+                      the order of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the tcp port on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry instead to
+                      define that port.
+
+
+</PRE>
+<H2>RETURN VALUES</H2><PRE>
+       Upon successful completion, drmaa_run_job(), drmaa_run_bulk_jobs(), and
+       drmaa_get_next_job_id() return DRMAA_ERRNO_SUCCESS. Other values
+       indicate an error.  Up to <I>error</I><B>_</B><I>diag</I><B>_</B><I>len</I> characters of error related
+       diagnosis information is then provided in the buffer <I>error</I><B>_</B><I>diagnosis</I>.
+
+
+</PRE>
+<H2>ERRORS</H2><PRE>
+       The drmaa_synchronize(), drmaa_wait(), drmaa_wifexited(),
+       drmaa_wexitstatus(), drmaa_wifsignaled(), drmaa_wtermsig(),
+       drmaa_wcoredump(), and drmaa_wifaborted() will fail if:
+
+   <B>DRMAA_ERRNO_INTERNAL_ERROR</B>
+       Unexpected or internal DRMAA error, like system call failure, etc.
+
+   <B>DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE</B>
+       Could not contact DRM system for this request.
+
+   <B>DRMAA_ERRNO_AUTH_FAILURE</B>
+       The specified request is not processed successfully due to
+       authorization failure.
+
+   <B>DRMAA_ERRNO_INVALID_ARGUMENT</B>
+       The input value for an argument is invalid.
+
+   <B>DRMAA_ERRNO_NO_ACTIVE_SESSION</B>
+       Failed because there is no active session.
+
+   <B>DRMAA_ERRNO_NO_MEMORY</B>
+       Failed allocating memory.
+
+       The drmaa_synchronize() and drmaa_wait() functions will fail if:
+
+   <B>DRMAA_ERRNO_EXIT_TIMEOUT</B>
+       Time-out condition.
+
+   <B>DRMAA_ERRNO_INVALID_JOB</B>
+       The job specified by the does not exist.
+
+       The drmaa_wait() will fail if:
+
+   <B>DRMAA_ERRNO_NO_RUSAGE</B>
+       This error code is returned by drmaa_wait() when a job has finished but
+       no rusage and stat data could be provided.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman3/drmaa_submit.html">drmaa_submit(3)</A></B>.
+
+
+
+
+SGE 8.0.0                $Date: 2004-11-12 15:40:05 $            <B><A HREF="../htmlman3/drmaa_wait.html">drmaa_wait(3)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

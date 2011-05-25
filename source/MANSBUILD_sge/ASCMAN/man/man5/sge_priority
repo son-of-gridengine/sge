@@ -1,0 +1,137 @@
+SGE_PRIORITY(5)            Grid Engine File Formats            SGE_PRIORITY(5)
+
+
+
+NNAAMMEE
+       sge_priority - Grid Engine job priorities
+
+DDEESSCCRRIIPPTTIIOONN
+       Grid  Engine provides a means for controlling job dispatch and run-time
+       priorities. The dispatch priority indicates the relative importance  of
+       pending  jobs  and determines the order in which Grid Engine dispatches
+       jobs to queue instances, if the relevant resources are  available.  The
+       run-time priority determines the CPU allocation that the operating sys-
+       tem assigns to jobs.
+
+   JJOOBBSS DDIISSPPAATTCCHH PPRRIIOORRIITTYY
+       A job's dispatch priority is affected by a number of factors:
+
+       +o  the identity of the submitting user
+
+       +o  the project under which the job is submitted (or alternatively,  the
+          default project of the submitting user)
+
+       +o  any resources requested by the job
+
+       +o  the job's submit time
+
+       +o  the job's initiation deadline time (if specified)
+
+       +o  the  -p priority specified for the job (also known as the POSIX pri-
+          ority "pprio")
+
+       The effect of each of these is governed by the  overall  policy  setup,
+       which  is  split  into three top-level contributions.  Each of these is
+       configured  through  the  _s_c_h_e_d___c_o_n_f(5)   parameters   wweeiigghhtt__pprriioorriittyy,
+       wweeiigghhtt__ttiicckkeett  and  wweeiigghhtt__uurrggeennccyy.   These three parameters control to
+       what degree POSIX priority, ticket policy, and urgency  policy  are  in
+       effect.    To    facilitate    interpretation,   the   raw   priorities
+       ("tckts"/"urg"/"ppri")   are   normalized   ("ntckts"/"nurg"/"npprior")
+       before  they are used to calculate job priorities ("prio").  Normaliza-
+       tion maps each raw urgency/ticket/priority  value into a range  between
+       0 and 1.
+
+          npprior = normalized(ppri)
+          nurg    = normalized(urg)
+          ntckts  = normalized(tckts)
+
+          prio    = weight_priority * npprio +
+                    weight_urgency  * nurg +
+                    weight_ticket   * ntckts
+
+       The higher a job's priority value, the earlier it gets dispatched.
+
+       The  urgency  policy defines an urgency value for each job. The urgency
+       value
+
+          urg     =  rrcontr + wtcontr + dlcontr
+
+       consists of the  resource  requirement  contribution  ("rrcontr"),  the
+       waiting  time  contribution  ("wtcontr")  and the deadline contribution
+       ("dlcontr").
+
+       The  resource  requirement  contribution  is  adding  up  all  resource
+       requirements of a job into a single numeric value.
+
+          rrcontr = Sum over all(hrr)
+
+       with  an  "hrr"  for  each  hard  resource  request.   Depending on the
+       resource type, two different methods are used to determine the value to
+       be  used  for "hrr" here. For numeric type resource requests, the "hrr"
+       represents how much of a resource a job requests (on a  per-slot  basis
+       for PE jobs) and how "important" this resource is considered in compar-
+       ison to other resources. This is expressed by the formula:
+
+          hrr      = rurg * assumed_slot_allocation * request
+
+       where the resource's urgency  value  ("rurg")  is  as  specified  under
+       uurrggeennccyy in _c_o_m_p_l_e_x(5), the job's assumed_slot_allocation represents the
+       number of slots supposedly  assigned  to  the  job,  and  the  per-slot
+       request  is  that  which was specified using the -l _q_s_u_b(1) option. For
+       string type requests the formula is simply
+
+          hrr      = rurg
+
+       and directly assigns the resource  urgency  value  as  specified  under
+       uurrggeennccyy in _c_o_m_p_l_e_x(5).
+
+       The waiting time contribution represents a weighted waiting time of the
+       jobs
+
+          wtcontr = waiting_time * weight_waiting_time
+
+       with the waiting time in seconds and the wweeiigghhtt__wwaaiittiinngg__ttiimmee  value  as
+       specified in _s_c_h_e_d___c_o_n_f(5).
+
+       The  deadline  contribution  has  an increasing effect as jobs approach
+       their deadline initiation time (see the -dl option in _q_s_u_b(1)).  It  is
+       defined as the quotient of the wweeiigghhtt__ddeeaaddlliinnee value from _s_c_h_e_d___c_o_n_f(5)
+       and the (steadily decreasing) free time in seconds until deadline  ini-
+       tiation time
+
+          dlcontr = weight_deadline / free_time
+
+       or  is  set to 0 for non-deadline jobs.  After the deadline passes, the
+       value is static and equal to weight_deadline.
+
+       The ticket policy unites functional, override and share  tree  policies
+       in  the  ticket  value  ("tckts"),  defined  as the sum of the specific
+       ticket values  ("ftckt"/"otckt"/"stckt")  for  each  sub-policy  (func-
+       tional, override, share):
+
+           tckts = ftckt + otckt + stckt
+
+       The ticket policies provide a broad range of means for influencing both
+       job dispatch and runtime  priorities  on  a  per  job,  per  user,  per
+       project, and per department basis. See the Grid Engine Installation and
+       Administration Guide for details.
+
+   JJOOBB RRUUNN--TTIIMMEE PPRRIIOORRIITTYY
+       The run-time priority can be dynamically adjusted in order to meet  the
+       goals  set with the ticket policy. Dynamic run-time priority adjustment
+       can be turned off (default)  globally  using  rreepprriioorriittiizzee__iinntteerrvvaall  in
+       _s_c_h_e_d___c_o_n_f(5).  If no dynamic run-time priority adjustment is done at a
+       host level, the pprriioorriittyy specification in _q_u_e_u_e___c_o_n_f(5) is in effect.
+
+       Note that urgency and POSIX priorities do nnoott affect runtime priority.
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _c_o_m_p_l_e_x(5), _q_s_t_a_t(1), _q_s_u_b(1), _s_c_h_e_d___c_o_n_f(5), _s_g_e___c_o_n_f(5)
+       _G_r_i_d _E_n_g_i_n_e _I_n_s_t_a_l_l_a_t_i_o_n _a_n_d _A_d_m_i_n_i_s_t_r_a_t_i_o_n _G_u_i_d_e
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2007-01-05 19:56:10 $          SGE_PRIORITY(5)

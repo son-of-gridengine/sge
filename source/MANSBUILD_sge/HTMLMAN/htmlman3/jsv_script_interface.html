@@ -1,0 +1,561 @@
+<HTML>
+<HEAD>
+<TITLE>jsv_script_interface.3</TITLE>
+</HEAD>
+<BODY>
+<H1>jsv_script_interface.3</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       jsv_is_param, jsv_get_param, jsv_add_param, jsv_mod_param,
+       jsv_del_param, jsv_sub_is_param, jsv_sub_get_param, jsv_sub_add_param,
+       jsv_sub_del_param, jsv_is_env, jsv_get_env, jsv_add_env, jsv_mod_env,
+       jsv_del_env, jsv_accept, jsv_correct, jsv_reject, jsv_reject_wait,
+       jsv_show_params, jsv_show_envs, jsv_log_info, jsv_log_warning,
+       jsv_log_error, jsv_main - Grid Engine Job Submission Verifier Scripting
+       Interface
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>jsv_clear_params</B>();
+       <B>jsv_is_param</B>(<I>param</I><B>_</B><I>name</I>);
+       <B>jsv_get_param</B>(<I>param</I><B>_</B><I>name</I>);
+       <B>jsv_set_param</B>(<I>param</I><B>_</B><I>name</I>, <I>param</I><B>_</B><I>value</I>);
+       <B>jsv_del_param</B>(<I>param</I><B>_</B><I>name</I>);
+       <B>jsv_sub_is_param</B>(<I>param</I><B>_</B><I>name</I>, <I>variable</I><B>_</B><I>name</I>);
+       <B>jsv_sub_get_param</B>(<I>param</I><B>_</B><I>name</I>, <I>variable</I><B>_</B><I>name</I>);
+       <B>jsv_sub_add_param</B>(<I>param</I><B>_</B><I>name</I>, <I>variable</I><B>_</B><I>name</I>, <I>variable</I><B>_</B><I>value</I>);
+       <B>jsv_sub_del_param</B>(<I>param</I><B>_</B><I>name</I>, <I>variable</I><B>_</B><I>name</I>);
+
+       <B>jsv_clear_envs</B>();
+       <B>jsv_is_env</B>(<I>variable</I><B>_</B><I>name</I>);
+       <B>jsv_get_env</B>(<I>variable</I><B>_</B><I>name</I>);
+       <B>jsv_add_env</B>(<I>variable</I><B>_</B><I>name</I>, <I>variable</I><B>_</B><I>value</I>);
+       <B>jsv_mod_env</B>(<I>variable</I><B>_</B><I>name</I>, <I>variable</I><B>_</B><I>value</I>);
+       <B>jsv_del_env</B>(<I>variable</I><B>_</B><I>name</I>);
+
+       <B>jsv_accept</B>(<I>message</I>);
+       <B>jsv_correct</B>(<I>message</I>);
+       <B>jsv_reject</B>(<I>message</I>);
+       <B>jsv_reject_wait</B>(<I>message</I>);
+
+       <B>jsv_show_params</B>();
+       <B>jsv_show_envs</B>();
+       <B>jsv_log_info</B>(<I>message</I>);
+       <B>jsv_log_warning</B>(<I>message</I>);
+       <B>jsv_log_error</B>(<I>message</I>);
+
+       <B>jsv_main</B>();
+       <B>jsv_send_env</B>();
+       <B>jsv_on_start</B>();
+       <B>jsv_on_verify</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The functions documented here implement the server side of the JSV
+       protocol as described in the man page <B><A HREF="../htmlman1/jsv.html">jsv(1)</A></B>.  These script functions
+       are available in Bourne shell, TCL or Perl scripts after
+       sourcing/including the files jsv_inlcude.sh, jsv_include.tcl or JSV.pm.
+       The files and corresponding JSV script templates are located in the
+       directory $SGE_ROOT/util/resources/jsv.  There is also a Java
+       implementation, with Javadoc documentation in
+       $SGE_ROOT/doc/javadocs/jjsv, and example files SimpleJsv.java and
+       jjsv.sh the resources directory.
+
+       Note that Bourne shell server JSVs are discouraged because any problems
+       with unintended expansion of job parameters represent a security hazard
+       (with the qmaster running as the sgeadmin user).  Also they may be
+       relatively slow, and constitute a bottleneck in high-throughput
+       clusters.  Shell JSVs may be faster using <B><A HREF="../htmlman1/bash.html">bash(1)</A></B>, even compared with a
+       generally faster shell, since fewer external commands may be invoked.
+
+       In the descriptions of routines here, a calling sequence like
+              <B>function</B>(<I>arg1</I>, <I>arg2</I>)
+       should be interpreted for Bourne shell and Tcl scripts as
+              <B>function</B> <I>arg1</I> <I>arg2</I>
+
+   <B>jsv_clear_params()</B>
+       This function clears all received job parameters that were stored
+       during the last job verification process.
+
+   <B>jsv_clear_envs()</B>
+       This function clears all received job environment variables that were
+       stored during the last job verification process.
+
+   <B>jsv_show_params()</B>
+       A call of this function reports all known job parameters to the
+       counterpart of this script (client or master daemon thread). These
+       parameters will be reported as info messages and appear either in the
+       stdout stream of the client or in the message file of the master
+       process.
+
+   <B>jsv_show_envs()</B>
+       This function reports all known job environment variables to the
+       counterpart of this script (client or master daemon thread).  They will
+       be reported as info messages and appear in the stdout stream of the
+       client or in the message file of the master process.
+
+   <B>jsv_is_param(</B><I>param</I><B>_</B><I>name</I><B>)</B>
+       This function returns whether or not a specific job parameter is
+       available for the job which is currently being verified. Either the
+       string <I>true</I> or <I>false</I> will be returned. The availability/absence of a
+       job parameter does not mean that the corresponding command line switch
+       was used/not used.
+
+       The values allowed for <I>param</I><B>_</B><I>name</I> are listed below.  Find additional
+       information in <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B> describing the availability and value format.
+       Job parameters written in capital letters are pseudo parameters. A
+       detailed description for them can be found in <B><A HREF="../htmlman1/jsv.html">jsv(1)</A></B>.  Note that
+
+       The following parameters directly reflect arguments of the same name
+       supplied to the submission command (<I>qsub</I> etc.) or corresponding values
+       specified with <I>qmon</I>:
+       <B>A</B>, <B>a</B>, <B>ar</B>, <B>b</B>, <B>ckpt</B>, <B>dl</B>, <B>e</B>, <B>h</B>, <B>hold_jid</B>, <B>hold_jid_ad</B>, <B>i</B>, <B>j</B>, <B>js</B>, <B>M</B>, <B>m</B>,
+       <B>masterq</B>, <B>N</B>, <B>notify</B>, <B>o</B>, <B>P</B>, <B>p</B>, <B>R</B>, <B>r</B>, <B>S</B>, <B>shell</B>, <B>tc</B>, <B>w</B>
+       Other parameters are related to the submission command arguments as
+       follows:
+
+       <B>ac</B>     The the job context.  The outcome of the evaluation of all <B>-ac</B>,
+              <B>-dc</B>, and <B>-sc</B> options is passed as a parameter with the name <B>ac</B>,
+              whose value is a comma-separated list of variable/value pairs;
+
+       <B>binding_strategy</B>, <B>binding_type</B>, <B>binding_amount</B>
+
+       <B>binding_step</B>, <B>binding_socket</B>, <B>binding_core</B>
+
+       <B>binding_exp_n</B>, <B>binding_exp_socket</B><I>id</I>, <B>binding_exp_core</B><I>id</I>
+              The values passed to the <B>-binding</B> parameter are passed as
+              multiple parameters to JSV instances.  <B>binding_strategy</B>
+              represents the strategy to be used and is one of: <B>linear</B>,
+              <B>striding</B> or <B>explicit</B>.  <B>binding_type</B> is the instance that should
+              do the binding, one of: <B>env</B>, <B>set</B> or <B>pe</B>.  <B>binding_socket</B> and
+              <B>binding_core</B> are socket/core values whereas <B>binding_step</B> is the
+              step size (used only for striding binding).  The length of the
+              socket/core value list of the explicit binding is reported as
+              <B>binding_exp_n</B>.  The <I>id</I> part of <B>binding_exp_socket</B><I>id</I> and
+              <B>binding_exp_core</B><I>id</I> will be replaced by the position of the
+              socket/core pair within the explicit binding list (0 &lt;= <I>id</I> &lt;
+              <B>binding_exp_</B><I>n</I>).  The first socket/core pair of the explicit
+              binding will be reported with the parameter names
+              <B>binding_exp_socket0</B> and <B>binding_exp_core0</B>.  Values that do not
+              apply for the specified binding will not be reported to JSV.
+              E.g.  <B>binding_step</B> will only be reported for the striding
+              binding and all <B>binding_exp_...</B>  values will only be passed if
+              explicit binding was specified.
+
+       <B>c_interval</B>
+              Checkpoint interval, specified as a numeric value with <B>-c</B>;
+
+       <B>c_occasion</B>
+              Checkpoint "occasion_specifier" <B>-c</B>.  (<B>n</B>, <B>s</B>, <B>m</B>, or <B>x</B>) specified
+              with <B>-c</B>;
+
+       <B>cwd</B>    Working directory, possibly specified with <B>-cwd</B> or <B>-wd</B>;
+
+       <B>display</B>
+              Reflects the <B>-display</B> submit argument and also sets job
+              environment variable DISPLAY to the same value;
+
+       <B>l_hard</B> <B>-l</B> or <B>-hard</B> followed by <B>-l</B>;
+
+       <B>l_soft</B> <B>-soft</B> followed by <B>-l</B>;
+
+       <B>pe_name</B>, <B>pe_min</B>, <B>pe_max</B>
+              The PE name and range limits specified with <B>-pe</B>;
+
+       <B>q_hard</B> <B>-q</B>, or <B>-hard</B> followed by <B>-q</B>;
+
+       <B>q_soft</B> <B>-soft</B> followed by <B>-q</B>.
+
+       See <B><A HREF="../htmlman1/jsv.html">jsv(1)</A></B> for explanation of the following pseudo parameters: <B>CLIENT</B>,
+       <B>CMDNAME</B>, <B>CMDARGS</B>, <B>CMDARG</B><I>i</I>, <B>CONTEXT</B>, <B>GROUP</B>, <B>JOB_ID</B>, <B>USER</B>, <B>VERSION</B>.
+
+   <B>jsv_get_param(</B><I>param</I><B>_</B><I>name</I><B>)</B>
+       This function returns the value of a specific job parameter <I>param</I><B>_</B><I>name</I>.
+
+       This value is only available if the function <B>jsv_is_param</B>() returns
+       <I>true</I>. Otherwise an empty string is returned.
+
+       Find a list of allowed parameter names in the section for the function
+       <B>jsv_is_param</B>().
+
+   <B>jsv_set_param(</B><I>param</I><B>_</B><I>name</I><B>,</B> <I>param</I><B>_</B><I>value</I><B>)</B>
+       This function changes the job parameter <I>param</I><B>_</B><I>name</I> to the value
+       <I>param</I><B>_</B><I>value</I>.
+
+       If <I>param</I><B>_</B><I>value</I> is an empty string then the corresponding job parameter
+       will be deleted, similarly to the function <B>jsv_del_param</B>().  As a
+       result, the job parameter is not available, as if the corresponding
+       command line switch was not specified during job submission.
+
+       For boolean parameters that only accept the values <I>yes</I> or <I>no</I> it is not
+       allowed to pass an empty string as <I>param</I><B>_</B><I>value.</I>
+
+       Also for the parameters <I>c</I> and <I>m</I> it is not allowed to use empty strings.
+       Details can be found in <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>.
+
+   <B>jsv_del_param(</B><I>param</I><B>_</B><I>name</I><B>)</B>
+       This function deletes the job parameter <I>param</I><B>_</B><I>name</I>.
+
+       Find a list of allowed parameter names in the section for the function
+       <B>jsv_is_param</B>().
+
+   <B>jsv_sub_is_param(</B><I>param</I><B>_</B><I>name</I><B>,</B> <I>variable</I><B>_</B><I>name</I><B>)</B>
+       Some job parameters are lists that can contain multiple variables with
+       an optional value.
+
+       This function returns <I>true</I> if a job's parameters contain the list-
+       valued <I>param</I><B>_</B><I>name</I>, with <I>variable</I><B>_</B><I>name</I> in the list; otherwise it returns
+       <I>false</I>. <I>false</I> might also indicate that the parameter list itself is not
+       available. Use the function <B>jsv_is_param</B>() to check if the parameter
+       list is not available.
+
+       The following parameters are list parameters. The second column
+       describes the corresponding variable names to be used. The third column
+       contains a dash (-) if there is no value (<I>variable</I><B>_</B><I>value</I>) allowed with
+       the function <B>jsv_sub_add_param</B>() or <B>jsv_sub_get_param</B>() will return
+       always an empty string. A question mark (?) shows that the value is
+       optional.
+
+       +---------------------------------------------------------------+
+       |<B>param_name</B>     <B>description</B> <B>of</B> <B>variable_name</B>     <B>variable_value</B> |
+       +---------------------------------------------------------------+
+       |ac             job context variable name                       |
+       |hold_jid       job identifier                   -              |
+       |l_hard         complex attribute name           ?              |
+       |l_soft         complex attribute name           ?              |
+       |M              mail address                     -              |
+       |masterq        cluster queue name or            -              |
+       |               queue instance name                             |
+       |q_hard         cluster queue name or            -              |
+       |               queue instance name                             |
+       |q_soft         cluster queue name or            -              |
+       |               queue instance name                             |
+       +---------------------------------------------------------------+
+   <B>jsv_sub_get_param(</B><I>param</I><B>_</B><I>name</I><B>,</B> <I>variable</I><B>_</B><I>name</I><B>)</B>
+       Some job parameters are lists that can contain multiple variables with
+       an optional value.
+
+       This function returns the value of a variable <I>variable</I><B>_</B><I>name</I> in the
+       parameter list <I>param</I><B>_</B><I>name</I>.  For sub list elements that have no value an
+       empty string will be returned.
+
+       Find a list of allowed parameter names (<I>param</I><B>_</B><I>name</I>) and variable names
+       (<I>variable</I><B>_</B><I>name</I>) in the section for the function <B>jsv_sub_is_param</B>().
+
+   <B>jsv_sub_add_param(</B><I>param</I><B>_</B><I>name</I><B>,</B> <I>variable</I><B>_</B><I>name</I><B>,</B> <I>variable</I><B>_</B><I>value</I><B>)</B>
+       Some job parameters are lists that can contain multiple variables with
+       an optional value.
+
+       This function either adds a new variable with a new value or it
+       modifies the value if the variable is already in the list.
+       <I>variable</I><B>_</B><I>value</I> is optional, and if it is not supplied the variable has
+       no value.
+
+       Find a list of allowed parameter names (<I>param</I><B>_</B><I>name</I>) and variable names
+       (<I>variable</I><B>_</B><I>name</I>) in the section for the function <B>jsv_sub_is_param</B>().
+
+   <B>jsv_sub_del_param(</B><I>param</I><B>_</B><I>name</I><B>,</B> <I>variable</I><B>_</B><I>name</I><B>)</B>
+       Some job parameters are lists which can contain multiple variables with
+       an optional value.
+
+       This function deletes a variable <I>variable</I><B>_</B><I>name</I> and, if available, the
+       corresponding value. If <I>variable</I><B>_</B><I>name</I> is not available in the job
+       parameter then the command will be ignored.
+
+       Find a list of allowed parameter names (<I>param</I><B>_</B><I>name</I>) and variable names
+       (<I>variable</I><B>_</B><I>name</I> ) in the section for the function <B>jsv_sub_is_param</B>().
+
+   <B>jsv_is_env(</B><I>variable</I><B>_</B><I>name</I><B>)</B>
+       If the function returns <I>true</I>, then the job environment variable with
+       the name <I>variable</I><B>_</B><I>name</I> exists in the job currently being verified, and
+       <B>jsv_get_env</B>() can be used to retrieve the value of that variable.  If
+       the function returns <I>false</I>, then the job environment variable does not
+       exist.
+
+   <B>jsv_get_env(</B><I>variable</I><B>_</B><I>name</I><B>)</B>
+       This function returns the value of a job environment variable
+       <I>variable</I><B>_</B><I>name</I>.
+
+       This variable has to be passed with the <I>qsub</I> command line switch <I>-v</I> or
+       <I>-V</I>, and passing of environment variable data to JSV scripts has to be
+       enabled. Environment variable data are passed when the function
+       <B>jsv_send_env</B>() is called in the callback function <B>jsv_on_start</B>().
+
+       If the variable does not exist, or if environment variable information
+       is not available, then an empty string will be returned.
+
+   <B>jsv_add_env(</B><I>variable</I><B>_</B><I>name</I><B>,</B> <I>variable</I><B>_</B><I>value</I><B>)</B>
+       This function adds an additional environment variable to the set of
+       variables that will exported to the job when it is started.  As a
+       result the <I>variable</I><B>_</B><I>name</I> and <I>variable</I><B>_</B><I>value</I> become available, as if <B>-v</B>
+       Or <B>-V</B> was specified during job submission.
+
+       <I>variable</I><B>_</B><I>value</I> is optional. If an empty string is passed, then the
+       variable is defined without a value.
+
+       If <I>variable</I><B>_</B><I>name</I> already exists in the set of job environment
+       variables, the corresponding value will be replaced by <I>variable</I><B>_</B><I>value</I>,
+       as if the function <B>jsv_mod_env</B>() was used.  If an empty string is
+       passed then the old value will be deleted.
+
+       To delete an environment variable, the function <B>jsv_del_env</B>() has to be
+       used.
+
+   <B>jsv_mod_env(</B><I>variable</I><B>_</B><I>name</I><B>,</B> <I>variable</I><B>_</B><I>value</I><B>)</B>
+       This function modifies an existing environment variable that is in the
+       set of variables which will exported to the job when it is started.  As
+       a result, the <I>variable</I><B>_</B><I>name</I> and <I>variable</I><B>_</B><I>value</I> will be available as if
+       <B>-v</B> Or <B>-V</B> was specified during job submission.
+
+       <I>variable</I><B>_</B><I>value</I> is optional. If an empty string is passed, then the
+       variable is defined without a value.
+
+       If <I>variable</I><B>_</B><I>name</I> does not already exist in the set of job environment
+       variables, then the corresponding name and value will be added as if
+       the function <B>jsv_add_env</B>() was used.
+
+       To delete a environment variable, use the function <B>jsv_del_env</B>().
+
+   <B>jsv_del_env(</B><I>variable</I><B>_</B><I>name</I><B>)</B>
+       This function removes job environment variable <I>variable</I><B>_</B><I>name</I> from the
+       set of variables that will be exported to the job when it is started.
+
+       If <I>variable</I><B>_</B><I>name</I> does not already exist in the set of job environment
+       variables then the command is ignored.
+
+       To change the value of a variable use the function <B>jsv_mod_env</B>(); to
+       add a new value, call the function <B>jsv_add_env</B>().
+
+   <B>jsv_accept(</B><I>message</I><B>)</B>
+       This function can only be used in <B>jsv_on_verify</B>(). After it has been
+       called, the function <B>jsv_on_verify</B>() has to return immediately.
+
+       A call to this function indicates that the job that is currently being
+       verified should be accepted as it was initially provided. All job
+       modifications that might have been applied in <B>jsv_on_verify</B>() before
+       this function was called, are then ignored.
+
+       Instead of calling <B>jsv_accept</B>() in <B>jsv_on_verify</B>(), the functions
+       <B>jsv_correct</B>(), <B>jsv_reject</B>() or <B>jsv_reject_wait</B>() can be called, but
+       only one of these functions can be used at a time.
+
+   <B>jsv_correct(</B><I>message</I><B>)</B>
+       This function can only be used in <B>jsv_on_verify</B>(). After it has been
+       called, the function <B>jsv_on_verify</B>() has to return immediately.
+
+       A call to this function indicates that the job that is currently being
+       verified has to be modified before it can be accepted. All job
+       parameter modifications that were previously applied will be committed
+       and the job will be accepted. "Accept" in that case means that the job
+       will either be passed to the next JSV instance for modification or that
+       it is passed to that component in the master daemon that adds it to the
+       master data store when the last JSV instance has verified the job.
+
+       Instead of calling <B>jsv_correct</B>() in <B>jsv_on_verify</B>(), the functions
+       <B>jsv_accept</B>(), <B>jsv_reject</B>() or <B>jsv_reject_wait</B>() can be called, but only
+       one of these functions can be used.
+
+   <B>jsv_reject(</B><I>message</I><B>)</B>
+       This function can only be used in <B>jsv_on_verify</B>(). After it has been
+       called the function <B>jsv_on_verify</B>() has to return immediately.
+
+       The job that is currently being verified will be rejected. <I>message</I> will
+       be passed to the client application that tried to submit the job.
+       Commandline clients like <I>qsub</I> will print that message to stdout to
+       inform the user that the submission has failed.
+
+       <B>jsv_reject_wait</B>() should be called if the user may try to submit the
+       job again. <B>jsv_reject_wait</B>() indicates that the verification process
+       might be successful in the future.
+
+       Instead of calling <B>jsv_reject</B>() in <B>jsv_on_verify</B>(), the functions
+       <B>jsv_accept()</B>, <B>jsv_correct</B>() or <B>jsv_reject_wait</B>() can be called, but
+       only one of these functions can be used.
+
+   <B>jsv_reject_wait(</B><I>message</I><B>)</B>
+       This function can only be used in <B>jsv_on_verify</B>(). After it has been
+       called the function <B>jsv_on_verify</B>() has to return immediately.
+
+       The job which is currently verified will be rejected. <I>message</I> will be
+       passed to the client application, that tries to submit the job.
+       Commandline clients like <I>qsub</I> will print that message to stdout to
+       inform the user that the submission has failed.
+
+       This function should be called if the user who tries to submit the job
+       might have a chance to submit the job later. <B>jsv_reject</B> indicates that
+       the verified job will also be rejected in future.
+
+       Instead of calling <B>jsv_reject_wait</B>() in <B>jsv_on_verify</B>() the functions
+       <B>jsv_accept</B>(), <B>jsv_correct</B>() or <B>jsv_reject</B>() can be called, but only one
+       of these functions can be used.
+
+   <B>jsv_log_info(</B><I>message</I><B>)</B>
+       This function sends an info <I>message</I> to the client or master daemon
+       instance that started the JSV script.
+
+       For client JSVs, this means that the command line client will get the
+       information and print it to the stdout stream. Server JSVs will print
+       that message as an info message to the master daemon message file.
+
+       If <I>message</I> is missing then an empty line will be printed.
+
+   <B>jsv_log_warning(</B><I>message</I><B>)</B>
+       This function sends a warning <I>message</I> to the client or master daemon
+       instance that started the JSV script.
+
+       For client JSVs, this means that the command line client will get the
+       information and print it to the stdout stream. Server JSVs will print
+       that message as a warning message to the master daemon message file.
+
+       If <I>message</I> is missing then an empty line will be printed.
+
+   <B>jsv_log_error(</B><I>message</I><B>)</B>
+       This function sends an error <I>message</I> to the client or master daemon
+       instance that started the JSV script.
+
+       For client JSVs, this means that the command line client will get the
+       information and print it to the stdout stream. Server JSVs will print
+       that message as an error message to the master daemon message file.
+
+       If <I>message</I> is missing then an empty line will be printed.
+
+   <B>jsv_send_env()</B>
+       This function can only be used in <B>jsv_on_start</B>(). If it is used there,
+       then the job environment information will be available in
+       <B>jsv_on_verify</B>() for the next job that is scheduled to be verified.
+
+       This function must be called for the functions <B>jsv_show_envs()</B>,
+       <B>jsv_is_env</B>(), <B>jsv_get_env</B>(), <B>jsv_add_env</B>() and <B>jsv_mod_env</B>() to behave
+       correctly.
+
+       Job environments might become very big (10K and more). This will slow
+       down the executing component (submit client or master daemon thread).
+       For this reason, job environment information is not passed to JSV
+       scripts by default.
+
+       Please note also that the data in the job environment can't be verified
+       by Grid Engine and might therefore contain values which could be
+       misinterpreted in the script environment and cause security issues.
+
+   <B>jsv_main()</B>
+       This function has to be called in the main function in JSV scripts. It
+       implements the JSV protocol and performs the communication with client
+       and server components which might start JSV scripts.
+
+       This function does not return immediately. It returns only when the
+       "QUIT" command is sent by the client or server component.
+
+       During the communication with client and server components, this
+       function triggers two callback functions for each job that should be
+       verified. First <B>jsv_on_start</B>() and later on <B>jsv_on_verify</B>().
+
+       <B>jsv_on_start</B>() can be used to initialize certain things that might be
+       needed for the verification process. <B>jsv_on_verify</B>() does the
+       verification process itself.
+
+       The function <B>jsv_send_env</B>() can be called in <B>jsv_on_start</B>() so that the
+       job environment is available in <B>jsv_on_verify</B>().
+
+       The following functions can only be used in <B>jsv_on_verify</B>().  Simple
+       job parameters can be accessed/modified with: <B>jsv_is_param</B>,
+       <B>jsv_get_param</B>, <B>jsv_set_param</B> and <B>jsv_del_param</B>.
+
+       List based job parameters can be accessed with: <B>jsv_sub_is_param</B>,
+       <B>jsv_sub_get_param</B>, <B>jsv_sub_add_param</B> and <B>jsv_sub_del_param</B>.
+
+       If the environment was requested with <B>jsv_send_env</B>() in <B>jsv_on_start</B>()
+       then the environment can be accessed/modified with the following
+       commands: <B>jsv_is_env</B>, <B>jsv_get_env</B>, <B>jsv_add_env</B>, <B>jsv_mod_env</B> and
+       <B>jsv_del_env</B>.
+
+       Jobs can be accepted/rejected with the following: <B>jsv_accept</B>,
+       <B>jsv_correct</B>, <B>jsv_reject</B> and <B>jsv_reject_wait</B>.
+
+       The following functions send messages to the calling component of a JSV
+       that will either appear on the stdout stream of the client or in the
+       master message file. This is especially useful when new JSV scripts
+       should be tested: jsv_show_params<B>,</B> jsv_show_envs<B>,</B> jsv_log_info<B>,</B>
+       jsv_log_warning <B>and</B> jsv_log_error<B>.</B>
+
+   <B>jsv_on_start()</B>
+       This is a callback function that has to be defined by the creator of a
+       JSV script.  It is called for every job a short time before the
+       verification process of a job starts.
+
+       Within this function <B>jsv_send_env</B> can be called to request job
+       environment information for the next job scheduled to be verified.
+
+       After this function returns <B>jsv_on_verify</B>() will be called. This
+       function does the verification process itself.
+
+   <B>jsv_on_verify()</B>
+       This is a callback function that has to be defined by the creator of a
+       JSV script.  It is called for every job, and when it returns the job
+       will either be accepted or rejected. Find implementation examples in
+       the directory $SGE_ROOT/util/resources/jsv.
+
+       The logic of this function completely depends on its creator. The
+       creator has only to take care that one of the functions <B>jsv_accept</B>(),
+       <B>jsv_reject</B>(), <B>jsv_reject_wait</B>() or <B>jsv_correct</B>() is called before the
+       function returns.
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       Find in the table below the returned values for the "*is*" and "*get*"
+       functions when following job is submitted:
+
+              qsub -l mem=1G,mem2=200M ...
+
+
+              function call                      returned value
+              ------------------------------------------------------
+              jsv_is_param(l_hard)               "true"
+              jsv_get_param(l_hard)              "mem=1G,mem2=200M"
+              jsv_sub_is_param(l_hard,mem)       "true"
+              jsv_sub_get_param(l_hard,mem)      "1G"
+              jsv_sub_get_param(l_hard,mem3)     "false"
+              jsv_sub_get_param(l_hard,mem3)     ""
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       Include files:
+       <I>$SGE</I><B>_</B><I>ROOT/util/resources/jsv/jsv</I><B>_</B><I>inlcude.sh</I>
+       <I>$SGE</I><B>_</B><I>ROOT/util/resources/jsv/jsv</I><B>_</B><I>include.tcl</I>
+       <I>$SGE</I><B>_</B><I>ROOT/util/resources/jsv/JSV.pm</I>
+       <I>$SGE</I><B>_</B><I>ROOT/util/resources/jsv/Simplejsv.java</I>
+       Example files:
+       <I>$SGE</I><B>_</B><I>ROOT/util/resources/jsv/jsv.sh</I>
+       <I>$SGE</I><B>_</B><I>ROOT/util/resources/jsv/jsv.tcl</I>
+       <I>$SGE</I><B>_</B><I>ROOT/util/resources/jsv/jsv.pl</I>
+       <I>$SGE</I><B>_</B><I>ROOT/util/resources/jsv/jjsv.sh</I>
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/jsv.html">jsv(1)</A></B>, <B><A HREF="../htmlman1/qalter.html">qalter(1)</A></B>, <B><A HREF="../htmlman1/qlogin.html">qlogin(1)</A></B>, <B><A HREF="../htmlman1/qmake.html">qmake(1)</A></B>, <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B>, <B><A HREF="../htmlman1/qsh.html">qsh(1)</A></B>,
+       <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>, <B><A HREF="../htmlman1/qtcsh.html">qtcsh(1)</A></B>,
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2009-05-28 16:56:19 $  <B><A HREF="../htmlman3/JSV_SCRIPT_INTERFACE.html">JSV_SCRIPT_INTERFACE(3)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,809 @@
+QUEUE_CONF(5)              Grid Engine File Formats              QUEUE_CONF(5)
+
+
+
+NNAAMMEE
+       queue_conf - Grid Engine queue configuration file format
+
+DDEESSCCRRIIPPTTIIOONN
+       This  manual  page  describes  the  format of the template file for the
+       cluster queue configuration.  Via  the  --aaqq  and  --mmqq  options  of  the
+       _q_c_o_n_f(1)  command, you can add cluster queues and modify the configura-
+       tion of any queue in the cluster. Any of these change operations can be
+       rejected as a result of a failed integrity verification.
+
+       The queue configuration parameters take as values strings, integer dec-
+       imal numbers,  booleans, or time and memory specifiers (see _t_i_m_e___s_p_e_c_i_-
+       _f_i_e_r  and  _m_e_m_o_r_y___s_p_e_c_i_f_i_e_r in _s_g_e___t_y_p_e_s(5)) as well as comma-separated
+       lists.
+
+       Note, Grid Engine allows backslashes (\)  be  used  to  escape  newline
+       characters.  The  backslash  and  the newline are replaced with a space
+       character before any interpretation.
+
+FFOORRMMAATT
+       The following list of parameters specifies the queue configuration file
+       content:
+
+   qqnnaammee
+       The  name  of  the  cluster  queue  in  the  format  for  _q_u_e_u_e___n_a_m_e in
+       _s_g_e___t_y_p_e_s(1).  As template default "template" is used.
+
+   hhoossttlliisstt
+       A list of  host  identifiers  in  the  format  for  _h_o_s_t___i_d_e_n_t_i_f_i_e_r  in
+       _s_g_e___t_y_p_e_s(1).  For each host Grid Engine maintains a queue instance for
+       running jobs on that particular host. Large numbers of hosts can easily
+       be  managed  by  using host groups rather than single host names.  Both
+       white-space and "," can be used as list separators.  (Template default:
+       NONE.)
+
+       If  more  than  one  host  is  specified it can be desirable to specify
+       divergences for certain hosts with  additional  parameters.   They  are
+       expressed using the enhanced queue configuration specifier syntax which
+       builds upon the regular parameter specifier syntax for each parameter:
+
+       "["_h_o_s_t___i_d_e_n_t_i_f_i_e_r=_p_a_r_a_m_e_t_e_r_s___s_p_e_c_i_f_i_e_r___s_y_n_t_a_x"]"     [,"["_h_o_s_t___i_d_e_n_t_i_-
+       _f_i_e_r=_p_a_r_a_m_e_t_e_r_s___s_p_e_c_i_f_i_e_r___s_y_n_t_a_x"]" ]
+
+       Note,  even  in  the  enhanced queue configuration specifier syntax, an
+       entry without brackets is required to denote the default  setting,  and
+       used  for  all  queue  instances  where  no  divergences are specified.
+       Tuples with a host group _h_o_s_t___i_d_e_n_t_i_f_i_e_r override the default  setting.
+       Tuples  with  a host _n_a_m_e _h_o_s_t___i_d_e_n_t_i_f_i_e_r override both the default and
+       the host group setting.
+
+       Note also that with the enhanced queue configuration specifier syntax a
+       default setting is always needed for each configuration attribute; oth-
+       erwise the queue configuration gets rejected. Ambiguous queue  configu-
+       rations  with more than one attribute setting for a particular host are
+       rejected.  Configurations containing override values for hosts  not  in
+       the execution host list are accepted as "detached", as indicated by the
+       --ssddss argument of _q_c_o_n_f(1).  The cluster queue should contain  an  unam-
+       biguous  specification  for  each configuration attribute of each queue
+       instance specified under a hostname in the queue configuration. Ambigu-
+       ous  configurations with more than one attribute setting resulting from
+       overlapping host groups are indicated by the  --eexxppllaaiinn  cc  argument  of
+       _q_s_t_a_t(1)  and cause the queue instance with ambiguous configurations to
+       enter the cc(onfiguration ambiguous) state.
+
+   sseeqq__nnoo
+       In conjunction with the hosts load situation at some time, this parame-
+       ter  specifies this queue's position in the scheduling order within the
+       suitable  queues  for  a  job  to  be  dispatched  according   to   the
+       qquueeuuee__ssoorrtt__mmeetthhoodd (see _s_c_h_e_d___c_o_n_f(5) ).
+
+       Regardless  of  the  qquueeuuee__ssoorrtt__mmeetthhoodd  setting, _q_s_t_a_t(1) reports queue
+       information in the order defined by the value of the sseeqq__nnoo.  Set  this
+       parameter  to  a monotonically increasing sequence. (Type: number; tem-
+       plate default: 0.)
+
+   llooaadd__tthhrreesshhoollddss
+       llooaadd__tthhrreesshhoollddss is a list of load thresholds. When one of  the  thresh-
+       olds  is  exceeded  no further jobs will be scheduled to the queues and
+       _q_m_o_n(1) will signal an overload condition for the node. Arbitrary  load
+       values defined in the "host" and "global" complexes (see _c_o_m_p_l_e_x(5) for
+       details) can be used.
+
+       The syntax is that of a comma-separated list, with  each  list  element
+       consisting  of  the _c_o_m_p_l_e_x___n_a_m_e (see _s_g_e___t_y_p_e_s(5)) of a load value, an
+       equal sign and the threshold value intended  to  trigger  the  overload
+       situation (e.g. load_avg=1.75,users_logged_in=5).
+
+       NNoottee:: Load values as well as consumable resources may be scaled differ-
+       ently for different hosts if specified in the  corresponding  execution
+       host  definitions  (refer  to  _h_o_s_t___c_o_n_f(5) for more information). Load
+       thresholds are compared against the scaled load and consumable values.
+
+   ssuussppeenndd__tthhrreesshhoollddss
+       A list of load thresholds with the same semantics as  the  llooaadd__tthhrreesshh--
+       oollddss  parameter (see above), except that exceeding one of these thresh-
+       olds initiates suspension of one of multiple jobs in  the  queue.   See
+       the  nnssuussppeenndd  parameter  below for details on the number of jobs which
+       are suspended. There is an  important  relationship  between  the  ssuuss--
+       ppeenndd__tthhrreesshhoolldd  and  the  sscchheedduulleerr__iinntteerrvvaall. If you have for example a
+       suspend threshold on the np_load_avg, and the load exceeds the  thresh-
+       old,  this  does not have immediate effect. Jobs continue running until
+       the next scheduling run, where the scheduler detects the threshold  has
+       been  exceeded  and  sends  an order to qmaster to suspend the job. The
+       same applies for unsuspending.
+
+   nnssuussppeenndd
+       The number of jobs which are suspended/enabled per time interval if  at
+       least  one  of  the  load  thresholds in the ssuussppeenndd__tthhrreesshhoollddss list is
+       exceeded or if no ssuussppeenndd__tthhrreesshhoolldd is violated anymore,  respectively.
+       NNssuussppeenndd  jobs  are  suspended  in  each  time  interval  until no ssuuss--
+       ppeenndd__tthhrreesshhoollddss are exceeded anymore or all jobs in the queue are  sus-
+       pended.  Jobs  are  enabled  in  the  corresponding  way  if  the  ssuuss--
+       ppeenndd__tthhrreesshhoollddss are no longer exceeded.  The time interval in which the
+       suspensions of the jobs occur is defined in ssuussppeenndd__iinntteerrvvaall below.
+
+   ssuussppeenndd__iinntteerrvvaall
+       The  time  interval in which further nnssuussppeenndd jobs are suspended if one
+       of the ssuussppeenndd__tthhrreesshhoollddss (see above for both) is exceeded by the  cur-
+       rent load on the host on which the queue is located.  The time interval
+       is also used  when  enabling  the  jobs.   The  syntax  is  that  of  a
+       _t_i_m_e___s_p_e_c_i_f_i_e_r in _s_g_e___t_y_p_e_s(5).
+
+   pprriioorriittyy
+       The  pprriioorriittyy  parameter  specifies  the _n_i_c_e(2) value at which jobs in
+       this queue will be run. It is of type "number" and the default is  zero
+       (which  means  no nice value is set explicitly). Negative values (up to
+       -20) correspond to a higher scheduling priority; positive values (up to
+       +20) correspond to a lower scheduling priority.
+
+       Note, the value of pprriioorriittyy has no effect if Grid Engine adjusts prior-
+       ities dynamically to implement ticket-based entitlement  policy  goals.
+       Dynamic  priority  adjustment  is  switched   off  by  default  due  to
+       _s_g_e___c_o_n_f(5) rreepprriioorriittiizzee being set to false.
+
+   mmiinn__ccppuu__iinntteerrvvaall
+       The time between two automatic checkpoints  in  case  of  transparently
+       checkpointing  jobs.  The maximum of the time requested by the user via
+       _q_s_u_b(1) and the time defined by the queue configuration is used as  the
+       checkpoint  interval.  Since  checkpoint  files may be quite large, and
+       thus writing them to the file system may become  expensive,  users  and
+       administrators are advised to choose sufficiently large time intervals.
+       mmiinn__ccppuu__iinntteerrvvaall is of type "time" and the default is 5 minutes  (which
+       usually  is  suitable for test purposes only).  The syntax is that of a
+       _t_i_m_e___s_p_e_c_i_f_i_e_r in _s_g_e___t_y_p_e_s(5).
+
+   pprroocceessssoorrss
+       A set of processors in case of a multiprocessor execution host  can  be
+       defined  to which the jobs executing in this queue are bound. The value
+       type of this parameter is a range description  like  that  of  the  --ppee
+       option  of  _q_s_u_b(1)  (e.g. 1-4,8,10) denoting the processor numbers for
+       the processor group to be used. Obviously the interpretation  of  these
+       values  relies  on  operating  system  specifics  and is thus performed
+       inside _s_g_e___e_x_e_c_d(8) running on the queue host. Therefore,  the  parsing
+       of  the  parameter  has  to be provided by the execution daemon and the
+       parameter is only passed through _s_g_e___q_m_a_s_t_e_r(8) as a string.
+
+       Currently, support is only provided for multiprocessor machines running
+       Solaris,  SGI multiprocessor machines running IRIX 6.2 and Digital UNIX
+       multiprocessor machines.  In the case of Solaris the processor set must
+       already exist when this processors parameter is configured, so the pro-
+       cessor set has to be created manually.  In the  case  of  Digital  UNIX
+       only  one job per processor set is allowed to execute at the same time,
+       i.e.  sslloottss (see below) should be set to 1 for this queue.
+
+   qqttyyppee
+       The type of queue. Currently _b_a_t_c_h_, _i_n_t_e_r_a_c_t_i_v_e or a combination  in  a
+       comma separated list, or _N_O_N_E_.
+
+       Jobs  that need to be scheduled immediately (_q_s_h, _q_l_o_g_i_n, _q_r_s_h and _q_s_u_b
+       with option _-_n_o_w _y_e_s) can ONLY be scheduled on _i_n_t_e_r_a_c_t_i_v_e queues.
+
+       The formerly supported types parallel and checkpointing are not allowed
+       anymore.  A queue instance is implicitly of type parallel/checkpointing
+       if there is a parallel environment or a checkpointing interface  speci-
+       fied  for  this queue instance in ppee__lliisstt/cckkpptt__lliisstt.  Formerly possible
+       settings e.g.
+
+       qtype   PARALLEL
+
+       could be changed to
+
+       qtype   NONE
+       pe_list pe_name
+
+       (Type string; default: batch interactive.)
+
+   ppee__lliisstt
+       The list of administrator-defined parallel environment (see  _s_g_e___p_e(5))
+       names to be associated with the queue. The default is _N_O_N_E.
+
+   cckkpptt__lliisstt
+       The  list  of  administrator-defined checkpointing interface names (see
+       _c_k_p_t___n_a_m_e in _s_g_e___t_y_p_e_s(1)) to be associated with the queue. The default
+       is _N_O_N_E.
+
+   rreerruunn
+       Defines a default behavior for jobs which are aborted by system crashes
+       or manual "violent" (via _k_i_l_l(1)) shutdown of the complete Grid  Engine
+       system  (including  the  _s_g_e___s_h_e_p_h_e_r_d(8)  of the jobs and their process
+       hierarchy) on the queue host. As soon as _s_g_e___e_x_e_c_d(8) is restarted  and
+       detects  that  a  job  has  been  aborted  for  such  reasons it can be
+       restarted if the jobs are restartable. A job may  not  be  restartable,
+       for  example,if  it  updates  databases (first reads then writes to the
+       same record of a database/file), because abortion of the job  may  have
+       left the database in an inconsistent state. If the owner of a job wants
+       to overrule the default behavior for the  jobs  in  the  queue  the  --rr
+       option of _q_s_u_b(1) can be used.
+
+       The type of this parameter is boolean, thus either TRUE or FALSE can be
+       specified. The default is FALSE, i.e. do  not  restart  jobs  automati-
+       cally.
+
+   sslloottss
+       The  maximum number of concurrently executing jobs allowed in instances
+       of the queue.  Type is number, valid values are 0 to 9999999.
+
+   ttmmppddiirr
+       The ttmmppddiirr parameter specifies the absolute path to  the  base  of  the
+       temporary  directory  filesystem.  When _s_g_e___e_x_e_c_d(8) launches a job, it
+       creates a uniquely-named directory in this filesystem for  the  purpose
+       of  holding scratch files during job execution. At job completion, this
+       directory and its contents are removed automatically.  The  environment
+       variables  TMPDIR  and  TMP  are  set to the path of each job's scratch
+       directory.  (Type string; default: /tmp.)
+
+   sshheellll
+       If either _p_o_s_i_x___c_o_m_p_l_i_a_n_t or  _s_c_r_i_p_t___f_r_o_m___s_t_d_i_n  is  specified  as  the
+       sshheellll__ssttaarrtt__mmooddee parameter in _s_g_e___c_o_n_f(5) the sshheellll parameter specifies
+       the executable path of the command interpreter (e.g.  _s_h(1) or  _c_s_h(1))
+       to  be used to process the job scripts executed in the queue. The defi-
+       nition of sshheellll can be overruled by the job owner via  the  _q_s_u_b(1)  --SS
+       option.
+
+       The type of the parameter is string. The default is /bin/csh.
+
+   sshheellll__ssttaarrtt__mmooddee
+       This parameter defines the mechanisms which are used to actually invoke
+       the job scripts on the execution hosts. The following values are recog-
+       nized:
+
+       _u_n_i_x___b_e_h_a_v_i_o_r
+              If  a user starts a job shell script under UNIX interactively by
+              invoking it just with the script name,  the  operating  system's
+              executable  loader  uses  the  information provided in a comment
+              such as `#!/bin/csh' in the first line of the script  to  detect
+              which command interpreter to start to interpret the script. This
+              mechanism  is  used  by  Grid  Engine  when  starting  jobs   if
+              _u_n_i_x___b_e_h_a_v_i_o_r is defined as sshheellll__ssttaarrtt__mmooddee.
+
+       _p_o_s_i_x___c_o_m_p_l_i_a_n_t
+              POSIX  does  not  consider  first  script  line comments such as
+              `#!/bin/csh' significant. The POSIX standard for  batch  queuing
+              systems (P1003.2d) therefore requires a compliant queuing system
+              to ignore such lines and to use  user  specified  or  configured
+              default  command interpreters instead. Thus, if sshheellll__ssttaarrtt__mmooddee
+              is set to _p_o_s_i_x___c_o_m_p_l_i_a_n_t Grid Engine will either use  the  com-
+              mand  interpreter indicated by the --SS option of the _q_s_u_b(1) com-
+              mand or the sshheellll parameter of the queue to be used (see above).
+              The template default is "unix_behavior".
+
+       _s_c_r_i_p_t___f_r_o_m___s_t_d_i_n
+              Setting the sshheellll__ssttaarrtt__mmooddee parameter either to _p_o_s_i_x___c_o_m_p_l_i_a_n_t
+              or _u_n_i_x___b_e_h_a_v_i_o_r requires you  to  set  the  umask  in  use  for
+              _s_g_e___e_x_e_c_d(8)  such  that  every  user  has  read  access  to the
+              active_jobs directory in the spool directory of the  correspond-
+              ing execution daemon. In case you have pprroolloogg and eeppiilloogg scripts
+              configured, they also need to be readable by any  user  who  may
+              execute jobs.
+              If  this  violates your site's security policies you may want to
+              set sshheellll__ssttaarrtt__mmooddee to _s_c_r_i_p_t___f_r_o_m___s_t_d_i_n. This will force  Grid
+              Engine  to open the job script, as well as the epilogue and pro-
+              logue scripts, for reading into STDIN as root  (if  _s_g_e___e_x_e_c_d(8)
+              was  started  as  root)  before changing to the job owner's user
+              account.  The script is then fed into the STDIN  stream  of  the
+              command  interpreter  indicated  by the --SS option of the _q_s_u_b(1)
+              command or the sshheellll parameter of the  queue  to  be  used  (see
+              above).
+              Thus  setting sshheellll__ssttaarrtt__mmooddee to _s_c_r_i_p_t___f_r_o_m___s_t_d_i_n also implies
+              _p_o_s_i_x___c_o_m_p_l_i_a_n_t behavior. NNoottee, however,  that  feeding  scripts
+              into the STDIN stream of a command interpreter may cause trouble
+              if commands like _r_s_h(1) are invoked inside a job script as  they
+              also  process the STDIN stream of the command interpreter. These
+              problems can usually be resolved by redirecting the STDIN  chan-
+              nel of those commands to come from /dev/null (e.g. rsh host date
+              < /dev/null). NNoottee aallssoo, that any command-line  options  associ-
+              ated  with  the job are passed to the executing shell. The shell
+              will only forward them to the job if they are not recognized  as
+              valid shell options.
+
+       The  default  for  sshheellll__ssttaarrtt__mmooddee  is _p_o_s_i_x___c_o_m_p_l_i_a_n_t.  Note, though,
+       that the sshheellll__ssttaarrtt__mmooddee can only be used for batch jobs submitted  by
+       _q_s_u_b(1)  and  can't  be used for interactive jobs submitted by _q_r_s_h(1),
+       _q_s_h(1), _q_l_o_g_i_n(1).
+
+   pprroolloogg
+       The executable path of a shell script that is started before  execution
+       of  Grid  Engine jobs with the same environment setting as that for the
+       Grid Engine jobs to be started afterwards. An optional  prefix  "user@"
+       specifies  the  user  under  which this procedure is to be started. The
+       procedure's standard output and error output stream are written to  the
+       same file used for the standard output and error output of the job.
+
+       This procedure is intended as a means for the Grid Engine administrator
+       to automate the execution of  general  site-specific  tasks,  like  the
+       preparation  of  temporary file systems in the same context as the job.
+       For a parallel job, only a single instance of the prolog is run on  the
+       master  node.  This queue configuration entry overwrites cluster global
+       or execution host specific pprroolloogg definitions (see _s_g_e___c_o_n_f(5)).
+
+       The default for pprroolloogg is the special value NONE, which prevents execu-
+       tion  of  a prologue script.  The  special variables for constructing a
+       command line are the same as in pprroolloogg definitions of the cluster  con-
+       figuration (see _s_g_e___c_o_n_f(5)).
+
+       Exit  codes  for  the  prolog attribute can be interpreted based on the
+       following exit values:
+              0: Success
+              99: Reschedule job
+              100: Put job in error state
+              Anything else: Put queue in error state
+
+   eeppiilloogg
+       The executable path of a shell script that is started  after  execution
+       of  Grid  Engine jobs with the same environment setting as that for the
+       Grid Engine job that has just completed.  An  optional  prefix  "user@"
+       specifies  the  user  under  which this procedure is to be started. The
+       procedure's standard output and the error output stream are written  to
+       the same file used for the standard output and error output of the job.
+
+       This procedure is intended as a means for the Grid Engine administrator
+       to automate the execution  of  general  site-specific  tasks  like  the
+       cleaning  up  of temporary file systems in the same context as the job.
+       For a parallel job, only a single instance of the epilog is run on  the
+       master  node.  This queue configuration entry overwrites cluster global
+       or execution host specific eeppiilloogg definitions (see _s_g_e___c_o_n_f(5)).
+
+       The default for eeppiilloogg is the special value NONE, which prevents execu-
+       tion of an epilogue script.  The special variables for composing a com-
+       mand line are the same as for pprroolloogg definitions of the cluster config-
+       uration (see _s_g_e___c_o_n_f(5)).
+
+       Exit codes for the epilog attribute are interpreted as follows:
+              0: Success
+              99: Reschedule job
+              100: Put job in error state
+              Anything else: Put queue in error state
+
+   ssttaarrtteerr__mmeetthhoodd
+       The  specified  executable  path will be used as a job starter facility
+       responsible for starting batch jobs.  The executable path will be  exe-
+       cuted  instead  of the configured shell to start the job. The job argu-
+       ments will be passed as arguments to the  job  starter.  The  following
+       environment  variables  are used to pass information to the job starter
+       concerning the shell environment which was configured or  requested  to
+       start the job.
+
+
+       _S_G_E___S_T_A_R_T_E_R___S_H_E_L_L___P_A_T_H
+              The name of the requested shell to start the job
+
+       _S_G_E___S_T_A_R_T_E_R___S_H_E_L_L___S_T_A_R_T___M_O_D_E
+              The configured sshheellll__ssttaarrtt__mmooddee
+
+       _S_G_E___S_T_A_R_T_E_R___U_S_E___L_O_G_I_N___S_H_E_L_L
+              Set  to  "true"  if  the shell is supposed to be used as a login
+              shell (see llooggiinn__sshheellllss in _s_g_e___c_o_n_f(5)).
+
+       The starter_method will not be invoked for qsh, qlogin or  qrsh  acting
+       as rlogin.
+
+
+   ssuussppeenndd__mmeetthhoodd
+   rreessuummee__mmeetthhoodd
+   tteerrmmiinnaattee__mmeetthhoodd
+       These parameters can be used for overwriting the default method used by
+       Grid Engine for suspension, release of a suspension and for termination
+       of  a  job.  Per  default, the signals SIGSTOP, SIGCONT and SIGKILL are
+       delivered to the job to perform these actions. However, for some appli-
+       cations this is not appropriate.
+
+       If no executable path is given, Grid Engine takes the specified parame-
+       ter entries as the signal to be delivered instead of the  default  sig-
+       nal.  A  signal  must be either a positive number or a signal name with
+       ""SSIIGG"" as prefix and the  signal  name  as  printed  by  _k_i_l_l  _-_l  (e.g.
+       SIGTERM).
+
+       If  an  executable  path is given (it must be an _a_b_s_o_l_u_t_e _p_a_t_h starting
+       with a "/") then this command, together with its arguments, is  started
+       by Grid Engine to perform the appropriate action. The following special
+       variables are expanded at runtime and can be used  (besides  any  other
+       strings  which  have  to be interpreted by the procedures) to compose a
+       command line:
+
+       _$_h_o_s_t  The name of the host on which the procedure is started.
+
+       _$_j_o_b___o_w_n_e_r
+              The user name of the job owner.
+
+       _$_j_o_b___i_d
+              Grid Engine's unique job identification number.
+
+       _$_j_o_b___n_a_m_e
+              The name of the job.
+
+       _$_q_u_e_u_e The name of the queue.
+
+       _$_j_o_b___p_i_d
+              The pid of the job.
+
+       Note that a method is only executed on the master node  of  a  parallel
+       job,  so it may be necessary to propagate the necessary action to slave
+       nodes explicitly.  (However, MPI  implementations  may,  for  instance,
+       respond  to SIGTSTP sent to the master process by stopping all the dis-
+       tributed processes.)  If an executable is used  for  a  method,  it  is
+       started the same environment setting as that for the job concerned (see
+       _q_s_u_b(1)).
+
+       The normal Grid Engine-defined environment variables  are  exported  to
+       the  prolog  (see  _q_s_u_b(1)); thus, say, it could choose the appropriate
+       method according to $$PPEE.
+
+   nnoottiiffyy
+       The time to wait between delivery of SIGUSR1/SIGUSR2 notification  sig-
+       nals and suspend/kill signals if the job was submitted with the _q_s_u_b(1)
+       _-_n_o_t_i_f_y option.
+
+   oowwnneerr__lliisstt
+       The oowwnneerr__lliisstt  comprises  comma-separated  _l_o_g_i_n(1)  user  names  (see
+       _u_s_e_r___n_a_m_e in _s_g_e___t_y_p_e_s(1)) of those users who are authorized to disable
+       and suspend this queue through _q_m_o_d(1).   (Grid  Engine  operators  and
+       managers can do this by default.) It is customary to set this field for
+       queues on interactive workstations where the  computing  resources  are
+       shared  between interactive sessions and Grid Engine jobs, allowing the
+       workstation owner to have priority access.  (default: NONE).
+
+   uusseerr__lliissttss
+       The uusseerr__lliissttss parameter contains a comma-separated list of Grid Engine
+       user  access list names as described in _a_c_c_e_s_s___l_i_s_t(5).  Each user con-
+       tained in at least one of the given access  lists  has  access  to  the
+       queue.  If  the  uusseerr__lliissttss  parameter is set to NONE (the default) any
+       user has access if not explicitly excluded via the xxuusseerr__lliissttss  parame-
+       ter  described below.  If a user is contained both in an access list in
+       xxuusseerr__lliissttss and uusseerr__lliissttss, the user is denied access to the queue.
+
+   xxuusseerr__lliissttss
+       The xxuusseerr__lliissttss parameter  contains  a  comma-separated  list  of  Grid
+       Engine  user  access  list  names as described in _a_c_c_e_s_s___l_i_s_t(5).  Each
+       user contained in at least one of the given access lists is not allowed
+       to  access  the queue. If the xxuusseerr__lliissttss parameter is set to NONE (the
+       default) any user has access.  If a user is contained both in an access
+       list  in  xxuusseerr__lliissttss  and uusseerr__lliissttss, the user is denied access to the
+       queue.
+
+   pprroojjeeccttss
+       The pprroojjeeccttss parameter contains a comma-separated list of  Grid  Engine
+       projects  (see  _p_r_o_j_e_c_t(5))  that have access to the queue. Any project
+       not in this list is denied access to the queue. If  set  to  NONE  (the
+       default),  any project has access that is not specifically excluded via
+       the xxpprroojjeeccttss parameter described below. If a project is  in  both  the
+       pprroojjeeccttss  and xxpprroojjeeccttss parameters, the project is denied access to the
+       queue.
+
+   xxpprroojjeeccttss
+       The xxpprroojjeeccttss parameter contains a comma-separated list of Grid  Engine
+       projects  (see  _p_r_o_j_e_c_t(5)) that are denied access to the queue. If set
+       to NONE (the default), no projects are denied access other  than  those
+       denied  access  based  on the pprroojjeeccttss parameter described above.  If a
+       project is in both the pprroojjeeccttss and xxpprroojjeeccttss parameters,  the  project
+       is denied access to the queue.
+
+   ssuubboorrddiinnaattee__lliisstt
+       There are two different types of subordination:
+
+       11.. QQuueeuueewwiissee ssuubboorrddiinnaattiioonn
+
+       A  list  of  Grid  Engine  queue  names in the format for _q_u_e_u_e___n_a_m_e in
+       _s_g_e___t_y_p_e_s(1).  Subordinate relationships are  in  effect  only  between
+       queue  instances  residing at the same host.  The relationship does not
+       apply and is ignored when jobs are running in queue instances on  other
+       hosts.   Queue  instances  residing  on the same host will be suspended
+       when a specified count of jobs is running in this queue instance.   The
+       list specification is the same as that of the llooaadd__tthhrreesshhoollddss parameter
+       above, e.g. low_pri_q=5,small_q. The numbers denote the  job  slots  of
+       the queue that have to be filled in the superordinated queue to trigger
+       the suspension of the subordinated queue. If no value  is  assigned,  a
+       suspension is triggered if all slots of the queue are filled.
+
+       On  nodes which host more than one queue, you might wish to accord bet-
+       ter service to certain classes of jobs (e.g., queues that are dedicated
+       to parallel processing might need priority over low priority production
+       queues). The default is NONE.
+
+       22.. SSlloottwwiissee pprreeeemmppttiioonn
+
+       Slotwise preemption provides a means to ensure that high priority  jobs
+       get  the  resources they need, while at the same time low priority jobs
+       on the same host are not unnecessarily preempted, maximizing  the  host
+       utilization.  Slotwise preemption is designed to provide different pre-
+       emption actions, but with the current implementation only suspension is
+       provided.   This  means  there  is a subordination relationship defined
+       between queues similar to the queue-wise subordination, but if the sus-
+       pend  threshold  is  exceeded, the whole subordinated queue is not sus-
+       pended, only single tasks running in single slots.
+
+       As with queue-wise subordination, the subordination  relationships  are
+       in  effect  only between queue instances residing at the same host. The
+       relationship does not apply and is ignored when jobs and tasks are run-
+       ning in queue instances on other hosts.
+
+       The syntax is:
+
+       slots=_t_h_r_e_s_h_o_l_d(_q_u_e_u_e___l_i_s_t)
+
+       where
+
+       _t_h_r_e_s_h_o_l_d =a positive integer number
+
+       _q_u_e_u_e___l_i_s_t=_q_u_e_u_e___d_e_f[,_q_u_e_u_e___l_i_s_t]
+
+       _q_u_e_u_e___d_e_f =_q_u_e_u_e[:_s_e_q___n_o][:_a_c_t_i_o_n]
+
+       _q_u_e_u_e      =a  Grid  Engine  queue name in the format for _q_u_e_u_e___n_a_m_e in
+              _s_g_e___t_y_p_e_s(1).
+
+       "_s_e_q___n_o"    =sequence number among all subordinated queues of the  same
+              depth in the tree.
+              The higher the sequence number, the lower is the priority of the
+              queue.  Default is 0, which is the highest priority.
+
+       _a_c_t_i_o_n    =the action to be taken if the threshold is exceeded.
+              Supported are:
+              "sr": Suspend the task with the shortest run time.
+              "lr": Suspend the task with the longest run time.
+              Default is "sr".
+
+       Some examples of possible configurations and their functionalities:
+
+       a) The simplest configuration
+
+       subordinate_list   slots=2(B.q)
+
+       which means the queue "B.q" is subordinated to the current queue (let's
+       call  it  "A.q"),  the suspend threshold for all tasks running in "A.q"
+       and "B.q" on the current host is two, the sequence number of  "B.q"  is
+       "0" and the action is "suspend task with shortest run time first". This
+       subordination relationship looks like this:
+
+             A.q
+              |
+             B.q
+
+       This could be a typical configuration for a host with a dual core  CPU.
+       This  subordination configuration ensures that tasks that are scheduled
+       to "A.q" always get a CPU core for themselves, while jobs in "B.q"  are
+       not preempted as long as there are no jobs running in "A.q".
+
+       If  there  is  no task running in "A.q", two tasks are running in "B.q"
+       and a new task is scheduled to "A.q", the sum of tasks running in "A.q"
+       and  "B.q"  is  three.  Three is greater than two, so this triggers the
+       defined action. This causes the task with the shortest run time in  the
+       subordinated  queue  "B.q"  to be suspended. After suspension, there is
+       one task running in "A.q", one task running in "B.q", and one task sus-
+       pended in "B.q".
+
+       b) A simple tree
+
+       subordinate_list   slots=2(B.q:1, C.q:2)
+
+       This defines a small tree that looks like this:
+
+             A.q
+            /   \
+          B.q   C.q
+
+       A  use case for this configuration could be a host with a dual core CPU
+       and queue "B.q" and "C.q" for jobs with  different  requirements,  e.g.
+       "B.q"  for interactive jobs, "C.q" for batch jobs.  Again, the tasks in
+       "A.q" always get a CPU core, while tasks in "B.q" and  "C.q"  are  sus-
+       pended  only  if  the threshold of running tasks is exceeded.  Here the
+       sequence number among the queues of the same  depth  comes  into  play.
+       Tasks scheduled to "B.q" can't directly trigger the suspension of tasks
+       in "C.q", but if there is a task to be suspended, first "C.q"  will  be
+       searched for a suitable task.
+
+       If  there  is one task running in "A.q", one in "C.q" and a new task is
+       scheduled to "B.q", the threshold of "2" in "A.q", "B.q" and  "C.q"  is
+       exceeded.  This  triggers the suspension of one task in either "B.q" or
+       "C.q". The sequence number gives "B.q" a higher  priority  than  "C.q",
+       therefore  the  task  in "C.q" is suspended. After suspension, there is
+       one task running in "A.q", one task running in "B.q" and one task  sus-
+       pended in "C.q".
+
+       c) More than two levels
+
+       Configuration of A.q: subordinate_list   slots=2(B.q)
+       Configuration of B.q: subordinate_list   slots=2(C.q)
+
+       looks like this:
+
+             A.q
+              |
+             B.q
+              |
+             C.q
+
+       These  are  three queues with high, medium and low priority.  If a task
+       is scheduled to "C.q", first the subtree consisting of "B.q" and  "C.q"
+       is  checked,  the  number  of  tasks  running  there is counted. If the
+       threshold which is defined in "B.q" is exceeded, the job  in  "C.q"  is
+       suspended.  Then the whole tree is checked, if the number of tasks run-
+       ning in "A.q", "B.q" and "C.q" exceeds the threshold defined  in  "A.q"
+       the  task in "C.q" is suspended. This means, the effective threshold of
+       any subtree is not higher than the threshold of the root  node  of  the
+       tree.  If in this example a task is scheduled to "A.q", immediately the
+       number of tasks running in "A.q", "B.q" and "C.q"  is  checked  against
+       the threshold defined in "A.q".
+
+       d) Any tree
+
+              A.q
+             /   \
+           B.q   C.q
+          /     /   \
+        D.q    E.q  F.q
+                       \
+                        G.q
+
+       The computation of the tasks that are to be (un)suspended always starts
+       at the queue instance that is modified, i.e. a task is scheduled to,  a
+       task  ends  at,  the configuration is modified, a manual or other auto-
+       matic (un)suspend is issued, except when it is a leaf node, like "D.q",
+       "E.q"  and  "G.q"  in  this example. Then the computation starts at its
+       parent queue instance (like "B.q", "C.q" or  "F.q"  in  this  example).
+       From  there  first all running tasks in the whole subtree of this queue
+       instance are counted. If the sum exceeds the  threshold  configured  in
+       the subordinate_list, in this subtree a task is sought to be suspended.
+       Then the algorithm proceeds to  the  parent  of  this  queue  instance,
+       counts  all  running  tasks  in the whole subtree below the parent, and
+       checks if the number exceeds the threshold configured in  the  parent's
+       subordinate_list. If so, it searches for a task to suspend in the whole
+       subtree below the parent. And so on, until it did this computation  for
+       the root node of the tree.
+
+
+   ccoommpplleexx__vvaalluueess
+       ccoommpplleexx__vvaalluueess  defines quotas for resource attributes managed via this
+       queue. The syntax is the same as for llooaadd__tthhrreesshhoollddss (see  above).  The
+       quotas  are  related to the resource consumption of all jobs in a queue
+       in the case of consumable resources (see _c_o_m_p_l_e_x(5) for details on con-
+       sumable  resources)  or  they  are interpreted on a per queue slot (see
+       sslloottss above) basis in the case of non-consumable resources.  Consumable
+       resource  attributes are commonly used to manage free memory, free disk
+       space or available floating  software  licenses,  while  non-consumable
+       attributes usually define distinctive characteristics, like the type of
+       hardware installed.
+
+       For consumable resource attributes  an  available  resource  amount  is
+       determined  by subtracting the current resource consumption of all run-
+       ning jobs in the queue from the quota in the ccoommpplleexx__vvaalluueess list.  Jobs
+       can  only  be  dispatched to a queue if no resource requests exceed any
+       corresponding resource availability obtained by this scheme. The  quota
+       definition  in the ccoommpplleexx__vvaalluueess list is automatically replaced by the
+       current load value reported for this attribute if load is monitored for
+       this resource and if the reported load value is more stringent than the
+       quota. This effectively avoids oversubscription of resources.
+
+       NNoottee:: Load values replacing the quota specifications  may  have  become
+       more  stringent because they have been scaled (see _h_o_s_t___c_o_n_f(5)) and/or
+       load adjusted (see _s_c_h_e_d___c_o_n_f(5)).  The _-_F option of _q_s_t_a_t(1)  and  the
+       load display in the _q_m_o_n(1) queue control dialog (activated by clicking
+       on a queue icon while the "Shift"  key  is  pressed)  provide  detailed
+       information  on  the actual availability of consumable resources and on
+       the origin of the values taken into account currently.
+
+       NNoottee aallssoo:: The resource consumption  of  running  jobs  (used  for  the
+       availability  calculation) as well as the resource requests of the jobs
+       waiting to be dispatched either  may  be  derived  from  explicit  user
+       requests during job submission (see the _-_l option to _q_s_u_b(1)) or from a
+       "default" value configured for an attribute by the  administrator  (see
+       _c_o_m_p_l_e_x(5)).  The _-_r option to _q_s_t_a_t(1) can be used for retrieving full
+       detail on the actual resource requests of all jobs in the system.
+
+       For non-consumable resources Grid  Engine  simply  compares  the  job's
+       attribute requests with the corresponding specification in ccoommpplleexx__vvaall--
+       uueess, taking the relation operator of the complex  attribute  definition
+       into  account  (see  _c_o_m_p_l_e_x(5)).   If  the result of the comparison is
+       "true", the queue is suitable for the job with respect to the  particu-
+       lar  attribute.  For  parallel jobs each queue slot to be occupied by a
+       parallel task is meant to provide the same resource attribute value.
+
+       NNoottee:: Only numeric complex attributes  can  be  defined  as  consumable
+       resources,  hence  non-numeric  attributes  are always handled on a per
+       queue slot basis.
+
+       The default value for this parameter is  NONE,  i.e.  no  administrator
+       defined resource attribute quotas are associated with the queue.
+
+   ccaalleennddaarr
+       specifies the ccaalleennddaarr to be valid for this queue or contains NONE (the
+       default). A calendar defines the availability of a queue  depending  on
+       time  of  day,  week  and  year.  Please  refer to _c_a_l_e_n_d_a_r___c_o_n_f(5) for
+       details on the Grid Engine calendar facility.
+
+       NNoottee:: Jobs can request queues with a certain calendar model via  a  "-l
+       c=_c_a_l___n_a_m_e" option to _q_s_u_b(1).
+
+   iinniittiiaall__ssttaattee
+       defines an initial state for the queue, either when adding the queue to
+       the system for the first time or on start-up of the _s_g_e___e_x_e_c_d(8) on the
+       host on which the queue resides. Possible values are:
+
+       default   The  queue  is  enabled when adding the queue, or is reset to
+                 the previous status when _s_g_e___e_x_e_c_d(8) comes up  (this  corre-
+                 sponds  to  the  behavior in earlier Grid Engine releases not
+                 supporting initial_state).
+
+       enabled   The queue is enabled in either case. This is equivalent to  a
+                 manual and explicit '_q_m_o_d _-_e' command (see _q_m_o_d(1)).
+
+       disabled  The  queue is disable in either case. This is equivalent to a
+                 manual and explicit '_q_m_o_d _-_d' command (see _q_m_o_d(1)).
+
+RREESSOOUURRCCEE LLIIMMIITTSS
+       The first two resource limit parameters, ss__rrtt and hh__rrtt, are implemented
+       by  Grid  Engine. They define the "real time" (also called "elapsed" or
+       "wall clock" time) passed since the  start  of  the  job.  If  hh__rrtt  is
+       exceeded  by  a job running in the queue, it is aborted via the SIGKILL
+       signal (see _k_i_l_l(1)).  If ss__rrtt is exceeded, the job is  first  "warned"
+       via  the  SIGUSR1  signal  (which can be caught by the job) and finally
+       aborted after the notification time defined in the queue  configuration
+       parameter  nnoottiiffyy (see above) has passed. In cases when ss__rrtt is used in
+       combination with job notification it might be necessary to configure  a
+       signal  other  than  SIGUSR1  using  the  NOTIFY_KILL  and  NOTIFY_SUSP
+       execd_params (see _s_g_e___c_o_n_f(5)) so that the jobs' signal-catching mecha-
+       nism can differ in each case and react accordingly.
+
+       The  resource  limit parameters ss__ccppuu and hh__ccppuu are implemented by Grid
+       Engine as a job limit. They impose a limit on the  amount  of  combined
+       CPU  time  consumed  by  all  the  processes  in  the job.  If hh__ccppuu is
+       exceeded by a job running in the queue, it is  aborted  via  a  SIGKILL
+       signal  (see _k_i_l_l(1)).  If ss__ccppuu is exceeded, the job is sent a SIGXCPU
+       signal which can be caught by the job.  If you wish to allow a  job  to
+       be  "warned"  so  it  can exit gracefully before it is killed, then you
+       should set the ss__ccppuu limit to a lower value than hh__ccppuu.   For  parallel
+       processes, the limit is applied per slot, which means that the limit is
+       multiplied by the number of slots being used by the  job  before  being
+       applied.
+
+       The resource limit parameters ss__vvmmeemm and hh__vvmmeemm are implemented by Grid
+       Engine as a job limit.  They impose a limit on the amount  of  combined
+       virtual  memory  consumed by all the processes in the job. If hh__vvmmeemm is
+       exceeded by a job running in the queue, it is  aborted  via  a  SIGKILL
+       signal (see kill(1)).  If ss__vvmmeemm is exceeded, the job is sent a SIGXCPU
+       signal which can be caught by the job.  If you wish to allow a  job  to
+       be  "warned"  so  it  can exit gracefully before it is killed, then you
+       should set the ss__vvmmeemm limit to a lower value than hh__vvmmeemm.  For parallel
+       processes,  the limit is applied per slot which means that the limit is
+       multiplied by the number of slots being used by the  job  before  being
+       applied.
+
+       The  remaining  parameters  in the queue configuration template specify
+       per-job soft and hard resource  limits  as  implemented  by  the  _s_e_t_r_-
+       _l_i_m_i_t(2)  system  call.  See  this  manual page on your system for more
+       information.  By default, each limit field is set  to  infinity  (which
+       means  RLIM_INFINITY as described in the _s_e_t_r_l_i_m_i_t(2) manual page). The
+       value type for the CPU-time limits ss__ccppuu and hh__ccppuu is time.  The  value
+       type  for  the  other  limits is memory.  NNoottee:: Not all systems support
+       _s_e_t_r_l_i_m_i_t(2).
+
+       NNoottee aallssoo:: s_vmem and h_vmem (virtual memory)  are  only  available  on
+       systems supporting RLIMIT_VMEM (see _s_e_t_r_l_i_m_i_t(2) on your operating sys-
+       tem).
+
+       The UNICOS operating system supplied by SGI/Cray does not  support  the
+       _s_e_t_r_l_i_m_i_t(2) system call, using their own resource limit-setting system
+       call instead.  For UNICOS systems only, the following meanings apply:
+
+       s_cpu     The per-process CPU time limit in seconds.
+
+       s_core    The per-process maximum core file size in bytes.
+
+       s_data    The per-process maximum memory limit in bytes.
+
+       s_vmem    The same as s_data (if both are set the minimum is used).
+
+       h_cpu     The per-job CPU time limit in seconds.
+
+       h_data    The per-job maximum memory limit in bytes.
+
+       h_vmem    The same as h_data (if both are set the minimum is used).
+
+       h_fsize   The total number of disk blocks that this job can create.
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _s_g_e___t_y_p_e_s(1),  _c_s_h(1),  _q_c_o_n_f(1),  _q_m_o_n(1),  _q_r_e_s_t_a_r_t(1),
+       _q_s_t_a_t(1), _q_s_u_b(1), _s_h(1), _n_i_c_e(2), _s_e_t_r_l_i_m_i_t(2), _a_c_c_e_s_s___l_i_s_t(5), _c_a_l_e_n_-
+       _d_a_r___c_o_n_f(5),  _s_g_e___c_o_n_f(5),  _c_o_m_p_l_e_x(5),  _h_o_s_t___c_o_n_f(5),   _s_c_h_e_d___c_o_n_f(5),
+       _s_g_e___e_x_e_c_d(8), _s_g_e___q_m_a_s_t_e_r(8), _s_g_e___s_h_e_p_h_e_r_d(8).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-22 12:20:50 $            QUEUE_CONF(5)

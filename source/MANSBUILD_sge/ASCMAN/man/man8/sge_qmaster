@@ -1,0 +1,83 @@
+SGE_QMASTER(8)        Grid Engine Administrative Commands       SGE_QMASTER(8)
+
+
+
+NNAAMMEE
+       sge_qmaster - Grid Engine master control daemon
+
+SSYYNNOOPPSSIISS
+       ssggee__qqmmaasstteerr [ --hheellpp ]
+
+DDEESSCCRRIIPPTTIIOONN
+       _s_g_e___q_m_a_s_t_e_r controls the overall Grid Engine behavior in a cluster.
+
+OOPPTTIIOONNSS
+       --hheellpp  Prints  a listing of all options.
+
+EENNVVIIRROONNMMEENNTTAALL VVAARRIIAABBLLEESS
+       SSGGEE__RROOOOTT       Specifies  the location of the Grid Engine standard con-
+                      figuration files.
+
+       SSGGEE__CCEELLLL       If set, specifies  the  default  Grid  Engine  cell.  To
+                      address a Grid Engine cell _s_g_e___q_m_a_s_t_e_r uses (in order of
+                      precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. ddeeffaauulltt.
+
+
+       SSGGEE__DDEEBBUUGG__LLEEVVEELL
+                      If set, specifies that debug information should be writ-
+                      ten to stderr. In addition, the level of detail in which
+                      debug information is generated is defined by the defined
+                      value.
+
+       SSGGEE__DDEEBBUUGG__LLEEVVEELL
+                      If set, the qmaster will not daemonize.
+
+       SSGGEE__QQMMAASSTTEERR__PPOORRTT
+                      If set, specifies the tcp port on  which  _s_g_e___q_m_a_s_t_e_r(8)
+                      is  expected to listen for communication requests.  Most
+                      installations will use a services map entry for the ser-
+                      vice "sge_qmaster" instead to define that port.
+
+       SSGGEE__EEXXEECCDD__PPOORRTT If  set, specifies the tcp port on which _s_g_e___e_x_e_c_d(8) is
+                      expected to listen  for  communication  requests.   Most
+                      installations will use a services map entry for the ser-
+                      vice "sge_execd" instead to define that port.
+
+       SSGGEE__TTEESSTT__DDEELLAAYY__SSCCHHEEDDUULLIINNGG
+                      If set, specifies a delay in (integral seconds) before a
+                      scheduling run, for test purposes.
+
+RREESSTTRRIICCTTIIOONNSS
+       _s_g_e___q_m_a_s_t_e_r is usually started from root on the master or shadow master
+       machines of the cluster (refer to  the  _G_r_i_d  _E_n_g_i_n_e  _I_n_s_t_a_l_l_a_t_i_o_n  _a_n_d
+       _A_d_m_i_n_i_s_t_r_a_t_i_o_n  _G_u_i_d_e  for  more information about the configuration of
+       shadow master hosts).  If started by a  normal  user,  a  master  spool
+       directory must be used to which the user has read/write access. In this
+       case only jobs being submitted by that same user are handled  correctly
+       by the system.
+
+FFIILLEESS
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_c_o_n_f_i_g_u_r_a_t_i_o_n
+                       Grid Engine global configuration
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_l_o_c_a_l___c_o_n_f_/_<_h_o_s_t_>
+                       Grid Engine host specific configuration
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_q_m_a_s_t_e_r___a_r_g_s
+                       _s_g_e___q_m_a_s_t_e_r argument file
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_s_p_o_o_l
+                       Default master spool directory
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1),  _s_g_e___c_o_n_f(5),  _s_g_e___e_x_e_c_d(8),  _s_g_e___s_h_a_d_o_w_d(8), _G_r_i_d _E_n_g_i_n_e
+       _I_n_s_t_a_l_l_a_t_i_o_n _a_n_d _A_d_m_i_n_i_s_t_r_a_t_i_o_n _G_u_i_d_e
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2008-05-05 09:03:35 $           SGE_QMASTER(8)

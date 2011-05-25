@@ -1,0 +1,414 @@
+<HTML>
+<HEAD>
+<TITLE>sge_ca.8</TITLE>
+</HEAD>
+<BODY>
+<H1>sge_ca.8</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       util/sgeCA/sge_ca - Grid Engine CSP Support control command
+
+
+</PRE>
+<H2>SYNTAX</H2><PRE>
+       <B>sge_ca</B> <I>command</I> [<I>command</I> <I>options</I>]
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>sge_ca</B> controls a simple Grid Engine Certificate Authority that is used
+       for the special Certificate Security Protocol (CSP) mode.  CSP mode
+       improves the security behavior of Grid Engine by enabling OpenSSL
+       secured communication channels and X509v3 certificates for
+       authentication. In addition it is possible to export the key material
+       or to create JKS keystores for the JMX connector.  There follows a list
+       of possible commands and command options to give an overview of what
+       functionality is available. For further details about every command
+       refer to the COMMAND DETAILS section.
+
+
+</PRE>
+<H2>COMMAND OVERVIEW</H2><PRE>
+       <B>sge_ca</B> <B>[-help]</B>
+              Show usage.
+
+       <B>sge_ca</B> <B>-init</B> <B>[command</B> <B>options]</B>
+              Create the infrastructure for a new Grid Engine Certificate
+              Authority with its corresponding files and directories, and a
+              set of keys and certificates for the Grid Engine daemon, root
+              and admin user.
+
+       <B>sge_ca</B> <B>-req</B> <B>|</B> <B>-verify</B> <B>&lt;cert&gt;</B> <B>|</B> <B>-sign</B> <B>|</B> <B>-copy</B> <B>[command</B> <B>options]</B>
+              Manipulate individual keys and certificates.
+
+       <B>sge_ca</B> <B>-print</B> <B>&lt;cert&gt;</B> <B>|</B> <B>-printkey</B> <B>&lt;key&gt;</B> <B>|</B> <B>-printcrl</B> <B>&lt;crl&gt;</B>
+              Print out certificates, keys and certificate revocation lists in
+              human readable form.
+
+       <B>sge_ca</B> <B>-showCaTop</B> <B>|</B> <B>-showCaLocalTop</B> <B>[command</B> <B>options]</B>
+              Echo the $CATOP or $CALOCALTOP directory. This command is
+              usually run as root on the qmaster host after a CA
+              infrastructure has been created. If "<B>-cadir</B>", "<B>-catop</B>" or
+              "<B>-calocaltop</B>" are set, the corresponding directories are
+              printed.
+
+       <B>sge_ca</B> <B>-usercert</B> <B>&lt;user</B> <B>file&gt;</B> <B>|</B> <B>-user</B> <B>&lt;u:g:e&gt;</B> <B>|</B> <B>-sdm_daemon</B> <B>&lt;u:g:e&gt;</B>
+       <B>[command</B> <B>options]</B>
+              Create certificates and keys for a bunch of users contained in
+              &lt;user file&gt;, a single user, or SDM daemon &lt;u:g:e&gt;. (See
+              <B><A HREF="../htmlman1/hedeby_introduction.html">hedeby_introduction(1)</A></B>).
+
+       <B>sge_ca</B> <B>-pkcs12</B> <B>&lt;user&gt;</B> <B>|</B> <B>-sdm_pkcs12</B> <B>&lt;g&gt;</B> <B>|</B> <B>-sys_pkcs12</B> <B>[command</B> <B>options]</B>
+              Export the certificate and key for user &lt;user&gt; or SDM daemon &lt;g&gt;
+              in PKCS12 format and to export the Grid Engine daemon
+              certificate and key in PKCS12 format.
+
+       <B>sge_ca</B> <B>-userks</B> <B>|</B> <B>-ks</B> <B>&lt;user&gt;</B> <B>|</B> <B>-sysks</B> <B>[command</B> <B>options]</B>
+              Create keystore for all users with a certificate and key, the
+              keystore for a single user &lt;user&gt;, or the keystore containing
+              the Grid Engine daemon certificate and key.
+
+       <B>sge_ca</B> <B>-renew</B> <B>&lt;user&gt;</B> <B>|</B> <B>-renew_ca</B> <B>|</B> <B>-renew_sys</B> <B>|</B> <B>-renew_sdm</B> <B>&lt;g&gt;</B> <B>[command</B>
+       <B>options]</B>
+              Renew the corresponding certificates for user &lt;user&gt;, for the
+              CA, for the Grid Engine daemon certificate, or for the SDM
+              daemon &lt;g&gt; certificate.
+
+       where "<B>[command</B> <B>options]</B>" is a combination of the following options
+       depending on the command. The COMMAND DETAILS section explains which
+       options are usable for each command.
+
+       <B>-days</B> <B>&lt;days&gt;</B>
+              days of validity of the certificate
+
+       <B>-sha1</B>  Use SHA-1 instead of MD5 as message digest
+
+       <B>-encryptkey</B>
+              Use DES to encrypt the generated private key with a passphrase.
+              The passphrase is requested when a key is created or used.
+
+       <B>-outdir</B> <B>&lt;dir&gt;</B>
+              Write to directory &lt;dir&gt;
+
+       <B>-cahost</B> <B>&lt;host&gt;</B>
+              Define CA hostname (CA master host)
+
+       <B>-cadir</B> <B>&lt;dir&gt;</B>
+              Define $CALOCALTOP and $CATOP settings
+
+       <B>-calocaltop</B> <B>&lt;dir&gt;</B>
+              Define $CALOCALTOP setting
+
+       <B>-catop</B> <B>&lt;dir&gt;</B>
+              Define $CATOP setting
+
+       <B>-kspwf</B> <B>&lt;file&gt;</B>
+              Define a keystore password file that contains a password that is
+              used to encrypt the keystore and the keys contained therein
+
+       <B>-ksout</B> <B>&lt;file&gt;</B>
+              Define output file to write the keystore to
+
+       <B>-pkcs12pwf</B> <B>&lt;file&gt;</B>
+              Define a PKCS12 password file that contains a password that is
+              used to encrypt the PKCS12 export file and the keys contained
+              therein
+
+       <B>-pkcs12dir</B> <B>&lt;dir&gt;</B>
+              Define the output directory &lt;dir&gt; to write the exported PKCS12
+              format file to. Otherwise the current working directory is used.
+
+
+</PRE>
+<H2>COMMAND DETAILS</H2><PRE>
+       <B>sge_ca</B> <B>-init</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B>
+       <B>[-adminuser</B> <B>&lt;admin&gt;]</B> <B>[-days</B> <B>&lt;num</B> <B>days&gt;]</B>
+              The <B>-init</B> command creates a new Grid Engine certificate
+              authority and its corresponding files. Usually "<B>sge_ca</B> <B>-init</B>" is
+              run by user root on the master host.  If the options -adminuser,
+              -cadir, -calocaltop, -catop are not used and the Grid Engine
+              environment variables SGE_ROOT, SGE_CELL and SGE_QMASTER_PORT
+              are set, the CA directories are created in the following
+              locations:
+              two letter country code, state, location, e.g city or your
+              building-code, organization (e.g. your company name),
+              organizational unit, e.g. your department, email address of the
+              CA administrator (you!)
+
+       Certificates and keys are generated for the CA itself, the Grid Engine
+       daemon, install user (usually root), and finally for the admin user.
+
+       How and where the certificates and keys are created can be influenced
+       additionally by:
+       <B>-days</B> <B>&lt;days&gt;</B> Change the time of validity of the certificates to number
+       of &lt;days&gt; instead of 365 days
+       <B>-sha1</B> Change the message digest algorithm from MD5 to SHA-1
+       <B>-encryptkey</B> Encrypt the generated keys with a passphrase
+       <B>-adminuser</B> <B>&lt;user&gt;</B> Use &lt;user&gt; as admin user
+       <B>-cahost</B> <B>&lt;host&gt;</B> Use &lt;host&gt; as the CA master host
+       <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B> Set $CATOP and
+       $CALOCALTOP to &lt;dir&gt; to use something different than the Grid Engine
+       default directories. Either -cadir &lt;dir&gt; has to be specified to replace
+       $CATOP and $CALOCALTOP by the same directory or -catop &lt;dir&gt; for $CATOP
+       and -calocaltop &lt;dir&gt; for $CALOCALTOP.
+
+       <B>sge_ca</B> <B>-user</B> <B>&lt;u:g:e&gt;</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B>
+       <B>[-adminuser</B> <B>&lt;admin&gt;]</B> <B>[-days</B> <B>&lt;days&gt;]</B>
+              Generate certificate and keys for &lt;u:g:e&gt; with u='Unix user
+              account name', g='common name' and e='email address'. By default
+              the certificate is valid for 365 days or for &lt;days&gt; specified
+              with -days &lt;days&gt;.  This command is usually run as user root on
+              the qmaster host. $CATOP and $CALOCALTOP may be overruled by
+              -cadir, -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-sdm_daemon</B> <B>&lt;u:g:e&gt;</B>
+              Generate daemon certificate and keys for &lt;u:g:e&gt; with u='Unix
+              user account name', g='common name' and e='email address'. By
+              default the certificate is valid for 365 days or for &lt;days&gt;
+              specified with "<B>-days</B> <B>&lt;days&gt;</B>". This command is usually run as
+              user root on the qmaster host.
+
+       <B>sge_ca</B> <B>-usercert</B> <B>&lt;user</B> <B>file&gt;</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B>
+       <B>&lt;dir&gt;]</B> <B>[-adminuser</B> <B>&lt;admin&gt;]</B> <B>[-days</B> <B>&lt;days&gt;]</B> <B>[-encryptkey]</B> <B>[-sha1]</B>
+              Usually sge_ca -usercert &lt;user file&gt; is run as user root on the
+              master host. The argument &lt;user file&gt; contains a list of users
+              in the following format:
+
+                eddy:Eddy Smith:eddy@griders.org
+                sarah:Sarah Miller:sarah@griders.org
+                leo:Leo Lion:leo@griders.org
+
+              where the fields separated by colon are:
+                Unix user:Gecos field:email address
+
+       <B>sge_ca</B> <B>-renew</B> <B>&lt;user&gt;</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B>
+       <B>[-adminuser</B> <B>&lt;admin&gt;]</B> <B>[-days</B> <B>&lt;days&gt;]</B>
+              Renew the certificate for &lt;user&gt;. By default the certificate is
+              extended for 365 days or for &lt;days&gt; specified with -days &lt;days&gt;.
+              If the value is negative the certificate becomes invalid.  This
+              command is usually run as user root on the qmaster host. $CATOP
+              and $CALOCALTOP may be overruled by -cadir, -catop and
+              -calocaltop.
+
+       <B>sge_ca</B> <B>-renew_ca</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B>
+       <B>[-adminuser</B> <B>&lt;admin&gt;]</B> <B>[-days</B> <B>&lt;days&gt;]</B>
+              Renew the CA certificate. By default the certificate is extended
+              for 365 days or for &lt;days&gt; specified with -days &lt;days&gt;. If the
+              value is negative the certificate becomes invalid.  This command
+              is usually run as user root on the qmaster host. $CATOP and
+              $CALOCALTOP may be overruled by -cadir, -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-renew_sys</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B>
+       <B>[-adminuser</B> <B>&lt;admin&gt;]</B> <B>[-days</B> <B>&lt;days&gt;]</B>
+              Renew the Grid Engine daemon certificate. By default the
+              certificate is extended for 365 days or for &lt;days&gt; specified
+              with -days &lt;days&gt;. If the value is negative the certificate
+              becomes invalid.  This command is usually run as user root on
+              the qmaster host. $CATOP and $CALOCALTOP may be overruled by
+              -cadir, -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-renew_sdm</B> <B>&lt;g&gt;</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B>
+       <B>[-adminuser</B> <B>&lt;admin&gt;]</B> <B>[-days</B> <B>&lt;days&gt;]</B>
+              Renew the SDM daemon certificate of &lt;g&gt;, where &lt;g&gt; is the common
+              name of the daemon. By default the certificate is extended for
+              365 days or for &lt;days&gt; specified with -days &lt;days&gt;. If the value
+              is negative the certificate becomes invalid.  This command is
+              usually run as user root on the qmaster host. $CATOP and
+              $CALOCALTOP may be overruled by -cadir, -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-pkcs12</B> <B>&lt;user&gt;</B> <B>[-pkcs12pwf</B> <B>&lt;file&gt;]</B> <B>[-pkcs12dir</B> <B>&lt;dir&gt;]</B> <B>[-cadir</B>
+       <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B> <B>[-adminuser</B> <B>&lt;admin&gt;]</B>
+              Export certificate and key of user &lt;user&gt; 'the Unix user name'
+              in PKCS12 format. This command is usually run as user root on
+              the qmaster host. If -pkcs12pwf &lt;file&gt; is used the file and the
+              corresponding key will be encrypted with the password in &lt;file&gt;.
+              If -pkcs12dir &lt;dir&gt; is used the output file is written into
+              &lt;dir&gt;/&lt;user&gt;.p12 instead of ./&lt;user&gt;.p12 . $CATOP and
+              $CALOCALTOP may be overruled by -cadir, -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-sys_pkcs12</B> <B>[-pkcs12pwf</B> <B>&lt;file&gt;]</B> <B>[-pkcs12dir</B> <B>&lt;dir&gt;]</B> <B>[-cadir</B>
+       <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B> <B>[-adminuser</B> <B>&lt;admin&gt;]</B>
+              Export certificate and key of Grid Engine daemon in PKCS12
+              format. This command is usually run as user root on the qmaster
+              host. If -pkcs12pwf &lt;file&gt; is used the file and the
+              corresponding key will be encrypted with the password in &lt;file&gt;.
+              If -pkcs12dir &lt;dir&gt; is used the output file is written into
+              &lt;dir&gt;/&lt;user&gt;.p12 instead of ./&lt;user&gt;.p12 . $CATOP and
+              $CALOCALTOP may be overruled by -cadir, -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-sdm_pkcs12</B> <B>&lt;g&gt;</B> <B>[-pkcs12pwf</B> <B>&lt;file&gt;]</B> <B>[-pkcs12dir</B> <B>&lt;dir&gt;]</B> <B>[-cadir</B>
+       <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B> <B>[-adminuser</B> <B>&lt;admin&gt;]</B>
+              Export certificate and key of daemon &lt;g&gt; g='common name' in
+              PKCS12 format. This command is usually run as user root on the
+              qmaster host. If -pkcs12pwf &lt;file&gt; is used the file and the
+              corresponding key will be encrypted with the password in &lt;file&gt;.
+              If -pkcs12dir &lt;dir&gt; is used the output file is written into
+              &lt;dir&gt;/&lt;g&gt;.p12 instead of ./&lt;g&gt;.p12 . $CATOP and $CALOCALTOP may
+              be overruled by -cadir, -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-ks</B> <B>&lt;user&gt;</B> <B>[-ksout</B> <B>&lt;file&gt;]</B> <B>[-kspwf</B> <B>&lt;file&gt;]</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B>
+       <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B> <B>[-adminuser</B> <B>&lt;admin&gt;]</B>
+              Create a keystore containing certificate and key of user &lt;user&gt;
+              in JKS format where &lt;user&gt; is the Unix user name. This command
+              is usually run as user root on the qmaster host. If -kspwf
+              &lt;file&gt; is used the keystore and the corresponding key will be
+              encrypted with the password in &lt;file&gt;. The -ksout &lt;file&gt; option
+              specifies the keystore file that is created. If the -ksout
+              &lt;file&gt; option is missing the default location for the keystore
+              is $CALOCALTOP/userkeys/&lt;user&gt;/keystore. This command is usually
+              invoked by sge_ca -userks. A prerequisite is a valid JAVA_HOME
+              environment variable setting. $CATOP and $CALOCALTOP may be
+              overruled by -cadir, -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-userks</B> <B>[-kspwf</B> <B>&lt;file&gt;]</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B>
+       <B>[-calocaltop</B> <B>&lt;dir&gt;]</B> <B>[-adminuser</B> <B>&lt;admin&gt;]</B>
+              Generate a keystore in JKS format for all users having a key and
+              certificate.  This command is usually run as user root on the
+              qmaster host.  If -kspwf &lt;file&gt; is used the keystore and the
+              corresponding key will be encrypted with the password in &lt;file&gt;.
+              The keystore files are created in
+              $CALOCALTOP/userkeys/&lt;user&gt;/keystore. This command is run after
+              user certificates and keys have been created with sge_ca
+              -usercert &lt;userfile&gt; or if any of the certificates have been
+              renewed. $CATOP and $CALOCALTOP may be overruled by -cadir,
+              -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-sysks</B> <B>[-kspwf</B> <B>&lt;file&gt;]</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B>
+       <B>[-calocaltop</B> <B>&lt;dir&gt;]</B> <B>[-adminuser</B> <B>&lt;admin&gt;]</B>
+              Generate a keystore containing the Grid Engine daemon
+              certificate and key in JKS format.  This command is usually run
+              as user root on the qmaster host.  If -kspwf &lt;file&gt; is used the
+              keystore and the corresponding key will be encrypted with the
+              password in &lt;file&gt;.  The keystore file is created in
+              $CALOCALTOP/private/keystore. $CATOP and $CALOCALTOP may be
+              overruled by -cadir, -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-print</B> <B>&lt;cert&gt;</B>
+              Print a PEM-format certificate &lt;cert&gt;.
+
+       <B>sge_ca</B> <B>-printkey</B> <B>&lt;key&gt;</B>
+              Print a PEM-format key &lt;key&gt;.
+
+       <B>sge_ca</B> <B>-printcrl</B> <B>&lt;crl&gt;</B>
+              Print a PEM-format certificate revocation list &lt;crl&gt;.
+
+       <B>sge_ca</B> <B>-req</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B>
+       <B>[-adminuser</B> <B>&lt;admin&gt;]</B> <B>[-days</B> <B>&lt;days&gt;]</B> <B>[-encryptkey]</B> <B>[-sha1]</B> <B>[-outdir</B>
+       <B>&lt;dir&gt;]</B>
+              Create a private key and a certificate request for the calling
+              user. These are created as newkey.pem and newreq.pem in the
+              current working directory.  If the option -outdir &lt;dir&gt; is
+              specified in addition the files are created in &lt;dir&gt;.
+
+       <B>sge_ca</B> <B>-sign</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B>
+       <B>[-adminuser</B> <B>&lt;admin&gt;]</B> <B>[-days</B> <B>&lt;days&gt;]</B> <B>[-encryptkey]</B> <B>[-sha1]</B> <B>[-outdir</B>
+       <B>&lt;dir&gt;</B>
+              Sign a certificate request. The CA certificate under $CATOP
+              (default: $SGE_ROOT/$SGE_CELL/common/sgeCA) and CA key from
+              $CALOCALTOP (default:
+              /var/sgaCA/{port$SGE_QMASTER_PORT|sge_qmaster}/$SGE_CELL) are
+              used for the signature.  If $CATOP and $CALOCALTOP are set to a
+              different directory the information there is used. The
+              certificate is created as newcert.pem in the current working
+              directory or in &lt;dir&gt; if the option -outdir &lt;dir&gt; has been
+              specified. In addition the option "<B>-days</B> <B>&lt;number</B> <B>of</B> <B>days&gt;</B>" can
+              be specified to change the default validity from 365 to number
+              of days.
+
+       <B>sge_ca</B> <B>-verify</B> <B>&lt;cert&gt;</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B>
+       <B>[-adminuser</B> <B>&lt;admin&gt;]</B>
+              Verify a certificate's validity where &lt;cert&gt; is the certificate
+              in pem format. $CATOP and $CALOCALTOP can be overruled by
+              -cadir, -catop and -calocaltop.
+
+       <B>sge_ca</B> <B>-copy</B> <B>[-cadir</B> <B>&lt;dir&gt;]</B> <B>[-catop</B> <B>&lt;dir&gt;]</B> <B>[-calocaltop</B> <B>&lt;dir&gt;]</B>
+              sge_ca -copy is run by a user to copy the users certificate and
+              key on the master host to
+              $HOME/.sge/port$SGE_QMASTER_PORT/$SGE_CELL/certs/cert.pem and
+              the corresponding private key to
+              $HOME/.sge/port$SGE_QMASTER_PORT/$SGE_CELL/private/key.pem,
+              which are used instead of the files in $CATOP and $CALOCALTOP.
+              The command is only recommended for testing purposes or where
+              $HOME is on a secure shared file system.
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       # sge_ca -init -cadir /tmp -sha1 -encryptkey -days 31
+              Create a CA infrastructure in /tmp with a certificate validity
+              of 31 days using SHA-1 instead of MD5 as message digest. The
+              keys are encrypted and a passphrase has to be entered during the
+              creation of the different keys or during signing a certificate
+              with the created CA key.
+
+       # sge_ca -usercert /tmp/myusers.txt -cadir /tmp
+              /tmp/myusers.txt contains user1:My User:user1@myorg.org and
+              user1 is a valid Unix user account. Create a key and certificate
+              for user1.
+
+       # sge_ca -userks -cadir /tmp
+              Create a keystore for all users of the simple CA. The keystore
+              is stored under /tmp/userkeys/&lt;user&gt;/keystore.
+
+       # sge_ca -renew root -cadir /tmp -days -1
+              Make the root certificate temporarily invalid.
+
+       # sge_ca -renew_ca -days 365 -cadir /tmp
+              Renew the CA certificate for 365 days
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell.
+
+
+</PRE>
+<H2>RESTRICTIONS</H2><PRE>
+       The command must usually be called with Grid Engine root permissions on
+       the master host.  For more details on the permission requirements
+       consult the detailed description for the different commands above.
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <B>sge_ca</B> creates a file tree starting in <B>$CATOP</B> and <B>$CALOCALTOP</B>. The
+       default for <B>$CATOP</B> is usually $SGE_ROOT/$SGE_CELL/common/sgeCA and for
+       <B>$CALOCALTOP</B> /var/sgeCA/{port$SGE_QMASTER_PORT|sge_qmaster}/$SGE_CELL
+       where the subpaths beginning with $ expand to the content of the
+       corresponding environment variable.
+
+       In addition there may optionally exist the user certificate in
+       $HOME/.sge/port$SGE_QMASTER_PORT/$SGE_CELL/certs/cert.pem and the
+       corresponding private key in
+       $HOME/.sge/port$SGE_QMASTER_PORT/$SGE_CELL/private/key.pem which are
+       used instead of the files in $CATOP and $CALOCALTOP. (See sge_ca -copy
+       above.)
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-19 00:07:14 $                <B><A HREF="../htmlman8/SGE_CA.html">SGE_CA(8)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

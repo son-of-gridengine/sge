@@ -1,0 +1,91 @@
+SGE_ALIASES(5)             Grid Engine File Formats             SGE_ALIASES(5)
+
+
+
+NNAAMMEE
+       sge_aliases - Grid Engine path aliases file format
+
+DDEESSCCRRIIPPTTIIOONN
+       The  Grid  Engine  path  aliasing  facility provides administrators and
+       users with the means to reflect complicated and inhomogeneous file sys-
+       tem  structures in distributed environments (such as user home directo-
+       ries mounted under different paths on different hosts)  and  to  ensure
+       that  Grid Engine is able to locate the appropriate working directories
+       for executing batch jobs.
+
+       There is a system global path aliasing  file  and  a  user-local  file.
+       _s_g_e___a_l_i_a_s_e_s defines the format of both:
+
+       +o  Blank  lines,  and  lines  with  a '#' sign in the first column, are
+          skipped.
+
+       +o  Each line other than a blank line or a line with a leading  '#'  has
+          to contain four strings separated by any number of blanks or tabs.
+
+       +o  The  first string specifies a source path, the second a submit host,
+          the third an execution host, and the fourth the source path replace-
+          ment.
+
+       +o  Both the submit and the execution host entries may consist of only a
+          '*' sign which matches any host.
+
+       If the _q_s_u_b(1)
+        _-_c_w_d flag is specified (and only if - otherwise the user's home direc-
+       tory  on  the  execution host is selected to execute the job), the path
+       aliasing mechanism is activated, and the files are  processed  as  fol-
+       lows:
+
+       +o  After  _q_s_u_b(1)  has retrieved the physical current working directory
+          path, the cluster global path aliasing file is read, if present. The
+          user  path aliases file is read afterwards as if it were appended to
+          the global file.
+
+       +o  Lines not to be skipped are read from the top of the file one by one
+          while the translations specified by those lines are stored if neces-
+          sary.
+
+       +o  A translation is stored only if the submit host  entry  matches  the
+          host _q_s_u_b(1) is executed on and if the source path forms the initial
+          part of either the current working directory or of the  source  path
+          replacements already stored.
+
+       +o  As soon as both files are read the stored, path aliasing information
+          is passed along with the submitted job.
+
+       +o  On the execution host, the aliasing information will  be  evaluated.
+          The  leading  part of the current working directory will be replaced
+          by the source-path replacement if the execution-host  entry  of  the
+          path  alias  matches  the  executing host. NNoottee:: The current working
+          directory string will be changed in this case, and  subsequent  path
+          aliases  must  match  the  replaced  working  directory  path  to be
+          applied.
+
+EEXXAAMMPPLLEESS
+       The following is a simple example of a  path  aliasing  file  resolving
+       problems with inhomogeneous paths if _a_u_t_o_m_o_u_n_t(8) is used:
+
+       =====================================================
+       # Path Aliasing File
+       # src-path   sub-host   exec-host   replacement
+       /tmp_mnt/    *          *           /
+       # replaces any occurrence of /tmp_mnt/ by /
+       # if submitting or executing on any host.
+       # Thus paths on nfs server and clients are the same
+       =====================================================
+
+
+FFIILLEESS
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_s_g_e___a_l_i_a_s_e_s
+                     global aliases file
+       _$_H_O_M_E_/_._s_g_e___a_l_i_a_s_e_s   user local aliases file
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1),  _q_s_u_b(1),  _G_r_i_d  _E_n_g_i_n_e  _I_n_s_t_a_l_l_a_t_i_o_n  _a_n_d _A_d_m_i_n_i_s_t_r_a_t_i_o_n
+       _G_u_i_d_e
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2004-04-19 10:52:09 $           SGE_ALIASES(5)

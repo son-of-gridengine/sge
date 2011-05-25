@@ -1,0 +1,64 @@
+USERMAPPING(5)                                                  USERMAPPING(5)
+
+
+
+NNAAMMEE
+       usermapping - user mapping entry file format
+
+DDEESSCCRRIIPPTTIIOONN
+       A  usermapping  entry is used to define alias names for a cluster user.
+       The user's name known by the scheduling system is known as the  cluster
+       user.  If  the  cluster  user doesn't match the user account name on an
+       execution host, the usermapping feature can solve the problem.
+
+       Each line in the usermapping entry file specifies a user name  and  the
+       host(s) where he has an account.
+
+       A  list  of  currently configured user mapping entries can be displayed
+       via the _q_c_o_n_f(1) --ssuummaappll option. The contents  of  each  enlisted  user
+       mapping  entry  can  be shown via the --ssuummaapp switch. The output follows
+       the _u_s_e_r_m_a_p_p_i_n_g format description. New user entries can be created and
+       existing  can  be modified via the --aauummaapp, --mmuummaapp and --dduummaapp options to
+       _q_c_o_n_f(1).
+
+FFOORRMMAATT
+       A user mapping entry contains two parameters:
+
+   cclluusstteerr__uusseerr
+       The cluster_user keyword defines the cluster user name. The rest of the
+       textline after the keyword "cluster_user" will be taken as cluster user
+       value.
+
+
+   rreemmoottee__uusseerr
+       The user name on an execution host. Please note that the value for this
+       attribute might be overwritten for a certain hostgroups or single host.
+       Find an example below.
+
+
+
+EEXXAAMMPPLLEE
+       This is a typical user mapping entry for a cluster user mapping:
+
+
+       cluster_user   peter
+
+       remote_user    peter,[@linux=pet1],[fangorn=peter1]
+
+       The entry will map the user peter which is defined in the cluster  sys-
+       tem  to the user peter on all hosts in the cluster except for all hosts
+       which are referenced in the hostgroup @linux. For all these  hosts  the
+       user  will be mapped to pet1. For the host fangorn the remote user will
+       be peter1.  _h_o_s_t_g_r_o_u_p(5) to obtain for more information about that.
+
+
+
+SSEEEE AALLSSOO
+       _q_c_o_n_f(1), _h_o_s_t_g_r_o_u_p(5).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+                         $Date: 2007-01-05 19:56:10 $           USERMAPPING(5)

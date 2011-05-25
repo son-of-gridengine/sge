@@ -1,0 +1,104 @@
+QHOLD(1)                   Grid Engine User Commands                  QHOLD(1)
+
+
+
+NNAAMMEE
+       qhold - hold back Grid Engine jobs from execution
+
+SSYYNNTTAAXX
+       qqhhoolldd [--hh {uu|oo|ss},...]  [--hheellpp] [_j_o_b_/_t_a_s_k___i_d___l_i_s_t]
+
+       qqhhoolldd [--hh {uu|oo|ss},...]  [--hheellpp] --uu _u_s_e_r___l_i_s_t
+
+DDEESSCCRRIIPPTTIIOONN
+       _Q_h_o_l_d  provides  a means for a user/operator/manager to place so called
+       _h_o_l_d_s on one or more jobs pending scheduling for execution.  As long as
+       any  type  of  hold  is  assigned to a job, the job is not eligible for
+       scheduling.
+
+       Holds can be removed with the _q_r_l_s(1) or _q_a_l_t_e_r(1) command.
+
+       There are three different types of holds:
+
+       uusseerr   User holds can be assigned and removed  by  managers,  operators
+              and the owner of the jobs.
+
+       ooppeerraattoorr
+              Operator holds can be assigned and removed by managers and oper-
+              ators.
+
+       ssyysstteemm System holds can be assigned and removed by managers only.
+
+       If no hold type is specified with the --hh option (see  below)  the  user
+       hold is assumed by default.
+
+       An  alternate  way  to  assign holds to jobs is the _q_s_u_b(1) or the _q_a_l_-
+       _t_e_r(1) command (see the _-_h option).
+
+OOPPTTIIOONNSS
+       --hh {uu|oo|ss},...
+              Assign a u(ser), o(perator) or s(system) hold, or a  combination
+              thereof, to one or more jobs.
+
+       --hheellpp  Prints a listing of all options.
+
+       --uu uusseerrnnaammee,,......
+              Changes  are  only  made  on  those jobs which were submitted by
+              users specified in the list of usernames.  Managers are  allowed
+              to  use  the  qqhhoolldd --uu ""**"" command to set a hold for all jobs of
+              all users.
+
+              If a user uses the --uu switch, the user may specify an additional
+              _j_o_b_/_t_a_s_k___i_d___l_i_s_t.
+
+       jjoobb//ttaasskk__iidd__lliisstt
+              Specified by the following form:
+
+                  _j_o_b___i_d_[_._t_a_s_k___r_a_n_g_e_]_[_,_j_o_b___i_d_[_._t_a_s_k___r_a_n_g_e_]_,_._._._]
+
+              If  present,  the  _t_a_s_k___r_a_n_g_e  restricts the effect of the _q_h_o_l_d
+              operation to the array job task range specified as suffix to the
+              job  id  (see  the  --tt  option to _q_s_u_b(1) for further details on
+              array jobs).
+
+              The task range specifier has the form _n[-_m[:_s]]. The  range  may
+              be  a single number, a  simple range  of the form _n-_m or a range
+              with a step size _s.
+
+              Instead of _j_o_b_/_t_a_s_k___i_d___l_i_s_t it is possible to  use  the  keyword
+              'all' to modify the hold state for all jobs of the current user.
+
+EENNVVIIRROONNMMEENNTTAALL VVAARRIIAABBLLEESS
+       SSGGEE__RROOOOTT       Specifies  the location of the Grid Engine standard con-
+                      figuration files.
+
+       SSGGEE__CCEELLLL       If set, specifies  the  default  Grid  Engine  cell.  To
+                      address  a  Grid Engine cell _q_h_o_l_d uses (in the order of
+                      precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. ddeeffaauulltt.
+
+
+       SSGGEE__DDEEBBUUGG__LLEEVVEELL
+                      If set, specifies that debug information should be writ-
+                      ten to stderr. In addition the level of detail in  which
+                      debug information is generated is defined.
+
+       SSGGEE__QQMMAASSTTEERR__PPOORRTT
+                      If  set,  specifies the tcp port on which _s_g_e___q_m_a_s_t_e_r(8)
+                      is expected to listen for communication requests.   Most
+                      installations will use a services map entry for the ser-
+                      vice "sge_qmaster" instead to define that port.
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _q_a_l_t_e_r(1), _q_r_l_s(1), _q_s_u_b(1).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-20 22:55:51 $                 QHOLD(1)

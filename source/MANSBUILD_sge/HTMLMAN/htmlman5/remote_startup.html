@@ -1,0 +1,351 @@
+<HTML>
+<HEAD>
+<TITLE>remote_startup.5</TITLE>
+</HEAD>
+<BODY>
+<H1>remote_startup.5</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       Remote startup - the Grid Engine remote startup mechanism
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Grid Engine supports several commands to facilitate interactive
+       commands or remote startup of a tightly integrated parallel job. Each
+       command can be set up with <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B> to use different daemons and
+       commands to start the final session. Different startup methods can
+       therefore contain different daemons and commands, and are not related
+       to other startup methods in any way, although it is often desirable to
+       have the same communication method for all startup methods.
+
+       Each method requires a separate instance of the communication daemon to
+       be started by <B><A HREF="../htmlman8/sge_shepherd.html">sge_shepherd(8)</A></B> for each job, which thus must use a
+       randomly-chosen port, to which the client will try to connect.  This is
+       necessary to support tight integration, ensuring that everything for a
+       given job stays in the same process tree and can be properly controlled
+       and accounted by Grid Engine.
+
+
+</PRE>
+<H2>QLOGIN</H2><PRE>
+       An interactive <B>qlogin</B> session invoked by <B><A HREF="../htmlman1/qlogin.html">qlogin(1)</A></B> will show up in
+       <B>qstat</B> with the default name <B>QLOGIN</B> unless changed by the <B>-N</B> <I>name</I>
+       option.  The two entries <B>qlogin_daemon</B> and <B>qlogin_command</B> are
+       responsible for establishing the communication to start such a session.
+
+       The default is the value <B>builtin</B>, which will trigger an SGE internal
+       communication method:
+
+              <B>qlogin_command</B>      builtin
+              <B>qlogin_daemon</B>       builtin
+
+       In cases where you want a different communication method, it can also
+       be set up for the formerly-used communication method based on <B>telnet</B>.
+       Despite the fact that <B>telnet</B> is used, there is no need to have <B>telnetd</B>
+       running all the time - SGE will start a unique one for each job, even
+       when it's from the same user, and telnet can stay disabled as a system
+       service (whether under init or inetd).  Only the file /etc/hosts.equiv
+       needs to contain the name of the machines from where a <B><A HREF="../htmlman1/qlogin.html">qlogin(1)</A></B> should
+       be allowed. This is often the head node of a cluster, or particular
+       submit machines.  Using telnet, the traffic is not encrypted, but that
+       may be reasonable on a private subnet for the cluster, especially if
+       SGE's CSP security isn't used to secure the system generally.
+
+       To achieve this:
+
+              <B>qlogin_command</B>      /usr/bin/telnet
+              <B>qlogin_daemon</B>       /usr/sbin/in.telnetd
+
+       must be defined in <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>.  The defined <B>qlogin_command</B> will then
+       be called with two additional parameters: 'HOST', and 'PORT' in exactly
+       that order, which refer to the machine the <B>qlogin_command</B> should
+       address and the port to be used.
+
+       This can also be used to set up secure communication using <B>SSH</B> (which
+       can also provide X and credential forwarding, as well as compression).
+       In this case a small wrapper must be implemented, whose sole purpose is
+       to swap the two given arguments and prepend <B>-p</B> to the port argument:
+
+              <B>qlogin_command</B>      <I>path</I><B>_</B><I>to</I><B>_</B><I>qlogin</I><B>_</B><I>wrapper</I>
+              <B>qlogin_daemon</B>       /usr/sbin/sshd -i
+
+       and a <I>path</I><B>_</B><I>to</I><B>_</B><I>qlogin</I><B>_</B><I>wrapper</I> script:
+
+              #!/bin/sh
+              HOST=$1
+              PORT=$2
+              exec /usr/bin/ssh -X -p $PORT $HOST
+
+
+</PRE>
+<H2>QRLOGIN</H2><PRE>
+       An interactive <B>qrlogin</B> session invoked by <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B> <B>without</B> a command
+       will show up in <B>qstat</B> having the default name <B>QRLOGIN</B> unless changed by
+       the <B>-N</B> <I>name</I> option.  The two entries <B>rlogin_daemon</B> and <B>rlogin_command</B>
+       are responsible for establishing the command to start such a session.
+
+       The default is the value <B>builtin</B>, which will trigger an SGE internal
+       communication method:
+
+              <B>rlogin_command</B>      builtin
+              <B>rlogin_daemon</B>       builtin
+
+       In cases where you want a different communication method, it can follow
+       the formerly-used communication method based on <B>rlogin</B>.  As for telnet,
+       rlogin can stay disabled as a system service (whether under init or
+       inetd).  Only the file /etc/hosts.equiv needs to contain the name of
+       the machines from where a <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B> should be allowed. This is often the
+       head node of a cluster, or particular submit machines.  Using <B>rlogin</B>,
+       the traffic is not encrypted, but that may be reasonable on a private
+       subnet for the cluster, especially if SGE's CSP security isn't used to
+       secure the system generally.
+
+       To achieve this:
+
+              <B>rlogin_command</B>      $SGE_ROOT/utilbin/<I>$ARC</I>/rlogin
+              <B>rlogin_daemon</B>       /usr/sbin/in.rlogind
+
+       must be defined in <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>.  The value of <I>$SGE</I><B>_</B><I>ROOT</I> must be
+       replaced by the root of the installation, and <I>$ARC</I> must be replaced by
+       the particular platform architecture, as use of environment variables
+       is not implemented for these entries. When the cluster is homogeneous,
+       it can be set to e.g. 'lx24-amd64' or 'lx24-x86'. In a heterogeneous
+       cluster local configurations need to be defined, where preferably the
+       minority of machines will get local configurations.
+
+       The defined <B>rlogin_command</B> will then be called with three additional
+       parameters: '-p','PORT', and 'HOST''PORT' in exactly that order, which
+       refer to the machine the <B>rlogin_command</B> should address and the port to
+       be used.
+
+       This can also be used to set up a secure communication using <B>SSH</B>:
+
+              <B>rlogin_command</B>      /usr/bin/ssh
+              <B>rlogin_daemon</B>       /usr/sbin/sshd -i
+
+
+</PRE>
+<H2>QRSH</H2><PRE>
+       An interactive session for a remote command invoked by <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B> <B>with</B> a
+       command will show up in <B>qstat</B> by default with name of the command
+       issued, unless changed by the <B>-N</B> <I>name</I> option.  The two entries
+       <B>rsh_daemon</B> and <B>rsh_command</B> are responsible for establishing the
+       communication to start such a session.  This startup method will also
+       be used by the master task of a tightly integrated parallel job to
+       start slave processes on other granted exechosts.
+
+       The default is the value <B>builtin</B>, which will trigger an SGE internal
+       communication method:
+
+              <B>rsh_command</B>         builtin
+              <B>rsh_daemon</B>          builtin
+
+       In cases where you want a different communication method, it can also
+       be set up for the formerly-used communication method based on <B>rsh</B>.  As
+       for telnet, rsh can stay disabled as a system service (whether under
+       init or inetd).  Only the file /etc/hosts.equiv needs to contain the
+       name of the machines from where a <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B> should be allowed. This is
+       often the head node of a cluster, or particular submit machines.  Using
+       <B>rsh</B>, the traffic is not encrypted, but that may be reasonable on a
+       private subnet for the cluster, especially if SGE's CSP security isn't
+       used to secure the system generally.
+
+       To achieve this:
+
+              <B>rsh_command</B>         $SGE_ROOT/utilbin/<I>$ARC</I>/rsh
+              <B>rsh_daemon</B>          $SGE_ROOT/utilbin/<I>$ARC</I>/rshd -l
+
+       must be defined in <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>.  The value of <I>$SGE</I><B>_</B><I>ROOT</I> must be
+       replaced by the root of the installation, and <I>$ARC</I> must be replaced by
+       the particular platform architecture, as use of environment variables
+       is not implemented for these entries. When the cluster is homogeneous,
+       it can be set to e.g. 'lx24-amd64' or 'lx24-x86'. In a heterogeneous
+       cluster local configurations need to be defined, where preferably the
+       minority of machines will get local configurations.
+
+       The defined <B>rsh_command</B> will then be called with four additional
+       parameters: '-n', '-p', 'PORT', and 'HOST' in exactly that order, which
+       refer to the machine the <B>rsh_command</B> should address and the port to be
+       used.
+
+       This can also be used to set up a secure communication using <B>SSH</B>:
+
+              <B>rsh_command</B>         /usr/bin/ssh
+              <B>rsh_daemon</B>          /usr/sbin/sshd -i
+       Again, this is independent of SSH as a system service, which can remain
+       disabled.
+
+
+</PRE>
+<H2>LOCAL CONFIGURATIONS OF EXECHOSTS</H2><PRE>
+       It is important to note that the communication method set up for one
+       particular startup method must match at each end. This can either be
+       achieved by using only a global configuration, or carefully setting up
+       local configurations for the exechosts involved. Whether or not local
+       configurations exist, which must be taken care of, can be checked with
+       <B>qconf</B> <B>-sconfl</B>.
+
+       As a general rule, for setting up a communication method between a
+       machine A (where the <B>command</B> is issued) and a machine B (where the
+       <B>daemon</B> is started) it must be guaranteed that the:
+
+              setup communication method for the <B>command</B> on machine A
+              (either global configuration from <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B> or local
+              configuration <B>qconf</B> <B>-sconf</B> <B>A</B> of machine A)
+
+       matches
+
+              setup communication method for the <B>daemon</B> for machine B
+              (either global configuration from <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B> or local
+              configuration <B>qconf</B> <B>-sconf</B> <B>B</B> of machine B)
+
+       This way it is also possible to use different communication methods,
+       depending whether a connection from A to B is invoked, or from B to A.
+
+
+</PRE>
+<H2>RESTRICTIONS</H2><PRE>
+       For all three communication methods, a direct connection between the
+       target and the source machine where the particular command was issued
+       must exist. This can also be implemented using TCP/IP forwarding, but
+       will usually fail if one machine is behind <B>NAT</B> which will mangle the
+       machines' addresses.  The communication methods won't work with simple
+       firewalling of the exec hosts since the methods use a random port.  It
+       may be possible to set up application-specific firewalling, if
+       necessary, or to wrap the methods and start an SSH tunnel on the port
+       specified for each communication instance.
+
+       The <B>builtin</B> method does not support forwarding of X graphics from the
+       compute nodes, or GSSAPI tokens to them.  If you need that for any of
+       the remote methods, you will want to set up SSH communication instead.
+
+
+</PRE>
+<H2>SSH AUTHENTICATION</H2><PRE>
+       To allow the <B>SSH</B> setup explained above to work, the user must be
+       authenticated without the use of a <I>passphrase</I>. While entering a
+       <I>passphrase</I> would still work for interactive commands, it will fail in
+       case of a tightly integrated parallel job, where the master process
+       tries to start a slave process on another exechost.
+
+       You can set up <I>passphraseless</I> <B>SSH</B> <B>keys</B>, although this is discouraged. A
+       simpler and global working setup is to use host-based authentication
+       &lt;http://arc.liv.ac.uk/SGE/howto/hostbased-ssh.html&gt;  for  the  machines
+       inside the cluster.
+
+
+</PRE>
+<H2>SSH TIGHT INTEGRATION</H2><PRE>
+       To  have a tight integration of <B>SSH</B> into SGE, the started <B>sshd</B> needs an
+       additional group ID to be attached.  With this additional group ID, SGE
+       is  able  to  record  the  resource consumption and computing time in a
+       correct way.  Also a <B>qdel</B> of such a job will be able to succeed.
+
+       Such a tight SSH integration can be achieved by two means:
+
+       <B>Recompile</B> <B>Grid</B> <B>Engine</B> <B>with</B> <B>./aimk</B> <B>-tight-ssh</B> <B>...</B>
+              The source of Grid Engine contains the  necessary  additions  to
+              compile  a  modified <I>sshd</I>, which will honor the additional group
+              ID and attach it also to the started process. It's necessary  to
+              provide  the source of <I>OpenSSH</I> in the directory <I>3rd</I><B>_</B><I>party</I> inside
+              <I>$SGE</I><B>_</B><I>ROOT</I> having a plain name 'openssh'. Inside  this  directory
+              the file <I>sshd.c</I> needs to be patched:
+
+              in main():
+                     init_rng();
+                     #ifdef SGESSH_INTEGRATION
+                     sgessh_readconfig();
+                     #endif
+
+              in privsep_postauth():
+                     /* Drop privileges */
+                     #ifdef SGESSH_INTEGRATION
+                     sgessh_do_setusercontext(aut hctxt-&gt;pw);
+                     #else
+                     do_setusercontext(authctxt-&gt;pw);
+                     #endif
+
+              See the original documentation &lt;http://gridengine.org/assets/
+              static/ws2007/SGE-openSSHTightIntegration.RonChen.pdf&gt;.
+
+       <B>Use</B> <B>of</B> <B>PAM</B>
+              On supported platforms (at least  GNU/Linux),  a  <B><A HREF="../htmlman7/pam.html">pam(7)</A></B>  module
+              <B><A HREF="../htmlman8/pam_sge-qrsh-setup.html">pam_sge-qrsh-setup(8)</A></B>  is available which attaches the necessary
+              additional group ID to the  started  process  to  provide  tight
+              integration.  See also the workshop paper &lt;http://
+              gridengine.org/assets/static/ws2007/K5SGE.pdf&gt;.
+
+
+</PRE>
+<H2>RESTRICTING ACCESS</H2><PRE>
+       With the builtin method in use, there is no need to allow direct access
+       for  normal users to compute nodes with ssh etc.  However, you may want
+       to allow users to access the nodes for debugging.  If you don't want to
+       over-subscribe the nodes, so that qrsh etc. can be used for access, you
+       can use PAM to restrict access for a user only to the  nodes  on  which
+       they  have  a  running  job,  so as to minimize interference with other
+       others.
+
+       There are two possible ways.  The cleanest  uses  <B><A HREF="../htmlman8/pam_sge_authorize.html">pam_sge_authorize(8)</A></B>.
+       Otherwise  you  can  use  generic PAM modules, such as <B><A HREF="../htmlman8/pam_limits.html">pam_limits(8)</A></B> or
+       <B><A HREF="../htmlman8/pam_access.html">pam_access(8)</A></B>, with modifications to their  configuration  set  up  and
+       taken  down  in  the  job  prolog  and  epilog  respectively.  See, for
+       instance, a user list message &lt;http://gridengine.markmail.org/message/
+       mu3i7haeshlevu6q?q=282211&gt;, and other examples of similar prolog/epilog
+       scripts provided with locking in the pam_authuser contribution  in  the
+       Torque distribution.
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       Using  SSH  with the PAM module, forcing tty allocation, and preventing
+       the delegation of GSSAPI credentials to the compute nodes:
+              rsh_daemon     /opt/sge/util/rshdwrapper
+              rsh_command    ssh -tt -o GSSAPIDelegateCredentials=no
+              qlogin_daemon  /opt/sge/util/rshdwrapper
+              qlogin_command ssh -tt -o GSSAPIDelegateCredentials=no
+              rlogin_daemon  /opt/sge/util/rshdwrapper
+              rlogin_command ssh -tt -o GSSAPIDelegateCredentials=no
+
+       Old-style method, using telnet and rlogin:
+              qlogin_command /usr/bin/telnet
+              qlogin_daemon  /usr/sbin/in.telnetd
+              rlogin_command /opt/sge/utilbin/lx24-x86/rlogin
+              rlogin_daemon  /usr/sbin/in.rlogind
+              rsh_command    /opt/sge/utilbin/lx24-x86/rsh
+              rsh_daemon     /opt/sge/utilbin/lx24-x86/rshd -l
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>,  <B><A HREF="../htmlman1/qlogin.html">qlogin(1)</A></B>,   <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B>,   <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>,   <B><A HREF="../htmlman8/pam_sge_authorize.html">pam_sge_authorize(8)</A></B>,
+       <B><A HREF="../htmlman8/pam_sge-qrsh-setup.html">pam_sge-qrsh-setup(8)</A></B>, Grid Engine-specific remote programs &lt;http://
+       arc.liv.ac.uk/repos/darcs/sge/source/3rdparty/remote/remote.html&gt;.
+
+
+</PRE>
+<H2>AUTHOR</H2><PRE>
+       Man page  written  by  Reuti,  partly  based  on  Sun  material.   Some
+       additions by Dave Love.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                     2010/11/22 20:58:24            <B><A HREF="../htmlman5/remote_startup.html">remote_startup(5)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

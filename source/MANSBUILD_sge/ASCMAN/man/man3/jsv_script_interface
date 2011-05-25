@@ -1,0 +1,530 @@
+JSV_SCRIPT_INTERFACE(3)    Grid Engine File Formats    JSV_SCRIPT_INTERFACE(3)
+
+
+
+NNAAMMEE
+       jsv_is_param,      jsv_get_param,     jsv_add_param,     jsv_mod_param,
+       jsv_del_param, jsv_sub_is_param, jsv_sub_get_param,  jsv_sub_add_param,
+       jsv_sub_del_param,  jsv_is_env,  jsv_get_env, jsv_add_env, jsv_mod_env,
+       jsv_del_env,  jsv_accept,  jsv_correct,  jsv_reject,   jsv_reject_wait,
+       jsv_show_params,    jsv_show_envs,    jsv_log_info,    jsv_log_warning,
+       jsv_log_error, jsv_main - Grid Engine Job Submission Verifier Scripting
+       Interface
+
+SSYYNNOOPPSSIISS
+       jjssvv__cclleeaarr__ppaarraammss();
+       jjssvv__iiss__ppaarraamm(_p_a_r_a_m___n_a_m_e);
+       jjssvv__ggeett__ppaarraamm(_p_a_r_a_m___n_a_m_e);
+       jjssvv__sseett__ppaarraamm(_p_a_r_a_m___n_a_m_e, _p_a_r_a_m___v_a_l_u_e);
+       jjssvv__ddeell__ppaarraamm(_p_a_r_a_m___n_a_m_e);
+       jjssvv__ssuubb__iiss__ppaarraamm(_p_a_r_a_m___n_a_m_e, _v_a_r_i_a_b_l_e___n_a_m_e);
+       jjssvv__ssuubb__ggeett__ppaarraamm(_p_a_r_a_m___n_a_m_e, _v_a_r_i_a_b_l_e___n_a_m_e);
+       jjssvv__ssuubb__aadddd__ppaarraamm(_p_a_r_a_m___n_a_m_e, _v_a_r_i_a_b_l_e___n_a_m_e, _v_a_r_i_a_b_l_e___v_a_l_u_e);
+       jjssvv__ssuubb__ddeell__ppaarraamm(_p_a_r_a_m___n_a_m_e, _v_a_r_i_a_b_l_e___n_a_m_e);
+
+       jjssvv__cclleeaarr__eennvvss();
+       jjssvv__iiss__eennvv(_v_a_r_i_a_b_l_e___n_a_m_e);
+       jjssvv__ggeett__eennvv(_v_a_r_i_a_b_l_e___n_a_m_e);
+       jjssvv__aadddd__eennvv(_v_a_r_i_a_b_l_e___n_a_m_e, _v_a_r_i_a_b_l_e___v_a_l_u_e);
+       jjssvv__mmoodd__eennvv(_v_a_r_i_a_b_l_e___n_a_m_e, _v_a_r_i_a_b_l_e___v_a_l_u_e);
+       jjssvv__ddeell__eennvv(_v_a_r_i_a_b_l_e___n_a_m_e);
+
+       jjssvv__aacccceepptt(_m_e_s_s_a_g_e);
+       jjssvv__ccoorrrreecctt(_m_e_s_s_a_g_e);
+       jjssvv__rreejjeecctt(_m_e_s_s_a_g_e);
+       jjssvv__rreejjeecctt__wwaaiitt(_m_e_s_s_a_g_e);
+
+       jjssvv__sshhooww__ppaarraammss();
+       jjssvv__sshhooww__eennvvss();
+       jjssvv__lloogg__iinnffoo(_m_e_s_s_a_g_e);
+       jjssvv__lloogg__wwaarrnniinngg(_m_e_s_s_a_g_e);
+       jjssvv__lloogg__eerrrroorr(_m_e_s_s_a_g_e);
+
+       jjssvv__mmaaiinn();
+       jjssvv__sseenndd__eennvv();
+       jjssvv__oonn__ssttaarrtt();
+       jjssvv__oonn__vveerriiffyy();
+
+DDEESSCCRRIIPPTTIIOONN
+       The functions documented here implement the server side of the JSV pro-
+       tocol as described in the man page _j_s_v(1).  These script functions  are
+       available in Bourne shell, TCL or Perl scripts after sourcing/including
+       the files jsv_inlcude.sh, jsv_include.tcl or  JSV.pm.   The  files  and
+       corresponding  JSV  script  templates  are  located  in  the  directory
+       $SGE_ROOT/util/resources/jsv.  There is  also  a  Java  implementation,
+       with  Javadoc documentation in $SGE_ROOT/doc/javadocs/jjsv, and example
+       files SimpleJsv.java and jjsv.sh the resources directory.
+
+       Note that Bourne shell server JSVs are discouraged because any problems
+       with unintended expansion of job parameters represent a security hazard
+       (with the qmaster running as the sgeadmin user).  Also they may be rel-
+       atively  slow, and constitute a bottleneck in high-throughput clusters.
+       Shell JSVs may be faster using _b_a_s_h(1), even compared with a  generally
+       faster shell, since fewer external commands may be invoked.
+
+       In the descriptions of routines here, a calling sequence like
+              ffuunnccttiioonn(_a_r_g_1, _a_r_g_2)
+       should be interpreted for Bourne shell and Tcl scripts as
+              ffuunnccttiioonn _a_r_g_1 _a_r_g_2
+
+   jjssvv__cclleeaarr__ppaarraammss(())
+       This  function clears all received job parameters that were stored dur-
+       ing the last job verification process.
+
+   jjssvv__cclleeaarr__eennvvss(())
+       This function clears all received job environment variables  that  were
+       stored during the last job verification process.
+
+   jjssvv__sshhooww__ppaarraammss(())
+       A  call  of this function reports all known job parameters to the coun-
+       terpart of this script (client or master daemon thread). These  parame-
+       ters  will be reported as info messages and appear either in the stdout
+       stream of the client or in the message file of the master process.
+
+   jjssvv__sshhooww__eennvvss(())
+       This function reports all known job environment variables to the  coun-
+       terpart  of this script (client or master daemon thread).  They will be
+       reported as info messages and appear in the stdout stream of the client
+       or in the message file of the master process.
+
+   jjssvv__iiss__ppaarraamm((_p_a_r_a_m___n_a_m_e))
+       This function returns whether or not a specific job parameter is avail-
+       able for the job which is currently being verified. Either  the  string
+       _t_r_u_e  or  _f_a_l_s_e  will  be  returned.  The availability/absence of a job
+       parameter does not mean that the corresponding command line switch  was
+       used/not used.
+
+       The  values  allowed  for _p_a_r_a_m___n_a_m_e are listed below.  Find additional
+       information in _q_s_u_b(1) describing the availability  and  value  format.
+       Job  parameters  written  in  capital  letters are pseudo parameters. A
+       detailed description for them can be found in _j_s_v(1).  Note that
+
+       The following parameters directly reflect arguments of  the  same  name
+       supplied  to the submission command (_q_s_u_b etc.) or corresponding values
+       specified with _q_m_o_n:
+       AA, aa, aarr, bb, cckkpptt, ddll, ee, hh, hhoolldd__jjiidd, hhoolldd__jjiidd__aadd, ii,  jj,  jjss,  MM,  mm,
+       mmaasstteerrqq, NN, nnoottiiffyy, oo, PP, pp, RR, rr, SS, sshheellll, ttcc, ww
+       Other  parameters  are  related  to the submission command arguments as
+       follows:
+
+       aacc     The the job context.  The outcome of the evaluation of all  --aacc,
+              --ddcc,  and --sscc options is passed as a parameter with the name aacc,
+              whose value is a comma-separated list of variable/value pairs;
+
+       bbiinnddiinngg__ssttrraatteeggyy, bbiinnddiinngg__ttyyppee, bbiinnddiinngg__aammoouunntt
+
+       bbiinnddiinngg__sstteepp, bbiinnddiinngg__ssoocckkeett, bbiinnddiinngg__ccoorree
+
+       bbiinnddiinngg__eexxpp__nn, bbiinnddiinngg__eexxpp__ssoocckkeett_i_d, bbiinnddiinngg__eexxpp__ccoorree_i_d
+              The values passed to the --bbiinnddiinngg parameter are passed as multi-
+              ple  parameters  to  JSV instances.  bbiinnddiinngg__ssttrraatteeggyy represents
+              the strategy to be used and  is  one  of:  lliinneeaarr,  ssttrriiddiinngg  or
+              eexxpplliicciitt.  bbiinnddiinngg__ttyyppee is the instance that should do the bind-
+              ing, one of: eennvv, sseett or ppee.   bbiinnddiinngg__ssoocckkeett  and  bbiinnddiinngg__ccoorree
+              are  socket/core  values  whereas  bbiinnddiinngg__sstteepp is the step size
+              (used only for striding binding).  The length of the socket/core
+              value list of the explicit binding is reported as bbiinnddiinngg__eexxpp__nn.
+              The _i_d part of bbiinnddiinngg__eexxpp__ssoocckkeett_i_d and bbiinnddiinngg__eexxpp__ccoorree_i_d  will
+              be  replaced  by the position of the socket/core pair within the
+              explicit binding list (0 <=  _i_d  <  bbiinnddiinngg__eexxpp___n).   The  first
+              socket/core  pair  of the explicit binding will be reported with
+              the parameter names bbiinnddiinngg__eexxpp__ssoocckkeett00  and  bbiinnddiinngg__eexxpp__ccoorree00.
+              Values  that  do not apply for the specified binding will not be
+              reported to JSV. E.g.  bbiinnddiinngg__sstteepp will only  be  reported  for
+              the  striding  binding and all bbiinnddiinngg__eexxpp__......  values will only
+              be passed if explicit binding was specified.
+
+       cc__iinntteerrvvaall
+              Checkpoint interval, specified as a numeric value with --cc;
+
+       cc__ooccccaassiioonn
+              Checkpoint "occasion_specifier" --cc.  (nn, ss, mm, or  xx)  specified
+              with --cc;
+
+       ccwwdd    Working directory, possibly specified with --ccwwdd or --wwdd;
+
+       ddiissppllaayy
+              Reflects the --ddiissppllaayy submit argument and also sets job environ-
+              ment variable DISPLAY to the same value;
+
+       ll__hhaarrdd --ll or --hhaarrdd followed by --ll;
+
+       ll__ssoofftt --ssoofftt followed by --ll;
+
+       ppee__nnaammee, ppee__mmiinn, ppee__mmaaxx
+              The PE name and range limits specified with --ppee;
+
+       qq__hhaarrdd --qq, or --hhaarrdd followed by --qq;
+
+       qq__ssoofftt --ssoofftt followed by --qq.
+
+       See _j_s_v(1) for explanation of the following pseudo parameters:  CCLLIIEENNTT,
+       CCMMDDNNAAMMEE, CCMMDDAARRGGSS, CCMMDDAARRGG_i, CCOONNTTEEXXTT, GGRROOUUPP, JJOOBB__IIDD, UUSSEERR, VVEERRSSIIOONN.
+
+   jjssvv__ggeett__ppaarraamm((_p_a_r_a_m___n_a_m_e))
+       This function returns the value of a specific job parameter _p_a_r_a_m___n_a_m_e.
+
+       This  value  is  only  available if the function jjssvv__iiss__ppaarraamm() returns
+       _t_r_u_e. Otherwise an empty string is returned.
+
+       Find a list of allowed parameter names in the section for the  function
+       jjssvv__iiss__ppaarraamm().
+
+   jjssvv__sseett__ppaarraamm((_p_a_r_a_m___n_a_m_e,, _p_a_r_a_m___v_a_l_u_e))
+       This  function  changes  the  job  parameter  _p_a_r_a_m___n_a_m_e  to  the value
+       _p_a_r_a_m___v_a_l_u_e.
+
+       If _p_a_r_a_m___v_a_l_u_e is an empty string then the corresponding job  parameter
+       will  be  deleted,  similarly  to  the  function jjssvv__ddeell__ppaarraamm().  As a
+       result, the job parameter is not available,  as  if  the  corresponding
+       command line switch was not specified during job submission.
+
+       For  boolean parameters that only accept the values _y_e_s or _n_o it is not
+       allowed to pass an empty string as _p_a_r_a_m___v_a_l_u_e_.
+
+       Also for the parameters _c and _m it is not allowed to use empty strings.
+       Details can be found in _q_s_u_b(1).
+
+   jjssvv__ddeell__ppaarraamm((_p_a_r_a_m___n_a_m_e))
+       This function deletes the job parameter _p_a_r_a_m___n_a_m_e.
+
+       Find  a list of allowed parameter names in the section for the function
+       jjssvv__iiss__ppaarraamm().
+
+   jjssvv__ssuubb__iiss__ppaarraamm((_p_a_r_a_m___n_a_m_e,, _v_a_r_i_a_b_l_e___n_a_m_e))
+       Some job parameters are lists that can contain multiple variables  with
+       an optional value.
+
+       This  function returns _t_r_u_e if a job's parameters contain the list-val-
+       ued _p_a_r_a_m___n_a_m_e, with _v_a_r_i_a_b_l_e___n_a_m_e in the list;  otherwise  it  returns
+       _f_a_l_s_e.  _f_a_l_s_e might also indicate that the parameter list itself is not
+       available. Use the function jjssvv__iiss__ppaarraamm() to check  if  the  parameter
+       list is not available.
+
+       The  following  parameters  are  list  parameters.  The  second  column
+       describes the corresponding variable names to be used. The third column
+       contains  a dash (-) if there is no value (_v_a_r_i_a_b_l_e___v_a_l_u_e) allowed with
+       the function jjssvv__ssuubb__aadddd__ppaarraamm()  or  jjssvv__ssuubb__ggeett__ppaarraamm()  will  return
+       always  an  empty  string.  A question mark (?) shows that the value is
+       optional.
+
+       +---------------------------------------------------------------+
+       |ppaarraamm__nnaammee     ddeessccrriippttiioonn ooff vvaarriiaabbllee__nnaammee     vvaarriiaabbllee__vvaalluuee |
+       +---------------------------------------------------------------+
+       |ac             job context variable name                       |
+       |hold_jid       job identifier                   -              |
+       |l_hard         complex attribute name           ?              |
+       |l_soft         complex attribute name           ?              |
+       |M              mail address                     -              |
+       |masterq        cluster queue name or            -              |
+       |               queue instance name                             |
+       |q_hard         cluster queue name or            -              |
+       |               queue instance name                             |
+       |q_soft         cluster queue name or            -              |
+       |               queue instance name                             |
+       +---------------------------------------------------------------+
+   jjssvv__ssuubb__ggeett__ppaarraamm((_p_a_r_a_m___n_a_m_e,, _v_a_r_i_a_b_l_e___n_a_m_e))
+       Some job parameters are lists that can contain multiple variables  with
+       an optional value.
+
+       This  function  returns  the  value  of a variable _v_a_r_i_a_b_l_e___n_a_m_e in the
+       parameter list _p_a_r_a_m___n_a_m_e.  For sub list elements that have no value an
+       empty string will be returned.
+
+       Find  a list of allowed parameter names (_p_a_r_a_m___n_a_m_e) and variable names
+       (_v_a_r_i_a_b_l_e___n_a_m_e) in the section for the function jjssvv__ssuubb__iiss__ppaarraamm().
+
+   jjssvv__ssuubb__aadddd__ppaarraamm((_p_a_r_a_m___n_a_m_e,, _v_a_r_i_a_b_l_e___n_a_m_e,, _v_a_r_i_a_b_l_e___v_a_l_u_e))
+       Some job parameters are lists that can contain multiple variables  with
+       an optional value.
+
+       This  function  either adds a new variable with a new value or it modi-
+       fies the value if the variable is already in the list.   _v_a_r_i_a_b_l_e___v_a_l_u_e
+       is optional, and if it is not supplied the variable has no value.
+
+       Find  a list of allowed parameter names (_p_a_r_a_m___n_a_m_e) and variable names
+       (_v_a_r_i_a_b_l_e___n_a_m_e) in the section for the function jjssvv__ssuubb__iiss__ppaarraamm().
+
+   jjssvv__ssuubb__ddeell__ppaarraamm((_p_a_r_a_m___n_a_m_e,, _v_a_r_i_a_b_l_e___n_a_m_e))
+       Some job parameters are lists which can contain multiple variables with
+       an optional value.
+
+       This  function  deletes a variable _v_a_r_i_a_b_l_e___n_a_m_e and, if available, the
+       corresponding value. If _v_a_r_i_a_b_l_e___n_a_m_e  is  not  available  in  the  job
+       parameter then the command will be ignored.
+
+       Find  a list of allowed parameter names (_p_a_r_a_m___n_a_m_e) and variable names
+       (_v_a_r_i_a_b_l_e___n_a_m_e ) in the section for the function jjssvv__ssuubb__iiss__ppaarraamm().
+
+   jjssvv__iiss__eennvv((_v_a_r_i_a_b_l_e___n_a_m_e))
+       If the function returns _t_r_u_e, then the job  environment  variable  with
+       the  name _v_a_r_i_a_b_l_e___n_a_m_e exists in the job currently being verified, and
+       jjssvv__ggeett__eennvv() can be used to retrieve the value of that  variable.   If
+       the  function returns _f_a_l_s_e, then the job environment variable does not
+       exist.
+
+   jjssvv__ggeett__eennvv((_v_a_r_i_a_b_l_e___n_a_m_e))
+       This function returns the value of a  job  environment  variable  _v_a_r_i_-
+       _a_b_l_e___n_a_m_e.
+
+       This  variable has to be passed with the _q_s_u_b command line switch _-_v or
+       _-_V, and passing of environment variable data to JSV scripts has  to  be
+       enabled.  Environment  variable  data  are  passed  when  the  function
+       jjssvv__sseenndd__eennvv() is called in the callback function jjssvv__oonn__ssttaarrtt().
+
+       If the variable does not exist, or if environment variable  information
+       is not available, then an empty string will be returned.
+
+   jjssvv__aadddd__eennvv((_v_a_r_i_a_b_l_e___n_a_m_e,, _v_a_r_i_a_b_l_e___v_a_l_u_e))
+       This  function  adds  an  additional environment variable to the set of
+       variables that will exported to the job  when  it  is  started.   As  a
+       result  the _v_a_r_i_a_b_l_e___n_a_m_e and _v_a_r_i_a_b_l_e___v_a_l_u_e become available, as if --vv
+       Or --VV was specified during job submission.
+
+       _v_a_r_i_a_b_l_e___v_a_l_u_e is optional. If an empty  string  is  passed,  then  the
+       variable is defined without a value.
+
+       If  _v_a_r_i_a_b_l_e___n_a_m_e  already  exists  in the set of job environment vari-
+       ables, the corresponding value will be replaced by  _v_a_r_i_a_b_l_e___v_a_l_u_e,  as
+       if  the  function jjssvv__mmoodd__eennvv() was used.  If an empty string is passed
+       then the old value will be deleted.
+
+       To delete an environment variable, the function jjssvv__ddeell__eennvv() has to be
+       used.
+
+   jjssvv__mmoodd__eennvv((_v_a_r_i_a_b_l_e___n_a_m_e,, _v_a_r_i_a_b_l_e___v_a_l_u_e))
+       This  function modifies an existing environment variable that is in the
+       set of variables which will exported to the job when it is started.  As
+       a  result, the _v_a_r_i_a_b_l_e___n_a_m_e and _v_a_r_i_a_b_l_e___v_a_l_u_e will be available as if
+       --vv Or --VV was specified during job submission.
+
+       _v_a_r_i_a_b_l_e___v_a_l_u_e is optional. If an empty  string  is  passed,  then  the
+       variable is defined without a value.
+
+       If  _v_a_r_i_a_b_l_e___n_a_m_e  does not already exist in the set of job environment
+       variables, then the corresponding name and value will be  added  as  if
+       the function jjssvv__aadddd__eennvv() was used.
+
+       To delete a environment variable, use the function jjssvv__ddeell__eennvv().
+
+   jjssvv__ddeell__eennvv((_v_a_r_i_a_b_l_e___n_a_m_e))
+       This  function  removes job environment variable _v_a_r_i_a_b_l_e___n_a_m_e from the
+       set of variables that will be exported to the job when it is started.
+
+       If _v_a_r_i_a_b_l_e___n_a_m_e does not already exist in the set of  job  environment
+       variables then the command is ignored.
+
+       To  change  the  value of a variable use the function jjssvv__mmoodd__eennvv(); to
+       add a new value, call the function jjssvv__aadddd__eennvv().
+
+   jjssvv__aacccceepptt((_m_e_s_s_a_g_e))
+       This function can only be used in jjssvv__oonn__vveerriiffyy(). After  it  has  been
+       called, the function jjssvv__oonn__vveerriiffyy() has to return immediately.
+
+       A  call to this function indicates that the job that is currently being
+       verified should be accepted as it was initially provided. All job  mod-
+       ifications  that might have been applied in jjssvv__oonn__vveerriiffyy() before this
+       function was called, are then ignored.
+
+       Instead of  calling  jjssvv__aacccceepptt()  in  jjssvv__oonn__vveerriiffyy(),  the  functions
+       jjssvv__ccoorrrreecctt(),  jjssvv__rreejjeecctt()  or  jjssvv__rreejjeecctt__wwaaiitt()  can be called, but
+       only one of these functions can be used at a time.
+
+   jjssvv__ccoorrrreecctt((_m_e_s_s_a_g_e))
+       This function can only be used in jjssvv__oonn__vveerriiffyy(). After  it  has  been
+       called, the function jjssvv__oonn__vveerriiffyy() has to return immediately.
+
+       A  call to this function indicates that the job that is currently being
+       verified has to be modified before it can be accepted. All job  parame-
+       ter  modifications  that  were previously applied will be committed and
+       the job will be accepted. "Accept" in that case means that the job will
+       either  be  passed to the next JSV instance for modification or that it
+       is passed to that component in the master daemon that adds  it  to  the
+       master data store when the last JSV instance has verified the job.
+
+       Instead  of  calling  jjssvv__ccoorrrreecctt()  in  jjssvv__oonn__vveerriiffyy(), the functions
+       jjssvv__aacccceepptt(), jjssvv__rreejjeecctt() or jjssvv__rreejjeecctt__wwaaiitt() can be called, but only
+       one of these functions can be used.
+
+   jjssvv__rreejjeecctt((_m_e_s_s_a_g_e))
+       This  function  can  only be used in jjssvv__oonn__vveerriiffyy(). After it has been
+       called the function jjssvv__oonn__vveerriiffyy() has to return immediately.
+
+       The job that is currently being verified will be rejected. _m_e_s_s_a_g_e will
+       be  passed to the client application that tried to submit the job. Com-
+       mandline clients like _q_s_u_b will print that message to stdout to  inform
+       the user that the submission has failed.
+
+       jjssvv__rreejjeecctt__wwaaiitt()  should  be  called if the user may try to submit the
+       job again. jjssvv__rreejjeecctt__wwaaiitt() indicates that  the  verification  process
+       might be successful in the future.
+
+       Instead  of  calling  jjssvv__rreejjeecctt()  in  jjssvv__oonn__vveerriiffyy(),  the functions
+       jjssvv__aacccceepptt(()), jjssvv__ccoorrrreecctt() or jjssvv__rreejjeecctt__wwaaiitt()  can  be  called,  but
+       only one of these functions can be used.
+
+   jjssvv__rreejjeecctt__wwaaiitt((_m_e_s_s_a_g_e))
+       This  function  can  only be used in jjssvv__oonn__vveerriiffyy(). After it has been
+       called the function jjssvv__oonn__vveerriiffyy() has to return immediately.
+
+       The job which is currently verified will be rejected. _m_e_s_s_a_g_e  will  be
+       passed to the client application, that tries to submit the job. Comman-
+       dline clients like _q_s_u_b will print that message to stdout to inform the
+       user that the submission has failed.
+
+       This  function should be called if the user who tries to submit the job
+       might have a chance to submit the job later. jjssvv__rreejjeecctt indicates  that
+       the verified job will also be rejected in future.
+
+       Instead  of  calling jjssvv__rreejjeecctt__wwaaiitt() in jjssvv__oonn__vveerriiffyy() the functions
+       jjssvv__aacccceepptt(), jjssvv__ccoorrrreecctt() or jjssvv__rreejjeecctt() can be called, but only one
+       of these functions can be used.
+
+   jjssvv__lloogg__iinnffoo((_m_e_s_s_a_g_e))
+       This  function  sends  an  info  _m_e_s_s_a_g_e to the client or master daemon
+       instance that started the JSV script.
+
+       For client JSVs, this means that the command line client will  get  the
+       information  and  print it to the stdout stream. Server JSVs will print
+       that message as an info message to the master daemon message file.
+
+       If _m_e_s_s_a_g_e is missing then an empty line will be printed.
+
+   jjssvv__lloogg__wwaarrnniinngg((_m_e_s_s_a_g_e))
+       This function sends a warning _m_e_s_s_a_g_e to the client  or  master  daemon
+       instance that started the JSV script.
+
+       For  client  JSVs, this means that the command line client will get the
+       information and print it to the stdout stream. Server JSVs  will  print
+       that message as a warning message to the master daemon message file.
+
+       If _m_e_s_s_a_g_e is missing then an empty line will be printed.
+
+   jjssvv__lloogg__eerrrroorr((_m_e_s_s_a_g_e))
+       This  function  sends  an  error _m_e_s_s_a_g_e to the client or master daemon
+       instance that started the JSV script.
+
+       For client JSVs, this means that the command line client will  get  the
+       information  and  print it to the stdout stream. Server JSVs will print
+       that message as an error message to the master daemon message file.
+
+       If _m_e_s_s_a_g_e is missing then an empty line will be printed.
+
+   jjssvv__sseenndd__eennvv(())
+       This function can only be used in jjssvv__oonn__ssttaarrtt(). If it is used  there,
+       then  the  job environment information will be available in jjssvv__oonn__vveerr--
+       iiffyy() for the next job that is scheduled to be verified.
+
+       This  function  must  be  called  for  the  functions  jjssvv__sshhooww__eennvvss(()),
+       jjssvv__iiss__eennvv(),  jjssvv__ggeett__eennvv(), jjssvv__aadddd__eennvv() and jjssvv__mmoodd__eennvv() to behave
+       correctly.
+
+       Job environments might become very big (10K and more). This  will  slow
+       down  the  executing component (submit client or master daemon thread).
+       For this reason, job environment  information  is  not  passed  to  JSV
+       scripts by default.
+
+       Please note also that the data in the job environment can't be verified
+       by Grid Engine and might therefore contain values which could be misin-
+       terpreted in the script environment and cause security issues.
+
+   jjssvv__mmaaiinn(())
+       This  function has to be called in the main function in JSV scripts. It
+       implements the JSV protocol and performs the communication with  client
+       and server components which might start JSV scripts.
+
+       This  function  does  not  return immediately. It returns only when the
+       "QUIT" command is sent by the client or server component.
+
+       During the communication with client and server components, this  func-
+       tion  triggers two callback functions for each job that should be veri-
+       fied. First jjssvv__oonn__ssttaarrtt() and later on jjssvv__oonn__vveerriiffyy().
+
+       jjssvv__oonn__ssttaarrtt() can be used to initialize certain things that  might  be
+       needed for the verification process. jjssvv__oonn__vveerriiffyy() does the verifica-
+       tion process itself.
+
+       The function jjssvv__sseenndd__eennvv() can be called in jjssvv__oonn__ssttaarrtt() so that the
+       job environment is available in jjssvv__oonn__vveerriiffyy().
+
+       The  following  functions  can only be used in jjssvv__oonn__vveerriiffyy().  Simple
+       job   parameters   can   be   accessed/modified   with:   jjssvv__iiss__ppaarraamm,
+       jjssvv__ggeett__ppaarraamm, jjssvv__sseett__ppaarraamm and jjssvv__ddeell__ppaarraamm.
+
+       List  based  job  parameters  can  be  accessed with: jjssvv__ssuubb__iiss__ppaarraamm,
+       jjssvv__ssuubb__ggeett__ppaarraamm, jjssvv__ssuubb__aadddd__ppaarraamm and jjssvv__ssuubb__ddeell__ppaarraamm.
+
+       If the environment was requested with jjssvv__sseenndd__eennvv() in  jjssvv__oonn__ssttaarrtt()
+       then  the  environment can be accessed/modified with the following com-
+       mands:   jjssvv__iiss__eennvv,   jjssvv__ggeett__eennvv,   jjssvv__aadddd__eennvv,   jjssvv__mmoodd__eennvv    and
+       jjssvv__ddeell__eennvv.
+
+       Jobs  can be accepted/rejected with the following: jjssvv__aacccceepptt, jjssvv__ccoorr--
+       rreecctt, jjssvv__rreejjeecctt and jjssvv__rreejjeecctt__wwaaiitt.
+
+       The following functions send messages to the calling component of a JSV
+       that  will  either  appear on the stdout stream of the client or in the
+       master message file. This is especially useful  when  new  JSV  scripts
+       should   be   tested:   jsv_show_params,,  jsv_show_envs,,  jsv_log_info,,
+       jsv_log_warning aanndd jsv_log_error..
+
+   jjssvv__oonn__ssttaarrtt(())
+       This is a callback function that has to be defined by the creator of  a
+       JSV script.  It is called for every job a short time before the verifi-
+       cation process of a job starts.
+
+       Within this function jjssvv__sseenndd__eennvv can be called to request job environ-
+       ment information for the next job scheduled to be verified.
+
+       After  this function returns jjssvv__oonn__vveerriiffyy() will be called. This func-
+       tion does the verification process itself.
+
+   jjssvv__oonn__vveerriiffyy(())
+       This is a callback function that has to be defined by the creator of  a
+       JSV  script.   It  is called for every job, and when it returns the job
+       will either be accepted or rejected. Find  implementation  examples  in
+       the directory $SGE_ROOT/util/resources/jsv.
+
+       The  logic of this function completely depends on its creator. The cre-
+       ator has only to take care that  one  of  the  functions  jjssvv__aacccceepptt(),
+       jjssvv__rreejjeecctt(),  jjssvv__rreejjeecctt__wwaaiitt()  or jjssvv__ccoorrrreecctt() is called before the
+       function returns.
+
+EEXXAAMMPPLLEESS
+       Find in the table below the returned values for the "*is*" and  "*get*"
+       functions when following job is submitted:
+
+              qsub -l mem=1G,mem2=200M ...
+
+
+              function call                      returned value
+              ------------------------------------------------------
+              jsv_is_param(l_hard)               "true"
+              jsv_get_param(l_hard)              "mem=1G,mem2=200M"
+              jsv_sub_is_param(l_hard,mem)       "true"
+              jsv_sub_get_param(l_hard,mem)      "1G"
+              jsv_sub_get_param(l_hard,mem3)     "false"
+              jsv_sub_get_param(l_hard,mem3)     ""
+
+FFIILLEESS
+       Include files:
+       _$_S_G_E___R_O_O_T_/_u_t_i_l_/_r_e_s_o_u_r_c_e_s_/_j_s_v_/_j_s_v___i_n_l_c_u_d_e_._s_h
+       _$_S_G_E___R_O_O_T_/_u_t_i_l_/_r_e_s_o_u_r_c_e_s_/_j_s_v_/_j_s_v___i_n_c_l_u_d_e_._t_c_l
+       _$_S_G_E___R_O_O_T_/_u_t_i_l_/_r_e_s_o_u_r_c_e_s_/_j_s_v_/_J_S_V_._p_m
+       _$_S_G_E___R_O_O_T_/_u_t_i_l_/_r_e_s_o_u_r_c_e_s_/_j_s_v_/_S_i_m_p_l_e_j_s_v_._j_a_v_a
+       Example files:
+       _$_S_G_E___R_O_O_T_/_u_t_i_l_/_r_e_s_o_u_r_c_e_s_/_j_s_v_/_j_s_v_._s_h
+       _$_S_G_E___R_O_O_T_/_u_t_i_l_/_r_e_s_o_u_r_c_e_s_/_j_s_v_/_j_s_v_._t_c_l
+       _$_S_G_E___R_O_O_T_/_u_t_i_l_/_r_e_s_o_u_r_c_e_s_/_j_s_v_/_j_s_v_._p_l
+       _$_S_G_E___R_O_O_T_/_u_t_i_l_/_r_e_s_o_u_r_c_e_s_/_j_s_v_/_j_j_s_v_._s_h
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1),  _j_s_v(1), _q_a_l_t_e_r(1), _q_l_o_g_i_n(1), _q_m_a_k_e(1), _q_r_s_h(1), _q_s_h(1),
+       _q_s_u_b(1), _q_t_c_s_h(1),
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2009-05-28 16:56:19 $  JSV_SCRIPT_INTERFACE(3)

@@ -1,0 +1,117 @@
+SGE_EXECD(8)          Grid Engine Administrative Commands         SGE_EXECD(8)
+
+
+
+NNAAMMEE
+       sge_execd - Grid Engine job execution agent
+
+SSYYNNOOPPSSIISS
+       ssggee__eexxeeccdd [ --hheellpp ]
+
+DDEESSCCRRIIPPTTIIOONN
+       _s_g_e___e_x_e_c_d controls the Grid Engine queues local to the machine on which
+       _s_g_e___e_x_e_c_d is running and executes/controls the jobs sent from _s_g_e___q_m_a_s_-
+       _t_e_r(8) to be run on these queues.
+
+OOPPTTIIOONNSS
+   --hheellpp
+       Prints a listing of all options.
+
+LLOOAADD SSEENNSSOORRSS
+       If a llooaadd sseennssoorr is configured for _s_g_e___e_x_e_c_d via either the global host
+       configuration or the execution-host-specific cluster configuration (see
+       _s_g_e___c_o_n_f(5)),  the  executable  path  of  the load sensor is invoked by
+       _s_g_e___e_x_e_c_d on a regular basis and delivers one or multiple load  figures
+       for  the  execution  host (e.g.  users currently logged in) or the com-
+       plete cluster (e.g. free disk space on a network wide scratch file sys-
+       tem). The load sensor may be a script or a binary executable. In either
+       case its handling of the STDIN and STDOUT streams and its control  flow
+       must comply to the following rules:
+
+       The  load  sensor must be written as an infinite loop waiting at a cer-
+       tain point for input from STDIN. If the  string  "quit"  is  read  from
+       STDIN,  the  load sensor should exit.  When an end-of-line is read from
+       STDIN, a load data retrieval cycle should start. The load  sensor  then
+       performs  whatever  operation  is necessary to compute the desired load
+       figures.  At the end of the cycle the load sensor writes the result  to
+       stdout. The format is as follows:
+
+       +o  A  load  value  report starts with a line containing only either the
+          word  "start" or the word "begin".
+
+       +o  Individual load values are separated by newlines.
+
+       +o  Each load value report consists of three parts separated  by  colons
+          (":") and containing no blanks.
+
+       +o  The first part of a load value information is either the name of the
+          host for which load is reported or the special name "global".
+
+       +o  The second part is the symbolic name of the load value as defined in
+          the  host  or global complex list (see _c_o_m_p_l_e_x(5) for details). If a
+          load value is reported for which no entry in the host or global com-
+          plex list exists, the reported load value is not used.
+
+       +o  The third part is the measured load value.
+
+       +o  A load value report ends with a line with only the word "end".
+
+EENNVVIIRROONNMMEENNTTAALL VVAARRIIAABBLLEESS
+       SSGGEE__RROOOOTT       Specifies  the location of the Grid Engine standard con-
+                      figuration files.
+
+       SSGGEE__CCEELLLL       If set, specifies  the  default  Grid  Engine  cell.  To
+                      address  a Grid Engine cell _s_g_e___e_x_e_c_d uses (in the order
+                      of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. ddeeffaauulltt.
+
+
+       SSGGEE__DDEEBBUUGG__LLEEVVEELL
+                      If set, specifies that debug information should be writ-
+                      ten to stderr. In addition the level of detail in  which
+                      debug information is generated is defined.
+
+       SSGGEE__QQMMAASSTTEERR__PPOORRTT
+                      If  set,  specifies the tcp port on which _s_g_e___q_m_a_s_t_e_r(8)
+                      is expected to listen for communication requests.   Most
+                      installations will use a services map entry for the ser-
+                      vice "sge_qmaster" instead to define that port.
+
+       SSGGEE__EEXXEECCDD__PPOORRTT If set, specifies the tcp port on which _s_g_e___e_x_e_c_d(8)  is
+                      expected  to  listen  for  communication requests.  Most
+                      installations will use a services map entry for the ser-
+                      vice "sge_execd" instead to define that port.
+
+RREESSTTRRIICCTTIIOONNSS
+       _s_g_e___e_x_e_c_d  usually  is  started  from  root on each machine in the Grid
+       Engine pool.  If started by a normal user, a spool  directory  must  be
+       used  to  which  the user has read/write access. In this case only jobs
+       being submitted by that same user are handled correctly by the system.
+
+FFIILLEESS
+       ssggeeppaasssswwdd  contains  a  list  of  user  names   and   their correspond-
+       ing  encrypted  passwords.  If  available, the password  file  will  be
+       used   by  ssggee__eexxeeccdd. To change the contents of this  file  please  use
+       the ssggeeppaasssswwdd command. It is not advised to  change that file manually.
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_c_o_n_f_i_g_u_r_a_t_i_o_n
+                       Grid Engine global configuration
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_l_o_c_a_l___c_o_n_f_/_<_h_o_s_t_>
+                       Grid Engine host specific configuration
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_s_p_o_o_l_/_<_h_o_s_t_>
+                       Default execution host spool directory
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_a_c_t___q_m_a_s_t_e_r
+                       Grid Engine master host file
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _s_g_e___c_o_n_f(5), _c_o_m_p_l_e_x(5), _s_g_e___s_h_e_p_h_e_r_d(8), _s_g_e___q_m_a_s_t_e_r(8).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2008-12-04 17:11:17 $             SGE_EXECD(8)

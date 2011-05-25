@@ -1,0 +1,142 @@
+drmaa_jobcontrol(3)            Grid Engine DRMAA           drmaa_jobcontrol(3)
+
+
+
+NNAAMMEE
+       drmaa_job_ps, drmaa_control, - Monitor and control jobs
+
+SSYYNNOOPPSSIISS
+       ##iinncclluuddee ""ddrrmmaaaa..hh""
+
+       iinntt ddrrmmaaaa__jjoobb__ppss((
+              ccoonnsstt cchhaarr **jjoobb__iidd,,
+              iinntt **rreemmoottee__ppss,,
+              cchhaarr **eerrrroorr__ddiiaaggnnoossiiss,,
+              ssiizzee__tt eerrrroorr__ddiiaagg__lleenn
+       ));;
+
+       iinntt ddrrmmaaaa__ccoonnttrrooll((
+              ccoonnsstt cchhaarr **jjoobbiidd,,
+              iinntt aaccttiioonn,,
+              cchhaarr **eerrrroorr__ddiiaaggnnoossiiss,,
+              ssiizzee__tt eerrrroorr__ddiiaagg__lleenn
+       ));;
+
+DDEESSCCRRIIPPTTIIOONN
+       The  drmaa_job_ps()  function returns the status of the Grid Engine job
+       _j_o_b___i_d into the integer pointed to by _r_e_m_o_t_e___p_s. Possible return values
+       are
+
+              DRMAA_PS_UNDETERMINED        job status cannot be determined
+              DRMAA_PS_QUEUED_ACTIVE       job is queued and active
+              DRMAA_PS_SYSTEM_ON_HOLD      job is queued and in system hold
+              DRMAA_PS_USER_ON_HOLD        job is queued and in user hold
+              DRMAA_PS_USER_SYSTEM_ON_HOLD job is queued and in user and system hold
+              DRMAA_PS_RUNNING             job is running
+              DRMAA_PS_SYSTEM_SUSPENDED    job is system suspended
+              DRMAA_PS_USER_SUSPENDED      job is user suspended
+              DRMAA_PS_DONE                job finished normally
+              DRMAA_PS_FAILED              job finished, but failed
+
+       Jobs'  user  hold  and  user  suspend  states  can  be  controlled  via
+       _d_r_m_a_a___c_o_n_t_r_o_l(3).  For affecting system hold and system suspend  states
+       the appropriate Grid Engine interfaces must be used.
+
+   ddrrmmaaaa__ccoonnttrrooll(())
+       The  drmaa_control() function applies control operations on Grid Engine
+       jobs.   _j_o_b_i_d  may   contain   either   an   Grid   Engine   jobid   or
+       `DRMAA_JOB_IDS_SESSION_ALL'  to  refer to all jobs submitted during the
+       DRMAA session opened using _d_r_m_a_a___i_n_i_t(3).  Legal values for _a_c_t_i_o_n  and
+       their meanings are:
+
+              DRMAA_CONTROL_SUSPEND        suspend the job
+              DRMAA_CONTROL_RESUME         resume the job,
+              DRMAA_CONTROL_HOLD           put the job on-hold
+              DRMAA_CONTROL_RELEASE        release the hold on the job
+              DRMAA_CONTROL_TERMINATE      kill the job
+
+       The  DRMAA  suspend/resume operations are equivalent to the use of `-sj
+       <jobid>' and `-usj <jobid>' options  with  Grid  Engine  _q_m_o_d(1).   The
+       DRMAA  hold/release operations are equivalent to the use of Grid Engine
+       _q_h_o_l_d(1) and _q_r_l_s(1).  The DRMAA terminate operation is  equivalent  to
+       the use of Grid Engine _q_d_e_l(1).  Only user hold and user suspend can be
+       controlled via _d_r_m_a_a___c_o_n_t_r_o_l(3).  For affecting system hold and  system
+       suspend states the appropriate Grid Engine interfaces must be used.
+
+EENNVVIIRROONNMMEENNTTAALL VVAARRIIAABBLLEESS
+       SSGGEE__RROOOOTT       Specifies  the location of the Grid Engine standard con-
+                      figuration files.
+
+       SSGGEE__CCEELLLL       If set, specifies the default Grid  Engine  cell  to  be
+                      used. To address a Grid Engine cell Grid Engine uses (in
+                      the order of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. ddeeffaauulltt.
+
+
+       SSGGEE__DDEEBBUUGG__LLEEVVEELL
+                      If set, specifies that debug information should be writ-
+                      ten to stderr. In addition the level of detail in  which
+                      debug information is generated is defined.
+
+       SSGGEE__QQMMAASSTTEERR__PPOORRTT
+                      If  set,  specifies the tcp port on which _s_g_e___q_m_a_s_t_e_r(8)
+                      is expected to listen for communication requests.   Most
+                      installations  will  use a services map entry instead to
+                      define that port.
+
+RREETTUURRNN VVAALLUUEESS
+       Upon successful completion, drmaa_job_ps(), and drmaa_control()  return
+       DRMAA_ERRNO_SUCCESS.   Other   values   indicate   an   error.   Up  to
+       _e_r_r_o_r___d_i_a_g___l_e_n characters of error  related  diagnosis  information  is
+       then provided in the buffer, _e_r_r_o_r___d_i_a_g_n_o_s_i_s.
+
+EERRRROORRSS
+       The drmaa_job_ps(), and drmaa_control() will fail if:
+
+   DDRRMMAAAA__EERRRRNNOO__IINNTTEERRNNAALL__EERRRROORR
+       Unexpected or internal DRMAA error, like system call failure, etc.
+
+   DDRRMMAAAA__EERRRRNNOO__DDRRMM__CCOOMMMMUUNNIICCAATTIIOONN__FFAAIILLUURREE
+       Could not contact DRM system for this request.
+
+   DDRRMMAAAA__EERRRRNNOO__AAUUTTHH__FFAAIILLUURREE
+       The  specified request was not processed successfully due to authoriza-
+       tion failure.
+
+   DDRRMMAAAA__EERRRRNNOO__IINNVVAALLIIDD__AARRGGUUMMEENNTT
+       The input value for an argument is invalid.
+
+   DDRRMMAAAA__EERRRRNNOO__NNOO__AACCTTIIVVEE__SSEESSSSIIOONN
+       Failed because there is no active session.
+
+   DDRRMMAAAA__EERRRRNNOO__NNOO__MMEEMMOORRYY
+       Failed allocating memory.
+
+   DDRRMMAAAA__EERRRRNNOO__IINNVVAALLIIDD__JJOOBB
+       The specified job does not exist.
+
+       The drmaa_control() will fail if:
+
+   DDRRMMAAAA__EERRRRNNOO__RREESSUUMMEE__IINNCCOONNSSIISSTTEENNTT__SSTTAATTEE
+       The job is not suspended. The resume request will not be processed.
+
+   DDRRMMAAAA__EERRRRNNOO__SSUUSSPPEENNDD__IINNCCOONNSSIISSTTEENNTT__SSTTAATTEE
+       The job is not running and thus cannot be suspended.
+
+   DDRRMMAAAA__EERRRRNNOO__HHOOLLDD__IINNCCOONNSSIISSTTEENNTT__SSTTAATTEE
+       The job cannot be moved to a hold state.
+
+   DDRRMMAAAA__EERRRRNNOO__RREELLEEAASSEE__IINNCCOONNSSIISSTTEENNTT__SSTTAATTEE
+       The job is not in a hold state.
+
+SSEEEE AALLSSOO
+       _d_r_m_a_a___s_u_b_m_i_t(3)and _d_r_m_a_a___w_a_i_t(3).
+
+
+
+
+SGE 8.0.0                $Date: 2009-06-17 09:50:13 $      drmaa_jobcontrol(3)

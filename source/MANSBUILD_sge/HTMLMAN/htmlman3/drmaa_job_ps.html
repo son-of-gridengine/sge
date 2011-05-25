@@ -1,0 +1,169 @@
+<HTML>
+<HEAD>
+<TITLE>drmaa_job_ps.3</TITLE>
+</HEAD>
+<BODY>
+<H1>drmaa_job_ps.3</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       drmaa_job_ps, drmaa_control, - Monitor and control jobs
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>#include</B> <B>"drmaa.h"</B>
+
+       <B>int</B> <B>drmaa_job_ps(</B>
+              <B>const</B> <B>char</B> <B>*job_id,</B>
+              <B>int</B> <B>*remote_ps,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_control(</B>
+              <B>const</B> <B>char</B> <B>*jobid,</B>
+              <B>int</B> <B>action,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The drmaa_job_ps() function returns the status of the Grid Engine job
+       <I>job</I><B>_</B><I>id</I> into the integer pointed to by <I>remote</I><B>_</B><I>ps</I>. Possible return values
+       are
+
+              DRMAA_PS_UNDETERMINED        job status cannot be determined
+              DRMAA_PS_QUEUED_ACTIVE       job is queued and active
+              DRMAA_PS_SYSTEM_ON_HOLD      job is queued and in system hold
+              DRMAA_PS_USER_ON_HOLD        job is queued and in user hold
+              DRMAA_PS_USER_SYSTEM_ON_HOLD job is queued and in user and system hold
+              DRMAA_PS_RUNNING             job is running
+              DRMAA_PS_SYSTEM_SUSPENDED    job is system suspended
+              DRMAA_PS_USER_SUSPENDED      job is user suspended
+              DRMAA_PS_DONE                job finished normally
+              DRMAA_PS_FAILED              job finished, but failed
+
+       Jobs' user hold and user suspend states can be controlled via
+       <B><A HREF="../htmlman3/drmaa_control.html">drmaa_control(3)</A></B>.  For affecting system hold and system suspend states
+       the appropriate Grid Engine interfaces must be used.
+
+   <B>drmaa_control()</B>
+       The drmaa_control() function applies control operations on Grid Engine
+       jobs.  <I>jobid</I> may contain either an Grid Engine jobid or
+       `DRMAA_JOB_IDS_SESSION_ALL' to refer to all jobs submitted during the
+       DRMAA session opened using <B><A HREF="../htmlman3/drmaa_init.html">drmaa_init(3)</A></B>.  Legal values for <I>action</I> and
+       their meanings are:
+
+              DRMAA_CONTROL_SUSPEND        suspend the job
+              DRMAA_CONTROL_RESUME         resume the job,
+              DRMAA_CONTROL_HOLD           put the job on-hold
+              DRMAA_CONTROL_RELEASE        release the hold on the job
+              DRMAA_CONTROL_TERMINATE      kill the job
+
+       The DRMAA suspend/resume operations are equivalent to the use of `-sj
+       &lt;jobid&gt;' and `-usj &lt;jobid&gt;' options with Grid Engine <B><A HREF="../htmlman1/qmod.html">qmod(1)</A></B>.  The
+       DRMAA hold/release operations are equivalent to the use of Grid Engine
+       <B><A HREF="../htmlman1/qhold.html">qhold(1)</A></B> and <B><A HREF="../htmlman1/qrls.html">qrls(1)</A></B>.  The DRMAA terminate operation is equivalent to
+       the use of Grid Engine <B><A HREF="../htmlman1/qdel.html">qdel(1)</A></B>.  Only user hold and user suspend can be
+       controlled via <B><A HREF="../htmlman3/drmaa_control.html">drmaa_control(3)</A></B>.  For affecting system hold and system
+       suspend states the appropriate Grid Engine interfaces must be used.
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell to be
+                      used. To address a Grid Engine cell Grid Engine uses (in
+                      the order of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the tcp port on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry instead to
+                      define that port.
+
+
+</PRE>
+<H2>RETURN VALUES</H2><PRE>
+       Upon successful completion, drmaa_job_ps(), and drmaa_control() return
+       DRMAA_ERRNO_SUCCESS. Other values indicate an error. Up to
+       <I>error</I><B>_</B><I>diag</I><B>_</B><I>len</I> characters of error related diagnosis information is
+       then provided in the buffer, <I>error</I><B>_</B><I>diagnosis</I>.
+
+
+</PRE>
+<H2>ERRORS</H2><PRE>
+       The drmaa_job_ps(), and drmaa_control() will fail if:
+
+   <B>DRMAA_ERRNO_INTERNAL_ERROR</B>
+       Unexpected or internal DRMAA error, like system call failure, etc.
+
+   <B>DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE</B>
+       Could not contact DRM system for this request.
+
+   <B>DRMAA_ERRNO_AUTH_FAILURE</B>
+       The specified request was not processed successfully due to
+       authorization failure.
+
+   <B>DRMAA_ERRNO_INVALID_ARGUMENT</B>
+       The input value for an argument is invalid.
+
+   <B>DRMAA_ERRNO_NO_ACTIVE_SESSION</B>
+       Failed because there is no active session.
+
+   <B>DRMAA_ERRNO_NO_MEMORY</B>
+       Failed allocating memory.
+
+   <B>DRMAA_ERRNO_INVALID_JOB</B>
+       The specified job does not exist.
+
+       The drmaa_control() will fail if:
+
+   <B>DRMAA_ERRNO_RESUME_INCONSISTENT_STATE</B>
+       The job is not suspended. The resume request will not be processed.
+
+   <B>DRMAA_ERRNO_SUSPEND_INCONSISTENT_STATE</B>
+       The job is not running and thus cannot be suspended.
+
+   <B>DRMAA_ERRNO_HOLD_INCONSISTENT_STATE</B>
+       The job cannot be moved to a hold state.
+
+   <B>DRMAA_ERRNO_RELEASE_INCONSISTENT_STATE</B>
+       The job is not in a hold state.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman3/drmaa_submit.html">drmaa_submit(3)</A></B>and <B><A HREF="../htmlman3/drmaa_wait.html">drmaa_wait(3)</A></B>.
+
+
+
+
+SGE 8.0.0                $Date: 2009-06-17 09:50:13 $      <B><A HREF="../htmlman3/drmaa_jobcontrol.html">drmaa_jobcontrol(3)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

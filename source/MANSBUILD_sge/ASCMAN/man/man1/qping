@@ -1,0 +1,309 @@
+QPING(1)                   Grid Engine User Commands                  QPING(1)
+
+
+
+NNAAMMEE
+       qping - check application status of Grid Engine daemons.
+
+SSYYNNTTAAXX
+       qqppiinngg [--hheellpp] [--nnooaalliiaass] [--ssssll|--ttccpp] [[[--ii _i_n_t_e_r_v_a_l] [--iinnffoo] [--ff]] | [[
+       --dduummpp__ttaagg _t_a_g [_p_a_r_a_m]] [--dduummpp] [--nnoonneewwlliinnee]]] _h_o_s_t _p_o_r_t _n_a_m_e _i_d
+
+DDEESSCCRRIIPPTTIIOONN
+       _Q_p_i_n_g is used to validate the runtime status of a Grid  Engine  service
+       daemon.  The current Grid Engine implementation allows one to query the
+       SGE_QMASTER daemon and any running SGE_EXECD daemon. The qping  command
+       is  used  to send a SIM (Status Information Message) to the destination
+       daemon. The communication layer of the specified  daemon  will  respond
+       with a SIRM (Status Information Response Message) which contains status
+       information about the consulted daemon.
+
+       The qping -dump and -dump_tag options allow an administrator to observe
+       the  communication  protocol data flow of a Grid Engine service daemon.
+       The qping -dump instruction must be started under the root account  and
+       on the host where the observed daemon is running.
+
+OOPPTTIIOONNSS
+   --ff
+       Show full status information on each ping interval.
+
+       _F_i_r_s_t _o_u_t_p_u_t _L_i_n_e_: The first output line shows the date and time of the
+       request.
+
+       _S_I_R_M _v_e_r_s_i_o_n_: Internal version number of the SIRM  (Status  Information
+       Response Message)
+
+       _S_I_R_M _m_e_s_s_a_g_e _i_d_: Current message id for this connection
+
+       _s_t_a_r_t _t_i_m_e_: Start time of daemon. The format is as follows:
+
+       MM/DD/YYYY HH:MM:SS (seconds since 01.01.1970)
+
+       _r_u_n _t_i_m_e _[_s_]_: Run time in seconds since start time
+
+       _m_e_s_s_a_g_e_s  _i_n _r_e_a_d _b_u_f_f_e_r_: Number of buffered messages in the communica-
+       tion read buffer. The messages are buffered for the  application  (dae-
+       mon). When this number grows too large the daemon is not able to handle
+       all messages sent to it.
+
+       _m_e_s_s_a_g_e_s _i_n _w_r_i_t_e _b_u_f_f_e_r_: Number of buffered messages in the communica-
+       tion  write buffer. The messages are sent from the application (daemon)
+       to the connected clients, but the communication layer  wasn't  able  to
+       send  the  messages yet. If this number grows too large, the communica-
+       tion layer isn't able to send them as fast as the application  (daemon)
+       wants the messages to be sent.
+
+       _n_r_.  _o_f  _c_o_n_n_e_c_t_e_d _c_l_i_e_n_t_s_: This is the number of clients actually con-
+       nected to this daemon, including the current qping connection.
+
+       _s_t_a_t_u_s_: The status value of the  daemon.  This  value  depends  on  the
+       application  which  replies  to  the qping request.  If the application
+       does not provide any information, the status is 99999.   Here  are  the
+       possible status information values for the Grid Engine daemons:
+
+          qmaster:
+
+             _0 There is no unusual timing situation.
+
+             _1  One or more threads has reached warning timeout. This may hap-
+             pen when at least one thread does not increment  its  time  stamp
+             for  an  usually  long time. A possible reason for this is a high
+             workload for this thread.
+
+             _2 One or more threads has reached error timeout. This may  happen
+             when  at  least one thread has not incremented its time stamp for
+             longer than 10 minutes.
+
+             _3 The time measurement is not initialized.
+
+          execd:
+
+             _0 There is no unusual timing situation.
+
+             _1 Dispatcher has reached warning timeout. This  may  happen  when
+             the dispatcher does not increment its time stamp for an unusually
+             long time. A possible reason for this is a high workload.
+
+             _2 Dispatcher has reached error timeout. This may happen when  the
+             dispatcher  has not incremented its time stamp for longer than 10
+             minutes.
+
+             _3 The time measurement is not initialized.
+
+
+       _i_n_f_o_: Status message of the daemon. This value depends on the  applica-
+       tion  which  replies to the qping request.  If the application does not
+       provide any information the info message is "not available".  Here  are
+       the possible status information values for the Grid Engine daemons:
+
+
+          qmaster:
+
+             The  info message contains information about the qmaster threads,
+             followed by a thread state and time information. Each time one of
+             the  known threads passes through its main loop the time informa-
+             tion is updated. Since the qmaster has two message threads, every
+             message  thread  updates the time. This means the timeout for the
+             message thread (MT) can only occur  when  no  message  thread  is
+             active anymore:
+
+                THREAD_NAME: THREAD_STATE (THREAD_TIME)
+
+                THREAD_NAME:
+                   MAIN: Main thread
+                   signaler: Signal thread
+                   event_master: Event master thread
+                   timer: Timer thread
+                   worker: Worker thread
+                   listener: Listener thread
+                   scheduler: Scheduler thread
+                   jvm: Java thread
+
+                   The thread names above will be followed by a 3 digit number.
+
+                THREAD_STATE:
+                   R: Running
+                   W: Warning
+                   E: Error
+
+                THREAD_TIME:
+                   Time since last timestamp updating.
+
+             After  the dispatcher information comes an additional information
+             string which describes the complete application status.
+
+          execd:
+
+             The info message contains information  for  the  execd  job  dis-
+             patcher:
+                dispatcher: STATE (TIME)
+
+             STATE:
+                R: Running
+                W: Warning
+                E: Error
+
+             TIME:
+                Time since last timestamp updating.
+
+          After  the thread information comes an additional information string
+          which describes the application status.
+
+    _M_o_n_i_t_o_r_: If available, displays statistics on a thread. The data for  each
+    thread is displayed in one line. The format of this line can be changed at
+    any time. Only the master implements monitoring.
+
+
+   --hheellpp
+       Prints a list of all options.
+
+
+   --ii iinntteerrvvaall
+       Set qping interval.
+
+       The default interval is one second.  Qping  will  send  a  SIM  (Status
+       Information Message) after each interval.
+
+
+   --iinnffoo
+       Show  full  status  information (see --ff for more information) and exit.
+       The exit value 0 indicates no error. On errors qping returns with 1.
+
+
+   --nnooaalliiaass
+       Ignore host_aliases file, which is  located  at  _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_-
+       _m_o_n_/_h_o_s_t___a_l_i_a_s_e_s_.   If  this  option is used it is not necessary to set
+       any Grid Engine environment variable.
+
+
+   --ssssll
+       This option can be used to specify an SSL (Secure Socket Layer) config-
+       uration.  qping  will use the configuration to connect to services run-
+       ning SSL. If the Grid Engine settings file is not sourced, you have  to
+       use the -noalias option to bypass the need for the SGE_ROOT environment
+       variable.  The following environment variables are used to specify your
+       certificates:
+         SSL_CA_CERT_FILE - CA certificate file
+         SSL_CERT_FILE    - certificates file
+         SSL_KEY_FILE     - key file
+         SSL_RAND_FILE    - rand file
+
+
+   --ttccpp
+       This option is used to select TCP/IP as the protocol used to connect to
+       other services.
+
+
+   --nnoonneewwlliinnee
+       Dump output will not have a linebreak within a message, and binary mes-
+       sages are not unpacked.
+
+
+   --dduummpp
+       This option allows an administrator to observe the communication proto-
+       col data flow of a Grid Engine service daemon. The qping -dump instruc-
+       tion  must be started as root and on the host where the observed daemon
+       is running.
+
+       The  output  is   written   to   stdout.   The   environment   variable
+       "SGE_QPING_OUTPUT_FORMAT"  can  be  set  to hide columns, set a default
+       column width or to set a hostname output format. The value of the envi-
+       ronment  variable can be set to any combination of the following speci-
+       fiers separated by a space character:
+              "h:X"   -> hide column X
+              "s:X"   -> show column X
+              "w:X:Y" -> set width of column X to Y
+              "hn:X"  -> set hostname output parameter X.
+                         X values are "long" or "short"
+
+       Run qping -help to see which columns are available.
+
+
+
+   --dduummpp__ttaagg ttaagg [[ppaarraamm]]
+       This option has the same meaning as -dump, but can provide more  infor-
+       mation  by  specifying  the  debug level and message types qping should
+       print:
+          --dduummpp__ttaagg AALLLL _d_e_b_u_g _l_e_v_e_l
+             This option shows all possible debug messages (APP+MSG)  for  the
+             debug  levels,  ERROR, WARNING, INFO, DEBUG and DPRINTF. The con-
+             tacted service must support this kind of debugging.  This  option
+             is not currently implemented.
+          --dduummpp__ttaagg AAPPPP _d_e_b_u_g _l_e_v_e_l
+             This  option  shows only application debug messages for the debug
+             levels, ERROR, WARNING, INFO, DEBUG and  DPRINTF.  The  contacted
+             service  must support this kind of debugging.  This option is not
+             currently implemented.
+          -dump_tag MSG
+             This option has the same behavior as the -dump option.
+
+
+   hhoosstt
+       Host where daemon is running.
+
+
+   ppoorrtt
+       Port which daemon has bound (used sge_qmaster/sge_execd port number).
+
+
+   nnaammee
+       Name of communication endpoint ("qmaster" or "execd"). A  communication
+       endpoint  is  a  triplet  of  hostname/endpoint  name/endpoint id (e.g.
+       hostA/qmaster/1 or subhost/qstat/4).
+
+
+   iidd
+       Id of communication endpoint ("1" for daemons)
+
+
+
+EEXXAAMMPPLLEESS
+       >qping master_host 31116 qmaster
+       08/24/2004 16:41:15 endpoint master_host/qmaster/1 at port 31116 is up since 365761 seconds
+       08/24/2004 16:41:16 endpoint master_host/qmaster/1 at port 31116 is up since 365762 seconds
+       08/24/2004 16:41:17 endpoint master_host/qmaster/1 at port 31116 is up since 365763 seconds
+
+       > qping -info master_host 31116 qmaster 1
+       08/24/2004 16:42:47:
+       SIRM version:             0.1
+       SIRM message id:          1
+       start time:               08/20/2004 11:05:14 (1092992714)
+       run time [s]:             365853
+       messages in read buffer:  0
+       messages in write buffer: 0
+       nr. of connected clients: 4
+       status:                   0
+       info:                     ok
+
+       > qping -info execd_host 31117 execd 1
+       08/24/2004 16:43:45:
+       SIRM version:             0.1
+       SIRM message id:          1
+       start time:               08/20/2004 11:06:13 (1092992773)
+       run time [s]:             365852
+       messages in read buffer:  0
+       messages in write buffer: 0
+       nr. of connected clients: 2
+       status:                   0
+       info:                     ok
+
+
+BBUUGGSS
+       The command is currently broken, so that it always produces error  out-
+       put.
+
+EENNVVIIRROONNMMEENNTTAALL VVAARRIIAABBLLEESS
+       SSGGEE__RROOOOTT       Specifies  the location of the Grid Engine standard con-
+                      figuration files.
+
+       SSGGEE__CCEELLLL       If set, specifies the default Grid Engine cell.
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _h_o_s_t___a_l_i_a_s_e_s(5), _s_g_e___q_m_a_s_t_e_r(8), _s_g_e___e_x_e_c_d(8).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-20 22:17:01 $                 QPING(1)

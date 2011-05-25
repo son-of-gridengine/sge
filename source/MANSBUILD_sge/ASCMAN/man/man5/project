@@ -1,0 +1,56 @@
+PROJECT(5)                 Grid Engine File Formats                 PROJECT(5)
+
+
+
+NNAAMMEE
+       project - Grid Engine project entry file format
+
+DDEESSCCRRIIPPTTIIOONN
+       Jobs can be submitted to projects, and a project can be assigned with a
+       certain level of importance, via the functional or the override policy.
+       This  level of importance is then inherited by the jobs executing under
+       that project.
+
+       A list of currently  configured  projects  can  be  displayed  via  the
+       _q_c_o_n_f(1)  --sspprrjjll option. The contents of each listed project definition
+       can be shown via the --sspprrjj switch. The output follows the _p_r_o_j_e_c_t  for-
+       mat  description. New projects can be created, and existing ones can be
+       modified, via the --aapprrjj, --mmpprrjj and --ddpprrjj options to _q_c_o_n_f(1).
+
+       Note, Grid Engine allows backslashes (\)  be  used  to  escape  newline
+       characters.  The  backslash  and  the newline are replaced with a space
+       character before any interpretation.
+
+FFOORRMMAATT
+       A project definition contains the following parameters:
+
+   nnaammee
+       The project name in the format for _p_r_o_j_e_c_t___n_a_m_e in _s_g_e___t_y_p_e_s(1).
+
+   oottiicckkeett
+       The number of override tickets currently assigned to the project.
+
+   ffsshhaarree
+       The current functional share of the project.
+
+   aaccll
+       A list of user access lists (ACLs - see  _a_c_c_e_s_s___l_i_s_t(5))  referring  to
+       those users allowed to submit jobs to the project.
+
+       If  the  aaccll  parameter is set to NONE, all users are allowed to submit
+       jobs to the project except for  those  listed  in  the  xxaaccll  parameter
+       described below.
+
+   xxaaccll
+       A  list  of  user access lists (ACLs - see _a_c_c_e_s_s___l_i_s_t(5)) referring to
+       those users not allowed to submit jobs to the project.
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _s_g_e___t_y_p_e_s(1), _q_c_o_n_f(1), _a_c_c_e_s_s___l_i_s_t(5).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-17 21:12:00 $               PROJECT(5)

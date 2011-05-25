@@ -1,0 +1,144 @@
+drmaa_misc(3)                  Grid Engine DRMAA                 drmaa_misc(3)
+
+
+
+NNAAMMEE
+       drmaa_strerror,  drmaa_get_contact, drmaa_version, drmaa_get_DRM_system
+       - Miscellaneous DRMAA functions.
+
+SSYYNNOOPPSSIISS
+       ##iinncclluuddee ""ddrrmmaaaa..hh""
+
+       ccoonnsstt cchhaarr **ddrrmmaaaa__ssttrreerrrroorr((
+              iinntt ddrrmmaaaa__eerrrrnnoo
+       ));;
+
+       iinntt ddrrmmaaaa__ggeett__ccoonnttaacctt((
+              cchhaarr **ccoonnttaacctt,,
+              ssiizzee__tt ccoonnttaacctt__lleenn,,
+              cchhaarr **eerrrroorr__ddiiaaggnnoossiiss,,
+              ssiizzee__tt eerrrroorr__ddiiaagg__lleenn
+       ));;
+
+       iinntt ddrrmmaaaa__vveerrssiioonn((
+              uunnssiiggnneedd iinntt **mmaajjoorr,,
+              uunnssiiggnneedd iinntt **mmiinnoorr,,
+              cchhaarr **eerrrroorr__ddiiaaggnnoossiiss,,
+              ssiizzee__tt eerrrroorr__ddiiaagg__lleenn
+       ));;
+
+       iinntt ddrrmmaaaa__ggeett__DDRRMM__ssyysstteemm((
+              cchhaarr **ddrrmm__ssyysstteemm,,
+              ssiizzee__tt ddrrmm__ssyysstteemm__lleenn,,
+              cchhaarr **eerrrroorr__ddiiaaggnnoossiiss,,
+              ssiizzee__tt eerrrroorr__ddiiaagg__lleenn
+       ));;
+
+       iinntt ddrrmmaaaa__ggeett__DDRRMMAAAA__iimmpplleemmeennttaattiioonn((
+              cchhaarr **ddrrmm__iimmppll,,
+              ssiizzee__tt ddrrmm__iimmppll__lleenn,,
+              cchhaarr **eerrrroorr__ddiiaaggnnoossiiss,,
+              ssiizzee__tt eerrrroorr__ddiiaagg__lleenn
+       ));;
+
+DDEESSCCRRIIPPTTIIOONN
+       The drmaa_strerror() function returns a message  text  associated  with
+       the  DRMAA  error  number,  _d_r_m_a_a___e_r_r_n_o.  For invalid DRMAA error codes
+       `NULL' is returned.
+
+   ddrrmmaaaa__ggeett__ccoonnttaacctt(())
+       The drmaa_get_contact() returns an  opaque  string  containing  contact
+       information  related  to  the current DRMAA session to be used with the
+       _d_r_m_a_a___i_n_i_t(3) function. The  opaque  string  contains  the  information
+       required by drmaa_init() to reconnect to the current session instead of
+       creating a new session.  _d_r_m_a_a___i_n_i_t(3) function.
+
+       The drmaa_get_contact() function returns  the  same  value  before  and
+       after _d_r_m_a_a___i_n_i_t(3) is called.
+
+   ddrrmmaaaa__vveerrssiioonn(())
+       The  drmaa_version()  function  returns into the integers pointed to by
+       _m_a_j_o_r and _m_i_n_o_r, the major and  minor  version  numbers  of  the  DRMAA
+       library.   For a DRMAA 1.0 compliant implementation `1' and `0' will be
+       returned in _m_a_j_o_r and _m_i_n_o_r, respectively.
+
+   ddrrmmaaaa__ggeett__DDRRMM__ssyysstteemm(())
+       The drmaa_get_DRM_system()  function  returns  into  _d_r_m___s_y_s_t_e_m  up  to
+       _d_r_m___s_y_s_t_e_m___l_e_n  characters  of  a string containing Grid Engine product
+       and version information.
+
+       The drmaa_get_DRM_system() function returns the same value  before  and
+       after _d_r_m_a_a___i_n_i_t(3) is called.
+
+   ddrrmmaaaa__ggeett__DDRRMMAAAA__iimmpplleemmeennttaattiioonn(())
+       The  drmaa_get_DRMAA_implementation()  function returns into _d_r_m___s_y_s_t_e_m
+       up to _d_r_m___s_y_s_t_e_m___l_e_n characters of a string containing the Grid  Engine
+       DRMAA  implementation  version information.  In the current implementa-
+       tion, the drmaa_get_DRMAA_implementation() function  returns  the  same
+       result as the drmaa_get_DRM_system() function.
+
+       The  drmaa_get_DRMAA_implementation()  function  returns the same value
+       before and after _d_r_m_a_a___i_n_i_t(3) is called.
+
+EENNVVIIRROONNMMEENNTTAALL VVAARRIIAABBLLEESS
+       SSGGEE__RROOOOTT       Specifies the location of the Grid Engine standard  con-
+                      figuration files.
+
+       SSGGEE__CCEELLLL       If  set,  specifies  the  default Grid Engine cell to be
+                      used. To address a Grid Engine cell Grid Engine uses (in
+                      the order of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. ddeeffaauulltt.
+
+
+       SSGGEE__DDEEBBUUGG__LLEEVVEELL
+                      If set, specifies that debug information should be writ-
+                      ten  to stderr. In addition the level of detail in which
+                      debug information is generated is defined.
+
+       SSGGEE__QQMMAASSTTEERR__PPOORRTT
+                      If set, specifies the tcp port on  which  _s_g_e___q_m_a_s_t_e_r(8)
+                      is  expected to listen for communication requests.  Most
+                      installations will use a services map entry  instead  to
+                      define that port.
+
+RREETTUURRNN VVAALLUUEESS
+       Upon  successful  completion, drmaa_get_contact(), drmaa_version(), and
+       drmaa_get_DRM_system() return DRMAA_ERRNO_SUCCESS. Other  values  indi-
+       cate  an error.  Up to _e_r_r_o_r___d_i_a_g___l_e_n characters of error related diag-
+       nosis information is then provided in the buffer _e_r_r_o_r___d_i_a_g_n_o_s_i_s.
+
+EERRRROORRSS
+       The drmaa_get_contact(), drmaa_version(),  drmaa_get_DRM_system(),  and
+       drmaa_get_DRMAA_implementation() will fail if:
+
+   DDRRMMAAAA__EERRRRNNOO__IINNTTEERRNNAALL__EERRRROORR
+       Unexpected or internal DRMAA error, like system call failure, etc.
+
+   DDRRMMAAAA__EERRRRNNOO__DDRRMM__CCOOMMMMUUNNIICCAATTIIOONN__FFAAIILLUURREE
+       Could not contact DRM system for this request.
+
+   DDRRMMAAAA__EERRRRNNOO__AAUUTTHH__FFAAIILLUURREE
+       The  specified  request is not processed successfully due to authoriza-
+       tion failure.
+
+   DDRRMMAAAA__EERRRRNNOO__IINNVVAALLIIDD__AARRGGUUMMEENNTT
+       The input value for an argument is invalid.
+
+   DDRRMMAAAA__EERRRRNNOO__NNOO__MMEEMMOORRYY
+       Failed allocating memory.
+
+       The drmaa_get_contact() and drmaa_get_DRM_system() will fail if:
+
+   DDRRMMAAAA__EERRRRNNOO__NNOO__AACCTTIIVVEE__SSEESSSSIIOONN
+       Failed because there is no active session.
+
+SSEEEE AALLSSOO
+       _d_r_m_a_a___s_e_s_s_i_o_n(3).
+
+
+
+SGE 8.0.0                $Date: 2008-07-08 09:10:04 $            drmaa_misc(3)
