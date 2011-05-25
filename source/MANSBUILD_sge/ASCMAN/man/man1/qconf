@@ -1,0 +1,944 @@
+QCONF(1)                   Grid Engine User Commands                  QCONF(1)
+
+
+
+NNAAMMEE
+       qconf - Grid Engine Queue Configuration
+
+SSYYNNTTAAXX
+       qqccoonnff ooppttiioonnss
+
+DDEESSCCRRIIPPTTIIOONN
+       _Q_c_o_n_f  allows  the  system administrator to add, delete, and modify the
+       current Grid Engine configuration,  including  queue  management,  host
+       management,  complex management and user management.  _Q_c_o_n_f also allows
+       you to examine the current queue configuration for existing queues.
+
+       _Q_c_o_n_f allows the use of the backslash, '\', character at the end  of  a
+       line  to  indicate  that the next line is a continuation of the current
+       line.  When displaying settings, such as the output of one of  the  --ss_*
+       options,  _q_c_o_n_f will break up long lines (lines greater than 80 charac-
+       ters) into smaller lines using backslash line continuation where possi-
+       ble.   Lines will only be broken up at commas or whitespace.  This fea-
+       ture can be disabled by setting the SGE_SINGLE_LINE  environment  vari-
+       able.
+
+OOPPTTIIOONNSS
+       Unless  denoted  otherwise, the following options and the corresponding
+       operations are available to all users with a valid account.
+
+       --AAaattttrr oobbjj__ssppeecc ffnnaammee oobbjj__iinnssttaannccee,,......
+                                     _<_a_d_d _t_o _o_b_j_e_c_t _a_t_t_r_i_b_u_t_e_s_>
+              Similar to --aaaattttrr (see below) but takes specifications  for  the
+              object  attributes  to  be  enhanced  from  file named ffnnaammee. As
+              opposed to --aaaattttrr, multiple attributes can  be  enhanced.  Their
+              specification  has to be listed in ffnnaammee following the file for-
+              mat of the  corresponding  object  (see  _q_u_e_u_e___c_o_n_f(5)  for  the
+              queue, for example).
+              Requires root or manager privileges.
+
+       --AAccaall ffnnaammee                   _<_a_d_d _c_a_l_e_n_d_a_r_>
+              Adds  a  new calendar definition to the Grid Engine environment.
+              Calendars are used in Grid Engine for defining availability  and
+              unavailability  schedules  of  queues.  The format of a calendar
+              definition is described in _c_a_l_e_n_d_a_r___c_o_n_f(5).
+
+              The calendar definition is taken from the file  ffnnaammee.  Requires
+              root or manager privileges.
+
+       --AAcckkpptt ffnnaammee                  _<_a_d_d _c_k_p_t_. _e_n_v_i_r_o_n_m_e_n_t_>
+              Add  the  checkpointing  environment  as  defined  in ffnnaammee (see
+              _c_h_e_c_k_p_o_i_n_t(5)) to the list of supported  checkpointing  environ-
+              ments.  Requires root or manager privileges.
+
+       --AAccoonnff ffnnaammee__lliisstt             _<_a_d_d _c_o_n_f_i_g_u_r_a_t_i_o_n_s_>
+              Add  the configurations (see _s_g_e___c_o_n_f(5)) specified in the files
+              in the comma separated ffnnaammee__lliisstt. The  configuration  is  added
+              for the host that is identical to the file name.
+              Requires root or manager privileges.
+
+       --AAee ffnnaammee                     _<_a_d_d _e_x_e_c_u_t_i_o_n _h_o_s_t_>
+              Add the execution host defined in ffnnaammee to the Grid Engine clus-
+              ter. The format of the execution host specification is described
+              in _h_o_s_t___c_o_n_f(5).  Requires root or manager privileges.
+
+       --AAhhggrrpp ffnnaammee                  _<_a_d_d _h_o_s_t _g_r_o_u_p _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Add the host group configuration defined in ffiillee.  The file for-
+              mat of ffnnaammee must comply with  the  format  specified  in  _h_o_s_t_-
+              _g_r_o_u_p(5).  Requires root or manager privileges.
+
+       --AArrqqss ffnnaammee                   _<_a_d_d _R_Q_S _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Add the resource quota set (RQS) defined in the file named ffnnaammee
+              to the Grid Engine cluster. Requires root or manager privileges.
+
+       --AApp ffnnaammee                     _<_a_d_d _P_E _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Add the parallel environment (PE) defined in ffnnaammee to  the  Grid
+              Engine cluster. Requires root or manager privileges.
+
+       --AApprrjj ffnnaammee                   _<_a_d_d _n_e_w _p_r_o_j_e_c_t_>
+              Adds  the  project  description  defined in ffnnaammee to the list of
+              registered projects (see _p_r_o_j_e_c_t(5)).  Requires root or  manager
+              privileges.
+
+       --AAqq ffnnaammee                     _<_a_d_d _n_e_w _q_u_e_u_e_>
+              Add  the  queue  defined  in  ffnnaammee  to the Grid Engine cluster.
+              Requires root or manager privileges.
+
+       --AAuu ffnnaammee                     _<_a_d_d _a_n _A_C_L_>
+              Add the user access list (ACL) defined in  file  ffnnaammee  to  Grid
+              Engine.  User  lists  are  used  for queue usage authentication.
+              Requires root, manager, or operator privileges.
+
+       --ccbb    This parameter can be used since Grid Engine  version  6.2u5  in
+              combination  with the command line switch --sseepp. In that case the
+              output of the corresponding  command  will  contain  information
+              about the added job to core binding functionality.
+
+              If --ccbb switch is not used then --sseepp will behave as in GE version
+              6.2u4 and below.
+
+              Please note that this command-line switch will be  removed  from
+              Grid Engine with the next major release.
+
+       --DDaattttrr oobbjj__ssppeecc ffnnaammee oobbjj__iinnssttaannccee,,......
+                                     _<_d_e_l_. _f_r_o_m _o_b_j_e_c_t _a_t_t_r_i_b_s_>
+              Similar  to  --ddaattttrr  (see  below) but the definition of the list
+              attributes from which entries are to be deleted is contained  in
+              the  file named ffnnaammee. As opposed to --ddaattttrr, multiple attributes
+              can be modified. Their specification has to be listed  in  ffnnaammee
+              following  the  file  format  of  the  corresponding object (see
+              _q_u_e_u_e___c_o_n_f(5) for the queue, for example).
+              Requires root or manager privileges.
+
+       --MMaattttrr oobbjj__ssppeecc ffnnaammee oobbjj__iinnssttaannccee,,......
+                                     _<_m_o_d_. _o_b_j_e_c_t _a_t_t_r_i_b_u_t_e_s_>
+              Similar to --mmaattttrr (see below) but takes specifications  for  the
+              object  attributes  to  be  modified  from  file named ffnnaammee. As
+              opposed to --mmaattttrr, multiple attributes can  be  modified.  Their
+              specification  has to be listed in ffnnaammee following the file for-
+              mat of the  corresponding  object  (see  _q_u_e_u_e___c_o_n_f(5)  for  the
+              queue, for example).
+              Requires root or manager privileges.
+
+       --MMcc ffnnaammee                     _<_m_o_d_i_f_y _c_o_m_p_l_e_x_>
+              Overwrites the complex configuration with the contents of ffnnaammee.
+              The argument file must comply with the format specified in  _c_o_m_-
+              _p_l_e_x(5).  Requires root or manager privileges.
+
+       --MMccaall ffnnaammee                   _<_m_o_d_i_f_y _c_a_l_e_n_d_a_r_>
+              Overwrites  the  calendar  definition as specified in ffnnaammee. The
+              argument file must comply with the format  described  in  _c_a_l_e_n_-
+              _d_a_r___c_o_n_f(5).  Requires root or manager privileges.
+
+       --MMcckkpptt ffnnaammee                  _<_m_o_d_i_f_y _c_k_p_t_. _e_n_v_i_r_o_n_m_e_n_t_>
+              Overwrite an existing checkpointing environment with the defini-
+              tions in ffnnaammee (see _c_h_e_c_k_p_o_i_n_t(5)).  The name attribute in ffnnaammee
+              has  to  match  an  existing checkpointing environment. Requires
+              root or manager privileges.
+
+       --MMccoonnff ffnnaammee__lliisstt             _<_m_o_d_i_f_y _c_o_n_f_i_g_u_r_a_t_i_o_n_s_>
+              Modify the configurations (see  _s_g_e___c_o_n_f(5))  specified  in  the
+              files  in  the  comma separated ffnnaammee__lliisstt. The configuration is
+              modified for the host that is identical to the file name.
+              Requires root or manager privileges.
+
+       --MMee ffnnaammee                     _<_m_o_d_i_f_y _e_x_e_c_u_t_i_o_n _h_o_s_t_>
+              Overwrites the execution host configuration  for  the  specified
+              host with the contents of ffnnaammee, which must comply with the for-
+              mat defined in _h_o_s_t___c_o_n_f(5).  Requires root  or  manager  privi-
+              lege.
+
+       --MMhhggrrpp ffnnaammee                  _<_m_o_d_i_f_y _h_o_s_t _g_r_o_u_p _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Allows  changing the host group configuration with a single com-
+              mand.  All host group configuration entries contained  in  ffnnaammee
+              will  be  applied.  Configuration entries not contained in ffnnaammee
+              will be deleted. The file format of ffnnaammee  must  comply  to  the
+              format  specified  in  _h_o_s_t_g_r_o_u_p(5).   Requires  root or manager
+              privileges.
+
+       --MMrrqqss ffnnaammee [[mmrrqqss__nnaammee]]       _<_m_o_d_i_f_y _R_Q_S _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Same as --mmrrqqss (see below) but instead of invoking an  editor  to
+              modify  the  RQS  configuration, the file ffnnaammee is considered to
+              contain a changed configuration. The name of  the  rule  set  in
+              ffnnaammee  must be the same as rrqqss__nnaammee. If rrqqss__nnaammee is not set, all
+              rule sets are overwritten by the rule sets  in  ffnnaammee  Refer  to
+              _s_g_e___r_e_s_o_u_r_c_e___q_u_o_t_a(5)  for details on the RQS configuration for-
+              mat.  Requires root or manager privileges.
+
+       --MMpp ffnnaammee                     _<_m_o_d_i_f_y _P_E _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Same as --mmpp (see below) but instead of  invoking  an  editor  to
+              modify the PE configuration the file ffnnaammee is considered to con-
+              tain a changed configuration.  Refer to _s_g_e___p_e(5) for details on
+              the  PE  configuration  format.  Requires root or manager privi-
+              lege.
+
+       --MMpprrjj ffnnaammee                   _<_m_o_d_i_f_y _p_r_o_j_e_c_t _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Same as --mmpprrjj (see below) but instead of invoking an  editor  to
+              modify the project configuration the file ffnnaammee is considered to
+              contain  a  changed  configuration.   Refer  to  _p_r_o_j_e_c_t(5)  for
+              details  on  the project configuration format.  Requires root or
+              manager privilege.
+
+       --MMqq ffnnaammee                     _<_m_o_d_i_f_y _q_u_e_u_e _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Same as --mmqq (see below) but instead of  invoking  an  editor  to
+              modify  the  queue configuration the file ffnnaammee is considered to
+              contain a changed configuration.   Refer  to  _q_u_e_u_e___c_o_n_f(5)  for
+              details  on  the  queue  configuration format.  Requires root or
+              manager privilege.
+
+       --MMssccoonnff  ffnnaammee                 _<_m_o_d_i_f_y  _s_c_h_e_d_u_l_e_r  _c_o_n_f_i_g_u_r_a_t_i_o_n   _f_r_o_m
+       _f_n_a_m_e_>
+              The current scheduler configuration (see _s_c_h_e_d___c_o_n_f(5)) is over-
+              ridden with the configuration specified in the  file.   Requires
+              root or manager privilege.
+
+       --MMssttrreeee ffnnaammee                 _<_m_o_d_i_f_y _s_h_a_r_e _t_r_e_e_>
+              Modifies  the  definition of the share tree (see _s_h_a_r_e___t_r_e_e(5)).
+              The modified sharetree is read from file ffnnaammee.   Requires  root
+              or manager privileges.
+
+       --MMuu ffnnaammee                     _<_m_o_d_i_f_y _A_C_L_>
+              Takes  the  user access list (ACL) defined in ffnnaammee to overwrite
+              any existing ACL with the  same  name.  See  _a_c_c_e_s_s___l_i_s_t(5)  for
+              information  on  the  ACL configuration format. Requires root or
+              manager privilege.
+
+       --MMuusseerr ffnnaammee                  _<_m_o_d_i_f_y _u_s_e_r_>
+              Modify the user defined in ffnnaammee in the Grid Engine cluster. The
+              format  of  the  user  specification  is  described  in _u_s_e_r(5).
+              Requires root or manager privileges.
+
+       --RRaattttrr oobbjj__ssppeecc ffnnaammee oobbjj__iinnssttaannccee,,......
+                                     _<_r_e_p_l_a_c_e _o_b_j_e_c_t _a_t_t_r_i_b_s_>
+              Similar to --rraattttrr (see below) but the  definition  of  the  list
+              attributes  whose  content is to be replaced is contained in the
+              file named ffnnaammee. As opposed to --rraattttrr, multiple attributes  can
+              be  modified. Their specification has to be listed in ffnnaammee fol-
+              lowing  the  file  format  of  the  corresponding  object   (see
+              _q_u_e_u_e___c_o_n_f(5) for the queue, for example).
+              Requires root/manager privileges.
+
+       --aaaattttrr oobbjj__ssppeecc aattttrr__nnaammee vvaall oobbjj__iinnssttaannccee,,......
+                                     _<_a_d_d _t_o _o_b_j_e_c_t _a_t_t_r_i_b_u_t_e_s_>
+              Allows  adding  specifications  to  a  single configuration list
+              attribute in multiple instances of an object with a single  com-
+              mand.  Currently  supported objects are the queue, the host, the
+              host group, the parallel environment, the  resource  quota  sets
+              and the checkpointing interface configuration being specified as
+              _q_u_e_u_e, _e_x_e_c_h_o_s_t, _h_o_s_t_g_r_o_u_p, _p_e, _r_q_s, or _c_k_p_t in  oobbjj__ssppeecc.   For
+              the obj_spec _q_u_e_u_e the obj_instance can be a cluster queue name,
+              a queue domain name or a queue instance name. Find more informa-
+              tion  concerning different queue names in _s_g_e___t_y_p_e_s(1).  Depend-
+              ing on the type of the obj_instance, this adds  to  the  cluster
+              queues  attribute  sublist  the cluster queue's implicit default
+              configuration value or the queue domain configuration  value  or
+              queue  instance  configuration value.  The queue llooaadd__tthhrreesshhoollddss
+              parameter is an example of a list  attribute.  With  the  --aaaattttrr
+              option,  entries  can  be added to such lists, while they can be
+              deleted with --ddaattttrr, modified with  --mmaattttrr,  and  replaced  with
+              --rraattttrr.
+              For the obj_spec _r_q_s the obj_instance is a unique identifier for
+              a specific rule. The identifier consists of a rule-set name  and
+              either  the  number  of the rule in the list, or the name of the
+              rule, separated by a "/".
+              The name of the configuration attribute to be enhanced is speci-
+              fied  with  aattttrr__nnaammee  followed by vvaall as a _n_a_m_e_=_v_a_l_u_e pair. The
+              comma separated list of object  instances  (e.g.,  the  list  of
+              queues) to which the changes have to be applied are specified at
+              the end of the command.
+              The following restriction applies: For the _e_x_e_c_h_o_s_t  object  the
+              llooaadd__vvaalluueess attribute cannot be modified (see _h_o_s_t___c_o_n_f(5)).
+              Requires root or manager privileges.
+
+       --aaccaall ccaalleennddaarr__nnaammee           _<_a_d_d _c_a_l_e_n_d_a_r_>
+              Adds  a  new calendar definition to the Grid Engine environment.
+              Calendars are used in Grid Engine for defining availability  and
+              unavailability  schedules  of  queues.  The format of a calendar
+              definition is described in _c_a_l_e_n_d_a_r___c_o_n_f(5).
+
+              With the calendar name given in the option argument, _q_c_o_n_f  will
+              open  a temporary file and start up the text editor indicated by
+              the environment variable EDITOR (default _v_i(1) if EDITOR is  not
+              set).  After  entering  the  calendar definition and closing the
+              editor the new calendar is checked and registered with _s_g_e___q_m_a_s_-
+              _t_e_r(8).  Requires root/manager privileges.
+
+       --aacckkpptt cckkpptt__nnaammee              _<_a_d_d _c_k_p_t_. _e_n_v_i_r_o_n_m_e_n_t_>
+              Adds a checkpointing environment under the name cckkpptt__nnaammee to the
+              list of checkpointing environments maintained by Grid Engine and
+              to be usable to submit checkpointing jobs (see _c_h_e_c_k_p_o_i_n_t(5) for
+              details on the format of  a  checkpointing  environment  defini-
+              tion).  _Q_c_o_n_f retrieves a default checkpointing environment con-
+              figuration and executes _v_i(1) (or $EDITOR if the EDITOR environ-
+              ment  variable is set) to allow you to customize the checkpoint-
+              ing environment configuration. Upon exit from  the  editor,  the
+              checkpointing  environment  is  registered  with _s_g_e___q_m_a_s_t_e_r(8).
+              Requires root/manager privileges.
+
+       --aaccoonnff hhoosstt,,......               _<_a_d_d _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Successively adds configurations (see _s_g_e___c_o_n_f(5)) For the hosts
+              in  the  comma  separated  host  list.  For each host, an editor
+              ($EDITOR, if defined, or _v_i(1)) is invoked and the configuration
+              for  the  host  can  be entered. The configuration is registered
+              with _s_g_e___q_m_a_s_t_e_r(8) after saving the file and quitting the  edi-
+              tor.
+              Requires root or manager privileges.
+
+       --aaee [[hhoosstt__tteemmppllaattee]]           _<_a_d_d _e_x_e_c_u_t_i_o_n _h_o_s_t_>
+              Adds  a  host  to  the list of Grid Engine execution hosts. If a
+              queue is configured on a host this host is  automatically  added
+              to  the Grid Engine execution host list.  Adding execution hosts
+              explicitly offers the advantage to be able to specify parameters
+              like  load  scale  values with the registration of the execution
+              host. However, these parameters  can  be  modified  (from  their
+              defaults) at any later time via the --mmee option described below.
+              If  the  hhoosstt__tteemmppllaattee  argument is present, _q_c_o_n_f retrieves the
+              configuration of the specified  execution  host  from  _s_g_e___q_m_a_s_-
+              _t_e_r(8)  or  a  generic template otherwise.  The template is then
+              stored in a file and _q_c_o_n_f executes _v_i(1) (or the  editor  indi-
+              cated  by  $EDITOR if the EDITOR environment variable is set) to
+              change the entries in the file.  The  format  of  the  execution
+              host  specification  is  described  in  _h_o_s_t___c_o_n_f(5).   When the
+              changes are saved in the editor and the editor is quit  the  new
+              execution  host  is  registered  with  _s_g_e___q_m_a_s_t_e_r(8).  Requires
+              root/manager privileges.
+
+       --aahh hhoossttnnaammee,,......              _<_a_d_d _a_d_m_i_n_i_s_t_r_a_t_i_v_e _h_o_s_t_>
+              Adds hosts hhoossttnnaammee to the Grid Engine trusted host list (a host
+              must  be in this list to execute administrative Grid Engine com-
+              mands, the sole exception to this being the execution  of  _q_c_o_n_f
+              on  the  _s_g_e___q_m_a_s_t_e_r(8) node). The default Grid Engine installa-
+              tion procedures usually add all designated execution hosts  (see
+              the --aaee option above) to the Grid Engine trusted host list auto-
+              matically.  Requires root or manager privileges.
+
+       --aahhggrrpp ggrroouupp                  _<_a_d_d _h_o_s_t _g_r_o_u_p _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Adds a new host group with the name specified  in  ggrroouupp..   This
+              command  invokes an editor (either _v_i(1) or the editor indicated
+              by the EDITOR environment variable).  The new host  group  entry
+              is  registered  after changing the entry and exiting the editor.
+              Requires root or manager privileges.
+
+       --aarrqqss [[rrqqss__nnaammee]]              _<_a_d_d _n_e_w _R_Q_S_>
+              Adds one or more _R_e_s_o_u_r_c_e _Q_u_o_t_a _S_e_t (RQS) description under  the
+              names  rrqqss__nnaammee  to  the list of RQSs maintained by Grid Engine.
+              (See _s_g_e___r_e_s_o_u_r_c_e___q_u_o_t_a(5) for details on the format of  an  RQS
+              definition.)   _Q_c_o_n_f  retrieves  a default RQS configuration and
+              executes _v_i(1) (or $EDITOR if the EDITOR environment variable is
+              set)  to allow you to customize the RQS configuration. Upon exit
+              from the editor, the  RQS  is  registered  with  _s_g_e___q_m_a_s_t_e_r(8).
+              Requires root or manager privileges.
+
+       --aamm uusseerr,,......                  _<_a_d_d _m_a_n_a_g_e_r_s_>
+              Adds  the  indicated  users  to  the  Grid  Engine manager list.
+              Requires root or manager privileges.
+
+       --aaoo uusseerr,,......                  _<_a_d_d _o_p_e_r_a_t_o_r_s_>
+              Adds the indicated users  to  the  Grid  Engine  operator  list.
+              Requires root or manager privileges.
+
+       --aapp ppee__nnaammee                   _<_a_d_d _n_e_w _P_E_>
+              Adds  a  _P_a_r_a_l_l_e_l  _E_n_v_i_r_o_n_m_e_n_t  (PE)  description under the name
+              ppee__nnaammee to the list of PEs maintained by Grid Engine and  to  be
+              usable to submit parallel jobs (see _s_g_e___p_e(5) for details on the
+              format of a PE definition).  _Q_c_o_n_f retrieves a default  PE  con-
+              figuration and executes _v_i(1) (or $EDITOR if the EDITOR environ-
+              ment variable is set) to allow you to customize the PE  configu-
+              ration.  Upon  exit  from  the editor, the PE is registered with
+              _s_g_e___q_m_a_s_t_e_r(8).  Requires root/manager privileges.
+
+       --aatt tthhrreeaadd__nnaammee _<_a_c_t_i_v_a_t_e_s _t_h_r_e_a_d _i_n _m_a_s_t_e_r_>
+              Activates  an  additional  thread   in   the   master   process.
+              tthhrreeaadd__nnaammee  might  be  either  "scheduler" or "jvm". The corre-
+              sponding thread is only started when it is not already  running.
+              There might be only one scheduler and only one JVM thread in the
+              master process at the same time.
+
+       --aapprrjj                         _<_a_d_d _n_e_w _p_r_o_j_e_c_t_>
+              Adds a project description to the list  of  registered  projects
+              (see _p_r_o_j_e_c_t(5)).  _Q_c_o_n_f retrieves a template project configura-
+              tion and executes _v_i(1) (or $EDITOR if  the  EDITOR  environment
+              variable is set) to allow you to customize the new project. Upon
+              exit from the editor, the template is registered with  _s_g_e___q_m_a_s_-
+              _t_e_r(8).  Requires root or manager privileges.
+
+       --aaqq [[qquueeuuee__nnaammee]]              _<_a_d_d _n_e_w _q_u_e_u_e_>
+              _Q_c_o_n_f   retrieves   the   default   queue   configuration   (see
+              _q_u_e_u_e___c_o_n_f(5)) and executes _v_i(1)  (or  $EDITOR  if  the  EDITOR
+              environment variable is set) to allow you to customize the queue
+              configuration. Upon exit from the editor, the  queue  is  regis-
+              tered  with  _s_g_e___q_m_a_s_t_e_r(8).   A  minimal configuration requires
+              only that the queue name and queue hostlist  be  set.   Requires
+              root or manager privileges.
+
+       --aass hhoossttnnaammee,,......              _<_a_d_d _s_u_b_m_i_t _h_o_s_t_s_>
+              Add  hosts  hhoossttnnaammee to the list of hosts allowed to submit Grid
+              Engine jobs and control their behavior only.  Requires  root  or
+              manager privileges.
+
+       --aassttnnooddee nnooddee__ppaatthh==sshhaarreess,,...... _<_a_d_d _s_h_a_r_e _t_r_e_e _n_o_d_e_>
+              Adds  the  specified  share  tree node(s) to the share tree (see
+              _s_h_a_r_e___t_r_e_e(5)).   The   nnooddee__ppaatthh   is   a   hierarchical   path
+              ([[//]]nnooddee__nnaammee[[[[//..]]nnooddee__nnaammee......]])  specifying the location of the
+              new node in the share tree.  The base name of the  node_path  is
+              the name of the new node.  The node is initialized to the number
+              of specified shares.  Requires root or manager privileges.
+
+       --aassttrreeee                       _<_a_d_d _s_h_a_r_e _t_r_e_e_>
+              Adds  the  definition  of  a  share  tree  to  the  system  (see
+              _s_h_a_r_e___t_r_e_e(5)).   A template share tree is retrieved and an edi-
+              tor (either _v_i(1) or the editor indicated by $EDITOR) is invoked
+              for  modifying  the share tree definition. Upon exiting the edi-
+              tor,  the  modified  data  is  registered  with  _s_g_e___q_m_a_s_t_e_r(8).
+              Requires root or manager privileges.
+
+       --AAssttrreeee ffnnaammee                 _<_a_d_d _s_h_a_r_e _t_r_e_e_>
+              Adds  the  definition  of  a  share  tree  to  the  system  (see
+              _s_h_a_r_e___t_r_e_e(5)) from the file ffnnaammee.  Requires  root  or  manager
+              privileges.
+
+       --aauu uusseerr,,...... aaccll__nnaammee,,......     _<_a_d_d _u_s_e_r_s _t_o _A_C_L_s_>
+              Adds  users  to Grid Engine user access lists (ACLs). User lists
+              are used for  queue  usage  authentication.  Requires  root/man-
+              ager/operator privileges.
+
+       --AAuusseerr ffnnaammee                  _<_a_d_d _u_s_e_r_>
+              Add  the  user  defined in ffnnaammee to the Grid Engine cluster. The
+              format of  the  user  specification  is  described  in  _u_s_e_r(5).
+              Requires root or manager privileges.
+
+       --aauusseerr                        _<_a_d_d _u_s_e_r_>
+              Adds a user to the list of registered users (see _u_s_e_r(5)).  This
+              command invokes an editor (either _v_i(1) or the editor  indicated
+              by the EDITOR environment variable) for a template user. The new
+              user is registered after changing the entry and exiting the edi-
+              tor. Requires root or manager privileges.
+
+       --bboonnssaaii                       _<_h_u_m_a_n_-_r_e_a_d_a_b_l_e _s_h_a_r_e_t_r_e_e_>
+              Shows  a  textual tree layout of the share tree analogous to the
+              graphical view in _q_m_o_n(1).  --ssssttrreeee shows the  same  information
+              in a less-readable (linearized) form.
+
+       --cclleeaarruussaaggee                   _<_c_l_e_a_r _s_h_a_r_e_t_r_e_e _u_s_a_g_e_>
+              Clears all user and project usage from the sharetree.  All usage
+              will be initialized back to zero.
+
+       --ccqq wwcc__qquueeuuee__lliisstt             _<_c_l_e_a_n _q_u_e_u_e_>
+              Cleans queue from jobs which haven't been  reaped.  Primarily  a
+              development  tool.  Requires  root/manager/operator  privileges.
+              Find a description of wc_queue_list in _s_g_e___t_y_p_e_s(1).
+
+       --ddaattttrr oobbjj__ssppeecc aattttrr__nnaammee vvaall oobbjj__iinnssttaannccee,,......
+                                     _<_d_e_l_e_t_e _i_n _o_b_j_e_c_t _a_t_t_r_i_b_s_>
+              Allows deleting specifications in a  single  configuration  list
+              attribute  in multiple instances of an object with a single com-
+              mand.    Find   more   information   concerning   obj_spec   and
+              obj_instance in the description of --aaaattttrr
+
+       --ddccaall ccaalleennddaarr__nnaammee,,......       _<_d_e_l_e_t_e _c_a_l_e_n_d_a_r_>
+              Deletes  the  specified  calendar  definition  from Grid Engine.
+              Requires root/manager privileges.
+
+       --ddcckkpptt cckkpptt__nnaammee              _<_d_e_l_e_t_e _c_k_p_t_. _e_n_v_i_r_o_n_m_e_n_t_>
+              Deletes  the  specified  checkpointing   environment.   Requires
+              root/manager privileges.
+
+       --ddccoonnff hhoosstt,,......               _<_d_e_l_e_t_e _l_o_c_a_l _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              The  local  configuration  entries  for  the specified hosts are
+              deleted from the configuration list.  Requires root  or  manager
+              privilege.
+
+       --ddee hhoosstt__nnaammee,,......             _<_d_e_l_e_t_e _e_x_e_c_u_t_i_o_n _h_o_s_t_>
+              Deletes   hosts  from  the  Grid  Engine  execution  host  list.
+              Requires root or manager privileges.
+
+       --ddhh hhoosstt__nnaammee,,......             _<_d_e_l_e_t_e _a_d_m_i_n_i_s_t_r_a_t_i_v_e _h_o_s_t_>
+              Deletes hosts from the Grid Engine trusted host list.  The  host
+              on  which  _s_g_e___q_m_a_s_t_e_r(8) is currently running cannot be removed
+              from the list of administrative hosts.  Requires root or manager
+              privileges.
+
+       --ddhhggrrpp ggrroouupp                  _<_d_e_l_e_t_e _h_o_s_t _g_r_o_u_p _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Deletes  host  group  configuration  with  the name specified in
+              ggrroouupp..  Requires root or manager privileges.
+
+       --ddrrqqss rrqqss__nnaammee__lliisstt           _<_d_e_l_e_t_e _R_Q_S_>
+              Deletes the specified resource quota sets (RQS).  Requires  root
+              or manager privileges.
+
+       --ddmm uusseerr[[,,uusseerr,,......]]           _<_d_e_l_e_t_e _m_a_n_a_g_e_r_s_>
+              Deletes  managers  from the manager list.  Requires root or man-
+              ager privileges.  It is not possible to delete the admin user or
+              the user root from the manager list.
+
+       --ddoo uusseerr[[,,uusseerr,,......]]           _<_d_e_l_e_t_e _o_p_e_r_a_t_o_r_s_>
+              Deletes operators from the operator list.  Requires root or man-
+              ager privileges.  It is not possible to delete the admin user or
+              the user root from the operator list.
+
+       --ddpp ppee__nnaammee                   _<_d_e_l_e_t_e _p_a_r_a_l_l_e_l _e_n_v_i_r_o_n_m_e_n_t_>
+              Deletes  the specified parallel environment (PE).  Requires root
+              or manager privileges.
+
+       --ddpprrjj pprroojjeecctt,,......             _<_d_e_l_e_t_e _p_r_o_j_e_c_t_s_>
+              Deletes the specified project(s). Requires  root/manager  privi-
+              leges.
+
+       --ddqq qquueeuuee__nnaammee,,......            _<_d_e_l_e_t_e _q_u_e_u_e_>
+              Removes  the  specified queue(s), which must be empty.  Requires
+              root or manager privileges.
+
+       --ddss hhoosstt__nnaammee,,......             _<_d_e_l_e_t_e _s_u_b_m_i_t _h_o_s_t_>
+              Deletes hosts from the Grid Engine submit host  list.   Requires
+              root or manager privileges.
+
+       --ddssttnnooddee nnooddee__ppaatthh,,......        _<_d_e_l_e_t_e _s_h_a_r_e _t_r_e_e _n_o_d_e_>
+              Deletes  the  specified  share tree node(s).  The nnooddee__ppaatthh is a
+              hierarchical path  ([[//]]nnooddee__nnaammee[[[[//..]]nnooddee__nnaammee......]])   specifying
+              the  location  of  the  node  to  be  deleted in the share tree.
+              Requires root or manager privileges.
+
+       --ddssttrreeee                       _<_d_e_l_e_t_e _s_h_a_r_e _t_r_e_e_>
+              Deletes the current share tree. Requires root or manager  privi-
+              leges.
+
+       --dduu uusseerr,,...... aaccll__nnaammee,,......     _<_d_e_l_e_t_e _u_s_e_r_s _f_r_o_m _A_C_L_>
+              Deletes  one  or  more  users  from one or more Grid Engine user
+              access lists (ACLs). Requires root/manager/operator privileges.
+
+       --dduull aaccll__nnaammee,,......             _<_d_e_l_e_t_e _u_s_e_r _l_i_s_t_s_>
+              Deletes one or  more  user  lists  from  the  system.   Requires
+              root/manager/operator privileges.
+
+       --dduusseerr uusseerr,,......               _<_d_e_l_e_t_e _u_s_e_r_s_>"
+              Deletes the specified user(s) from the list of registered users.
+              Requires root or manager privileges.
+
+       --hheellpp  Prints a listing of all options.
+
+       --kk{{mm||ss||ee[[jj]] {{hhoosstt,,......||aallll}}}}   _<_s_h_u_t_d_o_w_n _G_r_i_d _E_n_g_i_n_e_>
+              NNoottee:: The --kkss switch is deprecated, may  be  removed  in  future
+              release.  Please use the --kktt switch instead.
+              Used  to shutdown Grid Engine components (daemons).  In the form
+              --kkmm _s_g_e___q_m_a_s_t_e_r(8) is forced to terminate in a controlled  fash-
+              ion.  In  the  same way the --kkss switch causes termination of the
+              scheduler thread.  Shutdown of  running  _s_g_e___e_x_e_c_d(8)  processes
+              currently  registered is initiated by the --kkee option. If --kkeejj is
+              specified instead, all jobs running on the execution  hosts  are
+              aborted  prior to termination of the corresponding _s_g_e___e_x_e_c_d(8).
+              The comma separated host list specifies the execution  hosts  to
+              be  addressed  by the --kkee and --kkeejj option. If the keyword aallll is
+              specified instead of a host list, all running _s_g_e___e_x_e_c_d(8)  pro-
+              cesses  are shutdown. Job abortion, initiated by the --kkeejj option
+              will result in ddrr state for all running jobs until  _s_g_e___e_x_e_c_d(8)
+              is running again.
+              Requires root or manager privileges.
+
+       --kktt tthhrreeaadd__nnaammee   _<_t_e_r_m_i_n_a_t_e _m_a_s_t_e_r _t_h_r_e_a_d_>"
+              Terminates  a thread in the master process. Currently it is only
+              supported to shutdown the "scheduler" and the "jvm" thread.  The
+              command  will  only be successful if the corresponding thread is
+              running.
+
+       --kkeecc {{iidd,,......||aallll}}             _<_k_i_l_l _e_v_e_n_t _c_l_i_e_n_t_>
+              Used to shutdown event  clients  registered  at  _s_g_e___q_m_a_s_t_e_r(8).
+              The  comma  separated  event  client  list  specifies  the event
+              clients to be addressed by the --kkeecc option.  If the keyword  aallll
+              is  specified instead of an event client list, all running event
+              clients except special clients like  the  scheduler  thread  are
+              terminated.  Requires root or manager privilege.
+
+       --mmaattttrr oobbjj__ssppeecc aattttrr__nnaammee vvaall oobbjj__iinnssttaannccee,,......
+                                     _<_m_o_d_i_f_y _o_b_j_e_c_t _a_t_t_r_i_b_u_t_e_s_>
+              Allows  changing  a  single  configuration attribute in multiple
+              instances of an object with a single command.  Find more  infor-
+              mation  concerning  obj_spec and obj_instance in the description
+              of --aaaattttrr
+
+       --mmcc                           _<_m_o_d_i_f_y _c_o_m_p_l_e_x_>
+              The complex configuration (see _c_o_m_p_l_e_x(5)) is retrieved, an edi-
+              tor  is  executed (either _v_i(1) or the editor indicated by $EDI-
+              TOR) and the changed complex configuration  is  registered  with
+              _s_g_e___q_m_a_s_t_e_r(8)  upon  exit of the editor.  Requires root or man-
+              ager privilege.
+
+       --mmccaall ccaalleennddaarr__nnaammee           _<_m_o_d_i_f_y _c_a_l_e_n_d_a_r_>
+              The specified  calendar  definition  (see  _c_a_l_e_n_d_a_r___c_o_n_f(5))  is
+              retrieved,  an  editor  is  executed (either _v_i(1) or the editor
+              indicated by $EDITOR) and the  changed  calendar  definition  is
+              registered with _s_g_e___q_m_a_s_t_e_r(8) upon exit of the editor. Requires
+              root or manager privilege.
+
+       --mmcckkpptt cckkpptt__nnaammee              _<_m_o_d_i_f_y _c_k_p_t_. _e_n_v_i_r_o_n_m_e_n_t_>
+              Retrieves the current configuration  for  the  specified  check-
+              pointing  environment,  executes  an editor (either _v_i(1) or the
+              editor indicated by the EDITOR environment variable) and  regis-
+              ters  the  new  configuration with the _s_g_e___q_m_a_s_t_e_r(8).  Refer to
+              _c_h_e_c_k_p_o_i_n_t(5) for details on the checkpointing environment  con-
+              figuration format.  Requires root or manager privilege.
+
+       --mmccoonnff [[hhoosstt,,......||gglloobbaall]]      _<_m_o_d_i_f_y _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              The configuration for the specified host is retrieved, an editor
+              is executed (either _v_i(1) or the editor  indicated  by  $EDITOR)
+              and  the changed configuration is registered with _s_g_e___q_m_a_s_t_e_r(8)
+              upon exit of the editor.  If the optional host argument is omit-
+              ted  or if the special host name gglloobbaall is specified, the global
+              configuration is modified.  The  format of the configuration  is
+              described in _s_g_e___c_o_n_f(5).
+              Requires root or manager privilege.
+
+       --mmee hhoossttnnaammee                  _<_m_o_d_i_f_y _e_x_e_c_u_t_i_o_n _h_o_s_t_>
+              Retrieves  the current configuration for the specified execution
+              host, executes an editor (either _v_i(1) or the  editor  indicated
+              by  the  EDITOR  environment variable) and registers the changed
+              configuration with _s_g_e___q_m_a_s_t_e_r(8) upon  exit  from  the  editor.
+              The  format  of the execution host configuration is described in
+              _h_o_s_t___c_o_n_f(5).  Requires root or manager privilege.
+
+       --mmhhggrrpp ggrroouupp                  _<_m_o_d_i_f_y _h_o_s_t _g_r_o_u_p _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              The host group entries for the host group specified in ggrroouupp are
+              retrieved and an editor (either _v_i(1) or the editor indicated by
+              the EDITOR environment variable) is invoked  for  modifying  the
+              host  group  configuration.  By closing the editor, the modified
+              data is registered.  The format of the host group  configuration
+              is  described  in _h_o_s_t_g_r_o_u_p(5).  Requires root or manager privi-
+              leges.
+
+       --mmrrqqss [[rrqqss__nnaammee]]              _<_m_o_d_i_f_y _R_Q_S _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Retrieves the resource quota set (RQS)configuration  defined  in
+              rqs_name,  or  if  rqs_name is not given, retrieves all resource
+              quota sets, executes an editor (either _v_i(1) or the editor indi-
+              cated  by the EDITOR environment variable) and registers the new
+              configuration    with    the    _s_g_e___q_m_a_s_t_e_r(8).     Refer     to
+              _s_g_e___r_e_s_o_u_r_c_e___q_u_o_t_a(5)  for details on the RQS configuration for-
+              mat.  Requires root or manager privilege.
+
+       --mmpp ppee__nnaammee                   _<_m_o_d_i_f_y _P_E _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Retrieves the current configuration for the  specified  _p_a_r_a_l_l_e_l
+              _e_n_v_i_r_o_n_m_e_n_t (PE), executes an editor (either _v_i(1) or the editor
+              indicated by the EDITOR environment variable) and registers  the
+              new  configuration  with the _s_g_e___q_m_a_s_t_e_r(8).  Refer to _s_g_e___p_e(5)
+              for details on the PE configuration format.   Requires  root  or
+              manager privilege.
+
+       --mmpprrjj pprroojjeecctt                 _<_m_o_d_i_f_y _p_r_o_j_e_c_t_>
+              Data  for the specific project is retrieved (see _p_r_o_j_e_c_t(5)) and
+              an editor (either _v_i(1) or the editor indicated by  $EDITOR)  is
+              invoked  for  modifying the project definition. Upon exiting the
+              editor, the modified data is registered.  Requires root or  man-
+              ager privileges.
+
+       --mmqq qquueeuueennaammee                 _<_m_o_d_i_f_y _q_u_e_u_e _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Retrieves  the  current  configuration  for the specified queue,
+              executes an editor (either _v_i(1) or the editor indicated by  the
+              EDITOR environment variable) and registers the new configuration
+              with the _s_g_e___q_m_a_s_t_e_r(8).  Refer to _q_u_e_u_e___c_o_n_f(5) for details  on
+              the queue configuration format.  Requires root or manager privi-
+              lege.
+
+       --mmssccoonnff                       _<_m_o_d_i_f_y _s_c_h_e_d_u_l_e_r _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              The  current  scheduler  configuration  (see  _s_c_h_e_d___c_o_n_f(5))  is
+              retrieved,  an  editor  is  executed (either _v_i(1) or the editor
+              indicated by $EDITOR) and the changed  configuration  is  regis-
+              tered  with  _s_g_e___q_m_a_s_t_e_r(8)  upon  exit of the editor.  Requires
+              root or manager privilege.
+
+       --mmssttnnooddee nnooddee__ppaatthh==sshhaarreess,,...... _<_m_o_d_i_f_y _s_h_a_r_e _t_r_e_e _n_o_d_e_>
+              Modifies the specified share tree node(s) in the share tree (see
+              _s_h_a_r_e___t_r_e_e(5)).    The   nnooddee__ppaatthh   is   a   hierarchical  path
+              ([[//]]nnooddee__nnaammee[[[[//..]]nnooddee__nnaammee......]])  specifying the location of  an
+              existing  node in the share tree.  The node is set to the number
+              of specified sshhaarreess.  Requires root or manager privileges.
+
+       --mmssttrreeee                       _<_m_o_d_i_f_y _s_h_a_r_e _t_r_e_e_>
+              Modifies the definition of the share tree  (see  _s_h_a_r_e___t_r_e_e(5)).
+              The  present share tree is retrieved and an editor (either _v_i(1)
+              or the editor indicated by $EDITOR) is invoked for modifying the
+              share  tree  definition.  Upon  exiting the editor, the modified
+              data is registered with _s_g_e___q_m_a_s_t_e_r(8).  Requires root  or  man-
+              ager privileges.
+
+       --mmuu aaccll__nnaammee                  _<_m_o_d_i_f_y _u_s_e_r _a_c_c_e_s_s _l_i_s_t_s_>
+              Retrieves  the  current  configuration  for  the  specified user
+              access list, executes an editor  (either  _v_i(1)  or  the  editor
+              indicated  by the EDITOR environment variable) and registers the
+              new configuration with the  _s_g_e___q_m_a_s_t_e_r(8).   Requires  root  or
+              manager privilege.
+
+       --mmuusseerr uusseerr                   _<_m_o_d_i_f_y _u_s_e_r_>
+              Data  for  the  specific  user is retrieved (see _u_s_e_r(5)) and an
+              editor (either _v_i(1) or the editor indicated by the EDITOR envi-
+              ronment  variable) is invoked for modifying the user definition.
+              Upon exiting  the  editor,  the  modified  data  is  registered.
+              Requires root or manager privileges.
+
+       --ppuurrggee qquueeuuee aattttrr__nnmm,,...... oobbjj__ssppeecc
+                                     _<_p_u_r_g_e _d_i_v_e_r_g_e_n_t _a_t_t_r_i_b_u_t_e _s_e_t_t_i_n_g_s_>
+              Delete  the values of the attributes defined in aattttrr__nnmm from the
+              object defined in oobbjj__ssppeecc. Obj_spec can be "queue_instance"  or
+              "queue_domain".   The  names  of the attributes are described in
+              _q_u_e_u_e___c_o_n_f(5).
+              This operation only works on a single queue instance or  domain.
+              It  cannot  be  used  on a cluster queue.  In the case where the
+              oobbjj__ssppeecc is "queue@@hostgroup", the attribute values defined  in
+              aattttrr__nnmm  which  are set for the indicated hostgroup are deleted,
+              but not those which are set for  the  hosts  contained  by  that
+              hostgroup.   If the aattttrr__nnmm is '*', all attribute values set for
+              the given queue instance or domain are deleted.
+              The main difference between -dattr and  -purge  is  that  -dattr
+              removes  a  value  from  a single list attribute, whereas -purge
+              removes one or more overriding attribute settings from a cluster
+              queue  configuration.   With  -purge,  the  entire  attribute is
+              deleted for the given queue instance or queue domain.
+
+       --rraattttrr oobbjj__ssppeecc aattttrr__nnaammee vvaall oobbjj__iinnssttaannccee,,......
+                                     _<_r_e_p_l_a_c_e _o_b_j_e_c_t _a_t_t_r_i_b_u_t_e_s_>
+              Allows replacing a single configuration list attribute in multi-
+              ple  instances  of  an  object with a single command.  Find more
+              information concerning obj_spec and obj_instance in the descrip-
+              tion of --aaaattttrr ..
+              Requires root or manager privilege.
+
+       --rrssssttnnooddee nnooddee__ppaatthh,,......       _<_s_h_o_w _s_h_a_r_e _t_r_e_e _n_o_d_e_>
+              Recursively  shows  the  name  and shares of the specified share
+              tree node(s) and the names and shares of its child  nodes.  (see
+              _s_h_a_r_e___t_r_e_e(5)).    The   nnooddee__ppaatthh   is   a   hierarchical  path
+              ([[//]]nnooddee__nnaammee[[[[//..]]nnooddee__nnaammee......]])  specifying the location  of  a
+              node in the share tree.
+
+       --sscc                           _<_s_h_o_w _c_o_m_p_l_e_x_e_s_>
+              Display the complex configuration.
+
+       --ssccaall ccaalleennddaarr__nnaammee           _<_s_h_o_w _c_a_l_e_n_d_a_r_>
+              Display the configuration of the specified calendar.
+
+       --ssccaallll                        _<_s_h_o_w _c_a_l_e_n_d_a_r _l_i_s_t_>
+              Show a list of all calendars currently defined.
+
+       --sscckkpptt cckkpptt__nnaammee              _<_s_h_o_w _c_k_p_t_. _e_n_v_i_r_o_n_m_e_n_t_>
+              Display  the  configuration of the specified checkpointing envi-
+              ronment.
+
+       --sscckkppttll                       _<_s_h_o_w _c_k_p_t_. _e_n_v_i_r_o_n_m_e_n_t _l_i_s_t_>
+              Show a list of the names of all checkpointing environments  cur-
+              rently configured.
+
+       --ssccoonnff [[hhoosstt,,......||gglloobbaall]]      _<_s_h_o_w _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Print the global or local (host specific) configuration.  If the
+              optional comma separated host list argument is  omitted  or  the
+              special string gglloobbaall is given, the global configuration is dis-
+              played.  The configuration in effect on a certain  host  is  the
+              merger  of  the global configuration and the host specific local
+              configuration.  The  format of the configuration is described in
+              _s_g_e___c_o_n_f(5).
+
+       --ssccoonnffll                       _<_s_h_o_w _c_o_n_f_i_g_u_r_a_t_i_o_n _l_i_s_t_>
+              Display  a list of hosts for which configurations are available.
+              The special host name gglloobbaall refers to the global configuration.
+
+       --ssddss                          _<_s_h_o_w _d_e_t_a_c_h_e_d _s_e_t_t_i_n_g_s_>
+              Displays detached settings in the cluster configuration.
+
+       --ssee hhoossttnnaammee                  _<_s_h_o_w _e_x_e_c_u_t_i_o_n _h_o_s_t_>
+              Displays the definition of the specified execution host.
+
+       --sseell                          _<_s_h_o_w _e_x_e_c_u_t_i_o_n _h_o_s_t_s_>
+              Displays the Grid Engine execution host list.
+
+       --sseeccll                         _<_s_h_o_w _e_v_e_n_t _c_l_i_e_n_t_s_>
+              Displays the Grid Engine event client list.
+
+       --sseepp                          _<_s_h_o_w _l_i_c_e_n_s_e_d _p_r_o_c_e_s_s_o_r_s_>
+              NNoottee:: Deprecated, may be removed in future release.
+
+              Displays a list of virtual processors. This value is taken  from
+              the  underlying  OS  and  it  depends on underlying hardware and
+              operating system whether this value represents sockets, cores or
+              supported threads.
+
+              If  this  option is used in combination with --ccbb  parameter then
+              two additional columns will be shown in the output for the  num-
+              ber  of  sockets and number of cores. Currently Grid Engine will
+              list these values only if the execution host is running under  a
+              version  of Linux >= 2.6.16, or Solaris 10. Other operating sys-
+              tems or versions might  be  supported  with  the  future  update
+              releases. In case these values won't be retrieved, a '0' charac-
+              ter will be displayed.
+
+       --sshh                           _<_s_h_o_w _a_d_m_i_n_i_s_t_r_a_t_i_v_e _h_o_s_t_s_>
+              Displays the Grid Engine administrative host list.
+
+       --sshhggrrpp ggrroouupp                  _<_s_h_o_w _h_o_s_t _g_r_o_u_p _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Displays the host group  entries  for  the  group  specified  in
+              ggrroouupp..
+
+       --sshhggrrppll                       _<_s_h_o_w _h_o_s_t _g_r_o_u_p _l_i_s_t_s_>
+              Displays  a name list of all currently defined host groups which
+              have a valid host group configuration.
+
+       --sshhggrrpp__ttrreeee ggrroouupp             _<_s_h_o_w _h_o_s_t _g_r_o_u_p _t_r_e_e_>
+              Shows a tree like structure of host group.
+
+       --sshhggrrpp__rreessoollvveedd ggrroouupp         _<_s_h_o_w _h_o_s_t _g_r_o_u_p _h_o_s_t_s_>
+              Shows a list of all hosts which are part of  the  definition  of
+              host  group.  If  the  host  group  definition contains sub host
+              groups than also these groups are resolved and the hostnames are
+              printed.
+
+       --ssrrqqss [[rrqqss__nnaammee__lliisstt]]         _<_s_h_o_w _R_Q_S _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Show  the  definition of the _r_e_s_o_u_r_c_e _q_u_o_t_a _s_e_t_s (RQS) specified
+              by the argument.
+
+       --ssrrqqssll                        _<_s_h_o_w _R_Q_S_-_l_i_s_t_>
+              Show a list  of  all  currently  defined  _r_e_s_o_u_r_c_e  _q_u_o_t_a  _s_e_t_ss
+              (RQSs).
+
+       --ssmm                           _<_s_h_o_w _m_a_n_a_g_e_r_s_>
+              Displays the managers list.
+
+       --ssoo                           _<_s_h_o_w _o_p_e_r_a_t_o_r_s_>
+              Displays the operator list.
+
+       --ssoobbjjll oobbjj__ssppeecc aattttrr__nnaammee vvaall _<_s_h_o_w _o_b_j_e_c_t _l_i_s_t_>
+              Shows  a list of all configuration objects for which val matches
+              at least one configuration value of the  attributes  whose  name
+              matches with attr_name.
+
+              Obj_spec can be "queue" or "queue_domain" or "queue_instance" or
+              "exechost".  Note: When "queue_domain"  or  "queue_instance"  is
+              specified  as  obj_spec matching is only done with the attribute
+              overridings concerning the host group or the execution host.  In
+              this case queue domain names resp. queue instances are returned.
+
+              Attr_name  can  be any of the configuration file keywords listed
+              in _q_u_e_u_e___c_o_n_f(5) or _h_o_s_t___c_o_n_f(5).  Also wildcards can be used to
+              match multiple attributes.
+
+              Val can be an arbitrary string or a wildcard expression.
+
+       --sspp ppee__nnaammee                   _<_s_h_o_w _P_E _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Show  the  definition of the _p_a_r_a_l_l_e_l _e_n_v_i_r_o_n_m_e_n_t (PE) specified
+              by the argument.
+
+       --ssppll                          _<_s_h_o_w _P_E_-_l_i_s_t_>
+              Show a list  of  all  currently  defined  _p_a_r_a_l_l_e_l  _e_n_v_i_r_o_n_m_e_n_ts
+              (PEs).
+
+       --sspprrjj pprroojjeecctt                 _<_s_h_o_w _p_r_o_j_e_c_t_>
+              Shows the definition of the specified project (see _p_r_o_j_e_c_t(5)).
+
+       --sspprrjjll                        _<_s_h_o_w _p_r_o_j_e_c_t _l_i_s_t_>
+              Shows the list of all currently defined projects.
+
+       --ssqq wwcc__qquueeuuee__lliisstt             <show queues>
+              Displays  one  or  multiple cluster queues or queue instances. A
+              description of wc_queue_list can be found in _s_g_e___t_y_p_e_s(1).
+
+       --ssqqll                          _<_s_h_o_w _q_u_e_u_e _l_i_s_t_>
+              Show a list of all currently defined cluster queues.
+
+       --ssss                           _<_s_h_o_w _s_u_b_m_i_t _h_o_s_t_s_>
+              Displays the Grid Engine submit host list.
+
+       --ssssccoonnff                       _<_s_h_o_w _s_c_h_e_d_u_l_e_r _c_o_n_f_i_g_u_r_a_t_i_o_n_>
+              Displays the  current  scheduler  configuration  in  the  format
+              explained in _s_c_h_e_d___c_o_n_f(5).
+
+       --ssssttnnooddee nnooddee__ppaatthh,,......        _<_s_h_o_w _s_h_a_r_e _t_r_e_e _n_o_d_e_>
+              Shows  the  name  and shares of the specified share tree node(s)
+              (see _s_h_a_r_e___t_r_e_e(5)).   The  nnooddee__ppaatthh  is  a  hierarchical  path
+              ([[//]]nnooddee__nnaammee[[[[//..]]nnooddee__nnaammee......]])   specifying  the location of a
+              node in the share tree.
+
+       --ssssttrreeee                       _<_s_h_o_w _s_h_a_r_e _t_r_e_e_>
+              Shows the definition of the share tree (see  _s_h_a_r_e___t_r_e_e(5)).   A
+              different view is provided by --bboonnssaaii.
+
+       --sssstt                          _<_s_h_o_w _f_o_r_m_a_t_t_e_d _s_h_a_r_e _t_r_e_e_>
+              Shows  the  definition  of  the  share  tree in a tree view (see
+              _s_h_a_r_e___t_r_e_e(5)).
+
+       --ssssss                          _<_s_h_o_w _s_c_h_e_d_u_l_e_r _s_t_a_t_u_s_>
+              Currently displays the host on which the Grid  Engine  scheduler
+              is active or an error message if no scheduler is running.
+
+       --ssuu aaccll__nnaammee                  _<_s_h_o_w _u_s_e_r _A_C_L_>
+              Displays a Grid Engine user access list (ACL).
+
+       --ssuull                          _<_s_h_o_w _u_s_e_r _l_i_s_t_s_>
+              Displays  a  list  of names of all currently defined Grid Engine
+              user access lists (ACLs).
+
+       --ssuusseerr uusseerr,,......               _<_s_h_o_w _u_s_e_r_>
+              Shows the definition of the specified user(s) (see _u_s_e_r(5)).
+
+       --ssuusseerrll                       _<_s_h_o_w _u_s_e_r_s_>
+              Shows the list of all currently defined users.
+
+       --ttssmm                          _<_t_r_i_g_g_e_r _s_c_h_e_d_u_l_e_r _m_o_n_i_t_o_r_i_n_g_>
+              The Grid Engine scheduler is forced  by  this  option  to  print
+              trace   messages   of  its  next  scheduling  run  to  the  file
+              _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_s_c_h_e_d_d___r_u_n_l_o_g.  The  messages  indicate
+              the  reasons for jobs and queues not being selected in that run.
+              Requires root or manager privileges.
+
+              Note, that the reasons for job requirements being  invalid  with
+              respect  to  resource availability of queues are displayed using
+              the format as described for the _q_s_t_a_t(1) --FF option (see descrip-
+              tion  of  FFuullll  FFoorrmmaatt in section OOUUTTPPUUTT FFOORRMMAATTSS of the _q_s_t_a_t(1)
+              manual page.
+
+EENNVVIIRROONNMMEENNTTAALL VVAARRIIAABBLLEESS
+       SSGGEE__RROOOOTT       Specifies the location of the Grid Engine standard  con-
+                      figuration files.
+
+       SSGGEE__CCEELLLL       If  set,  specifies  the  default  Grid  Engine cell. To
+                      address a Grid Engine cell _q_c_o_n_f uses (in the  order  of
+                      precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. ddeeffaauulltt.
+
+
+       SSGGEE__DDEEBBUUGG__LLEEVVEELL
+                      If set, specifies that debug information should be writ-
+                      ten  to stderr. In addition the level of detail in which
+                      debug information is generated is defined.
+
+       SSGGEE__QQMMAASSTTEERR__PPOORRTT
+                      If set, specifies the tcp port on  which  _s_g_e___q_m_a_s_t_e_r(8)
+                      is  expected to listen for communication requests.  Most
+                      installations will use a services map entry  instead  to
+                      define that port.
+
+       SSGGEE__EEXXEECCDD__PPOORRTT If  set, specifies the tcp port on which _s_g_e___e_x_e_c_d(8) is
+                      expected to listen  for  communication  requests.   Most
+                      installations  will  use a services map entry instead to
+                      define that port.
+
+       SSGGEE__SSIINNGGLLEE__LLIINNEE
+                      If set, indicates that long lines should not  be  broken
+                      up  using  backslashes.   This  setting  is  useful  for
+                      scripts which expect one entry per line.
+
+RREESSTTRRIICCTTIIOONNSS
+       Modifications to a queue configuration do not affect an  active  queue,
+       taking effect on next invocation of the queue (i.e., the next job).
+
+FFIILLEESS
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_a_c_t___q_m_a_s_t_e_r
+                       Grid Engine master host file
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1),   _q_s_t_a_t(1),   _c_h_e_c_k_p_o_i_n_t(5),   _c_o_m_p_l_e_x(5),   _s_g_e___c_o_n_f(5),
+       _h_o_s_t___c_o_n_f(5), _s_g_e___p_e(5), _q_u_e_u_e___c_o_n_f(5),  _s_g_e___e_x_e_c_d(8),  _s_g_e___q_m_a_s_t_e_r(8),
+       _s_g_e___r_e_s_o_u_r_c_e___q_u_o_t_a(5)
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2009-12-02 13:47:56 $                 QCONF(1)

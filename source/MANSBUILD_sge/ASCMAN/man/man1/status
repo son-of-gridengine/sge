@@ -1,0 +1,104 @@
+STATUS(1)                        User Commands                       STATUS(1)
+
+
+
+NNAAMMEE
+       status - Grid Engine status script
+
+SSYYNNOOPPSSIISS
+       ssttaattuuss [--aaccgghhjjllmmnnoott] [--ss _S_O_R_T___F_I_E_L_D___L_I_S_T] [_U_S_E_R]
+
+DDEESSCCRRIIPPTTIIOONN
+       This manual page documents ssttaattuuss, a script to reformat the
+        output of the Grid Engine command _q_s_t_a_t(1).
+
+       The  reformatted list is by default limited to the actual user account.
+       This can be changed to request a job list of any user by supplying  the
+       username  _U_S_E_R  as  the  last argument, or requesting an output for all
+       users by the --aa switch (see below).
+
+   OOppttiioonnss
+       --aa     Display the jobs of all users. May not be used when there  is  a
+              dedicated  user  specified.  This also implies the output of the
+              owner of the jobs.
+
+       --cc     Calculate a statistic of the listed jobs.
+
+       --gg     Group output by owner. Only applicable if the owner  is  listed,
+              either  by  the --oo switch or implied by --aa. This is a short form
+              of '--ss oowwnneerr,rruunnnniinngg'.  Can't  be  used  together  with  the  --ss
+              option.
+
+       --hh     Print help.
+
+       --jj     Include jobs which are suspended.
+
+       --ll     Suppress  the  output  of the list of jobs. Maybe useful in case
+              you are only interested in the statistic with the --cc switch.
+
+       --mm     Display the machine instead of the name of the queue the job  is
+              running in under the column 'running in'.
+
+       --nn     Suppress the listing of the individual owner, mostly useful when
+              all jobs are listed. Takes precedence  over  any  other  implied
+              options.   If used together with --oo, only the later one is rele-
+              vant.
+
+       --oo     List the owner of the individual job. Takes precedence over  any
+              other  implied  option. If used together with --nn, only the later
+              one is relevant.
+
+       --rr     Display times relative to submit- or start-times,  as  appropri-
+              ate.
+
+       --ss _S_O_R_T___F_I_E_L_D___L_I_S_T
+              Sort   the   output   according   to   the  given  columns.  The
+              _S_O_R_T___F_I_E_L_D___L_I_S_T            has            the             format
+              _S_O_R_T___F_I_E_L_D___L_I_S_T=_S_O_R_T___F_I_E_L_D[,_S_O_R_T___F_I_E_L_D]* where _S_O_R_T___F_I_E_L_D can be
+              one of jjoobb, nnaammee, nnoonnee, oowwnneerr, rruunnnniinngg, sslloottss, ttiimmee.
+
+              The option nnoonnee will supersede any other column  names  and  set
+              the complete sort order to none.
+
+              The  column  oowwnneerr  can  only be used if the owner of the job is
+              displayed at all. Otherwise it will be ignored.
+
+              The sort by rruunnnniinngg will only be used for the running jobs,  not
+              for the waiting ones.
+
+              This will overwrite the default sort order, which is:
+
+                     running jobs:  rruunnnniinngg
+                     waiting jobs:  nnoonnee
+
+              If the option --gg is specified, the default sort order is changed
+              to:
+
+                     running jobs:  oowwnneerr,rruunnnniinngg
+                     waiting jobs:  oowwnneerr
+
+
+       --tt     Append task ID to the jobname for array tasks. This  option  has
+              no meaning for non-array jobs.
+
+AAUUTTHHOORR
+       Written by Reuti.
+
+RREEPPOORRTTIINNGG BBUUGGSS
+       Report bugs to <reuti@staff.uni-marburg.de>.
+
+CCOOPPYYRRIIGGHHTT
+       Copyright (C) 2010 Philipps-University of Marburg.
+       This  is  free  software.   You may redistribute copies of it under the
+       terms of the GNU General Public License <http://www.gnu.org/licenses/
+       gpl.html>.  There is NO WARRANTY, to the extent permitted by law.
+
+SSEEEE AALLSSOO
+       _q_s_t_a_t(1) of Grid Engine.
+
+BBUUGGSS
+       Does not support the PBS or Torque resource manager.
+
+
+
+status 1.5                     30 NOVEMBER 2010                      STATUS(1)

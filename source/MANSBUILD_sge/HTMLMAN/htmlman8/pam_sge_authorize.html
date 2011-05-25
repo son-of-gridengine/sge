@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<TITLE>pam_sge_authorize.8</TITLE>
+</HEAD>
+<BODY>
+<H1>pam_sge_authorize.8</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       pam_sge_authorize - PAM module to control access to SGE hosts
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>pam_sge_authorize</B> [<I>options</I>]
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       This PAM module limits access via <B><A HREF="../htmlman1/ssh.html">ssh(1)</A></B> etc. to Grid Engine hosts only
+       to users who currently have a job running on the host.  The expectation
+       is that this limits their impact on any other users of the host.
+
+
+</PRE>
+<H2>OPTIONS</H2><PRE>
+       <B>execd_spool_dir=</B><I>dir</I>
+           Specify the spool directory in which to find the <B>active_jobs</B>
+           directory as <I>dir</I><B>/</B><I>hostname</I><B>/active_jobs</B>.  Default:
+           <B>/opt/sge/default/spool</B>.
+
+       <B>bypass_users=</B><I>user</I><B>_</B><I>list</I>
+           The module ignores access by users with unames in the comma-
+           separated <I>user</I><B>_</B><I>list</I>.  There is a limit of 30 users.
+
+       <B>max_sleep=</B><I>max</I><B>_</B><I>sleep</I>
+           A non-zero <I>max</I><B>_</B><I>sleep</I> allows desynchronization of accesses to the
+           spool directory.  The module sleeps for a random period <I>t,</I> where
+           0&lt;=<I>t</I>&lt;=<I>max</I><B>_</B><I>sleep</I> microseconds before accessing the spool directory.
+           This probably isn't useful.  Default: 0.
+
+
+</PRE>
+<H2>EXAMPLE</H2><PRE>
+       On a typical GNU/Linux system, add something like the following to
+       <B>/etc/pam.d/sshd</B>, e.g. at the top.
+
+         account required /opt/sge/lib/lx26-amd64/pam_sge_authorize.so \
+           bypass_users=foo,bar,baz,qux spool_dir=/opt/sge6.2/execd_spool
+
+       On some systems it might be necessary to copy pam_sge_authorize.so
+       into, say, <B>/lib/security</B>, and instead use it as
+
+         auth required pam_sge_authorize.so
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/ssh.html">ssh(1)</A></B>, <B><A HREF="../htmlman7/pam.html">pam(7)</A></B>, <B><A HREF="../htmlman4/pam.conf.html">pam.conf(4)</A></B>.
+
+
+</PRE>
+<H2>AUTHOR</H2><PRE>
+       TACC.  Man page by Dave Love, based on material from Bill Barth, TACC.
+
+
+
+                                  2010-11-25              <B><A HREF="../htmlman8/pam_sge_authorize.html">pam_sge_authorize(8)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,422 @@
+<HTML>
+<HEAD>
+<TITLE>reporting.5</TITLE>
+</HEAD>
+<BODY>
+<H1>reporting.5</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       reporting - Grid Engine reporting file format
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A Grid Engine system writes a reporting file
+       <I>$SGE</I><B>_</B><I>ROOT/$SGE</I><B>_</B><I>CELL/common/reporting</I> if <B>reporting=true</B> is specified in
+       the <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B> <B>reporting_params</B>.  This occurs intervals of the
+       <B>flush_time</B> specified in the same place.  The reporting file contains
+       data that can be used for accounting, monitoring and analysis purposes.
+       It contains information about the cluster (hosts, queues, load values,
+       consumables, etc.), about the jobs running in the cluster and about
+       sharetree configuration and usage.  All information is time-related and
+       events are dumped to the reporting file in a configurable interval.  It
+       allows "real time" monitoring of the cluster status as well as
+       historical analysis.
+
+
+</PRE>
+<H2>FORMAT</H2><PRE>
+       The reporting file is an ASCII file.  Each line contains one record,
+       and the fields of a record are separated by a delimiter (:).  The
+       reporting file contains records of different type. Each record type has
+       a specific record structure.
+
+       The first two fields are common to all reporting records:
+
+       <B>time</B>   The time when the record was created.  All time values described
+              here are the number of seconds since the Unix epoch (1970-01-01
+              00:00:00 UTC).
+
+       <B>record</B> <B>type</B>
+              Type of the accounting record.
+
+       The different types of records and their structure are described below,
+       eliding the leading <B>time</B> and <B>record</B> <B>type</B> fields in each case.
+
+   <B>new_job</B>
+       The new_job record is written whenever a new job enters the system
+       (usually by a submission command). It has the following fields:
+
+       <B>submission_time</B>
+              Time when the job was submitted.
+
+       <B>job_number</B>
+              The job number.
+
+       <B>task_number</B>
+              The array task id. Always has the value -1 for new_job records
+              (as array tasks haven't been created at that stage).
+
+       <B>pe_taskid</B>
+              The task id of parallel tasks. Always has the value "none" for
+              new_job records.
+
+       <B>job_name</B>
+              The job name (from <B>-N</B> submission option).
+
+       <B>owner</B>  The job owner.
+
+       <B>group</B>  The Unix group of the job owner.
+
+       <B>project</B>
+              The project the job is running in.
+
+       <B>department</B>
+              The department the job owner is in.
+
+       <B>account</B>
+              The account string specified for the job (from the <B>-A</B> submission
+              option).
+
+       <B>priority</B>
+              The job priority (from the <B>-p</B> submission option).
+
+   <B>job_log</B>
+       If <B>joblog=true</B> is specified in the <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B> <B>reporting_params</B>, a
+       job_log record is written whenever a job, an array task or a PE task
+       changes status. A status change can be the transition from pending to
+       running, but can also be triggered by user actions, like suspension of
+       a job.  It has the following fields:
+
+       <B>event_time</B>
+              Time when the event was generated.
+
+       <B>event</B>  A one word description of the event.
+
+       <B>job_number</B>
+              The job number.
+
+       <B>task_number</B>
+              The PE task id. Always has the value -1 for new_job records (as
+              parallel tasks haven't been created at that stage).
+
+       <B>pe_taskid</B>
+              The task id of parallel tasks. Always has the value "none" for
+              new_job records.
+
+       <B>state</B>  The state of the job after the event was processed.
+
+       <B>user</B>   The user who initiated the event (or special usernames
+              "qmaster", "scheduler" and "execd" for actions of the system
+              itself like scheduling jobs, executing jobs etc.).
+
+       <B>host</B>   The host from which the action was initiated (e.g. the submit
+              host, the qmaster host, etc.).
+
+       <B>state_time</B>
+              Reserved field for later use.
+
+       <B>submission_time</B>
+              Time when the job was submitted.
+
+       <B>job_name</B>
+              The job name (from the <B>-N</B> submission option).
+
+       <B>owner</B>  The job owner.
+
+       <B>group</B>  The Unix group of the job owner.
+
+       <B>project</B>
+              The project the job is running in.
+
+       <B>department</B>
+              The department the job owner is in.
+
+       <B>account</B>
+              The account string specified for the job (from the <B>-A</B> submission
+              option).
+
+       <B>priority</B>
+              The job priority (from the <B>-p</B> submission option).
+
+       <B>message</B>
+              A message describing the reported action.
+
+   <B>acct</B>
+       Records of type acct are accounting records. Normally, they are written
+       whenever a job, a task of an array job, or a task of a parallel job
+       terminates. However, for long running jobs an intermediate acct record
+       is created once a day after midnight. This results in multiple
+       accounting records for a particular job and allows for fine-grained
+       resource usage monitoring over time.
+
+       Accounting records have the structure described in <B><A HREF="../htmlman5/accounting.html">accounting(5)</A></B>, with
+       the addition the leading time and type fields (which are not used in
+       the accounting file).
+
+   <B>queue</B>
+       Records of type queue contain state information for queues (queue
+       instances).  A queue record has the following fields:
+
+       <B>qname</B>  The cluster queue name.
+
+       <B>hostname</B>
+              The hostname of a specific queue instance.
+
+       <B>report_time</B>
+              The time when a state change was triggered.
+
+       <B>state</B>  The new queue state.  The possible states are single-letter
+              values, as reported by <B><A HREF="../htmlman1/qhost.html">qhost(1)</A></B> with the <B>-q</B> option.
+
+   <B>queue_consumable</B>
+       A queue_consumable record contains information about queue consumable
+       values in addition to queue state information:
+
+       <B>qname</B>  The cluster queue name.
+
+       <B>hostname</B>
+              The hostname of a specific queue instance.
+
+       <B>report_time</B>
+              The time when a state change was triggered.
+
+       <B>state</B>  The new queue state.
+
+       <B>consumables</B>
+              Description of consumable values. Information about multiple
+              consumables is separated by space.  A consumable description has
+              the format &lt;name&gt;=&lt;actual_value&gt;=&lt;configured value&gt;.
+
+       Consumables are only logged if <B>log_consumables=true</B> is specified in the
+       <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B> <B>reporting_params</B>, or the consumable is specified in the
+       local or global <B><A HREF="../htmlman5/host_conf.html">host_conf(5)</A></B> <B>report_variables</B>.
+
+   <B>host</B>
+       A host record contains information about hosts and host load values.
+       It contains the following information:
+
+       <B>hostname</B>
+              The name of the host.
+
+       <B>report_time</B>
+              The time when the reported information was generated.
+
+       <B>state</B>  The new host state.  Currently, Grid Engine doesn't track a host
+              state; the field is reserved for future use. Always contains the
+              value X.
+
+       <B>load</B> <B>values</B>
+              Description of load values. Information about multiple load
+              values is separated by space.  A load value description has the
+              format &lt;name&gt;=&lt;actual_value&gt;.
+
+   <B>host_consumable</B>
+       A host_consumable record contains information about hosts and host
+       consumables.  Host consumables can, for example, be licenses.  It
+       contains the following information:
+
+       <B>hostname</B>
+              The name of the host.
+
+       <B>report_time</B>
+              The time when the reported information was generated.
+
+       <B>state</B>  The new host state.  Currently, Grid Engine doesn't track a host
+              state; the field is reserved for future use. Always contains the
+              value X.
+
+       <B>consumables</B>
+              Description of consumable values. Information about multiple
+              consumables is separated by space.  A consumable description has
+              the format &lt;name&gt;=&lt;actual_value&gt;=&lt;configured value&gt;.
+
+       Consumables are only logged if <B>log_consumables=true</B> is specified in the
+       <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B> <B>reporting_params</B>, or the consumable is specified in the
+       local or global <B><A HREF="../htmlman5/host_conf.html">host_conf(5)</A></B> <B>report_variables</B>.
+
+   <B>sharelog</B>
+       The Grid Engine qmaster can dump information about sharetree
+       configuration and use to the reporting file.  The <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>
+       <B>reporting_params</B> can specify <B>sharelog</B>, which sets an interval in which
+       sharetree information will be dumped.  It is set in the format
+       HH:MM:SS. A value of 00:00:00 configures qmaster not to dump sharetree
+       information. Intervals of several minutes up to hours are sensible
+       values for this parameter.  The record contains the following fields
+
+       <B>current</B> <B>time</B>
+              The present time
+
+       <B>usage</B> <B>time</B>
+              The  time used so far
+
+       <B>node</B> <B>name</B>
+              The node name
+
+       <B>user</B> <B>name</B>
+              The user name
+
+       <B>project</B> <B>name</B>
+              The project name
+
+       <B>shares</B> The total shares
+
+       <B>job</B> <B>count</B>
+              The job  count
+
+       <B>level</B>  The percentage of shares used
+
+       <B>total</B>  The adjusted percentage of shares used
+
+       <B>long</B> <B>target</B> <B>share</B>
+              The long target percentage of resource shares used
+
+       <B>short</B> <B>target</B> <B>share</B>
+              The short target percentage of resource shares used
+
+       <B>actual</B> <B>share</B>
+              The actual percentage of resource shares used
+
+       <B>usage</B>  The combined shares used
+
+       <B>cpu</B>    The cpu used
+
+       <B>mem</B>    The memory used
+
+       <B>io</B>     The IO used
+
+       <B>long</B> <B>target</B> <B>cpu</B>
+              The long target cpu used
+
+       <B>long</B> <B>target</B> <B>mem</B>
+              The long target memory used
+
+       <B>long</B> <B>target</B> <B>io</B>
+              The long target IO used
+
+   <B>new_ar</B>
+       A new_ar record contains information about advance reservation objects.
+       Entries of this type will be added if an advance reservation is
+       created.  It contains the following information:
+
+       <B>submission_time</B>
+              The time when the advance reservation was created.
+
+       <B>ar_number</B>
+              The advance reservation number identifying the reservation.
+
+       <B>ar_owner</B>
+              The owner of the advance reservation.
+
+   <B>ar_attribute</B>
+       The ar_attribute record is written whenever a new advance reservation
+       was added or the attribute of an existing advance reservation has
+       changed. It has the following fields.
+
+       <B>event_time</B>
+              The time when the event was generated.
+
+       <B>submission_time</B>
+              The time when the advance reservation was created.
+
+       <B>ar_number</B>
+              The advance reservation number identifying the reservation.
+
+       <B>ar_name</B>
+              Name of the advance reservation.
+
+       <B>ar_account</B>
+              An account string which was specified during the creation of the
+              advance reservation.
+
+       <B>ar_start_time</B>
+              Start time.
+
+       <B>ar_end_time</B>
+              End time.
+
+       <B>ar_granted_pe</B>
+              The parallel environment which was selected for an advance
+              reservation.
+
+       <B>ar_granted_resources</B>
+              The granted resources which were selected for an advance
+              reservation.
+
+   <B>ar_log</B>
+       The ar_log record is written whenever an advance reservation changes
+       status. A status change can be from pending to active, but can also be
+       triggered by system events like host outage. It has the following
+       fields.
+
+       <B>ar_state_change_time</B>
+              The time when the event occurred which caused a state change.
+
+       <B>submission_time</B>
+              The time when the advance reservation was created.
+
+       <B>ar_number</B>
+              The advance reservation number identifying the reservation.
+
+       <B>ar_state</B>
+              The new state.
+
+       <B>ar_event</B>
+              An event id identifying the event which caused the state change.
+
+       <B>ar_message</B>
+              A message describing the event which caused the state change.
+
+   <B>ar_acct</B>
+       The ar_acct records are accounting records which are written for every
+       queue instance whenever an advance reservation terminates. Advance
+       reservation accounting records comprise following fields.
+
+       <B>ar_termination_time</B>
+              The time when the advance reservation terminated.
+
+       <B>submission_time</B>
+              The time when the advance reservation was created.
+
+       <B>ar_number</B>
+              The advance reservation number identifying the reservation.
+
+       <B>ar_qname</B>
+              Cluster queue name which the advance reservation reserved.
+
+       <B>ar_hostname</B>
+              The name of the execution host.
+
+       <B>ar_slots</B>
+              The number of slots which were reserved.
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <I>$SGE</I><B>_</B><I>ROOT/$SGE</I><B>_</B><I>CELL/common/reporting</I>
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman5/accounting.html">accounting(5)</A></B>, <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>, <B><A HREF="../htmlman5/host_conf.html">host_conf(5)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-08 17:04:22 $             <B><A HREF="../htmlman5/REPORTING.html">REPORTING(5)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

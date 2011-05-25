@@ -1,0 +1,66 @@
+SGE_PASSWD(1)              Grid Engine User Commands             SGE_PASSWD(1)
+
+
+
+NNAAMMEE
+       sgepasswd - Modify the Grid Engine password file of Grid Engine
+
+SSYYNNTTAAXX
+       ssggeeppaasssswwdd [[ --DD ddoommaaiinn ] --dd uusseerr ]
+
+       ssggeeppaasssswwdd [ --DD ddoommaaiinn ] [ uusseerr ]
+
+DDEESSCCRRIIPPTTIIOONN
+       _s_g_e_p_a_s_s_w_d modifies the Grid Engine password file _s_g_e_p_a_s_s_w_d(5).
+
+       This  file  contains  a list of usernames and their windows password in
+       encrypted form.  _s_g_e___e_x_e_c_d(8)  and  _s_g_e___s_h_e_p_h_e_r_d(8)  on  hosts  running
+       Microsoft  Windows  as  operating systems use this information to start
+       jobs for a certain user.
+
+       Each user can use the _s_g_e_p_a_s_s_w_d application to  add  a  new  entry  for
+       their  own user account. It is also possible to change the stored pass-
+       word with _s_g_e_p_a_s_s_w_d if the user knows the old one.
+
+       The root user  additionally  has  permission  to  change  the  password
+       entries for other user accounts. Root can also delete existing entries.
+
+       The _s_g_e_p_a_s_s_w_d binary is only available on non-Windows hosts.
+
+OOPPTTIIOONNSS
+       --DD ddoommaaiinn
+              By  default  _s_g_e_p_a_s_s_w_d will add/modify the current Unix username
+              without a domain specification.  This switch can be used to  add
+              a  domain  specification in front of the current user name. Con-
+              sult your Microsoft Windows documentation to get  more  informa-
+              tion about domain users.
+
+       --dd uusseerr
+              Only  root  can  use  this  parameter to delete entries from the
+              _s_g_e_p_a_s_s_w_d(5) file.
+
+       --hheellpp  Prints a listing of all options.
+
+EENNVVIIRROONNMMEENNTTAALL VVAARRIIAABBLLEESS
+       SSGGEE__CCEERRTTFFIILLEE   Specifies the  location  of  the  public  key  file.  By
+                      default   _s_g_e_p_a_s_s_w_d  will  use  $SGE_ROOT/$SGE_CELL/com-
+                      mon/sgeCA/certs/cert.pem.
+
+       SSGGEE__KKEEYYFFIILLEE    If set, specifies the location of the private key  file.
+                      Default           is          /var/sgeCA/port${SGE_QMAS-
+                      TER_PORT}/${SGE_CELL}/private/key.pem.
+
+       SSGGEE__RRAANNDDFFIILLEE   If set, specifies the location of the seed used to  cre-
+                      ate  encrypted  versions  of  user passwords. Default is
+                      /var/sgeCA/port${SGE_QMASTER_PORT}/${SGE_CELL}/pri-
+                      vate/rand.seed.
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _s_g_e_p_a_s_s_w_d(5)
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2008-12-18 16:09:50 $            SGE_PASSWD(1)

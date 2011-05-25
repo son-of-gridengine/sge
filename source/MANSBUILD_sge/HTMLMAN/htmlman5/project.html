@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<TITLE>project.5</TITLE>
+</HEAD>
+<BODY>
+<H1>project.5</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       project - Grid Engine project entry file format
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Jobs can be submitted to projects, and a project can be assigned with a
+       certain level of importance, via the functional or the override policy.
+       This level of importance is then inherited by the jobs executing under
+       that project.
+
+       A list of currently configured projects can be displayed via the
+       <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B> <B>-sprjl</B> option. The contents of each listed project definition
+       can be shown via the <B>-sprj</B> switch. The output follows the <I>project</I>
+       format description. New projects can be created, and existing ones can
+       be modified, via the <B>-aprj</B>, <B>-mprj</B> and <B>-dprj</B> options to <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>.
+
+       Note, Grid Engine allows backslashes (\) be used to escape newline
+       characters. The backslash and the newline are replaced with a space
+       character before any interpretation.
+
+
+</PRE>
+<H2>FORMAT</H2><PRE>
+       A project definition contains the following parameters:
+
+   <B>name</B>
+       The project name in the format for <I>project</I><B>_</B><I>name</I> in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+   <B>oticket</B>
+       The number of override tickets currently assigned to the project.
+
+   <B>fshare</B>
+       The current functional share of the project.
+
+   <B>acl</B>
+       A list of user access lists (ACLs - see <B><A HREF="../htmlman5/access_list.html">access_list(5)</A></B>) referring to
+       those users allowed to submit jobs to the project.
+
+       If the <B>acl</B> parameter is set to NONE, all users are allowed to submit
+       jobs to the project except for those listed in the <B>xacl</B> parameter
+       described below.
+
+   <B>xacl</B>
+       A list of user access lists (ACLs - see <B><A HREF="../htmlman5/access_list.html">access_list(5)</A></B>) referring to
+       those users not allowed to submit jobs to the project.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>, <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>, <B><A HREF="../htmlman5/access_list.html">access_list(5)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-17 21:12:00 $               <B><A HREF="../htmlman5/PROJECT.html">PROJECT(5)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,172 @@
+<HTML>
+<HEAD>
+<TITLE>drmaa_strerror.3</TITLE>
+</HEAD>
+<BODY>
+<H1>drmaa_strerror.3</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       drmaa_strerror, drmaa_get_contact, drmaa_version, drmaa_get_DRM_system
+       - Miscellaneous DRMAA functions.
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>#include</B> <B>"drmaa.h"</B>
+
+       <B>const</B> <B>char</B> <B>*drmaa_strerror(</B>
+              <B>int</B> <B>drmaa_errno</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_get_contact(</B>
+              <B>char</B> <B>*contact,</B>
+              <B>size_t</B> <B>contact_len,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_version(</B>
+              <B>unsigned</B> <B>int</B> <B>*major,</B>
+              <B>unsigned</B> <B>int</B> <B>*minor,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_get_DRM_system(</B>
+              <B>char</B> <B>*drm_system,</B>
+              <B>size_t</B> <B>drm_system_len,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_get_DRMAA_implementation(</B>
+              <B>char</B> <B>*drm_impl,</B>
+              <B>size_t</B> <B>drm_impl_len,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The drmaa_strerror() function returns a message text associated with
+       the DRMAA error number, <I>drmaa</I><B>_</B><I>errno</I>. For invalid DRMAA error codes
+       `NULL' is returned.
+
+   <B>drmaa_get_contact()</B>
+       The drmaa_get_contact() returns an opaque string containing contact
+       information related to the current DRMAA session to be used with the
+       <B><A HREF="../htmlman3/drmaa_init.html">drmaa_init(3)</A></B> function. The opaque string contains the information
+       required by drmaa_init() to reconnect to the current session instead of
+       creating a new session.  <B><A HREF="../htmlman3/drmaa_init.html">drmaa_init(3)</A></B> function.
+
+       The drmaa_get_contact() function returns the same value before and
+       after <B><A HREF="../htmlman3/drmaa_init.html">drmaa_init(3)</A></B> is called.
+
+   <B>drmaa_version()</B>
+       The drmaa_version() function returns into the integers pointed to by
+       <I>major</I> and <I>minor</I>, the major and minor version numbers of the DRMAA
+       library.  For a DRMAA 1.0 compliant implementation `1' and `0' will be
+       returned in <I>major</I> and <I>minor</I>, respectively.
+
+   <B>drmaa_get_DRM_system()</B>
+       The drmaa_get_DRM_system() function returns into <I>drm</I><B>_</B><I>system</I> up to
+       <I>drm</I><B>_</B><I>system</I><B>_</B><I>len</I> characters of a string containing Grid Engine product
+       and version information.
+
+       The drmaa_get_DRM_system() function returns the same value before and
+       after <B><A HREF="../htmlman3/drmaa_init.html">drmaa_init(3)</A></B> is called.
+
+   <B>drmaa_get_DRMAA_implementation()</B>
+       The drmaa_get_DRMAA_implementation() function returns into <I>drm</I><B>_</B><I>system</I>
+       up to <I>drm</I><B>_</B><I>system</I><B>_</B><I>len</I> characters of a string containing the Grid Engine
+       DRMAA implementation version information.  In the current
+       implementation, the drmaa_get_DRMAA_implementation() function returns
+       the same result as the drmaa_get_DRM_system() function.
+
+       The drmaa_get_DRMAA_implementation() function returns the same value
+       before and after <B><A HREF="../htmlman3/drmaa_init.html">drmaa_init(3)</A></B> is called.
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell to be
+                      used. To address a Grid Engine cell Grid Engine uses (in
+                      the order of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the tcp port on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry instead to
+                      define that port.
+
+
+</PRE>
+<H2>RETURN VALUES</H2><PRE>
+       Upon successful completion, drmaa_get_contact(), drmaa_version(), and
+       drmaa_get_DRM_system() return DRMAA_ERRNO_SUCCESS. Other values
+       indicate an error.  Up to <I>error</I><B>_</B><I>diag</I><B>_</B><I>len</I> characters of error related
+       diagnosis information is then provided in the buffer <I>error</I><B>_</B><I>diagnosis</I>.
+
+
+</PRE>
+<H2>ERRORS</H2><PRE>
+       The drmaa_get_contact(), drmaa_version(), drmaa_get_DRM_system(), and
+       drmaa_get_DRMAA_implementation() will fail if:
+
+   <B>DRMAA_ERRNO_INTERNAL_ERROR</B>
+       Unexpected or internal DRMAA error, like system call failure, etc.
+
+   <B>DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE</B>
+       Could not contact DRM system for this request.
+
+   <B>DRMAA_ERRNO_AUTH_FAILURE</B>
+       The specified request is not processed successfully due to
+       authorization failure.
+
+   <B>DRMAA_ERRNO_INVALID_ARGUMENT</B>
+       The input value for an argument is invalid.
+
+   <B>DRMAA_ERRNO_NO_MEMORY</B>
+       Failed allocating memory.
+
+       The drmaa_get_contact() and drmaa_get_DRM_system() will fail if:
+
+   <B>DRMAA_ERRNO_NO_ACTIVE_SESSION</B>
+       Failed because there is no active session.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman3/drmaa_session.html">drmaa_session(3)</A></B>.
+
+
+
+
+SGE 8.0.0                $Date: 2008-07-08 09:10:04 $            <B><A HREF="../htmlman3/drmaa_misc.html">drmaa_misc(3)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

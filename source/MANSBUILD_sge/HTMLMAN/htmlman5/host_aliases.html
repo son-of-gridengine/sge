@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+<TITLE>host_aliases.5</TITLE>
+</HEAD>
+<BODY>
+<H1>host_aliases.5</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       host_aliases - Grid Engine host aliases file format
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       All Grid Engine components use a hostname resolving service provided by
+       the communication library to identify hosts via a unique hostname. The
+       communication library itself references standard UNIX directory
+       services such as DNS, NIS and /etc/hosts to resolve hostnames (through
+       the Name Service Switch on systems which support it).  In rare cases
+       these standard services cannot be setup cleanly and Grid Engine
+       communication daemons running on different hosts are unable to
+       automatically determine a unique hostname for one or all hosts which
+       can be used on all hosts. In such situations a Grid Engine host aliases
+       file can be used to provide the communication daemons with a private
+       and consistent hostname resolution database.
+
+       The location for the host aliases file is
+       <I>&lt;sge</I><B>_</B><I>root&gt;/&lt;cell&gt;/common/host</I><B>_</B><I>aliases</I>.
+
+
+</PRE>
+<H2>FORMAT</H2><PRE>
+       For each host a single line must be provided with a blank-, comma-, or
+       semicolon-separated list of hostname aliases. The first alias is
+       defined to be the <B>unique</B> hostname which will be used by all Grid Engine
+       components using the hostname aliasing service of the communication
+       library.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman5/nsswitch.conf.html">nsswitch.conf(5)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-18 01:57:41 $          <B><A HREF="../htmlman5/HOST_ALIASES.html">HOST_ALIASES(5)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

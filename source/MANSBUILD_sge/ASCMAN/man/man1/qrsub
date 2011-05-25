@@ -1,0 +1,214 @@
+QRSUB(1)                   Grid Engine User Commands                  QRSUB(1)
+
+
+
+NNAAMMEE
+       qrsub   - Submit an Advance Reservation (AR) to Grid Engine.
+
+SSYYNNTTAAXX
+       qqrrssuubb  [--aa  _d_a_t_e___t_i_m_e]  [--AA _a_c_c_o_u_n_t___s_t_r_i_n_g] [--cckkpptt _c_k_p_t___n_a_m_e] [--dd _t_i_m_e]
+       [--ee _d_a_t_e___t_i_m_e] [--hhee  _y_e_s|_n_o]  [--hheellpp]  [--ll  _r_e_s_o_u_r_c_e___l_i_s_t]  [--nnooww]  [--MM
+       _u_s_e_r[@_h_o_s_t],...]   [--NN  _a_r___n_a_m_e]  [--ww _e_|_v] [--ppee _p_e___n_a_m_e _s_l_o_t___r_a_n_g_e] [--qq
+       _w_c___q_u_e_u_e___l_i_s_t] [--uu _w_c___u_s_e_r___l_i_s_t]
+
+DDEESSCCRRIIPPTTIIOONN
+       _Q_r_s_u_b provides a means for operators, managers or users  referenced  in
+       the ACL (see _a_c_c_e_s_s___l_i_s_t(5)) "aarruusseerrss" to create an Advance Reservation
+       (AR) in the Grid Engine queuing system. ARs allow reserving  particular
+       consumable  resources for future use. These reserved resources are only
+       available for jobs requesting the AR, and  the  scheduler  ensures  the
+       availability  of  the  resources  when  the start time is reached. Jobs
+       requesting the AR can only use the reserved consumable resources.
+
+       During AR submit time the Grid Engine queuing system selects  the  best
+       suited  queues  for the AR request and then reserves the desired amount
+       of resources.  For a reservation, all queues that are not  in  orphaned
+       state are considered as suited. Only if the AR request can be fulfilled
+       will the AR be granted.
+
+       ARs will be deleted either automatically when the end time is  reached,
+       or  manually  using _q_r_d_e_l(1).  In both cases, first all jobs requesting
+       the AR will be removed and then the AR itself. Already granted ARs  can
+       be shown with _q_r_s_t_a_t(1).
+
+       Note: To make AR behavior predictable, it is necessary to have reserved
+       resources available at the time of AR start. This is  done  by  keeping
+       jobs with a unlimited runtime limit separated from ARs, and not consid-
+       ering resources used by such jobs for reservation.
+
+       Note: Resource Quotas are not considered for AR  queue  selection,  nor
+       for jobs requesting an AR.
+
+       When  an  AR  was  successfully added to the Grid Engine queuing system
+       _q_r_s_u_b returns a unique integer ID referring to the  the  newly  created
+       AR. The highest AR ID is 9999999. If the highest ID is reached, a wrap-
+       around happens and the next unused ID, starting with 1, will be used.
+
+       For _q_r_s_u_b, the administrator and the user may  define  default  request
+       files  (analogous  to  Grid Engine_request for qsub), which can contain
+       any of the possible command line options.
+       A cluster wide default request file is optional.   If  such  a  default
+       request file is used, it must be placed under
+       $SGE_ROOT/$SGE_CELL/common/sge_ar_request (global defaults file).
+       A user private default request file is optional. If it is used, it must
+       be placed under
+       $HOME/.sge_ar_request (user private defaults file).
+
+OOPPTTIIOONNSS
+       --aa ddaattee__ttiimmee
+              Defines the activation (start) date and  time  of  an  AR.   The
+              option  is  not  mandatory. If omitted, the current date_time is
+              assumed. Either a duration or end date_time must also be  speci-
+              fied. For details about date_time please see _s_g_e___t_y_p_e_s(1).
+
+       --AA aaccccoouunntt__ssttrriinngg
+              Identifies  the account to which the resource reservation of the
+              AR should be charged. For "aaccccoouunntt__ssttrriinngg" value details  please
+              see  the  "nnaammee"  definition in _s_g_e___t_y_p_e_s(1).  In the absence of
+              this parameter Grid Engine will place the default account string
+              "sge" in the accounting record of the AR.
+
+       --cckkpptt cckkpptt__nnaammee
+              Selects the checkpointing environment (see _c_h_e_c_k_p_o_i_n_t(5)) the AR
+              jobs may request. Using this option guarantees that only  queues
+              providing this checkpoint environment will be reserved.
+
+       --dd ttiimmee
+              Defines the duration of the AR. The use of "--dd ttiimmee" is optional
+              if "--ee ddaattee__ttiimmee" is requested.  For details about  "ttiimmee" defi-
+              nition please see _s_g_e___t_y_p_e_s(1).
+
+       --ee ddaattee__ttiimmee
+              Defines  the  end  date  and  time  of  an  AR.  The  use of "--ee
+              ddaattee__ttiimmee" is optional if "--dd ttiimmee" is requested.   For  details
+              about "ddaattee__ttiimmee" definition please see _s_g_e___t_y_p_e_s(1).
+
+       --hhee yy[[eess]]||nn[[oo]]
+              Specifies the behavior when the AR goes into an error state. The
+              AR goes into error state when a reserved host goes into  unknown
+              state,  a  queue  error  happens, or when a queue is disabled or
+              suspended.
+
+              A hard error, "--hhee yyeess", means as long as the  AR  is  in  error
+              state  no  jobs  using the AR will be scheduled.  If soft error,
+              "--hhee nnoo", is specified the AR stays usable  with  the  remaining
+              resources.
+              By default soft error handling is used.
+
+
+       --hheellpp  Prints a list of all options.
+
+       --ll rreessoouurrccee==vvaalluuee,...
+              Creates  an  AR  in  a  Grid  Engine  queue, providing the given
+              resource request list.   _c_o_m_p_l_e_x(5)  describes  how  a  list  of
+              available  resources and their associated valid value specifiers
+              can be obtained.
+              There may be multiple --ll switches in a single command.
+
+       --mm bb||ee||aa||nn
+              Defines or redefines under which circumstances  mail  is  to  be
+              sent  to the AR owner or to the users defined with the --MM option
+              described below. The option arguments have the  following  mean-
+              ing:
+
+              `b'     Mail is sent at the beginning of the AR
+              `e'     Mail is sent at the end of the AR
+              `a'     Mail is sent when the AR goes into error state
+              `n'     No mail is sent, default for _q_r_s_u_b
+
+       --MM uusseerr[[@@hhoosstt]],,......
+              Defines  or  redefines  the  list  of users to which the qmaster
+              sends mail.
+
+       --mmaasstteerrqq wwcc__qquueeuuee__lliisstt
+              Only meaningful for a parallel AR request together with the  -pe
+              option.
+
+              This  option  is used to reserve the proper queues to match this
+              request if it would be requested by a  qsub.   A  more  detailed
+              description of _w_c___q_u_e_u_e___l_i_s_t can be found in _s_g_e___t_y_p_e_s(1).
+
+       --nnooww yy[[eess]]||nn[[oo]]
+              This option affects the queue selection for reservation.
+              With  the  "--nnooww yy" option, only queues with the qtype "INTERAC-
+              TIVE" assigned will be considered for reservation.  "--nnooww nn"  is
+              the default for _q_r_s_u_b.
+
+       --NN nnaammee
+              The  name  of  the  AR.  The name, if requested, must conform to
+              "nnaammee" as defined in _s_g_e___t_y_p_e_s(1).  Invalid names will be denied
+              at submit time.
+
+       --ww ee||vv Specifies the validation level applied to the AR request.
+
+              The specifiers e and v define the following validation modes:
+
+              `v'  verify - does not submit the AR but prints
+                   an extensive validation report
+              `e'  error - rejects request if requirements cannot
+                   be fulfilled, default for _q_r_s_u_b
+
+       --ppee ppaarraalllleell__eennvv nn[[--[[mm]]]]||[[--]]mm,,......
+              Parallel programming environment (PE) to select for the AR queue
+              reservation.  Please see the details of a PE in _s_g_e___p_e(5).
+
+       --qq wwcc__qquueeuuee__lliisstt
+              Defines or redefines a list of cluster queues, queue domains  or
+              queue  instances  that  may be reserved by the AR. Please find a
+              description of _w_c___q_u_e_u_e___l_i_s_t in  _s_g_e___t_y_p_e_s(1).   This  parameter
+              has  all the properties of a resource request and will be merged
+              with requirements derived from the --ll option described above.
+
+       --uu [[uusseerrnnaammee||@@aacccceessss__lliisstt]],,......
+              Defines the users allowed to submit jobs requesting the AR.  The
+              access  is  specified  by a comma-separated list containing UNIX
+              users or ACLs (see _a_c_c_e_s_s___l_i_s_t(5)).  An  ACL  is  differentiated
+              from  a  UNIX  user  name  by prefixing the ACL name with an '@'
+              sign.
+              By default only the AR owner is allowed to submit jobs  request-
+              ing the AR.
+
+              Note:  Only  queues  where  all users specified in the list have
+              access are considered for reservation (see _q_u_e_u_e___c_o_n_f(5)).
+
+EENNVVIIRROONNMMEENNTTAALL VVAARRIIAABBLLEESS
+       SSGGEE__RROOOOTT       Specifies the location of the Grid Engine standard  con-
+                      figuration files.
+
+       SSGGEE__CCEELLLL       If  set,  specifies  the  default  Grid  Engine cell. To
+                      address a Grid Engine cell, _q_s_u_b, _q_s_h, _q_l_o_g_i_n or  _q_a_l_t_e_r
+                      use (in the order of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. ddeeffaauulltt.
+
+       SSGGEE__DDEEBBUUGG__LLEEVVEELL
+                      If set, specifies that debug information should be writ-
+                      ten  to stderr. In addition the level of detail in which
+                      debug information is generated is defined.
+
+       SSGGEE__QQMMAASSTTEERR__PPOORRTT
+                      If set, specifies the TCP port on  which  _s_g_e___q_m_a_s_t_e_r(8)
+                      is  expected to listen for communication requests.  Most
+                      installations will use a services map entry for the ser-
+                      vice "sge_qmaster" instead of defining the port.
+
+FFIILLEESS
+       _$_S_G_E___R_O_O_T_/_$_S_G_E___C_E_L_L_/_c_o_m_m_o_n_/_s_g_e___a_r___r_e_q_u_e_s_t
+                      global defaults file
+       _$_H_O_M_E_/_._s_g_e___a_r___r_e_q_u_e_s_t
+                      user private defaults file
+
+SSEEEE AALLSSOO
+       _q_r_d_e_l(1),  _q_r_s_t_a_t(1), _q_s_u_b(1), _s_g_e___t_y_p_e_s(1), _c_h_e_c_k_p_o_i_n_t(5), _c_o_m_p_l_e_x(5),
+       _q_u_e_u_e___c_o_n_f(5), _s_g_e___p_e(5), _s_g_e___r_e_s_o_u_r_c_e___q_u_o_t_a(5).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+
+SGE 8.0.0                $Date: 2011-05-20 22:26:16 $                 QRSUB(1)

@@ -1,0 +1,173 @@
+HOST_CONF(5)               Grid Engine File Formats               HOST_CONF(5)
+
+
+
+NNAAMMEE
+       host_conf - Grid Engine execution host configuration file format
+
+DDEESSCCRRIIPPTTIIOONN
+       _H_o_s_t___c_o_n_f  reflects  the  format of the template file for the execution
+       host configuration.  Via the --aaee and --mmee options of the  _q_c_o_n_f(1)  com-
+       mand,  you  can add execution hosts and modify the configuration of any
+       execution host in the cluster. Default execution host entries are added
+       automatically as soon as a _s_g_e___e_x_e_c_d(8) registers to _s_g_e___q_m_a_s_t_e_r(8) for
+       the very first time from a certain host. The _q_c_o_n_f(1) --sseell  switch  can
+       be  used  to  display a list of execution hosts currently configured in
+       your Grid Engine system. Via the --ssee option you can print the execution
+       host configuration of a specified host.
+
+       The  special  hostname  "global"  can  be used to define cluster global
+       characteristics.
+
+       Note Grid Engine allows backslashes (\) be used to escape newline char-
+       acters. The backslash and the newline are replaced with a space charac-
+       ter before any interpretation.
+
+FFOORRMMAATT
+       The format of a _h_o_s_t___c_o_n_f file is defined as follows:
+
+   hhoossttnnaammee
+       The execution host's name in the format for _h_o_s_t___n_a_m_e in _s_g_e___t_y_p_e_s(1).
+
+   llooaadd__ssccaalliinngg
+       A comma-separated list of scaling values to be applied to each or  part
+       of  the  load values being reported by the _s_g_e___e_x_e_c_d(8) on the host and
+       defined in the cluster global "host"  complex  (see  _c_o_m_p_l_e_x(5)).   The
+       load  scaling  factors are intended to level hardware or operating sys-
+       tem-specific differences between execution hosts.
+
+       The syntax of a load factor specification is as follows: First the name
+       of the load value (as defined in the "host" complex) is given and, sep-
+       arated by an equal sign, the load scaling value is provided. No  blanks
+       are allowed in the load_scaling value string.
+
+       The  parameter llooaadd__ssccaalliinngg is not meaningful for the definition of the
+       "global" host.
+
+   ccoommpplleexx__vvaalluueess
+       ccoommpplleexx__vvaalluueess defines quotas for resource attributes managed via  this
+       host.  Each  complex attribute is followed by an "=" sign and the value
+       specification compliant with  the  complex  attribute  type  (see  _c_o_m_-
+       _p_l_e_x(5)).  Quota specifications are separated by commas.
+
+       The  quotas  are  related  to the resource consumption of all jobs on a
+       host in the case of consumable resources (see _c_o_m_p_l_e_x(5) for details on
+       consumable  resources), or they are interpreted on a per-job slot basis
+       in the case of non-consumable resources. Consumable resource attributes
+       are  commonly  used to manage free memory, free disk space or available
+       floating software licenses,  while  non-consumable  attributes  usually
+       define distinctive characteristics like type of hardware installed.
+
+       For  consumable  resource  attributes,  an available resource amount is
+       determined by subtracting the current resource consumption of all  run-
+       ning  jobs  on the host from the quota in the ccoommpplleexx__vvaalluueess list. Jobs
+       can only be dispatched to a host if no  resource  requests  exceed  any
+       corresponding  resource availability obtained by this scheme. The quota
+       definition in the ccoommpplleexx__vvaalluueess list is automatically replaced by  the
+       current  load  value  reported for this attribute, if load is monitored
+       for this resource and if the reported load value is more stringent than
+       the quota. This effectively avoids oversubscription of resources.
+
+       NNoottee::  Load  values  replacing the quota specifications may have become
+       more stringent because they have been scaled (see  llooaadd__ssccaalliinngg  above)
+       and/or  load  adjusted  (see _s_c_h_e_d___c_o_n_f(5)).  The _-_F option of _q_s_t_a_t(1)
+       and the load display in the _q_m_o_n(1) queue control dialog (activated  by
+       clicking  on  a  queue  icon  while the "Shift" key is pressed) provide
+       detailed information on the actual availability of consumable resources
+       and on the origin of the values taken into account currently.
+
+       NNoottee  aallssoo::  The  resource  consumption  of  running jobs (used for the
+       availability calculation) as well as the resource requests of the  jobs
+       waiting  to  be  dispatched  either  may  be derived from explicit user
+       requests during job submission (see the _-_l option to _q_s_u_b(1)) or from a
+       "default"  value  configured for an attribute by the administrator (see
+       _c_o_m_p_l_e_x(5)).  The _-_r option to _q_s_t_a_t(1) can be used for retrieving full
+       detail on the actual resource requests of all jobs in the system.
+
+       For  non-consumable  resources  Grid  Engine  simply compares the job's
+       attribute requests with the corresponding specification in ccoommpplleexx__vvaall--
+       uueess  taking  the  relation operator of the complex attribute definition
+       into account (see _c_o_m_p_l_e_x(5)).  If the  result  of  the  comparison  is
+       "true", the host is suitable for the job with respect to the particular
+       attribute. For parallel jobs each job slot to be occupied by a parallel
+       task is meant to provide the same resource attribute value.
+
+       NNoottee::  Only  numeric  complex  attributes  can be defined as consumable
+       resources and hence non-numeric attributes are always handled on a  per
+       job slot basis.
+
+       The  default  value  for  this parameter is NONE, i.e. no administrator
+       defined resource attribute quotas are associated with the host.
+
+   llooaadd__vvaalluueess
+       This entry cannot be configured but is only  displayed  in  case  of  a
+       _q_c_o_n_f(1)  --ssee command. All load values are displayed as reported by the
+       _s_g_e___e_x_e_c_d(8) on the host. The load values are shown  in  a  comma-sepa-
+       rated  list. Each load value starts with its name, followed by an equal
+       sign and the reported value.
+
+   pprroocceessssoorrss
+       NNoottee:: Deprecated, may be removed in future release.
+       This entry cannot be configured but is only  displayed  in  case  of  a
+       _q_c_o_n_f(1) --ssee command. Its value is the number of "processors" which has
+       been detected by _s_g_e___e_x_e_c_d(8) on  the  corresponding  host.   This  may
+       include "hardware threads" reported by the operating system.
+
+   uussaaggee__ssccaalliinngg
+       The  format  is  equivalent to llooaadd__ssccaalliinngg (see above), the only valid
+       attributes to be scaled however are ccppuu for CPU time  consumption,  mmeemm
+       for  memory consumption aggregated over the lifetime of jobs and iioo for
+       data transferred via any I/O devices. The default NONE means "no  scal-
+       ing", i.e. all scaling factors are 1.
+
+   uusseerr__lliissttss
+       The  uusseerr__lliissttss  parameter contains a comma-separated list of so called
+       user access lists as described in _a_c_c_e_s_s___l_i_s_t(5).  Each user  contained
+       in  at  least one of the listed access lists has access to the host. If
+       the uusseerr__lliissttss parameter is set to NONE (the  default),  any  user  has
+       access  if  not  explicitly  excluded  via  the  xxuusseerr__lliissttss  parameter
+       described below.  If a user is contained both  in  an  access  list  in
+       xxuusseerr__lliissttss and uusseerr__lliissttss the user is denied access to the host.
+
+   xxuusseerr__lliissttss
+       The  xxuusseerr__lliissttss parameter contains a comma-separated list of so called
+       user access lists as described in _a_c_c_e_s_s___l_i_s_t(5).  Each user  contained
+       in  at least one of the access lists is not allowed to access the host.
+       If the xxuusseerr__lliissttss parameter is set to NONE (the default), any user has
+       access.  If a user is contained both in xxuusseerr__lliissttss and uusseerr__lliissttss, the
+       user is denied access to the host.
+
+   pprroojjeeccttss
+       The pprroojjeeccttss parameter contains a comma-separated list of projects that
+       have  access  to  the  host.  Any  projects not in this list are denied
+       access to the host. If set to  NONE  (the  default),  any  project  has
+       access  if  not  specifically  excluded  via  the  xxpprroojjeeccttss  parameter
+       described below. If a project is in both pprroojjeeccttss  and  xxpprroojjeeccttss,  the
+       project is denied access to the host.
+
+   xxpprroojjeeccttss
+       The  xxpprroojjeeccttss  parameter  contains  a comma-separated list of projects
+       that are denied access to the host. If set to NONE  (the  default),  no
+       projects  are denied access other than those denied access based on the
+       pprroojjeeccttss parameter described above.  If a project is in  both  pprroojjeeccttss
+       and xxpprroojjeeccttss, the project is denied access to the host.
+
+   rreeppoorrtt__vvaarriiaabblleess
+       The rreeppoorrtt__vvaarriiaabblleess parameter contains a comma-separated list of vari-
+       ables that should be written to  the  reporting  file.   The  variables
+       listed  here  will  be written to the reporting file when a load report
+       arrives from an execution host.
+
+       Default settings can be done in the global host. Host-specific settings
+       for report_variables will override settings from the global host.
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1),  _s_g_e___t_y_p_e_s(1),  _q_c_o_n_f(1), _u_p_t_i_m_e(1), _a_c_c_e_s_s___l_i_s_t(5), _c_o_m_-
+       _p_l_e_x(5), _s_g_e___e_x_e_c_d(8), _s_g_e___q_m_a_s_t_e_r(8).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-18 01:57:34 $             HOST_CONF(5)

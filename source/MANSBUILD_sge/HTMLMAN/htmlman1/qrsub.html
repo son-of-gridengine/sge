@@ -1,0 +1,244 @@
+<HTML>
+<HEAD>
+<TITLE>qrsub.1</TITLE>
+</HEAD>
+<BODY>
+<H1>qrsub.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       qrsub   - Submit an Advance Reservation (AR) to Grid Engine.
+
+
+</PRE>
+<H2>SYNTAX</H2><PRE>
+       <B>qrsub</B> [<B>-a</B> <I>date</I><B>_</B><I>time</I>] [<B>-A</B> <I>account</I><B>_</B><I>string</I>] [<B>-ckpt</B> <I>ckpt</I><B>_</B><I>name</I>] [<B>-d</B> <I>time</I>]
+       [<B>-e</B> <I>date</I><B>_</B><I>time</I>] [<B>-he</B> <I>yes</I>|<I>no</I>] [<B>-help</B>] [<B>-l</B> <I>resource</I><B>_</B><I>list</I>] [<B>-now</B>] [<B>-M</B>
+       <I>user</I>[@<I>host</I>],...]  [<B>-N</B> <I>ar</I><B>_</B><I>name</I>] [<B>-w</B> <I>e|v</I>] [<B>-pe</B> <I>pe</I><B>_</B><I>name</I> <I>slot</I><B>_</B><I>range</I>] [<B>-q</B>
+       <I>wc</I><B>_</B><I>queue</I><B>_</B><I>list</I>] [<B>-u</B> <I>wc</I><B>_</B><I>user</I><B>_</B><I>list</I>]
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <I>Qrsub</I> provides a means for operators, managers or users referenced in
+       the ACL (see <B><A HREF="../htmlman5/access_list.html">access_list(5)</A></B>) "<B>arusers</B>" to create an Advance Reservation
+       (AR) in the Grid Engine queuing system. ARs allow reserving particular
+       consumable resources for future use. These reserved resources are only
+       available for jobs requesting the AR, and the scheduler ensures the
+       availability of the resources when the start time is reached. Jobs
+       requesting the AR can only use the reserved consumable resources.
+
+       During AR submit time the Grid Engine queuing system selects the best
+       suited queues for the AR request and then reserves the desired amount
+       of resources.  For a reservation, all queues that are not in orphaned
+       state are considered as suited. Only if the AR request can be fulfilled
+       will the AR be granted.
+
+       ARs will be deleted either automatically when the end time is reached,
+       or manually using <B><A HREF="../htmlman1/qrdel.html">qrdel(1)</A></B>.  In both cases, first all jobs requesting
+       the AR will be removed and then the AR itself. Already granted ARs can
+       be shown with <B><A HREF="../htmlman1/qrstat.html">qrstat(1)</A></B>.
+
+       Note: To make AR behavior predictable, it is necessary to have reserved
+       resources available at the time of AR start. This is done by keeping
+       jobs with a unlimited runtime limit separated from ARs, and not
+       considering resources used by such jobs for reservation.
+
+       Note: Resource Quotas are not considered for AR queue selection, nor
+       for jobs requesting an AR.
+
+       When an AR was successfully added to the Grid Engine queuing system
+       <I>qrsub</I> returns a unique integer ID referring to the the newly created
+       AR. The highest AR ID is 9999999. If the highest ID is reached, a
+       wraparound happens and the next unused ID, starting with 1, will be
+       used.
+
+       For <I>qrsub</I>, the administrator and the user may define default request
+       files (analogous to Grid Engine_request for qsub), which can contain
+       any of the possible command line options.
+       A cluster wide default request file is optional.  If such a default
+       request file is used, it must be placed under
+       $SGE_ROOT/$SGE_CELL/common/sge_ar_request (global defaults file).
+       A user private default request file is optional. If it is used, it must
+       be placed under
+       $HOME/.sge_ar_request (user private defaults file).
+
+
+</PRE>
+<H2>OPTIONS</H2><PRE>
+       <B>-a</B> <B>date_time</B>
+              Defines the activation (start) date and time of an AR.  The
+              option is not mandatory. If omitted, the current date_time is
+              assumed. Either a duration or end date_time must also be
+              specified. For details about date_time please see <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-A</B> <B>account_string</B>
+              Identifies the account to which the resource reservation of the
+              AR should be charged. For "<B>account_string</B>" value details please
+              see the "<B>name</B>" definition in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.  In the absence of
+              this parameter Grid Engine will place the default account string
+              "sge" in the accounting record of the AR.
+
+       <B>-ckpt</B> <B>ckpt_name</B>
+              Selects the checkpointing environment (see <B><A HREF="../htmlman5/checkpoint.html">checkpoint(5)</A></B>) the AR
+              jobs may request. Using this option guarantees that only queues
+              providing this checkpoint environment will be reserved.
+
+       <B>-d</B> <B>time</B>
+              Defines the duration of the AR. The use of "<B>-d</B> <B>time</B>" is optional
+              if "<B>-e</B> <B>date_time</B>" is requested.  For details about  "<B>time</B>"
+              definition please see <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-e</B> <B>date_time</B>
+              Defines the end date and time of an AR. The use of "<B>-e</B>
+              <B>date_time</B>" is optional if "<B>-d</B> <B>time</B>" is requested.  For details
+              about "<B>date_time</B>" definition please see <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-he</B> <B>y[es]|n[o]</B>
+              Specifies the behavior when the AR goes into an error state. The
+              AR goes into error state when a reserved host goes into unknown
+              state, a queue error happens, or when a queue is disabled or
+              suspended.
+
+              A hard error, "<B>-he</B> <B>yes</B>", means as long as the AR is in error
+              state no jobs using the AR will be scheduled.  If soft error,
+              "<B>-he</B> <B>no</B>", is specified the AR stays usable with the remaining
+              resources.
+              By default soft error handling is used.
+
+
+       <B>-help</B>  Prints a list of all options.
+
+       <B>-l</B> <B>resource=value</B>,...
+              Creates an AR in a Grid Engine queue, providing the given
+              resource request list.  <B><A HREF="../htmlman5/complex.html">complex(5)</A></B> describes how a list of
+              available resources and their associated valid value specifiers
+              can be obtained.
+              There may be multiple <B>-l</B> switches in a single command.
+
+       <B>-m</B> <B>b|e|a|n</B>
+              Defines or redefines under which circumstances mail is to be
+              sent to the AR owner or to the users defined with the <B>-M</B> option
+              described below. The option arguments have the following
+              meaning:
+
+              `b'     Mail is sent at the beginning of the AR
+              `e'     Mail is sent at the end of the AR
+              `a'     Mail is sent when the AR goes into error state
+              `n'     No mail is sent, default for <I>qrsub</I>
+
+       <B>-M</B> <B>user[@host],...</B>
+              Defines or redefines the list of users to which the qmaster
+              sends mail.
+
+       <B>-masterq</B> <B>wc_queue_list</B>
+              Only meaningful for a parallel AR request together with the -pe
+              option.
+
+              This option is used to reserve the proper queues to match this
+              request if it would be requested by a qsub.  A more detailed
+              description of <I>wc</I><B>_</B><I>queue</I><B>_</B><I>list</I> can be found in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-now</B> <B>y[es]|n[o]</B>
+              This option affects the queue selection for reservation.
+              With the "<B>-now</B> <B>y</B>" option, only queues with the qtype
+              "INTERACTIVE" assigned will be considered for reservation.
+              "<B>-now</B> <B>n</B>" is the default for <I>qrsub</I>.
+
+       <B>-N</B> <B>name</B>
+              The name of the AR. The name, if requested, must conform to
+              "<B>name</B>" as defined in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.  Invalid names will be denied
+              at submit time.
+
+       <B>-w</B> <B>e|v</B> Specifies the validation level applied to the AR request.
+
+              The specifiers e and v define the following validation modes:
+
+              `v'  verify - does not submit the AR but prints
+                   an extensive validation report
+              `e'  error - rejects request if requirements cannot
+                   be fulfilled, default for <I>qrsub</I>
+
+       <B>-pe</B> <B>parallel_env</B> <B>n[-[m]]|[-]m,...</B>
+              Parallel programming environment (PE) to select for the AR queue
+              reservation.  Please see the details of a PE in <B><A HREF="../htmlman5/sge_pe.html">sge_pe(5)</A></B>.
+
+       <B>-q</B> <B>wc_queue_list</B>
+              Defines or redefines a list of cluster queues, queue domains or
+              queue instances that may be reserved by the AR. Please find a
+              description of <I>wc</I><B>_</B><I>queue</I><B>_</B><I>list</I> in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.  This parameter
+              has all the properties of a resource request and will be merged
+              with requirements derived from the <B>-l</B> option described above.
+
+       <B>-u</B> <B>[username|@access_list],...</B>
+              Defines the users allowed to submit jobs requesting the AR. The
+              access is specified by a comma-separated list containing UNIX
+              users or ACLs (see <B><A HREF="../htmlman5/access_list.html">access_list(5)</A></B>).  An ACL is differentiated
+              from a UNIX user name by prefixing the ACL name with an '@'
+              sign.
+              By default only the AR owner is allowed to submit jobs
+              requesting the AR.
+
+              Note: Only queues where all users specified in the list have
+              access are considered for reservation (see <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B>).
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell. To
+                      address a Grid Engine cell, <I>qsub</I>, <I>qsh</I>, <I>qlogin</I> or <I>qalter</I>
+                      use (in the order of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the TCP port on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry for the
+                      service "sge_qmaster" instead of defining the port.
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <I>$SGE</I><B>_</B><I>ROOT/$SGE</I><B>_</B><I>CELL/common/sge</I><B>_</B><I>ar</I><B>_</B><I>request</I>
+                      global defaults file
+       <I>$HOME/.sge</I><B>_</B><I>ar</I><B>_</B><I>request</I>
+                      user private defaults file
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/qrdel.html">qrdel(1)</A></B>, <B><A HREF="../htmlman1/qrstat.html">qrstat(1)</A></B>, <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>, <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>, <B><A HREF="../htmlman5/checkpoint.html">checkpoint(5)</A></B>, <B><A HREF="../htmlman5/complex.html">complex(5)</A></B>,
+       <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B>, <B><A HREF="../htmlman5/sge_pe.html">sge_pe(5)</A></B>, <B><A HREF="../htmlman5/sge_resource_quota.html">sge_resource_quota(5)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+
+SGE 8.0.0                $Date: 2011-05-20 22:26:16 $                 <B><A HREF="../htmlman1/QRSUB.html">QRSUB(1)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

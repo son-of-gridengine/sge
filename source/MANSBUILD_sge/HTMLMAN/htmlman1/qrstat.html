@@ -1,0 +1,151 @@
+<HTML>
+<HEAD>
+<TITLE>qrstat.1</TITLE>
+</HEAD>
+<BODY>
+<H1>qrstat.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       qrstat - show the status of Grid Engine Advance Reservations (AR)
+
+
+</PRE>
+<H2>SYNTAX</H2><PRE>
+       <B>qrstat</B> [<B>-ar</B> <I>ar</I><B>_</B><I>id</I>,...]  [<B>-help</B>] [<B>-u</B> <I>user</I>,...]  [<B>-explain</B>]
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <I>qrstat</I> shows the current status of the available Grid Engine ARs.  The
+       selection option <B>-ar</B> allows you to get information about specific AR.
+
+       The administrator and the user may define files which can contain any
+       of the options described below. A cluster-wide sge_qrstat file may be
+       placed under $SGE_ROOT/$SGE_CELL/common/sge_qrstat The user private
+       file is searched at the location $HOME/.sge_qrstat.  The home directory
+       request file has the highest precedence over the cluster global file.
+       Command line can be used to override the flags contained in the files.
+
+
+</PRE>
+<H2>OPTIONS</H2><PRE>
+       <B>-ar</B> <B>ar_id,...</B>
+              Prints various information about the ARs identified by given
+              ar_id list.
+
+       <B>-explain</B>
+              Displays the reason for the error state of an AR. Possible
+              reasons are the unknown state of a host or queue instance.
+
+              The output format for the alarm reasons is one line per reason.
+
+       <B>-help</B>  Prints a listing of all options.
+
+       <B>-u</B> <B>user,...</B>
+              Display information only for those ARs created by the users from
+              the given user list.
+
+              The string  <B>$user</B> is a placeholder for the current username. An
+              asterisk "*" can be used as username wildcard to request that
+              all users' ARs be displayed. The default value for this switch
+              is "<B>-u</B> <B>$user</B>".
+
+
+       <B>-xml</B>   This option can be used with all other options and changes the
+              output to XML. The schemas used are referenced in the XML
+              output. The output is printed to stdout.
+
+
+</PRE>
+<H2>OUTPUT FORMATS</H2><PRE>
+       Depending on the presence or absence of the <B>-ar</B> option there are two
+       output formats need to be differentiated.
+
+   <B>Advance</B> <B>Reservation</B> <B>Summary</B> <B>(without</B> <B>-ar)</B>
+       Following the header line, a section for each AR is provided. The
+       columns contain information for
+
+       <B>o</B>  the AR id.
+
+       <B>o</B>  the name of the AR.
+
+       <B>o</B>  the current state of the AR. One of following states "wWrEd".
+
+          w - waiting without error
+          W - warning (effective - waiting with error)
+          r - running
+          E - error (effective - running with error)
+          d - deleted
+
+       <B>o</B>  the start time of the AR.
+
+       <B>o</B>  the end time of the AR.
+
+       <B>o</B>  the duration of the AR.
+
+   <B>Detailed</B> <B>Format</B> <B>(with</B> <B>-ar)</B>
+       The output contains two columns. The first one contains all AR
+       attributes.  The second one the corresponding value.
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell. To
+                      address a Grid Engine cell <I>qrstat</I> uses (in the order of
+                      precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the tcp port on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry for the
+                      service "sge_qmaster" instead to define that port.
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <I>&lt;sge</I><B>_</B><I>root&gt;/&lt;cell&gt;/common/act</I><B>_</B><I>qmaster</I>
+                       Grid Engine master host file
+       <I>&lt;sge</I><B>_</B><I>root&gt;/&lt;cell&gt;/common/sge</I><B>_</B><I>qrstat</I>
+                       cluster qrstat default options
+       <I>$HOME/.sge</I><B>_</B><I>qrstat</I>
+                       user qrstat default options
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/qrsub.html">qrsub(1)</A></B>, <B><A HREF="../htmlman1/qrdel.html">qrdel(1)</A></B>, <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>,
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-20 22:25:06 $                <B><A HREF="../htmlman1/QRSTAT.html">QRSTAT(1)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

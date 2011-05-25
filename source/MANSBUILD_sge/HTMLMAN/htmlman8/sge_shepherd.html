@@ -1,0 +1,118 @@
+<HTML>
+<HEAD>
+<TITLE>sge_shepherd.8</TITLE>
+</HEAD>
+<BODY>
+<H1>sge_shepherd.8</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       sge_shepherd - Grid Engine single job-controlling agent
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>sge_shepherd</B>
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <I>sge</I><B>_</B><I>shepherd</I> provides the parent process functionality for a single
+       Grid Engine job.  The parent functionality is necessary on UNIX systems
+       to retrieve resource usage information (see <B><A HREF="../htmlman2/getrusage.html">getrusage(2)</A></B>) after a job
+       has finished. In addition, the <I>sge</I><B>_</B><I>shepherd</I> forwards signals to the
+       job, such as the signals for suspension, enabling, termination and the
+       Grid Engine checkpointing signal (see <B><A HREF="../htmlman1/sge_ckpt.html">sge_ckpt(1)</A></B> and <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B> for
+       details).
+
+       The <I>sge</I><B>_</B><I>shepherd</I> receives information about the job to be started from
+       the <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>.  During the execution of the job it actually starts
+       up to 5 child processes. First a prolog script is run if this feature
+       is enabled by the <B>prolog</B> parameter in the cluster configuration. (See
+       <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>.)  Next a parallel environment startup procedure is run if
+       the job is a parallel job. (See <B><A HREF="../htmlman5/sge_pe.html">sge_pe(5)</A></B> for more information.)  After
+       that, the job itself is run, followed by a parallel environment
+       shutdown procedure for parallel jobs, and finally an epilog script if
+       requested by the <B>epilog</B> parameter in the cluster configuration. The
+       prolog and epilog scripts, as well as the parallel environment startup
+       and shutdown procedures, are to be provided by the Grid Engine
+       administrator and are intended for site-specific actions to be taken
+       before and after execution of the actual user job.
+
+       After the job has finished and the epilog script is processed,
+       <I>sge</I><B>_</B><I>shepherd</I> retrieves resource usage statistics about the job, places
+       them in a job specific subdirectory of the <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B> spool directory
+       for reporting through <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>, and finishes.
+
+       <I>sge</I><B>_</B><I>shepherd</I> also places an exit status file in the spool directory.
+       This exit status can be viewed with qacct -j JobId (see <B><A HREF="../htmlman1/qacct.html">qacct(1)</A></B>); it
+       is not the exit status of <I>sge</I><B>_</B><I>shepherd</I> itself but of one of the methods
+       executed by <I>sge</I><B>_</B><I>shepherd.</I>  This exit status can have several meanings,
+       depending on the method in which an error occurred (if any).  The
+       possible methods are: prolog, parallel start, job, parallel stop,
+       epilog, suspend, restart, terminate, clean, migrate, and checkpoint.
+
+       The following exit values are returned:
+
+       0      All methods: Operation was executed successfully.
+
+       99     Job script, prolog and epilog: When <I>FORBID</I><B>_</B><I>RESCHEDULE</I> is not set
+              in the configuration (see <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>), the job gets re-queued.
+              Otherwise see "Other".
+
+       100    Job script, prolog and epilog: When <I>FORBID</I><B>_</B><I>APPERROR</I> is not set
+              in the configuration (see <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>), the job gets re-queued.
+              Otherwise see "Other".
+
+       Other  Job script: This is the exit status of the job itself. No action
+              is taken upon this exit status because the meaning of this exit
+              status is not known.
+              Prolog, epilog and parallel start: The queue is set to error
+              state and the job is re-queued.
+              Parallel stop: The queue is set to error state, but the job is
+              not re-queued. It is assumed that the job itself ran
+              successfully and only the clean up script failed.
+              Suspend, restart, terminate, clean, and migrate: Always
+              successful.
+              Checkpoint: Success, except for kernel checkpointing: checkpoint
+              was not successful, did not happen (but migration will happen by
+              Grid Engine).
+
+
+</PRE>
+<H2>RESTRICTIONS</H2><PRE>
+       <I>sge</I><B>_</B><I>shepherd</I> should not be invoked manually, but only by <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>.
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <B>sgepasswd</B> contains a list of user names and their corresponding
+       encrypted passwords. If available, the password file will be used by
+       <B>sge_shepherd.</B> <B>To</B> <B>change</B> <B>the</B> <B>contents</B> <B>of</B> <B>this</B> <B>file</B> <B>please</B> <B>use</B> <B>the</B>
+       <B>sgepasswd</B> <B>command.</B> <B>It</B> <B>is</B> <B>not</B> <B>advised</B> <B>to</B> <B>change</B> <B>that</B> <B>file</B> <B>manually.</B>
+       <I>&lt;execd</I><B>_</B><I>spool&gt;/job</I><B>_</B><I>dir/&lt;job</I><B>_</B><I>id&gt;</I>     job specific directory
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>, <B><A HREF="../htmlman5/remote_startup.html">remote_startup(5)</A></B>, <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2007-07-19 09:04:33 $          <B><A HREF="../htmlman8/SGE_SHEPHERD.html">SGE_SHEPHERD(8)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

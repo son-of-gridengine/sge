@@ -1,0 +1,69 @@
+'\" t
+.\"___INFO__MARK_BEGIN__
+.\"
+.\" Copyright: 2004 by Sun Microsystems, Inc.
+.\"
+.\"___INFO__MARK_END__
+.\" $RCSfile: host_aliases.5,v $     Last Update: $Date: 2011-05-18 01:57:41 $     Revision: $Revision: 1.1 $
+.\"
+.\"
+.\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
+.\"
+.de SB		\" small and bold
+.if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
+..
+.\" "
+.de T		\" switch to typewriter font
+.ft CW		\" probably want CW if you don't have TA font
+..
+.\"
+.de TY		\" put $1 in typewriter font
+.if t .T
+.if n ``\c
+\\$1\c
+.if t .ft P
+.if n \&''\c
+\\$2
+..
+.\"
+.de M		\" man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
+.TH HOST_ALIASES 5 "$Date: 2011-05-18 01:57:41 $" "SGE 8.0.0" "Grid Engine File Formats"
+.\"
+.SH NAME
+host_aliases \- Grid Engine host aliases file format
+.\"
+.SH DESCRIPTION
+All Grid Engine components use a hostname resolving service provided by
+the communication library to identify hosts via a unique hostname. The
+communication library itself references standard UNIX directory services
+such as DNS, NIS and /etc/hosts to resolve hostnames (through the Name
+Service Switch on systems which support it).
+In rare cases these standard services
+cannot be setup cleanly and Grid Engine communication daemons running on
+different hosts are unable to automatically determine a unique hostname
+for one or all hosts which can be used on all hosts. In such situations
+a Grid Engine host aliases file can be used to provide the communication
+daemons with a private and consistent hostname resolution database.
+.PP
+The location for the host aliases file is 
+\fI<sge_root>/<cell>/common/host_aliases\fP.
+.\"
+.\"
+.SH FORMAT
+For each host a single line must be provided with a blank-, comma-, or
+semicolon-separated list of hostname aliases. The first alias
+is defined to be the \fBunique\fP hostname which will be used
+by all Grid Engine components using the hostname aliasing service
+of the communication library.
+.\"
+.\"
+.SH "SEE ALSO"
+.M sge_intro 1 ,
+.M nsswitch.conf 5 .
+.\"
+.SH "COPYRIGHT"
+See
+.M sge_intro 1
+for a full statement of rights and permissions.

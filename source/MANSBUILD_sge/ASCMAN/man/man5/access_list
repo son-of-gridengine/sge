@@ -1,0 +1,66 @@
+ACCESS_LIST(5)             Grid Engine File Formats             ACCESS_LIST(5)
+
+
+
+NNAAMMEE
+       access_list - Grid Engine access list file format
+
+DDEESSCCRRIIPPTTIIOONN
+       Access  lists  are  used in Grid Engine to define access permissions of
+       users to queues  (see  _q_u_e_u_e___c_o_n_f(5))  or  parallel  environments  (see
+       _s_g_e___p_e(5)).   A  list  of currently configured access lists can be dis-
+       played via the _q_c_o_n_f(1) --ssuull option. The contents of each  access  list
+       can shown via the --ssuu switch. The output follows the _a_c_c_e_s_s___l_i_s_t format
+       description. New access lists can be created and existing can be  modi-
+       fied via the --aauu and --dduu options to _q_c_o_n_f(1).
+
+       Departments  are  a special form of access list that additionally allow
+       assignment of functional shares and override tickets.
+
+       Note, Grid Engine allows backslashes (\)  be  used  to  escape  newline
+       characters.  The  backslash  and  the newline are replaced with a space
+       character before any interpretation.
+
+FFOORRMMAATT
+       The following list of _a_c_c_e_s_s___l_i_s_t parameters specifies the  _a_c_c_e_s_s___l_i_s_t
+       content:
+
+   nnaammee
+       The  name  of  the  access  list  in  the  format  for  _u_s_e_r_s_e_t___n_a_m_e in
+       _s_g_e___t_y_p_e_s(1).
+
+   ttyyppee
+       The type of the access list, currently  one  of _A_C_L_, or _D_E_P_T or a  com-
+       bination of both in a comma separated list. Depending on this parameter
+       the access list can be used as access list only or as a department.
+
+   oottiicckkeett
+       The amount of override tickets currently assigned to the department.
+
+   ffsshhaarree
+       The current functional share of the department.
+
+   eennttrriieess
+       The entries parameter contains the comma separated list of  those  UNIX
+       users (see _u_s_e_r___n_a_m_e in _s_g_e___t_y_p_e_s(1)) or those primary UNIX groups that
+       are assigned to the access list or the department. Only a  user's  pri-
+       mary  UNIX  group  is used; secondary groups are ignored. Only symbolic
+       names are allowed.  A group is differentiated from a user name by  pre-
+       fixing the group name with a '@' sign.  Pure access lists allow listing
+       any user or group in any access list.
+
+       When using departments, each user or group may only be  listed  in  one
+       department,  in  order to ensure a unique assignment of jobs to depart-
+       ments.  If the _d_e_f_a_u_l_t_d_e_p_a_r_t_m_e_n_t is defined, it  is  assigned  to  jobs
+       whose  users  do not match with any of the users or groups listed under
+       _e_n_t_r_i_e_s.
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _s_g_e___t_y_p_e_s(1), _q_c_o_n_f(1), _s_g_e___p_e(5), _q_u_e_u_e___c_o_n_f(5).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-19 00:16:38 $           ACCESS_LIST(5)

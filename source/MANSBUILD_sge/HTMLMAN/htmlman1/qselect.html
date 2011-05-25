@@ -1,0 +1,139 @@
+<HTML>
+<HEAD>
+<TITLE>qselect.1</TITLE>
+</HEAD>
+<BODY>
+<H1>qselect.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       qselect - select queues.
+
+
+</PRE>
+<H2>SYNTAX</H2><PRE>
+       <B>qselect</B> [ <B>-help</B> ] [ <B>-l</B> <B>resource=val,...</B>  ] [ <B>-pe</B> <B>pe_name,...</B>  ] [ <B>-q</B>
+       <B>wc_queue,...</B>  ] [ <B>-s</B> <B>{r|p|s|z|hu|ho|hs|hj|ha|h}[+]</B> ] [ <B>-U</B> <B>user,...</B>  ]
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <I>qselect</I> prints a list of Grid Engine queue names corresponding to
+       selection criteria specified in the <I>qselect</I> arguments described below.
+       The output of <I>qselect</I> can be fed into other Grid Engine commands to
+       apply actions on the selected queue sets. For example together with the
+       <I>-mqattr</I> option to <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>, <I>qselect</I> can be used to modify queue
+       attributes on a set of queues.
+
+
+</PRE>
+<H2>OPTIONS</H2><PRE>
+       <B>-help</B>  Prints a listing of all options.
+
+       <B>-l</B> <B>resource</B>[<B>=value</B>],...
+              Defines the resources to be granted by the queues which should
+              be included in the queue list output. Matching is performed on
+              queues based on non-mutable resource availability information
+              only.  That means load values are always ignored except the so-
+              called static load values (i.e. "arch", "num_proc", "mem_total",
+              "swap_total" and "virtual_total") ones. Also consumable
+              utilization is ignored.  If there are multiple -l resource
+              requests they will be concatenated by a logical AND: a queue
+              needs to offer all resources to be displayed.
+
+       <B>-pe</B> <B>pe_name,...</B>
+              Includes queues into the output which are attached to at least
+              one of the parallel environments listed in the comma-separated
+              option argument.
+
+       <B>-q</B> <B>wc_queue,...</B>
+              Directly specifies the wildcard expression queue list to be
+              included in the output.  This option usually is only meaningful
+              in conjunction with another <I>qselect</I> option to extract a subset
+              of queue names from a list given by <B>-q</B>.  Description of <I>wc</I><B>_</B><I>queue</I>
+              can be found in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-qs</B> <B>{a|c|d|o|s|u|A|C|D|E|S}</B>
+              This option allows to filter for queue instances in certain
+              states.
+
+       <B>-U</B> <B>user,...</B>
+              Includes the queues to which the specified users have access in
+              the <I>qselect</I> output.
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       =====================================================
+
+       % qselect -l arch=linux
+       % qselect -l arch=linux -U andreas,shannon
+       % qconf -mattr queue h_vmem=1GB `qselect -l arch=linux`
+
+       =====================================================
+
+       The first example prints the names of those queues residing on Linux
+       machines. The second command in addition restricts the output to those
+       queues with access permission for the users <I>andreas</I> and <I>shannon</I>. The
+       third command changes the queue attribute <I>h</I><B>_</B><I>vmem</I> to 1 Gigabyte on
+       queues residing on Linux machines (see the <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B> manual page for
+       details on the <I>-mattr</I> option and the <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B> manual page on
+       details of queue configuration entries).
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell. To
+                      address a Grid Engine cell <I>qselect</I> uses (in the order of
+                      precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the tcp port on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry for the
+                      service "sge_qmaster" instead to define that port.
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <I>&lt;sge</I><B>_</B><I>root&gt;/&lt;cell&gt;/common/act</I><B>_</B><I>qmaster</I>
+                       Grid Engine master host file
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>, <B><A HREF="../htmlman1/qmod.html">qmod(1)</A></B>, <B><A HREF="../htmlman1/qstat.html">qstat(1)</A></B>, <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B>,
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2009-05-28 16:09:10 $               <B><A HREF="../htmlman1/QSELECT.html">QSELECT(1)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

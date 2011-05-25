@@ -1,0 +1,50 @@
+sge-node-selection(1)                                    sge-node-selection(1)
+
+
+
+NNAAMMEE
+       busy-nodes,  idle-nodes,  dead-nodes, nodes-in-job, qselect-node-list -
+       List Grid Engine node names by various criteria
+
+SSYYNNOOPPSSIISS
+       bbuussyy--nnooddeess [--ww] [--hh|----hheellpp]
+       iiddllee--nnooddeess [--ww] [--hh|----hheellpp]
+       ddeeaadd--nnooddeess [--ww] [--hh|----hheellpp]
+       nnooddeess--iinn--jjoobb [--ww] [--hh|----hheellpp] _j_o_b_i_d
+       qqsseelleecctt--nnooddee--lliisstt [--hh|----hheellpp] _q_s_e_l_e_c_t___a_r_g ...
+
+DDEESSCCRRIIPPTTIIOONN
+       bbuussyy--nnooddeess, iiddllee--nnooddeess, and ddeeaadd--nnooddeess respectively  list  Grid  Engine
+       nodes  which are:  busy with one or more jobs, idle (without a job run-
+       ning), and "dead" (their Grid Engine exec daemon  is  not  responding).
+       nnooddeess--iinn--jjoobb list nodes which are running the given _j_o_b_i_d (presumably a
+       parallel one).  qqsseelleecctt--nnooddee--lliisstt runs _q_s_e_l_e_c_t(1) with the given  argu-
+       ments.  The node list is printed one node per line unless the --ww option
+       is used.
+
+OOPPTTIIOONNSS
+       --hh,----hheellpp
+              Print usage information.
+
+       --ww     Print the output in a form compatible with the  --ww  argument  of
+              _p_d_s_h(1).
+
+EEXXAAMMPPLLEESS
+       The  following would reboot all idle nodes.  (It is actually preferable
+       to submit a job to reboot nodes, to avoid a race with job further  sub-
+       mission.)
+              ppddsshh --ww ``iiddllee--nnooddeess --ww`` rreebboooott
+
+       The  following  would  run _q_h_o_s_t(1), selecting only nodes in job number
+       "123".
+              qqhhoosstt ``nnooddeess--iinn--jjoobb 112233``
+
+SSEEEE AALLSSOO
+       _q_h_o_s_t(1), _q_s_e_l_e_c_t(1), _p_d_s_h(1).
+
+AAUUTTHHOORR
+       Dave Love <d.love@liverpool.ac.uk>
+
+
+
+                                  2011-01-01             sge-node-selection(1)

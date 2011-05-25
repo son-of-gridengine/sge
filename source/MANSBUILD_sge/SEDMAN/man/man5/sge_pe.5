@@ -1,0 +1,351 @@
+'\" t
+.\"___INFO__MARK_BEGIN__
+.\"
+.\" Copyright: 2004 by Sun Microsystems, Inc.
+.\"
+.\"___INFO__MARK_END__
+.\" $RCSfile: sge_pe.5,v $     Last Update: $Date: 2011-05-19 00:21:08 $     Revision: $Revision: 1.21 $
+.\"
+.\"
+.\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
+.\"
+.de SB		\" small and bold
+.if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
+..
+.\"
+.de T		\" switch to typewriter font
+.ft CW		\" probably want CW if you don't have TA font
+..
+.\"
+.de TY		\" put $1 in typewriter font
+.if t .T
+.if n ``\c
+\\$1\c
+.if t .ft P
+.if n \&''\c
+\\$2
+..
+.\" "
+.\"
+.de URL
+\\$2 \(laURL: \\$1 \(ra\\$3
+..
+.if \n[.g] .mso www.tmac
+.de M		\" man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
+.TH SGE_PE 5 "$Date: 2011-05-19 00:21:08 $" "SGE 8.0.0" "Grid Engine File Formats"
+.\"
+.SH NAME
+sge_pe \- Grid Engine parallel environment configuration file format
+.\"
+.\"
+.SH DESCRIPTION
+Parallel environments are parallel programming and runtime environments
+supporting the execution of shared memory or distributed memory
+parallelized applications. Parallel environments usually require some
+kind of setup to be operational before starting parallel applications.
+Examples of common parallel environments are OpenMP on shared memory
+multiprocessor systems, and Message Passing Interface (MPI) on shared
+memory or distributed systems.
+.PP
+.I sge_pe
+allows for the definition of interfaces to arbitrary parallel environments.
+Once a parallel environment is defined or modified with the \fB\-ap\fP or
+\fB\-mp\fP options to
+.M qconf 1
+and linked with one or more queues via \fIpe_list\fP in 
+.M queue_conf 5
+the environment can be requested for a job via the \fB\-pe\fP switch
+to
+.M qsub 1
+together with a request for a numeric range of parallel processes
+to be allocated by the job. Additional \fB\-l\fP options may be used
+to specify more detailed job requirements.
+.PP
+Note, Grid Engine allows backslashes (\\) be used to escape newline
+characters. The backslash and the newline are replaced with a
+space character before any interpretation.
+.\"
+.\"
+.SH FORMAT
+The format of a
+.I sge_pe
+file is defined as follows:
+.\"
+.\"
+.SS "\fBpe_name\fP"
+The name of the parallel environment in the format for \fIpe_name\fP in
+.M sge_types 1 . 
+To be used in the
+.M qsub 1
+\fB\-pe\fP switch.
+.\"
+.\"
+.SS "\fBslots\fP"
+The total number of parallel processes allowed to run concurrently under the
+parallel environment.
+Type is integer, valid values are 0 to 9999999.
+.\"
+.\"
+.SS "\fBuser_lists\fP"
+.SS "\fBxuser_lists\fP" 
+A comma-separated list of user access list names (see
+.M access_list 5 ).
+.PP
+Each user contained in at least one of the
+.B user_lists
+access lists has access to the parallel environment. If the
+\fBuser_lists\fP parameter is set to NONE (the default) any user has
+access if not explicitly excluded via the \fBxuser_lists\fP parameter.
+.PP
+Each user contained in at least one of the
+.B xuser_lists
+access lists is not allowed to access the parallel environment. If the
+\fBxuser_lists\fP parameter is set to NONE (the default) any user has
+access.
+.PP
+If a user is contained both in an access list in \fBxuser_lists\fP and
+\fBuser_lists\fP the user is denied access to the parallel
+environment.
+.\"
+.\"
+.SS "\fBstart_proc_args\fP"
+.SS "\fBstop_proc_args\fP"
+The command line respectively of a startup or shutdown procedure (an
+executable command plus possible arguments) for the parallel environment, or
+"none" for no procedure (typically for tightly integrated PEs).
+An optional prefix "user@" specifies the username under which the
+procedure is to be started.
+.PP
+The startup procedure is invoked by
+.M sge_shepherd 8
+on the master node of the job
+prior to executing the job script. Its purpose is to setup the
+parallel environment according to its needs.
+The shutdown procedure is invoked by
+.M sge_shepherd 8
+after the job script has finished. Its purpose is to stop the
+parallel environment and to remove it from all participating
+systems.
+The standard output of the
+procedure is redirected to the file \fIREQUEST\fP.po\fIJID\fP in the
+job's working 
+directory (see
+.M qsub 1 ),
+with \fIREQUEST\fP being the name of the job as 
+displayed by
+.M qstat 1 ,
+and \fIJID\fP being the job's identification number.
+Likewise,
+the standard error output is redirected to \fIREQUEST\fP.pe\fIJID\fP.
+.PP
+The following special
+variables, expanded at runtime, can be used (besides any other
+strings which have to be interpreted by the start and stop procedures)
+to constitute a command line:
+.IP "\fI$pe_hostfile\fP"
+The pathname of a file containing
+a detailed description of the layout of the parallel environment to be
+setup by the start-up procedure. Each line of the file refers to a host
+on which parallel processes are to be run. The first entry of each line
+denotes the hostname, the second entry the number of parallel processes
+to be run on the host, the third entry the name of the queue, and the
+fourth entry a multi-processor configuration (or "NONE").  If
+.B \-binding pe
+is specified on job submission, the fourth column is the core binding
+specification as colon-separated socket-core pairs, like "0,0:0,1",
+meaning the first core on the first socket and the second
+core on the first socket can be used for binding.
+.IP "\fI$host\fP"
+The name of the host on which the startup or stop procedures are run.
+.IP "\fI$job_owner\fP"
+The user name of the job owner.
+.IP "\fI$job_id\fP"
+Grid Engine's unique job identification number.
+.IP "\fI$job_name\fP"
+The name of the job.
+.IP "\fI$pe\fP"
+The name of the parallel environment in use.
+.IP "\fI$pe_slots\fP"
+Number of slots granted for the job.
+.IP "\fI$processors\fP"
+The \fBprocessors\fP string as contained in the queue configuration
+(see
+.M queue_conf 5 )
+of the master queue (the queue in which the startup and stop procedures
+are run).
+.IP "\fI$queue\fP"
+The cluster queue of the master queue instance.
+.PP
+The start and stop commands are run with the same environment setting
+as that of the job to be started afterwards (see
+.M qsub 1 ).
+.\"
+.\"
+.SS "\fBallocation_rule\fP"
+The allocation rule is interpreted by the scheduler thread
+and helps the scheduler to decide how to distribute parallel
+processes among the available machines. If, for instance,
+a parallel environment is built for shared memory applications
+only, all parallel processes have to be assigned to a single
+machine, no matter how many suitable machines are available.
+If, however, the parallel environment follows the
+distributed memory paradigm, an even distribution of processes
+among machines may be favorable, as may packing processes onto the
+minimum number of machines.
+.PP
+The current version of the scheduler only understands the
+following allocation rules:
+.IP "\fB<int>\fP:" 1i
+An integer, fixing the number of processes per
+host. If it is 1, all processes have to reside
+on different hosts. If the special name
+.B $pe_slots
+is used, the full range of processes as specified with the
+.M qsub 1
+\fB\-pe\fP switch has to be allocated on a single host
+(no matter what value belonging to the range is finally
+chosen for the job to be allocated).
+.IP "\fB$fill_up\fP:" 1i
+Starting from the best suitable host/queue, all available slots are 
+allocated. Further hosts and queues are "filled up" as long as a job still 
+requires slots for parallel tasks.
+.IP "\fB$round_robin\fP:" 1i
+From all suitable hosts, a single slot is allocated until all tasks 
+requested by the parallel job are dispatched. If more tasks are requested 
+than suitable hosts are found, allocation starts again from the first host. 
+The allocation scheme walks through suitable hosts in a most-suitable-first 
+order.
+.\"
+.\"
+.SS "\fBcontrol_slaves\fP"
+This parameter can be set to TRUE or FALSE (the default). It indicates 
+whether Grid Engine is the creator of the slave tasks of a parallel application
+via 
+.M sge_execd 8
+and
+.M sge_shepherd 8
+and thus has full control over all processes in a parallel
+application, which enables capabilities such as resource limitation
+and correct accounting ("tight integration"). To gain control over the
+slave tasks of a parallel application, a sophisticated PE interface is
+required, which works closely together with Grid Engine facilities.
+See, for instance, the
+.B $SGE_ROOT/mpi
+directory and the
+.URL http://arc.liv.ac.uk/SGE/howto/#Tight%20Integration%20of%20Parallel%20Libraries "howto pages" .
+.sp 1
+Please set the control_slaves parameter to false for all other PE
+interfaces.
+.\"
+.\"
+.SS "\fBjob_is_first_task\fP"
+The
+.B job_is_first_task
+parameter can be set to TRUE or FALSE. A value of 
+TRUE indicates that the Grid Engine job script already contains one of 
+the tasks of the parallel application
+(the number of slots reserved for the job is the number of slots requested with the -pe switch).
+FALSE indicates that the
+job script (and its child processes) is not part of the parallel program
+(the number of slots reserved for the job is the number of slots requested with the -pe switch + 1).
+.PP
+If wallclock accounting is used 
+(execd_params ACCT_RESERVED_USAGE and/or SHARETREE_RESERVED_USAGE set to TRUE)
+and 
+.B control_slaves
+is set to FALSE, the
+.B job_is_first_task
+parameter influences the accounting for the job:
+A value of TRUE means that accounting for CPU and requested memory
+gets multiplied by the number of slots requested with the -pe switch.
+FALSE means the accounting information gets multiplied by number of slots + 1.
+.\"
+.\"
+.SS "\fBurgency_slots\fP"
+For pending jobs with a slot range PE request the number of slots
+is not determined. This setting specifies the method to be used by
+Grid Engine to assess the number of slots such jobs might finally
+get.
+.PP
+The assumed slot allocation has a meaning when determining the 
+resource-request-based priority contribution for numeric resources
+as described in
+.M sge_priority 5
+and is displayed when
+.M qstat 1
+is run without \fB\-g t\fP option.
+.PP
+The following methods are supported:
+.IP "\fB<int>\fP:" 1i
+The specified integer number is directly used as prospective slot amount.
+.IP "\fBmin\fP:" 1i
+The slot range minimum is used as prospective slot amount. If no
+lower bound is specified with the range, 1 is assumed.
+.IP "\fBmax\fP:" 1i
+The slot range maximum is used as prospective slot amount.
+If no upper bound is specified with the range, the absolute maximum
+possible due to the PE's \fBslots\fP setting is assumed.
+.IP "\fBavg\fP:" 1i
+The average of all numbers occurring within the job's PE range 
+request is assumed.
+.\"
+.\"
+.SS "\fBaccounting_summary\fP"
+This parameter is only checked if
+.B control_slaves
+(see above) is set to TRUE 
+and thus Grid Engine is the creator of the slave tasks of a parallel 
+application via
+.M sge_execd 8
+and
+.M sge_shepherd 8 .
+In this case, accounting information is available for every single
+slave task started by Grid Engine.
+.PP
+The
+.B accounting_summary
+parameter can be set to TRUE or FALSE. A value of 
+TRUE indicates that only a single accounting record is written to the
+.M accounting 5
+file, containing the accounting summary of the whole job, including all slave tasks,
+while a value of FALSE indicates an individual
+.M accounting 5
+record is written for every slave task, as well as for the master task.
+.PP
+.B Note:
+When running tightly integrated jobs with \fISHARETREE_RESERVED_USAGE\fP set,
+and \fIaccounting_summary\fP enabled in the parallel environment,
+reserved usage will only be reported by the master task of the parallel job.
+No per-parallel task usage records will be sent from execd to qmaster, which
+can significantly reduce load on the qmaster when running large,
+tightly integrated parallel jobs.
+.\"
+.\"
+.SH RESTRICTIONS
+\fBNote\fP that the functionality of the startup, shutdown,
+and signaling procedures remains the full responsibility
+of the administrator configuring the parallel environment.
+Grid Engine will just invoke these procedures and evaluate their
+exit status. If the procedures do not perform their tasks
+properly, or if the parallel environment or the parallel
+application behave unexpectedly, Grid Engine has no means to detect
+this.
+.\"
+.\"
+.SH "SEE ALSO"
+.M sge_intro 1 ,
+.M sge__types 1 ,
+.M qconf 1 ,
+.M qdel 1 ,
+.M qmod 1 ,
+.M qsub 1 ,
+.M access_list 5 ,
+.M sge_qmaster 8 ,
+.M sge_shepherd 8 .
+.\"
+.SH "COPYRIGHT"
+See
+.M sge_intro 1
+for a full statement of rights and permissions.

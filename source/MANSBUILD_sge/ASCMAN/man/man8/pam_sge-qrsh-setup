@@ -1,0 +1,51 @@
+pam_sge-qrsh-setup(8)                                    pam_sge-qrsh-setup(8)
+
+
+
+NNAAMMEE
+       pam_sge-qrsh-setup - PAM module for tight integration with Grid Engine
+
+SSYYNNOOPPSSIISS
+       ppaamm__ssggee--qqrrsshh--sseettuupp
+
+DDEESSCCRRIIPPTTIIOONN
+       This  PAM  module  provides tight integration of SSH communication into
+       Grid Engine when _s_s_h(1) is used with qqrrsshh etc.  It may also  work  with
+       other  communication  methods  that  run  daemons  which  use PAM.  See
+       _r_e_m_o_t_e___c_o_m_m_u_n_i_c_a_t_i_o_n(5).  It provides  to  the  spawned  processes  the
+       group           id          from          _$_S_G_E___R_O_O_T//ddeeffaauulltt//ssppooooll//_h_o_s_t_-
+       _n_a_m_e//aaccttiivvee__jjoobbss//_j_o_b___i_d//aaddddggrrppiidd    and    the     environment     from
+       _$_S_G_E___R_O_O_T//ddeeffaauulltt//ssppooooll//_h_o_s_t_n_a_m_e//aaccttiivvee__jjoobbss//_j_o_b___i_d//eennvviirroonnmmeenntt.
+
+       It  assumes  the use of a wrapper for rrsshhdd.  A suitable one is distrib-
+       uted as uuttiill//rreessoouurrcceess//wwrraappppeerrss//rrsshhdd--wwrraappppeerr under the Grid Engine root
+       directory.
+
+OOPPTTIIOONNSS
+       The module has no options.
+
+EEXXAAMMPPLLEE
+       On   a   typical   GNU/Linux   system,   add   the  following  line  to
+       //eettcc//ppaamm..dd//sssshhdd, e.g. at the top of the file.
+
+               auth required /opt/sge/lib/lx26-amd64/pam_sge-qrsh-setup.so
+
+       On some systems it might be  necessary  to  copy  pam_sge-qrsh-setup.so
+       into, say, //lliibb//sseeccuurriittyy and instead use it as
+
+               auth required pam_sge-qrsh-setup.so
+
+
+FFIILLEESS
+       //vvaarr//rruunn//ssggee--qqrrsshh--sseettuupp
+       $$SSGGEE__RROOOOTT//uuttiill//rreessoouurrcceess//wwrraappppeerrss//rrsshhdd--wwrraappppeerr
+
+SSEEEE AALLSSOO
+       _s_s_h(1), _r_e_m_o_t_e___c_o_m_m_u_n_i_c_a_t_i_o_n(5), _p_a_m(7), _p_a_m_._c_o_n_f(4).
+
+AAUUTTHHOORR
+       Andreas Haupt, man page by Dave Love.
+
+
+
+                                  2010-11-25             pam_sge-qrsh-setup(8)

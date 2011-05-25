@@ -1,0 +1,143 @@
+<HTML>
+<HEAD>
+<TITLE>qquota.1</TITLE>
+</HEAD>
+<BODY>
+<H1>qquota.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       qquota - shows current usage of Grid Engine resource quotas
+
+
+</PRE>
+<H2>SYNTAX</H2><PRE>
+       <B>qquota</B> [ <B>-h</B> <B>wc_host|wc_hostgroup,...</B>  ] [ <B>-help</B> ] [ <B>-l</B>
+       <B>resource_name,...</B>  ] [ <B>-u</B> <B>wc_user,...</B>  ] [ <B>-P</B> <B>wc_project,...</B>  ] [ <B>-pe</B>
+       <B>wc_pe_name,...</B>  ] [ <B>-q</B> <B>wc_cqueue,...</B>  ] [ <B>-xml</B> ]
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <I>qquota</I> shows the current Grid Engine resource quota sets. Only resource
+       quota sets with a positive usage count or a static limit are printed.
+
+       Selection options allow you to filter for specific hosts, cluster
+       queues, projects, parallel environments (pe), resources or users.
+       Without any option <I>qquota</I> will display a list of all resource quota
+       sets for the calling user.
+
+
+</PRE>
+<H2>OPTIONS</H2><PRE>
+       <B>-h</B> <B>wc_host|wc_hostgroup,...</B>
+              <I>Display</I> <I>only</I> <I>resource</I> <I>quota</I> <I>sets</I> <I>that</I> <I>match</I> <I>the</I> <I>hosts</I> in the
+              given wildcard host or hostgroup list. The definition of <B>wc_host</B>
+              and <B>wc_hostgroup</B> is in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-help</B>  Prints a listing of all options.
+
+       <B>-l</B> <B>resource_name,...</B>
+              Display only resource quota sets matching the resources in the
+              given resource list.
+
+       <B>-u</B> <B>wc_user,...</B>
+              Display only resource quota sets matching the users in the given
+              wildcard user list. The definition of <B>wc_user</B> is in
+              <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-P</B> <B>wc_project,...</B>
+              Display only resource quota sets matching the projects in the
+              given wildcard project list.  The definition of <B>wc_project</B> is in
+              <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-pe</B> <B>wc_pe_name,...</B>
+              Display only resource quota sets matching the parallel
+              environments (pe) in the given wildcard pe list. The definition
+              of <B>wc_pe_name</B> is in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-q</B> <B>wc_cqueue,...</B>
+              Display only resource quota sets matching the queues in the
+              given wildcard cluster queue list. The definition of <B>wc_cqueue</B>
+              is in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-xml</B>   This option can be used with all other options, and changes the
+              output to XML. The schema used is referenced in the XML output.
+              The output is printed to stdout.
+
+
+</PRE>
+<H2>OUTPUT FORMATS</H2><PRE>
+       A line is printed for every resource quota with a positive usage count
+       or static resource.  The line consists of
+
+       <B>o</B>  the resource quota - rule set name/rule name or number of rule in
+          ruleset
+
+       <B>o</B>  the limit - resource name, the number of used and available entities
+          of that resource
+
+       <B>o</B>  the effective resource quota set filter
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell. To
+                      address a Grid Engine cell <I>qquota</I> uses (in the order of
+                      precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition, the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the tcp port on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry for the
+                      service "sge_qmaster" instead to define that port.
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <I>&lt;sge</I><B>_</B><I>root&gt;/&lt;cell&gt;/common/act</I><B>_</B><I>qmaster</I>
+                       Grid Engine master host file
+       <I>&lt;sge</I><B>_</B><I>root&gt;/&lt;cell&gt;/common/sge</I><B>_</B><I>qquota</I>
+                       cluster qquota default options
+       <I>$HOME/.sge</I><B>_</B><I>qquota</I>
+                       user qquota default options
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/qalter.html">qalter(1)</A></B>, <B><A HREF="../htmlman1/qconf.html">qconf(1)</A></B>, <B><A HREF="../htmlman1/qhold.html">qhold(1)</A></B>, <B><A HREF="../htmlman1/qmod.html">qmod(1)</A></B>, <B><A HREF="../htmlman1/qstat.html">qstat(1)</A></B>,
+       <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>, <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B>, <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>, <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>, <B><A HREF="../htmlman8/sge_shepherd.html">sge_shepherd(8)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2007-07-19 09:04:31 $                <B><A HREF="../htmlman1/QQUOTA.html">QQUOTA(1)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>
