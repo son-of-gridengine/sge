@@ -913,6 +913,7 @@ while ($#argv >= 1 && $?found)
    case "-system-libs":
       set SYSTEM_LIBS = 1
       set SECLIBS_STATIC="-lssl -lcrypto"
+      set KLFLAGS = ""
       breaksw
    case  "-umap"
       echo "The -map option is currently broken"; exit 1
@@ -945,7 +946,7 @@ if ( $DEBUGGED && $USE_QMAKE ) then
    set MAKEOPT = "-verbose $MAKEOPT"
 endif
 
-if ( $SYSTEM_LIBS == 1 ) then
+if ( $SYSTEM_LIBS != 1 ) then
    # we generate a berkeley db shared lib, so we need bdb include and lib path
    set CFLAGS        = "-I$BERKELEYDB_HOME/include/${BDB_INCLUDE_SUBDIR} $CFLAGS"
    set LFLAGS        = "-L$BERKELEYDB_HOME/lib/${BDB_LIB_SUBDIR} $LFLAGS"
@@ -2055,7 +2056,10 @@ else
 endif
 
 if ( $JNI == 1 ) then
-   set CORE_INCLUDE = "$CORE_INCLUDE -I${JAVA_HOME}/${JAVA_INCL}"
+
+   if ( "${JAVA_HOME}/${JAVA_INCL}" != /usr/include ) then
+      set CORE_INCLUDE = "$CORE_INCLUDE -I${JAVA_HOME}/${JAVA_INCL}"
+   endif
 
    if ("$JAVA_ARCH" != "") then
       set CORE_INCLUDE = "$CORE_INCLUDE -I${JAVA_HOME}/${JAVA_INCL}/${JAVA_ARCH}"
