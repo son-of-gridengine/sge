@@ -1061,7 +1061,13 @@ static int cl_com_ssl_build_symbol_table(void) {
          return CL_RETVAL_SSL_SYMBOL_TABLE_ALREADY_LOADED;
       }
 
-
+/* This hook allows us to ensure that at runtime we pick up the
+   version against which we linked, specifically if we-re using system
+   libraries.  Fixme:  what, if anything should be done for the
+   systems that don't use .so?  */
+#ifndef LIBSSL_VER
+#  define LIBSSL_VER ""
+#endif
 #if defined(DARWIN)
 #ifdef RTLD_NODELETE
       cl_com_ssl_crypto_handle = dlopen ("libssl.dylib", RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE);
@@ -1071,9 +1077,9 @@ static int cl_com_ssl_build_symbol_table(void) {
 
 #elif defined(FREEBSD)
 #ifdef RTLD_NODELETE
-      cl_com_ssl_crypto_handle = dlopen ("libssl.so", RTLD_LAZY | RTLD_GLOBAL | RTLD_NODELETE);
+      cl_com_ssl_crypto_handle = dlopen ("libssl.so" LIBSSL_VER, RTLD_LAZY | RTLD_GLOBAL | RTLD_NODELETE);
 #else
-      cl_com_ssl_crypto_handle = dlopen ("libssl.so", RTLD_LAZY | RTLD_GLOBAL);
+      cl_com_ssl_crypto_handle = dlopen ("libssl.so" LIBSSL_VER, RTLD_LAZY | RTLD_GLOBAL);
 #endif /* RTLD_NODELETE */
 
 #elif defined(HPUX)
@@ -1085,9 +1091,9 @@ static int cl_com_ssl_build_symbol_table(void) {
 
 #else   
 #ifdef RTLD_NODELETE
-      cl_com_ssl_crypto_handle = dlopen ("libssl.so", RTLD_LAZY | RTLD_NODELETE);
+      cl_com_ssl_crypto_handle = dlopen ("libssl.so" LIBSSL_VER, RTLD_LAZY | RTLD_NODELETE);
 #else
-      cl_com_ssl_crypto_handle = dlopen ("libssl.so", RTLD_LAZY);
+      cl_com_ssl_crypto_handle = dlopen ("libssl.so" LIBSSL_VER, RTLD_LAZY);
 #endif /* RTLD_NODELETE */
 #endif
       
