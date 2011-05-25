@@ -1,0 +1,24 @@
+SGE_SGE_PASSWD(5)          Grid Engine File Formats          SGE_SGE_PASSWD(5)
+
+
+
+NNAAMMEE
+       sgepasswd - Grid Engine password file format
+
+DDEESSCCRRIIPPTTIIOONN
+       _s_g_e_p_a_s_s_w_d  contains  a  list  of  user  names  and  their corresponding
+       encrypted windows passwords. If available, the password  file  will  be
+       used  by  _s_g_e___s_h_e_p_h_e_r_d(8)  and _s_g_e___e_x_e_c_d(8).  To change the contents of
+       this file please use the _s_g_e_p_a_s_s_w_d(1) command. It  is  not  advised  to
+       change the file manually.
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _s_g_e_p_a_s_s_w_d(1), _G_r_i_d _E_n_g_i_n_e _I_n_s_t_a_l_l_a_t_i_o_n _a_n_d _A_d_m_i_n_i_s_t_r_a_t_i_o_n
+       _G_u_i_d_e
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2007-07-19 09:04:33 $        SGE_SGE_PASSWD(5)

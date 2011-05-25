@@ -1,0 +1,101 @@
+<HTML>
+<HEAD>
+<TITLE>sge_request.5</TITLE>
+</HEAD>
+<BODY>
+<H1>sge_request.5</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       sge_request - Grid Engine default request definition file format
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <I>sge</I><B>_</B><I>request</I> reflects the format of the files defining default request
+       profiles. If available, default request files are read and processed
+       during job submission, before any submit options embedded in the job
+       script, and before any options in the <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B> or <B><A HREF="../htmlman1/qsh.html">qsh(1)</A></B> command-line
+       are considered. Thus, the command-line and embedded script options may
+       overwrite the settings in the default request files (see <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B> or
+       <B><A HREF="../htmlman1/qsh.html">qsh(1)</A></B> for details).
+
+       There is a cluster global, a user private, and a working directory
+       local default request definition file. The working directory local
+       default request file has the highest precedence and is followed by the
+       user private and then the cluster global default request file.
+
+       <B>Note</B>, that the <I>-clear</I> option to <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B> or <B><A HREF="../htmlman1/qsh.html">qsh(1)</A></B> can be used to
+       discard any previous settings at any time in a default request file, in
+       the embedded script flags or in a <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B> or <B><A HREF="../htmlman1/qsh.html">qsh(1)</A></B> command-line
+       option.
+
+       The format of the default request definition files is:
+
+       <B>o</B>  The default request files may contain an arbitrary number of lines.
+          Blank lines, and lines with a '#' sign in the first column, are
+          skipped.
+
+       <B>o</B>  Each line not to be skipped may contain any <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B> option. More
+          than one option per line is allowed. The batch script file and
+          argument options to the batch script are not considered as <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>
+          options and thus are not allowed in a default request file.
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       The following is a simple example of a default request definition file:
+
+       =====================================================
+       # Default Requests File
+
+       # request group to be sun4 and a CPU-time of 5hr
+       -l arch=sun4,s_cpu=5:0:0
+
+       # don't restart the job in case of system crashes
+       -r n
+       =====================================================
+
+
+       Having defined a default request definition file like this, submitting
+       a job as follows:
+
+       qsub test.sh
+
+       would have precisely the same effect as if the job was submitted with:
+
+       qsub -l arch=sun4,s_cpu=5:0:0 -r n test.sh
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <I>&lt;sge</I><B>_</B><I>root&gt;/&lt;cell&gt;/common/sge</I><B>_</B><I>request</I>
+                     global defaults file
+       <I>$HOME/.sge</I><B>_</B><I>request</I>   user private defaults file
+       <I>$cwd/.sge</I><B>_</B><I>request</I>    cwd directory defaults file
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/qsh.html">qsh(1)</A></B>, <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>, <I>Grid</I> <I>Engine</I> <I>Installation</I> <I>and</I>
+       <I>Administration</I> <I>Guide</I>
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2004-04-19 10:52:10 $           <B><A HREF="../htmlman5/SGE_REQUEST.html">SGE_REQUEST(5)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

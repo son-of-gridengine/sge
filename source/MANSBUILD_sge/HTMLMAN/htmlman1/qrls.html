@@ -1,0 +1,132 @@
+<HTML>
+<HEAD>
+<TITLE>qrls.1</TITLE>
+</HEAD>
+<BODY>
+<H1>qrls.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       qrls - release Grid Engine jobs from previous hold states
+
+
+</PRE>
+<H2>SYNTAX</H2><PRE>
+       <B>qrls</B> [ <B>-h</B> {<B>u</B>|<B>o</B>|<B>s</B>},...  ] [ <B>-help</B> ] [ <B>job/task_id_list</B> ]
+
+       <B>qrls</B> [ <B>-h</B> {<B>u</B>|<B>o</B>|<B>s</B>},...  ] [ <B>-help</B> ] <B>-u</B> <B>user_list</B>
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <I>Qrls</I> provides a means for a user/operator/manager to release so called
+       <I>holds</I> from one or more jobs pending to be scheduled for execution.  As
+       long as any type of hold is assigned to a job, the job is not eligible
+       for scheduling.
+
+       Holds can be assigned to jobs with the <B><A HREF="../htmlman1/qhold.html">qhold(1)</A></B>, <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B> or the
+       <B><A HREF="../htmlman1/qalter.html">qalter(1)</A></B> command.
+
+       There are three different types of holds:
+
+       <B>user</B>   User holds can be assigned and removed by managers, operators
+              and the owner of the jobs.
+
+       <B>operator</B>
+              Operator holds can be assigned and removed by managers and
+              operators.
+
+       <B>system</B> System holds can be assigned and removed by managers only.
+
+       If no hold type is specified with the <B>-h</B> option (see below) the user
+       hold is assumed by default.
+
+       An alternate way to release holds is the <B><A HREF="../htmlman1/qalter.html">qalter(1)</A></B> command (see the <I>-h</I>
+       option).
+
+
+</PRE>
+<H2>OPTIONS</H2><PRE>
+       <B>-h</B> {<B>u</B>|<B>o</B>|<B>s</B>},...
+              Releases a u(ser), o(perator) or s(system) hold or a combination
+              thereof from one or more jobs.
+
+       <B>-help</B>  Prints a listing of all options.
+
+       <B>-u</B> <B>username,...</B>
+              Modifies the hold state of those jobs which were submitted by
+              users specified in the list of usernames.  Managers are allowed
+              to use the <B>qrls</B> <B>-u</B> <B>"*"</B> command to modify the hold state for jobs
+              of all users.
+
+              If a user uses the <B>-u</B> switch, the user may specify an additional
+              <I>job/task</I><B>_</B><I>id</I><B>_</B><I>list</I>.
+
+       <B>job/task_id_list</B>
+              Specified by the following form:
+
+                  <I>job</I><B>_</B><I>id[.task</I><B>_</B><I>range][,job</I><B>_</B><I>id[.task</I><B>_</B><I>range],...]</I>
+
+              If present, the <I>task</I><B>_</B><I>range</I> restricts the effect of the operation
+              to the array job task range specified as suffix to the job id
+              (see the <B>-t</B> option to <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B> for further details on array
+              jobs).
+
+              The task range specifier has the form n[-m[:s]]. The range may
+              be a single number, a  simple range  of the form n-m or a range
+              with a step size.
+
+              Instead of <I>job/task</I><B>_</B><I>id</I><B>_</B><I>list</I> it is possible to use the keyword
+              'all' to modify all jobs of the current user.
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell. To
+                      address a Grid Engine cell <I>qrls</I> uses (in the order of
+                      precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the tcp port on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry for the
+                      service "sge_qmaster" instead to define that port.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/qalter.html">qalter(1)</A></B>, <B><A HREF="../htmlman1/qhold.html">qhold(1)</A></B>, <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2007-01-05 19:56:11 $                  <B><A HREF="../htmlman1/QRLS.html">QRLS(1)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

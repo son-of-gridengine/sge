@@ -1,0 +1,89 @@
+SGE_SHADOWD(8)        Grid Engine Administrative Commands       SGE_SHADOWD(8)
+
+
+
+NNAAMMEE
+       sge_shadowd - Grid Engine shadow master daemon
+
+SSYYNNOOPPSSIISS
+       ssggee__sshhaaddoowwdd
+
+DDEESSCCRRIIPPTTIIOONN
+       _s_g_e___s_h_a_d_o_w_d  is  a "light weight" process which can be run on so-called
+       shadow master hosts in a Grid Engine cluster to detect failure  of  the
+       current  Grid  Engine  master daemon, _s_g_e___q_m_a_s_t_e_r(8), and to start-up a
+       new _s_g_e___q_m_a_s_t_e_r(8) on the host on which the _s_g_e___s_h_a_d_o_w_d runs. If multi-
+       ple  shadow  daemons are active in a cluster, they run a protocol which
+       ensures that only one of them will start-up a new master daemon.
+
+       The  hosts suitable for being used as shadow  master  hosts  must  have
+       shared root read/write access to the directory $SGE_ROOT/$SGE_CELL/com-
+       mon as well as  to  the  master  daemon  spool  directory  (by  default
+       $SGE_ROOT/$SGE_CELL/spool/qmaster).   The  names  of  the shadow master
+       hosts     need     to      be      contained      in      the      file
+       $SGE_ROOT/$xQS_NAME_Sxx_CELL/common/shadow_masters.
+
+RREESSTTRRIICCTTIIOONNSS
+       _s_g_e___s_h_a_d_o_w_d may only be started by root.
+
+EENNVVIIRROONNMMEENNTT VVAARRIIAABBLLEESS
+       SSGGEE__RROOOOTT       Specifies  the location of the Grid Engine standard con-
+                      figuration files.
+
+       SSGGEE__CCEELLLL       If set, specifies  the  default  Grid  Engine  cell.  To
+                      address  a  Grid  Engine  cell  _s_g_e___s_h_a_d_o_w_d uses (in the
+                      order of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. ddeeffaauulltt.
+
+
+       SSGGEE__DDEEBBUUGG__LLEEVVEELL
+                      If set, specifies that debug information should be writ-
+                      ten to stderr. In addition the level of detail in  which
+                      debug information is generated is defined.
+
+       SSGGEE__QQMMAASSTTEERR__PPOORRTT
+                      If  set,  specifies the tcp port on which _s_g_e___q_m_a_s_t_e_r(8)
+                      is expected to listen for communication requests.   Most
+                      installations will use a services map entry for the ser-
+                      vice "sge_qmaster" instead to define that port.
+
+       SSGGEE__DDEELLAAYY__TTIIMMEE This variable controls the interval in which _s_g_e___s_h_a_d_o_w_d
+                      pauses  if a takeover bid fails. This value is used only
+                      when there are multiple _s_g_e___s_h_a_d_o_w_d instances  and  they
+                      are  contending  to  be  the master.  The default is 600
+                      seconds.
+
+       SSGGEE__CCHHEECCKK__IINNTTEERRVVAALL
+                      This  variable  controls  the  interval  in  which   the
+                      _s_g_e___s_h_a_d_o_w_d  checks  the  heartbeat  file (60 seconds by
+                      default).
+
+       SSGGEE__GGEETT__AACCTTIIVVEE__IINNTTEERRVVAALL
+                      This variable controls the interval when  a  _s_g_e___s_h_a_d_o_w_d
+                      instance  tries to take over when the heartbeat file has
+                      not changed.  The default is 240 seconds.
+
+FFIILLEESS
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n
+                       Default configuration directory
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_c_o_m_m_o_n_/_s_h_a_d_o_w___m_a_s_t_e_r_s
+                       Shadow master hostname file.
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_s_p_o_o_l_/_q_m_a_s_t_e_r
+                       Default master daemon spool directory
+       _<_s_g_e___r_o_o_t_>_/_<_c_e_l_l_>_/_s_p_o_o_l_/_q_m_a_s_t_e_r_/_h_e_a_r_t_b_e_a_t
+                       The heartbeat file.
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _s_g_e___c_o_n_f(5), _s_g_e___q_m_a_s_t_e_r(8), _G_r_i_d _E_n_g_i_n_e _I_n_s_t_a_l_l_a_t_i_o_n _a_n_d
+       _A_d_m_i_n_i_s_t_r_a_t_i_o_n _G_u_i_d_e_.
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2007-11-08 23:04:23 $           SGE_SHADOWD(8)

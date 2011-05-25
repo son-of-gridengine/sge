@@ -1,0 +1,91 @@
+SGE_SHEPHERD(8)       Grid Engine Administrative Commands      SGE_SHEPHERD(8)
+
+
+
+NNAAMMEE
+       sge_shepherd - Grid Engine single job-controlling agent
+
+SSYYNNOOPPSSIISS
+       ssggee__sshheepphheerrdd
+
+DDEESSCCRRIIPPTTIIOONN
+       _s_g_e___s_h_e_p_h_e_r_d  provides  the  parent  process functionality for a single
+       Grid Engine job.  The parent functionality is necessary on UNIX systems
+       to  retrieve  resource usage information (see _g_e_t_r_u_s_a_g_e(2)) after a job
+       has finished. In addition, the _s_g_e___s_h_e_p_h_e_r_d  forwards  signals  to  the
+       job,  such as the signals for suspension, enabling, termination and the
+       Grid Engine checkpointing signal (see _s_g_e___c_k_p_t(1) and _q_u_e_u_e___c_o_n_f(5) for
+       details).
+
+       The  _s_g_e___s_h_e_p_h_e_r_d receives information about the job to be started from
+       the _s_g_e___e_x_e_c_d(8).  During the execution of the job it  actually  starts
+       up  to  5 child processes. First a prolog script is run if this feature
+       is enabled by the pprroolloogg parameter in the cluster  configuration.  (See
+       _s_g_e___c_o_n_f(5).)   Next a parallel environment startup procedure is run if
+       the job is a parallel job. (See _s_g_e___p_e(5) for more information.)  After
+       that,  the  job itself is run, followed by a parallel environment shut-
+       down procedure for parallel jobs,  and  finally  an  epilog  script  if
+       requested  by  the  eeppiilloogg  parameter in the cluster configuration. The
+       prolog and epilog scripts, as well as the parallel environment  startup
+       and shutdown procedures, are to be provided by the Grid Engine adminis-
+       trator and are intended for site-specific actions to  be  taken  before
+       and after execution of the actual user job.
+
+       After  the  job  has  finished  and  the  epilog  script  is processed,
+       _s_g_e___s_h_e_p_h_e_r_d retrieves resource usage statistics about the job,  places
+       them in a job specific subdirectory of the _s_g_e___e_x_e_c_d(8) spool directory
+       for reporting through _s_g_e___e_x_e_c_d(8), and finishes.
+
+       _s_g_e___s_h_e_p_h_e_r_d also places an exit status file in  the  spool  directory.
+       This  exit  status can be viewed with qacct -j JobId (see _q_a_c_c_t(1)); it
+       is not the exit status of _s_g_e___s_h_e_p_h_e_r_d itself but of one of the methods
+       executed  by _s_g_e___s_h_e_p_h_e_r_d_.  This exit status can have several meanings,
+       depending on the method in which an error occurred (if any).  The  pos-
+       sible  methods are: prolog, parallel start, job, parallel stop, epilog,
+       suspend, restart, terminate, clean, migrate, and checkpoint.
+
+       The following exit values are returned:
+
+       0      All methods: Operation was executed successfully.
+
+       99     Job script, prolog and epilog: When _F_O_R_B_I_D___R_E_S_C_H_E_D_U_L_E is not set
+              in  the configuration (see _s_g_e___c_o_n_f(5)), the job gets re-queued.
+              Otherwise see "Other".
+
+       100    Job script, prolog and epilog: When _F_O_R_B_I_D___A_P_P_E_R_R_O_R is  not  set
+              in  the configuration (see _s_g_e___c_o_n_f(5)), the job gets re-queued.
+              Otherwise see "Other".
+
+       Other  Job script: This is the exit status of the job itself. No action
+              is  taken upon this exit status because the meaning of this exit
+              status is not known.
+              Prolog, epilog and parallel start: The queue  is  set  to  error
+              state and the job is re-queued.
+              Parallel  stop:  The queue is set to error state, but the job is
+              not re-queued. It is assumed that the job  itself  ran  success-
+              fully and only the clean up script failed.
+              Suspend, restart, terminate, clean, and migrate: Always success-
+              ful.
+              Checkpoint: Success, except for kernel checkpointing: checkpoint
+              was not successful, did not happen (but migration will happen by
+              Grid Engine).
+
+RREESSTTRRIICCTTIIOONNSS
+       _s_g_e___s_h_e_p_h_e_r_d should not be invoked manually, but only by _s_g_e___e_x_e_c_d(8).
+
+FFIILLEESS
+       ssggeeppaasssswwdd contains  a  list  of  user  names  and  their  corresponding
+       encrypted  passwords.  If  available, the password file will be used by
+       ssggee__sshheepphheerrdd.. TToo cchhaannggee tthhee  ccoonntteennttss  ooff  tthhiiss  ffiillee  pplleeaassee  uussee  tthhee
+       ssggeeppaasssswwdd ccoommmmaanndd.. IItt iiss nnoott aaddvviisseedd ttoo cchhaannggee tthhaatt ffiillee mmaannuuaallllyy..
+       _<_e_x_e_c_d___s_p_o_o_l_>_/_j_o_b___d_i_r_/_<_j_o_b___i_d_>     job specific directory
+
+SSEEEE AALLSSOO
+       _s_g_e___i_n_t_r_o(1), _s_g_e___c_o_n_f(5), _r_e_m_o_t_e___s_t_a_r_t_u_p(5), _s_g_e___e_x_e_c_d(8).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2007-07-19 09:04:33 $          SGE_SHEPHERD(8)

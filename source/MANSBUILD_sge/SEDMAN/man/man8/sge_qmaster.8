@@ -1,0 +1,139 @@
+'\" t
+.\"___INFO__MARK_BEGIN__
+.\"
+.\" Copyright: 2004 by Sun Microsystems, Inc.
+.\"
+.\"___INFO__MARK_END__
+.\" $RCSfile: sge_qmaster.8,v $     Last Update: $Date: 2008-05-05 09:03:35 $     Revision: $Revision: 1.12 $
+.\"
+.\"
+.\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
+.\"
+.de SB		\" small and bold
+.if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
+..
+.\" "
+.de T		\" switch to typewriter font
+.ft CW		\" probably want CW if you don't have TA font
+..
+.\"
+.de TY		\" put $1 in typewriter font
+.if t .T
+.if n ``\c
+\\$1\c
+.if t .ft P
+.if n \&''\c
+\\$2
+..
+.\"
+.de M		\" man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
+.TH SGE_QMASTER 8 "$Date: 2008-05-05 09:03:35 $" "SGE 8.0.0" "Grid Engine Administrative Commands"
+.SH NAME
+sge_qmaster \- Grid Engine master control daemon
+.\"
+.\"
+.SH SYNOPSIS
+.B sge_qmaster
+[
+.B \-help
+]
+.\"
+.\"
+.SH DESCRIPTION
+.I sge_qmaster
+controls the overall Grid Engine behavior in a cluster. 
+.\"
+.\"
+.SH OPTIONS
+.IP "\fB\-help\fP"
+Prints  a listing of all options.
+.\"
+.\"
+.SH "ENVIRONMENTAL VARIABLES"
+.\" 
+.IP "\fBSGE_ROOT\fP" 1.5i
+Specifies the location of the Grid Engine standard configuration
+files.
+.\"
+.IP "\fBSGE_CELL\fP" 1.5i
+If set, specifies the default Grid Engine cell. To address a Grid Engine
+cell
+.I sge_qmaster
+uses (in order of precedence):
+.sp 1
+.RS
+.RS
+The name of the cell specified in the environment 
+variable SGE_CELL, if it is set.
+.sp 1
+The name of the default cell, i.e. \fBdefault\fP.
+.sp 1
+.RE
+.RE
+.\"
+.IP "\fBSGE_DEBUG_LEVEL\fP" 1.5i
+If set, specifies that debug information
+should be written to stderr. In addition, the level of
+detail in which debug information is generated is defined by the
+defined value.
+.\"
+.IP "\fBSGE_DEBUG_LEVEL\fP" 1.5i
+If set, the qmaster will not daemonize.
+.\"
+.IP "\fBSGE_QMASTER_PORT\fP" 1.5i
+If set, specifies the tcp port on which
+.M sge_qmaster 8
+is expected to listen for communication requests.
+Most installations will use a services map entry for the
+service "sge_qmaster" instead to define that port.
+.\"
+.IP "\fBSGE_EXECD_PORT\fP" 1.5i
+If set, specifies the tcp port on which
+.M sge_execd 8
+is expected to listen for communication requests.
+Most installations will use a services map entry for the
+service "sge_execd" instead to define that port.
+.\"
+.IP "\fBSGE_TEST_DELAY_SCHEDULING\fP" 1.5i
+If set, specifies a delay in (integral seconds) before a scheduling
+run, for test purposes.
+.\"
+.\"
+.SH RESTRICTIONS
+.I sge_qmaster
+is usually started from root on the master or shadow master machines of the
+cluster (refer to the
+.I Grid Engine Installation and Administration Guide
+for more information about the configuration of shadow master hosts).
+If started by a normal user, a master spool directory must be used to which
+the user has read/write access. In this case only jobs being submitted
+by that same user are handled correctly by the system.
+.\"
+.\"
+.SH FILES
+.nf
+.ta \w'<sge_root>/     'u
+\fI<sge_root>/<cell>/common/configuration\fP
+	Grid Engine global configuration
+\fI<sge_root>/<cell>/common/local_conf/<host>\fP
+	Grid Engine host specific configuration
+\fI<sge_root>/<cell>/common/qmaster_args\fP
+	\fIsge_qmaster\fP argument file
+\fI<sge_root>/<cell>/spool\fP
+	Default master spool directory
+.fi
+.\"
+.\"
+.SH "SEE ALSO"
+.M sge_intro 1 ,
+.M sge_conf 5 ,
+.M sge_execd 8 ,
+.M sge_shadowd 8 ,
+.I Grid Engine Installation and Administration Guide
+.\"
+.SH "COPYRIGHT"
+See
+.M sge_intro 1
+for a full statement of rights and permissions.

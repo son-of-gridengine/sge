@@ -1,0 +1,86 @@
+<HTML>
+<HEAD>
+<TITLE>qtask.5</TITLE>
+</HEAD>
+<BODY>
+<H1>qtask.5</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       qtask - file format of the qtask file.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A <I>qtask</I> file defines which commands are submitted to Grid Engine for
+       remote execution by <B><A HREF="../htmlman1/qtcsh.html">qtcsh(1)</A></B>.  The <I>qtask</I> file optionally may contain
+       <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B> command-line parameters. These parameters are passed to the
+       <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B> command being used by <I>qtcsh</I> to submit the commands.
+
+       Both a cluster global <I>qtask</I> file defining cluster wide defaults, and a
+       user specific <I>qtask</I> file eventually overriding and enhancing those
+       definitions, are supported. The cluster global file resides at
+       &lt;sge_root&gt;/&lt;cell/common/qtask, while the user specific file can be
+       found at ~/.qtask. An exclamation mark preceding command definitions in
+       the cluster global file can be used by the administrator to deny
+       overriding of such commands by users.
+
+
+</PRE>
+<H2>FORMAT</H2><PRE>
+       The overall format of the <I>qtask</I> file is that of a tabulated list. Each
+       line starting with a '#' character is a comment line. Each non-comment
+       line defines a command to be started remotely.
+
+       Definition starts with the command name that must match exactly the
+       name as typed in a <B><A HREF="../htmlman1/qtcsh.html">qtcsh(1)</A></B> command-line. Pathnames are not allowed in
+       <I>qtask</I> files. Hence absolute or relative pathnames in <B><A HREF="../htmlman1/qtcsh.html">qtcsh(1)</A></B> command-
+       lines always lead to local execution, even if the command itself is the
+       same as defined in the <I>qtask</I> file.
+
+       The command name can be followed by an arbitrary number of <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B>
+       option arguments which are passed on to <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B> by <B><A HREF="../htmlman1/qtcsh.html">qtcsh(1)</A></B>.
+
+       An exclamation mark prefixing the command in the cluster global <I>qtask</I>
+       file prevents overriding by the user supplied <I>qtask</I> file.
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       The following <I>qtask</I> file
+
+              firefox -l a=sol-sparc64 -v DISPLAY=myhost:0
+              grep -l h=filesurfer
+              verilog -l veri_lic=1
+
+       designates the applications firefox, grep and verilog for interactive
+       remote execution through Grid Engine. Firefox is requested to run only
+       on Solaris64 architectures with the DISPLAY environment variable set to
+       'myhost:0', grep only runs on the host named 'filesurfer', and verilog
+       requests availability of a verilog license in order to get executed
+       remotely.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/qtcsh.html">qtcsh(1)</A></B>, <B><A HREF="../htmlman1/qrsh.html">qrsh(1)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2005-03-30 14:31:37 $                 <B><A HREF="../htmlman5/QTASK.html">QTASK(5)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

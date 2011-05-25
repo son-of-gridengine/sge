@@ -1,0 +1,169 @@
+<HTML>
+<HEAD>
+<TITLE>drmaa_init.3</TITLE>
+</HEAD>
+<BODY>
+<H1>drmaa_init.3</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       drmaa_init, drmaa_exit - Start/finish Grid Engine DRMAA session
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>#include</B> <B>"drmaa.h"</B>
+
+       <B>int</B> <B>drmaa_init(</B>
+              <B>const</B> <B>char</B> <B>*contact,</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+       <B>int</B> <B>drmaa_exit(</B>
+              <B>char</B> <B>*error_diagnosis,</B>
+              <B>size_t</B> <B>error_diag_len</B>
+       <B>);</B>
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+   <B>drmaa_init()</B>
+       The drmaa_init() function initializes the Grid Engine DRMAA API library
+       for all threads of the process and creates a new DRMAA session. This
+       routine must be called once before any other DRMAA call, except for
+       <B><A HREF="../htmlman3/drmaa_version.html">drmaa_version(3)</A></B>, <B><A HREF="../htmlman3/drmaa_get_DRM_system.html">drmaa_get_DRM_system(3)</A></B>, and
+       <B><A HREF="../htmlman3/drmaa_get_DRMAA_implementation.html">drmaa_get_DRMAA_implementation(3)</A></B>.  Except for the above listed
+       functions, no DRMAA functions may be called before the drmaa_init()
+       function <I>completes</I>.  Any DRMAA function which is called before the
+       drmaa_init() function completes will return a
+       DRMAA_ERRNO_NO_ACTIVE_SESSION error.  <I>Contact</I> is an implementation
+       dependent string which may be used to specify which Grid Engine cell to
+       use. If <I>contact</I> is NULL, the default Grid Engine cell will be used. In
+       the 1.0 implementation <I>contact</I> may have the following value:
+       <I>session=&lt;session</I><B>_</B><I>id&gt;</I>.  To determine the session_id, the
+       <B><A HREF="../htmlman3/drmaa_get_contact.html">drmaa_get_contact(3)</A></B> function should be called after the session has
+       already been initialized.  By passing the <I>session=&lt;session</I><B>_</B><I>id&gt;</I> string
+       to the drmaa_init() function, instead of creating a new session, DRMAA
+       will attempt to reconnect to the session indicated by the <I>session</I><B>_</B><I>id</I>.
+       The result of reconnecting to a previous session is that all jobs
+       previously submitted in that session <B>that</B> <B>are</B> <B>still</B> <B>running</B> will be
+       available in the DRMAA session.  Note, however, that jobs which ended
+       before the call to drmaa_init() may not be available or may have no
+       associated exit information or resource usage data.
+
+   <B>drmaa_exit()</B>
+       The drmaa_exit() function closes the DRMAA session for all threads and
+       must be called before process termination.  The drmaa_exit() function
+       may be called only once by a single thread in the process and may only
+       be called after the drmaa_init() function has completed.  Any DRMAA
+       function, other than <B><A HREF="../htmlman3/drmaa_init.html">drmaa_init(3)</A></B>, which is called after the
+       drmaa_exit() function completes will return a
+       DRMAA_ERRNO_NO_ACTIVE_SESSION error.
+
+       The drmaa_exit() function does necessary clean up of the DRMAA session
+       state, including unregistering from the <B><A HREF="../htmlman8/qmaster.html">qmaster(8)</A></B>.  If the
+       drmaa_exit() function is not called, the qmaster will store events for
+       the DRMAA client until the connection times out, causing extra work for
+       the qmaster and consuming system resources.
+
+       Submitted jobs are not affected by the drmaa_exit() function.
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell to be
+                      used. To address a Grid Engine cell Grid Engine uses (in
+                      the order of precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the tcp port on which the sge_qmaster
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry instead to
+                      define that port.
+
+
+</PRE>
+<H2>RETURN VALUES</H2><PRE>
+       Upon successful completion, drmaa_init() and drmaa_exit() return
+       DRMAA_ERRNO_SUCCESS.  Other values indicate an error.  Up to
+       <I>error</I><B>_</B><I>diag</I><B>_</B><I>len</I> characters of error related diagnosis information is
+       then provided in the buffer <I>error</I><B>_</B><I>diagnosis</I>.
+
+
+</PRE>
+<H2>ERRORS</H2><PRE>
+       The drmaa_init() and drmaa_exit() functions will fail if:
+
+   <B>DRMAA_ERRNO_INTERNAL_ERROR</B>
+       Unexpected or internal DRMAA error, like system call failure, etc.
+
+   <B>DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE</B>
+       Could not contact DRM system for this request.
+
+   <B>DRMAA_ERRNO_AUTH_FAILURE</B>
+       The specified request is not processed successfully due to
+       authorization failure.
+
+   <B>DRMAA_ERRNO_INVALID_ARGUMENT</B>
+       The input value for an argument is invalid.
+
+       The drmaa_init() will fail if:
+
+   <B>DRMAA_ERRNO_INVALID_CONTACT_STRING</B>
+       Initialization failed due to invalid contact string.
+
+   <B>DRMAA_ERRNO_DEFAULT_CONTACT_STRING_ERROR</B>
+       Could not use the default contact string to connect to DRM system.
+
+   <B>DRMAA_ERRNO_DRMS_INIT_FAILED</B>
+       Initialization failed due to failure to init DRM system.
+
+   <B>DRMAA_ERRNO_ALREADY_ACTIVE_SESSION</B>
+       Initialization failed due to existing DRMAA session.
+
+   <B>DRMAA_ERRNO_NO_MEMORY</B>
+       Failed allocating memory.
+
+       The drmaa_exit() will fail if:
+
+   <B>DRMAA_ERRNO_NO_ACTIVE_SESSION</B>
+       Failed because there is no active session.
+
+   <B>DRMAA_ERRNO_DRMS_EXIT_ERROR</B>
+       DRM system disengagement failed.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman3/drmaa_submit.html">drmaa_submit(3)</A></B>.
+
+
+
+
+SGE 8.0.0                $Date: 2008-07-08 09:10:04 $         <B><A HREF="../htmlman3/drmaa_session.html">drmaa_session(3)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

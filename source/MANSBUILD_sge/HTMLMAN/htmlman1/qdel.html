@@ -1,0 +1,129 @@
+<HTML>
+<HEAD>
+<TITLE>qdel.1</TITLE>
+</HEAD>
+<BODY>
+<H1>qdel.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       qdel - delete Grid Engine jobs from queues
+
+
+</PRE>
+<H2>SYNTAX</H2><PRE>
+       <B>qdel</B> [<B>-f</B>] [<B>-help</B>] [<B>-u</B> <I>wc</I><B>_</B><I>user</I><B>_</B><I>list</I>] [<I>wc</I><B>_</B><I>job</I><B>_</B><I>range</I><B>_</B><I>list</I>] [<B>-t</B>
+       <I>task</I><B>_</B><I>id</I><B>_</B><I>range</I>]
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <I>Qdel</I> provides a means for a user/operator/manager to delete one or more
+       jobs. A manager/operator can delete jobs belonging to any user, while a
+       regular user can only delete his or her own jobs.  If a manager wants
+       to delete another user's job, the manager can specify the job id. A
+       manager using a job name or pattern must also specify the user's name
+       via "-u wc_user_list". A "qdel wc_job_name" will delete only the jobs
+       of the calling user by default.  <I>Qdel</I> deletes jobs in the order in
+       which their job identifiers are presented. Find additional information
+       concerning <I>wc</I><B>_</B><I>user</I><B>_</B><I>list</I> and <I>wc</I><B>_</B><I>job</I><B>_</B><I>list</I> in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+
+</PRE>
+<H2>OPTIONS</H2><PRE>
+       <B>-f</B>     Force deletion of job(s). The job(s) are deleted from the list
+              of jobs registered at <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B> even if the <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>
+              controlling the job(s) does not respond to the delete request
+              sent by <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.
+
+              Users who are neither Grid Engine managers nor operators can
+              only use the <B>-f</B> option (for their own jobs) if the cluster
+              configuration entry <B>qmaster_params</B> contains the flag
+              ENABLE_FORCED_QDEL (see <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>).  However, the behavior for
+              administrative and non-administrative users differs. Jobs are
+              deleted from the Grid Engine database immediately in the case of
+              administrators. Otherwise, a regular deletion is attempted first
+              and a forced cancellation is only executed if the regular
+              deletion was unsuccessful.
+
+              Additionally, regular qdel requests can result in a forced
+              deletion of a job if <B>ENABLE_FORCED_QDEL_IF_UNKNOWN</B> is set in the
+              <B>qmaster_params</B> (see <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>).
+
+       <B>-help</B>  Prints a listing of all options.
+
+       <B>-t</B>     Deletes specified tasks of an array job. It means tasks created
+              by the <I>qsub</I> <I>-t</I> command. For example, after creating an array job
+              with the command "qsub -t 1-100 $SGE_ROOT/examples/sleeper.sh"
+              it is possible to delete tasks 5-10 from the job array with the
+              command "qdel job_id -t 5-10".  All other tasks (1-4 and 11-100)
+              will be executed.
+
+       <B>-u</B> <B>wc_user_list</B>
+              Deletes only those jobs which were submitted by users specified
+              in the list of usernames.  For managers it is possible to use
+              <B>qdel</B> <B>-u</B> <B>"*"</B> to delete all jobs of all users. If a manager wants
+              to delete a specific job of a user, he has to specify the user
+              and the job. If no job is specified, all jobs from that user are
+              deleted.
+
+       <B>wc_job_range_list</B>
+              A list of jobs which should be deleted.
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell. To
+                      address a Grid Engine cell <I>qdel</I> uses (in the order of
+                      precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the tcp port on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry for the
+                      service "sge_qmaster" instead to define that port.
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <I>&lt;sge</I><B>_</B><I>root&gt;/&lt;cell&gt;/common/act</I><B>_</B><I>qmaster</I>
+                       Grid Engine master host file
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/qstat.html">qstat(1)</A></B>, <B><A HREF="../htmlman1/qsub.html">qsub(1)</A></B>, <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>, <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>.
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-17 22:33:49 $                  <B><A HREF="../htmlman1/QDEL.html">QDEL(1)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

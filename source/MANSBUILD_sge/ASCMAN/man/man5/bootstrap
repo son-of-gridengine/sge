@@ -1,0 +1,144 @@
+BOOTSTRAP(5)               Grid Engine File Formats               BOOTSTRAP(5)
+
+
+
+NNAAMMEE
+       bootstrap - Grid Engine bootstrap file
+
+DDEESSCCRRIIPPTTIIOONN
+       _b_o_o_t_s_t_r_a_p  contains  parameters that are needed for the startup of Grid
+       Engine components.  It is created during the sge_qmaster  installation.
+       Modifying _b_o_o_t_s_t_r_a_p in a running system is not supported.
+
+FFOORRMMAATT
+       The paragraphs that follow provide brief descriptions of the individual
+       parameters that comprise the bootstrap configuration for a Grid  Engine
+       cluster:
+
+   aaddmmiinn__uusseerr
+       Administrative  user  account used by Grid Engine for all internal file
+       handling (status spooling, message logging, etc.). Can be used in cases
+       where the root account does not have the corresponding file access per-
+       missions (e.g. on a shared file system without global  root  read/write
+       access).
+
+       As  a parameter set at installation time, changing aaddmmiinn__uusseerr in a run-
+       ning system is not supported. Changing it manually on a shut-down clus-
+       ter  is  possible,  but  if  access to the Grid Engine spooling area is
+       interrupted, this will result in unpredictable behavior.
+
+       The aaddmmiinn__uusseerr parameter has  no  default  value,  but  instead  it  is
+       defined during the master installation procedure.
+
+   ddeeffaauulltt__ddoommaaiinn
+       Only  needed if your Grid Engine cluster covers hosts belonging to more
+       than a single DNS domain. In this case it can be used if your  hostname
+       resolving yields both qualified and unqualified hostnames for the hosts
+       in one of the DNS domains.  The value of ddeeffaauulltt__ddoommaaiinn is appended  to
+       the  unqualified  hostname  to  define a fully qualified hostname.  The
+       ddeeffaauulltt__ddoommaaiinn parameter will have no effect if iiggnnoorree__ffqqddnn is  set  to
+       "true".
+
+       As  a  parameter set at installation time, changing ddeeffaauulltt__ddoommaaiinn in a
+       running system is not supported.  The  default  for  ddeeffaauulltt__ddoommaaiinn  is
+       "none", in which case it will not be used.
+
+   iiggnnoorree__ffqqddnn
+       Ignore  fully  qualified  domain name component of hostnames. Should be
+       set if all hosts belonging to a Grid Engine cluster are part of a  sin-
+       gle  DNS  domain.  It  is  switched  on if set to either "true" or "1".
+       Switching it on may solve problems with load reports due  to  different
+       hostname resolutions across the cluster.
+
+       As a parameter set at installation time, changing iiggnnoorree__ffqqddnn in a run-
+       ning system is not supported. The default for iiggnnoorree__ffqqddnn is "true".
+
+   ssppoooolliinngg__mmeetthhoodd
+       Defines how _s_g_e___q_m_a_s_t_e_r(8) writes  its  configuration  and  the  status
+       information of a running cluster.
+
+       The available spooling methods are _b_e_r_k_e_l_e_y_d_b and _c_l_a_s_s_i_c.
+
+   ssppoooolliinngg__lliibb
+       The  name  of  a  shared  library  containing the ssppoooolliinngg__mmeetthhoodd to be
+       loaded at _s_g_e___q_m_a_s_t_e_r(8) initialization time.  The extension character-
+       izing  a  shared  library  (.so,  .sl, .dylib etc.) is not contained in
+       ssppoooolliinngg__lliibb.
+
+       If ssppoooolliinngg__mmeetthhoodd was set to _b_e_r_k_e_l_e_y_d_b  during  installation,  ssppooooll--
+       iinngg__lliibb  is  set  to  _l_i_b_s_p_o_o_l_b,  and  if  _c_l_a_s_s_i_c was chosen as ssppooooll--
+       iinngg__mmeetthhoodd, ssppoooolliinngg__lliibb is set to _l_i_b_s_p_o_o_l_c.
+
+       Not all operating systems allow the dynamic loading  of  libraries.  On
+       these platforms a certain spooling method (default: berkeleydb) is com-
+       piled into the binaries and the parameter ssppoooolliinngg__lliibb will be ignored.
+
+   ssppoooolliinngg__ppaarraammss
+       Defines parameters of the chosen spooling method  that  are  needed  to
+       initialize  the  spooling  framework, e.g. to open database files or to
+       connect to a certain database server.
+
+       The  spooling  parameters  value  for  spooling  method  _b_e_r_k_e_l_e_y_d_b  is
+       [rpc_server:]database  directory,  e.g.  /sge_local/default/spool/qmas-
+       ter/spooldb for spooling to  a  local  filesystem,  or  myhost:sge  for
+       spooling over a Berkeley DB RPC server.
+
+       For spooling method _c_l_a_s_s_i_c the spooling parameters take the form <com-
+       mon_dir>;<qmaster     spool     dir>,      e.g.       /sge/default/com-
+       mon;/sge/default/spool/qmaster
+
+   bbiinnaarryy__ppaatthh
+       The  directory  path  where the Grid Engine binaries reside. It is used
+       within Grid Engine components to locate and startup other  Grid  Engine
+       programs.
+
+       The path name given here is searched for binaries as well as any direc-
+       tory below with a directory name equal to the current operating  system
+       architecture.  Therefore, /usr/SGE/bin will work for all architectures,
+       if the corresponding  binaries  are  located  in  subdirectories  named
+       aix43, lx-amd64, lx-x86, hp11, hp11-64, sol-amd64, sol-sparc etc.
+
+       The default location for the binary path is <sge_root>/bin
+
+   qqmmaasstteerr__ssppooooll__ddiirr
+       The  location  where  the  master  spool  directory  resides.  Only the
+       _s_g_e___q_m_a_s_t_e_r(8) and _s_g_e___s_h_a_d_o_w_d(8) need to have access  to  this  direc-
+       tory.   The  master  spool  directory  -  in particular the job_scripts
+       directory and the messages log file - may become quite large, depending
+       on  the size of the cluster and the number of jobs. Be sure to allocate
+       enough disk space and regularly clean off the log  files,  e.g.  via  a
+       _c_r_o_n(8) job.
+
+       As  a parameter set at installation time, changing qqmmaasstteerr__ssppooooll__ddiirr in
+       a running system is not supported.
+
+       The   default   location   for   the   master   spool   directory    is
+       <sge_root>/<cell>/spool/qmaster.
+
+   sseeccuurriittyy__mmooddee
+       The  security  mode  defines the set of security features the installed
+       cluster is using.
+
+       Possible security mode settings are none, afs, dce, kerberos,  csp  (no
+       additional security, AFS, DCE, KERBEROS, CSP security model).
+
+   lliisstteenneerr__tthhrreeaaddss
+       The number of listener threads (defaults set by installation).
+
+   wwoorrkkeerr__tthhrreeaaddss
+       The number of worker threads (defaults set by installation).
+
+   sscchheedduulleerr__tthhrreeaaddss
+       The number of scheduler threads (allowed: 0-1, default set by installa-
+       tion: 1, off: 0).  (see _q_c_o_n_f(1) -kt/-at option)
+
+   jjvvmm__tthhrreeaaddss
+       The number of JVM threads (allowed: 0-1, default set  by  installation,
+       off: 0).
+
+CCOOPPYYRRIIGGHHTT
+       See _s_g_e___i_n_t_r_o(1) for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2011-05-14 14:50:22 $             BOOTSTRAP(5)

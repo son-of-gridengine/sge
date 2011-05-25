@@ -1,0 +1,975 @@
+<HTML>
+<HEAD>
+<TITLE>qconf.1</TITLE>
+</HEAD>
+<BODY>
+<H1>qconf.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>NAME</H2><PRE>
+       qconf - Grid Engine Queue Configuration
+
+
+</PRE>
+<H2>SYNTAX</H2><PRE>
+       <B>qconf</B> <B>options</B>
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <I>Qconf</I> allows the system administrator to add, delete, and modify the
+       current Grid Engine configuration, including queue management, host
+       management, complex management and user management.  <I>Qconf</I> also allows
+       you to examine the current queue configuration for existing queues.
+
+       <I>Qconf</I> allows the use of the backslash, '\', character at the end of a
+       line to indicate that the next line is a continuation of the current
+       line.  When displaying settings, such as the output of one of the <B>-s</B><I>*</I>
+       options, <I>qconf</I> will break up long lines (lines greater than 80
+       characters) into smaller lines using backslash line continuation where
+       possible.  Lines will only be broken up at commas or whitespace.  This
+       feature can be disabled by setting the SGE_SINGLE_LINE environment
+       variable.
+
+
+</PRE>
+<H2>OPTIONS</H2><PRE>
+       Unless denoted otherwise, the following options and the corresponding
+       operations are available to all users with a valid account.
+
+       <B>-Aattr</B> <B>obj_spec</B> <B>fname</B> <B>obj_instance,...</B>
+                                     <I>&lt;add</I> <I>to</I> <I>object</I> <I>attributes&gt;</I>
+              Similar to <B>-aattr</B> (see below) but takes specifications for the
+              object attributes to be enhanced from file named <B>fname</B>. As
+              opposed to <B>-aattr</B>, multiple attributes can be enhanced. Their
+              specification has to be listed in <B>fname</B> following the file
+              format of the corresponding object (see <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B> for the
+              queue, for example).
+              Requires root or manager privileges.
+
+       <B>-Acal</B> <B>fname</B>                   <I>&lt;add</I> <I>calendar&gt;</I>
+              Adds a new calendar definition to the Grid Engine environment.
+              Calendars are used in Grid Engine for defining availability and
+              unavailability schedules of queues. The format of a calendar
+              definition is described in <B><A HREF="../htmlman5/calendar_conf.html">calendar_conf(5)</A></B>.
+
+              The calendar definition is taken from the file <B>fname</B>. Requires
+              root or manager privileges.
+
+       <B>-Ackpt</B> <B>fname</B>                  <I>&lt;add</I> <I>ckpt.</I> <I>environment&gt;</I>
+              Add the checkpointing environment as defined in <B>fname</B> (see
+              <B><A HREF="../htmlman5/checkpoint.html">checkpoint(5)</A></B>) to the list of supported checkpointing
+              environments.  Requires root or manager privileges.
+
+       <B>-Aconf</B> <B>fname_list</B>             <I>&lt;add</I> <I>configurations&gt;</I>
+              Add the configurations (see <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>) specified in the files
+              in the comma separated <B>fname_list</B>. The configuration is added
+              for the host that is identical to the file name.
+              Requires root or manager privileges.
+
+       <B>-Ae</B> <B>fname</B>                     <I>&lt;add</I> <I>execution</I> <I>host&gt;</I>
+              Add the execution host defined in <B>fname</B> to the Grid Engine
+              cluster. The format of the execution host specification is
+              described in <B><A HREF="../htmlman5/host_conf.html">host_conf(5)</A></B>.  Requires root or manager privileges.
+
+       <B>-Ahgrp</B> <B>fname</B>                  <I>&lt;add</I> <I>host</I> <I>group</I> <I>configuration&gt;</I>
+              Add the host group configuration defined in <B>file</B>.  The file
+              format of <B>fname</B> must comply with the format specified in
+              <B><A HREF="../htmlman5/hostgroup.html">hostgroup(5)</A></B>.  Requires root or manager privileges.
+
+       <B>-Arqs</B> <B>fname</B>                   <I>&lt;add</I> <I>RQS</I> <I>configuration&gt;</I>
+              Add the resource quota set (RQS) defined in the file named <B>fname</B>
+              to the Grid Engine cluster. Requires root or manager privileges.
+
+       <B>-Ap</B> <B>fname</B>                     <I>&lt;add</I> <I>PE</I> <I>configuration&gt;</I>
+              Add the parallel environment (PE) defined in <B>fname</B> to the Grid
+              Engine cluster. Requires root or manager privileges.
+
+       <B>-Aprj</B> <B>fname</B>                   <I>&lt;add</I> <I>new</I> <I>project&gt;</I>
+              Adds the project description defined in <B>fname</B> to the list of
+              registered projects (see <B><A HREF="../htmlman5/project.html">project(5)</A></B>).  Requires root or manager
+              privileges.
+
+       <B>-Aq</B> <B>fname</B>                     <I>&lt;add</I> <I>new</I> <I>queue&gt;</I>
+              Add the queue defined in <B>fname</B> to the Grid Engine cluster.
+              Requires root or manager privileges.
+
+       <B>-Au</B> <B>fname</B>                     <I>&lt;add</I> <I>an</I> <I>ACL&gt;</I>
+              Add the user access list (ACL) defined in file <B>fname</B> to Grid
+              Engine. User lists are used for queue usage authentication.
+              Requires root, manager, or operator privileges.
+
+       <B>-cb</B>    This parameter can be used since Grid Engine version 6.2u5 in
+              combination with the command line switch <B>-sep</B>. In that case the
+              output of the corresponding command will contain information
+              about the added job to core binding functionality.
+
+              If <B>-cb</B> switch is not used then <B>-sep</B> will behave as in GE version
+              6.2u4 and below.
+
+              Please note that this command-line switch will be removed from
+              Grid Engine with the next major release.
+
+       <B>-Dattr</B> <B>obj_spec</B> <B>fname</B> <B>obj_instance,...</B>
+                                     <I>&lt;del.</I> <I>from</I> <I>object</I> <I>attribs&gt;</I>
+              Similar to <B>-dattr</B> (see below) but the definition of the list
+              attributes from which entries are to be deleted is contained in
+              the file named <B>fname</B>. As opposed to <B>-dattr</B>, multiple attributes
+              can be modified. Their specification has to be listed in <B>fname</B>
+              following the file format of the corresponding object (see
+              <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B> for the queue, for example).
+              Requires root or manager privileges.
+
+       <B>-Mattr</B> <B>obj_spec</B> <B>fname</B> <B>obj_instance,...</B>
+                                     <I>&lt;mod.</I> <I>object</I> <I>attributes&gt;</I>
+              Similar to <B>-mattr</B> (see below) but takes specifications for the
+              object attributes to be modified from file named <B>fname</B>. As
+              opposed to <B>-mattr</B>, multiple attributes can be modified. Their
+              specification has to be listed in <B>fname</B> following the file
+              format of the corresponding object (see <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B> for the
+              queue, for example).
+              Requires root or manager privileges.
+
+       <B>-Mc</B> <B>fname</B>                     <I>&lt;modify</I> <I>complex&gt;</I>
+              Overwrites the complex configuration with the contents of <B>fname</B>.
+              The argument file must comply with the format specified in
+              <B><A HREF="../htmlman5/complex.html">complex(5)</A></B>.  Requires root or manager privileges.
+
+       <B>-Mcal</B> <B>fname</B>                   <I>&lt;modify</I> <I>calendar&gt;</I>
+              Overwrites the calendar definition as specified in <B>fname</B>. The
+              argument file must comply with the format described in
+              <B><A HREF="../htmlman5/calendar_conf.html">calendar_conf(5)</A></B>.  Requires root or manager privileges.
+
+       <B>-Mckpt</B> <B>fname</B>                  <I>&lt;modify</I> <I>ckpt.</I> <I>environment&gt;</I>
+              Overwrite an existing checkpointing environment with the
+              definitions in <B>fname</B> (see <B><A HREF="../htmlman5/checkpoint.html">checkpoint(5)</A></B>).  The name attribute in
+              <B>fname</B> has to match an existing checkpointing environment.
+              Requires root or manager privileges.
+
+       <B>-Mconf</B> <B>fname_list</B>             <I>&lt;modify</I> <I>configurations&gt;</I>
+              Modify the configurations (see <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>) specified in the
+              files in the comma separated <B>fname_list</B>. The configuration is
+              modified for the host that is identical to the file name.
+              Requires root or manager privileges.
+
+       <B>-Me</B> <B>fname</B>                     <I>&lt;modify</I> <I>execution</I> <I>host&gt;</I>
+              Overwrites the execution host configuration for the specified
+              host with the contents of <B>fname</B>, which must comply with the
+              format defined in <B><A HREF="../htmlman5/host_conf.html">host_conf(5)</A></B>.  Requires root or manager
+              privilege.
+
+       <B>-Mhgrp</B> <B>fname</B>                  <I>&lt;modify</I> <I>host</I> <I>group</I> <I>configuration&gt;</I>
+              Allows changing the host group configuration with a single
+              command.  All host group configuration entries contained in
+              <B>fname</B> will be applied. Configuration entries not contained in
+              <B>fname</B> will be deleted. The file format of <B>fname</B> must comply to
+              the format specified in <B><A HREF="../htmlman5/hostgroup.html">hostgroup(5)</A></B>.  Requires root or manager
+              privileges.
+
+       <B>-Mrqs</B> <B>fname</B> <B>[mrqs_name]</B>       <I>&lt;modify</I> <I>RQS</I> <I>configuration&gt;</I>
+              Same as <B>-mrqs</B> (see below) but instead of invoking an editor to
+              modify the RQS configuration, the file <B>fname</B> is considered to
+              contain a changed configuration. The name of the rule set in
+              <B>fname</B> must be the same as <B>rqs_name</B>. If <B>rqs_name</B> is not set, all
+              rule sets are overwritten by the rule sets in <B>fname</B> Refer to
+              <B><A HREF="../htmlman5/sge_resource_quota.html">sge_resource_quota(5)</A></B> for details on the RQS configuration
+              format.  Requires root or manager privileges.
+
+       <B>-Mp</B> <B>fname</B>                     <I>&lt;modify</I> <I>PE</I> <I>configuration&gt;</I>
+              Same as <B>-mp</B> (see below) but instead of invoking an editor to
+              modify the PE configuration the file <B>fname</B> is considered to
+              contain a changed configuration.  Refer to <B><A HREF="../htmlman5/sge_pe.html">sge_pe(5)</A></B> for details
+              on the PE configuration format.  Requires root or manager
+              privilege.
+
+       <B>-Mprj</B> <B>fname</B>                   <I>&lt;modify</I> <I>project</I> <I>configuration&gt;</I>
+              Same as <B>-mprj</B> (see below) but instead of invoking an editor to
+              modify the project configuration the file <B>fname</B> is considered to
+              contain a changed configuration.  Refer to <B><A HREF="../htmlman5/project.html">project(5)</A></B> for
+              details on the project configuration format.  Requires root or
+              manager privilege.
+
+       <B>-Mq</B> <B>fname</B>                     <I>&lt;modify</I> <I>queue</I> <I>configuration&gt;</I>
+              Same as <B>-mq</B> (see below) but instead of invoking an editor to
+              modify the queue configuration the file <B>fname</B> is considered to
+              contain a changed configuration.  Refer to <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B> for
+              details on the queue configuration format.  Requires root or
+              manager privilege.
+
+       <B>-Msconf</B> <B>fname</B>                 <I>&lt;modify</I> <I>scheduler</I> <I>configuration</I> <I>from</I>
+       <I>fname&gt;</I>
+              The current scheduler configuration (see <B><A HREF="../htmlman5/sched_conf.html">sched_conf(5)</A></B>) is
+              overridden with the configuration specified in the file.
+              Requires root or manager privilege.
+
+       <B>-Mstree</B> <B>fname</B>                 <I>&lt;modify</I> <I>share</I> <I>tree&gt;</I>
+              Modifies the definition of the share tree (see <B><A HREF="../htmlman5/share_tree.html">share_tree(5)</A></B>).
+              The modified sharetree is read from file <B>fname</B>.  Requires root
+              or manager privileges.
+
+       <B>-Mu</B> <B>fname</B>                     <I>&lt;modify</I> <I>ACL&gt;</I>
+              Takes the user access list (ACL) defined in <B>fname</B> to overwrite
+              any existing ACL with the same name. See <B><A HREF="../htmlman5/access_list.html">access_list(5)</A></B> for
+              information on the ACL configuration format. Requires root or
+              manager privilege.
+
+       <B>-Muser</B> <B>fname</B>                  <I>&lt;modify</I> <I>user&gt;</I>
+              Modify the user defined in <B>fname</B> in the Grid Engine cluster. The
+              format of the user specification is described in <B><A HREF="../htmlman5/user.html">user(5)</A></B>.
+              Requires root or manager privileges.
+
+       <B>-Rattr</B> <B>obj_spec</B> <B>fname</B> <B>obj_instance,...</B>
+                                     <I>&lt;replace</I> <I>object</I> <I>attribs&gt;</I>
+              Similar to <B>-rattr</B> (see below) but the definition of the list
+              attributes whose content is to be replaced is contained in the
+              file named <B>fname</B>. As opposed to <B>-rattr</B>, multiple attributes can
+              be modified. Their specification has to be listed in <B>fname</B>
+              following the file format of the corresponding object (see
+              <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B> for the queue, for example).
+              Requires root/manager privileges.
+
+       <B>-aattr</B> <B>obj_spec</B> <B>attr_name</B> <B>val</B> <B>obj_instance,...</B>
+                                     <I>&lt;add</I> <I>to</I> <I>object</I> <I>attributes&gt;</I>
+              Allows adding specifications to a single configuration list
+              attribute in multiple instances of an object with a single
+              command. Currently supported objects are the queue, the host,
+              the host group, the parallel environment, the resource quota
+              sets and the checkpointing interface configuration being
+              specified as <I>queue</I>, <I>exechost</I>, <I>hostgroup</I>, <I>pe</I>, <I>rqs</I>, or <I>ckpt</I> in
+              <B>obj_spec</B>.  For the obj_spec <I>queue</I> the obj_instance can be a
+              cluster queue name, a queue domain name or a queue instance
+              name. Find more information concerning different queue names in
+              <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.  Depending on the type of the obj_instance, this
+              adds to the cluster queues attribute sublist the cluster queue's
+              implicit default configuration value or the queue domain
+              configuration value or queue instance configuration value.  The
+              queue <B>load_thresholds</B> parameter is an example of a list
+              attribute. With the <B>-aattr</B> option, entries can be added to such
+              lists, while they can be deleted with <B>-dattr</B>, modified with
+              <B>-mattr</B>, and replaced with <B>-rattr</B>.
+              For the obj_spec <I>rqs</I> the obj_instance is a unique identifier for
+              a specific rule. The identifier consists of a rule-set name and
+              either the number of the rule in the list, or the name of the
+              rule, separated by a "/".
+              The name of the configuration attribute to be enhanced is
+              specified with <B>attr_name</B> followed by <B>val</B> as a <I>name=value</I> pair.
+              The comma separated list of object instances (e.g., the list of
+              queues) to which the changes have to be applied are specified at
+              the end of the command.
+              The following restriction applies: For the <I>exechost</I> object the
+              <B>load_values</B> attribute cannot be modified (see <B><A HREF="../htmlman5/host_conf.html">host_conf(5)</A></B>).
+              Requires root or manager privileges.
+
+       <B>-acal</B> <B>calendar_name</B>           <I>&lt;add</I> <I>calendar&gt;</I>
+              Adds a new calendar definition to the Grid Engine environment.
+              Calendars are used in Grid Engine for defining availability and
+              unavailability schedules of queues. The format of a calendar
+              definition is described in <B><A HREF="../htmlman5/calendar_conf.html">calendar_conf(5)</A></B>.
+
+              With the calendar name given in the option argument, <I>qconf</I> will
+              open a temporary file and start up the text editor indicated by
+              the environment variable EDITOR (default <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> if EDITOR is not
+              set). After entering the calendar definition and closing the
+              editor the new calendar is checked and registered with
+              <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Requires root/manager privileges.
+
+       <B>-ackpt</B> <B>ckpt_name</B>              <I>&lt;add</I> <I>ckpt.</I> <I>environment&gt;</I>
+              Adds a checkpointing environment under the name <B>ckpt_name</B> to the
+              list of checkpointing environments maintained by Grid Engine and
+              to be usable to submit checkpointing jobs (see <B><A HREF="../htmlman5/checkpoint.html">checkpoint(5)</A></B> for
+              details on the format of a checkpointing environment
+              definition).  <I>Qconf</I> retrieves a default checkpointing
+              environment configuration and executes <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> (or $EDITOR if the
+              EDITOR environment variable is set) to allow you to customize
+              the checkpointing environment configuration. Upon exit from the
+              editor, the checkpointing environment is registered with
+              <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Requires root/manager privileges.
+
+       <B>-aconf</B> <B>host,...</B>               <I>&lt;add</I> <I>configuration&gt;</I>
+              Successively adds configurations (see <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>) For the hosts
+              in the comma separated host list.  For each host, an editor
+              ($EDITOR, if defined, or <B><A HREF="../htmlman1/vi.html">vi(1)</A></B>) is invoked and the configuration
+              for the host can be entered. The configuration is registered
+              with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B> after saving the file and quitting the
+              editor.
+              Requires root or manager privileges.
+
+       <B>-ae</B> <B>[host_template]</B>           <I>&lt;add</I> <I>execution</I> <I>host&gt;</I>
+              Adds a host to the list of Grid Engine execution hosts. If a
+              queue is configured on a host this host is automatically added
+              to the Grid Engine execution host list.  Adding execution hosts
+              explicitly offers the advantage to be able to specify parameters
+              like load scale values with the registration of the execution
+              host. However, these parameters can be modified (from their
+              defaults) at any later time via the <B>-me</B> option described below.
+              If the <B>host_template</B> argument is present, <I>qconf</I> retrieves the
+              configuration of the specified execution host from
+              <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B> or a generic template otherwise.  The template is
+              then stored in a file and <I>qconf</I> executes <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> (or the editor
+              indicated by $EDITOR if the EDITOR environment variable is set)
+              to change the entries in the file.  The format of the execution
+              host specification is described in <B><A HREF="../htmlman5/host_conf.html">host_conf(5)</A></B>.  When the
+              changes are saved in the editor and the editor is quit the new
+              execution host is registered with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Requires
+              root/manager privileges.
+
+       <B>-ah</B> <B>hostname,...</B>              <I>&lt;add</I> <I>administrative</I> <I>host&gt;</I>
+              Adds hosts <B>hostname</B> to the Grid Engine trusted host list (a host
+              must be in this list to execute administrative Grid Engine
+              commands, the sole exception to this being the execution of
+              <I>qconf</I> on the <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B> node). The default Grid Engine
+              installation procedures usually add all designated execution
+              hosts (see the <B>-ae</B> option above) to the Grid Engine trusted host
+              list automatically.  Requires root or manager privileges.
+
+       <B>-ahgrp</B> <B>group</B>                  <I>&lt;add</I> <I>host</I> <I>group</I> <I>configuration&gt;</I>
+              Adds a new host group with the name specified in <B>group.</B>  This
+              command invokes an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor indicated
+              by the EDITOR environment variable).  The new host group entry
+              is registered after changing the entry and exiting the editor.
+              Requires root or manager privileges.
+
+       <B>-arqs</B> <B>[rqs_name]</B>              <I>&lt;add</I> <I>new</I> <I>RQS&gt;</I>
+              Adds one or more <I>Resource</I> <I>Quota</I> <I>Set</I> (RQS) description under the
+              names <B>rqs_name</B> to the list of RQSs maintained by Grid Engine.
+              (See <B><A HREF="../htmlman5/sge_resource_quota.html">sge_resource_quota(5)</A></B> for details on the format of an RQS
+              definition.)  <I>Qconf</I> retrieves a default RQS configuration and
+              executes <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> (or $EDITOR if the EDITOR environment variable is
+              set) to allow you to customize the RQS configuration. Upon exit
+              from the editor, the RQS is registered with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.
+              Requires root or manager privileges.
+
+       <B>-am</B> <B>user,...</B>                  <I>&lt;add</I> <I>managers&gt;</I>
+              Adds the indicated users to the Grid Engine manager list.
+              Requires root or manager privileges.
+
+       <B>-ao</B> <B>user,...</B>                  <I>&lt;add</I> <I>operators&gt;</I>
+              Adds the indicated users to the Grid Engine operator list.
+              Requires root or manager privileges.
+
+       <B>-ap</B> <B>pe_name</B>                   <I>&lt;add</I> <I>new</I> <I>PE&gt;</I>
+              Adds a <I>Parallel</I> <I>Environment</I> (PE) description under the name
+              <B>pe_name</B> to the list of PEs maintained by Grid Engine and to be
+              usable to submit parallel jobs (see <B><A HREF="../htmlman5/sge_pe.html">sge_pe(5)</A></B> for details on the
+              format of a PE definition).  <I>Qconf</I> retrieves a default PE
+              configuration and executes <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> (or $EDITOR if the EDITOR
+              environment variable is set) to allow you to customize the PE
+              configuration. Upon exit from the editor, the PE is registered
+              with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Requires root/manager privileges.
+
+       <B>-at</B> <B>thread_name</B> <I>&lt;activates</I> <I>thread</I> <I>in</I> <I>master&gt;</I>
+              Activates an additional thread in the master process.
+              <B>thread_name</B> might be either "scheduler" or "jvm". The
+              corresponding thread is only started when it is not already
+              running. There might be only one scheduler and only one JVM
+              thread in the master process at the same time.
+
+       <B>-aprj</B>                         <I>&lt;add</I> <I>new</I> <I>project&gt;</I>
+              Adds a project description to the list of registered projects
+              (see <B><A HREF="../htmlman5/project.html">project(5)</A></B>).  <I>Qconf</I> retrieves a template project
+              configuration and executes <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> (or $EDITOR if the EDITOR
+              environment variable is set) to allow you to customize the new
+              project. Upon exit from the editor, the template is registered
+              with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Requires root or manager privileges.
+
+       <B>-aq</B> <B>[queue_name]</B>              <I>&lt;add</I> <I>new</I> <I>queue&gt;</I>
+              <I>Qconf</I> retrieves the default queue configuration (see
+              <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B>) and executes <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> (or $EDITOR if the EDITOR
+              environment variable is set) to allow you to customize the queue
+              configuration. Upon exit from the editor, the queue is
+              registered with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  A minimal configuration
+              requires only that the queue name and queue hostlist be set.
+              Requires root or manager privileges.
+
+       <B>-as</B> <B>hostname,...</B>              <I>&lt;add</I> <I>submit</I> <I>hosts&gt;</I>
+              Add hosts <B>hostname</B> to the list of hosts allowed to submit Grid
+              Engine jobs and control their behavior only.  Requires root or
+              manager privileges.
+
+       <B>-astnode</B> <B>node_path=shares,...</B> <I>&lt;add</I> <I>share</I> <I>tree</I> <I>node&gt;</I>
+              Adds the specified share tree node(s) to the share tree (see
+              <B><A HREF="../htmlman5/share_tree.html">share_tree(5)</A></B>).  The <B>node_path</B> is a hierarchical path
+              (<B>[/]node_name[[/.]node_name...]</B>)  specifying the location of the
+              new node in the share tree.  The base name of the node_path is
+              the name of the new node.  The node is initialized to the number
+              of specified shares.  Requires root or manager privileges.
+
+       <B>-astree</B>                       <I>&lt;add</I> <I>share</I> <I>tree&gt;</I>
+              Adds the definition of a share tree to the system (see
+              <B><A HREF="../htmlman5/share_tree.html">share_tree(5)</A></B>).  A template share tree is retrieved and an
+              editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor indicated by $EDITOR) is
+              invoked for modifying the share tree definition. Upon exiting
+              the editor, the modified data is registered with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.
+              Requires root or manager privileges.
+
+       <B>-Astree</B> <B>fname</B>                 <I>&lt;add</I> <I>share</I> <I>tree&gt;</I>
+              Adds the definition of a share tree to the system (see
+              <B><A HREF="../htmlman5/share_tree.html">share_tree(5)</A></B>) from the file <B>fname</B>.  Requires root or manager
+              privileges.
+
+       <B>-au</B> <B>user,...</B> <B>acl_name,...</B>     <I>&lt;add</I> <I>users</I> <I>to</I> <I>ACLs&gt;</I>
+              Adds users to Grid Engine user access lists (ACLs). User lists
+              are used for queue usage authentication. Requires
+              root/manager/operator privileges.
+
+       <B>-Auser</B> <B>fname</B>                  <I>&lt;add</I> <I>user&gt;</I>
+              Add the user defined in <B>fname</B> to the Grid Engine cluster. The
+              format of the user specification is described in <B><A HREF="../htmlman5/user.html">user(5)</A></B>.
+              Requires root or manager privileges.
+
+       <B>-auser</B>                        <I>&lt;add</I> <I>user&gt;</I>
+              Adds a user to the list of registered users (see <B><A HREF="../htmlman5/user.html">user(5)</A></B>).  This
+              command invokes an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor indicated
+              by the EDITOR environment variable) for a template user. The new
+              user is registered after changing the entry and exiting the
+              editor. Requires root or manager privileges.
+
+       <B>-bonsai</B>                       <I>&lt;human-readable</I> <I>sharetree&gt;</I>
+              Shows a textual tree layout of the share tree analogous to the
+              graphical view in <B><A HREF="../htmlman1/qmon.html">qmon(1)</A></B>.  <B>-sstree</B> shows the same information
+              in a less-readable (linearized) form.
+
+       <B>-clearusage</B>                   <I>&lt;clear</I> <I>sharetree</I> <I>usage&gt;</I>
+              Clears all user and project usage from the sharetree.  All usage
+              will be initialized back to zero.
+
+       <B>-cq</B> <B>wc_queue_list</B>             <I>&lt;clean</I> <I>queue&gt;</I>
+              Cleans queue from jobs which haven't been reaped. Primarily a
+              development tool. Requires root/manager/operator privileges.
+              Find a description of wc_queue_list in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-dattr</B> <B>obj_spec</B> <B>attr_name</B> <B>val</B> <B>obj_instance,...</B>
+                                     <I>&lt;delete</I> <I>in</I> <I>object</I> <I>attribs&gt;</I>
+              Allows deleting specifications in a single configuration list
+              attribute in multiple instances of an object with a single
+              command.  Find more information concerning obj_spec and
+              obj_instance in the description of <B>-aattr</B>
+
+       <B>-dcal</B> <B>calendar_name,...</B>       <I>&lt;delete</I> <I>calendar&gt;</I>
+              Deletes the specified calendar definition from Grid Engine.
+              Requires root/manager privileges.
+
+       <B>-dckpt</B> <B>ckpt_name</B>              <I>&lt;delete</I> <I>ckpt.</I> <I>environment&gt;</I>
+              Deletes the specified checkpointing environment. Requires
+              root/manager privileges.
+
+       <B>-dconf</B> <B>host,...</B>               <I>&lt;delete</I> <I>local</I> <I>configuration&gt;</I>
+              The local configuration entries for the specified hosts are
+              deleted from the configuration list.  Requires root or manager
+              privilege.
+
+       <B>-de</B> <B>host_name,...</B>             <I>&lt;delete</I> <I>execution</I> <I>host&gt;</I>
+              Deletes hosts from the Grid Engine execution host list.
+              Requires root or manager privileges.
+
+       <B>-dh</B> <B>host_name,...</B>             <I>&lt;delete</I> <I>administrative</I> <I>host&gt;</I>
+              Deletes hosts from the Grid Engine trusted host list.  The host
+              on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B> is currently running cannot be removed
+              from the list of administrative hosts.  Requires root or manager
+              privileges.
+
+       <B>-dhgrp</B> <B>group</B>                  <I>&lt;delete</I> <I>host</I> <I>group</I> <I>configuration&gt;</I>
+              Deletes host group configuration with the name specified in
+              <B>group.</B>  Requires root or manager privileges.
+
+       <B>-drqs</B> <B>rqs_name_list</B>           <I>&lt;delete</I> <I>RQS&gt;</I>
+              Deletes the specified resource quota sets (RQS).  Requires root
+              or manager privileges.
+
+       <B>-dm</B> <B>user[,user,...]</B>           <I>&lt;delete</I> <I>managers&gt;</I>
+              Deletes managers from the manager list.  Requires root or
+              manager privileges.  It is not possible to delete the admin user
+              or the user root from the manager list.
+
+       <B>-do</B> <B>user[,user,...]</B>           <I>&lt;delete</I> <I>operators&gt;</I>
+              Deletes operators from the operator list.  Requires root or
+              manager privileges.  It is not possible to delete the admin user
+              or the user root from the operator list.
+
+       <B>-dp</B> <B>pe_name</B>                   <I>&lt;delete</I> <I>parallel</I> <I>environment&gt;</I>
+              Deletes the specified parallel environment (PE).  Requires root
+              or manager privileges.
+
+       <B>-dprj</B> <B>project,...</B>             <I>&lt;delete</I> <I>projects&gt;</I>
+              Deletes the specified project(s). Requires root/manager
+              privileges.
+
+       <B>-dq</B> <B>queue_name,...</B>            <I>&lt;delete</I> <I>queue&gt;</I>
+              Removes the specified queue(s), which must be empty.  Requires
+              root or manager privileges.
+
+       <B>-ds</B> <B>host_name,...</B>             <I>&lt;delete</I> <I>submit</I> <I>host&gt;</I>
+              Deletes hosts from the Grid Engine submit host list.  Requires
+              root or manager privileges.
+
+       <B>-dstnode</B> <B>node_path,...</B>        <I>&lt;delete</I> <I>share</I> <I>tree</I> <I>node&gt;</I>
+              Deletes the specified share tree node(s).  The <B>node_path</B> is a
+              hierarchical path (<B>[/]node_name[[/.]node_name...]</B>)  specifying
+              the location of the node to be deleted in the share tree.
+              Requires root or manager privileges.
+
+       <B>-dstree</B>                       <I>&lt;delete</I> <I>share</I> <I>tree&gt;</I>
+              Deletes the current share tree. Requires root or manager
+              privileges.
+
+       <B>-du</B> <B>user,...</B> <B>acl_name,...</B>     <I>&lt;delete</I> <I>users</I> <I>from</I> <I>ACL&gt;</I>
+              Deletes one or more users from one or more Grid Engine user
+              access lists (ACLs). Requires root/manager/operator privileges.
+
+       <B>-dul</B> <B>acl_name,...</B>             <I>&lt;delete</I> <I>user</I> <I>lists&gt;</I>
+              Deletes one or more user lists from the system.  Requires
+              root/manager/operator privileges.
+
+       <B>-duser</B> <B>user,...</B>               <I>&lt;delete</I> <I>users&gt;</I>"
+              Deletes the specified user(s) from the list of registered users.
+              Requires root or manager privileges.
+
+       <B>-help</B>  Prints a listing of all options.
+
+       <B>-k{m|s|e[j]</B> <B>{host,...|all}}</B>   <I>&lt;shutdown</I> <I>Grid</I> <I>Engine&gt;</I>
+              <B>Note:</B> The <B>-ks</B> switch is deprecated, may be removed in future
+              release.  Please use the <B>-kt</B> switch instead.
+              Used to shutdown Grid Engine components (daemons).  In the form
+              <B>-km</B> <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B> is forced to terminate in a controlled
+              fashion. In the same way the <B>-ks</B> switch causes termination of
+              the scheduler thread.  Shutdown of running <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>
+              processes currently registered is initiated by the <B>-ke</B> option.
+              If <B>-kej</B> is specified instead, all jobs running on the execution
+              hosts are aborted prior to termination of the corresponding
+              <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>.  The comma separated host list specifies the
+              execution hosts to be addressed by the <B>-ke</B> and <B>-kej</B> option. If
+              the keyword <B>all</B> is specified instead of a host list, all running
+              <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B> processes are shutdown. Job abortion, initiated by
+              the <B>-kej</B> option will result in <B>dr</B> state for all running jobs
+              until <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B> is running again.
+              Requires root or manager privileges.
+
+       <B>-kt</B> <B>thread_name</B>   <I>&lt;terminate</I> <I>master</I> <I>thread&gt;</I>"
+              Terminates a thread in the master process. Currently it is only
+              supported to shutdown the "scheduler" and the "jvm" thread. The
+              command will only be successful if the corresponding thread is
+              running.
+
+       <B>-kec</B> <B>{id,...|all}</B>             <I>&lt;kill</I> <I>event</I> <I>client&gt;</I>
+              Used to shutdown event clients registered at <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.
+              The comma separated event client list specifies the event
+              clients to be addressed by the <B>-kec</B> option.  If the keyword <B>all</B>
+              is specified instead of an event client list, all running event
+              clients except special clients like the scheduler thread are
+              terminated.  Requires root or manager privilege.
+
+       <B>-mattr</B> <B>obj_spec</B> <B>attr_name</B> <B>val</B> <B>obj_instance,...</B>
+                                     <I>&lt;modify</I> <I>object</I> <I>attributes&gt;</I>
+              Allows changing a single configuration attribute in multiple
+              instances of an object with a single command.  Find more
+              information concerning obj_spec and obj_instance in the
+              description of <B>-aattr</B>
+
+       <B>-mc</B>                           <I>&lt;modify</I> <I>complex&gt;</I>
+              The complex configuration (see <B><A HREF="../htmlman5/complex.html">complex(5)</A></B>) is retrieved, an
+              editor is executed (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor indicated by
+              $EDITOR) and the changed complex configuration is registered
+              with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B> upon exit of the editor.  Requires root or
+              manager privilege.
+
+       <B>-mcal</B> <B>calendar_name</B>           <I>&lt;modify</I> <I>calendar&gt;</I>
+              The specified calendar definition (see <B><A HREF="../htmlman5/calendar_conf.html">calendar_conf(5)</A></B>) is
+              retrieved, an editor is executed (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor
+              indicated by $EDITOR) and the changed calendar definition is
+              registered with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B> upon exit of the editor. Requires
+              root or manager privilege.
+
+       <B>-mckpt</B> <B>ckpt_name</B>              <I>&lt;modify</I> <I>ckpt.</I> <I>environment&gt;</I>
+              Retrieves the current configuration for the specified
+              checkpointing environment, executes an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or
+              the editor indicated by the EDITOR environment variable) and
+              registers the new configuration with the <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Refer
+              to <B><A HREF="../htmlman5/checkpoint.html">checkpoint(5)</A></B> for details on the checkpointing environment
+              configuration format.  Requires root or manager privilege.
+
+       <B>-mconf</B> <B>[host,...|global]</B>      <I>&lt;modify</I> <I>configuration&gt;</I>
+              The configuration for the specified host is retrieved, an editor
+              is executed (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor indicated by $EDITOR)
+              and the changed configuration is registered with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+              upon exit of the editor.  If the optional host argument is
+              omitted or if the special host name <B>global</B> is specified, the
+              global configuration is modified.  The  format of the
+              configuration is described in <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>.
+              Requires root or manager privilege.
+
+       <B>-me</B> <B>hostname</B>                  <I>&lt;modify</I> <I>execution</I> <I>host&gt;</I>
+              Retrieves the current configuration for the specified execution
+              host, executes an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor indicated
+              by the EDITOR environment variable) and registers the changed
+              configuration with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B> upon exit from the editor.
+              The format of the execution host configuration is described in
+              <B><A HREF="../htmlman5/host_conf.html">host_conf(5)</A></B>.  Requires root or manager privilege.
+
+       <B>-mhgrp</B> <B>group</B>                  <I>&lt;modify</I> <I>host</I> <I>group</I> <I>configuration&gt;</I>
+              The host group entries for the host group specified in <B>group</B> are
+              retrieved and an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor indicated by
+              the EDITOR environment variable) is invoked for modifying the
+              host group configuration. By closing the editor, the modified
+              data is registered.  The format of the host group configuration
+              is described in <B><A HREF="../htmlman5/hostgroup.html">hostgroup(5)</A></B>.  Requires root or manager
+              privileges.
+
+       <B>-mrqs</B> <B>[rqs_name]</B>              <I>&lt;modify</I> <I>RQS</I> <I>configuration&gt;</I>
+              Retrieves the resource quota set (RQS)configuration defined in
+              rqs_name, or if rqs_name is not given, retrieves all resource
+              quota sets, executes an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor
+              indicated by the EDITOR environment variable) and registers the
+              new configuration with the <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Refer to
+              <B><A HREF="../htmlman5/sge_resource_quota.html">sge_resource_quota(5)</A></B> for details on the RQS configuration
+              format.  Requires root or manager privilege.
+
+       <B>-mp</B> <B>pe_name</B>                   <I>&lt;modify</I> <I>PE</I> <I>configuration&gt;</I>
+              Retrieves the current configuration for the specified <I>parallel</I>
+              <I>environment</I> (PE), executes an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor
+              indicated by the EDITOR environment variable) and registers the
+              new configuration with the <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Refer to <B><A HREF="../htmlman5/sge_pe.html">sge_pe(5)</A></B>
+              for details on the PE configuration format.  Requires root or
+              manager privilege.
+
+       <B>-mprj</B> <B>project</B>                 <I>&lt;modify</I> <I>project&gt;</I>
+              Data for the specific project is retrieved (see <B><A HREF="../htmlman5/project.html">project(5)</A></B>) and
+              an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor indicated by $EDITOR) is
+              invoked for modifying the project definition. Upon exiting the
+              editor, the modified data is registered.  Requires root or
+              manager privileges.
+
+       <B>-mq</B> <B>queuename</B>                 <I>&lt;modify</I> <I>queue</I> <I>configuration&gt;</I>
+              Retrieves the current configuration for the specified queue,
+              executes an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor indicated by the
+              EDITOR environment variable) and registers the new configuration
+              with the <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Refer to <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B> for details on
+              the queue configuration format.  Requires root or manager
+              privilege.
+
+       <B>-msconf</B>                       <I>&lt;modify</I> <I>scheduler</I> <I>configuration&gt;</I>
+              The current scheduler configuration (see <B><A HREF="../htmlman5/sched_conf.html">sched_conf(5)</A></B>) is
+              retrieved, an editor is executed (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor
+              indicated by $EDITOR) and the changed configuration is
+              registered with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B> upon exit of the editor.
+              Requires root or manager privilege.
+
+       <B>-mstnode</B> <B>node_path=shares,...</B> <I>&lt;modify</I> <I>share</I> <I>tree</I> <I>node&gt;</I>
+              Modifies the specified share tree node(s) in the share tree (see
+              <B><A HREF="../htmlman5/share_tree.html">share_tree(5)</A></B>).  The <B>node_path</B> is a hierarchical path
+              (<B>[/]node_name[[/.]node_name...]</B>)  specifying the location of an
+              existing node in the share tree.  The node is set to the number
+              of specified <B>shares</B>.  Requires root or manager privileges.
+
+       <B>-mstree</B>                       <I>&lt;modify</I> <I>share</I> <I>tree&gt;</I>
+              Modifies the definition of the share tree (see <B><A HREF="../htmlman5/share_tree.html">share_tree(5)</A></B>).
+              The present share tree is retrieved and an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B>
+              or the editor indicated by $EDITOR) is invoked for modifying the
+              share tree definition. Upon exiting the editor, the modified
+              data is registered with <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Requires root or
+              manager privileges.
+
+       <B>-mu</B> <B>acl_name</B>                  <I>&lt;modify</I> <I>user</I> <I>access</I> <I>lists&gt;</I>
+              Retrieves the current configuration for the specified user
+              access list, executes an editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor
+              indicated by the EDITOR environment variable) and registers the
+              new configuration with the <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>.  Requires root or
+              manager privilege.
+
+       <B>-muser</B> <B>user</B>                   <I>&lt;modify</I> <I>user&gt;</I>
+              Data for the specific user is retrieved (see <B><A HREF="../htmlman5/user.html">user(5)</A></B>) and an
+              editor (either <B><A HREF="../htmlman1/vi.html">vi(1)</A></B> or the editor indicated by the EDITOR
+              environment variable) is invoked for modifying the user
+              definition. Upon exiting the editor, the modified data is
+              registered. Requires root or manager privileges.
+
+       <B>-purge</B> <B>queue</B> <B>attr_nm,...</B> <B>obj_spec</B>
+                                     <I>&lt;purge</I> <I>divergent</I> <I>attribute</I> <I>settings&gt;</I>
+              Delete the values of the attributes defined in <B>attr_nm</B> from the
+              object defined in <B>obj_spec</B>. Obj_spec can be "queue_instance" or
+              "queue_domain".  The names of the attributes are described in
+              <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B>.
+              This operation only works on a single queue instance or domain.
+              It cannot be used on a cluster queue.  In the case where the
+              <B>obj_spec</B> is "queue@@hostgroup", the attribute values defined in
+              <B>attr_nm</B> which are set for the indicated hostgroup are deleted,
+              but not those which are set for the hosts contained by that
+              hostgroup.  If the <B>attr_nm</B> is '*', all attribute values set for
+              the given queue instance or domain are deleted.
+              The main difference between -dattr and -purge is that -dattr
+              removes a value from a single list attribute, whereas -purge
+              removes one or more overriding attribute settings from a cluster
+              queue configuration.  With -purge, the entire attribute is
+              deleted for the given queue instance or queue domain.
+
+       <B>-rattr</B> <B>obj_spec</B> <B>attr_name</B> <B>val</B> <B>obj_instance,...</B>
+                                     <I>&lt;replace</I> <I>object</I> <I>attributes&gt;</I>
+              Allows replacing a single configuration list attribute in
+              multiple instances of an object with a single command.  Find
+              more information concerning obj_spec and obj_instance in the
+              description of <B>-aattr</B> <B>.</B>
+              Requires root or manager privilege.
+
+       <B>-rsstnode</B> <B>node_path,...</B>       <I>&lt;show</I> <I>share</I> <I>tree</I> <I>node&gt;</I>
+              Recursively shows the name and shares of the specified share
+              tree node(s) and the names and shares of its child nodes. (see
+              <B><A HREF="../htmlman5/share_tree.html">share_tree(5)</A></B>).  The <B>node_path</B> is a hierarchical path
+              (<B>[/]node_name[[/.]node_name...]</B>)  specifying the location of a
+              node in the share tree.
+
+       <B>-sc</B>                           <I>&lt;show</I> <I>complexes&gt;</I>
+              Display the complex configuration.
+
+       <B>-scal</B> <B>calendar_name</B>           <I>&lt;show</I> <I>calendar&gt;</I>
+              Display the configuration of the specified calendar.
+
+       <B>-scall</B>                        <I>&lt;show</I> <I>calendar</I> <I>list&gt;</I>
+              Show a list of all calendars currently defined.
+
+       <B>-sckpt</B> <B>ckpt_name</B>              <I>&lt;show</I> <I>ckpt.</I> <I>environment&gt;</I>
+              Display the configuration of the specified checkpointing
+              environment.
+
+       <B>-sckptl</B>                       <I>&lt;show</I> <I>ckpt.</I> <I>environment</I> <I>list&gt;</I>
+              Show a list of the names of all checkpointing environments
+              currently configured.
+
+       <B>-sconf</B> <B>[host,...|global]</B>      <I>&lt;show</I> <I>configuration&gt;</I>
+              Print the global or local (host specific) configuration.  If the
+              optional comma separated host list argument is omitted or the
+              special string <B>global</B> is given, the global configuration is
+              displayed.  The configuration in effect on a certain host is the
+              merger of the global configuration and the host specific local
+              configuration.  The  format of the configuration is described in
+              <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>.
+
+       <B>-sconfl</B>                       <I>&lt;show</I> <I>configuration</I> <I>list&gt;</I>
+              Display a list of hosts for which configurations are available.
+              The special host name <B>global</B> refers to the global configuration.
+
+       <B>-sds</B>                          <I>&lt;show</I> <I>detached</I> <I>settings&gt;</I>
+              Displays detached settings in the cluster configuration.
+
+       <B>-se</B> <B>hostname</B>                  <I>&lt;show</I> <I>execution</I> <I>host&gt;</I>
+              Displays the definition of the specified execution host.
+
+       <B>-sel</B>                          <I>&lt;show</I> <I>execution</I> <I>hosts&gt;</I>
+              Displays the Grid Engine execution host list.
+
+       <B>-secl</B>                         <I>&lt;show</I> <I>event</I> <I>clients&gt;</I>
+              Displays the Grid Engine event client list.
+
+       <B>-sep</B>                          <I>&lt;show</I> <I>licensed</I> <I>processors&gt;</I>
+              <B>Note:</B> Deprecated, may be removed in future release.
+
+              Displays a list of virtual processors. This value is taken from
+              the underlying OS and it depends on underlying hardware and
+              operating system whether this value represents sockets, cores or
+              supported threads.
+
+              If this option is used in combination with <B>-cb</B>  parameter then
+              two additional columns will be shown in the output for the
+              number of sockets and number of cores. Currently Grid Engine
+              will list these values only if the execution host is running
+              under a version of Linux &gt;= 2.6.16, or Solaris 10. Other
+              operating systems or versions might be supported with the future
+              update releases. In case these values won't be retrieved, a '0'
+              character will be displayed.
+
+       <B>-sh</B>                           <I>&lt;show</I> <I>administrative</I> <I>hosts&gt;</I>
+              Displays the Grid Engine administrative host list.
+
+       <B>-shgrp</B> <B>group</B>                  <I>&lt;show</I> <I>host</I> <I>group</I> <I>configuration&gt;</I>
+              Displays the host group entries for the group specified in
+              <B>group.</B>
+
+       <B>-shgrpl</B>                       <I>&lt;show</I> <I>host</I> <I>group</I> <I>lists&gt;</I>
+              Displays a name list of all currently defined host groups which
+              have a valid host group configuration.
+
+       <B>-shgrp_tree</B> <B>group</B>             <I>&lt;show</I> <I>host</I> <I>group</I> <I>tree&gt;</I>
+              Shows a tree like structure of host group.
+
+       <B>-shgrp_resolved</B> <B>group</B>         <I>&lt;show</I> <I>host</I> <I>group</I> <I>hosts&gt;</I>
+              Shows a list of all hosts which are part of the definition of
+              host group. If the host group definition contains sub host
+              groups than also these groups are resolved and the hostnames are
+              printed.
+
+       <B>-srqs</B> <B>[rqs_name_list]</B>         <I>&lt;show</I> <I>RQS</I> <I>configuration&gt;</I>
+              Show the definition of the <I>resource</I> <I>quota</I> <I>sets</I> (RQS) specified
+              by the argument.
+
+       <B>-srqsl</B>                        <I>&lt;show</I> <I>RQS-list&gt;</I>
+              Show a list of all currently defined <I>resource</I> <I>quota</I> <I>sets</I>s
+              (RQSs).
+
+       <B>-sm</B>                           <I>&lt;show</I> <I>managers&gt;</I>
+              Displays the managers list.
+
+       <B>-so</B>                           <I>&lt;show</I> <I>operators&gt;</I>
+              Displays the operator list.
+
+       <B>-sobjl</B> <B>obj_spec</B> <B>attr_name</B> <B>val</B> <I>&lt;show</I> <I>object</I> <I>list&gt;</I>
+              Shows a list of all configuration objects for which val matches
+              at least one configuration value of the attributes whose name
+              matches with attr_name.
+
+              Obj_spec can be "queue" or "queue_domain" or "queue_instance" or
+              "exechost".  Note: When "queue_domain" or "queue_instance" is
+              specified as obj_spec matching is only done with the attribute
+              overridings concerning the host group or the execution host. In
+              this case queue domain names resp. queue instances are returned.
+
+              Attr_name can be any of the configuration file keywords listed
+              in <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B> or <B><A HREF="../htmlman5/host_conf.html">host_conf(5)</A></B>.  Also wildcards can be used to
+              match multiple attributes.
+
+              Val can be an arbitrary string or a wildcard expression.
+
+       <B>-sp</B> <B>pe_name</B>                   <I>&lt;show</I> <I>PE</I> <I>configuration&gt;</I>
+              Show the definition of the <I>parallel</I> <I>environment</I> (PE) specified
+              by the argument.
+
+       <B>-spl</B>                          <I>&lt;show</I> <I>PE-list&gt;</I>
+              Show a list of all currently defined <I>parallel</I> <I>environment</I>s
+              (PEs).
+
+       <B>-sprj</B> <B>project</B>                 <I>&lt;show</I> <I>project&gt;</I>
+              Shows the definition of the specified project (see <B><A HREF="../htmlman5/project.html">project(5)</A></B>).
+
+       <B>-sprjl</B>                        <I>&lt;show</I> <I>project</I> <I>list&gt;</I>
+              Shows the list of all currently defined projects.
+
+       <B>-sq</B> <B>wc_queue_list</B>             &lt;show queues&gt;
+              Displays one or multiple cluster queues or queue instances. A
+              description of wc_queue_list can be found in <B><A HREF="../htmlman1/sge_types.html">sge_types(1)</A></B>.
+
+       <B>-sql</B>                          <I>&lt;show</I> <I>queue</I> <I>list&gt;</I>
+              Show a list of all currently defined cluster queues.
+
+       <B>-ss</B>                           <I>&lt;show</I> <I>submit</I> <I>hosts&gt;</I>
+              Displays the Grid Engine submit host list.
+
+       <B>-ssconf</B>                       <I>&lt;show</I> <I>scheduler</I> <I>configuration&gt;</I>
+              Displays the current scheduler configuration in the format
+              explained in <B><A HREF="../htmlman5/sched_conf.html">sched_conf(5)</A></B>.
+
+       <B>-sstnode</B> <B>node_path,...</B>        <I>&lt;show</I> <I>share</I> <I>tree</I> <I>node&gt;</I>
+              Shows the name and shares of the specified share tree node(s)
+              (see <B><A HREF="../htmlman5/share_tree.html">share_tree(5)</A></B>).  The <B>node_path</B> is a hierarchical path
+              (<B>[/]node_name[[/.]node_name...]</B>)  specifying the location of a
+              node in the share tree.
+
+       <B>-sstree</B>                       <I>&lt;show</I> <I>share</I> <I>tree&gt;</I>
+              Shows the definition of the share tree (see <B><A HREF="../htmlman5/share_tree.html">share_tree(5)</A></B>).  A
+              different view is provided by <B>-bonsai</B>.
+
+       <B>-sst</B>                          <I>&lt;show</I> <I>formatted</I> <I>share</I> <I>tree&gt;</I>
+              Shows the definition of the share tree in a tree view (see
+              <B><A HREF="../htmlman5/share_tree.html">share_tree(5)</A></B>).
+
+       <B>-sss</B>                          <I>&lt;show</I> <I>scheduler</I> <I>status&gt;</I>
+              Currently displays the host on which the Grid Engine scheduler
+              is active or an error message if no scheduler is running.
+
+       <B>-su</B> <B>acl_name</B>                  <I>&lt;show</I> <I>user</I> <I>ACL&gt;</I>
+              Displays a Grid Engine user access list (ACL).
+
+       <B>-sul</B>                          <I>&lt;show</I> <I>user</I> <I>lists&gt;</I>
+              Displays a list of names of all currently defined Grid Engine
+              user access lists (ACLs).
+
+       <B>-suser</B> <B>user,...</B>               <I>&lt;show</I> <I>user&gt;</I>
+              Shows the definition of the specified user(s) (see <B><A HREF="../htmlman5/user.html">user(5)</A></B>).
+
+       <B>-suserl</B>                       <I>&lt;show</I> <I>users&gt;</I>
+              Shows the list of all currently defined users.
+
+       <B>-tsm</B>                          <I>&lt;trigger</I> <I>scheduler</I> <I>monitoring&gt;</I>
+              The Grid Engine scheduler is forced by this option to print
+              trace messages of its next scheduling run to the file
+              <I>&lt;sge</I><B>_</B><I>root&gt;/&lt;cell&gt;/common/schedd</I><B>_</B><I>runlog</I>.  The messages indicate
+              the reasons for jobs and queues not being selected in that run.
+              Requires root or manager privileges.
+
+              Note, that the reasons for job requirements being invalid with
+              respect to resource availability of queues are displayed using
+              the format as described for the <B><A HREF="../htmlman1/qstat.html">qstat(1)</A></B> <B>-F</B> option (see
+              description of <B>Full</B> <B>Format</B> in section <B>OUTPUT</B> <B>FORMATS</B> of the
+              <B><A HREF="../htmlman1/qstat.html">qstat(1)</A></B> manual page.
+
+
+</PRE>
+<H2>ENVIRONMENTAL VARIABLES</H2><PRE>
+       <B>SGE_ROOT</B>       Specifies the location of the Grid Engine standard
+                      configuration files.
+
+       <B>SGE_CELL</B>       If set, specifies the default Grid Engine cell. To
+                      address a Grid Engine cell <I>qconf</I> uses (in the order of
+                      precedence):
+
+                             The name of the cell specified in the environment
+                             variable SGE_CELL, if it is set.
+
+                             The name of the default cell, i.e. <B>default</B>.
+
+
+       <B>SGE_DEBUG_LEVEL</B>
+                      If set, specifies that debug information should be
+                      written to stderr. In addition the level of detail in
+                      which debug information is generated is defined.
+
+       <B>SGE_QMASTER_PORT</B>
+                      If set, specifies the tcp port on which <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>
+                      is expected to listen for communication requests.  Most
+                      installations will use a services map entry instead to
+                      define that port.
+
+       <B>SGE_EXECD_PORT</B> If set, specifies the tcp port on which <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B> is
+                      expected to listen for communication requests.  Most
+                      installations will use a services map entry instead to
+                      define that port.
+
+       <B>SGE_SINGLE_LINE</B>
+                      If set, indicates that long lines should not be broken
+                      up using backslashes.  This setting is useful for
+                      scripts which expect one entry per line.
+
+
+</PRE>
+<H2>RESTRICTIONS</H2><PRE>
+       Modifications to a queue configuration do not affect an active queue,
+       taking effect on next invocation of the queue (i.e., the next job).
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <I>&lt;sge</I><B>_</B><I>root&gt;/&lt;cell&gt;/common/act</I><B>_</B><I>qmaster</I>
+                       Grid Engine master host file
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B>, <B><A HREF="../htmlman1/qstat.html">qstat(1)</A></B>, <B><A HREF="../htmlman5/checkpoint.html">checkpoint(5)</A></B>, <B><A HREF="../htmlman5/complex.html">complex(5)</A></B>, <B><A HREF="../htmlman5/sge_conf.html">sge_conf(5)</A></B>,
+       <B><A HREF="../htmlman5/host_conf.html">host_conf(5)</A></B>, <B><A HREF="../htmlman5/sge_pe.html">sge_pe(5)</A></B>, <B><A HREF="../htmlman5/queue_conf.html">queue_conf(5)</A></B>, <B><A HREF="../htmlman8/sge_execd.html">sge_execd(8)</A></B>, <B><A HREF="../htmlman8/sge_qmaster.html">sge_qmaster(8)</A></B>,
+       <B><A HREF="../htmlman5/sge_resource_quota.html">sge_resource_quota(5)</A></B>
+
+
+</PRE>
+<H2>COPYRIGHT</H2><PRE>
+       See <B><A HREF="../htmlman1/sge_intro.html">sge_intro(1)</A></B> for a full statement of rights and permissions.
+
+
+
+SGE 8.0.0                $Date: 2009-12-02 13:47:56 $                 <B><A HREF="../htmlman1/QCONF.html">QCONF(1)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>
