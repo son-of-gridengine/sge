@@ -91,7 +91,6 @@ cat <<EOF | xargs chmod +x
 ./dist/util/resources/jsv/jsv_include.sh
 ./dist/util/resources/jsv/jsv_include.tcl
 ./dist/util/resources/jsv/jsv.tcl
-./dist/util/bdb_checkpoint.sh
 ./dist/util/setfileperm.sh
 ./dist/util/arch_variables
 ./dist/util/sgeCA/renew_all_certs.csh
@@ -102,8 +101,6 @@ cat <<EOF | xargs chmod +x
 ./dist/util/upgrade_modules/load_sge_config.sh
 ./dist/mpi/hostname
 ./dist/mpi/mpi_cpi.sh
-./dist/mpi/SunHPCT5/resume_sunmpi_ci.sh
-./dist/mpi/SunHPCT5/suspend_sunmpi_ci.sh
 ./dist/mpi/stopmpi.sh
 ./dist/mpi/myrinet/gmps
 ./dist/mpi/myrinet/sge_mpirun.x
@@ -124,8 +121,6 @@ cat <<EOF | xargs chmod +x
 ./3rdparty/qtcsh/install-sh
 ./3rdparty/qtcsh/configure
 ./3rdparty/qtcsh/config.sub
-./3rdparty/qtcsh/MAKESHAR
-./3rdparty/qtcsh/MAKEDIFFS
 ./3rdparty/qtcsh/sge_configure.csh
 ./3rdparty/qtcsh/config.guess
 ./3rdparty/plpa/plpa-1.3.1/autogen.sh
