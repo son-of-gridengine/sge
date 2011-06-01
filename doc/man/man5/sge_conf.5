@@ -4,7 +4,7 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: sge_conf.5,v $     Last Update: $Date: 2011-05-20 14:05:13 $     Revision: $Revision: 1.91 $
+.\" $RCSfile: sge_conf.5,v $     Last Update: $Date: 2011-05-25 17:49:44 $     Revision: $Revision: 1.91 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -29,7 +29,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH xxQS_NAME_Sxx_CONF 5 "$Date: 2011-05-20 14:05:13 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH xxQS_NAME_Sxx_CONF 5 "$Date: 2011-05-25 17:49:44 $" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 xxqs_name_sxx_conf \- xxQS_NAMExx configuration files
@@ -1227,11 +1227,20 @@ This is used for passing additional parameters
 to the xxQS_NAMExx execution daemon. The following values are recognized:
 .\"
 .IP "\fIACCT_RESERVED_USAGE\fP"
-.\" fixme:  what exactly does reserved mean?  Including resource
-.\" reservation time?
-If this parameter is set to true, the  usage of reserved resources is used for the
-accounting entries \fBcpu\fP, \fBmem\fP and \fBio\fP instead of the
-measured usage.
+If this parameter is set to true, the usage of "reserved" (allocated)
+resources is reported in the accounting entries \fBcpu\fP, \fBmem\fP,
+and \fBmaxvmem\fP instead of the measured usage.  This means that the
+"wall clock" time (end\-start) is reported instead of CPU time, memory
+usage is memory allocation times wall clock time (only computable if
+the job requests h_vmem/s_vmem), and maxvmem is the requested
+h_vmem/s_vmem; the same scaling by slots is done as without this option.
+.br
+Note that both the wall clock and CPU times are available normally (see
+.M accounting 5 ),
+so this option loses information, and "reserved" here has nothing to
+do with advance/resource reservation.  See also
+.I SHARETREE_RESERVED_USAGE
+below.
 .PP
 .IP "\fIENABLE_WINDOMACC\fP"
 If this parameter is set to true, Windows Domain accounts (WinDomAcc)
@@ -1304,11 +1313,11 @@ instance, or another
 signal name, then this signal will be sent as notification signal.
 .PP
 .IP "\fISHARETREE_RESERVED_USAGE\fP"
-.B Note:
-Deprecated, may be removed in future release.
-.br
-If this parameter is set to true, the usage of reserved resources is taken for the 
-xxQS_NAMExx share tree consumption instead of measured usage.
+If this parameter is set to true, the usage of "reserved" resources is
+taken for the xxQS_NAMExx share tree consumption instead of measured
+usage.  See the description of
+.I ACCT_RESERVED_USAGE
+above for details.
 .br
 .B Note:
 When running tightly integrated jobs with \fISHARETREE_RESERVED_USAGE\fP set,
@@ -1498,14 +1507,17 @@ for further information about sharelog.
 .PP
 .IP "\fIlog_consumables\fP"
 This parameter controls writing of consumable resources to the reporting file.
-When set to (\fBlog_consumables=true\fP)
+When set to \fBlog_consumables=true\fP
 information about all consumable resources (their current usage and their capacity)
 will be written
 to the reporting file, whenever a consumable resource changes either in definition,
-or in capacity, 
-or when the usage of a consumable resource changes.
-When \fBlog_consumables\fP is set to \fBfalse\fP (default), only those variables will be written to the 
-reporting file that are configured in the \fBreport_variables\fP in the exec host configuration. See
+or in capacity,
+or when the usage of an arbitrary consumable resource changes.
+When \fBlog_consumables\fP is set to \fBfalse\fP (default), only those variables will be written to the
+reporting file that are configured in the \fBreport_variables\fP in the exec host configuration
+and whose definition or value actually changed.
+This parameter is deprecated and will get removed in the next major release.
+See
 .M host_conf 5
 for further information about \fBreport_variables\fP.
 .PP
