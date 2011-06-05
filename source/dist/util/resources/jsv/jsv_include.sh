@@ -1537,15 +1537,20 @@ jsv_send_command()
 
 # private function
 # Whether or not echo does backslash-processing is implementation-defined.
-if [ "`echo -E '\n'`" = '\n' ]; then
+# bash's built-in and GNU echo support -E to suppress escapes and -e
+# to interpret them.
+if [ "`echo -E '\n'`" = '\n' -a "`echo -e '\n'`" = '' ]; then
 jsv_echo_raw() {
+    # Special case to avoid problems if passed -n as first arg
     if [ "x$1" = x-n ]; then
         "$SGE_ROOT/utilbin/$ARCH/echo_raw" "$@"
     else
+	# If $1 is -n, rely on echo -E -e == echo -e
         echo -E "$@"
     fi
 }
 else
+    # Can't rely on echo
 jsv_echo_raw() {
     "$SGE_ROOT/utilbin/$ARCH/echo_raw" "$@"
 }
