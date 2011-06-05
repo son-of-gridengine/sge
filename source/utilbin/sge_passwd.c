@@ -295,7 +295,7 @@ sge_get_file_pub_key(void)
       const char *cert = getenv("SGE_CERTFILE");
 
       if (cert != NULL) {
-         snprintf(file, 4096, cert);
+         snprintf(file, 4096, "%s", cert);
       } else {
          const char *sge_root = sge_get_root_dir(0, NULL, 0, 1);
          const char *sge_cell = sge_get_default_cell();
@@ -655,7 +655,7 @@ buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
       snprintf(err_str, MAX_STRING_SIZE, MSG_PWD_LOAD_PRIV_SSS, 
               SGE_PASSWD_PROG_NAME, file_priv_key, err_msg);
 #ifdef DEFINE_SGE_PASSWD_MAIN
-      fprintf(stderr, err_str);
+      fprintf(stderr, "%s", err_str);
 #endif
       DEXIT;
       return 1;
@@ -685,7 +685,7 @@ buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
       snprintf(err_str, MAX_STRING_SIZE, MSG_PWD_MALLOC_SS, 
          SGE_PASSWD_PROG_NAME, err_msg);
 #ifdef DEFINE_SGE_PASSWD_MAIN
-      fprintf(stderr, err_str);
+      fprintf(stderr, "%s", err_str);
 #endif
       DEXIT;
       return 1;
@@ -1197,7 +1197,7 @@ sge_passwd_add_change(const char *username, const char *domain, uid_t uid)
    password_write_file(users, encryped_pwd, 
                        sge_get_file_dotpasswd(), sge_get_file_passwd());
    DPRINTF(("password table has been written\n"));
-   fprintf(stdout, MSG_PWD_CHANGED);
+   fprintf(stdout, "%s", MSG_PWD_CHANGED);
    fprintf(stdout, "\n");
    DEXIT;
 }
