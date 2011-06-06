@@ -264,8 +264,8 @@ SetPermissions()
                       "to set the file permissions (enter: n) (y/n) [n] >> "
          else
             $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n \
-                      "Did you either install this version with a package manager,\n"
-                      "or otherwise verify and set the file permissions of your\n"
+                      "Did you either install this version with a package manager,\n" \
+                      "or otherwise verify and set the file permissions of your\n" \
 		      "distribution (enter: y) (y/n) [y] >> "
          fi
          if [ $? = 0 ]; then
