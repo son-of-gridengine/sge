@@ -104,7 +104,7 @@ echo "      setenv MANPATH \$SGE_ROOT/"'${MANTYPE}:$DEFAULTMANPATH' >> $SP_CSH
 echo "   endif"                                                  >> $SP_CSH
 echo "endif"                                                     >> $SP_CSH
 echo ""                                                          >> $SP_CSH
-echo "set path = ( \$SGE_ROOT/bin/"'$SGE_ARCH $path )'           >> $SP_CSH
+echo "set path = ( \$SGE_ROOT/bin \$SGE_ROOT/bin/"'$SGE_ARCH  $path )' >> $SP_CSH
 
 # Not if we're using the system paths'
 echo 'if ( -d $SGE_ROOT/lib/$SGE_ARCH ) then'                    >> $SP_CSH 
@@ -169,7 +169,7 @@ echo "   fi"                                                     >> $SP_SH
 echo "   MANPATH=\$SGE_ROOT/\$MANTYPE:\$MANPATH; export MANPATH" >> $SP_SH
 echo "fi"                                                        >> $SP_SH
 echo ""                                                          >> $SP_SH
-echo "PATH=\$SGE_ROOT/bin/\$SGE_ARCH:\$PATH; export PATH"        >> $SP_SH
+echo "PATH=\$SGE_ROOT/bin:\$SGE_ROOT/bin/\$SGE_ARCH:\$PATH; export PATH" >> $SP_SH
 
 echo '# library path setting required only for architectures where RUNPATH is not supported' >> $SP_SH
 echo 'if [ -d $SGE_ROOT/lib/$SGE_ARCH ]; then'                      >> $SP_SH

@@ -492,10 +492,12 @@ while [ $# -ge 1 ]; do
    -allall)
       PROG="$DEFAULTPROG distcommon arco sgeinspect"
       instsharedlibs=true
+      userscripts=true
       ;;
    -all)
       PROG="$DEFAULTPROG common"
       instsharedlibs=true
+      userscripts=true
       ;;
    -basedir)
       shift
@@ -511,6 +513,7 @@ while [ $# -ge 1 ]; do
    -bin)
       PROG="$DEFAULTPROG $PROG"
       instsharedlibs=true
+      userscripts=true
       ;;
    -onlybin)
       PROG="$DEFAULTPROG $PROG"
@@ -880,8 +883,9 @@ if [ $instcommon = true ]; then
 
       # User-level scripts
       if [ $userscripts = true ]; then
-	  for script in ;do
-	      mv $DEST_SGE_ROOT/util/resources/$script $DEST_SGE_ROOT/bin
+	  Execute mkdir -p $DEST_SGE_ROOT/bin
+	  for script in $USERSCRIPTS; do
+	      Execute mv $DEST_SGE_ROOT/util/resources/scripts/$script $DEST_SGE_ROOT/bin/$script
 	      Execute chmod 755 $DEST_SGE_ROOT/bin/$script
 	  done
       fi
@@ -937,7 +941,7 @@ if [ $instcommon = true ]; then
    fi
    
    if [ $instexamples = true ]; then
-      echo Installing \"examples/jobs\"
+      echo Installing \"examples\"
       Execute rm -rf $DEST_SGE_ROOT/examples/jobs
       MakeDir examples
       MakeDir examples/jobs      
@@ -1181,6 +1185,7 @@ if [ $instcommon = true ]; then
       if [ "x$LICENSE_FILE" != "x" ]; then
          Execute cp $LICENSE_FILE $DEST_SGE_ROOT/doc
       fi
+      Execute cp ../NEWS $DEST_SGE_ROOT/doc
       Execute chmod 644 $DEST_SGE_ROOT/doc/*
       Cleanup doc      
    fi
