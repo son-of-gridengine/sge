@@ -1503,7 +1503,7 @@ CheckWhoInstallsSGE()
    fi
    $INFOTEXT -u "\nChoosing Grid Engine admin user account"
 
-   $INFOTEXT "\nYou may install Grid Engine that all files are created with the user id of an\n" \
+   $INFOTEXT "\nYou may install Grid Engine so that all files are created with the user id of an\n" \
              "unprivileged user.\n\n" \
              "This will make it possible to install and run Grid Engine in directories\n" \
              "where user >root< has no permissions to create and write files and directories.\n\n" \
