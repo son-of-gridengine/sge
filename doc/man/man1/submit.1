@@ -764,8 +764,8 @@ is CCYYMMDDhhmm.SS.
 
 .\"
 .IP "\fB\-e [[hostname]:]path,...\fP"
-Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
-\fIqalter\fP only.
+Available for \fIqsub\fP and \fIqalter\fP only, but currently silently
+ignored by \fIqsh\fP, \fIqrsh\fP, and \fIqlogin\fP.
 .sp 1
 Defines or redefines
 the path used for the standard error stream of the job. For
@@ -804,11 +804,12 @@ $HOSTNAME	name of the execution host
 $TASK_ID	array job task index number
 .fi
 .sp 1
-Alternatively to $HOME the tilde sign "~" can be used as common in
-.M csh 1
+The tilde sign "~" can be used as an alternative to $HOME, as in
+.M csh 1 ,
+.M bash 1 ,
 or
 .M ksh 1 .
-Note, that the "~" sign also works in combination with user names,
+Note that the "~" sign also works in combination with user names,
 so that "~<user>" expands to the home directory of <user>. Using
 another user ID than that of the job owner
 requires corresponding permissions, of course.
@@ -1387,8 +1388,8 @@ are executed in parallel using \fIqrsh\fP, e.g. in a
 process \- it would be undefined, which process would get the input.
 .\"
 .IP "\fB\-o [[hostname]:]path,...\fP"
-Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
-\fIqalter\fP only.
+Available for \fIqsub\fP and \fIqalter\fP only, but currently silently
+ignored by \fIqsh\fP, \fIqrsh\fP, and \fIqlogin\fP.
 .sp 1
 The path used for the standard output stream of the job. The
 \fBpath\fP is handled as described in the \fB\-e\fP option for
