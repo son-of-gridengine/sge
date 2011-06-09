@@ -68,6 +68,8 @@ Due to the fact that (4) and (5) are defined and configured by xxQS_NAMExx
 administrators and executed as the last JSV instances in
 the sequence of JSV scripts, an administrator has a way
 to enforce certain policies for a cluster.
+However, note that (4) may be over-ridden trivially with
+.BR "qsub \-clear" .
 .PP
 As soon as one JSV instance rejects a job the whole process of verification
 is stopped and the end user will get a corresponding error message
