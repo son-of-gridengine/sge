@@ -39,8 +39,8 @@
 #
 # set -x
 
-SCRIPT_VERSION="6"
-SGE_VERSION="6.2u5.1"
+SCRIPT_VERSION="8"
+SGE_VERSION="8.0.0a"
 
 #Reset PATH to a safe value
 #
@@ -132,7 +132,6 @@ ARGC=$#
 
 if [ $ARGC = 0 ]; then
    ErrUsage
-   exit 2
 fi
 
 
@@ -311,7 +310,6 @@ while [ $ARGC != 0 ]; do
    -copycerts)
      if [ "$2" = "" ]; then
         ErrUsage
-        exit 1
      fi
      #copy ca certs to the given hosts
      COPY_CA="true"
