@@ -185,6 +185,9 @@ Possible security mode settings are none, afs, dce, kerberos, csp
 .\"
 .SS "\fBlistener_threads\fP"
 The number of listener threads (defaults set by installation).
+Increasing this and/or \fBworker_threads\fP (below) to use additional
+cores/hardware threads on the master host may improve performance in
+demanding cases.
 .\"
 .\"
 .SS "\fBworker_threads\fP"
