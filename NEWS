@@ -71,28 +71,30 @@ https://github.com/gridengine/gridengine).
 
 * Enhancements
 
+  * Additional and clarified documentation
   * PAM modules for ssh tight integration and access control for
     interactive jobs
   * Initial core binding support for Solaris/SPARC64
   * Some efficiency improvements and memory leaks fixed
-  * Add ports to S/390 and PARISC GNU/Linux
+  * Ports to S/390 and PARISC GNU/Linux
   * New complex m_thread
   * Show topology by default in qhost
   * Show core binding by default in qstat
-  * Add qsub -pty switch
+  * qsub -pty switch
   * Improved qmon graphics
-  * Add bash to default shell list
-  * Provide a JSV that rejects all jobs
-  * Add  files for Scali-MPI
-  * Add Ruby DRMAA implementation
+  * Include bash in default shell list
+  * A JSV that rejects all jobs
+  * Files for Scali-MPI
+  * Ruby DRMAA implementation
   * Enable easy building against shared system libraries and use
     system openssl and bdb binaries
-  * Add qsched script to report resource reservations; also
-    enable/disable submit scripts, node-selection scripts, status
-  * Add restart argument to daemon init scripts
-  * Improve efficiency of shell JSV if used with bash
-  * Enable core dumps from crashing daemons under Linux
-  * Add example host_aliases file [#154]
+  * New scripts: "qsched" reports resource reservations; "status"
+    wraps qstat; enable/disable submission; node-selection (idle etc.)
+  * Restart argument for daemon init scripts
+  * Improved efficiency of shell JSV if used with bash
+  * Core dumps from crashing daemons enabled under Linux
+  * Example host_aliases file [#154]
+  * Spec file for RPM packaging
 
 * Other changes (possibly-incompatible)
 
@@ -100,7 +102,7 @@ https://github.com/gridengine/gridengine).
   * Changed position in pending job list for user-rescheduled jobs
     (exit99, qmod -rj) and OLD_RESCHEDULE_BEHAVIOR,
     OLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB parameters
-  * Unify GNU/Linux arch strings (lx-*, from lx24-* and lx26-*)
+  * Unified GNU/Linux arch strings (lx-*, from lx24-* and lx26-*)
   * Default to enabling core binding on GNU/Linux
-  * Remove Sun service tags support
-  * Remove obsolete SunHPCT5 files
+  * Removed Sun service tags support
+  * Removed obsolete SunHPCT5 files
