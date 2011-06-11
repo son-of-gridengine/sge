@@ -171,7 +171,7 @@ echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
   done
   gzip man/man*/*
 )
-cat ../README - > $RPM_BUILD_ROOT/%{sge_home}/doc <<+
+cat ../README - > $RPM_BUILD_ROOT/%{sge_home}/doc/README <<+
 
 Note that, unlike the Fedora rpm, this version doesn't try to configure
 the system or provide its own init scripts, and installs into /opt/sge,
