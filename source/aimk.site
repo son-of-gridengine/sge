@@ -131,10 +131,18 @@ set COPYRIGHT_DIR = /off_home/codine/ge62u4-copyright
 
 #
 # Location of a copyright.h file which containes a copyright string
-# which is included in each binary part of Sun Grid Engine (the version
-# which Sun Microsystems is releasing
+# which is included in each binary part of Univa Grid Engine (the version
+# which Univa is releasing
 #
-set SUN_COPYRIGHT_DIR  = /off_home/codine/sge62u5-copyright
+set UNIVA_COPYRIGHT_DIR  = ""
+set BASEDIR = `pwd`
+set BASEDIR = `dirname $BASEDIR`
+set BASEDIR = `dirname $BASEDIR`
+if ( -d $BASEDIR/uge-extensions ) then
+   set UGE_EXT = 1
+   set UGE_LIBS = $BASEDIR/uge-extensions
+   set UNIVA_COPYRIGHT_DIR = $UGE_LIBS/copyright
+endif
 
 # for some platforms we cannot use dynamic loading of the spooling libraries.
 # fallback to berkeleydb spooling
