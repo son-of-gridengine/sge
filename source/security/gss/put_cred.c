@@ -125,7 +125,7 @@ main(int argc, char **argv)
    gsslib_verbose(verbose);
 
    if (verbose) {
-      fprintf(stderr, MSG_GSS_PUTCRED_ARGUMENTS);
+      fprintf(stderr, "%s", MSG_GSS_PUTCRED_ARGUMENTS);
       for (i=0; i<argc; i++)
          fprintf(stderr, "%s ", argv[i]);
       fputc('\n', stderr);
@@ -156,7 +156,7 @@ main(int argc, char **argv)
    }
    client_cred.length = gsslib_unpackint(lenbuf);
    if (verbose)
-      fprintf(stderr, "credentials length = %d\n", client_cred.length);
+      fprintf(stderr, "credentials length = %d\n", (int)client_cred.length);
 
    if ((client_cred.value = (char *)malloc(client_cred.length)) == 0) {
       fprintf(stderr, MSG_GSS_COULDNOTALLOCATEXBYTESFORCREDENTIALS_I ,
@@ -306,7 +306,7 @@ main(int argc, char **argv)
       fprintf(stderr, "KRB5CCNAME=%s\n", getenv("KRB5CCNAME"));
 
    if (cmd)
-      system(cmd);
+      cc = system(cmd);
 
    if (ecmd) {
       int eargc = 0;
