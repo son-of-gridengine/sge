@@ -126,8 +126,11 @@ main(int argc, char **argv)
          fprintf(stderr, "\n");
       }
       gsslib_packint(cred.length, lenbuf);
-      write(1, lenbuf, GSSLIB_INTSIZE);
-      write(1, cred.value, cred.length);
+      if ((GSSLIB_INTSIZE != write(1, lenbuf, GSSLIB_INTSIZE)) ||
+	  (cred.length != write (1, cred.value, cred.length))) {
+	 perror (MSG_GSS_WRITEFAILED);
+	 cc = 1;
+      }
    } else {
       fprintf(stderr, "%s\n", MSG_GSS_GETCREDNOCREDENTIALSFOUND );
       cc = 1;
