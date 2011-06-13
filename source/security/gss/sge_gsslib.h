@@ -42,9 +42,9 @@
 
 void gsslib_packint(u_long hostlong, char *buf);
 u_long gsslib_unpackint(char *buf);
-void gsslib_display_status( char *msg, OM_uint32 maj_stat, OM_uint32 min_stat);
+void gsslib_display_status(const char *msg, OM_uint32 maj_stat, OM_uint32 min_stat);
 void gsslib_reset_error(void);
-char *gsslib_print_error(char *msg);
+char *gsslib_print_error(const char *msg);
 char *gsslib_error(void);
 void gsslib_display_ctx_flags(OM_uint32 flags);
 int gsslib_get_credentials(char *service_name, gss_buffer_desc *cred,

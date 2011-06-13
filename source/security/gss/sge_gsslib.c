@@ -44,6 +44,11 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #ifdef KERBEROS
+#include <krb5.h>
+#include <gssapi/gssapi_krb5.h>
+#ifdef KRB5_EXPORTVAR /* this is required for later Kerberos versions */
+static void put_creds_in_ccache(char *name, gss_cred_id_t creds);
+#endif
 #include <gssapi/gssapi_generic.h>
 #else
 #include <gssapi.h>
@@ -65,22 +70,50 @@
 /* #define TURN_OFF_DELEGATION */
 #define HACK
 
-#ifdef KERBEROS
-#include <krb5.h>
-#include <gssapi/gssapi_krb5.h>
-#ifdef KRB5_EXPORTVAR /* this is required for later Kerberos versions */
-static void put_creds_in_ccache(char *name, gss_cred_id_t creds);
-#endif
-#endif
-
 static char msgbuf[2048];
 static char *msgptr = NULL;
 static int verbose = 0;
 
 #ifdef KERBEROS
-OM_uint32 kg_get_context PROTOTYPE((OM_uint32 *minor_status,
-                                    krb5_context *context));
-#endif
+/* OM_uint32 kg_get_context(OM_uint32 *minor_status, krb5_context *context); */
+/* kg_get_context isn't in the current MIT library.  This is the  v 1.3 version.
+   Fixme:  Try to replace it with current external routine.  */
+krb5_error_code krb5_ser_context_init(krb5_context);
+krb5_error_code krb5_ser_auth_context_init(krb5_context);
+krb5_error_code krb5_ser_ccache_init(krb5_context);
+krb5_error_code krb5_ser_rcache_init(krb5_context);
+krb5_error_code krb5_ser_keytab_init(krb5_context);
+OM_uint32
+kg_get_context(OM_uint32 *minor_status, krb5_context *context)
+{
+  static krb5_context kg_context = NULL;
+  krb5_error_code code;
+
+  if (!kg_context) {
+    if ((code = krb5_init_context(&kg_context)))
+      goto fail;
+    if ((code = krb5_ser_context_init(kg_context)))
+      goto fail;
+    if ((code = krb5_ser_auth_context_init(kg_context)))
+      goto fail;
+    if ((code = krb5_ser_ccache_init(kg_context)))
+      goto fail;
+    if ((code = krb5_ser_rcache_init(kg_context)))
+      goto fail;
+    if ((code = krb5_ser_keytab_init(kg_context)))
+      goto fail;
+    if ((code = krb5_ser_auth_context_init(kg_context)))
+      goto fail;
+  }
+  *context = kg_context;
+  *minor_status = 0;
+  return GSS_S_COMPLETE;
+
+ fail:
+  *minor_status = (OM_uint32) code;
+  return GSS_S_FAILURE;
+}
+#endif	/* KERBEROS */
 
 void gsslib_packint(u_long hostlong, char *buf)
 {
@@ -96,7 +129,7 @@ u_long gsslib_unpackint(char *buf)
    return ntohl(netlong);
 }
 
-static void gsslib_display_status_1(char *m, OM_uint32 code, int type)
+static void gsslib_display_status_1(const char *m, OM_uint32 code, int type)
 {
    OM_uint32 maj_stat, min_stat;
    gss_buffer_desc msg;
@@ -127,7 +160,7 @@ void gsslib_verbose(int verbosity)
    verbose = verbosity;
 }
 
-void gsslib_display_status(char *msg, OM_uint32 maj_stat, OM_uint32 min_stat)
+void gsslib_display_status(const char *msg, OM_uint32 maj_stat, OM_uint32 min_stat)
 {
    msgptr = msgbuf;
    gsslib_display_status_1(msg, maj_stat, GSS_C_GSS_CODE);
@@ -144,7 +177,7 @@ void gsslib_reset_error(void)
 }
 
 
-char *gsslib_print_error(char *msg)
+char *gsslib_print_error(const char *msg)
 {
    strcpy(msgptr, msg);
    sprintf(msgptr, "\n");

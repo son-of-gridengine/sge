@@ -136,4 +136,9 @@
 #define MSG_GSS_READXBYTES_I              _MESSAGE(51059, _("read %d bytes"))
 #define MSG_GSS_WROTEXBYTES_I             _MESSAGE(51060, _("wrote %d bytes"))
 #define MSG_GSS_WRITECREDNOCREDENTIALSFOUND  _MESSAGE(51061, _("write_cred: no credentials found"))
+
+/* 
+** gss/get_cred.c
+ */
+#define MSG_GSS_WRITEFAILED   _MESSAGE(51062, _("write failed"))
 #endif /* __MSG_GSS_H */

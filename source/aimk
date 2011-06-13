@@ -64,6 +64,9 @@ set ERR_WARN_ALL = ""
 set UNMODIFIED_ARGUMENTS = ( $argv )
 set FORCE_32BIT = 0
 set SYSTEM_LIBS = 0
+set SECTARGETS  = ""
+set SECDEPEND   = ""
+set SECCLEAN    = ""
 
 if ( -f dist/util/arch ) then
    set buildarch = `dist/util/arch`
@@ -171,7 +174,7 @@ usage:
    echo "-catman           -> generate man pages in catman format"
    echo "-cc               -> use cc/CC to compile c/c++ code"
    echo "-cov              -> complile for code coverage analysis"
-   echo "-dce              -> enable dce security"
+   echo "-dce              -> enable dce security (obsolete, likely broken)"
    echo "-debug            -> compile with debug information"
    echo "-efence           -> compile in debug mode and detect memory leaks"
    echo "-f                -> specify other Makefile instead of common/Makefile"
@@ -179,7 +182,7 @@ usage:
    echo "-gcc              -> use gcc instead of system compiler (where supported)"
    echo "-gettext          -> build the gettext libraries"
    echo "-gprof            -> enable gprof profiling"
-   echo "-gss              -> enable gss security (currently broken)"
+   echo "-gss              -> enable gss security (_after_ building core)"
    echo "-help             -> show this help"
    echo "-htmlman          -> generate man and html pages"
    echo "-insure           -> compile in debug mode and detect memory leaks"
@@ -570,10 +573,30 @@ while ($#argv >= 1 && $?found)
       set STRIP      = "echo"
       breaksw
    case "-gss":
+      # Fixme:  Currently requires core to be built first.
+      # Alternative recipe (doesn't work with current security/aimk):
+      # export SGE_ROOT=<installed SGE distribution>
+      # cd <sge source dir>/source
+      # scripts/distinst -local -- sec
+      # cd $SGE_ROOT/security
+      # ./aimk -gss
+      # ./aimk install 
+      set CORE   = 1
+      set JAVA   = 0
+      set JAVA_GUI_INST = 0
+      set JAVA_HERD = 0
+      set QMAKE  = 0
+      set PLPA   = 0
+      set QMON   = 0
+      set QTCSH  = 0
+      set REMOTE = 0
+      set MAKEWINGRIDAPP = 0
+      set MAKEWINGRIDLIB = 0
       set GSSDEPEND = "gss_depend"
       set GSSCLEAN = "gss_clean"
       set CFLAGS  = "-DKERBEROS -I../security/gss -I$KRB_HOME/include -I$KRB_HOME/include/gssapi $CFLAGS"
       set GSSLIBS = "-lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err"
+      set SECTARGETS = gss_all
       breaksw
    case "-htmlman":
       set BUILDMAN = "1"
@@ -2689,6 +2712,7 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
          "KRBTARGETS=$KRBTARGETS" "KRBDEPEND=$KRBDEPEND" "KRBCLEAN=$KRBCLEAN"\
          "KRBLIBS=$KRBLIBS" "AUTHLIBS=$AUTHLIBS" \
          "KRBLIB=$KRBLIB" "GSSDEPEND=$GSSDEPEND" \
+         "SECTARGETS=$SECTARGETS" "SECDEPEND=$SECDEPEND" "SECCLEAN=$SECCLEAN" \
          "GSSCLEAN=$GSSCLEAN" "MSDIR=$MSDIR" "SLIBS=$GSSLIBS $KLIBS" "LIBS=$LIBS" \
          "XCFLAGS=$XCFLAGS" "XLFLAGS=$XLFLAGS" \
          "XLIBS=$XLIBS" "LFLAGS=$LFLAGS $KLFLAGS" "STRIP=$STRIP" \
