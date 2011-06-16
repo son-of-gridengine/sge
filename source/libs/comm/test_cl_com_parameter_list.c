@@ -41,8 +41,6 @@
 
 #include "uti/sge_stdlib.h"
 
-#include "uti/sge_stdlib.h"
-
 #ifdef __CL_FUNCTION__
 #undef __CL_FUNCTION__
 #endif
