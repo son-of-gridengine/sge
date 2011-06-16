@@ -36,6 +36,8 @@
 #include <sys/time.h>
 #include <stdlib.h>
 
+#include "uti/sge_stdlib.h"
+
 #include "comm/cl_app_message_queue.h"
 
 #ifdef __CL_FUNCTION__
@@ -55,8 +57,6 @@ int cl_app_message_queue_setup(cl_raw_list_t** list_p, char* list_name, int enab
 int cl_app_message_queue_cleanup(cl_raw_list_t** list_p) {
    return cl_raw_list_cleanup(list_p);
 }
-
-#include "uti/sge_stdlib.h"
 
 #ifdef __CL_FUNCTION__
 #undef __CL_FUNCTION__
