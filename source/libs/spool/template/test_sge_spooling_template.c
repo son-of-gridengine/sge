@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
          answer_list_print_err_warn(&answer_list, NULL, NULL);
       } else {
          lWriteElemTo(reread_queue, stdout);
-         reread_queue = lFreeElem(reread_queue);
+         lFreeElem(&reread_queue);
       }
      
       sge_unlink(NULL, filepath);
@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
          answer_list_print_err_warn(&answer_list, NULL, NULL);
       } else {
          lWriteListTo(reread_list, stdout);
-         reread_list = lFreeList(reread_list);
+         lFreeList(&reread_list);
       }
 /*       sge_unlink(NULL, filepath); */
       sge_free(&filepath);
@@ -193,7 +193,7 @@ int main(int argc, char *argv[])
    answer_list_print_err_warn(&answer_list, NULL, NULL);
 
    /* cleanup */
-   queue_list = lFreeList(queue_list);
+   lFreeList(&queue_list);
 
    fields = spool_free_spooling_fields(fields);
 
