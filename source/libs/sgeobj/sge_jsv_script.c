@@ -1846,7 +1846,7 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
 
    /* 
     * -N <job_name> 
-    * optional; only abaiable if specified during job submission
+    * optional; only available if specified during job submission
     */
    {
       const char *name = lGetString(old_job, JB_job_name);

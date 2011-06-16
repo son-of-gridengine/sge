@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
    } else if (argc >= 2 && 
               (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)) {
       /* show the usage and terminate */
-      printf("usage: echo_raw [-h|-r] [arg] ...\n");
+      printf("usage: echo_raw [-h|-e] [arg] ...\n");
       printf("write arguments separated by blank and followed by new line to stdout\n");
       printf("\n");
       printf(" -h    show this help\n");

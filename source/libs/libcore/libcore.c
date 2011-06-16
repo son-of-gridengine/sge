@@ -1,13 +1,15 @@
 /* This is taken from
-   http://gridengine.sunsource.net/issues/show_bug.cgi?id=2552.  It
-   was posted without a licence statement, which makes it implicitly
-   under the new BSD licence according to the sunsource.net terms at
+   http://gridengine.sunsource.net/issues/show_bug.cgi?id=2552 (now
+   https://arc.liv.ac.uk/trac/SGE/ticket/507).  It was posted without
+   a licence statement, which makes it implicitly under the new BSD
+   licence according to the sunsource.net terms previously at
    http://www.sunsource.net/TUPPCP.html.
 
-   It was intended to be used as an LD_PRELOADed shared object to allow
-   core dumps from daemons under Linux if the SGE admin user isn't
-   root (and is obviously applicable to daemons other than SGE's).
-   IT's currently linked statically into the daemons.
+   It was intended to be used as an LD_PRELOADed shared object to
+   allow core dumps from daemons under Linux if the SGE admin user
+   isn't root (and is obviously applicable to daemons other than
+   SGE's).  It's currently linked statically into the daemons, but it
+   might be better to do the prctl directly.
 
    Dave Love <d.love@liverpool.ac.uk>  2010-06.  */
 

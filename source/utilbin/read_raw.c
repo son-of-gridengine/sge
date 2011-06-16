@@ -34,16 +34,15 @@
 #include <string.h>
 
 /*
- * Implements a binary which reads in from stdin in "raw" mode thill 
- * the first newline character occures
+ * Implements a binary which reads in from stdin in "raw" mode until
+ * the first newline character occurs.
  *
- * This command can be used as a replacement for the buildin command
+ * This command can be used as a replacement for the builtin command
  * "read" in bourne shell. On most platforms this not able to read
- * in raw mode therefore it does backslash escaping. 
+ * in raw mode and does backslash escaping.
  *
- * As a result "binary" data with masked newline and backslash
- * characters can be read into a bourne shell scripts with this 
- * command.
+ * "Binary" data with masked newline and backslash characters can be
+ * read into a bourne shell scripts with this command.
  */
 
 #define BUF_SIZE 8 * 1024
