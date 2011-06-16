@@ -36,14 +36,14 @@ exec tclsh "$0" "$1"
 
 #****** util/sge_tee ******
 #  NAME
-#     sge_tee -- Splitt SGE RMON formatted output into thread specific files
+#     sge_tee -- Split SGE RMON formatted output into thread specific files
 #                and duplicate it to stdout.
 #
 #  SYNOPSIS
 #     sge_tee ?basename?
 #
 #  FUNCTION
-#     Splitt input in SGE RMON format into thread specific parts. In addition
+#     Split input in SGE RMON format into thread specific parts. In addition
 #     duplicate it to stdout.
 #
 #     For each thread one file with log messages is created. The generated

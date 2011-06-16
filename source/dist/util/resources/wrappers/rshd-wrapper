@@ -1,5 +1,10 @@
 #!/usr/bin/perl
 
+# Copyright (C) 2007,  Andreas Haupt
+# Licence:  GNU GPL, version 3 or later.
+
+# See pam_sge-qrsh-setup(8)
+
 # check for orphaned setting files
 foreach my $file ( </var/run/sge-qrsh-setup.*> ) {
 	$file =~ /\.(\d+)$/;

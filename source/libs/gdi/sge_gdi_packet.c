@@ -77,7 +77,7 @@
 *     Packets and tasks are structures which are used in the methods 
 *     implementing GDI. The real C structure names are 
 *
-*        "sge_gdi_packet_cass_t" and 
+*        "sge_gdi_packet_class_t" and
 *        "sge_gdi_task_class_t". 
 *
 *     An instance of the packet structure represents a GDI request.
@@ -86,7 +86,7 @@
 *     singe GDI request and that one with multiple task represents
 *     a multi GDI request.
 *
-*     GDI requests are created by funtion calls sge_gdi() and
+*     GDI requests are created by function calls sge_gdi() and
 *     sge_gdi_multi(). Internally the packet and task data 
 *     structures are used to represent that request information.
 *
@@ -128,9 +128,9 @@
 *    is required because the data structures are not thread
 *    safe per default. Only one thread is allowed to access
 *    a packet or task structure at the same time. To synchronize
-*    their activities between "listerner" and "worker"
+*    their activities between "listener" and "worker"
 *    threads a queue of packet elements is used. This
-*    "Master_Packet_Queue" is guarded by the funtion calls
+*    "Master_Packet_Queue" is guarded by the function calls
 *
 *        sge_gdi_packet_queue_wait_for_new_packet()
 *        sge_gdi_packet_queue_store_notify()
@@ -354,7 +354,7 @@ sge_gdi_task_create(sge_gdi_packet_class_t * packet, lList **answer_list,
 *  NOTES
 *     MT-NOTE: sge_gdi_task_free() is MT safe as long as the structure
 *              passed to this function is not accessed by more than one
-*              thread simultaniously.
+*              thread simultaneously.
 *
 *  SEE ALSO
 *     gdi/request_internal/sge_gdi_task_create()
@@ -417,10 +417,10 @@ sge_gdi_packet_debug_print(sge_gdi_packet_class_t * packet)
 *     sge_gdi_packet_create_base(lList **answer_list)
 *
 *  FUNCTION
-*     Creates a new GDI packet and initializes all base structure memebers
+*     Creates a new GDI packet and initializes all base structure members
 *     where necessary information is available.
 *
-*     "uid", "gid", "user" and "group" memebers part of sge_gdi_packet_class_t
+*     "uid", "gid", "user" and "group" members part of sge_gdi_packet_class_t
 *     will not be initialized with this function. Instead
 *     sge_gdi_packet_create() can be used or the function
 *     sge_gdi_packet_initialize_auth_info() can be called afterwards.
@@ -611,7 +611,7 @@ sge_gdi_packet_append_task(sge_gdi_packet_class_t * packet,
 *     sge_gdi_task_get_operation_name(sge_gdi_task_class_t *task) 
 *
 *  FUNCTION
-*     This function returns a string of represending the command type
+*     This function returns a string of representing the command type
 *     of a task part of a multi GDI request (e.g the function will return
 *     "GET" when (task->command == SGE_GDI_GET))
 *
@@ -710,7 +710,7 @@ sge_gdi_packet_get_last_task_id(sge_gdi_packet_class_t * packet)
 *     bool sge_gdi_packet_free(sge_gdi_packet_class_t **packet)
 *
 *  FUNCTION
-*     Releases the memory allocated by all members of ther "packet"
+*     Releases the memory allocated by all members of the "packet"
 *     structure including the list of tasks and sublists part of the
 *     tasks.
 *
@@ -776,11 +776,11 @@ sge_gdi_packet_free(sge_gdi_packet_class_t ** packet)
 *     before the packet structure was introduced.
 *
 *     It compares the version information of the provided "packet"
-*     with the compiledin version number GRM_GDI_VERSION.
+*     with the compiled-in version number GRM_GDI_VERSION.
 *
 *     If both versions are not the same then it tries to find
 *     if the client which provided us with this packet structure
-*     has a higer version number or the binary executing
+*     has a higher version number or the binary executing
 *     this function. In both cases the answer_list will
 *     be filled with an appropriate message.
 *
@@ -791,7 +791,7 @@ sge_gdi_packet_free(sge_gdi_packet_class_t ** packet)
 *  RESULT
 *     bool - error state
 *        true  - same version
-*        false - differnet version numbers
+*        false - different version numbers
 *
 *  NOTES
 *     MT-NOTE: sge_gdi_packet_verify_version() is not MT safe

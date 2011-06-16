@@ -583,7 +583,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       }
 
       {
-	 /* REQNAME is obsolete, but kept for compatibi;ity (see
+	 /* REQNAME is obsolete, but kept for compatibility (see
 	    IZ3287).  */
          const char *reqname = petep == NULL ? lGetString(jep, JB_job_name) : lGetString(petep, PET_name);
          if (reqname != NULL) {

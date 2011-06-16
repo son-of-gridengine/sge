@@ -90,7 +90,7 @@ static sge_category_t Category_Control = {PTHREAD_MUTEX_INITIALIZER, {-1, -1, -1
 *     *job, lList *acl_list) 
 *
 *  FUNCTION
-*     The following parameter are put into the category:
+*     The following parameters are put into the category:
 *        hard_queue_list
 *        master_hard_queue_list
 *        hard_resource_list
@@ -99,18 +99,20 @@ static sge_category_t Category_Control = {PTHREAD_MUTEX_INITIALIZER, {-1, -1, -1
 *        type
 *
 *        owner/group: -U user_lists 
-*           Omitted, if user_lists/xuser_lists were not used in
+*           Omitted if user_lists/xuser_lists were not used in
 *           host_conf(5), sge_pe(5) and queue_conf(5). In sge_conf(5) 
 *           user_lists/xuser_lists still can be used, as it causes
-*           jobs already be rejected at submit time.
+*           jobs already to be rejected at submit time.
 *
 *        project: -P user_lists 
-*           Omitted, if projects/xprojects were not used in
+*           Omitted if projects/xprojects were not used in
 *           host_conf(5), sge_pe(5) and queue_conf(5). In sge_conf(5) 
 *           projects/xprojects still can be used, as it cuases
-*           jobs already be rejected at submit time.
+*           jobs already to be rejected at submit time.
 *
 *        pe
+*
+*        ar
 *
 *  INPUTS
 *     dstring *category_str - target string, contains the category or nothing
