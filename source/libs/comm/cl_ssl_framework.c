@@ -27,6 +27,7 @@
  *
  *  All Rights Reserved.
  *
+ *  Portions of this software are Copyright (c) 2011 Univa Corporation.
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
@@ -94,8 +95,8 @@
 #include "comm/cl_commlib.h"
 #include "comm/msg_commlib.h"
 #include "uti/sge_unistd.h"
-#include "uti/sge_string.h"
 #include "uti/sge_os.h"
+#include "uti/sge_string.h"
 
 #if (OPENSSL_VERSION_NUMBER < 0x0090700fL) 
 #define OPENSSL_CONST
