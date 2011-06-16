@@ -37,8 +37,6 @@
 
 #include "uti/sge_stdlib.h"
 
-#include "uti/sge_stdlib.h"
-
 #ifdef DARWIN
 int JNI_CreateJavaVM_Impl(JavaVM **pvm, void **penv, void *args);
 #endif
