@@ -200,8 +200,8 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
    struct passwd pw_struct;
    char *buffer;
    int size;
-   int pty;
    bool skip_silently = false;
+   int pty;
 
 #if defined(INTERIX)
 #  define TARGET_USER_BUFFER_SIZE 1024
