@@ -50,16 +50,26 @@ Content
    carried out:
 
       - get and compile openSSL library (optional); actually, it is
-	recommended to use the system's shared library, which means
-	installing the openssl development package against which to
-	build (openssl-devel on RedHat, libssl-dev on Debian)
+        recommended to use the system's shared library, which means
+        installing the openssl development package against which to
+        build (openssl-devel on RedHat, libssl-dev on Debian)
       - install the Berkeleydb library (optional), preferably as your
-	OS's development package of it (openssl-devel on RedHat,
-	libdb-dev on Debian)
+        OS's development package of it (openssl-devel on RedHat,
+        libdb-dev on Debian)
       - You may also need development packages of ncurses and (on
-	GNU/Linux) pam.  For building the qmon GUI, you need
-	development packages of lesstif or openmotif (non-free
-	software), libXmu, and libXpm.
+        GNU/Linux) pam.  For building the qmon GUI, you need
+        development packages of lesstif or openmotif (non-free
+        software), libXmu, and libXpm.
+      - To make the basic Java targets, as well as a Java 1.6 JDK
+        (e.g. openjdk) you will need ant, ant-nodeps (RedHat)/ant-optional
+        (Debian), javacc and junit packages.  The GUI installer requires
+        IzPack (http://izpack.org) and swing-layout
+        (http://swing-layout.dev.java.net).  The herd library requires a
+        Hadoop distribution (e.g. http://archive.cloudera.com/cdh/2/).
+        Properties for ant are set in the top-level build.properties, and
+        may be overridden in build_private.properties.  Other properties you
+        might need to set are typically found in
+        nbproject/project.properties in each Java component directory.
       - create dependency tool and dependencies with 'aimk'
       - compile binaries with 'aimk'
       - create a distribution repository with 'distinst'
@@ -81,7 +91,7 @@ Content
    A checkout from the source repository may not have made necessary
    scripts, such as "aimk" executable.  To fix that before continuing, run
 
-     % scripts/chmodx
+     % sh scripts/chmodx
 
 3) Building the dependency tool 'sge_depend'
 --------------------------------------------
