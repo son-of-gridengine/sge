@@ -729,6 +729,7 @@ while ($#argv >= 1 && $?found)
       set MAKEWINGRIDLIB = 0
       set MAKEJEMALLOCLIB  = 0
       set ONLY_PARAM_SPEC = 1
+      set MAKEPAM = 0
       breaksw
    case  "-only-java"
       set JAVA = 2
