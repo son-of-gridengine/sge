@@ -419,7 +419,9 @@ static int handle_job(sge_gdi_ctx_class_t *ctx, lListElem *jelem, lListElem *jat
    }
 
 #ifdef KERBEROS
-   kerb_job(jelem, de);
+   /* fixme: check that it should be qualified_hostname and that get_uid is right */
+   kerb_job(jelem, ctx->get_progname(ctx), ctx->get_qualified_hostname(ctx),
+   ctx->get_uid(ctx));
 #endif
 
    if (!mconf_get_simulate_jobs()) {
@@ -661,9 +663,9 @@ static int handle_task(sge_gdi_ctx_class_t *ctx, lListElem *petrep, char *commpr
    DENTER(TOP_LAYER, "handle_task");
 
 #ifdef KERBEROS
-   if (krb_verify_user(de->host, de->commproc, de->id,
+   if (krb_verify_user(qualified_hostname, commproc, id,
                        lGetString(petrep, PETR_owner)) < 0) {
-      ERROR((SGE_EVENT, MSG_SEC_KRB_CRED_SSSI, lGetString(petrep, PETR_owner), de->host, de->commproc, de->id));
+      ERROR((SGE_EVENT, MSG_SEC_KRB_CRED_SSSI, lGetString(petrep, PETR_owner), qualified_hostname, commproc, id));
       goto Error;
    }
 #endif /* KERBEROS */

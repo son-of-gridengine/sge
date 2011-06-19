@@ -55,7 +55,7 @@ int sge_ssl_setup_security_path(const char *progname, const char *username);
 
 
 #ifdef KERBEROS
-int kerb_job(lListElem *jelem, struct dispatch_entry *de);
+int kerb_job(lListElem *jelem, const char *commproc, const char *host, u_short id);
 #endif
 
 void tgt2cc(lListElem *jep, const char *rhost);
@@ -64,7 +64,7 @@ int set_sec_cred(const char *sge_root, const char *mastername, lListElem *job, l
 void delete_credentials(const char *sge_root, lListElem *jep);
 bool cache_sec_cred(const char *sge_root, lListElem *jep, const char *rhost);
 int store_sec_cred(const char *sge_root, sge_gdi_packet_class_t *packe, lListElem *jep, 
-                   int do_authentication, lList **alpp);
+                   int do_authentication, lList **alpp, sge_gdi_ctx_class_t *ctx);
 int store_sec_cred2(const char* sge_root, 
                     const char* unqualified_hostname, 
                     lListElem *jelem, 
