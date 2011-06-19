@@ -132,7 +132,7 @@ xargs chmod +x <<EOF
 ./security/gss/starter_cred.ksh
 ./security/gss/put_cred.sh
 ./security/gss/aimk
-./security/gss/renew_cred.ksh
+./security/gss/renew_cred.sh
 ./security/gss/get_cred.sh
 ./aimk
 EOF

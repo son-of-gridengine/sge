@@ -47,21 +47,8 @@ fi
 SGE_CELL=${SGE_CELL:-default}
 arch=`$SGE_ROOT/util/arch`
 service="sge"
-product_name=`cat $SGE_ROOT/$SGE_CELL/common/product_mode`
-if [ -n "$product_name" ]
-then
-   service=`expr $product_name : '\([^-]*\)'`
-fi
 qmaster_host=`cat $SGE_ROOT/$SGE_CELL/common/act_qmaster`
 
-# preserve arguments
-args=
-while [ $# -gt 0 ]
-do
-   args="$args \"$1\""
-   shift
-done
-
 #echo exec $SGE_ROOT/utilbin/$arch/put_cred.orig $args -s ${service}@${qmaster_host} > /tmp/put_cred.out
-eval exec $SGE_ROOT/utilbin/$arch/put_cred.orig $args -s ${service}@${qmaster_host}
+eval exec $SGE_ROOT/utilbin/$arch/put_cred "$@" -s ${service}@${qmaster_host}
 

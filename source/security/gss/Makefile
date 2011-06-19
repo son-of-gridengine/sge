@@ -86,8 +86,8 @@ put_cred:        put_cred.o sge_gsslib.o
 starter_cred:	$(GSS_SDIR)/starter_cred.ksh
 	cp $(GSS_SDIR)/starter_cred.ksh starter_cred
 
-renew_cred:	$(GSS_SDIR)/renew_cred.ksh
-	cp $(GSS_SDIR)/renew_cred.ksh renew_cred
+renew_cred:	$(GSS_SDIR)/renew_cred.sh
+	cp $(GSS_SDIR)/renew_cred.sh renew_cred
 
 get_cred.sh:	$(GSS_SDIR)/get_cred.sh
 	cp $(GSS_SDIR)/get_cred.sh get_cred.sh
