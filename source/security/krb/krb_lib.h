@@ -37,6 +37,7 @@
 
 #include "cull/cull_list.h"
 
+#define FAR
 #define krb5_xfree(val) free((char FAR *)(val))
 
 #define KRB_CLIENT_TIMEOUT (15*60)
