@@ -48,7 +48,7 @@ get_cred:	get_cred.o sge_gsslib.o
 put_cred:	put_cred.o sge_gsslib.o
 	$(CC) -o $@ $(LFLAGS) put_cred.o sge_gsslib.o $(LIBS)
 
-renew_cred:	$(SDIR)/renew_cred.ksh
+renew_cred:	$(SDIR)/renew_cred.sh
 	cp $? $@
 
 starter_cred:	$(SDIR)/starter_cred.ksh
