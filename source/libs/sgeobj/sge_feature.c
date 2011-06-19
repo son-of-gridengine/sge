@@ -63,6 +63,7 @@ struct feature_state_t {
 static const featureset_names_t featureset_list[] = {
    {FEATURE_NO_SECURITY,            "none"},
    {FEATURE_AFS_SECURITY,           "afs"},
+   /* fixme allow gss instead of dce */
    {FEATURE_DCE_SECURITY,           "dce"},
    {FEATURE_KERBEROS_SECURITY,      "kerberos"},
    {FEATURE_CSP_SECURITY,           "csp"},

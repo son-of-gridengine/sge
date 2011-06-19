@@ -226,6 +226,7 @@ case sun4:
 
 default:
    echo "ERROR: Architecture not yet supported by CODINE-aimk"
+   echo "Better use the top-level aimk with -gss"
    exit 1
 endsw
 

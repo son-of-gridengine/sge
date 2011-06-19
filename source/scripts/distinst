@@ -111,7 +111,7 @@ SCALI_SCRIPTS="Scali_Resume.sh Scali_Suspend.sh"
 
 SECFILES="security/gss/get_cred.c security/gss/put_cred.c \
           security/gss/delete_cred.c security/gss/sge_gsslib.c \
-          security/gss/sge_gsslib.h security/gss/renew_cred.ksh \
+          security/gss/sge_gsslib.h security/gss/renew_cred.sh \
           security/gss/starter_cred.ksh security/gss/msg_gss.h \
           security/gss/aimk security/gss/Makefile.security \
           security/gss/doc/gss_customer.html \

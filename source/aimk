@@ -174,7 +174,7 @@ usage:
    echo "-catman           -> generate man pages in catman format"
    echo "-cc               -> use cc/CC to compile c/c++ code"
    echo "-cov              -> complile for code coverage analysis"
-   echo "-dce              -> enable dce security (obsolete, likely broken)"
+   echo "-dce              -> enable dce security (obsolete? likely broken)"
    echo "-debug            -> compile with debug information"
    echo "-efence           -> compile in debug mode and detect memory leaks"
    echo "-f                -> specify other Makefile instead of common/Makefile"
@@ -580,7 +580,7 @@ while ($#argv >= 1 && $?found)
       # scripts/distinst -local -- sec
       # cd $SGE_ROOT/security
       # ./aimk -gss
-      # ./aimk install 
+      # ./aimk install
       set CORE   = 1
       set JAVA   = 0
       set JAVA_GUI_INST = 0
