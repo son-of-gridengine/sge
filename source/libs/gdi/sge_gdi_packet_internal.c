@@ -695,7 +695,7 @@ sge_gdi_packet_execute_external(sge_gdi_ctx_class_t* ctx, lList **answer_list,
 
 #ifdef KERBEROS
    /* clear the forward TGT request */
-   if (ret && state->first->target == SGE_JB_LIST &&
+   if (ret && packet->first_task->target == SGE_JB_LIST &&
        SGE_GDI_GET_OPERATION(packet->first_task->command) == SGE_GDI_ADD) {
       krb_set_client_flags(krb_get_client_flags() & ~KRB_FORWARD_TGT);
       krb_set_tgt_id(0);

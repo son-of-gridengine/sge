@@ -46,10 +46,14 @@
 #include "uti/sge_time.h"
 #include "uti/sge_uidgid.h"
 #include "uti/sge_prog.h"
+#include "uti/sge_spool.h"
 
 #include "sgeobj/sge_all_listsL.h"
+#include "sgeobj/sge_conf.h"
 
 #include "comm/commlib.h"
+
+#include "spool/classic/read_write_job.h"
 
 #include "basis_types.h"
 #include "sge.h"
@@ -59,7 +63,7 @@
 #include "krb_data.h"
 #include "krb_lib.h"
 
-#include "sge_krbL.h"
+#include "sge_krb_KRB_L.h"
 #include "krb5.h"				/* Kerberos stuff 	*/
 #include "com_err.h"
 

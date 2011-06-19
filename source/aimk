@@ -623,7 +623,7 @@ while ($#argv >= 1 && $?found)
       set KRBLIB     = "-lkrb"
       set CFLAGS     = "-DKERBEROS -I../security/krb -I$KRB_HOME/include -I$KRB_HOME/include/gssapi $CFLAGS"
       set KLFLAGS    = "-L$KRB_HOME/lib"
-      set KLIBS      = "-lkrb5 -lk5crypto -lcom_err -lresolv"
+      set KLIBS      = "-lkrb -lkrb5 -lk5crypto -lcom_err -lresolv"
       breaksw
    case "-man":
       set BUILDMAN   = 1

@@ -381,7 +381,7 @@ int do_ck_to_do(sge_gdi_ctx_class_t *ctx, bool is_qmaster_down) {
    now = sge_get_gmt();
 
 #ifdef KERBEROS
-   krb_renew_tgts(Master_Job_List);
+   krb_renew_tgts(*(object_type_get_master_list(SGE_TYPE_JOB)));
 #endif
 
    /* start jobs if present */

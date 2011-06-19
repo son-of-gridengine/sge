@@ -60,6 +60,7 @@
 #include "sgeobj/sge_var.h"
 #include "sgeobj/sge_job.h"
 #include "sgeobj/sge_answer.h"
+#include "sgeobj/sge_object.h"
 
 #include "gdi/sge_gdi.h"
 #include "gdi/qm_name.h"
@@ -576,7 +577,7 @@ int sge_security_initialize(const char *progname, const char *username)
 #endif
 
 #ifdef KERBEROS
-   if (krb_init(name)) {
+   if (krb_init(progname)) {
       DRETURN(-1);
    }
 #endif   
@@ -915,7 +916,7 @@ void delete_credentials(const char *sge_root, lListElem *jep)
  *  NOTES
  *     MT-NOTE: store_sec_cred() is MT safe (assumptions)
  */
-int store_sec_cred(const char* sge_root, sge_gdi_packet_class_t *packet, lListElem *jep, int do_authentication, lList** alpp)
+int store_sec_cred(const char* sge_root, sge_gdi_packet_class_t *packet, lListElem *jep, int do_authentication, lList** alpp, sge_gdi_ctx_class_t *ctx)
 {
 
    DENTER(TOP_LAYER, "store_sec_cred");
@@ -991,15 +992,18 @@ int store_sec_cred(const char* sge_root, sge_gdi_packet_class_t *packet, lListEl
       krb5_error_code rc;
       krb5_creds ** tgt_creds = NULL;
       krb5_data outbuf;
+      const char *host = ctx->get_qualified_hostname(ctx);
+      const char *commproc = ctx->get_progname(ctx);
+      uid_t id = ctx->get_uid(ctx);
 
       outbuf.length = 0;
 
-      if (krb_get_tgt(request->host, request->commproc, request->id,
-		      request->request_id, &tgt_creds) == 0) {
+      if (krb_get_tgt(host, commproc, id, lGetUlong(jep, JB_job_number),
+		      &tgt_creds) == 0) {
       
 	 if ((rc = krb_encrypt_tgt_creds(tgt_creds, &outbuf))) {
 	    ERROR((SGE_EVENT, MSG_SEC_KRBENCRYPTTGT_SSIS, 
-            request->host, request->commproc, request->id, error_message(rc)));
+            host, commproc, id, error_message(rc)));
 	 }
 
 	 if (rc == 0)
@@ -1007,11 +1011,12 @@ int store_sec_cred(const char* sge_root, sge_gdi_packet_class_t *packet, lListEl
                        krb_bin2str(outbuf.data, outbuf.length, NULL));
 
 	 if (outbuf.length)
-	    krb5_free_data(outbuf.data);
+	    /* Was as follows, which requires extra first arg (context) */
+            /* krb5_free_data(outbuf.data); */
+            sge_free(&(outbuf.data));
 
          /* get rid of the TGT credentials */
-         krb_put_tgt(request->host, request->commproc, request->id,
-		     request->request_id, NULL);
+         krb_put_tgt(host, commproc, id, lGetUlong(jep, JB_job_number), NULL);
 
       }
    }
@@ -1113,7 +1118,9 @@ int store_sec_cred2(const char* sge_root, const char* unqualified_hostname, lLis
  */
 int kerb_job(
 lListElem *jelem,
-struct dispatch_entry *de 
+const char *commproc,
+const char *host,
+u_short id
 ) {
    /* get TGT and store in job entry and in user's credentials cache */
    krb5_error_code rc;
@@ -1124,7 +1131,7 @@ struct dispatch_entry *de
 
    outbuf.length = 0;
 
-   if (krb_get_tgt(de->host, de->commproc, de->id, lGetUlong(jelem, JB_job_number), &tgt_creds) == 0) {
+   if (krb_get_tgt(host, commproc, id, lGetUlong(jelem, JB_job_number), &tgt_creds) == 0) {
       struct passwd *pw;
       struct passwd pw_struct;
       char *pw_buffer;
@@ -1162,7 +1169,7 @@ struct dispatch_entry *de
       }
 
       /* clear TGT out of client entry (this frees the TGT credentials) */
-      krb_put_tgt(de->host, de->commproc, de->id, lGetUlong(jelem, JB_job_number), NULL);
+      krb_put_tgt(host, commproc, id, lGetUlong(jelem, JB_job_number), NULL);
 
       sge_free(&pw_buffer);
    }
@@ -1186,7 +1193,7 @@ void tgt2cc(lListElem *jep, const char *rhost)
    krb5_error_code rc;
    krb5_creds ** tgt_creds = NULL;
    krb5_data inbuf;
-   char *tgtstr = NULL;
+   const char *tgtstr = NULL;
    u_long32 jid = 0;
    
    DENTER(TOP_LAYER, "tgt2cc");
@@ -1194,7 +1201,8 @@ void tgt2cc(lListElem *jep, const char *rhost)
    jid = lGetUlong(jep, JB_job_number);
    
    if ((tgtstr = lGetString(jep, JB_tgt))) { 
-      inbuf.data = krb_str2bin(tgtstr, NULL, &inbuf.length);
+      inbuf.data = krb_str2bin(tgtstr, NULL, (int *)&inbuf.length);
+      rc = 1;	   /* fixme: was maybe undefined below -- check the logic */
       if (inbuf.length) {
          if ((rc = krb_decrypt_tgt_creds(&inbuf, &tgt_creds))) {
             ERROR((SGE_EVENT, MSG_SEC_KRBDECRYPTTGT_US, sge_u32c(jid),
@@ -1628,7 +1636,7 @@ int sge_security_verify_user(const char *host, const char *commproc, u_long32 id
 
 #ifdef KERBEROS
 
-   if (krb_verify_user(host, commproc, id, user) < 0) {
+   if (krb_verify_user(host, commproc, id, gdi_user) < 0) {
       DRETURN(False);
    }
 
@@ -1698,6 +1706,7 @@ void sge_security_event_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, mo
    DENTER(TOP_LAYER, "sge_security_event_handler");  
 #ifdef KERBEROS
    krb_check_for_idle_clients();
+   krb_renew_tgts(*(object_type_get_master_list(SGE_TYPE_JOB)));
 #endif
    DEXIT;
 }

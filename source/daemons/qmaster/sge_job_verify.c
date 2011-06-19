@@ -657,7 +657,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
    if (mconf_get_do_credentials()) {
       const char *sge_root = ctx->get_sge_root(ctx);
 
-      if (store_sec_cred(sge_root, packet, jep, mconf_get_do_authentication(), alpp) != 0) {
+      if (store_sec_cred(sge_root, packet, jep, mconf_get_do_authentication(), alpp, ctx) != 0) {
          DRETURN(STATUS_EUNKNOWN);
       }
    }

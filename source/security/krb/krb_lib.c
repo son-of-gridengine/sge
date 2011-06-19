@@ -40,6 +40,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <errno.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_string.h"
@@ -52,6 +53,7 @@
 #include "sgeobj/sge_all_listsL.h"
 
 #include "comm/commlib.h"
+#include "gdi/sge_gdi2.h"
 
 #include "sge.h"
 
@@ -59,13 +61,21 @@
 
 #include "msg_krb.h"
 
-#include "sge_krbL.h"
+#define KRB5_DEPRECATED 1
+#include "sge_krb_KRB_L.h"
 #include "krb5.h"				/* Kerberos stuff 	*/
 #include "com_err.h"
 
 #include "krb_data.h"
 #include "krb_lib.h"
 
+
+#if 1
+krb5_error_code KRB5_CALLCONV
+krb5_cc_register(krb5_context context, krb5_cc_ops FAR *ops, krb5_boolean override);
+#endif
+
+#define send_message krb_send_message
 
 /*
 
@@ -89,7 +99,7 @@
    May want to do double (reverse) lookup on hosts during initialization.
 
 */
-
+#define MIT_KRB 1
 #ifdef MIT_KRB
 extern krb5_cc_ops krb5_mcc_ops;
 #endif
@@ -466,7 +476,7 @@ static int krb_delete_client(lListElem *client)
       if ((creds = (krb5_creds **)str2ptr(lGetString(tgt_ep, KTGT_tgt))))
          krb5_free_tgt_creds(gsd.context, creds);
 
-   lFreeElem(client);
+   lFreeElem(&client);
    return 0;
 }
 
@@ -587,7 +597,7 @@ static krb5_error_code krb_get_forwardable_tgt(char *host,
 
    return rc;
 }
-
+#if 0
 int
 krb_send_message(int synchron, const char *tocomproc, int toid, 
                  const char *tohost, int tag, char *buffer, 
@@ -862,14 +872,14 @@ krb_send_message(int synchron, const char *tocomproc, int toid,
       packbuf(&pb, tgtbuf.data, tgtbuf.length);
    }
 
-   ret = send_message(synchron, tocomproc, toid, tohost, tag, pb.head_ptr, pb.bytes_used, mid, 0);
+   ret = send_message(synchron, tocomproc, toid, tohost, tag, pb.head_ptr, pb.bytes_used, mid);
  error:
 
    if (server)
       krb5_free_principal(gsd.context, server);
 
    if (where)
-      lFreeWhere(where);
+      lFreeWhere(&where);
 
    if (ap_req.length)
       krb5_xfree(ap_req.data);
@@ -885,6 +895,7 @@ krb_send_message(int synchron, const char *tocomproc, int toid,
    DEXIT;
    return ret;
 }
+#endif
 
 static int 
 krb_unpackmsg(sge_pack_buffer *pb, krb5_data *buf1, krb5_data *buf2, 
@@ -937,10 +948,10 @@ char *tohost
    int buflen;
    sge_strlcpy(buffer, MSG_KRB_AUTHENTICATIONFAILURE, BUFSIZ);
    buflen = strlen(buffer);
-   return send_message(0, tocommproc, toid, tohost, tag, buffer, buflen, NULL, 0);
+   return send_message(0, tocommproc, toid, tohost, tag, buffer, buflen, NULL);
 }
 
-
+#if 0
 int
 krb_receive_message(char *fromcommproc, u_short *fromid, char *fromhost, 
                     int *tag, char **buffer, u_long32 *buflen, int synchron) 
@@ -1292,7 +1303,7 @@ krb_receive_message(char *fromcommproc, u_short *fromid, char *fromhost,
    /* clean up */
 
    if (where)
-      lFreeWhere(where);
+      lFreeWhere(&where);
 
    if (ap_req.length)
       krb5_xfree(ap_req.data);
@@ -1319,7 +1330,7 @@ krb_receive_message(char *fromcommproc, u_short *fromid, char *fromhost,
    DEXIT;
    return ret;
 }
-
+#endif
 
 int
 krb_verify_user(
@@ -1379,7 +1390,7 @@ const char *user
 error:
 
    if (where)
-      lFreeWhere(where);
+      lFreeWhere(&where);
 
 #ifdef notdef
    if (clientname)
@@ -1742,7 +1753,7 @@ krb5_creds ***tgt_creds
 all_done:
 
    if (where)
-      lFreeWhere(where);
+      lFreeWhere(&where);
 
    DEXIT;
    return ret;
@@ -1826,7 +1837,7 @@ krb5_creds **tgt_creds
 all_done:
 
    if (where)
-      lFreeWhere(where);
+      lFreeWhere(&where);
 
    DEXIT;
    return ret;
