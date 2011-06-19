@@ -59,7 +59,7 @@ ErrUsage()
    echo "    -version <version> string to build filename of distribution"
    echo "    -basedir <basedir> set base directory for outputfile location"
    echo "                       default: $BASEDIR" 
-   echo "    -tar <tarcmd>      tar command which supports "z" option"
+   echo "    -tar <tarcmd>      tar command which supports \"z\" option"
    echo "    -bin               create tar.gz files from binaries in bin/,"
    echo "                       utilbin/ and examples/jobsbin"
    echo "    -common            create tar.gz file of \"common\" files"
