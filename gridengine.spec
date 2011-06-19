@@ -14,11 +14,15 @@
 # * Check on/port to SuSE and other relevant distributions.
 # * Support shared installs "--with sharedinstall"
 # * Try to support herd (Hadoop) and the GUI installer -- either assume
-#   izpack/hadoop installed, or maybe download and build them.
+#   izpack/hadoop installed, or maybe download and build them.  Probably
+#   use --with guiinst, --with hadoop.
 # * Clarify the licence on this file to the extent it's derived from the
 #   Fedora one.
 # * Patch or hook for installation scripts to default appropriately for
 #   packaged installation.
+
+# Use "rpmbuild --without java" to omit all Java bits
+%bcond_without java
 
 %define sge_home /opt/sge
 %define sge_lib %{sge_home}/lib
@@ -35,7 +39,7 @@
 
 Name:    gridengine
 Version: 8.0.0a
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Grid Engine - Distributed Resource Manager
 
 Group:   Applications/System
@@ -44,6 +48,7 @@ License: (BSD and LGPLv2+ and MIT and SISSL) and GPLv2+ and BSD with advertising
 URL:     https://arc.liv.ac.uk/trac/SGE
 Source:  sge-%{version}.tar.gz
 Packager: Dave Love <d.love@liverpool.ac.uk>
+Prefix: %{sge_home}
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -56,9 +61,11 @@ BuildRequires: lesstif-devel
 %else
 BuildRequires: openmotif-devel
 %endif
+%if %{with java}
 BuildRequires: java-devel >= 1.6.0, javacc, ant-junit, ant-nodeps
-BuildRequires: elfutils-libelf-devel, net-tools, man, gzip
 #BuildRequires: hadoop-0.20
+%endif
+BuildRequires: elfutils-libelf-devel, net-tools, man, gzip
 %if 0%{?fedora}
 BuildRequires: fedora-usermgmt-devel
 %endif
@@ -115,7 +122,9 @@ License: BSD and LGPLv2+ and MIT and SISSL
 Requires: %{name} = %{version}-%{release}
 Requires: db4-utils
 # Not automatically derived:
+%if %{with java}
 Requires: java >= 1.6.0
+%endif
 Requires(postun): %{name} = %{version}-%{release}
 Requires(preun): %{name} = %{version}-%{release}
 
@@ -141,15 +150,22 @@ EOF
 # Ensure dlopening the right libssl library version at runtime
 ssl_ver=$(objdump -p %{_libdir}/libssl.so | awk '/SONAME/ {print substr($2,10)}')
 
-export SGE_INPUT_CFLAGS="$RPM_OPT_FLAGS"
+# -O2/-O3 gives warnings about type puns.  It's not clear whether
+# they're serious, but -fno-strict-aliasing just in case.
+export SGE_INPUT_CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 [ -n "$RPM_BUILD_NCPUS" ] && parallel_flags="-parallel $RPM_BUILD_NCPUS"
-csh ./aimk -only-depend
+%if %{without java}
+JAVA_BUILD_OPTIONS="-no-java -no-jni"
+%endif
+csh -f ./aimk -only-depend
 scripts/zerodepend
 ./aimk depend
-./aimk -DLIBSSL_VER='\"'$ssl_ver'\"' -no-gui-inst -system-libs -pam -no-herd $parallel_flags
-./aimk -man 
+./aimk -DLIBSSL_VER='\"'$ssl_ver'\"' -no-gui-inst -system-libs -pam -no-herd $parallel_flags $JAVA_BUILD_OPTIONS
+./aimk -man
+%if %{with java}
 # "-no-gui-inst -no-herd -javadoc" still produces all the javadocs
 ant drmaa.javadoc juti.javadoc jgdi.javadoc jjsv.javadoc
+%endif
 
 %install 
 rm -rf $RPM_BUILD_ROOT
@@ -192,10 +208,14 @@ makewhatis %{sge_home}/man
 
 %files
 %defattr(-,root,root,-)
+# Ensure we can make sgeadmin-owned cell directory
+%attr(775,root,%{username},-) %{sge_home}
 %exclude %{sge_bin}/*/qacct
 %exclude %{sge_bin}/*/qmon
 %exclude %{sge_bin}/*/sge_*
+%if %{with java}
 %exclude %{sge_docdir}/javadocs
+%endif
 %exclude %{sge_home}/examples/drmaa
 %exclude %{sge_mandir}/man1/qmon.1.gz
 %exclude %{sge_mandir}/man8/sge_qmaster.8.gz
@@ -226,7 +246,9 @@ makewhatis %{sge_home}/man
 %{sge_include}
 %{sge_home}/pvm/src
 %{sge_mandir}/man3/*.3.gz
+%if %{with java}
 %doc %{sge_docdir}/javadocs
+%endif
 %{sge_home}/examples/drmaa
 
 %files qmon
@@ -257,6 +279,10 @@ makewhatis %{sge_home}/man
 %{sge_mandir}/man8/sge_shadowd.8.gz
 
 %changelog
+* Sat Jun 18 2011 Dave Love <d.love@liverpool.ac.uk> 8.0.0a
+- Add --without java (adapted from Jesse Becker <hawson@gmail.com>).
+- Use csh -f.  Add Prefix.  Use -fno-strict-aliasing.
+
 * Thu May 25 2011 Dave Love <d.love@liverpool.ac.uk> - 8.0.0a-1
 - Heavily re-written from Orion Poplawski's Fedora original for shared
   installation under /opt and not doing any configuration.  Different
