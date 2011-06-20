@@ -2757,7 +2757,7 @@ int *trigger
 
       lSetUlong(new_job, JB_ja_task_concurrency, task_concurrency);
       *trigger |= MOD_EVENT;
-      sprintf(SGE_EVENT, MSG_SGETEXT_MOD_JOBS_SU, MSG_JOB_TASK_CONCURRENCY, sge_u32c(task_concurrency));
+      sprintf(SGE_EVENT, MSG_SGETEXT_MOD_JOBS_SU, MSG_JOB_TASK_CONCURRENCY, sge_u32c(jobid));
       answer_list_add(alpp, SGE_EVENT, STATUS_OK, ANSWER_QUALITY_INFO);
    }
 
