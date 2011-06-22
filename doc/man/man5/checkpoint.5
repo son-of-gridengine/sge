@@ -4,7 +4,7 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: checkpoint.5,v $     Last Update: $Date: 2011-05-17 21:16:09 $     Revision: $Revision: 1.10 $
+.\" $RCSfile: checkpoint.5,v $     Last Update: $Date: 2011-06-22 13:41:03 $     Revision: $Revision: 1.10 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -29,7 +29,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH CHECKPOINT 5 "$Date: 2011-05-17 21:16:09 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH CHECKPOINT 5 "$Date: 2011-06-22 13:41:03 $" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 checkpoint \- xxQS_NAMExx checkpointing environment configuration file format
@@ -109,16 +109,29 @@ used (even if it is configured) but the job script is invoked in case of a
 restart instead.
 .SS "\fBckpt_command\fP"
 A command-line type command string to be executed by xxQS_NAMExx in order to
-initiate a checkpoint.
+initiate a checkpoint.  The following pseudo-variables are available to be
+substituted in the value:
+.\" fixme: explain them
+.IP \fB$host\fP
+.IP \fB$job_owner\fP
+.IP \fB$job_id\fP
+.IP \fB$job_name\fP
+.IP \fB$queue\fP
+.IP \fB$job_pid\fP
+.IP \fB$ckpt_dir\fP
+.IP \fB$ckpt_signal\fP
 .SS "\fBmigr_command\fP"
 A command-line type command string to be executed by xxQS_NAMExx during a
-migration of a checkpointing job from one host to another.
+migration of a checkpointing job from one host to another.  The same
+pseudo-variables are available as for \fBckpt_command\fP.
 .SS "\fBrestart_command\fP"
 A command-line type command string to be executed by xxQS_NAMExx when restarting
-a previously checkpointed application.
+a previously checkpointed application.  The same
+pseudo-variables are available as for \fBckpt_command\fP.
 .SS "\fBclean_command\fP"
 A command-line type command string to be executed by xxQS_NAMExx in order
-to cleanup after a checkpointed application has finished.
+to cleanup after a checkpointed application has finished.  The same
+pseudo-variables are available as for \fBckpt_command\fP.
 .SS "\fBckpt_dir\fP"
 A file system location to which checkpoints of potentially considerable
 size should be stored.
@@ -160,7 +173,11 @@ currently runs went into the "unknown" state and the time interval
 \fIreschedule_unknown\fP (see
 .M xxqs_name_sxx_conf 5 )
 defined in the global/local cluster configuration is exceeded.
-
+.\"
+.SH "ENVIRONMENT VARIABLES"
+\fBxxQS_NAME_Sxx_BINDING\fP and \fBxxQS_NAME_Sxx_CKPT_DIR\fP may be
+specified on job submission.  See
+.M submit 1 .
 .\"
 .\"
 .SH RESTRICTIONS
