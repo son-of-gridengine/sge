@@ -4,7 +4,7 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: queue_conf.5,v $     Last Update: $Date: 2011-05-22 12:20:50 $     Revision: $Revision: 1.38 $
+.\" $RCSfile: queue_conf.5,v $     Last Update: $Date: 2011-06-23 17:10:45 $     Revision: $Revision: 1.38 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -29,7 +29,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QUEUE_CONF 5 "$Date: 2011-05-22 12:20:50 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH QUEUE_CONF 5 "$Date: 2011-06-23 17:10:45 $" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 queue_conf \- xxQS_NAMExx queue configuration file format
@@ -55,8 +55,52 @@ space character before any interpretation.
 .\"
 .\"
 .SH FORMAT
-The following list of parameters specifies the queue configuration 
-file content:
+The list of parameters below specifies the queue configuration 
+file content.
+.PP
+For each parameter except \fBqname\fP and \fBhostlist\fP, it is
+possible to specify host-dependent values instead of a single value.
+This "enhanced queue configuration specifier syntax" takes the form
+.RS
+.nf
+.BR "\fIparameter parameter_value\fP" [ , [ \fIhost_id\fP = \fIparameter_value\fP ] ]...
+.fi
+.RE
+where \fIhost_id\fP is a \fBhost_identifier\fP, as defined in 
+.M sge_types 1 ,
+and \fIparameter_value\fP is of the correct form for each parameter,
+as described below.  Spaces are allowed around "\fb,\fP" but not
+inside "\fb[]\fP", except within list-valued \fIparameter_value\fPs.
+.PP
+An entry without brackets is always required as the
+default setting for all queue instances which don't override it.
+Tuples with a \fBhostgroup_name\fP (see
+.M sge_types 1 )
+\fIhost_id\fP override the default setting. Tuples with a
+\fBhost_name\fP \fIhost_id\fP override both the default and the host
+group setting.  As an example, PEs with different allocation rules may
+be specified according to the core count of different node types:
+.RS
+.nf
+pe_list NONE,[@dual=all-mpi mpi-4],[@quad=all-mpi mpi-8]
+.fi
+.RE
+.PP
+The queue configuration is rejected if a default setting is absent.
+.PP
+Ambiguous configurations (those with more than one attribute setting
+for a particular host) cause the relevant queue instances to go into a
+"configuration ambiguous" state and not accept jobs.  This is reported
+as "\fBc\fP" by
+.M qstat 1
+and
+.M qhost 1 ,
+and may be diagnosed with
+.BR "qstat \-explain c" .
+Configurations containing override values for hosts not in the
+execution host list are accepted as "detached", as indicated by the \fB\-sds\fP
+argument of
+.M qconf 1 .
 .SS "\fBqname\fP"
 The name of the cluster queue in the format for \fIqueue_name\fP in
 .M sge_types 1 .
@@ -68,42 +112,7 @@ For each host xxQS_NAMExx maintains a queue instance for running jobs
 on that particular host. Large numbers of hosts can easily be managed 
 by using host groups rather than single host names.
 Both white-space and "," can be used as list separators.
-.\" Fixme: Does NONE mean no hosts or all?
-(Template default: NONE.)
-.PP
-If more than one host is specified it can be desirable to specify
-divergences for certain hosts with additional parameters. 
-They are expressed using the enhanced queue configuration 
-specifier syntax which builds upon the regular parameter specifier 
-syntax for each parameter:
-.PP
-"["\fIhost_identifier\fP=\fIparameters_specifier_syntax\fP"]"
-[,"["\fIhost_identifier\fP=\fIparameters_specifier_syntax\fP"]" ]
-.PP
-Note, even in the enhanced queue configuration specifier syntax, an entry
-without brackets is required to denote the default setting, and
-used for all queue instances where no divergences are specified.
-Tuples with a host group \fIhost_identifier\fP override the default
-setting. Tuples with a host \fIname host_identifier\fP override both
-the default and the host group setting. 
-.PP
-Note also that with the enhanced queue configuration specifier syntax 
-a default setting is always needed for each configuration attribute;
-otherwise the queue configuration gets rejected. Ambiguous queue configurations 
-with more than one attribute setting for a particular host are rejected.
-Configurations containing override values for hosts not in the
-execution host list are accepted as "detached", as indicated by the \fB\-sds\fP
-argument of
-.M qconf 1 .
-The cluster queue should contain an unambiguous specification
-for each configuration attribute of each queue instance specified
-under a hostname in the queue configuration. Ambiguous configurations with more
-than one attribute setting resulting from overlapping host groups
-are indicated by the \fB\-explain c\fP argument of
-.M qstat 1
-and cause the queue instance
-with ambiguous configurations to enter the \fBc\fP(onfiguration ambiguous) state.
-.PP
+(Template default: NONE, i.e. no hosts support the queue.)
 .SS "\fBseq_no\fP"
 In conjunction with the hosts load situation at some time, this 
 parameter specifies this queue's position in the scheduling order 
