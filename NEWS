@@ -7,83 +7,93 @@ http://arc.liv.ac.uk/SGE/howto/Installation,%20Upgrade,%20Patches
 for detailed change information see https://arc.liv.ac.uk/trac/SGE/log/sge/
 
 "[#<n>]" below refers to ticket <n> at
-https://arc.liv.ac.uk/trac/SGE/ticket/<n>.  The issues fixed by Univa
+https://arc.liv.ac.uk/trac/SGE/ticket/<n>.  (The issues fixed by Univa
 changes aren't publicly available, and many other changes have been
-made without raising tickets.
+made without raising Trac tickets.)  Changes due to Univa (or Sun) are
+tagged as "[U]", and items partially due to them or appearing first in
+this version are tagged as "[(U)]".
 
 Version 8.0.0a
 --------------
 
-Roughly a superset of Univa's 8.0.0 (the V800_TAG from
-https://github.com/gridengine/gridengine).
+This is roughly a superset of Univa's 8.0.0 (the V800_TAG from
+https://github.com/gridengine/gridengine), with thanks for that.
+
+Changes made there which haven't been included in this version:  PLPA
+source not removed; some different build/installation defaults
+(e.g. for JMX); Univa/UGE "branding" (partly because trademark status
+is unknown); authuser not removed (for SDM and testing use),
 
 * Bug fixes
 
-  * Many man and other documentation fixes [#790, #776, #769, #733,
-    #610, #587, #581, #459, #456, #439, #103]
-  * Some program message fixes
-  * Various build and installation fixes [#761, #709, #656, #616,
-    #546, #536, #521, #491, #438, #414, #411, #383, #381, #138, #455,
-    #344, #438]
+  * Many man and other documentation fixes [including #790, #776,
+    #769, #733, #610, #587, #581, #459, #456, #439, #255, #1288, #797,
+    #1271, #773] [(U)]
+  * Some program message fixes [(U)]
+  * Various build and installation fixes [including #761, #709, #656,
+    #616, #546, #536, #521, #491, #438, #414, #411, #383, #381, #138,
+    #455, #344, #438, #1311, #1272, #1273] [(U)]
   * Ask for keystore password twice on installation
   * Fix qmaster crashes with tightly integrated parallel jobs or
-    un-discoverable qinstance [#789]
-  * Report 0 cores and sockets on unsupported Solaris hosts
+    un-discoverable qinstance [#789] [U]
+  * Report 0 cores and sockets on unsupported Solaris hosts [U]
   * Fix malloc hooks which caused crashes, particularly with SuSE 11
-    [#792, #748, #749]
-  * Verify the pe task start user in execd in non-CSP mode
-  * Fix binding parameters parsing
-  * Fix JSV logging with multiple users submitting jobs on same submit host
+    [#792, #748, #749] [U]
+  * Verify the pe task start user in execd in non-CSP mode [U]
+  * Fix binding parameters parsing [U]
+  * Fix JSV logging with multiple users submitting jobs on same submit
+    host [U]
   * Fix unresponsive qmaster when modifying the global configuration
-    in a huge cluster
-  * Speed up finishing tightly integrated jobs
-  * Check consistency of JSV binding information properly
+    in a huge cluster [U]
+  * Speed up finishing tightly integrated jobs [U]
+  * Check consistency of JSV binding information properly [U]
   * Fix broken project spooling, which caused loss of project when
-    restarting master when using core binding
-  * Fix slotwise preemption failure to unsuspend one job per host [#775]
+    restarting master when using core binding [U]
+  * Fix slotwise preemption failure to unsuspend one job per host [#775] [U]
   * Fix problems retrieving passwd and group information with large
-    responses [#160]
-  * Fix JSV changing default of boolean
-  * Fix ENABLE_RESCHEDULE_SLAVE=1
-  * Allow comma in CMDNAME with Perl JSV scripts
+    responses [#1295] [(U)]
+  * Fix JSV changing default of boolean [U]
+  * Fix ENABLE_RESCHEDULE_SLAVE=1 [U]
+  * Allow comma in CMDNAME with Perl JSV scripts [#803]
   * Don't put queue into error state when supplementary group id
-    cannot be set [#185]
-  * Don't convert LF to CRLF with qrsh -pty
-  * Fix qconf segfault on bad subordination string
-  * Fix group ids of submitted jobs
-  * Disallow -masterq with serial jobs
-  * Fix 100% CPU use by shepherd of qsh
-  * Removed unnecessary binding warning on job starts
-  * Fix qconf error reports when tmp directory has 755 permissions
-  * Fix suspending of remote process on qrsh -pty yes <cmd> on Solaris
-  * Fix starting jobs after global host changed
-  * Reject invalid load_formula value
-  * Fix handling of implicitly-requested exclusive resources
-  * Fix execd vmem reporting on 64-bit Linux
-  * Fix startup of execd on Windows Vista
-  * Set xterm's path more appropriately on GNU/Linux
-  * Fix generation of admin email from failed jobs
+    cannot be set [#185] [U]
+  * Don't convert LF to CRLF with qrsh -pty [U]
+  * Fix qconf segfault on bad subordination string [U]
+  * Fix group ids of submitted jobs [U]
+  * Disallow -masterq with serial jobs [#155] [U]
+  * Fix 100% CPU use by shepherd of qsh [U]
+  * Removed unnecessary binding warning on job starts [U]
+  * Fix qconf error reports when tmp directory has 755 permissions [U]
+  * Fix suspending of remote process on qrsh -pty yes <cmd> on Solaris [U]
+  * Fix starting jobs after global host changed [U]
+  * Reject invalid load_formula value [U]
+  * Fix handling of implicitly-requested exclusive resources [U]
+  * Fix execd vmem reporting on 64-bit Linux [U]
+  * Fix startup of execd on Windows Vista [U]
+  * Set xterm's path more appropriately on GNU/Linux [#557]
+  * Fix generation of admin email from failed jobs [#1307]
   * Fix some ill-formed output from qstat -xml [#314]
   * Fix handling of multi-line environment variables propagated to
     shepherd [#395]
   * Fix example MPI PE templates 
   * Fix bad quoting in JSV sh library
+  * Fix checking of consumables for parallel jobs across multiple hosts [U]
 
 * Enhancements
 
   * Additional and clarified documentation
   * PAM modules for ssh tight integration and access control for
     interactive jobs
-  * Initial core binding support for Solaris/SPARC64
-  * Some efficiency improvements and memory leaks fixed
-  * Ports to S/390 and PARISC GNU/Linux
-  * New complex m_thread
-  * Show topology by default in qhost
-  * Show core binding by default in qstat
-  * qsub -pty switch
-  * Improved qmon graphics
-  * Include bash in default shell list
-  * A JSV that rejects all jobs
+  * Initial core binding support for Solaris/SPARC64 [U]
+  * Some efficiency improvements and memory leaks fixed [U]
+  * Ports to S/390 and PARISC GNU/Linux [U]
+  * New complex m_thread [U]
+  * Show topology by default in qhost [U]
+  * Show core binding by default in qstat [U]
+  * qsub -pty switch [#704] [U]
+  * Improved qmon graphics [#530] [(U)]
+  * Include bash in default shell list [U]
+  * A JSV that rejects all jobs [U]
   * Files for Scali-MPI
   * Ruby DRMAA implementation
   * Enable easy building against shared system libraries and use
@@ -92,17 +102,17 @@ https://github.com/gridengine/gridengine).
     wraps qstat; enable/disable submission; node-selection (idle etc.)
   * Restart argument for daemon init scripts
   * Improved efficiency of shell JSV if used with bash
-  * Core dumps from crashing daemons enabled under Linux
+  * Core dumps from crashing daemons enabled under Linux [U]
   * Example host_aliases file [#154]
-  * Spec file for RPM packaging
+  * Spec file for RPM packaging [#820]
 
 * Other changes (possibly-incompatible)
 
-  * Removed Berkeley DB RPC support (recently dropped by BDB)
+  * Removed Berkeley DB RPC support (recently dropped by BDB) [U]
   * Changed position in pending job list for user-rescheduled jobs
     (exit99, qmod -rj) and OLD_RESCHEDULE_BEHAVIOR,
-    OLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB parameters
-  * Unified GNU/Linux arch strings (lx-*, from lx24-* and lx26-*)
-  * Default to enabling core binding on GNU/Linux
-  * Removed Sun service tags support
+    OLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB parameters [U]
+  * Unified GNU/Linux arch strings (lx-*, from lx24-* and lx26-*) [U]
+  * Default to enabling core binding on GNU/Linux [U]
+  * Removed Sun service tags support [U]
   * Removed obsolete SunHPCT5 files
