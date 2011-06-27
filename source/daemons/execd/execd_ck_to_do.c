@@ -279,7 +279,8 @@ static void force_job_rlimit(const char* qualified_hostname)
          if (h_cpu < cpu_val || h_vmem < vmem_val) {
             cpu_exceeded = (h_cpu < cpu_val);
             WARNING((SGE_EVENT, MSG_JOB_EXCEEDHLIM_USSFF, 
-                     sge_u32c(jobid), cpu_exceeded ? "h_cpu" : "h_vmem",
+                     sge_u32c(jobid), sge_u32c(jataskid),
+                     cpu_exceeded ? "h_cpu" : "h_vmem",
                      q?lGetString(q, QU_full_name) : "-",
                      cpu_exceeded ? cpu_val : vmem_val,
                      cpu_exceeded ? h_cpu : h_vmem));
@@ -290,7 +291,7 @@ static void force_job_rlimit(const char* qualified_hostname)
          if (s_cpu < cpu_val || s_vmem < vmem_val) {
             cpu_exceeded = (s_cpu < cpu_val);
             WARNING((SGE_EVENT, MSG_JOB_EXCEEDSLIM_USSFF,
-                     sge_u32c(jobid),
+                     sge_u32c(jobid), sge_u32c(jataskid),
                      cpu_exceeded ? "s_cpu" : "s_vmem",
                      q?lGetString(q, QU_full_name) : "-",
                      cpu_exceeded ? cpu_val : vmem_val,
