@@ -321,23 +321,23 @@ void check_core_binding()
    #if defined(LINUX) 
    
       #if !defined(PLPA_LINUX)
-      printf("Your UGE Linux version has no built-in core binding functionality!\n");
+      printf("Your SGE Linux version has no built-in core binding functionality!\n");
       #else
-      printf("Your UGE Linux version has built-in core binding functionality!\n");   
+      printf("Your SGE Linux version has built-in core binding functionality!\n");   
       test_linux_plpa();
       #endif
 
    #elif defined(SOLARIS)
 
       #if defined(BINDING_SOLARIS)
-      printf("Your UGE Solaris version has built-in core binding functionality!\n");
+      printf("Your SGE Solaris version has built-in core binding functionality!\n");
       test_solaris_binding();
       #else
-      printf("Your UGE Solaris version has no built-in core binding functionality!\n");
+      printf("Your SGE Solaris version has no built-in core binding functionality!\n");
       #endif
 
    #else 
-      printf("Your UGE does currently not support core binding on this platform!\n");
+      printf("Your SGE does currently not support core binding on this platform!\n");
    #endif
 }
 
