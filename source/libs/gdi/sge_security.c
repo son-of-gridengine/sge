@@ -678,6 +678,7 @@ int set_sec_cred(const char *sge_root, const char *mastername, lListElem *job, l
       ret = sge_peclose(command_pid, fp_in, fp_out, fp_err, NULL);
       
       lSetString(job, JB_tgt, str);
+      sge_free(&str);
    }
       
    /*
@@ -723,6 +724,7 @@ int set_sec_cred(const char *sge_root, const char *mastername, lListElem *job, l
       }
       
       lSetString(job, JB_cred, str);
+      sge_free(&str);
    }
    DRETURN(ret);
 } 
@@ -809,6 +811,7 @@ bool cache_sec_cred(const char* sge_root, lListElem *jep, const char *rhost)
          ret = sge_peclose(command_pid, fp_in, fp_out, fp_err, NULL);
 
          lSetString(jep, JB_cred, str);
+	 sge_free(&str);
 
          if (ret) {
             ERROR((SGE_EVENT, MSG_SEC_NOCRED_USSI, 
