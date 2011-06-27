@@ -128,7 +128,7 @@ SECURITYBINARIES="get_cred put_cred delete_cred renew_cred \
 
 USERSCRIPTS="qstatus sge-disable-submits sge-enable-submits dead-nodes \
              busy-nodes idle-nodes nodes-in-job qselect-node-list \
-	     process-scheduler-log qsched"
+	     process-scheduler-log qsched jobstats"
 
 EXCLUDE_MANPAGE="usermapping.5"
 
