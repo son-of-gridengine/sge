@@ -4,7 +4,7 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: host_conf.5,v $     Last Update: $Date: 2011-05-18 01:57:34 $     Revision: $Revision: 1.15 $
+.\" $RCSfile: host_conf.5,v $     Last Update: $Date: 2011-06-22 15:24:22 $     Revision: $Revision: 1.15 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -29,7 +29,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH HOST_CONF 5 "$Date: 2011-05-18 01:57:34 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH HOST_CONF 5 "$Date: 2011-06-22 15:24:22 $" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 host_conf \- xxQS_NAMExx execution host configuration file format
@@ -72,9 +72,7 @@ The execution host's name in the format for \fIhost_name\fP in
 A comma-separated list of scaling values to be applied to each or part
 of the load values being reported by the
 .M xxqs_name_sxx_execd 8
-on the host and defined in the cluster global "host" complex
-(see
-.M complex 5 ).
+on the host.
 The load scaling factors are intended to level hardware or operating
 system-specific differences between execution hosts.
 .sp 1
