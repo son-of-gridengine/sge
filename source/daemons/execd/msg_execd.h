@@ -215,8 +215,8 @@
 /*
 ** execd_ck_to_do.c
 */
-#define MSG_JOB_EXCEEDHLIM_USSFF      _MESSAGE(29126, _("job "sge_U32CFormat" exceeds job hard limit "SFQ" of queue "SFQ" (%8.5f > limit:%8.5f) - sending SIGKILL"))
-#define MSG_JOB_EXCEEDSLIM_USSFF      _MESSAGE(29127, _("job "sge_U32CFormat" exceeds job soft limit "SFQ" of queue "SFQ" (%8.5f > limit:%8.5f) - sending SIGXCPU"))
+#define MSG_JOB_EXCEEDHLIM_USSFF      _MESSAGE(29126, _("job "sge_U32CFormat"."sge_U32CFormat" exceeds job hard limit "SFQ" of queue "SFQ" (%8.5f > limit:%8.5f) - sending SIGKILL"))
+#define MSG_JOB_EXCEEDSLIM_USSFF      _MESSAGE(29127, _("job "sge_U32CFormat"."sge_U32CFormat" exceeds job soft limit "SFQ" of queue "SFQ" (%8.5f > limit:%8.5f) - sending SIGXCPU"))
 #define MSG_EXECD_EXCEEDHWALLCLOCK_UU _MESSAGE(29128, _("job "sge_U32CFormat"."sge_U32CFormat" exceeded hard wallclock time - initiate terminate method"))
 #define MSG_EXECD_EXCEEDSWALLCLOCK_UU _MESSAGE(29129, _("job "sge_U32CFormat"."sge_U32CFormat" exceeded soft wallclock time - initiate soft notify method"))
 #define MSG_EXECD_NOADDGIDOPEN_SSS   _MESSAGE(29130, _("failed opening addgrpid file "SFN" of job "SFN": "SFN))
