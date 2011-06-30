@@ -101,9 +101,6 @@
 #include "sge_ct_CTI_L.h"
 #include "sge_message_SME_L.h"
 #include "sge_message_MES_L.h"
-#ifdef SGE_PQS_API
-#include "sge_varL.h"
-#endif
 
 #include "msg_common.h"
 #include "msg_schedd.h"
@@ -6921,7 +6918,7 @@ sge_call_pe_qsort(sge_assignment_t *a, const char *qsort_args)
       ret = (*pqs_qsort)(&pqs_params, 0, err_str, sizeof(err_str)-1);
 
       if (err_str[0]) {
-         ERROR((SGE_EVENT, err_str));
+         ERROR((SGE_EVENT, "%s", err_str));
       }   
 
       /*
