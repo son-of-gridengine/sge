@@ -47,7 +47,7 @@ include $(SDIR)/libs/japi/Makefile
 include $(SDIR)/libs/juti/Makefile
 include $(SDIR)/libs/jgdi/Makefile
 include $(SDIR)/libs/libcore/Makefile
-include $(LIBS_DIR)/libs/ijs/Makefile
+include $(SDIR)/libs/ijs/Makefile
 
 ###############################################################################
 # Variable definitions for targets to build
