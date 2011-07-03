@@ -209,7 +209,7 @@ makewhatis %{sge_home}/man
 %files
 %defattr(-,root,root,-)
 # Ensure we can make sgeadmin-owned cell directory
-%attr(775,root,%{username},-) %{sge_home}
+%attr(775,root,%{username}) %{sge_home}
 %exclude %{sge_bin}/*/qacct
 %exclude %{sge_bin}/*/qmon
 %exclude %{sge_bin}/*/sge_*
