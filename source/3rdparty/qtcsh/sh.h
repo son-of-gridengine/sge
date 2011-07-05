@@ -236,7 +236,7 @@ typedef int sigret_t;
 
 #if defined(BSDTIMES) || defined(BSDLIMIT)
 # include <sys/time.h>
-# if SYSVREL>3 && !defined(SCO) && !defined(sgi) && !defined(SNI) && !defined(sun) && !(defined(__alpha) && defined(__osf__)) && !defined(_SX)
+# if SYSVREL>3 && !defined(SCO) && !defined(sgi) && !defined(SNI) && !defined(sun) && !defined(__sun) && !(defined(__alpha) && defined(__osf__)) && !defined(_SX)
 #  include "/usr/ucbinclude/sys/resource.h"
 # else
 #  ifdef convex
