@@ -5,7 +5,7 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: qrsub.1,v $     Last Update: $Date: 2008-05-21 09:47:34 $     Revision: $Revision: 1.5 $
+.\" $RCSfile: qrsub.1,v $     Last Update: $Date: 2011-05-20 22:26:16 $     Revision: $Revision: 1.5 $
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -29,7 +29,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QRSUB 1 "$Date: 2008-05-21 09:47:34 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QRSUB 1 "$Date: 2011-05-20 22:26:16 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qrsub   \- Submit an Advance Reservation (AR) to xxQS_NAMExx.
 .\"
@@ -48,12 +48,10 @@ qrsub   \- Submit an Advance Reservation (AR) to xxQS_NAMExx.
 .IR date_time ]
 .RB [ \-he
 .IR yes | no ]
-.RB [ \-help
-]
+.RB [ \-help ]
 .RB [ \-l
 .IR resource_list ]
-.RB [ \-now
-]
+.RB [ \-now ]
 .RB [ \-M
 .IR user [@ host ],...]
 .RB [ \-N
@@ -72,35 +70,35 @@ qrsub   \- Submit an Advance Reservation (AR) to xxQS_NAMExx.
 .I Qrsub
 provides a means for operators, managers or users referenced in the ACL (see
 .M access_list 5 )
-"\fBarusers\fP" to create a Advance Reservation (AR) in the
-xxQS_NAMExx queuing system. ARs allow to reserve particular consumable resources for
+"\fBarusers\fP" to create an Advance Reservation (AR) in the
+xxQS_NAMExx queuing system. ARs allow reserving particular consumable resources for
 future use. These reserved resources are only available for jobs requesting
-the AR and the scheduler ensures the availability of the resources when the
-start time is reached. Job requesting the AR can only use the reserved consumable
+the AR, and the scheduler ensures the availability of the resources when the
+start time is reached. Jobs requesting the AR can only use the reserved consumable
 resources.
 .PP
 During AR submit time the xxQS_NAMExx queuing system selects the best suited 
 queues for the AR request and then reserves the desired amount of resources.
 For a reservation, all queues that are not in orphaned state are considered as
-suited. Only if the AR request can be fulfilled, the AR will be granted.
+suited. Only if the AR request can be fulfilled will the AR be granted.
 .PP
 ARs will be deleted either automatically when the end time is reached, or
 manually using
-.I qrdel .
-In both cases, first all jobs requesting the AR will be removed and then AR
-itself. Already granted ARs can be shown with
-.M qrstat .
+.M qrdel 1 .
+In both cases, first all jobs requesting the AR will be removed and
+then the AR itself. Already granted ARs can be shown with
+.M qrstat 1 .
 .sp 1
 Note: To make AR behavior predictable, it is necessary to have reserved
 resources available at the time of AR start. This is done by keeping jobs with
 a unlimited runtime limit separated from ARs, and not considering resources used by
 such jobs for reservation.
 .sp 1
-Note: Resource Quotas are not considered for AR queue selection and nor for
-jobs requesting a AR.
+Note: Resource Quotas are not considered for AR queue selection, nor for
+jobs requesting an AR.
 .PP
 When an AR was successfully added to the xxQS_NAMExx queuing system \fIqrsub\fP
-returns a unique integer ID referring the the newly created AR. The highest
+returns a unique integer ID referring to the the newly created AR. The highest
 AR ID is 9999999. If the highest ID is reached, a wraparound happens and the
 next unused ID, starting with 1, will be used.
 .PP
@@ -126,7 +124,7 @@ Defines the activation (start) date and time of an AR.
 The option is not mandatory. If omitted, the current date_time is
 assumed. Either a duration or end date_time must also be specified. For details
 about date_time please see
-.M sge_types 1
+.M sge_types 1 .
 .\"
 .IP "\fB\-A account_string\fP"
 Identifies the account to which the resource reservation of the AR should be
@@ -140,7 +138,7 @@ of the AR.
 .IP "\fB\-ckpt ckpt_name\fP"
 Selects the checkpointing environment (see
 .M checkpoint 5 )
-the AR jobs may request. Using this option guarantees queues that only
+the AR jobs may request. Using this option guarantees that only queues
 providing this checkpoint environment will be reserved.
 .\"
 .IP "\fB\-d time\fP"
@@ -200,7 +198,7 @@ Defines or redefines the list of users to which the qmaster
 sends mail.
 .\"
 .IP "\fB\-masterq wc_queue_list\fP"
-Only meaningful for a parallel AR request together with the -pe option.
+Only meaningful for a parallel AR request together with the \-pe option.
 .sp 1
 This option is used to reserve the proper queues to match this request if it
 would be requested by a qsub.
@@ -209,7 +207,7 @@ can be found in
 .M sge_types 1 .
 .\"
 .IP "\fB\-now y[es]|n[o]\fP"                        
-This options impacts the queues selection for reservation.
+This option affects the queue selection for reservation.
 .br
 With the "\fB\-now y\fP" option, only queues with the qtype "INTERACTIVE"
 assigned will be considered for reservation.
@@ -228,9 +226,9 @@ The specifiers e and v define the following validation modes:
 .sp 1
 .nf
 .ta \w'|b|  'u
-`v'	verify - does not submit the AR but prints
+`v'	verify \- does not submit the AR but prints
 	an extensive validation report
-`e'	error - rejects request if requirements cannot
+`e'	error \- rejects request if requirements cannot
 	be fulfilled, default for \fIqrsub\fP
 .fi
 .\"
@@ -241,7 +239,7 @@ Please see the details of a PE in
 .\"
 .IP "\fB\-q wc_queue_list\fP"
 Defines or redefines a list of cluster queues, queue domains or queue
-instances, that may be reserved by the AR. Please find a description
+instances that may be reserved by the AR. Please find a description
 of \fIwc_queue_list\fP in
 .M sge_types 1 .
 This parameter has all the properties of a resource request and
@@ -250,14 +248,15 @@ described above.
 .\"
 .IP "\fB\-u [username|@access_list],...\fP"
 Defines the users allowed to submit jobs requesting the AR. The access is
-specified by a comma separated list containing UNIX users or ACLs (see
-.M access_list 5 ). An ACL is differentiated from a UNIX user name by
+specified by a comma-separated list containing UNIX users or ACLs (see
+.M access_list 5 ).
+An ACL is differentiated from a UNIX user name by
 prefixing the ACL name with an '@' sign.
 .br
 By default only the AR owner is allowed to submit jobs requesting the AR.
 .sp 1
-Note: Only queues, where all users specified in
-the list have access, are considered for reservation (see
+Note: Only queues where all users specified in
+the list have access are considered for reservation (see
 .M queue_conf 5 ).
 .\"
 .SH "ENVIRONMENTAL VARIABLES"
