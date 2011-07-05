@@ -115,6 +115,14 @@ while ($i <= $#argv)
             set buildarch = usol-sparc
             set COMPILE_ARCH = USOLARIS
          endif
+      else if ($BUILDARCH == SOLARISAMD64) then
+         set BUILDARCH = SOLARIS86
+         if ("$buildarch" == "sol-amd64") then
+            set buildarch = sol-x86
+         else
+            set buildarch = usol-x86
+            set COMPILE_ARCH = USOLARIS86
+         endif
       else if ($BUILDARCH == HP1164) then
          set BUILDARCH = HP11
          set buildarch = hp11

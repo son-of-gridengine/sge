@@ -47,6 +47,10 @@
 # save the old value of PATH for later restoration.
 #
 
+# NB this must avoid features not in Solaris /bin/sh, potentially
+# even in non-Solaris-specific bits of the code.  E.g. using $(...) in
+# "case ... in ... Linux) ..." failed on Solaris 10.
+
 SAFE_PATH=/bin:/usr/bin:/usr/sbin
 OLD_PATH=$PATH
 PATH=$SAFE_PATH
@@ -244,7 +248,7 @@ Linux)
 
 	 # This should account for, say /lib64/x86_64-linux-gnu/libc.so.6
 	 # in Ubuntu 11.04.
-	 libc=$(ldd /bin/date 2>/dev/null | awk '/[ \t]+libc\.so/ {print $3}')
+	 libc=`ldd /bin/date 2>/dev/null | awk '/[ \t]+libc\.so/ {print $3}'`
 	 case $libc in
 	 */libc.*) ;;
 	 *)			# fallbacks
