@@ -5,7 +5,7 @@
 .\" Copyright: 2011 by Dave Love <d.love@liv.ac.uk>
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: accounting.5,v $     Last Update: $Date: 2011-05-08 16:46:15 $     Revision: $Revision: 1.17 $
+.\" $RCSfile: accounting.5,v $     Last Update: $Date: 2011-06-28 18:10:08 $     Revision: $Revision: 1.17 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -30,7 +30,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH ACCOUNTING 5 "$Date: 2011-05-08 16:46:17 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH ACCOUNTING 5 "$Date: 2011-06-28 18:10:08 $" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 accounting \- xxQS_NAMExx accounting file format
@@ -140,9 +140,13 @@ The number of slots which were dispatched to the job by the scheduler.
 .SS "\fBtask_number\fP"
 Array job task index number.
 .SS "\fBcpu\fP"
-The CPU time usage in seconds.
+The CPU time usage in seconds.  The value may be affected by the
+ACCT_RESERVED_USAGE execd parameter (see
+.M sge_conf 5 ).
 .SS "\fBmem\fP"
-The integral memory usage in Gbytes seconds.
+The integral memory usage in Gbytes seconds.  The value may be affected by the
+ACCT_RESERVED_USAGE execd parameter (see
+.M sge_conf 5 ).
 .SS "\fBio\fP"
 The amount of data transferred in input/output operations (if available).
 .SS "\fBcategory\fP"
@@ -195,7 +199,9 @@ The i/o wait time in seconds.
 If this identifier is set, the task was part of a parallel job, and was
 passed to xxQS_NAMExx via the \fBqrsh \-inherit\fP interface.
 .SS "\fBmaxvmem\fP"
-The maximum vmem size in bytes.
+The maximum vmem size in bytes.  The value may be affected by the
+ACCT_RESERVED_USAGE execd parameter (see
+.M sge_conf 5 ).
 .SS "\fBarid\fP"
 Advance reservation identifier. If the job used the resources of an advance
 reservation, then this field contains a positive integer identifier; otherwise the

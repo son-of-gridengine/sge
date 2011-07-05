@@ -5,7 +5,7 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: qconf.1,v $     Last Update: $Date: 2009-12-02 13:47:56 $     Revision: $Revision: 1.43 $
+.\" $RCSfile: qconf.1,v $     Last Update: $Date: 2011-06-22 14:55:47 $     Revision: $Revision: 1.43 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -30,7 +30,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QCONF 1 "$Date: 2009-12-02 13:47:56 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QCONF 1 "$Date: 2011-06-22 14:55:47 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qconf \- xxQS_NAMExx Queue Configuration
 .SH SYNTAX
@@ -1087,7 +1087,8 @@ available. The special host name \fBglobal\fP refers to the
 global configuration.
 .\"
 .IP "\fB\-sds\fP	\fI<show detached settings>\fP"
-Displays detached settings in the cluster configuration.
+Displays detached settings in the cluster configuration (see
+.M queue_conf 5 ).
 .\"
 .IP "\fB\-se hostname\fP	\fI<show execution host>\fP"
 Displays the definition of the specified execution host.

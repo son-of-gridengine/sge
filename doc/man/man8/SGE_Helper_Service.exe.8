@@ -6,7 +6,7 @@
 .\" Portions of this software are Copyright (c) 2011 Univa Corporation
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: SGE_Helper_Service.exe.8,v $     Last Update: $Date: 2008-10-08 19:52:37 $     Revision: $Revision: 1.4 $
+.\" $RCSfile: SGE_Helper_Service.exe.8,v $     Last Update: $Date: 2011-06-22 17:57:39 $     Revision: $Revision: 1.4 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -31,7 +31,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH SGE_Helper_Service.exe 8 "$Date: 2008-10-08 19:52:37 $" "xxRELxx" "xxQS_NAMExx Administrative Commands"
+.TH SGE_Helper_Service.exe 8 "$Date: 2011-06-22 17:57:39 $" "xxRELxx" "xxQS_NAMExx Administrative Commands"
 .SH NAME
 SGE_Helper_Service.exe \- xxQS_NAMExx job execution agent helper service
 .\"
@@ -60,12 +60,13 @@ This service runs independently of the
 .M xxqs_name_sxx_execd 8
 (i.e. it is not started and stopped together with the execution daemon) and there
 can be only one
-.I SGE_Helper_Service.exe per host.
+.I SGE_Helper_Service.exe
+per host.
 .PP
 Jobs can request to be allowed to display their GUI on the visible desktop by 
 requesting the resource "display_win_gui" (qsub \-l display_win_gui=1). See
-.M submit 1
-, option "\-v", for information on how to set a job environment variable.
+.M submit 1 ,
+option "\-v", for information on how to set a job environment variable.
 .br
 When running GUI jobs, the environment variable SGE_BACKGND_MODE can be used to
 direct where the output of the GUI will be displayed. If the environment variable
@@ -80,7 +81,7 @@ might be still running. For a graceful shutdown, first run the "pause" method.
 This will start the shutdown procedure of the service and prevent it from
 accepting any further jobs. After this, the "resume" (aka "continue") method
 will fail as long as there are jobs running in the
-.I SGE_Helper_Service.exe.
+.IR SGE_Helper_Service.exe .
 If no job is left in the service, the "resume" method will succeed and the
 service will stop.
 .br
