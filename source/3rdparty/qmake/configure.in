@@ -111,7 +111,7 @@ AC_DECL_SYS_SIGLIST
 # that make necessarily works on those systems.
 AC_CHECK_LIB(sun, getpwnam)
 
-AC_SUBST(REMOTE) REMOTE=stub
+AC_SUBST(REMOTE) REMOTE=${REMOTE:-stub}
 make_try_customs=no
 AC_ARG_WITH(customs,
 [  --with-customs=DIR      Enable remote jobs via Customs--see README.customs],
