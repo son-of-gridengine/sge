@@ -177,6 +177,7 @@ extern "C" {
 #endif
 
 /* _POSIX_PATH_MAX is only 255 and this is less than in most real systmes */
+/* Fixme:  Why doesn't this just use PATH_MAX?  */
 #define SGE_PATH_MAX    1024
 
 #define MAX_STRING_SIZE 2048

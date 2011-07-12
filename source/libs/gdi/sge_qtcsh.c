@@ -283,7 +283,7 @@ int close_stdin /* use of qrsh's -nostdin option */
    char **argv_iter = NULL;
    char **newargv = NULL;
    /* TODO: This should be SGE_PATH_MAX. */
-   char qrsh_path[2048];
+   char qrsh_path[SGE_PATH_MAX];
 
    /* remote execution only for commands without any path information */
    if (!strchr(expath, '/')) {
