@@ -135,10 +135,10 @@ else
 
    if [ "$is_su" = "true" ]; then
       if [ "$SGE_QMASTER_PORT" = "" ]; then
-         CA_DIR="/var/sgeCA/sge_qmaster"
+         CA_DIR="/var/lib/sgeCA/sge_qmaster"
          USERKEY_DIR="$CA_DIR/$SGE_CELL/userkeys"
       else
-         CA_DIR="/var/sgeCA/port$SGE_QMASTER_PORT"
+         CA_DIR="/var/lib/sgeCA/port$SGE_QMASTER_PORT"
          USERKEY_DIR="$CA_DIR/$SGE_CELL/userkeys"
       fi
 

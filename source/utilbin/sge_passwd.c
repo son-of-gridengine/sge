@@ -321,7 +321,7 @@ sge_get_file_priv_key(void)
       if (key != NULL) {
          sge_dstring_append(&priv_key, key);
       } else {
-         const char *ca_local_dir = "/var/sgeCA"; 
+         const char *ca_local_dir = "/var/lib/sgeCA";
          const char *sge_cell = sge_get_default_cell();
          const char *user_key = "private/key.pem";
          const char *sge_qmaster_port = getenv("SGE_QMASTER_PORT");
@@ -502,7 +502,7 @@ int sge_ssl_get_rand_file_path(char *rand_file)
    if (key != NULL) {
       sge_strlcpy(rand_file, key, SGE_PATH_MAX);
    } else {
-      const char *ca_local_dir = "/var/sgeCA"; 
+      const char *ca_local_dir = "/var/lib/sgeCA";
       const char *sge_cell = sge_get_default_cell();
       const char *user_key = "private/rand.seed";
       const char *sge_qmaster_port = getenv("SGE_QMASTER_PORT");

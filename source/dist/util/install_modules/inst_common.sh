@@ -3907,11 +3907,11 @@ CopyCaToHostType()
          if [ "$?" = 0 ]; then
             $INFOTEXT "Copying certificates to host %s" $RHOST
             $INFOTEXT -log "Copying certificates to host %s" $RHOST
-            echo "mkdir /var/sgeCA > /dev/null 2>&1" | $SHELL_NAME $RHOST /bin/sh &
+            echo "mkdir /var/lib/sgeCA > /dev/null 2>&1" | $SHELL_NAME $RHOST /bin/sh &
             if [ "$SGE_QMASTER_PORT" = "" ]; then
-               $COPY_COMMAND -pr $HOST:/var/sgeCA/sge_qmaster $RHOST:/var/sgeCA
+               $COPY_COMMAND -pr $HOST:/var/lib/sgeCA/sge_qmaster $RHOST:/var/lib/sgeCA
             else
-               $COPY_COMMAND -pr $HOST:/var/sgeCA/port$SGE_QMASTER_PORT $RHOST:/var/sgeCA
+               $COPY_COMMAND -pr $HOST:/var/lib/sgeCA/port$SGE_QMASTER_PORT $RHOST:/var/lib/sgeCA
             fi
             if [ "$?" = 0 ]; then
                $INFOTEXT "Setting ownership to adminuser %s" $ADMINUSER
@@ -3921,10 +3921,10 @@ CopyCaToHostType()
                else
                   PORT_DIR="port$SGE_QMASTER_PORT"
                fi
-               echo "chown $ADMINUSER /var/sgeCA/$PORT_DIR" | $SHELL_NAME $RHOST /bin/sh &
-               echo "chown -R $ADMINUSER /var/sgeCA/$PORT_DIR/$SGE_CELL" | $SHELL_NAME $RHOST /bin/sh &
-               for dir in `ls /var/sgeCA/$PORT_DIR/$SGE_CELL/userkeys`; do
-                  echo "chown -R $dir /var/sgeCA/$PORT_DIR/$SGE_CELL/userkeys/$dir" | $SHELL_NAME $RHOST /bin/sh &
+               echo "chown $ADMINUSER /var/lib/sgeCA/$PORT_DIR" | $SHELL_NAME $RHOST /bin/sh &
+               echo "chown -R $ADMINUSER /var/lib/sgeCA/$PORT_DIR/$SGE_CELL" | $SHELL_NAME $RHOST /bin/sh &
+               for dir in `ls /var/lib/sgeCA/$PORT_DIR/$SGE_CELL/userkeys`; do
+                  echo "chown -R $dir /var/lib/sgeCA/$PORT_DIR/$SGE_CELL/userkeys/$dir" | $SHELL_NAME $RHOST /bin/sh &
                done
             else
                $INFOTEXT "The certificate copy failed!"
@@ -3954,7 +3954,7 @@ CopyCaFromQmaster()
       return
    fi
 
-   CA_TOP="/var/sgeCA"
+   CA_TOP="/var/lib/sgeCA"
 
    #Setup CA location
    if [ "$SGE_QMASTER_PORT" = "" ]; then
@@ -4006,7 +4006,7 @@ CopyCaFromQmaster()
    rm -rf "$tmp_dir"
 
    #Let's verify we have the keystores
-   if [ ! -f /var/sgeCA/$PORT_DIR/$SGE_CELL/userkeys/$ADMINUSER/keystore ]; then
+   if [ ! -f /var/lib/sgeCA/$PORT_DIR/$SGE_CELL/userkeys/$ADMINUSER/keystore ]; then
       $INFOTEXT "The certificate copy failed for host %s!" "$HOST"
       $INFOTEXT -log "The certificate copy failed for host %s!" "$HOST"
    fi

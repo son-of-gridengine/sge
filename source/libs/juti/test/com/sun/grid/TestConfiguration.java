@@ -109,7 +109,7 @@ public class TestConfiguration {
     
     public File getCaLocalTop() {
         if(calocaltop == null) {
-            String str = "/var/sgeCA/port" + getQMasterPort() + "/" + getCell();
+            String str = "/var/lib/sgeCA/port" + getQMasterPort() + "/" + getCell();
             calocaltop = new File(str.replace('/', File.pathSeparatorChar));
         }
         return calocaltop;

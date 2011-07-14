@@ -4,7 +4,7 @@ PWD=`dirname $0`
 PWD=`cd $PWD; pwd`
 
 CA_ARGS="-catop $SGE_ROOT/$SGE_CELL/common/sgeCA"
-CA_ARGS="$CA_ARGS -calocaltop /var/sgeCA/port$SGE_QMASTER_PORT/$SGE_CELL"
+CA_ARGS="$CA_ARGS -calocaltop /var/lib/sgeCA/port$SGE_QMASTER_PORT/$SGE_CELL"
 CA_ARGS="$CA_ARGS -cascript $SGE_ROOT/util/sgeCA/sge_ca"
 
 JVM_ARGS=""

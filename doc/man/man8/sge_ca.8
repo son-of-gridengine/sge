@@ -103,7 +103,7 @@ The \fB\-init\fP command creates a new xxQS_NAMExx certificate authority and its
 If the options \-adminuser, \-cadir, \-calocaltop, \-catop are not
 used and the xxQS_NAMExx environment variables SGE_ROOT, SGE_CELL and SGE_QMASTER_PORT are set, the CA directories are created in the following locations:
 .br $SGE_ROOT/$SGE_CELL/common/sgeCA  (can be overruled by \-catop <dir> or \-cadir <dir>)
-.br /var/sgeCA/{port$SGE_QMASTER_PORT|sge_qmaster}/$SGE_CELL  (can be overruled by \-calocaltop <dir> or \-cadir <dir>)
+.br /var/lib/sgeCA/{port$SGE_QMASTER_PORT|sge_qmaster}/$SGE_CELL  (can be overruled by \-calocaltop <dir> or \-cadir <dir>)
 .br The following information must be delivered for the site:
 two letter country code, state, location, e.g city or your building-code, organization (e.g. your company name), organizational unit, e.g. your department, email address of the CA administrator (you!)
 .PP
@@ -259,7 +259,7 @@ For more details on the permission requirements consult the detailed description
 .\"
 .\"
 .SH FILES
-\fBsge_ca\fP creates a file tree starting in \fB$CATOP\fP and \fB$CALOCALTOP\fP. The default for \fB$CATOP\fP is usually $SGE_ROOT/$SGE_CELL/common/sgeCA and for \fB$CALOCALTOP\fP /var/sgeCA/{port$SGE_QMASTER_PORT|sge_qmaster}/$SGE_CELL where the subpaths beginning with $ expand to the content of the corresponding environment variable.
+\fBsge_ca\fP creates a file tree starting in \fB$CATOP\fP and \fB$CALOCALTOP\fP. The default for \fB$CATOP\fP is usually $SGE_ROOT/$SGE_CELL/common/sgeCA and for \fB$CALOCALTOP\fP /var/lib/sgeCA/{port$SGE_QMASTER_PORT|sge_qmaster}/$SGE_CELL where the subpaths beginning with $ expand to the content of the corresponding environment variable.
 
 In addition there may optionally exist the user certificate in $HOME/.sge/port$SGE_QMASTER_PORT/$SGE_CELL/certs/cert.pem and the corresponding private key in $HOME/.sge/port$SGE_QMASTER_PORT/$SGE_CELL/private/key.pem which are used instead of the files in $CATOP and $CALOCALTOP. (See sge_ca \-copy above.) 
 .\"

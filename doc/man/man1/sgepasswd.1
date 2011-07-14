@@ -100,12 +100,12 @@ will use $SGE_ROOT/$SGE_CELL/common/sgeCA/certs/cert.pem.
 .\"
 .IP "\fBSGE_KEYFILE\fP" 1.5i
 If set, specifies the location of the private key file.
-Default is /var/sgeCA/port${SGE_QMASTER_PORT}/${SGE_CELL}/private/key.pem.
+Default is /var/lib/sgeCA/port${SGE_QMASTER_PORT}/${SGE_CELL}/private/key.pem.
 .\"
 .IP "\fBSGE_RANDFILE\fP" 1.5i
 If set, specifies the location of the seed used to create encrypted
 versions of user passwords. Default
-is /var/sgeCA/port${SGE_QMASTER_PORT}/${SGE_CELL}/private/rand.seed.
+is /var/lib/sgeCA/port${SGE_QMASTER_PORT}/${SGE_CELL}/private/rand.seed.
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
