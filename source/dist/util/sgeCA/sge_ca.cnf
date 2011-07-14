@@ -37,7 +37,7 @@ export CATOP
 
 euid=`$V5UTILBIN/uidgid -euid`
 if [ $euid = 0 ]; then
-   CALOCALTOP=/var/sgeCA/$CA_PORT/$SGE_CELL
+   CALOCALTOP=/var/lib/sgeCA/$CA_PORT/$SGE_CELL
    HOMEDIR=`env LC_ALL=C grep '^root:' /etc/passwd | cut -f6 -d:`
 else
    CALOCALTOP=/tmp/sgeCA/$CA_PORT/$SGE_CELL

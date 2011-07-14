@@ -77,7 +77,7 @@ SGE_JMX_SSL_CLIENT="${cfg.sge.jmx.ssl.client}";export SGE_JMX_SSL_CLIENT
 
 # SGE_JMX_SSL_KEYSTORE is used by qmasters JMX MBean server
 # if SGE_JMX_SSL=true the server keystore found here is used
-# e.g. /var/sgeCA/port${cfg.sge.qmaster.port}/${cfg.cell.name}/private/keystore
+# e.g. /var/lib/sgeCA/port${cfg.sge.qmaster.port}/${cfg.cell.name}/private/keystore
 SGE_JMX_SSL_KEYSTORE="${cfg.sge.jmx.ssl.keystore}";export SGE_JMX_SSL_KEYSTORE
 
 # SGE_JMX_SSL_KEYSTORE_PW is used by qmasters JMX MBean server
@@ -460,7 +460,7 @@ if [ -n "${first_install_task}" ]; then
    #For the CSP mode we have to copy the certificates to each of the execd/submit/admin hosts
    if [ -n "${gui_csphosts}" ]; then
       # Setup PORT_DIR
-      CA_TOP="/var/sgeCA"
+      CA_TOP="/var/lib/sgeCA"
       if [ "$SGE_QMASTER_PORT" = "" ]; then
          PORT_DIR="sge_qmaster"
       else

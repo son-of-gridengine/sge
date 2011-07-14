@@ -349,7 +349,7 @@ public final class ConnectorBootstrap {
             keystorePasswordFileName = props.getProperty(PropertyNames.SSL_SERVER_KEYSTORE_PASSWORD_FILE);
 
             // get the keystore password from the keystore password file
-            // (/var/sgeCA/portNNNN/sge_cell/private/keystore.password)
+            // (/var/lib/sgeCA/portNNNN/sge_cell/private/keystore.password)
             // workaround for euid problem of libjvm under Linux otherwise jmxremote.password
             // could have been used
             try {

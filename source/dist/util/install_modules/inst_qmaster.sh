@@ -2388,7 +2388,7 @@ GetJMXPort() {
                   # must be in sync with definitions in sge_ca.cnf
                   euid=`$SGE_UTILBIN/uidgid -euid`
                   if [ $euid = 0 ]; then
-                     CALOCALTOP=/var/sgeCA/$ca_port/$SGE_CELL
+                     CALOCALTOP=/var/lib/sgeCA/$ca_port/$SGE_CELL
                   else
                      CALOCALTOP=/tmp/sgeCA/$ca_port/$SGE_CELL
                   fi

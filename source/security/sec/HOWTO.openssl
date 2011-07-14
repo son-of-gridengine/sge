@@ -41,14 +41,14 @@ Initializing Certificate Authority (CA) for OpenSSL security framework
 ----------------------------------------------------------------------
 
 Creating /scratch2/aa114085/sge_sec/default/common/sgeCA
-Creating /var/sgeCA/port5321/default
+Creating /var/lib/sgeCA/port5321/default
 Creating /scratch2/aa114085/sge_sec/default/common/sgeCA/certs
 Creating /scratch2/aa114085/sge_sec/default/common/sgeCA/crl
 Creating /scratch2/aa114085/sge_sec/default/common/sgeCA/newcerts
 Creating /scratch2/aa114085/sge_sec/default/common/sgeCA/serial
 Creating /scratch2/aa114085/sge_sec/default/common/sgeCA/index.txt
-Creating /var/sgeCA/port5321/default/userkeys
-Creating /var/sgeCA/port5321/default/private
+Creating /var/lib/sgeCA/port5321/default/userkeys
+Creating /var/lib/sgeCA/port5321/default/private
 Hit <RETURN> to continue >> 
 
 Enter all the required information for the distinguished name for the CA certificate:
@@ -67,7 +67,7 @@ CA email address:     emailAddress=admin@eightbits.com
 Do you want to use these data (y/n) [y] >> 
 
 
-Creating RANDFILE from >/kernel/genunix< in >/var/sgeCA/port5321/default/private/rand.seed<
+Creating RANDFILE from >/kernel/genunix< in >/var/lib/sgeCA/port5321/default/private/rand.seed<
 
 1513428 semi-random bytes loaded
 Creating CA certificate and private key
@@ -76,21 +76,21 @@ Using configuration from /tmp/sge_ca126095.tmp
 Generating a 1024 bit RSA private key
 ....................................++++++
 ............++++++
-writing new private key to '/var/sgeCA/port5321/default/private/cakey.pem'
+writing new private key to '/var/lib/sgeCA/port5321/default/private/cakey.pem'
 -----
 Hit <RETURN> to continue >>
 
 Creating Daemon certificate and key
 -----------------------------------
 
-Creating RANDFILE from >/kernel/genunix< in >/var/sgeCA/port5321/default/private/rand.seed<
+Creating RANDFILE from >/kernel/genunix< in >/var/lib/sgeCA/port5321/default/private/rand.seed<
 
 1513428 semi-random bytes loaded
 Using configuration from /tmp/sge_ca126095.tmp
 Generating a 1024 bit RSA private key
 ...................................++++++
 .....................++++++
-writing new private key to '/var/sgeCA/port5321/default/private/key.pem'
+writing new private key to '/var/lib/sgeCA/port5321/default/private/key.pem'
 -----
 Using configuration from /tmp/sge_ca126095.tmp
 Check that the request matches the signature
@@ -109,14 +109,14 @@ Certificate is to be certified until Mar  1 16:14:23 2003 GMT (365 days)
 Write out database with 1 new entries
 Data Base Updated
 created and signed certificate for SGE daemons
-Creating RANDFILE from >/kernel/genunix< in >/var/sgeCA/port5321/default/userkeys/root/rand.seed<
+Creating RANDFILE from >/kernel/genunix< in >/var/lib/sgeCA/port5321/default/userkeys/root/rand.seed<
 
 1513428 semi-random bytes loaded
 Using configuration from /tmp/sge_ca126095.tmp
 Generating a 1024 bit RSA private key
 ....++++++
 .....................++++++
-writing new private key to '/var/sgeCA/port5321/default/userkeys/root/key.pem'
+writing new private key to '/var/lib/sgeCA/port5321/default/userkeys/root/key.pem'
 -----
 Using configuration from /tmp/sge_ca126095.tmp
 Check that the request matches the signature
@@ -134,15 +134,15 @@ Certificate is to be certified until Mar  1 16:14:25 2003 GMT (365 days)
 
 Write out database with 1 new entries
 Data Base Updated
-created and signed certificate for user >root< in >/var/sgeCA/port5321/default/userkeys/root<
-Creating RANDFILE from >/kernel/genunix< in >/var/sgeCA/port5321/default/userkeys/aa114085/rand.seed<
+created and signed certificate for user >root< in >/var/lib/sgeCA/port5321/default/userkeys/root<
+Creating RANDFILE from >/kernel/genunix< in >/var/lib/sgeCA/port5321/default/userkeys/aa114085/rand.seed<
 
 1513428 semi-random bytes loaded
 Using configuration from /tmp/sge_ca126095.tmp
 Generating a 1024 bit RSA private key
 ......++++++
 ...++++++
-writing new private key to '/var/sgeCA/port5321/default/userkeys/aa114085/key.pem'
+writing new private key to '/var/lib/sgeCA/port5321/default/userkeys/aa114085/key.pem'
 -----
 Using configuration from /tmp/sge_ca126095.tmp
 Check that the request matches the signature
@@ -160,7 +160,7 @@ Certificate is to be certified until Mar  1 16:14:26 2003 GMT (365 days)
 
 Write out database with 1 new entries
 Data Base Updated
-created and signed certificate for user >aa114085< in >/var/sgeCA/port5321/default/userkeys/aa114085<
+created and signed certificate for user >aa114085< in >/var/lib/sgeCA/port5321/default/userkeys/aa114085<
 Hit <RETURN> to continue >> 
 
 
@@ -432,11 +432,11 @@ awk '{printf "DE:"; printf "Bavaria:"; printf "Regensburg:"; printf "Sun Microsy
 
 
 Generate a CRL
-utilbin/solaris64/openssl ca -config util/sgeCA/sge_ssl.cnf -verbose -cert default/common/sgeCA/cacert.pem -keyfile /var/sgeCA/port5321/default/private/cakey.pem -gencrl -out troet
+utilbin/solaris64/openssl ca -config util/sgeCA/sge_ssl.cnf -verbose -cert default/common/sgeCA/cacert.pem -keyfile /var/lib/sgeCA/port5321/default/private/cakey.pem -gencrl -out troet
 
 
 Renewal of CA key:
 
-$SGE_ROOT/utilbin/solaris64/openssl req -nodes -x509 -key /var/sgeCA/port5321/default/private/cakey.pem -out cacert.new -days 1024 -new -config <myconfig>
+$SGE_ROOT/utilbin/solaris64/openssl req -nodes -x509 -key /var/lib/sgeCA/port5321/default/private/cakey.pem -out cacert.new -days 1024 -new -config <myconfig>
 
 

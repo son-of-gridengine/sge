@@ -143,7 +143,7 @@ int sge_ssl_setup_security_path(const char *progname, const char *user) {
 
 #define SGE_COMMD_SERVICE "sge_qmaster"
 #define CA_DIR          "common/sgeCA"
-#define CA_LOCAL_DIR    "/var/sgeCA"
+#define CA_LOCAL_DIR    "/var/lib/sgeCA"
 #define CaKey           "cakey.pem"
 #define CaCert          "cacert.pem"
 #define SGESecPath      ".sge"
@@ -214,7 +214,7 @@ int sge_ssl_setup_security_path(const char *progname, const char *user) {
          sge_dstring_copy_dstring(&ca_local_root, &ca_root);
       } else {
          char *ca_local_dir = NULL;
-         /* If the user is root, use /var/sgeCA.  Otherwise, use /tmp/sgeCA */
+         /* If the user is root, use /var/lib/sgeCA.  Otherwise, use /tmp/sgeCA */
 #if 0
          if (geteuid () == SGE_SUPERUSER_ID) {
             ca_local_dir = CA_LOCAL_DIR;
@@ -293,7 +293,7 @@ int sge_ssl_setup_security_path(const char *progname, const char *user) {
    ** - ca_root, ca_local_root for daemons 
    ** - $HOME/.sge/{port$COMMD_PORT|SGE_COMMD_SERVICE}/$SGE_CELL
    **   and as fallback
-   **   /var/sgeCA/{port$COMMD_PORT|SGE_COMMD_SERVICE}/$SGE_CELL/userkeys/$USER/{cert.pem,key.pem}
+   **   /var/lib/sgeCA/{port$COMMD_PORT|SGE_COMMD_SERVICE}/$SGE_CELL/userkeys/$USER/{cert.pem,key.pem}
    */
 
    if (is_daemon(progname)){
