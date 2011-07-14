@@ -51,7 +51,7 @@ else
    set CA_PORT = sge_qmaster
 endif
 
-set CERT = "/var/sgeCA/$CA_PORT/$SGE_CELL/userkeys"
+set CERT = "/var/lib/sgeCA/$CA_PORT/$SGE_CELL/userkeys"
 
 echo $CERT
 

@@ -59,7 +59,7 @@
 #define SGE_QMASTER_PORT_ENVIRONMENT_NAME "SGE_QMASTER_PORT"
 #define SGE_COMMD_SERVICE "sge_qmaster"
 #define CA_DIR          "common/sgeCA"
-#define CA_LOCAL_ROOTUSER_DIR    "/var/sgeCA"
+#define CA_LOCAL_ROOTUSER_DIR    "/var/lib/sgeCA"
 #define CA_LOCAL_NORMALUSER_DIR  "/tmp/sgeCA"
 #define CaKey           "cakey.pem"
 #define CaCert          "cacert.pem"
@@ -356,7 +356,7 @@ static bool sge_csp_path_setup(sge_csp_path_class_t *thiz, sge_env_state_class_t
    ** - ca_root, ca_local_root for daemons 
    ** - $HOME/.sge/{port$COMMD_PORT|SGE_COMMD_SERVICE}/$SGE_CELL
    **   and as fallback
-   **   /var/sgeCA/{port$COMMD_PORT|SGE_COMMD_SERVICE}/$SGE_CELL/userkeys/$USER/{cert.pem,key.pem}
+   **   /var/lib/sgeCA/{port$COMMD_PORT|SGE_COMMD_SERVICE}/$SGE_CELL/userkeys/$USER/{cert.pem,key.pem}
    */
    if (is_daemon(sge_env, sge_prog)) {
       user_dir = strdup(get_ca_root(thiz));

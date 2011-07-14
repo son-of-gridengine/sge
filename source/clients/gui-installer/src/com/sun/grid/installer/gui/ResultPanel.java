@@ -309,7 +309,7 @@ public class ResultPanel extends IzPanel implements Printable, Config {
 
             idata.setVariable(VAR_QMASTER_SPOOL_DIR, "${cfg.sge.root}/${cfg.cell.name}/spool/qmaster");
             idata.setVariable(VAR_EXECD_SPOOL_DIR, "${cfg.sge.root}/${cfg.cell.name}/spool");
-            idata.setVariable(VAR_JMX_SSL_KEYSTORE, "/var/sgeCA/port${cfg.sge.qmaster.port}/${cfg.cell.name}/private/keystore");
+            idata.setVariable(VAR_JMX_SSL_KEYSTORE, "/var/lib/sgeCA/port${cfg.sge.qmaster.port}/${cfg.cell.name}/private/keystore");
             idata.setVariable(VAR_DB_SPOOLING_DIR_BDB, "${cfg.sge.root}/${cfg.cell.name}/spool/spooldb");
         }
         

@@ -18,7 +18,7 @@ CONNECT=0
 GENERAL_ARGS=true
 
 if [ "$SGE_KEYSTORE" = "" ]; then
-   SGE_KEYSTORE=/var/sgeCA/port$SGE_QMASTER_PORT/$SGE_CELL/private/keystore
+   SGE_KEYSTORE=/var/lib/sgeCA/port$SGE_QMASTER_PORT/$SGE_CELL/private/keystore
 fi   
 
 while [ "$GENERAL_ARGS" = "true" -a $# -gt 0 ]; do

@@ -51,9 +51,9 @@ endif
 if ( $argument1 == "client" ) then
    echo "setting client environment"
    setenv SSL_CA_CERT_FILE "$SGE_ROOT/default/common/sgeCA/cacert.pem"
-   setenv SSL_CERT_FILE "/var/sgeCA/port$SGE_QMASTER_PORT/default/userkeys/$USER/cert.pem"
-   setenv SSL_KEY_FILE "/var/sgeCA/port$SGE_QMASTER_PORT/default/userkeys/$USER/key.pem"
-   setenv SSL_RAND_FILE "/var/sgeCA/port$SGE_QMASTER_PORT/default/userkeys/$USER/rand.seed"
+   setenv SSL_CERT_FILE "/var/lib/sgeCA/port$SGE_QMASTER_PORT/default/userkeys/$USER/cert.pem"
+   setenv SSL_KEY_FILE "/var/lib/sgeCA/port$SGE_QMASTER_PORT/default/userkeys/$USER/key.pem"
+   setenv SSL_RAND_FILE "/var/lib/sgeCA/port$SGE_QMASTER_PORT/default/userkeys/$USER/rand.seed"
    exit 0
 endif
 
@@ -61,8 +61,8 @@ if ( $argument1 == "service" ) then
    echo "setting service environment"
    setenv SSL_CA_CERT_FILE "$SGE_ROOT/default/common/sgeCA/cacert.pem"
    setenv SSL_CERT_FILE "$SGE_ROOT/default/common/sgeCA/certs/cert.pem"
-   setenv SSL_KEY_FILE "/var/sgeCA/port$SGE_QMASTER_PORT/default/private/key.pem"
-   setenv SSL_RAND_FILE "/var/sgeCA/port$SGE_QMASTER_PORT/default/private/rand.seed"
+   setenv SSL_KEY_FILE "/var/lib/sgeCA/port$SGE_QMASTER_PORT/default/private/key.pem"
+   setenv SSL_RAND_FILE "/var/lib/sgeCA/port$SGE_QMASTER_PORT/default/private/rand.seed"
    setenv SSL_CRL_FILE "$SGE_ROOT/default/common/sgeCA/ca-crl.pem"
    exit 0
 endif
