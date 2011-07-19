@@ -2,10 +2,9 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004-2007 by Sun Microsystems, Inc.
+.\" Copyright (C) 2011  Dave Love, University of Liverpool
 .\"
 .\"___INFO__MARK_END__
-.\"
-.\" $RCSfile: qstat.1,v $     Last Update: $Date: 2011-05-20 23:00:47 $     Revision: $Revision: 1.41 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -30,7 +29,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QSTAT 1 "$Date: 2011-05-20 23:00:47 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QSTAT 1 "$Date: 2011-07-19 14:51:09 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qstat \- show the status of xxQS_NAMExx jobs and queues
 .\"
@@ -157,23 +156,33 @@ obstacles are shown, if 'schedd_job_info' in
 .M sched_conf 5 
 is configured accordingly.
 .sp
-For running jobs available information on resource utilization is shown
-about consumed cpu time in seconds, integral memory usage in Gbytes 
+For running jobs, the available information on resource utilization is
+shown for each task:
+consumed cpu time in seconds, integral memory usage in Gbytes
 seconds, amount of data transferred in io operations, current virtual 
 memory utilization in Mbytes, and maximum virtual memory utilization in 
 Mbytes. This information is not available if resource utilization 
 retrieval is not supported for the OS platform where the job is hosted.
+It is also not available immediately after a job has started, before a
+load report is received.
 .sp
-In combination with \fB\-cp\fP the output of this command will additionally
-contain the information of a requested binding (see \fB\-binding\fP of
-.M qsub 1 ) 
+The resource usage reported is affected if \fBACCT_RESERVED_USAGE\fP
+or \fBSHARETREE_RESERVED_USAGE\fP is specified in the
+.M sge_conf 5
+configuration.  Then the requested values are reported, not the actual
+usage; if there is no memory request, 'mem' is reported as zero, and
+the vmem values as 'N/A'.
+.sp
+Unless \fB\-ncb\fP is specified, the output
+contains the information of a requested binding (see \fB\-binding\fP
+of option
+.M qsub 1 )
 and the changes that have been applied to the topology string (real
 binding) for the host where this job is running.
-.sp
 The topology string will contain capital letters for all those cores
 that were not bound to the displayed job. Bound cores will be shown
-lowercase (E.g "SCCcCSCCcC" means that core 2 on the two available
-sockets where bound to this job). 
+lowercase (e.g. "SCCcCSCCcC" means that core 2 on the two available
+sockets was bound to this job).
 .sp
 Please refer to the file
 <xxqs_name_sxx_root>/doc/load_parameters.asc for detailed information on the
@@ -200,8 +209,8 @@ displayed.
 .\"
 .IP "\fB\-ncb\fP"
 In combination with \fB\-ncb\fP the output of a command will
-suppress information of a requested binding and
-changes that have been applied to the topology string (real
+omit information on any requested binding and
+changes that have been applied to the topology string (the real
 binding) for the host where the job is running.
 This information will disappear in combination with the parameters
 \fB\-r\fP and \fB\-j\fP.

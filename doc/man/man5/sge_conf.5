@@ -2,10 +2,9 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
+.\" Copyright (C) 2011  Dave Love, University of Liverpool
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: sge_conf.5,v $     Last Update: $Date: 2011-05-25 17:49:44 $     Revision: $Revision: 1.91 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -29,7 +28,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH xxQS_NAME_Sxx_CONF 5 "$Date: 2011-05-25 17:49:44 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH xxQS_NAME_Sxx_CONF 5 "$Date: 2011-07-19 14:48:03 $" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 xxqs_name_sxx_conf \- xxQS_NAMExx configuration files
@@ -1181,7 +1180,7 @@ reason for gdi timeouts, this may show you some useful messages. The default val
 Setting this parameter allows the scheduler GDI event acknowledge timeout to be manually configured to a
 specific value. Currently the default value is 10 minutes with the default scheduler configuration and limited
 between 600 and 1200 seconds.
-.\" Fixme: wgat does this mean?
+.\" Fixme: what does this mean?
 Value is limited only in case of default value.
 The default value depends
 on the current scheduler configuration. The \fISCHEDULER_TIMEOUT\fP value is specified in seconds.
@@ -1229,13 +1228,16 @@ to the xxQS_NAMExx execution daemon. The following values are recognized:
 .IP "\fIACCT_RESERVED_USAGE\fP"
 If this parameter is set to true, the usage of "reserved" (allocated)
 resources is reported in the accounting entries \fBcpu\fP, \fBmem\fP,
-and \fBmaxvmem\fP instead of the measured usage.  This means that the
+and \fBmaxvmem\fP instead of the measured usage.  The live usage values
+reported by
+.M qstat 1
+are affected similarly.  This means that the
 "wall clock" time (end\-start) is reported instead of CPU time, memory
-usage is memory allocation times wall clock time (only computable if
-the job requests h_vmem/s_vmem), and maxvmem is the requested
-h_vmem/s_vmem; the same scaling by slots is done as without this option.
+usage is memory allocation times wall clock time (which is only computable if
+the job requests h_vmem or s_vmem), and maxvmem is the requested
+h_vmem or s_vmem; the same scaling by slots is done as without this option.
 .br
-Note that both the wall clock and CPU times are available normally (see
+Note that both the wall clock and CPU times are normally available (see
 .M accounting 5 ),
 so this option loses information, and "reserved" here has nothing to
 do with advance/resource reservation.  See also
