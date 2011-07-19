@@ -89,7 +89,6 @@ is unknown); authuser not removed (for SDM and testing use),
   * Ports to S/390 and PARISC GNU/Linux [U]
   * New complex m_thread [U]
   * Show topology by default in qhost [U]
-  * Show core binding by default in qstat [U]
   * qsub -pty switch [#704] [U]
   * Improved qmon graphics [#530] [(U)]
   * Include bash in default shell list [U]
@@ -108,6 +107,8 @@ is unknown); authuser not removed (for SDM and testing use),
 
 * Other changes (possibly-incompatible)
 
+  * Show core binding by default in qstat, qhost (use -ncb for
+    compatibility) [U]
   * Removed Berkeley DB RPC support (recently dropped by BDB) [U]
   * Changed position in pending job list for user-rescheduled jobs
     (exit99, qmod -rj) and OLD_RESCHEDULE_BEHAVIOR,
