@@ -44,7 +44,7 @@ umask  022
 if type gtar 2>/dev/null >/dev/null; then TAR=gtar
 else TAR=tar
 fi
-BASEDIR=/tmp/sge6_dist
+BASEDIR=/tmp/sge8_dist
 
 RPMSPECFILE=sge.spec
 
@@ -252,7 +252,9 @@ done
 
 DOC_PACKAGE=""
 COMMON_DOCS="doc/*.txt doc/*.asc doc/javadocs"
-COMMON_PACKAGE="3rd_party catman ckpt dtrace examples/jobs \
+# This used to include catman, but that's probably not very useful now,
+# as all the relevant systems should have a man formatter.
+COMMON_PACKAGE="3rd_party ckpt dtrace examples/jobs \
                 examples/drmaa hadoop include inst_sge install_qmaster \
                 install_execd start_gui_installer \
 	    man mpi pvm qmon util lib/JSV.jar lib/drmaa.jar lib/herd.jar lib/juti.jar lib/jgdi.jar"

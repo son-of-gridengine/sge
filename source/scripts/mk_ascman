@@ -87,7 +87,7 @@ else if ( $MANMODE == "uge" ) then
    set xxQS_NAMExx = "Univa Grid Engine"
    set xxQS_NAME_Sxx = "SGE"
    set xxqs_name_sxx = "sge"
-   set xxRELxx = "UGE 8.0.0a"
+   set xxRELxx = "UGE 8.0.0"
 else
    echo error wrong MANMODE=$MANMODE. Exit
    exit 1
