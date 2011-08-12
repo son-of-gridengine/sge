@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 #
 # *********
 # ATTENTION
@@ -65,8 +65,7 @@ PeHostfile2MachineFile()
    host_list=
    prev_host=
    mpi_tasks=0
-   cat $1 |&
-   while read -p line; do
+   while read line; do
       host=`echo $line|cut -f1 -d" "|cut -f1 -d"."`
       nslots=`echo $line|cut -f2 -d" "`
       port=`echo $line|cut -f4 -d" "`
@@ -84,7 +83,7 @@ PeHostfile2MachineFile()
 	 done
       fi
       prev_host=$host
-   done
+   done <$1
    echo $mpi_tasks
    echo "$host_list"
 }

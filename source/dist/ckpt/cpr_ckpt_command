@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 #
 #
 #___INFO__MARK_BEGIN__
@@ -37,9 +37,9 @@ set +u
 
 ckpt_dir=$3
 
-if [ ! -f $ckpt_dir/ckpt.log ]; then
-   touch $ckpt_dir/ckpt.log
-   chmod 666 $ckpt_dir/ckpt.log
+if [ ! -f "$ckpt_dir/ckpt.log" ]; then
+   touch "$ckpt_dir/ckpt.log"
+   chmod 666 "$ckpt_dir/ckpt.log"
 fi
 
 sge_root=${SGE}
@@ -47,13 +47,13 @@ sge_cell=${SGE_CELL}
 
 # workaround to force job to restart on same queue (svd)
 . $sge_root/${sge_cell:-default}/common/settings.sh
-qalter -q $QUEUE $JOB_ID
+qalter -q "$QUEUE" $JOB_ID
 
 # create temp directory for holding checkpoint info
 
-tmpdir=$ckpt_dir/ckpt.$1
-mkdir -p $tmpdir
-cd $tmpdir
+tmpdir="$ckpt_dir/ckpt.$1"
+mkdir -p "$tmpdir"
+cd "$tmpdir"
 
 # create log file
 
@@ -61,10 +61,10 @@ cd $tmpdir
 F=~/$REQUEST.co$1
 touch $F
 
-print -------------------------------------------------------------  >> $F 2>&1
-print `basename $0` called at `date`      >> $F 2>&1
-print called by: `id`			 >> $F 2>&1
-print with args: $*			 >> $F 2>&1
+echo -------------------------------------------------------------  >> $F
+echo `basename $0` called at `date`      >> $F
+echo called by: `id`			 >> $F
+echo with args: $*			 >> $F
 
 # checkpoint the job to one of two different files (i.e. ping-pong)
 # just in case we go down while checkpointing
@@ -88,15 +88,15 @@ else
     popt="$2:GID"
 fi
 
-print Checkpoint command: cpr -c cpr_$1.$currcpr -p $popt -f -g >> $F 2>&1
+echo Checkpoint command: cpr -c cpr_$1.$currcpr -p $popt -f -g >> $F
 cpr -c cpr_$1.$currcpr -p $popt -f -g >> $F 2>&1
 cc=$?
 if [ $cc -eq 0 ]; then
-   print $currcpr > currcpr
+   echo $currcpr > currcpr
    if [ -d cpr_$1.$prevcpr ]; then
-      print Deleting old checkpoint file >> $F 2>&1
+      echo Deleting old checkpoint file >> $F
       cpr -D cpr_$1.$prevcpr >> $F 2>&1
    fi
 fi
 
-print `date +"%D %T"` Job $1 "(pid=$2) checkpointed, status=$cc" >> $ckpt_dir/ckpt.log
+echo `date +"%D %T"` Job $1 "(pid=$2) checkpointed, status=$cc" >> $ckpt_dir/ckpt.log

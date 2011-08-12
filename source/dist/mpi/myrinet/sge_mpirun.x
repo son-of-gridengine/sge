@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 #
 # *********
 # ATTENTION
@@ -42,7 +42,7 @@
 set +u
 
 if [ "$SGE_ROOT" = "" ]; then
-   print -u2 SGE_ROOT is not set
+   echo >&2 SGE_ROOT is not set
    exit 1
 fi
 SGE_CELL=${SGE_CELL:-default}
@@ -52,36 +52,36 @@ SGE_CELL=${SGE_CELL:-default}
 host=`hostname`
 
 if [ "$PE" = "" ]; then
-   print -u2 PE is not set, sge_mpirun must be issued from a Grid Engine parallel job
+   echo >&2 "PE is not set, sge_mpirun must be issued from a Grid Engine parallel job"
    exit 2
 fi
 
 if [ "$NSLOTS" = "" ]; then
-   print -u2 NSLOTS is not set, sge_mpirun must be issued from a Grid Engine parallel job
+   echo >&2 "NSLOTS is not set, sge_mpirun must be issued from a Grid Engine parallel job"
    exit 3
 fi
 
 mpirun=$(qconf -sp $PE | grep "^start_proc_args" | awk '{ print $NF; }')
 
 if [ ! -f $mpirun ]; then
-   print -u2 $mpirun does not exist
-   print -u2 There must be a problem with the $PE parallel environment
+   echo >&2 "$mpirun does not exist"
+   echo >&2 "There must be a problem with the $PE parallel environment"
    exit 4
 fi
 
 if [ ! -f $TMPDIR/machines ]; then
-   print -u2 $TMPDIR/machines does not exist
-   print -u2 There must be a problem with the $PE parallel environment
+   echo >&2 "$TMPDIR/machines does not exist"
+   echo >&2 "There must be a problem with the $PE parallel environment"
    exit 5
 fi
 
 # Add TMPDIR to path in case there are wrappers
 export PATH=$TMPDIR:$PATH
 
-#print ===========DEBUG============
-#print exec $mpirun --gm-f $TMPDIR/machines --gm-kill 15 -np $NSLOTS "$@"
-#print ===========DEBUG============
+#echo ===========DEBUG============
+#echo exec $mpirun --gm-f $TMPDIR/machines --gm-kill 15 -np $NSLOTS "$@"
+#echo ===========DEBUG============
 exec $mpirun --gm-f $TMPDIR/machines --gm-kill 15 -np $NSLOTS "$@"
-print -u2 exec of $mpirun failed
+echo >&2 "exec of $mpirun failed"
 exit 6
 

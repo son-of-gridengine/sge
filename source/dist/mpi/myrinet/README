@@ -181,9 +181,6 @@ Environment Interface of Grid Engine.
 10) Notes
 ---------
 
-   The startmpi.sh, sge_mpirun, and gmps scripts use /bin/ksh (the
-   Korn shell).  Make sure it is installed.
-
    In a Kerberos environment, if you want the MPI tasks to have Kerberos
    credentials, then it is critical that the user have valid forwardable
    Kerberos tickets when the job is submitted. If the jobs may be queued
