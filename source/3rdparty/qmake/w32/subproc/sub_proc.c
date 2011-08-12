@@ -1,21 +1,44 @@
+/* Process handling for Windows.
+Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005,
+2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+This file is part of GNU Make.
+
+GNU Make is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later
+version.
+
+GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.  */
+
+#include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef _MSC_VER
+# include <stddef.h>    /* for intptr_t */
+#else
+# include <stdint.h>
+#endif
 #include <process.h>  /* for msvc _beginthreadex, _endthreadex */
+#include <signal.h>
 #include <windows.h>
 
 #include "sub_proc.h"
 #include "proc.h"
 #include "w32err.h"
-#include "config.h"
+#include "debug.h"
 
 static char *make_command_line(char *shell_name, char *exec_path, char **argv);
-
-extern int debug_flag; /* from make */
+extern char *xmalloc (unsigned int);
 
 typedef struct sub_process_t {
-	int sv_stdin[2];
-	int sv_stdout[2];
-	int sv_stderr[2];
+	intptr_t sv_stdin[2];
+	intptr_t sv_stdout[2];
+	intptr_t sv_stderr[2];
 	int using_pipes;
 	char *inp;
 	DWORD incnt;
@@ -23,7 +46,7 @@ typedef struct sub_process_t {
 	volatile DWORD outcnt;
 	char * volatile errp;
 	volatile DWORD errcnt;
-	int pid;
+	pid_t pid;
 	int exit_code;
 	int signal;
 	long last_err;
@@ -31,7 +54,7 @@ typedef struct sub_process_t {
 } sub_process;
 
 /* keep track of children so we can implement a waitpid-like routine */
-static sub_process *proc_array[256];
+static sub_process *proc_array[MAXIMUM_WAIT_OBJECTS];
 static int proc_index = 0;
 static int fake_exits_pending = 0;
 
@@ -66,7 +89,7 @@ process_adjust_wait_state(sub_process* pproc)
 static sub_process *
 process_wait_for_any_private(void)
 {
-	HANDLE handles[256];
+	HANDLE handles[MAXIMUM_WAIT_OBJECTS];
 	DWORD retval, which;
 	int i;
 
@@ -120,7 +143,17 @@ process_kill(HANDLE proc, int signal)
 void
 process_register(HANDLE proc)
 {
-	proc_array[proc_index++] = (sub_process *) proc;
+	if (proc_index < MAXIMUM_WAIT_OBJECTS)
+		proc_array[proc_index++] = (sub_process *) proc;
+}
+
+/*
+ * Return the number of processes that we are still waiting for.
+ */
+int
+process_used_slots(void)
+{
+	return proc_index;
 }
 
 /*
@@ -163,54 +196,58 @@ process_wait_for_any(void)
 }
 
 long
-process_errno(HANDLE proc)
+process_signal(HANDLE proc)
 {
-	return (((sub_process *)proc)->lerrno);
+        if (proc == INVALID_HANDLE_VALUE) return 0;
+        return (((sub_process *)proc)->signal);
 }
 
 long
-process_signal(HANDLE proc)
-{
-	return (((sub_process *)proc)->signal);
-}
-
-	long
 process_last_err(HANDLE proc)
 {
+        if (proc == INVALID_HANDLE_VALUE) return ERROR_INVALID_HANDLE;
 	return (((sub_process *)proc)->last_err);
 }
 
-	long
+long
 process_exit_code(HANDLE proc)
 {
+        if (proc == INVALID_HANDLE_VALUE) return EXIT_FAILURE;
 	return (((sub_process *)proc)->exit_code);
 }
 
-	char *
+/*
+2006-02:
+All the following functions are currently unused.
+All of them would crash gmake if called with argument INVALID_HANDLE_VALUE.
+Hence whoever wants to use one of this functions must invent and implement
+a reasonable error handling for this function.
+
+char *
 process_outbuf(HANDLE proc)
 {
 	return (((sub_process *)proc)->outp);
 }
 
-	char *
+char *
 process_errbuf(HANDLE proc)
 {
 	return (((sub_process *)proc)->errp);
 }
 
-	int
+int
 process_outcnt(HANDLE proc)
 {
 	return (((sub_process *)proc)->outcnt);
 }
 
-	int
+int
 process_errcnt(HANDLE proc)
 {
 	return (((sub_process *)proc)->errcnt);
 }
 
-	void
+void
 process_pipes(HANDLE proc, int pipes[3])
 {
 	pipes[0] = ((sub_process *)proc)->sv_stdin[0];
@@ -218,7 +255,7 @@ process_pipes(HANDLE proc, int pipes[3])
 	pipes[2] = ((sub_process *)proc)->sv_stderr[0];
 	return;
 }
-
+*/
 
 	HANDLE
 process_init()
@@ -278,12 +315,12 @@ process_init()
 		pproc->lerrno = E_SCALL;
 		return((HANDLE)pproc);
 	}
-	pproc->sv_stdin[0]  = (int) stdin_pipes[0];
-	pproc->sv_stdin[1]  = (int) stdin_pipes[1];
-	pproc->sv_stdout[0] = (int) stdout_pipes[0];
-	pproc->sv_stdout[1] = (int) stdout_pipes[1];
-	pproc->sv_stderr[0] = (int) stderr_pipes[0];
-	pproc->sv_stderr[1] = (int) stderr_pipes[1];
+	pproc->sv_stdin[0]  = (intptr_t) stdin_pipes[0];
+	pproc->sv_stdin[1]  = (intptr_t) stdin_pipes[1];
+	pproc->sv_stdout[0] = (intptr_t) stdout_pipes[0];
+	pproc->sv_stdout[1] = (intptr_t) stdout_pipes[1];
+	pproc->sv_stderr[0] = (intptr_t) stderr_pipes[0];
+	pproc->sv_stderr[1] = (intptr_t) stderr_pipes[1];
 
 	pproc->using_pipes = 1;
 
@@ -305,9 +342,9 @@ process_init_fd(HANDLE stdinh, HANDLE stdouth, HANDLE stderrh)
 	 * Just pass the provided file handles to the 'child side' of the
 	 * pipe, bypassing pipes altogether.
 	 */
-	pproc->sv_stdin[1]  = (int) stdinh;
-	pproc->sv_stdout[1] = (int) stdouth;
-	pproc->sv_stderr[1] = (int) stderrh;
+	pproc->sv_stdin[1]  = (intptr_t) stdinh;
+	pproc->sv_stdout[1] = (intptr_t) stdouth;
+	pproc->sv_stderr[1] = (intptr_t) stderrh;
 
 	pproc->last_err = pproc->lerrno = 0;
 
@@ -316,60 +353,61 @@ process_init_fd(HANDLE stdinh, HANDLE stdouth, HANDLE stderrh)
 
 
 static HANDLE
-find_file(char *exec_path, LPOFSTRUCT file_info)
+find_file(const char *exec_path, const char *path_var,
+	  char *full_fname, DWORD full_len)
 {
 	HANDLE exec_handle;
 	char *fname;
 	char *ext;
+	DWORD req_len;
+	int i;
+	static const char *extensions[] =
+	  /* Should .com come before no-extension case?  */
+	  { ".exe", ".cmd", ".bat", "", ".com", NULL };
 
-	fname = malloc(strlen(exec_path) + 5);
+	fname = xmalloc(strlen(exec_path) + 5);
 	strcpy(fname, exec_path);
 	ext = fname + strlen(fname);
 
-	strcpy(ext, ".exe");
-	if ((exec_handle = (HANDLE)OpenFile(fname, file_info,
-			OF_READ | OF_SHARE_COMPAT)) != (HANDLE)HFILE_ERROR) {
-		free(fname);
-		return(exec_handle);
-	}
-
-	strcpy(ext, ".cmd");
-	if ((exec_handle = (HANDLE)OpenFile(fname, file_info,
-			OF_READ | OF_SHARE_COMPAT)) != (HANDLE)HFILE_ERROR) {
-		free(fname);
-		return(exec_handle);
-	}
-
-	strcpy(ext, ".bat");
-	if ((exec_handle = (HANDLE)OpenFile(fname, file_info,
-			OF_READ | OF_SHARE_COMPAT)) != (HANDLE)HFILE_ERROR) {
-		free(fname);
-		return(exec_handle);
-	}
-
-	/* should .com come before this case? */
-	if ((exec_handle = (HANDLE)OpenFile(exec_path, file_info,
-			OF_READ | OF_SHARE_COMPAT)) != (HANDLE)HFILE_ERROR) {
-		free(fname);
-		return(exec_handle);
-	}
-
-	strcpy(ext, ".com");
-	if ((exec_handle = (HANDLE)OpenFile(fname, file_info,
-			OF_READ | OF_SHARE_COMPAT)) != (HANDLE)HFILE_ERROR) {
-		free(fname);
-		return(exec_handle);
+	for (i = 0; extensions[i]; i++) {
+		strcpy(ext, extensions[i]);
+		if (((req_len = SearchPath (path_var, fname, NULL, full_len,
+					    full_fname, NULL)) > 0
+		     /* For compatibility with previous code, which
+			used OpenFile, and with Windows operation in
+			general, also look in various default
+			locations, such as Windows directory and
+			Windows System directory.  Warning: this also
+			searches PATH in the Make's environment, which
+			might not be what the Makefile wants, but it
+			seems to be OK as a fallback, after the
+			previous SearchPath failed to find on child's
+			PATH.  */
+		     || (req_len = SearchPath (NULL, fname, NULL, full_len,
+					       full_fname, NULL)) > 0)
+		    && req_len <= full_len
+		    && (exec_handle =
+				CreateFile(full_fname,
+					   GENERIC_READ,
+					   FILE_SHARE_READ | FILE_SHARE_WRITE,
+					   NULL,
+					   OPEN_EXISTING,
+					   FILE_ATTRIBUTE_NORMAL,
+					   NULL)) != INVALID_HANDLE_VALUE) {
+			free(fname);
+			return(exec_handle);
+		}
 	}
 
 	free(fname);
-	return(exec_handle);
+	return INVALID_HANDLE_VALUE;
 }
 
 
 /*
  * Description:   Create the child process to be helped
  *
- * Returns:
+ * Returns: success <=> 0
  *
  * Notes/Dependencies:
  */
@@ -385,6 +423,9 @@ process_begin(
 	char *shell_name = 0;
 	int file_not_found=0;
 	HANDLE exec_handle;
+	char exec_fname[MAX_PATH];
+	const char *path_var = NULL;
+	char **ep;
 	char buf[256];
 	DWORD bytes_returned;
 	DWORD flags;
@@ -392,8 +433,6 @@ process_begin(
 	STARTUPINFO startInfo;
 	PROCESS_INFORMATION procInfo;
 	char *envblk=NULL;
-	OFSTRUCT file_info;
-
 
 	/*
 	 *  Shell script detection...  if the exec_path starts with #! then
@@ -402,16 +441,27 @@ process_begin(
 	 *  hard-code the path to the shell or perl or whatever:  Instead, we
 	 *  assume it's in the path somewhere (generally, the NT tools
 	 *  bin directory)
-	 *  We use OpenFile here because it is capable of searching the Path.
 	 */
 
-	exec_handle = find_file(exec_path, &file_info);
+	/* Use the Makefile's value of PATH to look for the program to
+	   execute, because it could be different from Make's PATH
+	   (e.g., if the target sets its own value.  */
+	if (envp)
+		for (ep = envp; *ep; ep++) {
+			if (strncmp (*ep, "PATH=", 5) == 0
+			    || strncmp (*ep, "Path=", 5) == 0) {
+				path_var = *ep + 5;
+				break;
+			}
+		}
+	exec_handle = find_file(exec_path, path_var,
+				exec_fname, sizeof(exec_fname));
 
 	/*
-	 * If we couldn't open the file, just assume that Windows32 will be able
-	 * to find and execute it.
+	 * If we couldn't open the file, just assume that Windows will be
+	 * somehow able to find and execute it.
 	 */
-	if (exec_handle == (HANDLE)HFILE_ERROR) {
+	if (exec_handle == INVALID_HANDLE_VALUE) {
 		file_not_found++;
 	}
 	else {
@@ -465,8 +515,7 @@ process_begin(
 	if (file_not_found)
 		command_line = make_command_line( shell_name, exec_path, argv);
 	else
-		command_line = make_command_line( shell_name, file_info.szPathName,
-				 argv);
+		command_line = make_command_line( shell_name, exec_fname, argv);
 
 	if ( command_line == NULL ) {
 		pproc->last_err = 0;
@@ -486,7 +535,7 @@ process_begin(
 	if ((shell_name) || (file_not_found)) {
 		exec_path = 0;	/* Search for the program in %Path% */
 	} else {
-		exec_path = file_info.szPathName;
+		exec_path = exec_fname;
 	}
 
 	/*
@@ -506,10 +555,9 @@ process_begin(
 		if (envblk) free(envblk);
 		return -1;
 	} else {
-		if (debug_flag)
-			printf("CreateProcess(%s,%s,...)\n",
-				exec_path ? exec_path : "NULL",
-				command_line ? command_line : "NULL");
+		DB (DB_JOBS, ("CreateProcess(%s,%s,...)\n",
+			exec_path ? exec_path : "NULL",
+			command_line ? command_line : "NULL"));
 		if (CreateProcess(
 			exec_path,
 			command_line,
@@ -524,30 +572,25 @@ process_begin(
 
 			pproc->last_err = GetLastError();
 			pproc->lerrno = E_FORK;
-			fprintf(stderr, "process_begin: CreateProcess(%s, %s, ...) failed.\n", exec_path, command_line);
+			fprintf(stderr, "process_begin: CreateProcess(%s, %s, ...) failed.\n",
+                                exec_path ? exec_path : "NULL", command_line);
 			if (envblk) free(envblk);
 			free( command_line );
 			return(-1);
 		}
 	}
 
-	pproc->pid = (int)procInfo.hProcess;
+	pproc->pid = (pid_t)procInfo.hProcess;
 	/* Close the thread handle -- we'll just watch the process */
 	CloseHandle(procInfo.hThread);
 
 	/* Close the halves of the pipes we don't need */
-	if (pproc->sv_stdin) {
-		CloseHandle((HANDLE)pproc->sv_stdin[1]);
-		(HANDLE)pproc->sv_stdin[1] = 0;
-	}
-	if (pproc->sv_stdout) {
-		CloseHandle((HANDLE)pproc->sv_stdout[1]);
-		(HANDLE)pproc->sv_stdout[1] = 0;
-	}
-	if (pproc->sv_stderr) {
-		CloseHandle((HANDLE)pproc->sv_stderr[1]);
-		(HANDLE)pproc->sv_stderr[1] = 0;
-	}
+        CloseHandle((HANDLE)pproc->sv_stdin[1]);
+        CloseHandle((HANDLE)pproc->sv_stdout[1]);
+        CloseHandle((HANDLE)pproc->sv_stderr[1]);
+        pproc->sv_stdin[1] = 0;
+        pproc->sv_stdout[1] = 0;
+        pproc->sv_stderr[1] = 0;
 
 	free( command_line );
 	if (envblk) free(envblk);
@@ -659,28 +702,28 @@ process_pipe_io(
 	sub_process *pproc = (sub_process *)proc;
 	bool_t stdin_eof = FALSE, stdout_eof = FALSE, stderr_eof = FALSE;
 	HANDLE childhand = (HANDLE) pproc->pid;
-	HANDLE tStdin, tStdout, tStderr;
-	DWORD dwStdin, dwStdout, dwStderr;
+	HANDLE tStdin = NULL, tStdout = NULL, tStderr = NULL;
+	unsigned int dwStdin, dwStdout, dwStderr;
 	HANDLE wait_list[4];
 	DWORD wait_count;
 	DWORD wait_return;
 	HANDLE ready_hand;
 	bool_t child_dead = FALSE;
-
+	BOOL GetExitCodeResult;
 
 	/*
 	 *  Create stdin thread, if needed
 	 */
-    pproc->inp = stdin_data;
-    pproc->incnt = stdin_data_len;
+	pproc->inp = stdin_data;
+	pproc->incnt = stdin_data_len;
 	if (!pproc->inp) {
 		stdin_eof = TRUE;
 		CloseHandle((HANDLE)pproc->sv_stdin[0]);
-		(HANDLE)pproc->sv_stdin[0] = 0;
+		pproc->sv_stdin[0] = 0;
 	} else {
 		tStdin = (HANDLE) _beginthreadex( 0, 1024,
-			(unsigned (__stdcall *) (void *))proc_stdin_thread, pproc, 0,
-			(unsigned int *) &dwStdin);
+			(unsigned (__stdcall *) (void *))proc_stdin_thread,
+						  pproc, 0, &dwStdin);
 		if (tStdin == 0) {
 			pproc->last_err = GetLastError();
 			pproc->lerrno = E_SCALL;
@@ -693,10 +736,10 @@ process_pipe_io(
 	 */
 	tStdout = (HANDLE) _beginthreadex( 0, 1024,
 		(unsigned (__stdcall *) (void *))proc_stdout_thread, pproc, 0,
-		(unsigned int *) &dwStdout);
+		&dwStdout);
 	tStderr = (HANDLE) _beginthreadex( 0, 1024,
 		(unsigned (__stdcall *) (void *))proc_stderr_thread, pproc, 0,
-		(unsigned int *) &dwStderr);
+		&dwStderr);
 
 	if (tStdout == 0 || tStderr == 0) {
 
@@ -741,7 +784,7 @@ process_pipe_io(
 
 		if (ready_hand == tStdin) {
 			CloseHandle((HANDLE)pproc->sv_stdin[0]);
-			(HANDLE)pproc->sv_stdin[0] = 0;
+			pproc->sv_stdin[0] = 0;
 			CloseHandle(tStdin);
 			tStdin = 0;
 			stdin_eof = TRUE;
@@ -749,7 +792,7 @@ process_pipe_io(
 		} else if (ready_hand == tStdout) {
 
 		  	CloseHandle((HANDLE)pproc->sv_stdout[0]);
-			(HANDLE)pproc->sv_stdout[0] = 0;
+			pproc->sv_stdout[0] = 0;
 			CloseHandle(tStdout);
 			tStdout = 0;
 		  	stdout_eof = TRUE;
@@ -757,14 +800,21 @@ process_pipe_io(
 		} else if (ready_hand == tStderr) {
 
 			CloseHandle((HANDLE)pproc->sv_stderr[0]);
-			(HANDLE)pproc->sv_stderr[0] = 0;
+			pproc->sv_stderr[0] = 0;
 			CloseHandle(tStderr);
 			tStderr = 0;
 			stderr_eof = TRUE;
 
 		} else if (ready_hand == childhand) {
 
-			if (GetExitCodeProcess(childhand, &pproc->exit_code) == FALSE) {
+			DWORD ierr;
+			GetExitCodeResult = GetExitCodeProcess(childhand, &ierr);
+			if (ierr == CONTROL_C_EXIT) {
+				pproc->signal = SIGINT;
+			} else {
+				pproc->exit_code = ierr;
+			}
+			if (GetExitCodeResult == FALSE) {
 				pproc->last_err = GetLastError();
 				pproc->lerrno = E_SCALL;
 				goto done;
@@ -811,6 +861,8 @@ process_file_io(
 	sub_process *pproc;
 	HANDLE childhand;
 	DWORD wait_return;
+	BOOL GetExitCodeResult;
+        DWORD ierr;
 
 	if (proc == NULL)
 		pproc = process_wait_for_any_private();
@@ -854,7 +906,13 @@ process_file_io(
 		goto done2;
 	}
 
-	if (GetExitCodeProcess(childhand, &pproc->exit_code) == FALSE) {
+	GetExitCodeResult = GetExitCodeProcess(childhand, &ierr);
+	if (ierr == CONTROL_C_EXIT) {
+		pproc->signal = SIGINT;
+	} else {
+		pproc->exit_code = ierr;
+	}
+	if (GetExitCodeResult == FALSE) {
 		pproc->last_err = GetLastError();
 		pproc->lerrno = E_SCALL;
 	}
@@ -1154,6 +1212,10 @@ process_easy(
   HANDLE hErr;
   HANDLE hProcess;
 
+  if (proc_index >= MAXIMUM_WAIT_OBJECTS) {
+	DB (DB_JOBS, ("process_easy: All process slots used up\n"));
+	return INVALID_HANDLE_VALUE;
+  }
   if (DuplicateHandle(GetCurrentProcess(),
                       GetStdHandle(STD_INPUT_HANDLE),
                       GetCurrentProcess(),
@@ -1162,7 +1224,7 @@ process_easy(
                       TRUE,
                       DUPLICATE_SAME_ACCESS) == FALSE) {
     fprintf(stderr,
-            "process_easy: DuplicateHandle(In) failed (e=%d)\n",
+            "process_easy: DuplicateHandle(In) failed (e=%ld)\n",
             GetLastError());
     return INVALID_HANDLE_VALUE;
   }
@@ -1174,7 +1236,7 @@ process_easy(
                       TRUE,
                       DUPLICATE_SAME_ACCESS) == FALSE) {
     fprintf(stderr,
-           "process_easy: DuplicateHandle(Out) failed (e=%d)\n",
+           "process_easy: DuplicateHandle(Out) failed (e=%ld)\n",
            GetLastError());
     return INVALID_HANDLE_VALUE;
   }
@@ -1186,7 +1248,7 @@ process_easy(
                       TRUE,
                       DUPLICATE_SAME_ACCESS) == FALSE) {
     fprintf(stderr,
-            "process_easy: DuplicateHandle(Err) failed (e=%d)\n",
+            "process_easy: DuplicateHandle(Err) failed (e=%ld)\n",
             GetLastError());
     return INVALID_HANDLE_VALUE;
   }
@@ -1195,6 +1257,9 @@ process_easy(
 
   if (process_begin(hProcess, argv, envp, argv[0], NULL)) {
     fake_exits_pending++;
+    /* process_begin() failed: make a note of that.  */
+    if (!((sub_process*) hProcess)->last_err)
+      ((sub_process*) hProcess)->last_err = -1;
     ((sub_process*) hProcess)->exit_code = process_last_err(hProcess);
 
     /* close up unused handles */
