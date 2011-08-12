@@ -1,13 +1,25 @@
-/*
-  vmsify.c
+/* vmsify.c -- Module for vms <-> unix file name conversion
+Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
+2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+This file is part of GNU Make.
 
-  Module for vms <-> unix file name conversion
+GNU Make is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later
+version.
 
-  Written by Klaus Kämpf (kkaempf@progis.de)
-  of proGIS Software, Aachen, Germany
+GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-*/
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
+/* Written by Klaus Kämpf (kkaempf@progis.de)
+   of proGIS Software, Aachen, Germany */
+
+
+#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -51,9 +63,9 @@
 */
 
 static int
-copyto (char **to, char **from, char upto, int as_dir)
+copyto (char **to, const char **from, char upto, int as_dir)
 {
-  char *s;
+  const char *s;
 
   s = strrchr (*from, '.');
 
@@ -78,9 +90,11 @@ copyto (char **to, char **from, char upto, int as_dir)
 	}
       else
 	{
-	  if (islower (**from))
-	    **to = toupper (**from);
+#ifdef HAVE_CASE_INSENSITIVE_FS
+	  if (isupper ((unsigned char)**from))
+	    **to = tolower ((unsigned char)**from);
 	  else
+#endif
 	    **to = **from;
 	}
       (*to)++;
@@ -97,7 +111,7 @@ copyto (char **to, char **from, char upto, int as_dir)
 */
 
 static char *
-trnlog (char *name)
+trnlog (const char *name)
 {
   int stat;
   static char reslt[1024];
@@ -106,7 +120,11 @@ trnlog (char *name)
   struct dsc$descriptor_s name_dsc;
   char *s;
 
-  INIT_DSC_CSTRING (name_dsc, name);
+  /*
+   * the string isn't changed, but there is no string descriptor with
+   * "const char *dsc$a_pointer"
+   */
+  INIT_DSC_CSTRING (name_dsc, (char *)name);
 
   stat = lib$sys_trnlog (&name_dsc, &resltlen, &reslt_dsc);
 
@@ -120,12 +138,33 @@ trnlog (char *name)
     }
   reslt[resltlen] = '\0';
 
-  s = (char *)malloc (resltlen+1);
+  s = malloc (resltlen+1);
   if (s == 0)
     return "";
   strcpy (s, reslt);
   return s;
 }
+
+static char *
+showall (char *s)
+{
+  static char t[512];
+  char *pt;
+
+  pt = t;
+  if (strchr (s, '\\') == 0)
+    return s;
+  while (*s)
+    {
+      if (*s == '\\')
+	{
+	  *pt++ = *s;
+	}
+      *pt++ = *s++;
+    }
+  return pt;
+}
+
 
 enum namestate { N_START, N_DEVICE, N_OPEN, N_DOT, N_CLOSED, N_DONE };
 
@@ -170,13 +209,12 @@ enum namestate { N_START, N_DEVICE, N_OPEN, N_DOT, N_CLOSED, N_DONE };
 25  filenames with ':' are left unchanged
 26  filenames with a single pair of '[' ']' are left unchanged
 
-  the input string is not written to
+  The input string is not written to.  The result is also const because
+  it's a static buffer; we don't want to change it.
 */
 
-char *
-vmsify (name, type)
-    char *name;
-    int type;
+const char *
+vmsify (const char *name, int type)
 {
 /* max 255 device
    max 39 directory
@@ -188,11 +226,14 @@ vmsify (name, type)
 
   enum namestate nstate;
   static char vmsname[MAXPATHLEN+1];
-  char *fptr;
+  const char *fptr;
+  const char *t;
   char *vptr;
-  char *s,*s1;
   int as_dir;
   int count;
+  const char *s;
+  const char *s1;
+  const char *s2;
 
   if (name == 0)
     return 0;
@@ -201,38 +242,58 @@ vmsify (name, type)
   nstate = N_START;
 
   /* case 25a */
+  t = strpbrk (name, "$:");
 
-  s = strpbrk (name, "$:");
-  if (s != 0)
+  if (t != 0)
     {
-      if (*s == '$')
-	{
-	  if (strchr (name, '/') == 0)
-	    {
-	      return name;
-	    }
-	}
+//      const char *s1;
+//      const char *s2;
+
+      if (type == 1)
+        {
+          s1 = strchr (t+1, '[');
+          s2 = strchr (t+1, ']');
+        }
+
+      if (*t == '$')
+        {
+          if (strchr (name, '/') == 0)
+            {
+              strcpy (vmsname, name);
+              if ((type == 1) && (s1 != 0) && (s2 == 0))
+                strcat (vmsname, "]");
+              return vmsname;
+            }
+        }
       else
-	{
-	  return name;
-	}
+        {
+          strcpy (vmsname, name);
+          if ((type == 1) && (s1 != 0) && (s2 == 0))
+            strcat (vmsname, "]");
+          return vmsname;
+        }
     }
 
   /* case 26 */
+  t = strchr (name, '[');
 
-  s = strchr (name, '[');
-
-  if (s != 0)
+  if (t != 0)
     {
-      s1 = strchr (s+1, '[');
+//      const char *s;
+//      const char *s1 = strchr (t+1, '[');
+      s1 = strchr (t+1, '[');
       if (s1 == 0)
 	{
-	  return name;			/* single [, keep unchanged */
+          strcpy (vmsname, name);
+	  if ((type == 1) && (strchr (t+1, ']') == 0))
+            strcat (vmsname, "]");
+          return vmsname;
 	}
       s1--;
       if (*s1 != ']')
 	{
-	  return name;			/* not ][, keep unchanged */
+          strcpy (vmsname, name);
+	  return vmsname;		/* not ][, keep unchanged */
 	}
 
       /* we have ][ */
@@ -241,7 +302,6 @@ vmsify (name, type)
 
       /* s  -> starting char
 	 s1 -> ending ']'  */
-
       do
 	{
 	  strncpy (vptr, s, s1-s);	/* copy up to but not including ']' */
@@ -265,19 +325,13 @@ vmsify (name, type)
       fptr = s;
 
     }
-
   else		/* no [ in name */
-
     {
-
-      int state;
+      int state = 0;
       int rooted = 1;	/* flag if logical is rooted, else insert [000000] */
-
-      state = 0;
 
       do
 	{
-
       switch (state)
 	{
 	  case 0:				/* start of loop */
@@ -306,7 +360,8 @@ vmsify (name, type)
 	    break;
 
 	  case 2:				/* no '/' at start */
-	    s = strchr (fptr, '/');
+            {
+            const char *s = strchr (fptr, '/');
 	    if (s == 0)			/* no '/' (16) */
 	      {
 		if (type == 1)
@@ -337,8 +392,13 @@ vmsify (name, type)
 		  }
 	      }
 	    break;
+            }
 
 	  case 3:				/* '//' at start */
+            {
+//            const char *s;
+//            const char *s1;
+            char *vp;
 	    while (*fptr == '/')	/* collapse all '/' */
 	      fptr++;
 	    if (*fptr == 0)		/* just // */
@@ -348,12 +408,14 @@ vmsify (name, type)
 		s1 = getcwd(cwdbuf, MAXPATHLEN);
 		if (s1 == 0)
 		  {
-		    return "";		/* FIXME, err getcwd */
+                    vmsname[0] = '\0';
+		    return vmsname;	/* FIXME, err getcwd */
 		  }
 		s = strchr (s1, ':');
 		if (s == 0)
 		  {
-		    return "";		/* FIXME, err no device */
+                    vmsname[0] = '\0';
+		    return vmsname;	/* FIXME, err no device */
 		  }
 		strncpy (vptr, s1, s-s1+1);
 		vptr += s-s1+1;
@@ -380,44 +442,43 @@ vmsify (name, type)
 	      }
 	    *vptr = 0;
 				/* check logical for [000000] insertion */
-	    s1 = trnlog (s);
-	    if (*s1 != 0)
+	    vp = trnlog (s);
+	    if (*vp != '\0')
 	      {			/* found translation */
-		char *s2;
 		for (;;)	/* loop over all nested logicals */
 		  {
-		    s2 = s1 + strlen (s1) - 1;
-		    if (*s2 == ':')	/* translation ends in ':' */
+		    char *vp2 = vp + strlen (vp) - 1;
+		    if (*vp2 == ':')	/* translation ends in ':' */
 		      {
-			s2 = trnlog (s1);
-			free (s1);
-			if (*s2 == 0)
+			vp2 = trnlog (vp);
+			free (vp);
+			if (*vp2 == 0)
 			  {
 			    rooted = 0;
 			    break;
 			  }
-			s1 = s2;
+			vp = vp2;
 			continue;	/* next iteration */
 		      }
-		    if (*s2 == ']')	/* translation ends in ']' */
+		    if (*vp2 == ']')	/* translation ends in ']' */
 		      {
-			if (*(s2-1) == '.')	/* ends in '.]' */
+			if (*(vp2-1) == '.')	/* ends in '.]' */
 			  {
-			    if (!strneq (fptr, "000000", 6))
+			    if (strncmp (fptr, "000000", 6) != 0)
 			      rooted = 0;
 			  }
 			else
 			  {
 			    strcpy (vmsname, s1);
-			    s = strchr (vmsname, ']');
-			    *s = '.';
+			    vp = strchr (vmsname, ']');
+			    *vp = '.';
 			    nstate = N_DOT;
-			    vptr = s;
+			    vptr = vp;
 			  }
 		      }
 		    break;
 		  }
-		free (s1);
+		free (vp);
 	      }
 	    else
 	      rooted = 0;
@@ -432,15 +493,15 @@ vmsify (name, type)
 
 	    if (rooted == 0)
 	      {
+		nstate = N_DOT;
 	        strcpy (vptr, "[000000.");
 		vptr += 8;
-		s1 = vptr-1;
-		nstate = N_DOT;
+		vp = vptr-1;
 	      }
 	    else
-	      s1 = 0;
+	      vp = 0;
 
-	/* s1-> '.' after 000000 or NULL */
+            /* vp-> '.' after 000000 or NULL */
 
 	    s = strchr (fptr, '/');
 	    if (s == 0)
@@ -467,18 +528,18 @@ vmsify (name, type)
 	      }
 	    else
 	      if ((nstate == N_DOT)
-		 && (s1 != 0)
+		 && (vp != 0)
 		 && (*(s+1) == 0))
 		{
 		  if (type == 2)
 		    {
-		      *s1 = ']';
+		      *vp = ']';
 		      nstate = N_CLOSED;
 		    }
 		}
 	    state = 9;
 	    break;
-
+            }
 	  case 4:				/* single '/' at start (9..15) */
 	    if (*fptr == 0)
 	      state = 5;
@@ -500,7 +561,9 @@ vmsify (name, type)
 	      state = 8;
 	    break;
 
-	  case 6:				/* chars following '/' at start 10..15 */
+	  case 6:		/* chars following '/' at start 10..15 */
+            {
+            const char *s;
 	    *vptr++ = '[';
 	    nstate = N_OPEN;
 	    s = strchr (fptr, '/');
@@ -531,24 +594,25 @@ vmsify (name, type)
 		state = 9;
 	      }
 	    break;
+            }
 
 	  case 7:				/* add '.dir' and exit */
 	    if ((nstate == N_OPEN)
 		|| (nstate == N_DOT))
 	      {
-		s = vptr-1;
-		while (s > vmsname)
+		char *vp = vptr-1;
+		while (vp > vmsname)
 		  {
-		    if (*s == ']')
+		    if (*vp == ']')
 		      {
 			break;
 		      }
-		    if (*s == '.')
+		    if (*vp == '.')
 		      {
-			*s = ']';
+			*vp = ']';
 			break;
 		      }
-		    s--;
+		    vp--;
 		  }
 	      }
 	    strcpy (vptr, ".dir");
@@ -561,7 +625,9 @@ vmsify (name, type)
 	    state = -1;
 	    break;
 
-	  case 9:				/* 17..21, fptr -> 1st '/' + 1 */
+	  case 9:			/* 17..21, fptr -> 1st '/' + 1 */
+            {
+            const char *s;
 	    if (*fptr == 0)
 	      {
 		if (type == 2)
@@ -623,6 +689,7 @@ vmsify (name, type)
 		&& ((*(fptr+2) == '/')
 		    || (*(fptr+2) == 0)) )
 	      {
+                char *vp;
 		fptr += 2;
 		if (*fptr == '/')
 		  {
@@ -635,29 +702,29 @@ vmsify (name, type)
 		else if (*fptr == 0)
 		  type = 1;
 		vptr--;				/* vptr -> '.' or ']' */
-		s1 = vptr;
+		vp = vptr;
 		for (;;)
 		  {
-		    s1--;
-		    if (*s1 == '.')		/* one back */
+		    vp--;
+		    if (*vp == '.')		/* one back */
 		      {
-			vptr = s1;
+			vptr = vp;
 			nstate = N_OPEN;
 			break;
 		      }
-		    if (*s1 == '[')		/* top level reached */
+		    if (*vp == '[')		/* top level reached */
 		      {
 			if (*fptr == 0)
 			  {
-			    strcpy (s1, "[000000]");
-			    vptr = s1 + 8;
+			    strcpy (vp, "[000000]");
+			    vptr = vp + 8;
 			    nstate = N_CLOSED;
 			    s = 0;
 			    break;
 			  }
 			else
 			  {
-			    vptr = s1+1;
+			    vptr = vp+1;
 			    nstate = N_OPEN;
 			    break;
 			  }
@@ -692,6 +759,7 @@ vmsify (name, type)
 		  }
 	      }
 	    break;
+            }
 
 	  case 10:				/* 1,2 first is '.' */
 	    if (*fptr == '.')
@@ -709,7 +777,8 @@ vmsify (name, type)
 	      {
 		if (*fptr != '/')		/* got ..xxx */
 		  {
-		    return name;
+                    strcpy (vmsname, name);
+		    return vmsname;
 		  }
 		do				/* got ../ */
 		  {
@@ -727,21 +796,50 @@ vmsify (name, type)
 		while (*fptr == '/');
 	      }
 	    {					/* got '..' or '../' */
-	      nstate = N_OPEN;
-	      *vptr++ = '[';
-	      while (count--)
-		*vptr++ = '-';
+              char *vp;
+	      char cwdbuf[MAXPATHLEN+1];
 
-	      if (*fptr == 0)	/* had '..' or '../' */
+	      vp = getcwd(cwdbuf, MAXPATHLEN);
+	      if (vp == 0)
 		{
-		  *vptr++ = ']';
-		  state = -1;
+                  vmsname[0] = '\0';
+		  return vmsname;    /* FIXME, err getcwd */
 		}
-	      else			/* had '../xxx' */
+	      strcpy (vptr, vp);
+	      vp = strchr (vptr, ']');
+	      if (vp != 0)
 		{
-		  state = 9;
+		  nstate = N_OPEN;
+		  while (vp > vptr)
+		    {
+		      vp--;
+		      if (*vp == '[')
+			{
+			  vp++;
+			  strcpy (vp, "000000]");
+			  state = -1;
+			  break;
+			}
+		      else if (*vp == '.')
+			{
+			  if (--count == 0)
+			    {
+			      if (*fptr == 0)	/* had '..' or '../' */
+				{
+				  *vp++ = ']';
+				  state = -1;
+				}
+			      else			/* had '../xxx' */
+				{
+				  state = 9;
+				}
+			      *vp = '\0';
+			      break;
+			    }
+			}
+		    }
 		}
-	      *vptr = 0;
+	      vptr += strlen (vptr);
 	    }
 	    break;
 
@@ -750,91 +848,43 @@ vmsify (name, type)
 	      {
 		if (*fptr != '/')
 		  {
-		    return name;
+                    strcpy (vmsname, name);
+		    return vmsname;
 		  }
-		fptr++;
+		while (*fptr == '/')
+		  fptr++;
 	      }
 
-	    if (*fptr)
-	      {
-		state = 9;
+	    {
+              char *vp;
+	      char cwdbuf[MAXPATHLEN+1];
 
-		switch (type)
-		  {
-		  case 0:
-		    nstate = N_CLOSED;
-		    *vptr++ = '[';
-		    *vptr++ = ']';
-		    break;
-
-		  case 1:
-		    nstate = N_OPEN;
-		    *vptr++ = '[';
-		    break;
-
-		  case 2:
-		    nstate = N_CLOSED;
-		    break;
-		  }
-	      }
-	    else
-	      {
-		if (type == 1)
-		  {
-		    *vptr++ = '[';
-		    *vptr++ = ']';
-		    state = -1;
-		  }
-		else
-		  {
-		    char cwdbuf[MAXPATHLEN+1];
-
-		    s1 = getcwd(cwdbuf, MAXPATHLEN);
-		    if (s1 == 0)
-		      {
-			return "foo";	    /*FIXME, err getcwd */
-		      }
-		    strcpy (vptr, s1);
-		    vptr += strlen (vptr);
-
-		    if (type == 2)
-		      {
-			s = vptr;
-			while (s > vmsname)
-			  {
-			    if (*s == '.')
-			      {
-				*s = ']';
-				vptr--;
-				break;
-			      }
-
-			    if (*s == '[')
-			      {
-				int i;
-				char *t = vptr - 2;
-				while (t > s)
-				  {
-				    *(t+7) = *t;
-				    t--;
-				  }
-				s++;
-				for (i = 0; i < 6; i++)
-				  *s++ = '0';
-				*s = ']';
-				vptr += 6;
-				break;
-			      }
-			    s--;
-			  }
-
-			strcpy (vptr, ".dir");
-			vptr += 4;
-		      }
-
-		    state = -1;
-		  }
-	      }
+	      vp = getcwd(cwdbuf, MAXPATHLEN);
+	      if (vp == 0)
+		{
+                  vmsname[0] = '\0';
+		  return vmsname;    /*FIXME, err getcwd */
+		}
+	      strcpy (vptr, vp);
+            }
+            if (*fptr == 0)
+              {
+                state = -1;
+                break;
+              }
+            else
+              {
+                char *vp = strchr (vptr, ']');
+                if (vp == 0)
+                  {
+                    state = -1;
+                    break;
+                  }
+                *vp = '\0';
+                nstate = N_OPEN;
+                vptr += strlen (vptr);
+                state = 9;
+              }
 	    break;
 	}
 
@@ -863,14 +913,18 @@ vmsify (name, type)
   dev:[dir1.dir2]	//dev/dir1/dir2/
 */
 
-char *
-unixify (char *name)
+const char *
+unixify (const char *name)
 {
   static char piece[512];
-  char *s, *p;
+  const char *s;
+  char *p;
 
   if (strchr (name, '/') != 0)		/* already in unix style */
-    return name;
+    {
+      strcpy (piece, name);
+      return piece;
+    }
 
   p = piece;
   *p = 0;
@@ -881,12 +935,11 @@ unixify (char *name)
 
   if (s != 0)
     {
-      *s = 0;
+      int l = s - name;
       *p++ = '/';
       *p++ = '/';
-      strcpy (p, name);
-      p += strlen (p);
-      *s = ':';
+      strncpy (p, name, l);
+      p += l;
     }
 
   /* directory part */

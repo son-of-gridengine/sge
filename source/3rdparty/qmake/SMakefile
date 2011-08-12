@@ -1,32 +1,33 @@
-# NOTE: If you have no `make' program at all to process this makefile, run
-# `build.sh' instead.
+# -*-Makefile-*- for building GNU make with smake
 #
-# Copyright (C) 1988, 89, 91, 92, 93, 94, 1995 Free Software Foundation, Inc.
+# NOTE: If you have no 'make' program at all to process this makefile,
+# run 'build.sh' instead.
+#
+# Copyright (C) 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
+# 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 # This file is part of GNU Make.
 #
-# GNU Make is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
+# GNU Make is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
 #
-# GNU Make is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
-# GNU General Public License for more details.
+# GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
 #
-# You should have received a copy of the GNU General Public License
-# along with GNU Make; see the file COPYING.  If not, write to
-# the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-# Boston, MA 02111-1307, USA.
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #
 #	Makefile for GNU Make
 #
 
 # Ultrix 2.2 make doesn't expand the value of VPATH.
-VPATH = /make-3.78.1/
+VPATH = /make-3.82/
 # This must repeat the value, because configure will remove `VPATH = .'.
-srcdir = /make-3.78.1/
+srcdir = /make-3.82/
 
 CC = sc
 RM = delete
@@ -125,16 +126,16 @@ CTAGS = ctags -w
 
 objs = commands.o job.o dir.o file.o misc.o main.o read.o remake.o	\
        rule.o implicit.o default.o variable.o expand.o function.o	\
-       vpath.o version.o ar.o arscan.o signame.o remote-$(REMOTE).o     \
-       $(GLOB) $(GETOPT) $(ALLOCA) $(extras)
+       vpath.o version.o ar.o arscan.o signame.o strcache.o hash.o      \
+       remote-$(REMOTE).o $(GLOB) $(GETOPT) $(ALLOCA) $(extras)
 srcs = $(srcdir)commands.c $(srcdir)job.c $(srcdir)dir.c             \
        $(srcdir)file.c $(srcdir)getloadavg.c $(srcdir)misc.c         \
        $(srcdir)main.c $(srcdir)read.c $(srcdir)remake.c             \
        $(srcdir)rule.c $(srcdir)implicit.c $(srcdir)default.c        \
        $(srcdir)variable.c $(srcdir)expand.c $(srcdir)function.c     \
-       $(srcdir)vpath.c $(srcdir)version.c                            \
+       $(srcdir)vpath.c $(srcdir)version.c $(srcdir)hash.c           \
        $(srcdir)remote-$(REMOTE).c                                     \
-       $(srcdir)ar.c $(srcdir)arscan.c                                \
+       $(srcdir)ar.c $(srcdir)arscan.c $(srcdir)strcache.c              \
        $(srcdir)signame.c $(srcdir)signame.h $(GETOPT_SRC)            \
        $(srcdir)commands.h $(srcdir)dep.h $(srcdir)file.h            \
        $(srcdir)job.h $(srcdir)make.h $(srcdir)rule.h                \
@@ -214,40 +215,175 @@ glob-clean glob-realclean:
 
 # --------------- DEPENDENCIES
 #
-alloca.o: alloca.c config.h
-ar.o: ar.c make.h config.h signame.h filedef.h dep.h glob/fnmatch.h
-arscan.o: arscan.c make.h config.h signame.h
-commands.o: commands.c make.h config.h signame.h dep.h filedef.h \
-	variable.h job.h commands.h
-default.o: default.c make.h config.h signame.h rule.h dep.h filedef.h \
-	job.h commands.h variable.h
-dir.o: dir.c make.h config.h signame.h glob/glob.h
-expand.o: expand.c make.h config.h signame.h filedef.h job.h commands.h \
-	variable.h rule.h
-file.o: file.c make.h config.h signame.h dep.h filedef.h job.h \
-	commands.h variable.h
-function.o: function.c make.h config.h signame.h filedef.h variable.h \
-	dep.h job.h commands.h
-getloadavg.o: getloadavg.c config.h
-getopt.o: getopt.c config.h getopt.h
-getopt1.o: getopt1.c config.h getopt.h
-implicit.o: implicit.c make.h config.h signame.h rule.h dep.h filedef.h
-job.o: job.c make.h config.h signame.h job.h filedef.h commands.h \
-	variable.h
-main.o: main.c make.h config.h signame.h dep.h filedef.h variable.h \
-	job.h commands.h rule.h getopt.h
-misc.o: misc.c make.h config.h signame.h dep.h
-read.o: read.c make.h config.h signame.h glob/glob.h dep.h filedef.h \
-	job.h commands.h variable.h rule.h
-remake.o: remake.c make.h config.h signame.h filedef.h job.h commands.h \
-	dep.h variable.h
-remote-stub.o: remote-stub.c make.h config.h signame.h filedef.h job.h \
-	commands.h
-rule.o: rule.c make.h config.h signame.h dep.h filedef.h job.h \
-	commands.h variable.h rule.h
-signame.o: signame.c make.h config.h signame.h
-variable.o: variable.c make.h config.h signame.h dep.h filedef.h job.h \
-	commands.h variable.h
-version.o: version.c config.h
-vpath.o: vpath.c make.h config.h signame.h filedef.h variable.h
 
+# .deps/alloca.Po
+# dummy
+
+# .deps/ar.Po
+ar.o: ar.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h dep.h \
+
+# .deps/arscan.Po
+arscan.o: arscan.c make.h config.h \
+ getopt.h \
+ gettext.h \
+
+# .deps/commands.Po
+commands.o: commands.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h hash.h variable.h job.h \
+ commands.h
+
+# .deps/default.Po
+default.o: default.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h variable.h rule.h dep.h \
+ job.h \
+ commands.h
+
+# .deps/dir.Po
+dir.o: dir.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ hash.h \
+
+# .deps/expand.Po
+expand.o: expand.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h \
+ job.h \
+ commands.h variable.h \
+ rule.h
+
+# .deps/file.Po
+file.o: file.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h \
+ hash.h job.h \
+ commands.h variable.h \
+ debug.h
+
+# .deps/function.Po
+function.o: function.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h variable.h dep.h job.h \
+ commands.h debug.h
+
+# .deps/getloadavg.Po
+# dummy
+
+# .deps/getopt.Po
+getopt.o: getopt.c config.h \
+
+# .deps/getopt1.Po
+getopt1.o: getopt1.c config.h getopt.h \
+
+# .deps/hash.Po
+hash.o: hash.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ hash.h
+
+# .deps/implicit.Po
+implicit.o: implicit.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h rule.h dep.h debug.h \
+ variable.h job.h \
+ commands.h
+
+# .deps/job.Po
+job.o: job.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ job.h \
+ debug.h filedef.h hash.h commands.h \
+ variable.h
+
+# .deps/loadavg-getloadavg.Po
+# dummy
+
+# .deps/main.Po
+main.o: main.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h hash.h variable.h job.h \
+ commands.h rule.h debug.h getopt.h \
+
+# .deps/misc.Po
+misc.o: misc.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h debug.h
+
+# .deps/read.Po
+read.o: read.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h hash.h job.h \
+ commands.h variable.h rule.h debug.h \
+
+# .deps/remake.Po
+remake.o: remake.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h job.h \
+ commands.h dep.h variable.h debug.h \
+
+# .deps/remote-cstms.Po
+# dummy
+
+# .deps/remote-stub.Po
+remote-stub.o: remote-stub.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h job.h \
+ commands.h
+
+# .deps/rule.Po
+rule.o: rule.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h \
+ hash.h job.h \
+ commands.h variable.h \
+ rule.h
+
+# .deps/signame.Po
+signame.o: signame.c make.h config.h \
+ getopt.h \
+ gettext.h \
+
+# .deps/strcache.Po
+strcache.o: strcache.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ hash.h
+
+# .deps/variable.Po
+variable.o: variable.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h \
+ hash.h job.h \
+ commands.h variable.h \
+ rule.h
+
+# .deps/version.Po
+version.o: version.c config.h
+
+# .deps/vmsjobs.Po
+# dummy
+
+# .deps/vpath.Po
+vpath.o: vpath.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h variable.h
