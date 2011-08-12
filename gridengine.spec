@@ -182,6 +182,7 @@ echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
   rm man/man8/SGE_Helper_Service.exe.8
   rm -r util/gui-installer util/sgeSMF
   rm start_gui_installer
+  rm util/resources/loadsensors/interix-loadsensor.sh # uses ksh
   for l in lib/*/libdrmaa.so.1; do
     ( cd $(dirname $l); ln -sf libdrmaa.so.1 libdrmaa.so; )
   done

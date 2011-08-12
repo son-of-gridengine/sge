@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 #
 #
 #___INFO__MARK_BEGIN__
@@ -50,13 +50,13 @@ cd $tmpdir
 
 # create log file
 #F=$tmpdir/checkpoint.log
-F=~/$REQUEST.co$1
+F=$HOME/$REQUEST.co$1
 touch $F
 
-print -------------------------------------------------------------  >> $F 2>&1
-print `basename $0` called at `date`      >> $F 2>&1
-print called by: `id`			 >> $F 2>&1
-print with args: $*			 >> $F 2>&1
+echo -------------------------------------------------------------  >> $F
+echo `basename $0` called at `date`      >> $F
+echo called by: `id`			 >> $F
+echo with args: $*			 >> $F
 
 # workaround for qdel failing to kill restarted jobs
 # make sure job is really dead
@@ -80,4 +80,4 @@ if [ -z "$SGE_LEAVE_CKPT_DIR" -a "$4" != "save" ]; then
    rm -rf $tmpdir
 fi
 
-print `date +"%D %T"` Job $1 "(pid=$2) cleaned up" >> $ckpt_dir/ckpt.log
+echo `date +"%D %T"` Job $1 "(pid=$2) cleaned up" >> $ckpt_dir/ckpt.log

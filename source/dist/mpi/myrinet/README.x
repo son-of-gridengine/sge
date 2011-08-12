@@ -209,9 +209,6 @@ Environment Interface of Grid Engine.
    resources consumed. This would obviate the need for a queue per CPU,
    and is probably the best long term solution.
 
-   The startmpi.sh, sge_mpirun, and gmps scripts use /bin/ksh.  Make
-   sure it is installed.
-
    In a Kerberos environment, if you want the MPI tasks to have Kerberos
    credentials, then it is critical that the user have valid forwardable
    Kerberos tickets when the job is submitted. If the jobs may be queued

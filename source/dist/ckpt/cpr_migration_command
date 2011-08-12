@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 #
 #
 #___INFO__MARK_BEGIN__
@@ -58,13 +58,13 @@ cd $tmpdir
 # create log file
 
 #F=$tmpdir/checkpoint.log
-F=~/$REQUEST.co$1
+F=$HOME/$REQUEST.co$1
 touch $F
 
-print -------------------------------------------------------------  >> $F 2>&1
-print `basename $0` called at `date`      >> $F 2>&1
-print called by: `id`			 >> $F 2>&1
-print with args: $*			 >> $F 2>&1
+echo -------------------------------------------------------------  >> $F
+echo `basename $0` called at `date`      >> $F
+echo called by: `id`			 >> $F
+echo with args: $*			 >> $F
 
 # checkpoint the job to one of two different files (i.e. ping-pong)
 # just in case we go down while checkpointing
@@ -88,15 +88,15 @@ else
     popt="$2:GID"
 fi
 
-print Migration command: cpr -c cpr_$1.$currcpr -p $popt -f -k >> $F 2>&1
-cpr -c cpr_$1.$currcpr -p $popt -f -k >> $F 2>&1
+echo Migration command: cpr -c cpr_$1.$currcpr -p $popt -f -k >> $F
+cpr -c cpr_$1.$currcpr -p $popt -f -k >> $F
 cc=$?
 if [ $cc -eq 0 ]; then
-   print $currcpr > currcpr
+   echo $currcpr > currcpr
    if [ -d cpr_$1.$prevcpr ]; then
-      print Deleting old checkpoint file >> $F 2>&1
-      cpr -D cpr_$1.$prevcpr >> $F 2>&1
+      echo Deleting old checkpoint file >> $F
+      cpr -D cpr_$1.$prevcpr >> $F
    fi
 fi
 
-print `date +"%D %T"` Job $1 "(pid=$2) checkpointed and killed, status=$cc" >> $ckpt_dir/ckpt.log
+echo `date +"%D %T"` Job $1 "(pid=$2) checkpointed and killed, status=$cc" >> $ckpt_dir/ckpt.log
