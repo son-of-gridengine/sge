@@ -82,7 +82,7 @@ if ( $MANMODE == "ge" || $MANMODE == "sge") then
    set xxQS_NAMExx = "Grid Engine" 
    set xxQS_NAME_Sxx = "SGE"
    set xxqs_name_sxx = "sge"
-   set xxRELxx = "SGE 8.0.0a"
+   set xxRELxx = "SGE 8.0.0pre_b"
 else if ( $MANMODE == "uge" ) then
    set xxQS_NAMExx = "Univa Grid Engine"
    set xxQS_NAME_Sxx = "SGE"

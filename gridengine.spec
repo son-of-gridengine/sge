@@ -38,8 +38,8 @@
 %define username sgeadmin
 
 Name:    gridengine
-Version: 8.0.0a
-Release: 2%{?dist}
+Version: 8.0.0pre_b
+Release: 1%{?dist}
 Summary: Grid Engine - Distributed Resource Manager
 
 Group:   Applications/System
@@ -133,7 +133,7 @@ Programs needed to run a Grid Engine master host.
 
 %prep
 
-%setup -q -n sge-8.0.0a
+%setup -q -n sge-%{version}
 
 %build
 cd source
