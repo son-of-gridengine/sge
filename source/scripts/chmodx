@@ -3,7 +3,7 @@
 # Ensure scripts have executable permission in case a checkout didn't
 # preserve/set the file modes.  These probably aren't all necessary.
 
-cat <<EOF | xargs chmod +x
+xargs chmod +x <<EOF
 ./scripts/intl_test.csh
 ./scripts/msgmbe.csh
 ./scripts/infotext_check_script_syntax.tcl
@@ -111,13 +111,10 @@ cat <<EOF | xargs chmod +x
 ./dist/mpi/mpi.sh
 ./dist/mpi/rsh
 ./dist/mpi/startmpi.sh
-./3rdparty/qmake/install-sh
-./3rdparty/qmake/mkinstalldirs
-./3rdparty/qmake/tests/run_make_tests
-./3rdparty/qmake/tests/mkshadow
-./3rdparty/qmake/tests/run_make_tests.pl
+./3rdparty/qmake/config/install-sh
+./3rdparty/qmake/config/mkinstalldirs
 ./3rdparty/qmake/configure
-./3rdparty/qmake/missing
+./3rdparty/qmake/config/missing
 ./3rdparty/qtcsh/install-sh
 ./3rdparty/qtcsh/configure
 ./3rdparty/qtcsh/config.sub

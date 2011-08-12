@@ -26,23 +26,11 @@ Boston, MA 02111-1307, USA.  */
 #include <fcntl.h>
 #include <stdio.h>    /* remove */
 #include <stdlib.h>   /* getenv() */
-#include <netdb.h>    /* MAXHOSTNAMELEN */
+#include <netdb.h>    /* MAXHOSTNAMELEN (should be in sys/param.h) */
 #include <sys/param.h>
 #include <unistd.h>   /* usleep */
 #include <limits.h>   /* PATH_MAX */
 #include <signal.h>   /* kill */
-
-#ifdef NECSX5
-#  include <sys/param.h>
-#endif 
-
-#ifdef LINUX
-#include <rpc/types.h> /* MAXHOSTNAMELEN */
-#endif
-
-#if defined(AIX43) || defined(sgi)
-#include <sys/param.h> /* MAXHOSTNAMELEN */
-#endif
 
 /****** Interactive/qmake/--Introduction ***************************************
 *

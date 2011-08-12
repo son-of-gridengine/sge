@@ -56,6 +56,28 @@ See the documentation for Customs for information on starting and
 configuring Customs.
 
 
+INVOKING CUSTOMS-IZED GNU MAKE
+-----------------------------
+
+One thing you should be aware of is that the default build environment
+for Customs requires root permissions.  Practically, this means that GNU
+make must be installed setuid root to use Customs.
+
+If you don't want to do this, you can build Customs such that root
+permissions are not necessary.  Andreas Stolcke <stolcke@speech.sri.com>
+writes:
+
+ > pmake, gnumake or any other customs client program is not required to
+ > be suid root if customs was compiled WITHOUT the USE_RESERVED_PORTS
+ > option in customs/config.h.  Make sure the "customs" service in
+ > /etc/services is defined accordingly (port 8231 instead of 1001).
+
+ > Not using USE_RESERVED_PORTS means that a user with programming
+ > skills could impersonate another user by writing a fake customs
+ > client that pretends to be someone other than himself.  See the
+ > discussion in etc/SECURITY.
+
+
 PROBLEMS
 --------
 
@@ -71,3 +93,21 @@ SunOS 4.1.x:
     #else
 
   YMMV.
+
+
+-------------------------------------------------------------------------------
+Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008,
+2009, 2010 Free Software Foundation, Inc.
+This file is part of GNU Make.
+
+GNU Make is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later
+version.
+
+GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.
