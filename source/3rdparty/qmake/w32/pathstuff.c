@@ -1,6 +1,23 @@
+/* Path conversion for Windows pathnames.
+Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
+2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+This file is part of GNU Make.
+
+GNU Make is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later
+version.
+
+GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.  */
+
+#include "make.h"
 #include <string.h>
 #include <stdlib.h>
-#include "make.h"
 #include "pathstuff.h"
 
 /*
@@ -16,7 +33,7 @@ convert_vpath_to_windows32(char *Path, char to_delim)
 	 * contain blanks get trounced here. Use 8.3 format as a workaround.
 	 */
 	for (etok = Path; etok && *etok; etok++)
-		if (isblank(*etok))
+		if (isblank ((unsigned char) *etok))
 			*etok = to_delim;
 
 	return (convert_Path_to_windows32(Path, to_delim));
@@ -32,6 +49,9 @@ convert_Path_to_windows32(char *Path, char to_delim)
     char *p;            /* points to element of old Path */
 
     /* is this a multi-element Path ? */
+    /* FIXME: Perhaps use ":;\"" in strpbrk to convert all quotes to
+       delimiters as well, as a way to handle quoted directories in
+       PATH?  */
     for (p = Path, etok = strpbrk(p, ":;");
          etok;
          etok = strpbrk(p, ":;"))
@@ -42,7 +62,7 @@ convert_Path_to_windows32(char *Path, char to_delim)
                 etok[0] = to_delim;
                 p = ++etok;
                 continue;    /* ignore empty bucket */
-            } else if (!isalpha(*p)) {
+            } else if (!isalpha ((unsigned char) *p)) {
                 /* found one to count, handle things like '.' */
                 *etok = to_delim;
                 p = ++etok;
@@ -53,11 +73,20 @@ convert_Path_to_windows32(char *Path, char to_delim)
             } else
                 /* all finished, force abort */
                 p += strlen(p);
+        } else if (*p == '"') { /* a quoted directory */
+            for (p++; *p && *p != '"'; p++) /* skip quoted part */
+                ;
+            etok = strpbrk(p, ":;");        /* find next delimiter */
+            if (etok) {
+                *etok = to_delim;
+                p = ++etok;
+	    } else
+                p += strlen(p);
         } else {
             /* found another one, no drive letter */
             *etok = to_delim;
             p = ++etok;
-	}
+        }
 
     return Path;
 }
@@ -66,7 +95,7 @@ convert_Path_to_windows32(char *Path, char to_delim)
  * Convert to forward slashes. Resolve to full pathname optionally
  */
 char *
-w32ify(char *filename, int resolve)
+w32ify(const char *filename, int resolve)
 {
     static char w32_path[FILENAME_MAX];
     char *p;
@@ -86,9 +115,9 @@ w32ify(char *filename, int resolve)
 char *
 getcwd_fs(char* buf, int len)
 {
-	char *p;
+	char *p = getcwd(buf, len);
 
-	if (p = getcwd(buf, len)) {
+	if (p) {
 		char *q = w32ify(buf, 0);
 		strncpy(buf, q, len);
 	}
