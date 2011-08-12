@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 #
 #
 #___INFO__MARK_BEGIN__
@@ -51,21 +51,21 @@ cd $tmpdir
 # create log file
 
 #F=$tmpdir/checkpoint.log
-F=~/$REQUEST.co$1
+F=$HOME/$REQUEST.co$1
 touch $F
 
-print -------------------------------------------------------------  >> $F 2>&1
-print `basename $0` called at `date`      >> $F 2>&1
-print called by: `id`			 >> $F 2>&1
-print with args: $*			 >> $F 2>&1
+echo -------------------------------------------------------------  >> $F
+echo "`basename $0` called at `date`"      >> $F
+echo "called by: `id`"			 >> $F
+echo "with args: $*"			 >> $F
 
-print `date +"%D %T"` Job $1 "(pid=$2)" restarting >> $ckpt_dir/ckpt.log
+echo "`date +"%D %T"` Job $1 \"(pid=$2)\" restarting" >> $ckpt_dir/ckpt.log
 
 currcpr=`cat currcpr`
 if [ "$currcpr" != "2" ]; then
    currcpr=1
 fi
-print Restart command: cpr -r cpr_$1.$currcpr >> $F 2>&1
+echo Restart command: cpr -r cpr_$1.$currcpr >> $F
 cpr -r cpr_$1.$currcpr >> $F 2>&1
 
 # Now be careful: The restart command is the parent process of the restarted
@@ -75,7 +75,7 @@ cpr -r cpr_$1.$currcpr >> $F 2>&1
 # exit status > 128 analogous to a KILL
 
 exit_status=$?
-print Exit status of restart command: $exit_status >> $F 2>&1
+echo "Exit status of restart command: $exit_status" >> $F
 
 # poll for job completion (based on job script pid)
 
@@ -92,14 +92,14 @@ fi
 # correctly set
 #if [ $exit_status -gt 128 ]; then
 #   signal=`expr $exit_status - 128`
-#   print Killing ourself: kill -$signal $$        >> $F 2>&1   
+#   echo Killing ourself: kill -$signal $$        >> $F 2>&1
 #   /usr/bin/kill -$signal $pid                   >> $F 2>&1
 #fi
 
 # If killing ourselves didn't help or the exit_status was  < 128 exit 
 # with the exit status of our child
 
-print `date +"%D %T"` Job $1 "(pid=$2) exiting, status=$exit_status" >> $ckpt_dir/ckpt.log
+echo `date +"%D %T"` Job $1 "(pid=$2) exiting, status=$exit_status" >> $ckpt_dir/ckpt.log
 
-print Exiting with exit status: $exit_status      >> $F 2>&1
+echo Exiting with exit status: $exit_status      >> $F
 exit $exit_status

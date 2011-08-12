@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 #
 #
 #___INFO__MARK_BEGIN__
@@ -72,7 +72,7 @@ PeHostfile2MachineFile()
       host=$1
       nslots=$2
       if [ "$prev_host" != "" -a "$prev_host" != "$host" ]; then
-         print $prev_host:$host_slots
+         echo $prev_host:$host_slots
          host_slots=0
       fi
       if [ $make_unique = 1 ]; then
@@ -84,7 +84,7 @@ PeHostfile2MachineFile()
       shift 4
    done
    if [ "$prev_host" != "" ]; then
-      print $prev_host:$host_slots
+      echo $prev_host:$host_slots
    fi
 }
 

@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 #
 #
 #___INFO__MARK_BEGIN__
@@ -46,7 +46,7 @@ parse_job_status() {
    do
       if [ "$pid" = "$match" ]
       then
-         print $stat
+         echo $stat
          return $stat
       fi
    done
@@ -57,9 +57,9 @@ parse_job_status() {
 
 job_status() {
 
-   if [[ "$1" = "" || "$2" = "" ]]
+   if [ "$1" = "" -o "$2" = "" ]
    then
-       print usage: $(basename $0) os_job_id pid
+       echo "usage: $(basename $0) os_job_id pid" 1>&2
        exit 1
    fi
 
