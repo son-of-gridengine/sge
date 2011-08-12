@@ -365,6 +365,16 @@ Also a \fBqdel\fR of such a job will be able to succeed.
 .sp 1
 Such a tight SSH integration can be achieved by two means:
 .TP
+.B Use of PAM
+The easiest way on supported platforms (at least GNU/Linux):  a
+.M pam 7
+module
+.M pam_sge-qrsh-setup 8
+is available for use with the system ssh; it attaches the
+necessary additional group ID to the started process to provide tight
+integration.  See also the
+.URL http://gridengine.org/assets/static/ws2007/K5SGE.pdf "workshop paper" .
+.TP
 .B Recompile xxQS_NAMExx with \fB./aimk -tight-ssh ...\fR
 The source of xxQS_NAMExx contains the necessary additions to compile a modified \fIsshd\fR, which will honor the
 additional group ID and attach it also to the started process. It's necessary to provide the source of \fIOpenSSH\fR
@@ -403,16 +413,6 @@ do_setusercontext(authctxt->pw);
 See the
 .URL http://gridengine.org/assets/static/ws2007/SGE-openSSHTightIntegration.RonChen.pdf "original documentation" .
 .RE
-.TP
-.B Use of PAM
-On supported platforms (at least GNU/Linux), a
-.M pam 7
-module
-.M pam_sge-qrsh-setup 8
-is available which attaches the
-necessary additional group ID to the started process to provide tight
-integration.  See also the
-.URL http://gridengine.org/assets/static/ws2007/K5SGE.pdf "workshop paper" .
 .\"
 .SH RESTRICTING ACCESS
 With the builtin method in use, there is no need to allow direct
