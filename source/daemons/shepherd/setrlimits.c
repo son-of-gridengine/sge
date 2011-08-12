@@ -591,6 +591,23 @@ static int get_resource_info(u_long32 resource, const char **name,
 }
 #endif
 
+/* FORMAT_LIMIT (above, used below) has a grim kludge, printing a
+ * backspace supposedly to replace a numerical value with a symbolic
+ * one.  Such non-printing characters can cause trouble with the
+ * resulting admin mail.  For now, just strip the sequences with
+ * this.  */
+static void
+strip_bs (char *str) {
+  int i, j;
+  for (i = 0, j = 0; i <= strlen (str); i++, j++) {
+    if ('\b' == str[i])
+      j -= 2;
+    else
+      str[j] = str[i];
+  }
+  return;
+}
+
 /* The following is due to problems with parallel jobs on 5.x IRIXes (and
  * possibly above): On such  systems  the  upper  bounds  for  resource
  * limits are set by the kernel. If  limits  are  set  above  the  kernel
@@ -660,7 +677,8 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
          /* exit or not exit ? */
          sprintf(trace_str, "setrlimit(%s, {"limit_fmt", "limit_fmt"}) failed: %s",
             limit_str, FORMAT_LIMIT(rlp->rlim_cur), FORMAT_LIMIT(rlp->rlim_max), strerror(errno));
-            shepherd_trace(trace_str);
+         strip_bs(trace_str);
+         shepherd_trace(trace_str);
       } else {
 #if defined(IRIX)
          getrlimit64(resource,&dlp);
@@ -677,6 +695,7 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
             FORMAT_LIMIT(rlp->rlim_max),
             FORMAT_LIMIT(dlp.rlim_cur),
             FORMAT_LIMIT(dlp.rlim_max));
+         strip_bs(trace_str);
          shepherd_trace(trace_str);
       }
    }
@@ -703,6 +722,8 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
          sprintf(trace_str, "setrlimitj(%s, {"limit_fmt", "limit_fmt"}) "
             "failed: %s", limit_str, FORMAT_LIMIT(rlp->rlim_cur), FORMAT_LIMIT(rlp->rlim_max),
             strerror(errno));
+         strip_bs(trace_str);
+         shepherd_trace(trace_str);
       } else {
          getrlimitj(get_rlimits_os_job_id(), resource,&dlp);
       }
@@ -717,6 +738,7 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
             FORMAT_LIMIT(rlp->rlim_max),
             FORMAT_LIMIT(dlp.rlim_cur),
             FORMAT_LIMIT(dlp.rlim_max));
+         strip_bs(trace_str);
          shepherd_trace(trace_str);
       }
    }
