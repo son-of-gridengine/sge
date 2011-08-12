@@ -4,65 +4,73 @@ $description = "Test various flavors of make variable setting.";
 
 $details = "";
 
-open(MAKEFILE, "> $makefile");
+# TEST 0: Recursive
 
-# The Contents of the MAKEFILE ...
-
-print MAKEFILE <<'EOF';
+run_make_test('
+ugh = Goodbye
 foo = $(bar)
 bar = ${ugh}
 ugh = Hello
+all: ; @echo $(foo)
+',
+              '', "Hello\n");
 
-all: multi ; @echo $(foo)
+# TEST 1: Simple
 
-multi: ; $(multi)
+run_make_test('
+bar = Goodbye
+foo := $(bar)
+bar = ${ugh}
+ugh = Hello
+all: ; @echo $(foo)
+',
+              '', "Goodbye\n");
 
-x := foo
-y := $(x) bar
-x := later
+# TEST 2: Append to recursive
 
-nullstring :=
-space := $(nullstring) $(nullstring)
+run_make_test('
+foo = Hello
+ugh = Goodbye
+foo += $(bar)
+bar = ${ugh}
+ugh = Hello
+all: ; @echo $(foo)
+',
+              '', "Hello Hello\n");
 
-next: ; @echo $x$(space)$y
+# TEST 3: Append to simple
 
-define multi
-@echo hi
-@echo there
-endef
+run_make_test('
+foo := Hello
+ugh = Goodbye
+bar = ${ugh}
+foo += $(bar)
+ugh = Hello
+all: ; @echo $(foo)
+',
+              '', "Hello Goodbye\n");
 
-ifdef BOGUS
-define
-@echo error
-endef
-endif
+# TEST 4: Conditional pre-set
 
-EOF
+run_make_test('
+foo = Hello
+ugh = Goodbye
+bar = ${ugh}
+foo ?= $(bar)
+ugh = Hello
+all: ; @echo $(foo)
+',
+              '', "Hello\n");
 
-# END of Contents of MAKEFILE
+# TEST 5: Conditional unset
 
-close(MAKEFILE);
-
-# TEST #1
-# -------
-
-&run_make_with_options($makefile, "", &get_logfile);
-$answer = "hi\nthere\nHello\n";
-&compare_output($answer, &get_logfile(1));
-
-# TEST #2
-# -------
-
-&run_make_with_options($makefile, "next", &get_logfile);
-$answer = "later foo bar\n";
-&compare_output($answer, &get_logfile(1));
-
-# TEST #3
-# -------
-
-&run_make_with_options($makefile, "BOGUS=true", &get_logfile, 512);
-$answer = "$makefile:23: *** empty variable name.  Stop.\n";
-&compare_output($answer, &get_logfile(1));
-
+run_make_test('
+ugh = Goodbye
+bar = ${ugh}
+foo ?= $(bar)
+ugh = Hello
+all: ; @echo $(foo)
+',
+              '', "Hello\n");
 
 1;
