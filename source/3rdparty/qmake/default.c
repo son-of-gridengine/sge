@@ -1,34 +1,33 @@
 /* Data base of default implicit rules for GNU Make.
-Copyright (C) 1988,89,90,91,92,93,94,95,96 Free Software Foundation, Inc.
+Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997,
+1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+2010 Free Software Foundation, Inc.
 This file is part of GNU Make.
 
-GNU Make is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
+GNU Make is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later
+version.
 
-GNU Make is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-Boston, MA 02111-1307, USA.  */
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include "make.h"
+#include "filedef.h"
+#include "variable.h"
 #include "rule.h"
 #include "dep.h"
-#include "filedef.h"
 #include "job.h"
 #include "commands.h"
-#include "variable.h"
 
 /* Define GCC_IS_NATIVE if gcc is the native development environment on
    your system (gcc/bison/flex vs cc/yacc/lex).  */
-#ifdef __MSDOS__
-#define GCC_IS_NATIVE
+#if defined(__MSDOS__) || defined(__EMX__)
+# define GCC_IS_NATIVE
 #endif
 
 
@@ -38,11 +37,15 @@ Boston, MA 02111-1307, USA.  */
 
 static char default_suffixes[]
 #ifdef VMS
-  = ".exe .olb .ln .obj .c .cc .pas .p .for .f .r .y .l .mar \
-.mod .sym .def .h .info .dvi .tex .texinfo .texi .txinfo \
+  = ".exe .olb .ln .obj .c .cxx .cc .pas .p .for .f .r .y .l .mar \
+.s .ss .i .ii .mod .sym .def .h .info .dvi .tex .texinfo .texi .txinfo \
 .w .ch .cweb .web .com .sh .elc .el";
+#elif defined(__EMX__)
+  = ".out .a .ln .o .c .cc .C .cpp .p .f .F .m .r .y .l .ym .yl .s .S \
+.mod .sym .def .h .info .dvi .tex .texinfo .texi .txinfo \
+.w .ch .web .sh .elc .el .obj .exe .dll .lib";
 #else
-  = ".out .a .ln .o .c .cc .C .cpp .p .f .F .r .y .l .s .S \
+  = ".out .a .ln .o .c .cc .C .cpp .p .f .F .m .r .y .l .ym .yl .s .S \
 .mod .sym .def .h .info .dvi .tex .texinfo .texi .txinfo \
 .w .ch .web .sh .elc .el";
 #endif
@@ -108,13 +111,21 @@ static char *default_suffix_rules[] =
   {
 #ifdef VMS
     ".obj.exe",
-    "$(LINK.obj) $^ $(LOADLIBES) $(LDLIBS) /exe=$@",
+    "$(LINK.obj) $^ $(LOADLIBES) $(LDLIBS) $(CRT0) /exe=$@",
     ".mar.exe",
-    "$(LINK.mar) $^ $(LOADLIBES) $(LDLIBS) /exe=$@",
+    "$(COMPILE.mar) $^ \n $(LINK.obj) $(subst .mar,.obj,$^) $(LOADLIBES) $(LDLIBS) $(CRT0) /exe=$@",
+    ".s.exe",
+    "$(COMPILE.s) $^ \n $(LINK.obj) $(subst .s,.obj,$^) $(LOADLIBES) $(LDLIBS) $(CRT0) /exe=$@",
     ".c.exe",
-    "$(COMPILE.c) $^ \n $(LINK.obj) $(subst .c,.obj,$^) $(LOADLIBES) $(LDLIBS) /exe=$@",
+    "$(COMPILE.c) $^ \n $(LINK.obj) $(subst .c,.obj,$^) $(LOADLIBES) $(LDLIBS) $(CRT0) /exe=$@",
     ".cc.exe",
-    "$(COMPILE.cc) $^ \n $(LINK.obj) $(subst .cc,.obj,$^) $(LOADLIBES) $(LDLIBS) /exe=$@",
+#ifdef GCC_IS_NATIVE
+    "$(COMPILE.cc) $^ \n $(LINK.obj) $(CXXSTARTUP),sys$$disk:[]$(subst .cc,.obj,$^) $(LOADLIBES) $(LXLIBS) $(LDLIBS) $(CXXRT0) /exe=$@",
+#else
+    "$(COMPILE.cc) $^ \n $(CXXLINK.obj) $(subst .cc,.obj,$^) $(LOADLIBES) $(LXLIBS) $(LDLIBS) $(CXXRT0) /exe=$@",
+    ".cxx.exe",
+    "$(COMPILE.cxx) $^ \n $(CXXLINK.obj) $(subst .cxx,.obj,$^) $(LOADLIBES) $(LXLIBS) $(LDLIBS) $(CXXRT0) /exe=$@",
+#endif
     ".for.exe",
     "$(COMPILE.for) $^ \n $(LINK.obj) $(subst .for,.obj,$^) $(LOADLIBES) $(LDLIBS) /exe=$@",
     ".pas.exe",
@@ -125,10 +136,28 @@ static char *default_suffix_rules[] =
 
     ".mar.obj",
     "$(COMPILE.mar) /obj=$@ $<",
+    ".s.obj",
+    "$(COMPILE.s) /obj=$@ $<",
+    ".ss.obj",
+    "$(COMPILE.s) /obj=$@ $<",
+    ".c.i",
+    "$(COMPILE.c)/prep /list=$@ $<",
+    ".c.s",
+    "$(COMPILE.c)/noobj/machine /list=$@ $<",
+    ".i.s",
+    "$(COMPILE.c)/noprep/noobj/machine /list=$@ $<",
     ".c.obj",
     "$(COMPILE.c) /obj=$@ $<",
+    ".cc.ii",
+    "$(COMPILE.cc)/prep /list=$@ $<",
+    ".cc.ss",
+    "$(COMPILE.cc)/noobj/machine /list=$@ $<",
+    ".ii.ss",
+    "$(COMPILE.cc)/noprep/noobj/machine /list=$@ $<",
     ".cc.obj",
     "$(COMPILE.cc) /obj=$@ $<",
+    ".cxx.obj",
+    "$(COMPILE.cxx) /obj=$@ $<",
     ".for.obj",
     "$(COMPILE.for) /obj=$@ $<",
     ".pas.obj",
@@ -163,6 +192,8 @@ static char *default_suffix_rules[] =
     "$(LINK.cpp) $^ $(LOADLIBES) $(LDLIBS) -o $@",
     ".f",
     "$(LINK.f) $^ $(LOADLIBES) $(LDLIBS) -o $@",
+    ".m",
+    "$(LINK.m) $^ $(LOADLIBES) $(LDLIBS) -o $@",
     ".p",
     "$(LINK.p) $^ $(LOADLIBES) $(LDLIBS) -o $@",
     ".F",
@@ -192,6 +223,8 @@ static char *default_suffix_rules[] =
     "$(COMPILE.cpp) $(OUTPUT_OPTION) $<",
     ".f.o",
     "$(COMPILE.f) $(OUTPUT_OPTION) $<",
+    ".m.o",
+    "$(COMPILE.m) $(OUTPUT_OPTION) $<",
     ".p.o",
     "$(COMPILE.p) $(OUTPUT_OPTION) $<",
     ".F.o",
@@ -220,15 +253,18 @@ static char *default_suffix_rules[] =
 #endif
     ".l.c",
     "@$(RM) $@ \n $(LEX.l) $< > $@",
+    ".ym.m",
+    "$(YACC.m) $< \n mv -f y.tab.c $@",
+    ".lm.m",
+    "@$(RM) $@ \n $(LEX.m) $< > $@",
 
     ".F.f",
     "$(PREPROCESS.F) $(OUTPUT_OPTION) $<",
     ".r.f",
     "$(PREPROCESS.r) $(OUTPUT_OPTION) $<",
 
-    /* This might actually make lex.yy.c if there's no %R%
-       directive in $*.l, but in that case why were you
-       trying to make $*.r anyway?  */
+    /* This might actually make lex.yy.c if there's no %R% directive in $*.l,
+       but in that case why were you trying to make $*.r anyway?  */
     ".l.r",
     "$(LEX.l) $< > $@ \n mv -f lex.yy.r $@",
 
@@ -273,15 +309,38 @@ static char *default_suffix_rules[] =
     0, 0,
   };
 
-static char *default_variables[] =
+static const char *default_variables[] =
   {
 #ifdef VMS
+#ifdef __ALPHA
+    "ARCH", "ALPHA",
+#endif
+#ifdef __ia64
+    "ARCH", "IA64",
+#endif
+#ifdef __VAX
+    "ARCH", "VAX",
+#endif
     "AR", "library/obj",
     "ARFLAGS", "/replace",
     "AS", "macro",
+    "MACRO", "macro",
+#ifdef GCC_IS_NATIVE
+    "CC", "gcc",
+#else
     "CC", "cc",
+#endif
+    "CD", "builtin_cd",
+    "MAKE", "make",
+    "ECHO", "write sys$$output \"",
+#ifdef GCC_IS_NATIVE
     "C++", "gcc/plus",
     "CXX", "gcc/plus",
+#else
+    "C++", "cxx",
+    "CXX", "cxx",
+    "CXXLD", "cxxlink",
+#endif
     "CO", "co",
     "CPP", "$(CC) /preprocess_only",
     "FC", "fortran",
@@ -292,21 +351,43 @@ static char *default_variables[] =
     "LD", "link",
     "LEX", "lex",
     "PC", "pascal",
-    "YACC", "yacc",	/* Or "bison -y"  */
+    "YACC", "bison/yacc",
+    "YFLAGS", "/Define/Verbose",
+    "BISON", "bison",
     "MAKEINFO", "makeinfo",
     "TEX", "tex",
     "TEXINDEX", "texindex",
 
     "RM", "delete/nolog",
 
+    "CSTARTUP", "",
+#ifdef GCC_IS_NATIVE
+    "CRT0", ",sys$$library:vaxcrtl.olb/lib,gnu_cc_library:crt0.obj",
+    "CXXSTARTUP", "gnu_cc_library:crtbegin.obj",
+    "CXXRT0", ",sys$$library:vaxcrtl.olb/lib,gnu_cc_library:crtend.obj,gnu_cc_library:gxx_main.obj",
+    "LXLIBS", ",gnu_cc_library:libstdcxx.olb/lib,gnu_cc_library:libgccplus.olb/lib",
+    "LDLIBS", ",gnu_cc_library:libgcc.olb/lib",
+#else
+    "CRT0", "",
+    "CXXSTARTUP", "",
+    "CXXRT0", "",
+    "LXLIBS", "",
+    "LDLIBS", "",
+#endif
+
     "LINK.obj", "$(LD) $(LDFLAGS)",
+#ifndef GCC_IS_NATIVE
+    "CXXLINK.obj", "$(CXXLD) $(LDFLAGS)",
+    "COMPILE.cxx", "$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)",
+#endif
     "COMPILE.c", "$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH)",
-    "COMPILE.cc", "$(C++) $(C++FLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c",
+    "COMPILE.cc", "$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH)",
     "YACC.y", "$(YACC) $(YFLAGS)",
     "LEX.l", "$(LEX) $(LFLAGS)",
     "COMPILE.for", "$(FC) $(FFLAGS) $(TARGET_ARCH)",
     "COMPILE.pas", "$(PC) $(PFLAGS) $(CPPFLAGS) $(TARGET_ARCH)",
-    "COMPILE.mar", "$(AS) $(ASFLAGS) $(TARGET_MACH)",
+    "COMPILE.mar", "$(MACRO) $(MACROFLAGS)",
+    "COMPILE.s", "$(AS) $(ASFLAGS) $(TARGET_MACH)",
     "LINT.c", "$(LINT) $(LINTFLAGS) $(CPPFLAGS) $(TARGET_ARCH)",
 
     "MV", "rename/new_version",
@@ -319,19 +400,24 @@ static char *default_variables[] =
     "AS", "as",
 #ifdef GCC_IS_NATIVE
     "CC", "gcc",
+# ifdef __MSDOS__
+    "CXX", "gpp",	/* g++ is an invalid name on MSDOS */
+# else
     "CXX", "gcc",
+# endif /* __MSDOS__ */
+    "OBJC", "gcc",
 #else
     "CC", "cc",
     "CXX", "g++",
+    "OBJC", "cc",
 #endif
 
     /* This expands to $(CO) $(COFLAGS) $< $@ if $@ does not exist,
        and to the empty string if $@ does exist.  */
-    "CHECKOUT,v",
-    "+$(patsubst $@-noexist,$(CO) $(COFLAGS) $< $@,\
-		 $(filter-out $@,$(firstword $(wildcard $@) $@-noexist)))",
-
+    "CHECKOUT,v", "+$(if $(wildcard $@),,$(CO) $(COFLAGS) $< $@)",
     "CO", "co",
+    "COFLAGS", "",
+
     "CPP", "$(CC) -E",
 #ifdef	CRAY
     "CF77PPFLAGS", "-P",
@@ -391,6 +477,8 @@ static char *default_variables[] =
     "LINK.o", "$(CC) $(LDFLAGS) $(TARGET_ARCH)",
     "COMPILE.c", "$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c",
     "LINK.c", "$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)",
+    "COMPILE.m", "$(OBJC) $(OBJCFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c",
+    "LINK.m", "$(OBJC) $(OBJCFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)",
     "COMPILE.cc", "$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c",
     "COMPILE.C", "$(COMPILE.cc)",
     "COMPILE.cpp", "$(COMPILE.cc)",
@@ -399,6 +487,8 @@ static char *default_variables[] =
     "LINK.cpp", "$(LINK.cc)",
     "YACC.y", "$(YACC) $(YFLAGS)",
     "LEX.l", "$(LEX) $(LFLAGS) -t",
+    "YACC.m", "$(YACC) $(YFLAGS)",
+    "LEX.m", "$(LEX) $(LFLAGS) -t",
     "COMPILE.f", "$(FC) $(FFLAGS) $(TARGET_ARCH) -c",
     "LINK.f", "$(FC) $(FFLAGS) $(LDFLAGS) $(TARGET_ARCH)",
     "COMPILE.F", "$(FC) $(FFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c",
@@ -443,42 +533,42 @@ static char *default_variables[] =
 /* Set up the default .SUFFIXES list.  */
 
 void
-set_default_suffixes ()
+set_default_suffixes (void)
 {
-  suffix_file = enter_file (".SUFFIXES");
+  suffix_file = enter_file (strcache_add (".SUFFIXES"));
 
   if (no_builtin_rules_flag)
-    (void) define_variable ("SUFFIXES", 8, "", o_default, 0);
+    define_variable_cname ("SUFFIXES", "", o_default, 0);
   else
     {
       char *p = default_suffixes;
-      suffix_file->deps = (struct dep *)
-	multi_glob (parse_file_seq (&p, '\0', sizeof (struct dep), 1),
-		    sizeof (struct dep));
-      (void) define_variable ("SUFFIXES", 8, default_suffixes, o_default, 0);
+      suffix_file->deps = enter_prereqs(PARSE_FILE_SEQ (&p, struct dep, '\0',
+                                                        NULL, 0),
+                                        NULL);
+      define_variable_cname ("SUFFIXES", default_suffixes, o_default, 0);
     }
 }
 
 /* Enter the default suffix rules as file rules.  This used to be done in
    install_default_implicit_rules, but that loses because we want the
-   suffix rules installed before reading makefiles, and thee pattern rules
+   suffix rules installed before reading makefiles, and the pattern rules
    installed after.  */
 
 void
-install_default_suffix_rules ()
+install_default_suffix_rules (void)
 {
-  register char **s;
+  char **s;
 
   if (no_builtin_rules_flag)
     return;
 
- for (s = default_suffix_rules; *s != 0; s += 2)
+  for (s = default_suffix_rules; *s != 0; s += 2)
     {
-      register struct file *f = enter_file (s[0]);
+      struct file *f = enter_file (strcache_add (s[0]));
       /* Don't clobber cmds given in a makefile if there were any.  */
       if (f->cmds == 0)
 	{
-	  f->cmds = (struct commands *) xmalloc (sizeof (struct commands));
+	  f->cmds = xmalloc (sizeof (struct commands));
 	  f->cmds->fileinfo.filenm = 0;
 	  f->cmds->commands = s[1];
 	  f->cmds->command_lines = 0;
@@ -490,9 +580,9 @@ install_default_suffix_rules ()
 /* Install the default pattern rules.  */
 
 void
-install_default_implicit_rules ()
+install_default_implicit_rules (void)
 {
-  register struct pspec *p;
+  struct pspec *p;
 
   if (no_builtin_rules_flag)
     return;
@@ -505,13 +595,13 @@ install_default_implicit_rules ()
 }
 
 void
-define_default_variables ()
+define_default_variables (void)
 {
-  register char **s;
+  const char **s;
 
   if (no_builtin_variables_flag)
     return;
 
   for (s = default_variables; *s != 0; s += 2)
-    (void) define_variable (s[0], strlen (s[0]), s[1], o_default, 1);
+    define_variable (s[0], strlen (s[0]), s[1], o_default, 1);
 }

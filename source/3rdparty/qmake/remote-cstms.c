@@ -3,29 +3,30 @@
    Please do not send bug reports or questions about it to
    the Make maintainers.
 
-Copyright (C) 1988, 1989, 1992, 1993 Free Software Foundation, Inc.
+Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997,
+1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+2010 Free Software Foundation, Inc.
 This file is part of GNU Make.
 
-GNU Make is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
+GNU Make is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later
+version.
 
-GNU Make is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with GNU Make; see the file COPYING.  If not, write to
-the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-Boston, MA 02111-1307, USA.  */
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include "make.h"
 #include "job.h"
 #include "filedef.h"
 #include "commands.h"
 #include "job.h"
+#include "debug.h"
+
 #include <sys/time.h>
 #include <netdb.h>
 
@@ -46,22 +47,21 @@ static char *normalized_cwd;
 /* Call once at startup even if no commands are run.  */
 
 void
-remote_setup ()
+remote_setup (void)
 {
 }
 
 /* Called before exit.  */
 
 void
-remote_cleanup ()
+remote_cleanup (void)
 {
 }
 
 /* Return nonzero if the next job should be done remotely.  */
 
 int
-start_remote_job_p (first_p)
-     int first_p;
+start_remote_job_p (int first_p)
 {
   static int inited = 0;
   int status;
@@ -81,7 +81,7 @@ start_remote_job_p (first_p)
 	 Customs requires a privileged source port be used.  */
       make_access ();
 
-      if (debug_flag)
+      if (ISDB (DB_JOBS))
         Rpc_Debug(1);
 
       /* Ping the daemon once to see if it is there.  */
@@ -98,7 +98,7 @@ start_remote_job_p (first_p)
 	  /* Normalize the current directory path name to something
 	     that should work on all machines exported to.  */
 
-	  normalized_cwd = (char *) xmalloc (GET_PATH_MAX);
+	  normalized_cwd = xmalloc (GET_PATH_MAX);
 	  strcpy (normalized_cwd, starting_directory);
 	  if (Customs_NormPath (normalized_cwd, GET_PATH_MAX) < 0)
 	    /* Path normalization failure means using Customs
@@ -122,8 +122,8 @@ start_remote_job_p (first_p)
   status = Customs_Host (EXPORT_SAME, &permit);
   if (status != RPC_SUCCESS)
     {
-      if (debug_flag)
-	printf ("Customs won't export: %s\n", Rpc_ErrorMessage (status));
+      DB (DB_JOBS, (_("Customs won't export: %s\n"),
+                    Rpc_ErrorMessage (status)));
       return 0;
     }
 
@@ -138,12 +138,8 @@ start_remote_job_p (first_p)
    if it is local (meaning *ID_PTR is a process ID).  */
 
 int
-start_remote_job (argv, envp, stdin_fd, is_remote, id_ptr, used_stdin)
-     char **argv, **envp;
-     int stdin_fd;
-     int *is_remote;
-     int *id_ptr;
-     int *used_stdin;
+start_remote_job (char **argv, char **envp, int stdin_fd,
+                  int *is_remote, int *id_ptr, int *used_stdin)
 {
   char waybill[MAX_DATA_SIZE], msg[128];
   struct hostent *host;
@@ -273,9 +269,8 @@ start_remote_job (argv, envp, stdin_fd, is_remote, id_ptr, used_stdin)
    0 if we would have to block and !BLOCK, or < 0 if there were none.  */
 
 int
-remote_status (exit_code_ptr, signal_ptr, coredump_ptr, block)
-     int *exit_code_ptr, *signal_ptr, *coredump_ptr;
-     int block;
+remote_status (int *exit_code_ptr, int *signal_ptr, int *coredump_ptr,
+               int block)
 {
   return -1;
 }
@@ -284,7 +279,7 @@ remote_status (exit_code_ptr, signal_ptr, coredump_ptr, block)
    If this notification is done by raising the child termination
    signal, do not block that signal.  */
 void
-block_remote_children ()
+block_remote_children (void)
 {
   return;
 }
@@ -293,16 +288,14 @@ block_remote_children ()
    If this is done by raising the child termination signal,
    do not unblock that signal.  */
 void
-unblock_remote_children ()
+unblock_remote_children (void)
 {
   return;
 }
 
 /* Send signal SIG to child ID.  Return 0 if successful, -1 if not.  */
 int
-remote_kill (id, sig)
-     int id;
-     int sig;
+remote_kill (int id, int sig)
 {
   return -1;
 }

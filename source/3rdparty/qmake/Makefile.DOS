@@ -1,12 +1,22 @@
 # -*-Makefile-*- template for DJGPP
 # Makefile.in generated automatically by automake 1.2 from Makefile.am
-
-# Copyright (C) 1994, 1995-1998, 1999 Free Software Foundation, Inc.
-# This Makefile.DOS is free software; the Free Software Foundation
-# gives unlimited permission to copy, distribute and modify it.
-
-# -*-Makefile-*-, or close enough
-
+#
+# Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003,
+# 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+# This file is part of GNU Make.
+#
+# GNU Make is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
 
 SHELL = /bin/sh
 
@@ -14,26 +24,28 @@ srcdir = .
 VPATH = $(srcdir)
 # $DJDIR is defined automatically by DJGPP to point
 # to the root of the DJGPP installation tree.
-prefix = ${DJDIR}
+prefix = /dev/env/DJDIR
 exec_prefix = ${prefix}
 
-bindir = ${exec_prefix}/bin
-datadir = ${prefix}/share
-libdir = ${prefix}/lib
-infodir = ${prefix}/info
-# DJGPP doesn't have separate man tree, use info instead.
-mandir = ${prefix}/info
-includedir = ${prefix}/include
+bindir = /bin
+datadir = /share
+libdir = /lib
+infodir = /info
+mandir = /man
+includedir = /include
 oldincludedir = c:/djgpp/include
+
+DESTDIR = /dev/env/DJDIR
 
 pkgdatadir = $(datadir)/make
 pkglibdir = $(libdir)/make
 pkgincludedir = $(includedir)/make
+localedir = $(datadir)/locale
 
-INSTALL = ${bindir}/ginstall -c
-INSTALL_PROGRAM = ${bindir}/ginstall -c
-INSTALL_DATA = ${bindir}/ginstall -c -m 644
-INSTALL_SCRIPT = ${bindir}/ginstall -c
+INSTALL = ${exec_prefix}/bin/ginstall -c
+INSTALL_PROGRAM = ${exec_prefix}/bin/ginstall -c
+INSTALL_DATA = ${exec_prefix}/bin/ginstall -c -m 644
+INSTALL_SCRIPT = ${exec_prefix}/bin/ginstall -c
 transform = s,x,x,
 
 # This will fail even if they don't have a Unix-like shell (stock DOS
@@ -47,37 +59,40 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+EXEEXT = .exe
+OBJEXT = o
+
 AR = ar
+AWK = gawk
 CC = gcc
 CPP = gcc -E
 LIBOBJS =
-MAKEINFO = ${bindir}/makeinfo
+MAKEINFO = ${exec_prefix}/bin/makeinfo
 PACKAGE = make
 PERL = perl
 RANLIB = ranlib
 REMOTE = stub
-VERSION = 3.78.1
+VERSION = 3.82
 
 AUTOMAKE_OPTIONS = 1.2
 
-bin_PROGRAMS =	make
+bin_PROGRAMS =	make$(EXEEXT)
 
-make_SOURCES =	main.c commands.c job.c dir.c file.c misc.c read.c remake.c rule.c implicit.c default.c variable.c expand.c function.c vpath.c version.c ar.c arscan.c commands.h dep.h filedef.h job.h make.h rule.h variable.h signame.c signame.h getopt.c getopt1.c getopt.h remote-$(REMOTE).c
+make_SOURCES =	ar.c arscan.c commands.c default.c dir.c expand.c file.c function.c getopt.c getopt1.c implicit.c job.c main.c misc.c read.c remake.c rule.c signame.c strcache.c variable.c version.c vpath.c hash.c remote-$(REMOTE).c
 # This should include the glob/ prefix
 libglob_a_SOURCES =	glob/fnmatch.c glob/glob.c glob/fnmatch.h glob/glob.h
 make_LDADD =	  glob/libglob.a
 
-info_TEXINFOS =	make.texinfo
 man_MANS =	make.1
 
-INCLUDES =	-I$(srcdir)/glob -DLIBDIR=\"c:/djgpp/lib\" -DINCLUDEDIR=\"c:/djgpp/include\"
+INCLUDES =	-I$(srcdir)/glob -DLIBDIR=\"$(prefix)$(libdir)\" -DINCLUDEDIR=\"$(prefix)$(includedir)\" -DLOCALEDIR=\"$(prefix)$(localedir)\"
 
-BUILT_SOURCES =	README build.sh.in
+BUILT_SOURCES =	README build.sh-in
 
-EXTRA_DIST = 	$(BUILT_SOURCES) $(man_MANS) README.customs remote-cstms.c  make-stds.texi texinfo.tex SCOPTIONS SMakefile  Makefile.ami README.Amiga config.ami amiga.c amiga.h  NMakefile README.DOS configh.dos configure.bat makefile.com  README.W32 build_w32.bat config.h.W32 subproc.bat make.lnk  config.h-vms makefile.vms readme.vms vmsdir.h vmsfunctions.c  vmsify.c
+EXTRA_DIST = 	$(BUILT_SOURCES) $(man_MANS) README.customs remote-cstms.c  make-stds.texi texinfo.tex SCOPTIONS SMakefile  Makefile.ami README.Amiga config.ami amiga.c amiga.h  NMakefile README.DOS configh.dos configure.bat makefile.com  README.W32 build_w32.bat config.h-W32 subproc.bat make.lnk  config.h-vms makefile.vms readme.vms vmsdir.h vmsfunctions.c  vmsify.c
 
-SUBDIRS =	glob
-mkinstalldirs = ${bindir}/gmkdir -p
+SUBDIRS =	glob doc
+mkinstalldirs = ${exec_prefix}/bin/gmkdir -p
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =  build.sh
 PROGRAMS =  $(bin_PROGRAMS)
@@ -89,7 +104,7 @@ DEFS =  -I. -I$(srcdir) -I.
 CPPFLAGS = -DHAVE_CONFIG_H
 LDFLAGS =
 LIBS =
-make_OBJECTS =  main.o commands.o job.o dir.o file.o misc.o read.o remake.o rule.o implicit.o default.o variable.o expand.o function.o vpath.o version.o ar.o arscan.o signame.o getopt.o getopt1.o remote-$(REMOTE).o
+make_OBJECTS =  ar.o arscan.o commands.o default.o dir.o expand.o file.o function.o getopt.o getopt1.o implicit.o job.o main.o misc.o read.o remake.o rule.o signame.o strcache.o variable.o version.o vpath.o hash.o remote-$(REMOTE).o
 make_DEPENDENCIES =    glob/libglob.a
 make_LDFLAGS =
 libglob_a_LIBADD =
@@ -99,16 +114,16 @@ CFLAGS = -O2 -g
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 TEXI2DVI = texi2dvi
-TEXINFO_TEX = $(srcdir)/texinfo.tex
-INFO_DEPS = make.info
-DVIS = make.dvi
-TEXINFOS = make.texinfo
+TEXINFO_TEX = $(srcdir)/config/texinfo.tex
+INFO_DEPS = doc/make.info
+DVIS = doc/make.dvi
+TEXINFOS = doc/make.texi
+noinst_TEXINFOS = doc/fdl.texi doc/make-stds.texi
 man1dir = $(mandir)/man1
 MANS = $(man_MANS)
 
 NROFF = nroff
-DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am  Makefile.in NEWS acconfig.h aclocal.m4 alloca.c build.sh.in config.h.in  configure configure.in getloadavg.c install-sh missing mkinstalldirs  stamp-h.in texinfo.tex
-
+DIST_COMMON =  README ABOUT-NLS AUTHORS COPYING ChangeLog INSTALL Makefile.am  Makefile.in NEWS acconfig.h aclocal.m4 alloca.c build.sh-in config.h-in  configure configure.in getloadavg.c
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
@@ -121,7 +136,7 @@ HEADERS = $(wildcard $(srcdir)/*.h)
 default: all
 
 .SUFFIXES:
-.SUFFIXES: .S .c .dvi .info .o .ps .s .texi .texinfo .txi
+.SUFFIXES: .c .dvi .info .o .obj .ps .texi .tex .html
 
 mostlyclean-hdr:
 
@@ -144,26 +159,20 @@ maintainer-clean-binPROGRAMS:
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do    if test -f $$p; then      echo "  $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p | sed '$(transform)'`";       $(INSTALL_PROGRAM) $$p $(bindir)/`echo $$p | sed '$(transform)'`;    else :; fi;  done
+	@list='$(bin_PROGRAMS)'; for p in $$list; do    if test -f $$p; then      echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p | sed '$(transform)'`";       $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p | sed '$(transform)'`;    else :; fi;  done
 
 uninstall-binPROGRAMS:
 	$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do    rm -f $(bindir)/`echo $$p|sed '$(transform)'`.exe;  done
+	list='$(bin_PROGRAMS)'; for p in $$list; do    rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`.exe;  done
 
 .c.o:
-	$(COMPILE) -c $<
-
-.s.o:
-	$(COMPILE) -c $<
-
-.S.o:
 	$(COMPILE) -c $<
 
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
 
 mostlyclean-compile:
-	-rm -f *.o *.exe make.new core
+	-rm -f *.$(OBJEXT) *$(EXEEXT) make.new core
 
 clean-compile:
 
@@ -172,71 +181,75 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-make: $(make_OBJECTS) $(make_DEPENDENCIES)
+make$(EXEEXT): $(make_OBJECTS) $(make_DEPENDENCIES)
 	@command.com /c if exist make del make
 	@command.com /c if exist make.exe del make.exe
 	$(LINK) $(make_LDFLAGS) $(make_OBJECTS) $(make_LDADD) $(LIBS)
 
-make.info: make.texinfo
-make.dvi: make.texinfo
+# Documentation
+
+make.info: make.texi
+make.dvi: make.texi
+make.ps: make.dvi make.texi
+make.html: make.texi
 
 
 DVIPS = dvips
 
 .texi.info:
-	$(MAKEINFO) $(srcdir)/$< -o ./$@
-
-.texi.dvi:
-	TEXINPUTS="$(srcdir);$$TEXINPUTS"    MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
+	@command.com /c if exist make.info* del make.info*
+	@command.com /c if exist make.i* del make.i*
+	$(MAKEINFO) -I$(srcdir) --no-split $< -o ./$@
 
 .texi:
-	$(MAKEINFO) $(srcdir)/$< -o ./$@
+	@command.com /c if exist make.info* del make.info*
+	@command.com /c if exist make.i* del make.i*
+	$(MAKEINFO) -I$(srcdir) --no-split $< -o ./$@
 
-.texinfo.info:
-	$(MAKEINFO) $(srcdir)/$< -o ./$@
-
-.texinfo:
-	$(MAKEINFO) $(srcdir)/$< -o ./$@
-
-.texinfo.dvi:
-	TEXINPUTS="$(srcdir);$$TEXINPUTS"    MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
-
-.txi.info:
-	$(MAKEINFO) $(srcdir)/$< -o ./$@
-
-.txi.dvi:
+.texi.dvi:
 	TEXINPUTS="$(srcdir);$$TEXINPUTS"    MAKEINFO='$(MAKEINFO) -I $(srcdir)' $(TEXI2DVI) $<
 
 .dvi.ps:
 	$(DVIPS) $< -o $@
 
+# Other documentation formats
+
+html: html-recursive
+
+.texi.html:
+	@command.com /c if exist make.html* del make.html*
+	$(MAKEINFO) --html -I$(srcdir) --no-split $< -o ./$@
+
 install-info-am: $(INFO_DEPS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(infodir)
-	@for file in $(INFO_DEPS) make.i; do    d=$(srcdir);    for ifile in `cd $$d && echo $$file $$file-[0-9] $$file-[0-9][0-9] $$file[0-9] $$file[0-9][0-9]`; do      if test -f $$d/$$ifile; then        echo " $(INSTALL_DATA) $$d/$$ifile $(DESTDIR)$(infodir)/$$ifile"; $(INSTALL_DATA) $$d/$$ifile $(DESTDIR)$(infodir)/$$ifile; else : ; fi;    done;  done
+	@for file in $(INFO_DEPS); do    iifile=`echo $$file | sed "s|doc/||"`;    d=$(srcdir);    for ifile in `cd $$d && echo $$file`; do      if test -f $$d/$$ifile; then        echo " $(INSTALL_DATA) $$d/$$ifile $(DESTDIR)$(infodir)/$$iifile"; $(INSTALL_DATA) $$d/$$ifile $(DESTDIR)$(infodir)/$$iifile; else : ; fi;    done;  done
 	@$(POST_INSTALL)
-	@if $(SHELL) -c 'install-info --version | sed 1q | fgrep -s -v -i debian' >/dev/null 2>&1; then    for file in $(INFO_DEPS); do      echo " install-info --info-dir=$(DESTDIR)$(infodir) $(DESTDIR)$(infodir)/$$file";     install-info --info-dir=$(DESTDIR)$(infodir) $(DESTDIR)$(infodir)/$$file || :;   done;  else : ; fi
+	@if $(SHELL) -c 'install-info --version | sed 1q | fgrep -s -v -i debian' >/dev/null 2>&1; then    for file in $(INFO_DEPS); do    iifile=`echo $$file | sed "s|doc/||"`;      echo " install-info --info-dir=$(DESTDIR)$(infodir) $(DESTDIR)$(infodir)/$$iifile";     install-info --info-dir=$(DESTDIR)$(infodir) $(DESTDIR)$(infodir)/$$iifile || :;   done;  else : ; fi
 
 uninstall-info:
 	$(PRE_UNINSTALL)
 	@if $(SHELL) -c 'install-info --version | sed 1q | fgrep -s -v -i debian' >/dev/null 2>&1; then    ii=yes;  else ii=; fi;  for file in $(INFO_DEPS); do    test -z $ii || install-info --info-dir=$(DESTDIR)$(infodir) --remove $$file;  done
 	$(NORMAL_UNINSTALL)
-	for file in $(INFO_DEPS) make.i; do    (cd $(DESTDIR)$(infodir) && rm -f $$file $$file-[0-9] $$file-[0-9][0-9] $$file[0-9] $$file[0-9][0-9]);  done
+	for file in $(INFO_DEPS); do (cd $(DESTDIR)$(infodir) && rm -f $$file);  done
 
 dist-info: $(INFO_DEPS)
 	for base in $(INFO_DEPS); do    d=$(srcdir);    for file in `cd $$d && eval echo $$base*`; do      test -f $(distdir)/$$file      || ln $$d/$$file $(distdir)/$$file 2> /dev/null      || cp -p $$d/$$file $(distdir)/$$file;    done;  done
 
 mostlyclean-aminfo:
-	-rm -f make.aux make.cp make.cps make.dvi make.fn make.fns make.ky \
-	  make.kys make.ps make.log make.pg make.toc make.tp make.tps \
-	  make.vr make.vrs make.op make.tr make.cv make.cn
+	-rm -f $(srcdir)/doc/make.aux $(srcdir)/doc/make.cp $(srcdir)/doc/make.cps $(srcdir)/doc/make.dvi \
+	  $(srcdir)/doc/make.fn $(srcdir)/doc/make.fns $(srcdir)/doc/make.ky $(srcdir)/doc/make.kys \
+	  $(srcdir)/doc/make.ps $(srcdir)/doc/make.log $(srcdir)/doc/make.pg $(srcdir)/doc/make.toc \
+	  $(srcdir)/doc/make.tp $(srcdir)/doc/make.tps $(srcdir)/doc/make.vr $(srcdir)/doc/make.vrs \
+	  $(srcdir)/doc/make.op $(srcdir)/doc/make.tr $(srcdir)/doc/make.cv $(srcdir)/doc/make.cn \
+	  $(srcdir)/doc/make.html
 
 clean-aminfo:
 
 distclean-aminfo:
 
 maintainer-clean-aminfo:
-	for i in $(INFO_DEPS) make.i; do rm -f `eval echo $$i*`; done
+	for i in $(INFO_DEPS); do rm -f $$i*; done
 
 install-man1:
 	$(mkinstalldirs) $(DESTDIR)$(man1dir)
@@ -281,13 +294,10 @@ uninstall-man:
 # but do a sanity check: if $SUBDIRS will ever have more than
 # a single directory, yell bloody murder.
 all-recursive:
-ifeq ($(words $(SUBDIRS)), 1)
+ifeq ($(findstring glob, $(SUBDIRS)), glob)
 	@command.com /c if not exist glob\\nul md glob
-	@echo Making all in $(SUBDIRS)
-	$(MAKE) -C $(SUBDIRS) -f ../Makefile INCLUDES='-I$(srcdir) -I$(srcdir)/glob' DEFS='-I.. -I$(srcdir)' VPATH=$(srcdir)/glob libglob.a
-else
-	@echo FATAL: There is more than one directory in "($(SUBDIRS))"
-	@$(EXIT_FAIL)
+	@echo Making all in glob
+	$(MAKE) -C glob -f ../Makefile INCLUDES='-I$(srcdir) -I$(srcdir)/glob' DEFS='-I.. -I$(srcdir)' VPATH=$(srcdir)/glob libglob.a
 endif
 
 $(SUBDIRS):
@@ -300,11 +310,13 @@ libglob.a: $(libglob_a_OBJECTS)
 
 mostlyclean-recursive clean-recursive distclean-recursive \
 maintainer-clean-recursive check-recursive:
-ifeq ($(words $(SUBDIRS)), 1)
-	@echo Making $(shell echo $@ | sed s/-recursive//) in $(SUBDIRS)
-	$(MAKE) -C $(SUBDIRS) -f ../Makefile $(shell echo $@ | sed s/-recursive//)-am
+ifeq ($(words $(SUBDIRS)), 2)
+	@echo Making $(shell echo $@ | sed s/-recursive//) in glob
+	$(MAKE) -C glob -f ../Makefile $(shell echo $@ | sed s/-recursive//)-am
+	@echo Making $(shell echo $@ | sed s/-recursive//) in doc
+	$(MAKE) -C doc -f ../Makefile $(shell echo $@ | sed s/-recursive//)-am
 else
-	@echo FATAL: There is more than one directory in "($(SUBDIRS))"
+	@echo FATAL: There is more than two directory in "($(SUBDIRS))"
 	@$(EXIT_FAIL)
 endif
 
@@ -312,10 +324,10 @@ tags-in-glob: $(libglob_a_SOURCES)
 	etags $(addprefix $(srcdir)/,$^) -o ./glob/TAGS
 
 tags-recursive:
-ifeq ($(words $(SUBDIRS)), 1)
+ifeq ($(words $(SUBDIRS)), 2)
 	$(MAKE) tags-in-glob
 else
-	@echo FATAL: There is more than one directory in "($(SUBDIRS))"
+	@echo FATAL: There is more than two directory in "($(SUBDIRS))"
 	@$(EXIT_FAIL)
 endif
 
@@ -366,15 +378,44 @@ distdir: $(DISTFILES)
 	$(MAKE) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-info
 	$(MAKE) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 
-info: $(INFO_DEPS) info-recursive
-dvi: $(DVIS) dvi-recursive
+info: info-recursive
+info-recursive:
+ifeq ($(findstring doc, $(SUBDIRS)), doc)
+	@command.com /c if not exist doc\\nul md doc
+	@echo Making all in doc
+	$(MAKE) -C doc -f ../Makefile VPATH=$(srcdir)/doc make.info
+endif
+
+dvi: dvi-recursive
+dvi-recursive:
+ifeq ($(findstring doc, $(SUBDIRS)), doc)
+	@command.com /c if not exist doc\\nul md doc
+	@echo Making all in doc
+	$(MAKE) -C doc -f ../Makefile VPATH=$(srcdir)/doc make.dvi
+endif
+
+ps: ps-recursive
+ps-recursive:
+ifeq ($(findstring doc, $(SUBDIRS)), doc)
+	@command.com /c if not exist doc\\nul md doc
+	@echo Making all in doc
+	$(MAKE) -C doc -f ../Makefile VPATH=$(srcdir)/doc make.ps
+endif
+
+html-recursive:
+ifeq ($(findstring doc, $(SUBDIRS)), doc)
+	@command.com /c if not exist doc\\nul md doc
+	@echo Making all in doc
+	$(MAKE) -C doc -f ../Makefile VPATH=$(srcdir)/doc make.html
+endif
+
 check: all-am check-recursive check-local
 	@:
 installcheck: installcheck-recursive
 all-recursive-am: config.h
 	$(MAKE) all-recursive
 
-all-am: Makefile $(INFO_DEPS) $(PROGRAMS) config.h
+all-am: Makefile $(PROGRAMS) config.h info
 
 install-exec-am: install-binPROGRAMS
 
@@ -387,6 +428,9 @@ install-exec: install-exec-recursive install-exec-am
 
 install-data: install-data-recursive install-data-am
 	@$(NORMAL_INSTALL)
+
+install-recursive uninstall-recursive:
+	@:
 
 install: install-recursive install-exec-am install-data-am
 	@:
@@ -453,7 +497,8 @@ maintainer-clean-depend info dvi check-local installcheck \
 all-recursive-am all-am install-exec-am install-data-am uninstall-am \
 install-exec install-data install uninstall all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean \
+html
 
 
 # --------------- Local DIST Section
@@ -541,41 +586,178 @@ check-regression:
 .NOEXPORT:
 
 # --------------- DEPENDENCIES
-#
-alloca.o: alloca.c config.h
-ar.o: ar.c make.h config.h signame.h filedef.h dep.h glob/fnmatch.h
-arscan.o: arscan.c make.h config.h signame.h
-commands.o: commands.c make.h config.h signame.h dep.h filedef.h \
-	variable.h job.h commands.h
-default.o: default.c make.h config.h signame.h rule.h dep.h filedef.h \
-	job.h commands.h variable.h
-dir.o: dir.c make.h config.h signame.h glob/glob.h
-expand.o: expand.c make.h config.h signame.h filedef.h job.h commands.h \
-	variable.h rule.h
-file.o: file.c make.h config.h signame.h dep.h filedef.h job.h \
-	commands.h variable.h
-function.o: function.c make.h config.h signame.h filedef.h variable.h \
-	dep.h job.h commands.h
-getloadavg.o: getloadavg.c config.h
-getopt.o: getopt.c config.h getopt.h
-getopt1.o: getopt1.c config.h getopt.h
-implicit.o: implicit.c make.h config.h signame.h rule.h dep.h filedef.h
-job.o: job.c make.h config.h signame.h job.h filedef.h commands.h \
-	variable.h
-main.o: main.c make.h config.h signame.h dep.h filedef.h variable.h \
-	job.h commands.h rule.h getopt.h
-misc.o: misc.c make.h config.h signame.h dep.h
-read.o: read.c make.h config.h signame.h glob/glob.h dep.h filedef.h \
-	job.h commands.h variable.h rule.h
-remake.o: remake.c make.h config.h signame.h filedef.h job.h commands.h \
-	dep.h variable.h
-remote-stub.o: remote-stub.c make.h config.h signame.h filedef.h job.h \
-	commands.h
-rule.o: rule.c make.h config.h signame.h dep.h filedef.h job.h \
-	commands.h variable.h rule.h
-signame.o: signame.c make.h config.h signame.h
-variable.o: variable.c make.h config.h signame.h dep.h filedef.h job.h \
-	commands.h variable.h
-version.o: version.c config.h
-vpath.o: vpath.c make.h config.h signame.h filedef.h variable.h
 
+# --------------- DEPENDENCIES
+#
+
+# .deps/alloca.Po
+# dummy
+
+# .deps/ar.Po
+ar.o: ar.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h dep.h \
+
+# .deps/arscan.Po
+arscan.o: arscan.c make.h config.h \
+ getopt.h \
+ gettext.h \
+
+# .deps/commands.Po
+commands.o: commands.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h hash.h variable.h job.h \
+ commands.h
+
+# .deps/default.Po
+default.o: default.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h variable.h rule.h dep.h \
+ job.h \
+ commands.h
+
+# .deps/dir.Po
+dir.o: dir.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ hash.h \
+
+# .deps/expand.Po
+expand.o: expand.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h \
+ job.h \
+ commands.h variable.h \
+ rule.h
+
+# .deps/file.Po
+file.o: file.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h \
+ hash.h job.h \
+ commands.h variable.h \
+ debug.h
+
+# .deps/function.Po
+function.o: function.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h variable.h dep.h job.h \
+ commands.h debug.h
+
+# .deps/getloadavg.Po
+# dummy
+
+# .deps/getopt.Po
+getopt.o: getopt.c config.h \
+
+# .deps/getopt1.Po
+getopt1.o: getopt1.c config.h getopt.h \
+
+# .deps/hash.Po
+hash.o: hash.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ hash.h
+
+# .deps/implicit.Po
+implicit.o: implicit.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h rule.h dep.h debug.h \
+ variable.h job.h \
+ commands.h
+
+# .deps/job.Po
+job.o: job.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ job.h \
+ debug.h filedef.h hash.h commands.h \
+ variable.h
+
+# .deps/loadavg-getloadavg.Po
+# dummy
+
+# .deps/main.Po
+main.o: main.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h hash.h variable.h job.h \
+ commands.h rule.h debug.h getopt.h \
+
+# .deps/misc.Po
+misc.o: misc.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h debug.h
+
+# .deps/read.Po
+read.o: read.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h hash.h job.h \
+ commands.h variable.h rule.h debug.h \
+
+# .deps/remake.Po
+remake.o: remake.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h job.h \
+ commands.h dep.h variable.h debug.h \
+
+# .deps/remote-cstms.Po
+# dummy
+
+# .deps/remote-stub.Po
+remote-stub.o: remote-stub.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h job.h \
+ commands.h
+
+# .deps/rule.Po
+rule.o: rule.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h \
+ hash.h job.h \
+ commands.h variable.h \
+ rule.h
+
+# .deps/signame.Po
+signame.o: signame.c make.h config.h \
+ getopt.h \
+ gettext.h \
+
+# .deps/strcache.Po
+strcache.o: strcache.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ hash.h
+
+# .deps/variable.Po
+variable.o: variable.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ dep.h filedef.h \
+ hash.h job.h \
+ commands.h variable.h \
+ rule.h
+
+# .deps/version.Po
+version.o: version.c config.h
+
+# .deps/vmsjobs.Po
+# dummy
+
+# .deps/vpath.Po
+vpath.o: vpath.c make.h config.h \
+ getopt.h \
+ gettext.h \
+ filedef.h hash.h variable.h

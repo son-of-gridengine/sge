@@ -1,10 +1,24 @@
-/* vmsfunctions.c */
+/* VMS functions
+Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
+2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+This file is part of GNU Make.
 
-#define KDEBUG 0
+GNU Make is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later
+version.
 
-#include <stdio.h>
-#include <ctype.h>
+GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.  */
+
 #include "make.h"
+#include "debug.h"
+#include "job.h"
+
 #ifdef __DECC
 #include <starlet.h>
 #endif
@@ -15,43 +29,20 @@
 #include <fibdef.h>
 #include "vmsdir.h"
 
-#if __VMS_VER < 70000000
+#ifdef HAVE_VMSDIR_H
 
 DIR *
-opendir (dspec)
-     char *dspec;
+opendir (char *dspec)
 {
-  static struct FAB *dfab;
-  struct NAM *dnam;
-  char *searchspec;
-
-  dfab = (struct FAB *) xmalloc (sizeof (struct FAB));
-  if (! dfab)
-    {
-      printf ("Error mallocing for FAB\n");
-      return (NULL);
-    }
-
-  dnam = (struct NAM *) xmalloc (sizeof (struct NAM));
-  if (! dnam)
-    {
-      printf ("Error mallocing for NAM\n");
-      free (dfab);
-      return (NULL);
-    }
-
-  searchspec = (char *) xmalloc (MAXNAMLEN + 1);
-  if (! searchspec)
-    {
-      printf ("Error mallocing for searchspec\n");
-      free (dfab);
-      free (dnam);
-      return (NULL);
-    }
-
-  sprintf (searchspec, "%s*.*;", dspec);
+  struct DIR *dir  = xcalloc (sizeof (struct DIR));
+  struct NAM *dnam = xmalloc (sizeof (struct NAM));
+  struct FAB *dfab = &dir->fab;
+  char *searchspec = xmalloc (MAXNAMLEN + 1);
 
   *dfab = cc$rms_fab;
+  *dnam = cc$rms_nam;
+  sprintf (searchspec, "%s*.*;", dspec);
+
   dfab->fab$l_fna = searchspec;
   dfab->fab$b_fns = strlen (searchspec);
   dfab->fab$l_nam = dnam;
@@ -62,13 +53,13 @@ opendir (dspec)
 
   if (! (sys$parse (dfab) & 1))
     {
-      free (dfab);
+      free (dir);
       free (dnam);
       free (searchspec);
       return (NULL);
     }
 
-  return (dfab);
+  return dir;
 }
 
 #define uppercasify(str) \
@@ -76,79 +67,69 @@ opendir (dspec)
     { \
       char *tmp; \
       for (tmp = (str); *tmp != '\0'; tmp++) \
-        if (islower (*tmp)) \
-          *tmp = toupper (*tmp); \
+        if (islower ((unsigned char)*tmp)) \
+          *tmp = toupper ((unsigned char)*tmp); \
     } \
   while (0)
 
 struct direct *
-readdir (dfd)
-     DIR * dfd;
+readdir (DIR *dir)
 {
-  static struct direct *dentry;
-  static char resultspec[MAXNAMLEN + 1];
+  struct FAB *dfab = &dir->fab;
+  struct NAM *dnam = (struct NAM *)(dfab->fab$l_nam);
+  struct direct *dentry = &dir->dir;
   int i;
 
-  dentry = (struct direct *) xmalloc (sizeof (struct direct));
-  if (! dentry)
+  memset (dentry, 0, sizeof *dentry);
+
+  dnam->nam$l_rsa = dir->d_result;
+  dnam->nam$b_rss = MAXNAMLEN;
+
+  DB (DB_VERBOSE, ("."));
+
+  if (!((i = sys$search (dfab)) & 1))
     {
-      printf ("Error mallocing for direct\n");
-      return (NULL);
-    }
-
-  dfd->fab$l_nam->nam$l_rsa = resultspec;
-  dfd->fab$l_nam->nam$b_rss = MAXNAMLEN;
-
-  if (debug_flag)
-    printf (".");
-
-  if (!((i = sys$search (dfd)) & 1))
-    {
-      if (debug_flag)
-	printf ("sys$search failed with %d\n", i);
-      free (dentry);
+      DB (DB_VERBOSE, (_("sys$search() failed with %d\n"), i));
       return (NULL);
     }
 
   dentry->d_off = 0;
-  if (dfd->fab$l_nam->nam$w_fid == 0)
+  if (dnam->nam$w_fid == 0)
     dentry->d_fileno = 1;
   else
-    dentry->d_fileno = dfd->fab$l_nam->nam$w_fid[0]
-      + dfd->fab$l_nam->nam$w_fid[1] << 16;
+    dentry->d_fileno = dnam->nam$w_fid[0] + (dnam->nam$w_fid[1] << 16);
+
   dentry->d_reclen = sizeof (struct direct);
-#if 0
-  if (!strcmp(dfd->fab$l_nam->nam$l_type, ".DIR"))
-    dentry->d_namlen = dfd->fab$l_nam->nam$b_name;
-  else
-#endif
-  dentry->d_namlen = dfd->fab$l_nam->nam$b_name + dfd->fab$l_nam->nam$b_type;
-  strncpy (dentry->d_name, dfd->fab$l_nam->nam$l_name, dentry->d_namlen);
+  dentry->d_namlen = dnam->nam$b_name + dnam->nam$b_type;
+  strncpy (dentry->d_name, dnam->nam$l_name, dentry->d_namlen);
   dentry->d_name[dentry->d_namlen] = '\0';
+
+#ifdef HAVE_CASE_INSENSITIVE_FS
   uppercasify (dentry->d_name);
-#if 0
-  uvUnFixRCSSeparator(dentry->d_name);
 #endif
 
   return (dentry);
 }
 
-closedir (dfd)
-     DIR *dfd;
+int
+closedir (DIR *dir)
 {
-  if (dfd)
+  if (dir != NULL)
     {
-      if (dfd->fab$l_nam)
-	free (dfd->fab$l_nam->nam$l_esa);
-      free (dfd->fab$l_nam);
-      free (dfd);
+      struct FAB *dfab = &dir->fab;
+      struct NAM *dnam = (struct NAM *)(dfab->fab$l_nam);
+      if (dnam != NULL)
+	free (dnam->nam$l_esa);
+      free (dnam);
+      free (dir);
     }
+
+  return 0;
 }
 #endif /* compiled for OpenVMS prior to V7.x */
 
 char *
-getwd (cwd)
-     char *cwd;
+getwd (char *cwd)
 {
   static char buf[512];
 
@@ -158,10 +139,12 @@ getwd (cwd)
     return (getcwd (buf, 512));
 }
 
+#if 0
+/*
+ * Is this used? I don't see any reference, so I suggest to remove it.
+ */
 int
-vms_stat (name, buf)
-     char *name;
-     struct stat *buf;
+vms_stat (char *name, struct stat *buf)
 {
   int status;
   int i;
@@ -229,7 +212,7 @@ vms_stat (name, buf)
   /* Initialize the FIB */
   for (i = 0; i < 3; i++)
     {
-#if __DECC
+#ifndef __VAXC
       Fib.fib$w_fid[i] = Nam.nam$w_fid[i];
       Fib.fib$w_did[i] = Nam.nam$w_did[i];
 #else
@@ -256,10 +239,10 @@ vms_stat (name, buf)
 
   return 0;
 }
+#endif
 
 char *
-cvt_time (tval)
-     unsigned long tval;
+cvt_time (unsigned long tval)
 {
   static long int date[2];
   static char str[27];

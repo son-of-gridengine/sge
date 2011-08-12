@@ -2948,8 +2948,8 @@ if ( "$QMAKE" == 1) then
       # current autotools lose re-making them.
       touch stamp-h.in configure.in acinclude.m4 configure config.h.in aclocal.m4 Makefile.in Makefile.am acconfig.h glob/Makefile.am glob/Makefile.ami glob/Makefile.in
       cd $SOURCE/3rdparty/qmake/$COMPILE_ARCH
-      env REMOTE=sge CC="$CC" CFLAGS="${CFLAGS} ${NOERR_CFLAG}" \
-       SGE_ARCH=$buildarch LDFLAGS="$LFLAGS" LIBS="$LIBS" \
+      env REMOTE=sge CC="$CC" CFLAGS="${CFLAGS} ${NOERR_CFLAG} ${NOERR_PROTO}" \
+       SGE_ARCH=$buildarch LDFLAGS="$LFLAGS" \
        ../configure --srcdir=..
    endif
 

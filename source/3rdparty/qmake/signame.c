@@ -1,39 +1,32 @@
 /* Convert between signal names and numbers.
-   Copyright (C) 1990, 1992, 1993, 1995, 1996 Free Software Foundation, Inc.
-   This file is part of the GNU C Library.
+Copyright (C) 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
+2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software
+Foundation, Inc.
+This file is part of GNU Make.
 
-   The GNU C Library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public License as
-   published by the Free Software Foundation; either version 2 of the
-   License, or (at your option) any later version.
+GNU Make is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later
+version.
 
-   The GNU C Library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+GNU Make is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with the GNU C Library; see the file COPYING.LIB.  If not,
-   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.  */
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include "make.h"
 
-#include <stdio.h>
-#include <sys/types.h>		/* Some systems need this for <signal.h>.  */
-#include <signal.h>
+/* If the system provides strsignal, we don't need it. */
 
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
+#if !HAVE_STRSIGNAL
 
-/* Some systems declare `sys_siglist in <unistd.h>; if
-   configure defined SYS_SIGLIST_DECLARED, it may expect
-   to find the declaration there.  */
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+/* If the system provides sys_siglist, we'll use that.
+   Otherwise create our own.
+ */
 
+#if !HAVE_DECL_SYS_SIGLIST
 
 /* Some systems do not define NSIG in <signal.h>.  */
 #ifndef	NSIG
@@ -44,27 +37,12 @@
 #endif
 #endif
 
-#if !__STDC__
-#define const
-#endif
-
-#include "signame.h"
-
-#ifndef HAVE_SYS_SIGLIST
 /* There is too much variation in Sys V signal numbers and names, so
    we must initialize them at runtime.  */
 
 static const char *undoc;
 
-const char *sys_siglist[NSIG];
-
-#else	/* HAVE_SYS_SIGLIST.  */
-
-#ifndef SYS_SIGLIST_DECLARED
-extern char *sys_siglist[];
-#endif	/* Not SYS_SIGLIST_DECLARED.  */
-
-#endif	/* Not HAVE_SYS_SIGLIST.  */
+static const char *sys_siglist[NSIG];
 
 /* Table of abbreviations for signals.  Note:  A given number can
    appear more than once with different abbreviations.  */
@@ -75,26 +53,24 @@ typedef struct
     int number;
     const char *abbrev;
   } num_abbrev;
+
 static num_abbrev sig_table[SIG_TABLE_SIZE];
+
 /* Number of elements of sig_table used.  */
 static int sig_table_nelts = 0;
 
 /* Enter signal number NUMBER into the tables with ABBREV and NAME.  */
 
 static void
-init_sig (number, abbrev, name)
-     int number;
-     const char *abbrev;
-     const char *name;
+init_sig (int number, const char *abbrev, const char *name)
 {
-#ifndef HAVE_SYS_SIGLIST
   /* If this value is ever greater than NSIG it seems like it'd be a bug in
      the system headers, but... better safe than sorry.  We know, for
      example, that this isn't always true on VMS.  */
 
   if (number >= 0 && number < NSIG)
     sys_siglist[number] = name;
-#endif
+
   if (sig_table_nelts < SIG_TABLE_SIZE)
     {
       sig_table[sig_table_nelts].number = number;
@@ -102,19 +78,16 @@ init_sig (number, abbrev, name)
     }
 }
 
-void
-signame_init ()
+static int
+signame_init (void)
 {
-#ifndef HAVE_SYS_SIGLIST
   int i;
-  char *u = _("unknown signal");
 
-  undoc = xstrdup(u);
+  undoc = xstrdup (_("unknown signal"));
 
   /* Initialize signal names.  */
   for (i = 0; i < NSIG; i++)
     sys_siglist[i] = undoc;
-#endif /* !HAVE_SYS_SIGLIST */
 
   /* Initialize signal names.  */
 #if defined (SIGHUP)
@@ -248,77 +221,36 @@ signame_init ()
 #if defined (SIGNOFP)
   init_sig (SIGNOFP, "NOFP", _("Floating point co-processor not available"));
 #endif
+
+  return 1;
 }
 
-/* Return the abbreviation for signal NUMBER.  */
+#endif  /* HAVE_DECL_SYS_SIGLIST */
+
 
 char *
-sig_abbrev (number)
-     int number;
-{
-  int i;
-
-  if (sig_table_nelts == 0)
-    signame_init ();
-
-  for (i = 0; i < sig_table_nelts; i++)
-    if (sig_table[i].number == number)
-      return (char *)sig_table[i].abbrev;
-  return NULL;
-}
-
-/* Return the signal number for an ABBREV, or -1 if there is no
-   signal by that name.  */
-
-int
-sig_number (abbrev)
-     const char *abbrev;
-{
-  int i;
-
-  if (sig_table_nelts == 0)
-    signame_init ();
-
-  /* Skip over "SIG" if present.  */
-  if (abbrev[0] == 'S' && abbrev[1] == 'I' && abbrev[2] == 'G')
-    abbrev += 3;
-
-  for (i = 0; i < sig_table_nelts; i++)
-    if (abbrev[0] == sig_table[i].abbrev[0]
-	&& strcmp (abbrev, sig_table[i].abbrev) == 0)
-      return sig_table[i].number;
-  return -1;
-}
-
-#ifndef HAVE_PSIGNAL
-/* Print to standard error the name of SIGNAL, preceded by MESSAGE and
-   a colon, and followed by a newline.  */
-
-void
-psignal (signal, message)
-     int signal;
-     const char *message;
-{
-  if (signal <= 0 || signal >= NSIG)
-    fprintf (stderr, "%s: unknown signal", message);
-  else
-    fprintf (stderr, "%s: %s\n", message, sys_siglist[signal]);
-}
-#endif
-
-#ifndef HAVE_STRSIGNAL
-/* Return the string associated with the signal number.  */
-
-char *
-strsignal (signal)
-     int signal;
+strsignal (int sig)
 {
   static char buf[] = "Signal 12345678901234567890";
 
-  if (signal > 0 || signal < NSIG)
-    return (char *) sys_siglist[signal];
+#if ! HAVE_DECL_SYS_SIGLIST
+# if HAVE_DECL__SYS_SIGLIST
+#  define sys_siglist _sys_siglist
+# elif HAVE_DECL___SYS_SIGLIST
+#  define sys_siglist __sys_siglist
+# else
+  static char sig_initted = 0;
 
-  sprintf (buf, "Signal %d", signal);
+  if (!sig_initted)
+    sig_initted = signame_init ();
+# endif
+#endif
+
+  if (sig > 0 || sig < NSIG)
+    return (char *) sys_siglist[sig];
+
+  sprintf (buf, "Signal %d", sig);
   return buf;
 }
-#endif
+
+#endif  /* HAVE_STRSIGNAL */
