@@ -1,19 +1,20 @@
-/* Copyright (C) 1991,92,93,94,95,96,97,98,99 Free Software Foundation, Inc.
+/* Copyright (C) 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999 Free
+Software Foundation, Inc.
 
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public License as
-   published by the Free Software Foundation; either version 2 of the
-   License, or (at your option) any later version.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public License as
+published by the Free Software Foundation; either version 2 of the
+License, or (at your option) any later version.
 
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
-   License along with this library; see the file COPYING.LIB.  If not,
-   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.  */
+You should have received a copy of the GNU Library General Public License
+along with this library; see the file COPYING.LIB.  If not, write to the Free
+Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
+USA.  */
 
 /* AIX requires this to be the first thing in the file.  */
 #if defined _AIX && !defined __GNUC__
@@ -181,19 +182,20 @@ extern void bcopy ();
 # define mempcpy(Dest, Src, Len) __mempcpy (Dest, Src, Len)
 #endif
 
-#ifndef	__GNU_LIBRARY__
+#if !defined __GNU_LIBRARY__ && !defined __DJGPP__
 # ifdef	__GNUC__
 __inline
 # endif
 # ifndef __SASC
 #  ifdef WINDOWS32
 static void *
+my_realloc (void *p, unsigned int n)
 #  else
 static char *
-# endif
 my_realloc (p, n)
      char *p;
      unsigned int n;
+#  endif
 {
   /* These casts are the for sake of the broken Ultrix compiler,
      which warns of illegal pointer combinations otherwise.  */
@@ -203,7 +205,7 @@ my_realloc (p, n)
 }
 # define	realloc	my_realloc
 # endif /* __SASC */
-#endif /* __GNU_LIBRARY__ */
+#endif /* __GNU_LIBRARY__ || __DJGPP__ */
 
 
 #if !defined __alloca && !defined __GNU_LIBRARY__
@@ -299,6 +301,9 @@ static int glob_in_dir __P ((const char *pattern, const char *directory,
 static int prefix_array __P ((const char *prefix, char **array, size_t n));
 static int collated_compare __P ((const __ptr_t, const __ptr_t));
 
+#if !defined _LIBC || !defined NO_GLOB_PATTERN_P
+int __glob_pattern_p __P ((const char *pattern, int quote));
+#endif
 
 /* Find the end of the sub-pattern in a brace expression.  We define
    this as an inline function if the compiler permits.  */
@@ -609,7 +614,12 @@ glob (pattern, flags, errfunc, pglob)
       if (dirname[1] == '\0' || dirname[1] == '/')
 	{
 	  /* Look up home directory.  */
-	  const char *home_dir = getenv ("HOME");
+#ifdef VMS
+/* This isn't obvious, RTLs of DECC and VAXC know about "HOME" */
+          const char *home_dir = getenv ("SYS$LOGIN");
+#else
+          const char *home_dir = getenv ("HOME");
+#endif
 # ifdef _AMIGA
 	  if (home_dir == NULL || home_dir[0] == '\0')
 	    home_dir = "SYS:";
@@ -618,6 +628,11 @@ glob (pattern, flags, errfunc, pglob)
 	  if (home_dir == NULL || home_dir[0] == '\0')
             home_dir = "c:/users/default"; /* poor default */
 #  else
+#   ifdef VMS
+/* Again, this isn't obvious, if "HOME" isn't known "SYS$LOGIN" should be set */
+	  if (home_dir == NULL || home_dir[0] == '\0')
+	    home_dir = "SYS$DISK:[]";
+#   else
 	  if (home_dir == NULL || home_dir[0] == '\0')
 	    {
 	      int success;
@@ -676,6 +691,7 @@ glob (pattern, flags, errfunc, pglob)
 	      else
 		home_dir = "~"; /* No luck.  */
 	    }
+#   endif /* VMS */
 #  endif /* WINDOWS32 */
 # endif
 	  /* Now construct the full directory.  */
@@ -696,7 +712,7 @@ glob (pattern, flags, errfunc, pglob)
 	      dirname = newp;
 	    }
 	}
-# if !defined _AMIGA && !defined WINDOWS32
+# if !defined _AMIGA && !defined WINDOWS32 && !defined VMS
       else
 	{
 	  char *end_name = strchr (dirname, '/');
@@ -776,7 +792,7 @@ glob (pattern, flags, errfunc, pglob)
 		 home directory.  */
 	      return GLOB_NOMATCH;
 	}
-# endif	/* Not Amiga && not WINDOWS32.  */
+# endif	/* Not Amiga && not WINDOWS32 && not VMS.  */
     }
 #endif	/* Not VMS.  */
 
@@ -1213,6 +1229,10 @@ glob_in_dir (pattern, directory, flags, errfunc, pglob)
   int meta;
   int save;
 
+#ifdef VMS
+  if (*directory == 0)
+    directory = "[]";
+#endif
   meta = __glob_pattern_p (pattern, !(flags & GLOB_NOESCAPE));
   if (meta == 0)
     {
@@ -1282,7 +1302,7 @@ glob_in_dir (pattern, directory, flags, errfunc, pglob)
 	    {
 	      int fnm_flags = ((!(flags & GLOB_PERIOD) ? FNM_PERIOD : 0)
 			       | ((flags & GLOB_NOESCAPE) ? FNM_NOESCAPE : 0)
-#if defined _AMIGA || defined VMS
+#if defined HAVE_CASE_INSENSITIVE_FS
 				   | FNM_CASEFOLD
 #endif
 				   );
