@@ -302,7 +302,8 @@ void job_related_adminmail(u_long32 progid, lListElem *jr, int is_array, const c
                n=fread(sge_mail_body_total+start, 1, 
                         sge_mail_body_total_size - start, fp);
                FCLOSE(fp);
-               sge_mail_body_total[start + n] = '\0';
+               start += n;
+               sge_mail_body_total[start] = '\0';
             }
          }
       }
