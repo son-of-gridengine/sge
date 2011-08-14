@@ -28,6 +28,11 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.\"
+.de URL
+\\$2 \(laURL: \\$1 \(ra\\$3
+..
+.if \n[.g] .mso www.tmac
 .TH xxQS_NAME_Sxx_CONF 5 "$Date: 2011-07-19 14:48:03 $" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
@@ -1114,24 +1119,27 @@ Profiling provides the user with the possibility to get system measurements.
 This can be useful for debugging or optimization of the system. The profiling 
 output will be done within the messages file.
 .IP "\fIPROF_SIGNAL\fP"
-Enables the profiling for qmaster signal thread
+Enables profiling for the qmaster signal thread
 (e.g. PROF_SIGNAL=true).
 .PP
 .IP "\fIPROF_WORKER\fP"
-Enables the profiling for qmaster worker threads
+Enables profiling for the qmaster worker threads
 (e.g. PROF_WORKER=true).
 .PP
 .IP "\fIPROF_LISTENER\fP"
-Enables the profiling for qmaster listener threads
+Enables profiling for the qmaster listener threads
 (e.g. PROF_LISTENER=true).
 .PP
 .IP "\fIPROF_DELIVER\fP"
-Enables the profiling for qmaster event deliver thread
+Enables profiling for the qmaster event deliver thread
 (e.g. PROF_DELIVER=true).
 .PP
 .IP "\fIPROF_TEVENT\fP"
-Enables the profiling for qmaster timed event thread
+Enables the profiling for the qmaster timed event thread
 (e.g. PROF_TEVENT=true).
+.IP \fPROF_SCHEDULER\fP
+Enables profiling for the qmaster scheduler thread
+(e.g. PROF_SCHEDULER=true).
 .PP
 Please note that the CPU utime and stime values contained in the profiling output
 are not per-thread CPU times.
@@ -1219,6 +1227,25 @@ The default for \fBqmaster_params\fP is none.
 .PP
 This value is a global configuration parameter only. It cannot be
 overwritten by the execution host local configuration.
+.IP \fISIMULATE_EXECDS\fP
+Bypass execd communication in qmaster for (throughput tests).
+.IP \fINO_AUTHENTICATION\fP
+Don't do authentication when GSSAPI security is enabled.  This, and
+the following parameter, determine the GSS global configuration, which
+can be overridden with the execd_params of the global or host-specific
+configuration.
+.IP \fINO_SECURITY\fP
+Don't store and forward credentials if GSSAPI security is enabled.
+.IP \fIENABLE_MTRACE\fP
+On GNU/Linux, enable the GNU malloc library facility for recording all
+ memory allocation/deallocation.  Requires
+.I MALLOC_TRACE
+to be set in the environment (see
+.M mtrace 3 ).
+.IP \fI__TEST_SLEEP_AFTER_REQUEST\fP
+Used by the test suite to block the worker thread for five seconds
+after handling a request to ensure another worker thread will handle a
+subsequent request.
 .\"
 .\"
 .SS "\fBexecd_params\fP"
@@ -1448,6 +1475,32 @@ The default for \fBexecd_params\fP is none.
 .PP
 The global configuration entry for this value
 may be overwritten by the execution host local configuration.
+.IP \fISIMULATE_JOBS\fP
+Allow the simulation of jobs.  (Job spooling and execution on the
+execd side is disabled.)
+.IP \fINO_AUTHENTICATION\fP
+Turn off authentication for the relevant host(s) when the
+authentication GSSAPI security feature is enabled globally.
+.IP \fIDO_AUTHENTICATION\fP
+Turn on authentication for the relevant host(s) when the
+authentication GSSAPI security feature is enabled globally.
+.IP \fINO_SECURITY\fP
+Turn off storing and forwarding of credentials when the GSSAPI
+security feature is enabled globally.
+.IP \fIUSE_QIDLE\fP
+Automatically start any executable named
+.I qidle
+present in the architecture-dependent binary directory as a load
+sensor, similarly to
+.I qloadsensor
+(which is run unconditionally).  It is intended to determine whether a
+workstation is "idle" or not, i.e. whether it has an interactive load.
+See e.g. the
+.URL http://arc.liv.ac.uk/SGE/howto/idle.html "idle time HOWTO"
+or
+.I sources/experimental/qidle
+in the source repository, but it may be better to check the
+the screensaver state.
 .\"
 .\"
 .SS "\fBreporting_params\fP"
