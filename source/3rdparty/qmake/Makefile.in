@@ -464,6 +464,9 @@ make$(EXEEXT): $(make_OBJECTS) $(make_DEPENDENCIES)
 	@rm -f make$(EXEEXT)
 	$(LINK) $(make_OBJECTS) $(make_LDADD) $(LIBS)
 
+depend:
+	@echo "No depends target for qmake yet"
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
