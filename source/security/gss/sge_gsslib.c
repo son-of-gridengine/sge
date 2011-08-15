@@ -142,6 +142,7 @@ static void gsslib_display_status_1(const char *m, OM_uint32 code, int type)
                                     type, GSS_C_NULL_OID,
                                     &msg_ctx, &msg);
       sprintf(msgptr, MSG_GSS_APIERRORXY_SS , m?m:"<>", (char *)msg.value?(char *)msg.value:"<>");
+      msgptr += strlen(msgptr);
       sprintf(msgptr, "\n");
       (void) gss_release_buffer(&min_stat, &msg);
       msgptr += strlen(msgptr);
