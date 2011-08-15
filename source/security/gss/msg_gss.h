@@ -108,6 +108,7 @@
 "   -b user     Become user before storing credentials and/or executing cmd\n" \
 "   -o user     Change ownership of credentials cache files to user\n" \
 "   -u user     Authenticate user\n" \
+"   -v          Verbose output\n" \
 "   -s service  Get credentials for service\n" \
 "   -c cmd      Run command as user\n" \
 "   -e cmd      Execute command as user" )
