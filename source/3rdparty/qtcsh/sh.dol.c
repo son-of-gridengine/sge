@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/sh.dol.c,v 3.77 2009/06/19 16:25:00 christos Exp $ */
 /*
  * sh.dol.c: Variable substitutions
  */
@@ -13,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -35,7 +32,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.dol.c,v 1.2 2008-06-05 12:32:52 roland Exp $")
+RCSID("$tcsh: sh.dol.c,v 3.77 2009/06/19 16:25:00 christos Exp $")
 
 /*
  * C shell
@@ -50,10 +47,11 @@ RCSID("$Id: sh.dol.c,v 1.2 2008-06-05 12:32:52 roland Exp $")
  * some QUOTEing may have occurred already, so we dont "trim()" here.
  */
 
-static int Dpeekc, Dpeekrd;	/* Peeks for DgetC and Dreadc */
-static Char *Dcp, **Dvp;	/* Input vector for Dreadc */
+static Char Dpeekc;		/* Peek for DgetC */
+static eChar Dpeekrd;		/* Peek for Dreadc */
+static Char *Dcp, *const *Dvp;	/* Input vector for Dreadc */
 
-#define	DEOF	-1
+#define	DEOF	CHAR_ERR
 
 #define	unDgetC(c)	Dpeekc = c
 
@@ -65,44 +63,34 @@ static Char *Dcp, **Dvp;	/* Input vector for Dreadc */
  * words within this expansion, the count of remaining words, and the
  * information about any : modifier which is being applied.
  */
-#define MAXWLEN (BUFSIZE - 4)
-#ifndef COMPAT
-#define MAXMOD MAXWLEN		/* This cannot overflow	*/
-#endif /* COMPAT */
 static Char *dolp;		/* Remaining chars from this word */
 static Char **dolnxt;		/* Further words */
 static int dolcnt;		/* Count of further words */
-#ifdef COMPAT
-static Char dolmod;		/* : modifier character */
-#else
-static Char dolmod[MAXMOD];	/* : modifier character */
-static int dolnmod;		/* Number of modifiers */
-#endif /* COMPAT */
-static int dolmcnt;		/* :gx -> 10000, else 1 */
-static int dolwcnt;		/* :ax -> 10000, else 1 */
+static struct Strbuf dolmod; /* = Strbuf_INIT; : modifier characters */
+static int dolmcnt;		/* :gx -> INT_MAX, else 1 */
+static int dol_flag_a;		/* :ax -> 1, else 0 */
 
-static	void	 Dfix2		__P((Char **));
-static	Char 	*Dpack		__P((Char *, Char *));
-static	int	 Dword		__P((void));
-static	void	 dolerror	__P((Char *));
-static	int	 DgetC		__P((int));
-static	void	 Dgetdol	__P((void));
-static	void	 fixDolMod	__P((void));
-static	void	 setDolp	__P((Char *));
-static	void	 unDredc	__P((int));
-static	int	 Dredc		__P((void));
-static	void	 Dtestq		__P((int));
+static	Char	 **Dfix2	(Char *const *);
+static	int 	 Dpack		(struct Strbuf *);
+static	int	 Dword		(struct blk_buf *);
+static	void	 dolerror	(Char *);
+static	eChar	 DgetC		(int);
+static	void	 Dgetdol	(void);
+static	void	 fixDolMod	(void);
+static	void	 setDolp	(Char *);
+static	void	 unDredc	(eChar);
+static	eChar	 Dredc		(void);
+static	void	 Dtestq		(Char);
 
 /*
  * Fix up the $ expansions and quotations in the
  * argument list to command t.
  */
 void
-Dfix(t)
-    register struct command *t;
+Dfix(struct command *t)
 {
-    register Char **pp;
-    register Char *p;
+    Char **pp;
+    Char *p;
 
     if (noexec)
 	return;
@@ -110,10 +98,11 @@ Dfix(t)
     for (pp = t->t_dcom; (p = *pp++) != NULL;) {
 	for (; *p; p++) {
 	    if (cmap(*p, _DOL | QUOTES)) {	/* $, \, ', ", ` */
-		Dfix2(t->t_dcom);	/* found one */
+		Char **expanded;
+
+		expanded = Dfix2(t->t_dcom);	/* found one */
 		blkfree(t->t_dcom);
-		t->t_dcom = gargv;
-		gargv = 0;
+		t->t_dcom = expanded;
 		return;
 	    }
 	}
@@ -124,52 +113,57 @@ Dfix(t)
  * $ substitute one word, for i/o redirection
  */
 Char   *
-Dfix1(cp)
-    register Char *cp;
+Dfix1(Char *cp)
 {
-    Char   *Dv[2];
+    Char *Dv[2], **expanded;
 
     if (noexec)
 	return (0);
     Dv[0] = cp;
     Dv[1] = NULL;
-    Dfix2(Dv);
-    if (gargc != 1) {
+    expanded = Dfix2(Dv);
+    if (expanded[0] == NULL || expanded[1] != NULL) {
+	blkfree(expanded);
 	setname(short2str(cp));
 	stderror(ERR_NAME | ERR_AMBIG);
     }
-    cp = Strsave(gargv[0]);
-    blkfree(gargv), gargv = 0;
+    cp = Strsave(expanded[0]);
+    blkfree(expanded);
     return (cp);
 }
 
 /*
  * Subroutine to do actual fixing after state initialization.
  */
-static void
-Dfix2(v)
-    Char  **v;
+static Char **
+Dfix2(Char *const *v)
 {
-    ginit();			/* Initialize glob's area pointers */
+    struct blk_buf *bb = bb_alloc();
+    Char **vec;
+
     Dvp = v;
     Dcp = STRNULL;		/* Setup input vector for Dreadc */
     unDgetC(0);
     unDredc(0);			/* Clear out any old peeks (at error) */
     dolp = 0;
     dolcnt = 0;			/* Clear out residual $ expands (...) */
-    while (Dword())
+    cleanup_push(bb, bb_free);
+    while (Dword(bb))
 	continue;
+    cleanup_ignore(bb);
+    cleanup_until(bb);
+    vec = bb_finish(bb);
+    xfree(bb);
+    return vec;
 }
 
 /*
  * Pack up more characters in this word
  */
-static Char *
-Dpack(wbuf, wp)
-    Char   *wbuf, *wp;
+static int
+Dpack(struct Strbuf *wbuf)
 {
-    register int c;
-    register int i = MAXWLEN - (int) (wp - wbuf);
+    eChar c;
 
     for (;;) {
 	c = DgetC(DODOL);
@@ -177,9 +171,7 @@ Dpack(wbuf, wp)
 	    c = DgetC(0);
 	    if (c == DEOF) {
 		unDredc(c);
-		*wp = 0;
-		Gcat(STRNULL, wbuf);
-		return (NULL);
+		return 1;
 	    }
 	    if (c == '\n')
 		c = ' ';
@@ -188,21 +180,15 @@ Dpack(wbuf, wp)
 	}
 	if (c == DEOF) {
 	    unDredc(c);
-	    *wp = 0;
-	    Gcat(STRNULL, wbuf);
-	    return (NULL);
+	    return 1;
 	}
 	if (cmap(c, _SP | _NL | _QF | _QB)) {	/* sp \t\n'"` */
 	    unDgetC(c);
 	    if (cmap(c, QUOTES))
-		return (wp);
-	    *wp++ = 0;
-	    Gcat(STRNULL, wbuf);
-	    return (NULL);
+		return 0;
+	    return 1;
 	}
-	if (--i <= 0)
-	    stderror(ERR_WTOOLONG);
-	*wp++ = (Char) c;
+	Strbuf_append1(wbuf, (Char) c);
     }
 }
 
@@ -213,40 +199,38 @@ Dpack(wbuf, wp)
  * Rather, DgetC will return a DEOF when we hit the end-of-input.
  */
 static int
-Dword()
+Dword(struct blk_buf *bb)
 {
-    register int c, c1;
-    Char    wbuf[BUFSIZE];
-    register Char *wp = wbuf;
-    register int i = MAXWLEN;
-    register bool dolflg;
-    bool    sofar = 0, done = 0;
+    eChar c, c1;
+    struct Strbuf *wbuf = Strbuf_alloc();
+    int dolflg;
+    int    sofar = 0;
+    Char *str;
 
-    while (!done) {
-	done = 1;
+    cleanup_push(wbuf, Strbuf_free);
+    for (;;) {
 	c = DgetC(DODOL);
 	switch (c) {
 
 	case DEOF:
-	    if (sofar == 0)
+	    if (sofar == 0) {
+		cleanup_until(wbuf);
 		return (0);
+	    }
 	    /* finish this word and catch the code above the next time */
 	    unDredc(c);
 	    /*FALLTHROUGH*/
 
 	case '\n':
-	    *wp = 0;
-	    Gcat(STRNULL, wbuf);
-	    return (1);
+	    goto end;
 
 	case ' ':
 	case '\t':
-	    done = 0;
-	    break;
+	    continue;
 
 	case '`':
 	    /* We preserve ` quotations which are done yet later */
-	    *wp++ = (Char) c, --i;
+	    Strbuf_append1(wbuf, (Char) c);
 	    /*FALLTHROUGH*/
 	case '\'':
 	case '"':
@@ -260,15 +244,14 @@ Dword()
 		c = DgetC(dolflg);
 		if (c == c1)
 		    break;
-		if (c == '\n' || c == DEOF)
-		    stderror(ERR_UNMATCHED, c1);
-		if ((c & (QUOTE | TRIM)) == ('\n' | QUOTE)) {
-		    if ((wp[-1] & TRIM) == '\\')
-			--wp;
-		    ++i;
+		if (c == '\n' || c == DEOF) {
+		    cleanup_until(bb);
+		    stderror(ERR_UNMATCHED, (int)c1);
 		}
-		if (--i <= 0)
-		    stderror(ERR_WTOOLONG);
+		if ((c & (QUOTE | TRIM)) == ('\n' | QUOTE)) {
+		    if (wbuf->len != 0 && (wbuf->s[wbuf->len - 1] & TRIM) == '\\')
+			wbuf->len--;
+		}
 		switch (c1) {
 
 		case '"':
@@ -276,17 +259,17 @@ Dword()
 		     * Leave any `s alone for later. Other chars are all
 		     * quoted, thus `...` can tell it was within "...".
 		     */
-		    *wp++ = c == '`' ? '`' : c | QUOTE;
+		    Strbuf_append1(wbuf, c == '`' ? '`' : c | QUOTE);
 		    break;
 
 		case '\'':
 		    /* Prevent all further interpretation */
-		    *wp++ = c | QUOTE;
+		    Strbuf_append1(wbuf, c | QUOTE);
 		    break;
 
 		case '`':
 		    /* Leave all text alone for later */
-		    *wp++ = (Char) c;
+		    Strbuf_append1(wbuf, (Char) c);
 		    break;
 
 		default:
@@ -294,63 +277,35 @@ Dword()
 		}
 	    }
 	    if (c1 == '`')
-		*wp++ = '`' /* i--; eliminated */;
+		Strbuf_append1(wbuf, '`');
 	    sofar = 1;
-	    if ((wp = Dpack(wbuf, wp)) == NULL)
-		return (1);
-	    else {
-#ifdef masscomp
-    /*
-     * Avoid a nasty message from the RTU 4.1A & RTU 5.0 compiler concerning
-     * the "overuse of registers". According to the compiler release notes,
-     * incorrect code may be produced unless the offending expression is
-     * rewritten. Therefore, we can't just ignore it, DAS DEC-90.
-     */
-		i = MAXWLEN;
-		i -= (int) (wp - wbuf);
-#else /* !masscomp */
-		i = MAXWLEN - (int) (wp - wbuf);
-#endif /* masscomp */
-		done = 0;
-	    }
-	    break;
+	    if (Dpack(wbuf) != 0)
+		goto end;
+	    continue;
 
 	case '\\':
 	    c = DgetC(0);	/* No $ subst! */
-	    if (c == '\n' || c == DEOF) {
-		done = 0;
-		break;
-	    }
+	    if (c == '\n' || c == DEOF)
+		continue;
 	    c |= QUOTE;
 	    break;
 
 	default:
 	    break;
 	}
-	if (done) {
-	    unDgetC(c);
-	    sofar = 1;
-	    if ((wp = Dpack(wbuf, wp)) == NULL)
-		return (1);
-	    else {
-#ifdef masscomp
-    /*
-     * Avoid a nasty message from the RTU 4.1A & RTU 5.0 compiler concerning
-     * the "overuse of registers". According to the compiler release notes,
-     * incorrect code may be produced unless the offending expression is
-     * rewritten. Therefore, we can't just ignore it, DAS DEC-90.
-     */
-		i = MAXWLEN;
-		i -= (int) (wp - wbuf);
-#else /* !masscomp */
-		i = MAXWLEN - (int) (wp - wbuf);
-#endif /* masscomp */
-		done = 0;
-	    }
-	}
+	unDgetC(c);
+	sofar = 1;
+	if (Dpack(wbuf) != 0)
+	    goto end;
     }
-    /* Really NOTREACHED */
-    return (0);
+
+ end:
+    cleanup_ignore(wbuf);
+    cleanup_until(wbuf);
+    str = Strbuf_finish(wbuf);
+    bb_append(bb, str);
+    xfree(wbuf);
+    return 1;
 }
 
 
@@ -359,23 +314,18 @@ Dword()
  * Any QUOTES character which is returned from a $ expansion is
  * QUOTEd so that it will not be recognized above.
  */
-static int
-DgetC(flag)
-    register int flag;
+static eChar
+DgetC(int flag)
 {
-    register int c;
+    Char c;
 
 top:
     if ((c = Dpeekc) != 0) {
 	Dpeekc = 0;
 	return (c);
     }
-    if (lap) {
-	c = *lap++ & (QUOTE | TRIM);
-	if (c == 0) {
-	    lap = 0;
-	    goto top;
-	}
+    if (lap < labuf.len) {
+	c = labuf.s[lap++] & (QUOTE | TRIM);
 quotspec:
 	if (cmap(c, QUOTES))
 	    return (c | QUOTE);
@@ -409,8 +359,7 @@ static struct varent nulargv = {nulvec, STRargv, VAR_READWRITE,
 				{ NULL, NULL, NULL }, 0 };
 
 static void
-dolerror(s)
-    Char   *s;
+dolerror(Char *s)
 {
     setname(short2str(s));
     stderror(ERR_NAME | ERR_RANGE);
@@ -421,24 +370,23 @@ dolerror(s)
  * Ugh.
  */
 static void
-Dgetdol()
+Dgetdol(void)
 {
-    register Char *np;
-    register struct varent *vp = NULL;
-    Char    name[4 * MAXVARLEN + 1];
-    int     c, sc;
+    Char *np;
+    struct varent *vp = NULL;
+    struct Strbuf *name = Strbuf_alloc();
+    eChar   c, sc;
     int     subscr = 0, lwb = 1, upb = 0;
-    bool    dimen = 0, bitset = 0, length = 0;
-    char    tnp;
-    Char    wbuf[BUFSIZE];
+    int    dimen = 0, bitset = 0, length = 0;
     static Char *dolbang = NULL;
 
-#ifdef COMPAT
-    dolmod = dolmcnt = dolwcnt = 0;
-#else
-    dolnmod = dolmcnt = dolwcnt = 0;
-#endif /* COMPAT */
+    cleanup_push(name, Strbuf_free);
+    dolmod.len = dolmcnt = dol_flag_a = 0;
     c = sc = DgetC(0);
+    if (c == DEOF) {
+      stderror(ERR_SYNTAX);
+      return;
+    }
     if (c == '{')
 	c = DgetC(0);		/* sc is { to take } later */
     if ((c & TRIM) == '#')
@@ -453,80 +401,91 @@ Dgetdol()
 	if (dimen || bitset || length)
 	    stderror(ERR_SYNTAX);
 	if (backpid != 0) {
-	    if (dolbang) 
-		xfree((ptr_t) dolbang);
+	    xfree(dolbang);
 	    setDolp(dolbang = putn(backpid));
 	}
+	cleanup_until(name);
 	goto eatbrac;
 
     case '$':
 	if (dimen || bitset || length)
 	    stderror(ERR_SYNTAX);
 	setDolp(doldol);
+	cleanup_until(name);
 	goto eatbrac;
 
-#ifdef COHERENT
-    /* Coherent compiler doesn't allow case-labels that are not 
-       constant-expressions */
-#ifdef SHORT_STRINGS
-    case 0100074:
-#else /* !SHORT_STRINGS */
-    case 0274:
-#endif
-#else /* !COHERENT */
-    case '<'|QUOTE:
-#endif
+    case '<'|QUOTE: {
+	static struct Strbuf wbuf; /* = Strbuf_INIT; */
+
 	if (bitset)
 	    stderror(ERR_NOTALLOWED, "$?<");
 	if (dimen)
 	    stderror(ERR_NOTALLOWED, "$#<");
 	if (length)
 	    stderror(ERR_NOTALLOWED, "$%<");
+	wbuf.len = 0;
 	{
-#ifdef BSDSIGS
-	    sigmask_t omask = sigsetmask(sigblock(0) & ~sigmask(SIGINT));
-#else /* !BSDSIGS */
-	    (void) sigrelse(SIGINT);
-#endif /* BSDSIGS */
-	    for (np = wbuf; force_read(OLDSTD, &tnp, 1) == 1; np++) {
-		*np = (unsigned char) tnp;
-		if (np >= &wbuf[BUFSIZE - 1])
-		    stderror(ERR_LTOOLONG);
-		if (tnp == '\n')
+	    char cbuf[MB_LEN_MAX];
+	    size_t cbp = 0;
+	    int old_pintr_disabled;
+
+	    for (;;) {
+	        int len;
+		ssize_t res;
+		Char wc;
+
+		pintr_push_enable(&old_pintr_disabled);
+		res = force_read(OLDSTD, cbuf + cbp, 1);
+		cleanup_until(&old_pintr_disabled);
+		if (res != 1)
 		    break;
+		cbp++;
+		len = normal_mbtowc(&wc, cbuf, cbp);
+		if (len == -1) {
+		    reset_mbtowc();
+		    if (cbp < MB_LEN_MAX)
+		        continue; /* Maybe a partial character */
+		    wc = (unsigned char)*cbuf | INVALID_BYTE;
+		}
+		if (len <= 0)
+		    len = 1;
+		if (cbp != (size_t)len)
+		    memmove(cbuf, cbuf + len, cbp - len);
+		cbp -= len;
+		if (wc == '\n')
+		    break;
+		Strbuf_append1(&wbuf, wc);
 	    }
-	    *np = 0;
-#ifdef BSDSIGS
-	    (void) sigsetmask(omask);
-#else /* !BSDSIGS */
-	    (void) sighold(SIGINT);
-#endif /* BSDSIGS */
+	    while (cbp != 0) {
+		int len;
+		Char wc;
+
+		len = normal_mbtowc(&wc, cbuf, cbp);
+		if (len == -1) {
+		    reset_mbtowc();
+		    wc = (unsigned char)*cbuf | INVALID_BYTE;
+		}
+		if (len <= 0)
+		    len = 1;
+		if (cbp != (size_t)len)
+		    memmove(cbuf, cbuf + len, cbp - len);
+		cbp -= len;
+		if (wc == '\n')
+		    break;
+		Strbuf_append1(&wbuf, wc);
+	    }
+	    Strbuf_terminate(&wbuf);
 	}
 
-#ifdef COMPAT
-	/*
-	 * KLUDGE: dolmod is set here because it will cause setDolp to call
-	 * domod and thus to copy wbuf. Otherwise setDolp would use it
-	 * directly. If we saved it ourselves, no one would know when to free
-	 * it. The actual function of the 'q' causes filename expansion not to
-	 * be done on the interpolated value.
-	 */
-	/* 
-	 * If we do that, then other modifiers don't work.
-	 * in addition, let the user specify :q if wanted
-	 * [christos]
-	 */
-/*old*/	dolmod = 'q';
-/*new*/	dolmod[dolnmod++] = 'q';
-	dolmcnt = 10000;
-#endif /* COMPAT */
-
 	fixDolMod();
-	setDolp(wbuf);
+	setDolp(wbuf.s); /* Kept allocated until next $< expansion */
+	cleanup_until(name);
 	goto eatbrac;
+    }
 
     case '*':
-	(void) Strcpy(name, STRargv);
+	Strbuf_append(name, STRargv);
+	Strbuf_terminate(name);
 	vp = adrof(STRargv);
 	subscr = -1;		/* Prevent eating [...] */
 	break;
@@ -536,7 +495,8 @@ Dgetdol()
 	np = dimen ? STRargv : (bitset ? STRstatus : NULL);
 	if (np) {
 	    bitset = 0;
-	    (void) Strcpy(name, np);
+	    Strbuf_append(name, np);
+	    Strbuf_terminate(name);
 	    vp = adrof(np);
 	    subscr = -1;		/* Prevent eating [...] */
 	    unDredc(c);
@@ -547,7 +507,6 @@ Dgetdol()
 	/*NOTREACHED*/
 
     default:
-	np = name;
 	if (Isdigit(c)) {
 	    if (dimen)
 		stderror(ERR_NOTALLOWED, "$#<num>");
@@ -555,30 +514,27 @@ Dgetdol()
 	    do {
 		subscr = subscr * 10 + c - '0';
 		c = DgetC(0);
-	    } while (Isdigit(c));
+	    } while (c != DEOF && Isdigit(c));
 	    unDredc(c);
-	    if (subscr < 0) {
-		dolerror(vp->v_name);
-		return;
-	    }
+	    if (subscr < 0)
+		stderror(ERR_RANGE);
 	    if (subscr == 0) {
 		if (bitset) {
 		    dolp = dolzero ? STR1 : STR0;
+		    cleanup_until(name);
 		    goto eatbrac;
 		}
 		if (ffile == 0)
 		    stderror(ERR_DOLZERO);
 		if (length) {
-		    Char *cp;
 		    length = Strlen(ffile);
-		    cp = putn(length);
-		    addla(cp);
-		    xfree((ptr_t) cp);
+		    addla(putn(length));
 		}
 		else {
 		    fixDolMod();
 		    setDolp(ffile);
 		}
+		cleanup_until(name);
 		goto eatbrac;
 	    }
 #if 0
@@ -590,15 +546,17 @@ Dgetdol()
 	    vp = adrof(STRargv);
 	    if (vp == 0) {
 		vp = &nulargv;
+		cleanup_until(name);
 		goto eatmod;
 	    }
 	    break;
 	}
-	if (!alnum(c)) {
+	if (c == DEOF || !alnum(c)) {
 	    np = dimen ? STRargv : (bitset ? STRstatus : NULL);
 	    if (np) {
 		bitset = 0;
-		(void) Strcpy(name, np);
+		Strbuf_append(name, np);
+		Strbuf_terminate(name);
 		vp = adrof(np);
 		subscr = -1;		/* Prevent eating [...] */
 		unDredc(c);
@@ -608,46 +566,56 @@ Dgetdol()
 		stderror(ERR_VARALNUM);
 	}
 	for (;;) {
-	    *np++ = (Char) c;
+	    Strbuf_append1(name, (Char) c);
 	    c = DgetC(0);
-	    if (!alnum(c))
+	    if (c == DEOF || !alnum(c))
 		break;
-	    if (np >= &name[MAXVARLEN])
-		stderror(ERR_VARTOOLONG);
 	}
-	*np++ = 0;
+	Strbuf_terminate(name);
 	unDredc(c);
-	vp = adrof(name);
+	vp = adrof(name->s);
     }
     if (bitset) {
-	dolp = (vp || getenv(short2str(name))) ? STR1 : STR0;
+	dolp = (vp || getenv(short2str(name->s))) ? STR1 : STR0;
+	cleanup_until(name);
 	goto eatbrac;
     }
-    if (vp == 0) {
-	np = str2short(getenv(short2str(name)));
+    if (vp == NULL || vp->vec == NULL) {
+	np = str2short(getenv(short2str(name->s)));
 	if (np) {
+	    static Char *env_val; /* = NULL; */
+
+	    cleanup_until(name);
 	    fixDolMod();
-	    setDolp(np);
+	    if (length) {
+		    addla(putn(Strlen(np)));
+	    } else {
+		    xfree(env_val);
+		    env_val = Strsave(np);
+		    setDolp(env_val);
+	    }
 	    goto eatbrac;
 	}
-	udvar(name);
+	udvar(name->s);
 	/* NOTREACHED */
     }
+    cleanup_until(name);
     c = DgetC(0);
     upb = blklen(vp->vec);
     if (dimen == 0 && subscr == 0 && c == '[') {
-	np = name;
+	name = Strbuf_alloc();
+	cleanup_push(name, Strbuf_free);
+	np = name->s;
 	for (;;) {
 	    c = DgetC(DODOL);	/* Allow $ expand within [ ] */
 	    if (c == ']')
 		break;
 	    if (c == '\n' || c == DEOF)
 		stderror(ERR_INCBR);
-	    if (np >= &name[sizeof(name) / sizeof(Char) - 2])
-		stderror(ERR_VARTOOLONG);
-	    *np++ = (Char) c;
+	    Strbuf_append1(name, (Char) c);
 	}
-	*np = 0, np = name;
+	Strbuf_terminate(name);
+	np = name->s;
 	if (dolp || dolcnt)	/* $ exp must end before ] */
 	    stderror(ERR_EXPORD);
 	if (!*np)
@@ -657,7 +625,8 @@ Dgetdol()
 
 	    for (i = 0; Isdigit(*np); i = i * 10 + *np++ - '0')
 		continue;
-	    if ((i < 0 || i > upb) && !any("-*", *np)) {
+	    if (i < 0 || i > upb && !any("-*", *np)) {
+		cleanup_until(name);
 		dolerror(vp->v_name);
 		return;
 	    }
@@ -670,7 +639,7 @@ Dgetdol()
 	else if (*np != '-')
 	    stderror(ERR_MISSING, '-');
 	else {
-	    register int i = upb;
+	    int i = upb;
 
 	    np++;
 	    if (Isdigit(*np)) {
@@ -678,6 +647,7 @@ Dgetdol()
 		while (Isdigit(*np))
 		    i = i * 10 + *np++ - '0';
 		if (i < 0 || i > upb) {
+		    cleanup_until(name);
 		    dolerror(vp->v_name);
 		    return;
 		}
@@ -689,6 +659,7 @@ Dgetdol()
 	}
 	if (lwb == 0) {
 	    if (upb != 0) {
+		cleanup_until(name);
 		dolerror(vp->v_name);
 		return;
 	    }
@@ -696,6 +667,7 @@ Dgetdol()
 	}
 	if (*np)
 	    stderror(ERR_SYNTAX);
+	cleanup_until(name);
     }
     else {
 	if (subscr > 0) {
@@ -707,35 +679,26 @@ Dgetdol()
 	unDredc(c);
     }
     if (dimen) {
-	Char   *cp = putn(upb - lwb + 1);
-
 	/* this is a kludge. It prevents Dgetdol() from */
 	/* pushing erroneous ${#<error> values into the labuf. */
 	if (sc == '{') {
 	    c = Dredc();
 	    if (c != '}')
-	    {
-		xfree((ptr_t) cp);
 		stderror(ERR_MISSING, '}');
-	        return;
-	    }
 	    unDredc(c);
 	}
-	addla(cp);
-	xfree((ptr_t) cp);
+	addla(putn(upb - lwb + 1));
     }
     else if (length) {
 	int i;
-	Char   *cp;
+
 	for (i = lwb - 1, length = 0; i < upb; i++)
 	    length += Strlen(vp->vec[i]);
 #ifdef notdef
 	/* We don't want that, since we can always compute it by adding $#xxx */
 	length += i - 1;	/* Add the number of spaces in */
 #endif
-	cp = putn(length);
-	addla(cp);
-	xfree((ptr_t) cp);
+	addla(putn(length));
     }
     else {
 eatmod:
@@ -752,45 +715,43 @@ eatbrac:
 }
 
 static void
-fixDolMod()
+fixDolMod(void)
 {
-    register int c;
+    eChar c;
 
     c = DgetC(0);
     if (c == ':') {
-#ifndef COMPAT
 	do {
-#endif /* COMPAT */
-	    c = DgetC(0), dolmcnt = 1, dolwcnt = 1;
+	    c = DgetC(0), dolmcnt = 1, dol_flag_a = 0;
 	    if (c == 'g' || c == 'a') {
 		if (c == 'g')
-		    dolmcnt = 10000;
+		    dolmcnt = INT_MAX;
 		else
-		    dolwcnt = 10000;
+		    dol_flag_a = 1;
 		c = DgetC(0);
 	    }
-	    if ((c == 'g' && dolmcnt != 10000) || 
-		(c == 'a' && dolwcnt != 10000)) {
+	    if ((c == 'g' && dolmcnt != INT_MAX) || 
+		(c == 'a' && dol_flag_a == 0)) {
 		if (c == 'g')
-		    dolmcnt = 10000;
+		    dolmcnt = INT_MAX;
 		else
-		    dolwcnt = 10000;
-		c = DgetC(0); 
+		    dol_flag_a = 1;
+		c = DgetC(0);
 	    }
 
 	    if (c == 's') {	/* [eichin:19910926.0755EST] */
 		int delimcnt = 2;
-		int delim = DgetC(0);
-		dolmod[dolnmod++] = (Char) c;
-		dolmod[dolnmod++] = (Char) delim;
-		
-		if (!delim || letter(delim)
+		eChar delim = DgetC(0);
+		Strbuf_append1(&dolmod, (Char) c);
+		Strbuf_append1(&dolmod, (Char) delim);
+
+		if (delim == DEOF || !delim || letter(delim)
 		    || Isdigit(delim) || any(" \t\n", delim)) {
 		    seterror(ERR_BADSUBST);
 		    break;
 		}	
-		while ((c = DgetC(0)) != (-1)) {
-		    dolmod[dolnmod++] = (Char) c;
+		while ((c = DgetC(0)) != DEOF) {
+		    Strbuf_append1(&dolmod, (Char) c);
 		    if(c == delim) delimcnt--;
 		    if(!delimcnt) break;
 		}
@@ -801,143 +762,115 @@ fixDolMod()
 		continue;
 	    }
 	    if (!any("luhtrqxes", c))
-		stderror(ERR_BADMOD, c);
-#ifndef COMPAT
-	    dolmod[dolnmod++] = (Char) c;
-#else
-	    dolmod = (Char) c;
-#endif /* COMPAT */
+		stderror(ERR_BADMOD, (int)c);
+	    Strbuf_append1(&dolmod, (Char) c);
 	    if (c == 'q')
-		dolmcnt = 10000;
-#ifndef COMPAT
+		dolmcnt = INT_MAX;
 	}
 	while ((c = DgetC(0)) == ':');
 	unDredc(c);
-#endif /* COMPAT */
     }
     else
 	unDredc(c);
 }
 
 static void
-setDolp(cp)
-    register Char *cp;
+setDolp(Char *cp)
 {
-    register Char *dp;
-#ifndef COMPAT
-    int i;
-#endif /* COMPAT */
+    Char *dp;
+    size_t i;
 
-#ifdef COMPAT
-    if (dolmod == 0 || dolmcnt == 0) {
-#else
-    if (dolnmod == 0 || dolmcnt == 0) {
-#endif /* COMPAT */
+    if (dolmod.len == 0 || dolmcnt == 0) {
 	dolp = cp;
 	return;
     }
-#ifdef COMPAT
-    dp = domod(cp, dolmod);
-#else
-    dp = cp = Strsave(cp);
-    for (i = 0; i < dolnmod; i++) {
+    cp = Strsave(cp);
+    for (i = 0; i < dolmod.len; i++) {
+	int didmod = 0;
+
 	/* handle s// [eichin:19910926.0510EST] */
-	if(dolmod[i] == 's') {
-	    int delim;
+	if(dolmod.s[i] == 's') {
+	    Char delim;
 	    Char *lhsub, *rhsub, *np;
 	    size_t lhlen = 0, rhlen = 0;
-	    int didmod = 0;
-		
-	    delim = dolmod[++i];
+
+	    delim = dolmod.s[++i];
 	    if (!delim || letter(delim)
 		|| Isdigit(delim) || any(" \t\n", delim)) {
 		seterror(ERR_BADSUBST);
 		break;
 	    }
-	    lhsub = &dolmod[++i];
-	    while(dolmod[i] != delim && dolmod[++i]) {
+	    lhsub = &dolmod.s[++i];
+	    while(dolmod.s[i] != delim && dolmod.s[++i]) {
 		lhlen++;
 	    }
-	    dolmod[i] = 0;
-	    rhsub = &dolmod[++i];
-	    while(dolmod[i] != delim && dolmod[++i]) {
+	    dolmod.s[i] = 0;
+	    rhsub = &dolmod.s[++i];
+	    while(dolmod.s[i] != delim && dolmod.s[++i]) {
 		rhlen++;
 	    }
-	    dolmod[i] = 0;
+	    dolmod.s[i] = 0;
 
+	    strip(lhsub);
+	    strip(rhsub);
+	    strip(cp);
+	    dp = cp;
 	    do {
-		strip(lhsub);
-		strip(cp);
-		dp = Strstr(cp, lhsub);
+		dp = Strstr(dp, lhsub);
 		if (dp) {
-		    np = (Char *) xmalloc((size_t)
-					  ((Strlen(cp) + 1 - lhlen + rhlen) *
-					  sizeof(Char)));
-		    (void) Strncpy(np, cp, (size_t) (dp - cp));
-		    (void) Strcpy(np + (dp - cp), rhsub);
-		    (void) Strcpy(np + (dp - cp) + rhlen, dp + lhlen);
+		    ptrdiff_t diff = dp - cp;
+		    size_t len = (Strlen(cp) + 1 - lhlen + rhlen);
+		    np = xmalloc(len * sizeof(Char));
+		    (void) Strncpy(np, cp, diff);
+		    (void) Strcpy(np + diff, rhsub);
+		    (void) Strcpy(np + diff + rhlen, dp + lhlen);
 
-		    xfree((ptr_t) cp);
-		    dp = cp = np;
+		    dp = np + diff + 1;
+		    xfree(cp);
+		    cp = np;
+		    cp[--len] = '\0';
 		    didmod = 1;
+		    if (diff >= len)
+			break;
 		} else {
 		    /* should this do a seterror? */
 		    break;
 		}
 	    }
-	    while (dolwcnt == 10000);
+	    while (dol_flag_a != 0);
 	    /*
 	     * restore dolmod for additional words
 	     */
-	    dolmod[i] = rhsub[-1] = (Char) delim;
-	    if (didmod)
-		dolmcnt--;
-#ifdef notdef
-	    else
-		break;
-#endif
+	    dolmod.s[i] = rhsub[-1] = (Char) delim;
         } else {
-	    int didmod = 0;
 
 	    do {
-		if ((dp = domod(cp, dolmod[i])) != NULL) {
+		if ((dp = domod(cp, dolmod.s[i])) != NULL) {
 		    didmod = 1;
 		    if (Strcmp(cp, dp) == 0) {
-			xfree((ptr_t) cp);
+			xfree(cp);
 			cp = dp;
 			break;
 		    }
 		    else {
-			xfree((ptr_t) cp);
+			xfree(cp);
 			cp = dp;
 		    }
 		}
 		else
 		    break;
 	    }
-	    while (dolwcnt == 10000);
-	    dp = cp;
-	    if (didmod)
-		dolmcnt--;
-#ifdef notdef
-	    else
-		break;
-#endif
+	    while (dol_flag_a != 0);
 	}
+	if (didmod && dolmcnt != INT_MAX)
+	    dolmcnt--;
+#ifdef notdef
+	else
+	    break;
+#endif
     }
-#endif /* COMPAT */
 
-    if (dp) {
-#ifdef COMPAT
-	dolmcnt--;
-#endif /* COMPAT */
-	addla(dp);
-	xfree((ptr_t) dp);
-    }
-#ifndef COMPAT
-    else
-	addla(cp);
-#endif /* COMPAT */
+    addla(cp);
 
     dolp = STRNULL;
     if (seterr)
@@ -945,17 +878,16 @@ setDolp(cp)
 }
 
 static void
-unDredc(c)
-    int     c;
+unDredc(eChar c)
 {
 
     Dpeekrd = c;
 }
 
-static int
-Dredc()
+static eChar
+Dredc(void)
 {
-    register int c;
+    Char c;
 
     if ((c = Dpeekrd) != 0) {
 	Dpeekrd = 0;
@@ -971,13 +903,21 @@ Dredc()
     return (' ');
 }
 
+static int gflag;
+
 static void
-Dtestq(c)
-    register int c;
+Dtestq(Char c)
 {
 
     if (cmap(c, QUOTES))
 	gflag = 1;
+}
+
+static void
+inheredoc_cleanup(void *dummy)
+{
+    USE(dummy);
+    inheredoc = 0;
 }
 
 /*
@@ -986,34 +926,54 @@ Dtestq(c)
  * Unit 0 should have been closed before this call.
  */
 void
-heredoc(term)
-    Char   *term;
+heredoc(Char *term)
 {
-    register int c;
+    eChar  c;
     Char   *Dv[2];
-    Char    obuf[BUFSIZE], lbuf[BUFSIZE], mbuf[BUFSIZE];
-    int     ocnt, lcnt, mcnt;
-    register Char *lbp, *obp, *mbp;
+    struct Strbuf lbuf = Strbuf_INIT, mbuf = Strbuf_INIT;
+    Char    obuf[BUFSIZE + 1];
+#define OBUF_END (obuf + sizeof(obuf) / sizeof (*obuf) - 1)
+    Char *lbp, *obp, *mbp;
     Char  **vp;
-    bool    quoted;
+    int    quoted;
     char   *tmp;
+#ifndef WINNT_NATIVE
+    struct timeval tv;
 
+again:
+#endif /* WINNT_NATIVE */
     tmp = short2str(shtemp);
 #ifndef O_CREAT
 # define O_CREAT 0
-    if (creat(tmp, 0600) < 0)
+    if (xcreat(tmp, 0600) < 0)
 	stderror(ERR_SYSTEM, tmp, strerror(errno));
 #endif
-    (void) close(0);
+    xclose(0);
 #ifndef O_TEMPORARY
 # define O_TEMPORARY 0
 #endif
-    if (open(tmp, O_RDWR|O_CREAT|O_TEMPORARY, 0600) < 0) {
-	int     oerrno = errno;
-
+#ifndef O_EXCL
+# define O_EXCL 0
+#endif
+    if (xopen(tmp, O_RDWR|O_CREAT|O_EXCL|O_TEMPORARY|O_LARGEFILE, 0600) ==
+	-1) {
+	int oerrno = errno;
+#ifndef WINNT_NATIVE
+	if (errno == EEXIST) {
+	    if (unlink(tmp) == -1) {
+		(void) gettimeofday(&tv, NULL);
+		xfree(shtemp);
+		mbp = putn((((int)tv.tv_sec) ^ 
+		    ((int)tv.tv_usec) ^ ((int)getpid())) & 0x00ffffff);
+		shtemp = Strspl(STRtmpsh, mbp);
+		xfree(mbp);
+	    }
+	    goto again;
+	}
+#endif /* WINNT_NATIVE */
 	(void) unlink(tmp);
 	errno = oerrno;
-	stderror(ERR_SYSTEM, tmp, strerror(errno));
+ 	stderror(ERR_SYSTEM, tmp, strerror(errno));
     }
     (void) unlink(tmp);		/* 0 0 inode! */
     Dv[0] = term;
@@ -1022,54 +982,49 @@ heredoc(term)
     trim(Dv);
     rscan(Dv, Dtestq);
     quoted = gflag;
-    ocnt = BUFSIZE;
     obp = obuf;
+    obuf[BUFSIZE] = 0;
     inheredoc = 1;
-#ifdef WINNT
+    cleanup_push(&inheredoc, inheredoc_cleanup);
+#ifdef WINNT_NATIVE
     __dup_stdin = 1;
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
+    cleanup_push(&lbuf, Strbuf_cleanup);
+    cleanup_push(&mbuf, Strbuf_cleanup);
     for (;;) {
+	Char **words;
+
 	/*
 	 * Read up a line
 	 */
-	lbp = lbuf;
-	lcnt = BUFSIZE - 4;
+	lbuf.len = 0;
 	for (;;) {
 	    c = readc(1);	/* 1 -> Want EOF returns */
-	    if (c < 0 || c == '\n')
+	    if (c == CHAR_ERR || c == '\n')
 		break;
-	    if ((c &= TRIM) != 0) {
-		*lbp++ = (Char) c;
-		if (--lcnt < 0) {
-		    setname("<<");
-		    stderror(ERR_NAME | ERR_OVERFLOW);
-		}
-	    }
+	    if ((c &= TRIM) != 0)
+		Strbuf_append1(&lbuf, (Char) c);
 	}
-	*lbp = 0;
+	Strbuf_terminate(&lbuf);
 
 	/*
 	 * Check for EOF or compare to terminator -- before expansion
 	 */
-	if (c < 0 || eq(lbuf, term)) {
-	    (void) write(0, short2str(obuf), (size_t) (BUFSIZE - ocnt));
-	    (void) lseek(0, (off_t) 0, L_SET);
-	    inheredoc = 0;
-	    return;
-	}
+	if (c == CHAR_ERR || eq(lbuf.s, term))
+	    break;
 
 	/*
 	 * If term was quoted or -n just pass it on
 	 */
 	if (quoted || noexec) {
-	    *lbp++ = '\n';
-	    *lbp = 0;
-	    for (lbp = lbuf; (c = *lbp++) != 0;) {
+	    Strbuf_append1(&lbuf, '\n');
+	    Strbuf_terminate(&lbuf);
+	    for (lbp = lbuf.s; (c = *lbp++) != 0;) {
 		*obp++ = (Char) c;
-		if (--ocnt == 0) {
-		    (void) write(0, short2str(obuf), BUFSIZE);
+		if (obp == OBUF_END) {
+		    tmp = short2str(obuf);
+		    (void) xwrite(0, tmp, strlen (tmp));
 		    obp = obuf;
-		    ocnt = BUFSIZE;
 		}
 	    }
 	    continue;
@@ -1079,10 +1034,9 @@ heredoc(term)
 	 * Term wasn't quoted so variable and then command expand the input
 	 * line
 	 */
-	Dcp = lbuf;
+	Dcp = lbuf.s;
 	Dvp = Dv + 1;
-	mbp = mbuf;
-	mcnt = BUFSIZE - 4;
+	mbuf.len = 0;
 	for (;;) {
 	    c = DgetC(DODOL);
 	    if (c == DEOF)
@@ -1097,29 +1051,25 @@ heredoc(term)
 		else
 		    c |= QUOTE;
 	    }
-	    *mbp++ = (Char) c;
-	    if (--mcnt == 0) {
-		setname("<<");
-		stderror(ERR_NAME | ERR_OVERFLOW);
-	    }
+	    Strbuf_append1(&mbuf, (Char) c);
 	}
-	*mbp++ = 0;
+	Strbuf_terminate(&mbuf);
 
 	/*
 	 * If any ` in line do command substitution
 	 */
-	mbp = mbuf;
+	mbp = mbuf.s;
 	if (Strchr(mbp, '`') != NULL) {
 	    /*
 	     * 1 arg to dobackp causes substitution to be literal. Words are
 	     * broken only at newlines so that all blanks and tabs are
 	     * preserved.  Blank lines (null words) are not discarded.
 	     */
-	    vp = dobackp(mbuf, 1);
+	    words = dobackp(mbp, 1);
 	}
 	else
 	    /* Setup trivial vector similar to return of dobackp */
-	    Dv[0] = mbp, Dv[1] = NULL, vp = Dv;
+	    Dv[0] = mbp, Dv[1] = NULL, words = Dv;
 
 	/*
 	 * Resurrect the words from the command substitution each separated by
@@ -1127,23 +1077,28 @@ heredoc(term)
 	 * will have been discarded, but we put a newline after the last word
 	 * because this represents the newline after the last input line!
 	 */
-	for (; *vp; vp++) {
+	for (vp= words; *vp; vp++) {
 	    for (mbp = *vp; *mbp; mbp++) {
 		*obp++ = *mbp & TRIM;
-		if (--ocnt == 0) {
-		    (void) write(0, short2str(obuf), BUFSIZE);
+		if (obp == OBUF_END) {
+		    tmp = short2str(obuf);
+		    (void) xwrite(0, tmp, strlen (tmp));
 		    obp = obuf;
-		    ocnt = BUFSIZE;
 		}
 	    }
 	    *obp++ = '\n';
-	    if (--ocnt == 0) {
-		(void) write(0, short2str(obuf), BUFSIZE);
+	    if (obp == OBUF_END) {
+	        tmp = short2str(obuf);
+		(void) xwrite(0, tmp, strlen (tmp));
 		obp = obuf;
-		ocnt = BUFSIZE;
 	    }
 	}
-	if (pargv)
-	    blkfree(pargv), pargv = 0;
+	if (words != Dv)
+	    blkfree(words);
     }
+    *obp = 0;
+    tmp = short2str(obuf);
+    (void) xwrite(0, tmp, strlen (tmp));
+    (void) lseek(0, (off_t) 0, L_SET);
+    cleanup_until(&inheredoc);
 }

@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/sh.char.c,v 3.20 2007/03/07 16:31:37 christos Exp $ */
 /*
  * sh.char.c: Character classification tables
  */
@@ -13,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -35,11 +32,10 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.char.c,v 1.1 2001-07-18 11:06:04 root Exp $")
+RCSID("$tcsh: sh.char.c,v 3.20 2007/03/07 16:31:37 christos Exp $")
 
 #include "sh.char.h"
 
-#if defined(KANJI) && defined(SHORT_STRINGS) && defined(DSPMBYTE)
 /* on default same as original map */
 unsigned short _cmap[256] = {
 /*	  0 nul		  1 soh		  2 stx		  3 etx	*/
@@ -138,6 +134,7 @@ unsigned short _cmap[256] = {
 /*	124 |		125 }		126 ~		127 del	*/
 	_META|_CMD|_PUN,_PUN,		_PUN,		_CTR,
 
+#ifdef SHORT_STRINGS
 /****************************************************************/
 /* 128 - 255 The below is supposedly ISO 8859/1			*/
 /****************************************************************/
@@ -237,6 +234,9 @@ unsigned short _cmap[256] = {
 /*	252 udiaeresis	253 yacute	254 thorn	255 ydiaeresis	*/
 	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
 };
+#endif /* SHORT_STRINGS */
+
+#if defined(KANJI) && defined(SHORT_STRINGS) && defined(DSPMBYTE)
 /* original table */
 unsigned short _cmap_c[256] = {
 /*	  0 nul		  1 soh		  2 stx		  3 etx	*/
@@ -812,204 +812,95 @@ unsigned short _mbmap_sjis[256] = {
     _MB1|_MB2,	0,		0,		0,
 };
 
-#else /* !(defined(KANJI) && defined(SHORT_STRINGS) && defined(DSPMBYTE)) */
-unsigned short _cmap[256] = {
-/*	  0 nul		  1 soh		  2 stx		  3 etx	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
+unsigned short _mbmap_big5[256] = {
+/* This is latest big5 charmap, so called "Big5+" */
+/* first byte   0x81 - 0xfe */
+/* second byte  0x40 - 0x7e, 0x80 - 0xfe */
+/* 0x00 - 0x3f = 0 */
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/* 0x40 - 0x7e = 2 */
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+    _MB2,	_MB2,		_MB2,		_MB2,
+						/* 0x7f = 0 */
+    _MB2,	_MB2,		_MB2,		0,
+/* 0x80 = 2, 0x81 - 0xfe = 3 */
+    _MB2,      _MB1|_MB2,      _MB1|_MB2,      _MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,    
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,    
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,
+						/* 0xff = 0 */
+    _MB1|_MB2,	_MB1|_MB2,	_MB1|_MB2,	0,
+};
 
-/*	  4 eot		  5 enq		  6 ack		  7 bel	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	  8 bs		  9 ht		 10 nl		 11 vt	*/
-	_CTR,		_CTR|_SP|_META,	_CTR|_NL|_META,	_CTR,
-
-/*	 12 np		 13 cr		 14 so		 15 si	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	 16 dle		 17 dc1		 18 dc2		 19 dc3	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	 20 dc4		 21 nak		 22 syn		 23 etb	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	 24 can		 25 em		 26 sub		 27 esc	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	 28 fs		 29 gs		 30 rs		 31 us	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	 32 sp		 33 !		 34 "		 35 #	*/
-	_SP|_META,	_PUN,		_QF|_PUN,	_META|_PUN,
-
-/*	 36 $		 37 %		 38 &		 39 '	*/
-	_DOL|_PUN,	_PUN,		_META|_CMD|_PUN,_QF|_PUN,
-
-/*	 40 (		 41 )		 42 *		 43 +	*/
-	_META|_CMD|_PUN,_META|_PUN,	_GLOB|_PUN,	_PUN,
-
-/*	 44 ,		 45 -		 46 .		 47 /	*/
-	_PUN,		_PUN,		_PUN,		_PUN,
-
-/*	 48 0		 49 1		 50 2		 51 3	*/
-	_DIG|_XD,	_DIG|_XD,	_DIG|_XD,	_DIG|_XD,
-
-/*	 52 4		 53 5		 54 6		 55 7	*/
-	_DIG|_XD,	_DIG|_XD,	_DIG|_XD,	_DIG|_XD,
-
-/*	 56 8		 57 9		 58 :		 59 ;	*/
-	_DIG|_XD,	_DIG|_XD,	_PUN,		_META|_CMD|_PUN,
-
-/*	 60 <		 61 =		 62 >		 63 ?	*/
-	_META|_PUN,	_PUN,		_META|_PUN,	_GLOB|_PUN,
-
-/*	 64 @		 65 A		 66 B		 67 C	*/
-	_PUN,		_LET|_UP|_XD,	_LET|_UP|_XD,	_LET|_UP|_XD,
-
-/*	 68 D		 69 E		 70 F		 71 G	*/
-	_LET|_UP|_XD,	_LET|_UP|_XD,	_LET|_UP|_XD,	_LET|_UP,
-
-/*	 72 H		 73 I		 74 J		 75 K	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_UP,
-
-/*	 76 L		 77 M		 78 N		 79 O	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_UP,
-
-/*	 80 P		 81 Q		 82 R		 83 S	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_UP,
-
-/*	 84 T		 85 U		 86 V		 87 W	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_UP,
-
-/*	 88 X		 89 Y		 90 Z		 91 [	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_GLOB|_PUN,
-
-/*	 92 \		 93 ]		 94 ^		 95 _	*/
-	_ESC|_PUN,	_PUN,		_PUN,		_PUN,
-
-/*	 96 `		 97 a		 98 b		 99 c	*/
-  _QB|_GLOB|_META|_PUN,	_LET|_DOW|_XD,	_LET|_DOW|_XD,	_LET|_DOW|_XD,
-
-/*	100 d		101 e		102 f		103 g	*/
-	_LET|_DOW|_XD,	_LET|_DOW|_XD,	_LET|_DOW|_XD,	_LET|_DOW,
-
-/*	104 h		105 i		106 j		107 k	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-
-/*	108 l		109 m		110 n		111 o	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-
-/*	112 p		113 q		114 r		115 s	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-
-/*	116 t		117 u		118 v		119 w	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-
-/*	120 x		121 y		122 z		123 {	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_GLOB|_PUN,
-
-/*	124 |		125 }		126 ~		127 del	*/
-	_META|_CMD|_PUN,_PUN,		_PUN,		_CTR,
-
-#ifdef SHORT_STRINGS
-/****************************************************************/
-/* 128 - 255 The below is supposedly ISO 8859/1			*/
-/****************************************************************/
-/*	128 (undef)	129 (undef)	130 (undef)	131 (undef)	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	132 (undef)	133 (undef)	134 (undef)	135 (undef)	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	136 (undef)	137 (undef)	138 (undef)	139 (undef)	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	140 (undef)	141 (undef)	142 (undef)	143 (undef)	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	144 (undef)	145 (undef)	146 (undef)	147 (undef)	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	148 (undef)	149 (undef)	150 (undef)	151 (undef)	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	152 (undef)	153 (undef)	154 (undef)	155 (undef)	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	156 (undef)	157 (undef)	158 (undef)	159 (undef)	*/
-	_CTR,		_CTR,		_CTR,		_CTR,
-
-/*	160 nobreakspace 161 exclamdown	162 cent	163 sterling	*/
-	_PUN, /* XXX */	_PUN,		_PUN,		_PUN,
-
-/*	164 currency	165 yen		166 brokenbar	167 section	*/
-	_PUN,		_PUN,		_PUN,		_PUN,
-
-/*	168 diaeresis	169 copyright	170 ordfeminine	171 guillemotleft*/
-	_PUN,		_PUN,		_PUN,		_PUN,
-
-/*	172 notsign	173 hyphen	174 registered	175 macron	*/
-	_PUN,		_PUN,		_PUN,		_PUN,
-
-/*	176 degree	177 plusminus	178 twosuperior	179 threesuperior*/
-	_PUN,		_PUN,		_PUN,		_PUN,
-
-/*	180 acute	181 mu 		182 paragraph	183 periodcentered*/
-	_PUN,		_PUN, /*XXX*/	_PUN,		_PUN,
-
-/*	184 cedilla	185 onesuperior	186 masculine	187 guillemotright*/
-	_PUN,		_PUN,		_PUN,		_PUN,
-
-/*	188 onequarter	189 onehalf	190 threequarters 191 questiondown*/
-	_PUN,		_PUN,		_PUN,		_PUN,
-
-/*	192 Agrave	193 Aacute	194 Acircumflex	195 Atilde	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_UP,
-
-/*	196 Adiaeresis	197 Aring	198 AE		199 Ccedilla	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_UP,
-
-/*	200 Egrave	201 Eacute	202 Ecircumflex	203 Ediaeresis	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_UP,
-
-/*	204 Igrave	205 Iacute	206 Icircumflex	207 Idiaeresis	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_UP,
-
-/*	208 ETH		209 Ntilde	210 Ograve	211 Oacute	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_UP,
-
-/*	212 Ocircumflex	213 Otilde	214 Odiaeresis	215 multiply	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_PUN,
-
-/*	216 Ooblique	217 Ugrave	218 Uacute	219 Ucircumflex	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_UP,
-
-/*	220 Udiaeresis	221 Yacute	222 THORN	223 ssharp	*/
-	_LET|_UP,	_LET|_UP,	_LET|_UP,	_LET|_DOW,
-
-/*	224 agrave	225 aacute	226 acircumflex	227 atilde	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-
-/*	228 adiaeresis	229 aring	230 ae		231 ccedilla	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-
-/*	232 egrave	233 eacute	234 ecircumflex	235 ediaeresis	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-
-/*	236 igrave	237 iacute	238 icircumflex	239 idiaeresis	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-
-/*	240 eth		241 ntilde	242 ograve	243 oacute	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-
-/*	244 ocircumflex	245 otilde	246 odiaeresis	247 division	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_PUN,
-
-/*	248 oslash	249 ugrave	250 uacute	251 ucircumflex	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-
-/*	252 udiaeresis	253 yacute	254 thorn	255 ydiaeresis	*/
-	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,	_LET|_DOW,
-#endif /* SHORT_STRINGS */
+unsigned short _mbmap_utf8[256] = {
+/* utf8 uses up to 6 bytes */
+/* first byte        0xc0 - 0xfd */
+/* any further bytes 0x80 - 0xbf */
+/* 0 - 7f all 0 */
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+/*  80 - bf : all _MB2 */
+    _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2,
+    _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2,
+    _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2,
+    _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2,
+    _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2,
+    _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2,
+    _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2,
+    _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2, _MB2,
+/* c0 - fc : all _MB1 */
+    _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1,
+    _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1,
+    _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1,
+    _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1,
+    _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1,
+    _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1,
+    _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, _MB1,
+/*  f8    f9    fa    fb    fc    fd    fe    ff*/
+    _MB1, _MB1, _MB1, _MB1, _MB1, _MB1, 0,    0
 };
 #endif /* defined(KANJI) && defined(SHORT_STRINGS) && defined(DSPMBYTE) */
 
@@ -1203,3 +1094,78 @@ unsigned short _toebcdic[256] = {
 };
 
 #endif /*_OSD_POSIX*/
+
+#ifdef __MVS__
+/* 
+   The IBM 1047 coded char set to/from ISO 8859-1 mapping differs from 
+   the POSIX-BC mapping in several places
+ */
+unsigned short _toascii[256] = {
+      0x00, 0x01, 0x02, 0x03, 0x9c, 0x09, 0x86, 0x7f, 
+      0x97, 0x8d, 0x8e, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 
+      0x10, 0x11, 0x12, 0x13, 0x9d, 0x0a, 0x08, 0x87, 
+      0x18, 0x19, 0x92, 0x8f, 0x1c, 0x1d, 0x1e, 0x1f, 
+      0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x17, 0x1b, 
+      0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x05, 0x06, 0x07, 
+      0x90, 0x91, 0x16, 0x93, 0x94, 0x95, 0x96, 0x04, 
+      0x98, 0x99, 0x9a, 0x9b, 0x14, 0x15, 0x9e, 0x1a, 
+      0x20, 0xa0, 0xe2, 0xe4, 0xe0, 0xe1, 0xe3, 0xe5, 
+      0xe7, 0xf1, 0xa2, 0x2e, 0x3c, 0x28, 0x2b, 0x7c, 
+      0x26, 0xe9, 0xea, 0xeb, 0xe8, 0xed, 0xee, 0xef, 
+      0xec, 0xdf, 0x21, 0x24, 0x2a, 0x29, 0x3b, 0x5e, 
+      0x2d, 0x2f, 0xc2, 0xc4, 0xc0, 0xc1, 0xc3, 0xc5, 
+      0xc7, 0xd1, 0xa6, 0x2c, 0x25, 0x5f, 0x3e, 0x3f, 
+      0xf8, 0xc9, 0xca, 0xcb, 0xc8, 0xcd, 0xce, 0xcf, 
+      0xcc, 0x60, 0x3a, 0x23, 0x40, 0x27, 0x3d, 0x22, 
+      0xd8, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 
+      0x68, 0x69, 0xab, 0xbb, 0xf0, 0xfd, 0xfe, 0xb1, 
+      0xb0, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f, 0x70, 
+      0x71, 0x72, 0xaa, 0xba, 0xe6, 0xb8, 0xc6, 0xa4, 
+      0xb5, 0x7e, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 
+      0x79, 0x7a, 0xa1, 0xbf, 0xd0, 0x5b, 0xde, 0xae, 
+      0xac, 0xa3, 0xa5, 0xb7, 0xa9, 0xa7, 0xb6, 0xbc, 
+      0xbd, 0xbe, 0xdd, 0xa8, 0xaf, 0x5d, 0xb4, 0xd7, 
+      0x7b, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 
+      0x48, 0x49, 0xad, 0xf4, 0xf6, 0xf2, 0xf3, 0xf5, 
+      0x7d, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f, 0x50, 
+      0x51, 0x52, 0xb9, 0xfb, 0xfc, 0xf9, 0xfa, 0xff, 
+      0x5c, 0xf7, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 
+      0x59, 0x5a, 0xb2, 0xd4, 0xd6, 0xd2, 0xd3, 0xd5, 
+      0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 
+      0x38, 0x39, 0xb3, 0xdb, 0xdc, 0xd9, 0xda, 0x9f, 
+};
+unsigned short _toebcdic[256] = {
+      0x00, 0x01, 0x02, 0x03, 0x37, 0x2d, 0x2e, 0x2f, 
+      0x16, 0x05, 0x15, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 
+      0x10, 0x11, 0x12, 0x13, 0x3c, 0x3d, 0x32, 0x26, 
+      0x18, 0x19, 0x3f, 0x27, 0x1c, 0x1d, 0x1e, 0x1f, 
+      0x40, 0x5a, 0x7f, 0x7b, 0x5b, 0x6c, 0x50, 0x7d, 
+      0x4d, 0x5d, 0x5c, 0x4e, 0x6b, 0x60, 0x4b, 0x61, 
+      0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 
+      0xf8, 0xf9, 0x7a, 0x5e, 0x4c, 0x7e, 0x6e, 0x6f, 
+      0x7c, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 
+      0xc8, 0xc9, 0xd1, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 
+      0xd7, 0xd8, 0xd9, 0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 
+      0xe7, 0xe8, 0xe9, 0xad, 0xe0, 0xbd, 0x5f, 0x6d, 
+      0x79, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 
+      0x88, 0x89, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 
+      0x97, 0x98, 0x99, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 
+      0xa7, 0xa8, 0xa9, 0xc0, 0x4f, 0xd0, 0xa1, 0x07, 
+      0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x06, 0x17, 
+      0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x09, 0x0a, 0x1b, 
+      0x30, 0x31, 0x1a, 0x33, 0x34, 0x35, 0x36, 0x08, 
+      0x38, 0x39, 0x3a, 0x3b, 0x04, 0x14, 0x3e, 0xff, 
+      0x41, 0xaa, 0x4a, 0xb1, 0x9f, 0xb2, 0x6a, 0xb5, 
+      0xbb, 0xb4, 0x9a, 0x8a, 0xb0, 0xca, 0xaf, 0xbc, 
+      0x90, 0x8f, 0xea, 0xfa, 0xbe, 0xa0, 0xb6, 0xb3, 
+      0x9d, 0xda, 0x9b, 0x8b, 0xb7, 0xb8, 0xb9, 0xab, 
+      0x64, 0x65, 0x62, 0x66, 0x63, 0x67, 0x9e, 0x68, 
+      0x74, 0x71, 0x72, 0x73, 0x78, 0x75, 0x76, 0x77, 
+      0xac, 0x69, 0xed, 0xee, 0xeb, 0xef, 0xec, 0xbf, 
+      0x80, 0xfd, 0xfe, 0xfb, 0xfc, 0xba, 0xae, 0x59, 
+      0x44, 0x45, 0x42, 0x46, 0x43, 0x47, 0x9c, 0x48, 
+      0x54, 0x51, 0x52, 0x53, 0x58, 0x55, 0x56, 0x57, 
+      0x8c, 0x49, 0xcd, 0xce, 0xcb, 0xcf, 0xcc, 0xe1, 
+      0x70, 0xdd, 0xde, 0xdb, 0xdc, 0x8d, 0x8e, 0xdf 
+};
+#endif /*__MVS__*/

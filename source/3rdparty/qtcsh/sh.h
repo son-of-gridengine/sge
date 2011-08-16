@@ -1,4 +1,4 @@
-/* $Header: /var/lib/cvs/gridengine/source/3rdparty/qtcsh/sh.h,v 1.13 2006-11-30 13:29:22 joga Exp $ */
+/* $Header: /p/tcsh/cvsroot/tcsh/sh.h,v 3.150 2009/06/25 21:27:37 christos Exp $ */
 /*
  * sh.h: Catch it all globals and includes file!
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -39,14 +35,33 @@
 
 #include "config.h"
 
+#include <stddef.h>
+#include <signal.h>
+
+#ifdef HAVE_ICONV
+# include <iconv.h>
+#endif
+
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#endif
+
+#ifdef HAVE_INTTYPES_H
+# include <inttypes.h>
+#endif
+
+#if !defined(HAVE_STDINT_H) && !defined(HAVE_INTTYPES_H) && !defined(WINNT_NATIVE)
+typedef unsigned long intptr_t;
+#endif
+
 
 #ifndef EXTERN
 # define EXTERN extern
 #else /* !EXTERN */
-# ifdef WINNT
+# ifdef WINNT_NATIVE
 #  define IZERO = 0
 #  define IZERO_STRUCT = {0}
-# endif /* WINNT */
+# endif /* WINNT_NATIVE */
 #endif /* EXTERN */
 
 #ifndef IZERO
@@ -54,13 +69,13 @@
 #endif /* IZERO */
 #ifndef IZERO_STRUCT
 # define IZERO_STRUCT
-# endif /* IZERO_STRUCT */
+#endif /* IZERO_STRUCT */
 
-#ifndef WINNT
+#ifndef WINNT_NATIVE
 # define INIT_ZERO
 # define INIT_ZERO_STRUCT
-# define force_read read
-#endif /*!WINNT */
+# define force_read xread
+#endif /*!WINNT_NATIVE */
 /*
  * Sanity
  */
@@ -72,48 +87,55 @@
 # define BSDJOBS
 #endif 
 
-#if defined(POSIXSIGS) && !defined(BSDSIGS)
-# define BSDSIGS
-#endif
-
 #ifdef SHORT_STRINGS
+# ifdef WIDE_STRINGS
+#include <wchar.h>
+typedef wchar_t Char;
+typedef unsigned long uChar;
+typedef wint_t eChar; /* Can contain any Char value or CHAR_ERR */
+#define CHAR_ERR WEOF /* Pretty please, use bit 31... */
+#define normal_mbtowc(PWC, S, N) rt_mbtowc(PWC, S, N)
+#define reset_mbtowc() IGNORE(mbtowc(NULL, NULL, 0))
+# else
 typedef short Char;
 typedef unsigned short uChar;
+typedef int eChar;
+#define CHAR_ERR (-1)
+#define normal_mbtowc(PWC, S, N) ((void)(N), *(PWC) = (unsigned char)*(S), 1)
+#define reset_mbtowc() ((void)0)
+# endif
 # define SAVE(a) (Strsave(str2short(a)))
 #else
 typedef char Char;
 typedef unsigned char uChar;
+typedef int eChar;
+#define CHAR_ERR (-1)
+#define normal_mbtowc(PWC, S, N) ((void)(N), *(PWC) = (unsigned char)*(S), 1)
+#define reset_mbtowc() ((void)0)
 # define SAVE(a) (strsave(a))
-#endif 
+#endif
 
 /* Elide unused argument warnings */
 #define USE(a)	(void) (a)
-/*
- * If your compiler complains, then you can either
- * throw it away and get gcc or, use the following define
- * and get rid of the typedef.
- * [The 4.2/3BSD vax compiler does not like that]
- * Both MULTIFLOW and PCC compilers exhbit this bug.  -- sterling@netcom.com
- */
-#ifdef SIGVOID
-# if (defined(vax) || defined(uts) || defined(MULTIFLOW) || defined(PCC)) && !defined(__GNUC__)
-#  define sigret_t void
-# else /* !((vax || uts || MULTIFLOW || PCC) && !__GNUC__) */
-typedef void sigret_t;
-# endif /* (vax || uts || MULTIFLOW || PCC) && !__GNUC__ */
-#else /* !SIGVOID */
-typedef int sigret_t;
-#endif /* SIGVOID */
+#define IGNORE(a)	ignore((intptr_t)a)
+static inline void ignore(intptr_t a)
+{
+    USE(a);
+}
 
 /*
  * Return true if the path is absolute
  */
-#ifndef WINNT
-# define ABSOLUTEP(p)	(*(p) == '/')
-#else /* WINNT */
+#if defined(WINNT_NATIVE)
 # define ABSOLUTEP(p)	((p)[0] == '/' || \
-			 (Isalpha((p)[0]) && (p)[1] == ':' && (p)[2] == '/'))
-#endif /* WINNT */
+    (Isalpha((p)[0]) && (p)[1] == ':'))
+#elif defined(__CYGWIN__)
+# define ABSOLUTEP(p)	((p)[0] == '/' || \
+    (Isalpha((p)[0]) && (p)[1] == ':' && \
+     ((p)[2] == '\0' || (p)[2] == '/')))
+#else /* !WINNT_NATIVE && !__CYGWIN__ */
+# define ABSOLUTEP(p)	(*(p) == '/')
+#endif /* WINNT_NATIVE || __CYGWIN__ */
 
 /*
  * Fundamental definitions which may vary from system to system.
@@ -122,12 +144,12 @@ typedef int sigret_t;
  *	MAILINTVL	How often to mailcheck; more often is more expensive
  */
 #ifdef BUFSIZE
-# if	   BUFSIZE < 1024
+# if	   BUFSIZE < 4096
 #  undef   BUFSIZE
-#  define  BUFSIZE	1024	/* buffer size should be no less than this */
+#  define  BUFSIZE	4096	/* buffer size should be no less than this */
 # endif
 #else
-# define   BUFSIZE	1024
+# define   BUFSIZE	4096
 #endif /* BUFSIZE */
 
 #define FORKSLEEP	10	/* delay loop on non-interactive fork failure */
@@ -159,6 +181,7 @@ typedef int sigret_t;
  * 0, 1, and 2 so that it is easy to set up these standards for invoked
  * commands.
  */
+#define	FSAFE	5		/* We keep the first 5 descriptors untouched */
 #define	FSHTTY	15		/* /dev/tty when manip pgrps */
 #define	FSHIN	16		/* Preferred desc for shell input */
 #define	FSHOUT	17		/* ... shell output */
@@ -183,22 +206,19 @@ typedef int sigret_t;
  * Path separator in environment variables
  */
 #ifndef PATHSEP
-# if defined(__EMX__) || defined(WINNT)
+# if defined(__EMX__) || defined(WINNT_NATIVE)
 #  define PATHSEP ';'
 # else /* unix */
 #  define PATHSEP ':'
-# endif /* __EMX__ || WINNT */
+# endif /* __EMX__ || WINNT_NATIVE */
 #endif /* !PATHSEP */
 
-/* GRIDWARE, AA 4/2000: commented to compile under HP11 , -lrpcsvc necessary */ 
-#if 0
-#ifdef __HP_CXD_SPP
+#if defined(__HP_CXD_SPP) && !defined(__hpux)
 # include <sys/cnx_stat.h>
 # define stat stat64
 # define fstat fstat64
 # define lstat lstat64
-#endif /* __HP_CXD_SPP */
-#endif
+#endif /* __HP_CXD_SPP && !__hpux */
 
 /*
  * This macro compares the st_dev field of struct stat. On aix on ibmESA
@@ -211,16 +231,16 @@ typedef int sigret_t;
 #ifdef _SEQUENT_
 # include <sys/procstats.h>
 #endif /* _SEQUENT_ */
-#if (defined(POSIX) || SYSVREL > 0) && !WINNT
+#if (defined(POSIX) || SYSVREL > 0) && !defined(WINNT_NATIVE)
 # include <sys/times.h>
-#endif /* (POSIX || SYSVREL > 0) && !WINNT */
+#endif /* (POSIX || SYSVREL > 0) && !WINNT_NATIVE */
 
 #ifdef NLS
 # include <locale.h>
 #endif /* NLS */
 
 
-#if !defined(_MINIX) && !defined(_VMS_POSIX) && !defined(WINNT)
+#if !defined(_MINIX) && !defined(_VMS_POSIX) && !defined(WINNT_NATIVE) && !defined(__MVS__)
 /*
  * On some systems, sys/param.h includes unistd.h
  * As such, we have to copy the set/getpgrp trick from where
@@ -231,12 +251,12 @@ typedef int sigret_t;
 # include <sys/param.h>
 # undef getpgrp
 # undef setpgrp
-#endif /* !_MINIX && !_VMS_POSIX && !WINNT */
+#endif /* !_MINIX && !_VMS_POSIX && !WINNT_NATIVE && !__MVS__ */
 #include <sys/stat.h>
 
 #if defined(BSDTIMES) || defined(BSDLIMIT)
 # include <sys/time.h>
-# if SYSVREL>3 && !defined(SCO) && !defined(sgi) && !defined(SNI) && !defined(sun) && !defined(__sun) && !(defined(__alpha) && defined(__osf__)) && !defined(_SX)
+# if SYSVREL>3 && !defined(SCO) && !defined(sgi) && !defined(SNI) && !defined(sun) && !defined(__sun) && !(defined(__alpha) && defined(__osf__)) && !defined(_SX) && !defined(__MVS__)
 #  include "/usr/ucbinclude/sys/resource.h"
 # else
 #  ifdef convex
@@ -249,7 +269,7 @@ typedef int sigret_t;
 # endif /* SYSVREL>3 */
 #endif /* BSDTIMES */
 
-#ifndef WINNT
+#ifndef WINNT_NATIVE
 # ifndef POSIX
 #  ifdef TERMIO
 #   include <termio.h>
@@ -269,37 +289,28 @@ typedef int sigret_t;
 #   define CSWTCH _POSIX_VDISABLE	/* So job control works */
 #  endif /* SYSVREL > 3 */
 # endif /* POSIX */
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
 #ifdef sonyrisc
 # include <sys/ttold.h>
 #endif /* sonyrisc */
-
+ 
 #ifdef REMOTEHOST
 # include <netdb.h>
 #endif /* REMOTEHOST */
 
-#if defined(POSIX) && !defined(WINNT)
-/*
- * We should be using setpgid and setpgid
- * by now, but in some systems we use the
- * old routines...
- */
-# define getpgrp __getpgrp
-# define setpgrp __setpgrp
+#if defined(POSIX) && !defined(WINNT_NATIVE)
 # include <unistd.h>
-# undef getpgrp
-# undef setpgrp
 
 /*
  * the gcc+protoize version of <stdlib.h>
  * redefines malloc(), so we define the following
  * to avoid it.
  */
-# if defined(linux) || defined(sgi) || defined(_OSD_POSIX)
+# if defined(SYSMALLOC) || defined(linux) || defined(__GNU__) || defined(__GLIBC__) || defined(sgi) || defined(_OSD_POSIX)
 #  define NO_FIX_MALLOC
 #  include <stdlib.h>
-# else /* linux */
+# else /* glibc */
 #  define _GNU_STDLIB_H
 #  define malloc __malloc
 #  define free __free
@@ -310,11 +321,11 @@ typedef int sigret_t;
 #  undef free
 #  undef calloc
 #  undef realloc
-# endif /* linux || sgi */
-# include <limits.h>
-#endif /* POSIX && !WINNT */
+# endif /* glibc || sgi */
+#endif /* POSIX && !WINNT_NATIVE */
+#include <limits.h>
 
-#if SYSVREL > 0 || defined(_IBMR2) || defined(_MINIX)
+#if SYSVREL > 0 || defined(_IBMR2) || defined(_MINIX) || defined(linux) || defined(__GNU__) || defined(__GLIBC__)
 # if !defined(pyr) && !defined(stellar)
 #  include <time.h>
 #  ifdef _MINIX
@@ -327,7 +338,7 @@ typedef int sigret_t;
  * versions of DECOSF1 will get TIOCGWINSZ. This might break older versions...
  */
 #if !((defined(SUNOS4) || defined(_MINIX) /* || defined(DECOSF1) */) && defined(TERMIO))
-# if !defined(COHERENT) && !defined(_VMS_POSIX) && !defined(WINNT)
+# if !defined(_VMS_POSIX) && !defined(WINNT_NATIVE)
 #  include <sys/ioctl.h>
 # endif
 #endif 
@@ -337,55 +348,53 @@ typedef int sigret_t;
 #define CSWTCH _POSIX_VDISABLE
 #endif
 
-#if (!defined(FIOCLEX) && defined(SUNOS4)) || ((SYSVREL == 4) && !defined(_SEQUENT_) && !defined(SCO) && !defined(_SX))
+#if (!defined(FIOCLEX) && defined(SUNOS4)) || ((SYSVREL == 4) && !defined(_SEQUENT_) && !defined(SCO) && !defined(_SX)) && !defined(__MVS__)
 # include <sys/filio.h>
 #endif /* (!FIOCLEX && SUNOS4) || (SYSVREL == 4 && !_SEQUENT_ && !SCO && !_SX ) */
 
-#if !defined(_MINIX) && !defined(COHERENT) && !defined(supermax) && !defined(WINNT)
+#if !defined(_MINIX) && !defined(supermax) && !defined(WINNT_NATIVE) && !defined(IRIS4D)
 # include <sys/file.h>
-#endif	/* !_MINIX && !COHERENT && !supermax && !WINNT */
+#endif	/* !_MINIX && !supermax && !WINNT_NATIVE && !defined(IRIS4D) */
 
 #if !defined(O_RDONLY) || !defined(O_NDELAY)
 # include <fcntl.h>
 #endif 
+#ifndef O_LARGEFILE
+# define O_LARGEFILE 0
+#endif
 
 #include <errno.h>
 
 #include <setjmp.h>
 
-#if __STDC__ || defined(FUNCPROTO)
-# include <stdarg.h>
-#else
-#ifdef	_MINIX
-# include "mi.varargs.h"
-#else
-# include <varargs.h>
-#endif	/* _MINIX */
-#endif 
+#include <stdarg.h>
 
-#ifdef DIRENT
+#ifdef HAVE_DIRENT_H
 # include <dirent.h>
 #else
-# ifdef hp9000s500
+# ifdef HAVE_NDIR_H
 #  include <ndir.h>
 # else
 #  include <sys/dir.h>
 # endif
 # define dirent direct
-#endif /* DIRENT */
-#if defined(hpux) || defined(sgi) || defined(OREO) || defined(COHERENT)
+#endif /* HAVE_DIRENT_H */
+#ifndef HAVE_STRUCT_DIRENT_D_INO
+# define d_ino d_fileno
+#endif
+#if defined(hpux) || defined(sgi) || defined(OREO)
 # include <stdio.h>	/* So the fgetpwent() prototypes work */
-#endif /* hpux || sgi || OREO || COHERENT */
-#ifndef WINNT
+#endif /* hpux || sgi || OREO */
+#ifndef WINNT_NATIVE
 #include <pwd.h>
 #include <grp.h>
-#endif /* WINNT */
-#ifdef PW_SHADOW
+#endif /* WINNT_NATIVE */
+#ifdef HAVE_SHADOW_H
 # include <shadow.h>
-#endif /* PW_SHADOW */
-#ifdef PW_AUTH
+#endif /* HAVE_SHADOW_H */
+#ifdef HAVE_AUTH_H
 # include <auth.h>
-#endif /* PW_AUTH */
+#endif /* HAVE_AUTH_H */
 #if defined(BSD) && !defined(POSIX)
 # include <strings.h>
 # define strchr(a, b) index(a, b)
@@ -410,33 +419,17 @@ typedef int sigret_t;
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <sys/socket.h>
+# if (defined(_SS_SIZE) || defined(_SS_MAXSIZE)) && defined(HAVE_STRUCT_SOCKADDR_STORAGE_SS_FAMILY)
+#  if !defined(__APPLE__) /* Damnit, where is getnameinfo() folks? */
+#   if !defined(sgi)
+#    if !defined(__CYGWIN__)
+#     define INET6
+#    endif /* __CYGWIN__ */
+#   endif /* sgi */
+#  endif /* __APPLE__ */
+# endif
 # include <sys/uio.h>	/* For struct iovec */
 #endif /* REMOTEHOST */
-
-/*
- * ANSIisms... These must be *after* the system include and 
- * *before* our includes, so that BSDreno has time to define __P
- */
-#undef __P
-#ifndef __P
-# if __STDC__ || defined(FUNCPROTO)
-#  ifndef FUNCPROTO
-#   define FUNCPROTO
-#  endif
-#  define __P(a) a
-# else
-#  define __P(a) ()
-#  if !__STDC__
-#   ifndef SOLARISAMD64
-#    define const 
-#   endif
-#   ifndef apollo
-#    define volatile	/* Apollo 'c' extensions need this */
-#   endif /* apollo */
-#  endif 
-# endif
-#endif 
-
 
 #ifdef PURIFY
 /* exit normally, allowing purify to trace leaks */
@@ -457,24 +450,24 @@ typedef void pret_t;
 # endif /* (vax || uts || MULTIFLOW || PCC) && !__GNUC__ */
 #endif /* PURIFY */
 
-typedef int bool;
+/*
+ * ASCII vs. EBCDIC
+ */
+#if 'Z' - 'A' == 25
+# ifndef IS_ASCII
+#  define IS_ASCII
+# endif
+#endif
 
 #include "sh.types.h"
 
-#ifndef WINNT
-# ifndef POSIX
-extern pid_t getpgrp __P((int));
-# else /* POSIX */
-#  if (defined(BSD) && !defined(BSD4_4)) || defined(SUNOS4) || defined(IRIS4D) || defined(DGUX)
-extern pid_t getpgrp __P((int));
-#  else /* !(BSD || SUNOS4 || IRIS4D || DGUX) */
-extern pid_t getpgrp __P((void));
-#  endif	/* BSD || SUNOS4 || IRISD || DGUX */
-# endif /* POSIX */
-extern pid_t setpgrp __P((pid_t, pid_t));
-#endif /* !WINNT */
-
-typedef sigret_t (*signalfun_t) __P((int));
+#if !HAVE_DECL_GETPGRP
+# ifndef GETPGRP_VOID
+extern pid_t getpgrp (int);
+# else
+extern pid_t getpgrp (void);
+# endif
+#endif
 
 #ifndef lint
 typedef ptr_t memalign_t;
@@ -494,29 +487,17 @@ typedef union {
 # define calloc		lint_calloc
 #endif 
 
-#ifdef MDEBUG
-extern memalign_t	DebugMalloc	__P((unsigned, char *, int));
-extern memalign_t	DebugRealloc	__P((ptr_t, unsigned, char *, int));
-extern memalign_t	DebugCalloc	__P((unsigned, unsigned, char *, int));
-extern void		DebugFree	__P((ptr_t, char *, int));
-# define xmalloc(i)  	DebugMalloc(i, __FILE__, __LINE__)
-# define xrealloc(p, i)((p) ? DebugRealloc(p, i, __FILE__, __LINE__) : \
-			      DebugMalloc(i, __FILE__, __LINE__))
-# define xcalloc(n, s)	DebugCalloc(n, s, __FILE__, __LINE__)
-# define xfree(p)    	if (p) DebugFree(p, __FILE__, __LINE__)
+#ifdef SYSMALLOC
+# define xmalloc(i)	smalloc(i)
+# define xrealloc(p, i)	srealloc(p, i)
+# define xcalloc(n, s)	scalloc(n, s)
+# define xfree		sfree
 #else
-# ifdef SYSMALLOC
-#  define xmalloc(i)		smalloc(i)
-#  define xrealloc(p, i)	srealloc(p, i)
-#  define xcalloc(n, s)		scalloc(n, s)
-#  define xfree(p)		sfree(p)
-# else
-#  define xmalloc(i)  		malloc(i)
-#  define xrealloc(p, i)	realloc(p, i)
-#  define xcalloc(n, s)		calloc(n, s)
-#  define xfree(p)    		free(p)
-# endif /* SYSMALLOC */
-#endif /* MDEBUG */
+# define xmalloc(i)  	malloc(i)
+# define xrealloc(p, i)	realloc(p, i)
+# define xcalloc(n, s)	calloc(n, s)
+# define xfree	 	free
+#endif /* SYSMALLOC */
 #include "sh.char.h"
 #include "sh.err.h"
 #include "sh.dir.h"
@@ -535,19 +516,17 @@ extern void		DebugFree	__P((ptr_t, char *, int));
  * April, 1980
  */
 
-#if !defined(MAXNAMLEN) && defined(_D_NAME_MAX)
-# define MAXNAMLEN _D_NAME_MAX
-#endif /* MAXNAMLEN */
-
 #ifdef HESIOD
 # include <hesiod.h>
 #endif /* HESIOD */
 
 #ifndef MAXHOSTNAMELEN
-# if defined(SCO) && (SYSVREL > 3)
+# ifdef HOST_NAME_MAX
+#  define MAXHOSTNAMELEN (HOST_NAME_MAX + 1)
+# elif defined(SCO) && (SYSVREL > 3)
 #  include <sys/socket.h>
 # else
-#  define MAXHOSTNAMELEN 255
+#  define MAXHOSTNAMELEN 256
 # endif
 #endif /* MAXHOSTNAMELEN */
 
@@ -563,39 +542,44 @@ extern void		DebugFree	__P((ptr_t, char *, int));
 /*
  * Global flags
  */
-EXTERN bool    chkstop IZERO;	/* Warned of stopped jobs... allow exit */
+EXTERN int    chkstop IZERO;	/* Warned of stopped jobs... allow exit */
 
 #if (defined(FIOCLEX) && defined(FIONCLEX)) || defined(F_SETFD)
 # define CLOSE_ON_EXEC
 #else
-EXTERN bool    didcch IZERO;	/* Have closed unused fd's for child */
+EXTERN int    didcch IZERO;	/* Have closed unused fd's for child */
 #endif /* (FIOCLEX && FIONCLEX) || F_SETFD */
 
-EXTERN bool    didfds IZERO;	/* Have setup i/o fd's for child */
-EXTERN bool    doneinp IZERO;	/* EOF indicator after reset from readc */
-EXTERN bool    exiterr IZERO;	/* Exit if error or non-zero exit status */
-EXTERN bool    child IZERO;	/* Child shell ... errors cause exit */
-EXTERN bool    haderr IZERO;	/* Reset was because of an error */
-EXTERN bool    intty IZERO;	/* Input is a tty */
-EXTERN bool    intact IZERO;	/* We are interactive... therefore prompt */
-EXTERN bool    justpr IZERO;	/* Just print because of :p hist mod */
-EXTERN bool    loginsh IZERO;	/* We are a loginsh -> .login/.logout */
-EXTERN bool    neednote IZERO;	/* Need to pnotify() */
-EXTERN bool    noexec IZERO;	/* Don't execute, just syntax check */
-EXTERN bool    pjobs IZERO;	/* want to print jobs if interrupted */
-EXTERN bool    setintr IZERO;	/* Set interrupts on/off -> Wait intr... */
-EXTERN bool    timflg IZERO;	/* Time the next waited for command */
-EXTERN bool    havhash IZERO;	/* path hashing is available */
-EXTERN bool    editing IZERO;	/* doing filename expansion and line editing */
-EXTERN bool    noediting IZERO;	/* initial $term defaulted to noedit */
-EXTERN bool    bslash_quote IZERO;/* PWP: tcsh-style quoting?  (in sh.c) */
-EXTERN bool    isoutatty IZERO;	/* is SHOUT a tty */
-EXTERN bool    isdiagatty IZERO;/* is SHDIAG a tty */
-EXTERN bool    is1atty IZERO;	/* is file descriptor 1 a tty (didfds mode) */
-EXTERN bool    is2atty IZERO;	/* is file descriptor 2 a tty (didfds mode) */
-EXTERN bool    arun IZERO;	/* Currently running multi-line-aliases */
+EXTERN int    didfds IZERO;	/* Have setup i/o fd's for child */
+EXTERN int    doneinp IZERO;	/* EOF indicator after reset from readc */
+EXTERN int    exiterr IZERO;	/* Exit if error or non-zero exit status */
+EXTERN int    child IZERO;	/* Child shell ... errors cause exit */
+EXTERN int    haderr IZERO;	/* Reset was because of an error */
+EXTERN int    intty IZERO;	/* Input is a tty */
+EXTERN int    intact IZERO;	/* We are interactive... therefore prompt */
+EXTERN int    justpr IZERO;	/* Just print because of :p hist mod */
+EXTERN int    loginsh IZERO;	/* We are a loginsh -> .login/.logout */
+EXTERN int    neednote IZERO;	/* Need to pnotify() */
+EXTERN int    noexec IZERO;	/* Don't execute, just syntax check */
+EXTERN int    pjobs IZERO;	/* want to print jobs if interrupted */
+EXTERN int    setintr IZERO;	/* Set interrupts on/off -> Wait intr... */
+EXTERN int    havhash IZERO;	/* path hashing is available */
+EXTERN int    editing IZERO;	/* doing filename expansion and line editing */
+EXTERN int    noediting IZERO;	/* initial $term defaulted to noedit */
+EXTERN int    bslash_quote IZERO;/* PWP: tcsh-style quoting?  (in sh.c) */
+EXTERN int    compat_expr IZERO;/* csh-style expressions? */
+EXTERN int    isoutatty IZERO;	/* is SHOUT a tty */
+EXTERN int    isdiagatty IZERO;/* is SHDIAG a tty */
+EXTERN int    is1atty IZERO;	/* is file descriptor 1 a tty (didfds mode) */
+EXTERN int    is2atty IZERO;	/* is file descriptor 2 a tty (didfds mode) */
+EXTERN int    arun IZERO;	/* Currently running multi-line-aliases */
 EXTERN int     implicit_cd IZERO;/* implicit cd enabled?(1=enabled,2=verbose) */
-EXTERN bool    inheredoc IZERO;	/* Currently parsing a heredoc */
+EXTERN int    inheredoc IZERO;	/* Currently parsing a heredoc */
+/* We received a window change event */
+EXTERN volatile sig_atomic_t windowchg IZERO;
+#if defined(KANJI) && defined(SHORT_STRINGS) && defined(DSPMBYTE)
+EXTERN int    dspmbyte_ls;
+#endif
 
 /*
  * Global i/o info
@@ -603,11 +587,15 @@ EXTERN bool    inheredoc IZERO;	/* Currently parsing a heredoc */
 EXTERN Char   *arginp IZERO;	/* Argument input for sh -c and internal `xx` */
 EXTERN int     onelflg IZERO;	/* 2 -> need line for -t, 1 -> exit on read */
 extern Char   *ffile;		/* Name of shell file for $0 */
-extern bool    dolzero;		/* if $?0 should return true... */
+extern int    dolzero;		/* if $?0 should return true... */
 
 extern char *seterr;		/* Error message from scanner/parser */
+#ifndef errno
 extern int errno;		/* Error from C library routines */
-EXTERN Char   *shtemp IZERO;	/* Temp name for << shell files in /tmp */
+#endif
+extern int exitset;
+/* Temp name for << shell files in /tmp, for xfree() */
+EXTERN Char   *shtemp IZERO;
 
 #ifdef BSDTIMES
 EXTERN struct timeval time0;	/* Time at which the shell started */
@@ -625,6 +613,7 @@ EXTERN clock_t clk_tck;
 #  endif /* POSIX */
 EXTERN struct tms shtimes;	/* shell and child times for process timing */
 # endif /* _SEQUENT_ */
+EXTERN time_t seconds0;
 #endif /* BSDTIMES */
 
 #ifndef HZ
@@ -635,7 +624,7 @@ EXTERN struct tms shtimes;	/* shell and child times for process timing */
  * Miscellany
  */
 EXTERN Char   *doldol;		/* Character pid for $$ */
-EXTERN int     backpid;		/* pid of the last background job */
+EXTERN pid_t   backpid;		/* pid of the last background job */
 
 /*
  * Ideally these should be uid_t, gid_t, pid_t. I cannot do that right now
@@ -643,19 +632,15 @@ EXTERN int     backpid;		/* pid of the last background job */
  * uid_t and gid_t are not defined in all the systems so I would have to
  * make special cases for them. In the future...
  */
-EXTERN int     uid, euid, 	/* Invokers real and effective */
-	       gid, egid;	/* User and group ids */
-EXTERN int     opgrp,		/* Initial pgrp and tty pgrp */
+EXTERN uid_t   uid, euid; 	/* Invokers real and effective */
+EXTERN gid_t   gid, egid;	/* User and group ids */
+EXTERN pid_t   opgrp,		/* Initial pgrp and tty pgrp */
                shpgrp,		/* Pgrp of shell */
                tpgrp;		/* Terminal process group */
 				/* If tpgrp is -1, leave tty alone! */
 
-EXTERN Char    PromptBuf[INBUFSIZE*2];	/* buffer for the actual printed prompt.
-					 * this must be large enough to contain
-					 * the input line and the prompt, in
-					 * case a correction occurred...
-					 */
-EXTERN Char    RPromptBuf[INBUFSIZE];	/* buffer for right-hand side prompt */
+EXTERN Char   *Prompt;		/* The actual printed prompt or NULL */
+EXTERN Char   *RPrompt;		/* Right-hand side prompt or NULL */
 
 /*
  * To be able to redirect i/o for builtins easily, the shell moves the i/o
@@ -687,49 +672,27 @@ EXTERN int   OLDSTD IZERO;	/* Old standard input (def for cmds) */
  * Because of source commands and .cshrc we need nested error catches.
  */
 
-#ifdef NO_STRUCT_ASSIGNMENT
-
-# ifdef SIGSETJMP
-   typedef sigjmp_buf jmp_buf_t;
-   /* bugfix by Jak Kirman @ Brown U.: remove the (void) cast here, see sh.c */
-#  define setexit()  sigsetjmp(reslab)
-#  define reset()    siglongjmp(reslab, 1)
-# else
-   typedef jmp_buf jmp_buf_t;
-   /* bugfix by Jak Kirman @ Brown U.: remove the (void) cast here, see sh.c */
-#  define setexit()  setjmp(reslab)
-#  define reset()    longjmp(reslab, 1)
-# endif
-# define getexit(a) (void) memmove((ptr_t)&(a), (ptr_t)&reslab, sizeof(reslab))
-# define resexit(a) (void) memmove((ptr_t)&reslab, (ptr_t)&(a), sizeof(reslab))
-
-# define cpybin(a, b) (void) memmove((ptr_t)&(a), (ptr_t)&(b), sizeof(Bin))
-
-#else
-
-# ifdef SIGSETJMP
+#ifdef SIGSETJMP
    typedef struct { sigjmp_buf j; } jmp_buf_t;
-#  define setexit()  sigsetjmp(reslab.j)
-#  define reset()    siglongjmp(reslab.j, 1)
-# else
+# define setexit()  sigsetjmp(reslab.j)
+# define _reset()    siglongjmp(reslab.j, 1)
+#else
    typedef struct { jmp_buf j; } jmp_buf_t;
-#  define setexit()  setjmp(reslab.j)
-#  define reset()    longjmp(reslab.j, 1)
-# endif
+# define setexit()  setjmp(reslab.j)
+# define _reset()    longjmp(reslab.j, 1)
+#endif
 
-# define getexit(a) (void) ((a) = reslab)
-# define resexit(a) (void) (reslab = (a))
+#define getexit(a) (void) ((a) = reslab)
+#define resexit(a) (void) (reslab = (a))
 
-# define cpybin(a, b) (void) ((a) = (b))
-
-#endif	/* NO_STRUCT_ASSIGNMENT */
+#define cpybin(a, b) (void) ((a) = (b))
 
 extern jmp_buf_t reslab;
 
 EXTERN Char   *gointr;		/* Label for an onintr transfer */
 
-extern signalfun_t parintr;	/* Parents interrupt catch */
-extern signalfun_t parterm;	/* Parents terminate catch */
+extern struct sigaction parintr;	/* Parents interrupt catch */
+extern struct sigaction parterm;	/* Parents terminate catch */
 
 /*
  * Lexical definitions.
@@ -740,14 +703,30 @@ extern signalfun_t parterm;	/* Parents terminate catch */
  */
 #define		META		0200
 #define		ASCII		0177
-#ifdef SHORT_STRINGS
+#ifdef WIDE_STRINGS		/* Implies SHORT_STRINGS */
+/* 31st char bit used for 'ing (not 32nd, we want all values nonnegative) */
+# define	QUOTE		0x40000000
+# define	TRIM		0x3FFFFFFF /* Mask to strip quote bit */
+# define	UNDER		0x08000000 /* Underline flag */
+# define	BOLD		0x04000000 /* Bold flag */
+# define	STANDOUT	0x02000000 /* Standout flag */
+# define	LITERAL		0x01000000 /* Literal character flag */
+# define	ATTRIBUTES	0x0F000000 /* The bits used for attributes */
+# define	INVALID_BYTE	0x00800000 /* Invalid character on input */
+# ifdef SOLARIS2
+#  define	CHAR		0x30FFFFFF /* Mask to mask out the character */
+# else
+#  define	CHAR		0x00FFFFFF /* Mask to mask out the character */
+# endif
+#elif defined (SHORT_STRINGS)
 # define	QUOTE 	((Char)	0100000)/* 16nth char bit used for 'ing */
-# define	TRIM		0077777	/* Mask to strip quote bit */
+# define	TRIM		0073777	/* Mask to strip quote/lit bit */
 # define	UNDER		0040000	/* Underline flag */
 # define	BOLD		0020000	/* Bold flag */
 # define	STANDOUT	0010000	/* Standout flag */
 # define	LITERAL		0004000	/* Literal character flag */
 # define	ATTRIBUTES	0074000	/* The bits used for attributes */
+# define	INVALID_BYTE	0
 # define	CHAR		0000377	/* Mask to mask out the character */
 #else
 # define	QUOTE 	((Char)	0200)	/* Eighth char bit used for 'ing */
@@ -757,8 +736,10 @@ extern signalfun_t parterm;	/* Parents terminate catch */
 # define	STANDOUT	META	/* Standout flag */
 # define	LITERAL		0000000	/* Literal character flag */
 # define	ATTRIBUTES	0200	/* The bits used for attributes */
+# define	INVALID_BYTE	0
 # define	CHAR		0000177	/* Mask to mask out the character */
-#endif 
+#endif
+#define		CHAR_DBWIDTH	(LITERAL|(LITERAL-1))
 
 EXTERN int     AsciiOnly;	/* If set only 7 bits expected in characters */
 
@@ -768,13 +749,24 @@ EXTERN int     AsciiOnly;	/* If set only 7 bits expected in characters */
  * exactly one if the input is seekable and tell is available.
  * In other cases, the shell buffers enough blocks to keep all loops
  * in the buffer.
+ *
+ * If (WIDE_STRINGS && cantell), fbobp is always a byte offset, but
+ * (fseekp - fbobp) and (feobp - fbobp) are character offsets (usable for
+ * fbuf indexing).
+ *
+ * If (!cantell), all offsets are character offsets; if (!WIDE_STRINGS), there
+ * is no difference between byte and character offsets.
  */
 EXTERN struct Bin {
-    off_t   Bfseekp;		/* Seek pointer */
+    off_t   Bfseekp;		/* Seek pointer, generally != lseek() value */
     off_t   Bfbobp;		/* Seekp of beginning of buffers */
     off_t   Bfeobp;		/* Seekp of end of buffers */
     int     Bfblocks;		/* Number of buffer blocks */
     Char  **Bfbuf;		/* The array of buffer blocks */
+#ifdef WIDE_STRINGS
+    /* Number of bytes in each character if (cantell) */
+    unsigned char Bfclens[BUFSIZE + 1];
+#endif
 }       B;
 
 /*
@@ -782,12 +774,12 @@ EXTERN struct Bin {
  */
 struct Ain {
     int type;
-#define I_SEEK -1		/* Invalid seek */
-#define A_SEEK	0		/* Alias seek */
-#define F_SEEK	1		/* File seek */
-#define E_SEEK	2		/* Eval seek */
+#define TCSH_I_SEEK 	 0		/* Invalid seek */
+#define TCSH_A_SEEK	 1		/* Alias seek */
+#define TCSH_F_SEEK	 2		/* File seek */
+#define TCSH_E_SEEK	 3		/* Eval seek */
     union {
-	off_t _f_seek;
+	off_t _f_seek;		/* A byte offset if (cantell) */
 	Char* _c_seek;
     } fc;
 #define f_seek fc._f_seek
@@ -805,6 +797,7 @@ extern int aret;		/* Type of last char returned */
 #define	feobp	B.Bfeobp
 #define	fblocks	B.Bfblocks
 #define	fbuf	B.Bfbuf
+#define fclens  B.Bfclens
 
 /*
  * The shell finds commands in loops by reseeking the input
@@ -813,7 +806,7 @@ extern int aret;		/* Type of last char returned */
  */
 EXTERN struct Ain lineloc;
 
-EXTERN bool    cantell;		/* Is current source tellable ? */
+EXTERN int    cantell;		/* Is current source tellable ? */
 
 /*
  * Input lines are parsed into doubly linked circular
@@ -845,7 +838,8 @@ struct wordent {
  * process id's from `$$', and modified variable values (from qualifiers
  * during expansion in sh.dol.c) here.
  */
-EXTERN Char   *lap;
+extern struct Strbuf labuf;
+EXTERN size_t lap; /* N/A if == labuf.len, index into labuf.s otherwise */
 
 /*
  * Parser structure
@@ -941,24 +935,25 @@ struct command {
     /* Avoid hpux ansi mode spurious warnings */
 typedef void (*bfunc_t) ();
 #else
-typedef void (*bfunc_t) __P((Char **, struct command *));
+typedef void (*bfunc_t) (Char **, struct command *);
 #endif /* hpux && __STDC__ && !__GNUC__ */
 
-extern struct biltins {
-    char   *bname;
+extern const struct biltins {
+    const char   *bname;
     bfunc_t bfunct;
     int     minargs, maxargs;
 } bfunc[];
 extern int nbfunc;
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 extern struct biltins  nt_bfunc[];
 extern int nt_nbfunc;
-#endif /* WINNT*/
+#endif /* WINNT_NATIVE*/
+extern int bequiet;
 
 extern struct srch {
-    char   *s_name;
-    int     s_value;
-}       srchn[];
+    const char *s_name;
+    int  s_value;
+} srchn[];
 extern int nsrchn;
 
 /*
@@ -1012,43 +1007,30 @@ EXTERN Char  **alvec IZERO_STRUCT,
 /*
  * Filename/command name expansion variables
  */
-EXTERN int   gflag;		/* After tglob -> is globbing needed? */
 
-#define MAXVARLEN 30		/* Maximum number of char in a variable name */
+#ifdef __CYGWIN__
+# undef MAXPATHLEN
+#endif /* __CYGWIN__ */
 
 #ifndef MAXPATHLEN
-# define MAXPATHLEN 2048
+# ifdef PATH_MAX
+#  define MAXPATHLEN PATH_MAX
+# else
+#  define MAXPATHLEN 2048
+# endif
 #endif /* MAXPATHLEN */
-
-#ifndef MAXNAMLEN
-# define MAXNAMLEN 512
-#endif /* MAXNAMLEN */
 
 #ifndef HAVENOLIMIT
 /*
  * resource limits
  */
 extern struct limits {
-    int     limconst;
-    char   *limname;
-    int     limdiv;
-    char   *limscale;
+    int         limconst;
+    const char *limname;
+    int         limdiv;
+    const char *limscale;
 } limits[];
 #endif /* !HAVENOLIMIT */
-
-/*
- * Variables for filename expansion
- */
-extern Char **gargv;		/* Pointer to the (stack) arglist */
-extern int    gargc;		/* Number args in gargv */
-
-/*
- * Variables for command expansion.
- */
-extern Char **pargv;		/* Pointer to the argv list space */
-EXTERN Char  *pargs;		/* Pointer to start current word */
-EXTERN long   pnleft;		/* Number of chars left in pargs */
-EXTERN Char  *pargcp;		/* Current index into pargs */
 
 /*
  * History list
@@ -1083,8 +1065,12 @@ EXTERN Char    PRCHROOT;	/* Prompt symbol for root */
  * For operating systems with single case filenames (OS/2)
  */
 #ifdef CASE_INSENSITIVE
-# define samecase(x) (isupper((unsigned char)(x)) ? \
-		      tolower((unsigned char)(x)) : (x))
+# ifdef WIDE_STRINGS
+#  define samecase(x) (towlower(x))
+# else
+#  define samecase(x) (isupper((unsigned char)(x)) ? \
+		       tolower((unsigned char)(x)) : (x))
+# endif
 #else
 # define samecase(x) (x)
 #endif /* CASE_INSENSITIVE */
@@ -1102,8 +1088,10 @@ EXTERN Char    PRCHROOT;	/* Prompt symbol for root */
 #define Strlen(a)		strlen(a)
 #define Strcmp(a, b)		strcmp(a, b)
 #define Strncmp(a, b, c)	strncmp(a, b, c)
+#define Strcasecmp(a, b)	strcasecmp(a, b)
 
 #define Strspl(a, b)		strspl(a, b)
+#define Strnsave(a, b)		strnsave(a, b)
 #define Strsave(a)		strsave(a)
 #define Strend(a)		strend(a)
 #define Strstr(a, b)		strstr(a, b)
@@ -1111,7 +1099,18 @@ EXTERN Char    PRCHROOT;	/* Prompt symbol for root */
 #define str2short(a) 		(a)
 #define blk2short(a) 		saveblk(a)
 #define short2blk(a) 		saveblk(a)
-#define short2str(a) 		strip(a)
+#define short2str(a) 		caching_strip(a)
+#else
+#ifdef WIDE_STRINGS
+#define Strchr(a, b)		wcschr(a, b)
+#define Strrchr(a, b)		wcsrchr(a, b)
+#define Strcat(a, b)  		wcscat(a, b)
+#define Strncat(a, b, c) 	wcsncat(a, b, c)
+#define Strcpy(a, b)  		wcscpy(a, b)
+#define Strncpy(a, b, c)	wcsncpy(a, b, c)
+#define Strlen(a)		wcslen(a)
+#define Strcmp(a, b)		wcscmp(a, b)
+#define Strncmp(a, b, c)	wcsncmp(a, b, c)
 #else
 #define Strchr(a, b)		s_strchr(a, b)
 #define Strrchr(a, b) 		s_strrchr(a, b)
@@ -1122,8 +1121,11 @@ EXTERN Char    PRCHROOT;	/* Prompt symbol for root */
 #define Strlen(a)		s_strlen(a)
 #define Strcmp(a, b)		s_strcmp(a, b)
 #define Strncmp(a, b, c)	s_strncmp(a, b, c)
+#endif
+#define Strcasecmp(a, b)	s_strcasecmp(a, b)
 
 #define Strspl(a, b)		s_strspl(a, b)
+#define Strnsave(a, b)		s_strnsave(a, b)
 #define Strsave(a)		s_strsave(a)
 #define Strend(a)		s_strend(a)
 #define Strstr(a, b)		s_strstr(a, b)
@@ -1132,7 +1134,7 @@ EXTERN Char    PRCHROOT;	/* Prompt symbol for root */
 /*
  * setname is a macro to save space (see sh.err.c)
  */
-EXTERN char   *bname;
+EXTERN const char   *bname;
 
 #define	setname(a)	(bname = (a))
 
@@ -1147,9 +1149,9 @@ EXTERN Char  **evalvec;
 EXTERN Char   *evalp;
 
 extern struct mesg {
-    char   *iname;		/* name from /usr/include */
-    char   *pname;		/* print name */
-}       mesg[];
+    const char   *iname;	/* name from /usr/include */
+    const char *pname;		/* print name */
+} mesg[];
 
 /* word_chars is set by default to WORD_CHARS but can be overridden by
    the worchars variable--if unset, reverts to WORD_CHARS */
@@ -1173,6 +1175,23 @@ extern Char    **INVPPTR;
 
 extern char    *progname;
 extern int	tcsh;
+extern int	xlate_cr;
+extern int	output_raw;
+extern int	lbuffed;
+extern time_t	Htime;
+extern int	numeof;
+extern int 	insource;
+extern char	linbuf[];
+extern char 	*linp;
+extern int	nsig;
+#ifdef VFORK
+extern int	use_fork;
+#endif
+extern int	tellwhat;
+extern int	NoNLSRebind;
+#if !HAVE_DECL_ENVIRON
+extern char   **environ;
+#endif
 
 /*
  * Do not exec directly. By using the exec wrapper for execv'ing processes
@@ -1187,25 +1206,10 @@ extern int	tcsh;
 #endif
 
 #include "tc.h"
-#include "sh.decls.h"
 
-/*
- * To print system call errors...
- */
-#ifdef BSD4_4
-# include <errno.h>
-#else
-# ifndef linux
-#  ifdef NEEDstrerror
-extern char *sys_errlist[];
-#  endif
-extern int errno, sys_nerr;
-# endif /* !linux */
-#endif
-
-#ifndef WINNT
+#ifndef WINNT_NATIVE
 # ifdef NLS_CATALOGS
-#  ifdef linux
+#  if defined(linux) || defined(__GNU__) || defined(__GLIBC__)
 #   include <locale.h>
 #   ifdef notdef
 #    include <localeinfo.h>	/* Has this changed ? */
@@ -1218,9 +1222,9 @@ extern int errno, sys_nerr;
     * This does not link right now...
     */
    typedef void *nl_catd; 
-   extern const char * catgets __P((nl_catd, int, int, const char *));
-   nl_catd catopen __P((const char *, int));
-   int catclose __P((nl_catd));
+   extern const char * catgets (nl_catd, int, int, const char *);
+   nl_catd catopen (const char *, int);
+   int catclose (nl_catd);
 #  else
 #   ifdef __uxps__
 #    define gettxt gettxt_ds
@@ -1234,23 +1238,60 @@ extern int errno, sys_nerr;
 #   define MCLoadBySet 0
 #  endif
 EXTERN nl_catd catd;
-#  define CGETS(b, c, d)	catgets(catd, b, c, d)
+#  if defined(HAVE_ICONV) && defined(HAVE_NL_LANGINFO)
+#   define CGETS(b, c, d)	iconv_catgets(catd, b, c, d)
+#  else
+#   define CGETS(b, c, d)	xcatgets(catd, b, c, d)
+#  endif
 #  define CSAVS(b, c, d)	strsave(CGETS(b, c, d))
 # else
 #  define CGETS(b, c, d)	d
 #  define CSAVS(b, c, d)	d
 # endif 
-#else /* WINNT */
+#else /* WINNT_NATIVE */
 # define CGETS(b, c, d)	nt_cgets( b, c, d)
 # define CSAVS(b, c, d)	strsave(CGETS(b, c, d))
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
+#if defined(FILEC)
+extern int    filec;
+#endif /* FILEC */
+
+#include "sh.decls.h"
 /*
  * Since on some machines characters are unsigned, and the signed
  * keyword is not universally implemented, we treat all characters
  * as unsigned and sign extend them where we need.
  */
 #define SIGN_EXTEND_CHAR(a)	(((a) & 0x80) ? ((a) | ~0x7f) : (a))
+
+/*
+ * explanation for use by the "--help" option
+ */
+#define HELP_STRING "\
+-b file		batch mode, read and execute commands from `file' \n\
+-c command	run `command' from next argument \n\
+-d		load directory stack from `~/.cshdirs' \n\
+-Dname[=value]	define environment variable `name' to `value' (DomainOS only) \n\
+-e		exit on any error \n\
+-f		start faster by ignoring the start-up file \n\
+-F		use fork() instead of vfork() when spawning (ConvexOS only) \n\
+-i		interactive, even when input is not from a terminal \n\
+-l		act as a login shell, must be the only option specified \n\
+-m		load the start-up file, whether or not owned by effective user \n\
+-n file		no execute mode, just check syntax of the following `file' \n\
+-q		accept SIGQUIT for running under a debugger \n\
+-s		read commands from standard input \n\
+-t		read one line from standard input \n\
+-v		echo commands after history substitution \n\
+-V		like -v but including commands read from the start-up file \n\
+-x		echo commands immediately before execution \n\
+-X		like -x but including commands read from the start-up file \n\
+--help		print this message and exit \n\
+--version	print the version shell variable and exit \n\
+\nSee the %s(1) manual page for detailed information.\n"
+
+#include "tc.nls.h"
 
 #if defined(LINUX86) || defined(ALINUX) || defined(LINUXIA64) || defined(LINUXAMD64) || defined(LINUXSPARC) || defined(LINUX)
 #include <time.h>
