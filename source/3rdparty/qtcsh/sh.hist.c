@@ -1,4 +1,4 @@
-/* $Header: /var/lib/cvs/gridengine/source/3rdparty/qtcsh/sh.hist.c,v 1.1 2001-07-18 11:06:05 root Exp $ */
+/* $Header: /p/tcsh/cvsroot/tcsh/sh.hist.c,v 3.40 2007/03/01 17:14:51 christos Exp $ */
 /*
  * sh.hist.c: Shell history expansions and substitutions
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,18 +32,18 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.hist.c,v 1.1 2001-07-18 11:06:05 root Exp $")
+RCSID("$tcsh: sh.hist.c,v 3.40 2007/03/01 17:14:51 christos Exp $")
 
 #include "tc.h"
 
-extern bool histvalid;
-extern Char histline[];
+extern int histvalid;
+extern struct Strbuf histline;
 Char HistLit = 0;
 
-static	bool	heq	__P((struct wordent *, struct wordent *));
-static	void	hfree	__P((struct Hist *));
-static	void	dohist1	__P((struct Hist *, int *, int));
-static	void	phist	__P((struct Hist *, int));
+static	int	heq	(const struct wordent *, const struct wordent *);
+static	void	hfree	(struct Hist *);
+static	void	dohist1	(struct Hist *, int *, int);
+static	void	phist	(struct Hist *, int);
 
 #define HIST_ONLY	0x01
 #define HIST_SAVE	0x02
@@ -62,28 +58,22 @@ static	void	phist	__P((struct Hist *, int));
  */
 
 void
-savehist(sp, mflg)
-    struct wordent *sp;
-    bool mflg;
+savehist(struct wordent *sp, int mflg)
 {
-    register struct Hist *hp, *np;
-    register int histlen = 0;
+    struct Hist *hp, *np;
+    int histlen = 0;
     Char   *cp;
 
     /* throw away null lines */
     if (sp && sp->next->word[0] == '\n')
 	return;
     cp = varval(STRhistory);
-    if (*cp) {
-	register Char *p = cp;
-
-	while (*p) {
-	    if (!Isdigit(*p)) {
-		histlen = 0;
-		break;
-	    }
-	    histlen = histlen * 10 + *p++ - '0';
+    while (*cp) {
+	if (!Isdigit(*cp)) {
+	    histlen = 0;
+	    break;
 	}
+	histlen = histlen * 10 + *cp++ - '0';
     }
     if (sp)
 	(void) enthist(++eventno, sp, 1, mflg);
@@ -94,11 +84,10 @@ savehist(sp, mflg)
 	    hp = np;
 }
 
-static bool
-heq(a0, b0)
-    struct wordent *a0, *b0;
+static int
+heq(const struct wordent *a0, const struct wordent *b0)
 {
-    struct wordent *a = a0->next, *b = b0->next;
+    const struct wordent *a = a0->next, *b = b0->next;
 
     for (;;) {
 	if (Strcmp(a->word, b->word) != 0)
@@ -114,17 +103,12 @@ heq(a0, b0)
 
 
 struct Hist *
-enthist(event, lp, docopy, mflg)
-    int     event;
-    register struct wordent *lp;
-    bool    docopy;
-    bool    mflg;
+enthist(int event, struct wordent *lp, int docopy, int mflg)
 {
-    extern time_t Htime;
     struct Hist *p = NULL, *pp = &Histlist;
     int n, r;
-    register struct Hist *np;
-    Char *dp;
+    struct Hist *np;
+    const Char *dp;
     
     if ((dp = varval(STRhistdup)) != STRNULL) {
 	if (eq(dp, STRerase)) {
@@ -157,10 +141,10 @@ enthist(event, lp, docopy, mflg)
 	}
     }
 
-    np = p ? p : (struct Hist *) xmalloc((size_t) sizeof(*np));
+    np = p ? p : xmalloc(sizeof(*np));
 
     /* Pick up timestamp set by lex() in Htime if reading saved history */
-    if (Htime != (time_t) 0) {
+    if (Htime != 0) {
 	np->Htime = Htime;
 	Htime = 0;
     }
@@ -174,7 +158,7 @@ enthist(event, lp, docopy, mflg)
     if (docopy) {
 	copylex(&np->Hlex, lp);
 	if (histvalid)
-	    np->histline = Strsave(histline);
+	    np->histline = Strsave(histline.s);
 	else
 	    np->histline = NULL;
     }
@@ -213,34 +197,25 @@ enthist(event, lp, docopy, mflg)
 }
 
 static void
-hfree(hp)
-    register struct Hist *hp;
+hfree(struct Hist *hp)
 {
 
     freelex(&hp->Hlex);
     if (hp->histline)
-	xfree((ptr_t) hp->histline);
-    xfree((ptr_t) hp);
+	xfree(hp->histline);
+    xfree(hp);
 }
 
 
 /*ARGSUSED*/
 void
-dohist(vp, c)
-    Char  **vp;
-    struct command *c;
+dohist(Char **vp, struct command *c)
 {
     int     n, hflg = 0;
 
     USE(c);
     if (getn(varval(STRhistory)) == 0)
 	return;
-    if (setintr)
-#ifdef BSDSIGS
-	(void) sigsetmask(sigblock((sigmask_t) 0) & ~sigmask(SIGINT));
-#else
-	(void) sigrelse(SIGINT);
-#endif
     while (*++vp && **vp == '-') {
 	Char   *vp2 = *vp;
 
@@ -279,30 +254,32 @@ dohist(vp, c)
 	    hp->Hnext = np->Hnext, hfree(np);
     }
 
-    if (hflg & (HIST_LOAD | HIST_MERGE)) {
+    if (hflg & (HIST_LOAD | HIST_MERGE))
 	loadhist(*vp, (hflg & HIST_MERGE) ? 1 : 0);
-	return;
-    }
-    else if (hflg & HIST_SAVE) {
+    else if (hflg & HIST_SAVE)
 	rechist(*vp, 1);
-	return;
-    }
-    if (*vp)
-	n = getn(*vp);
     else {
-	n = getn(varval(STRhistory));
+	if (*vp)
+	    n = getn(*vp);
+	else {
+	    n = getn(varval(STRhistory));
+	}
+	dohist1(Histlist.Hnext, &n, hflg);
     }
-    dohist1(Histlist.Hnext, &n, hflg);
 }
 
 static void
-dohist1(hp, np, hflg)
-    struct Hist *hp;
-    int    *np, hflg;
+dohist1(struct Hist *hp, int *np, int hflg)
 {
-    bool    print = (*np) > 0;
+    int    print = (*np) > 0;
 
     for (; hp != 0; hp = hp->Hnext) {
+	if (setintr) {
+	    int old_pintr_disabled;
+
+	    pintr_push_enable(&old_pintr_disabled);
+	    cleanup_until(&old_pintr_disabled);
+	}
 	(*np)--;
 	if ((hflg & HIST_REV) == 0) {
 	    dohist1(hp->Hnext, np, hflg);
@@ -316,82 +293,86 @@ dohist1(hp, np, hflg)
 }
 
 static void
-phist(hp, hflg)
-    register struct Hist *hp;
-    int     hflg;
+phist(struct Hist *hp, int hflg)
 {
-    extern bool output_raw;
     if (hflg & HIST_ONLY) {
+	int old_output_raw;
+
        /*
         * Control characters have to be written as is (output_raw).
         * This way one can preserve special characters (like tab) in
         * the history file.
         * From: mveksler@vnet.ibm.com (Veksler Michael)
         */
-        output_raw= 1;
+	old_output_raw = output_raw;
+        output_raw = 1;
+	cleanup_push(&old_output_raw, output_raw_restore);
 	if (hflg & HIST_TIME)
 	    /* 
 	     * Make file entry with history time in format:
 	     * "+NNNNNNNNNN" (10 digits, left padded with ascii '0') 
 	     */
 
-	    xprintf("#+%010lu\n", hp->Htime);
+	    xprintf("#+%010lu\n", (unsigned long)hp->Htime);
 
 	if (HistLit && hp->histline)
 	    xprintf("%S\n", hp->histline);
 	else
 	    prlex(&hp->Hlex);
-        output_raw= 0;
+        cleanup_until(&old_output_raw);
     }
     else {
 	Char   *cp = str2short("%h\t%T\t%R\n");
-	Char buf[INBUFSIZE];
+	Char *p;
 	struct varent *vp = adrof(STRhistory);
 
-	if (vp && vp->vec[0] && vp->vec[1])
+	if (vp && vp->vec != NULL && vp->vec[0] && vp->vec[1])
 	    cp = vp->vec[1];
 
-	tprintf(FMT_HISTORY, buf, cp, INBUFSIZE, NULL, hp->Htime, (ptr_t) hp);
-	for (cp = buf; *cp;)
-	    xputchar(*cp++);
+	p = tprintf(FMT_HISTORY, cp, NULL, hp->Htime, hp);
+	cleanup_push(p, xfree);
+	for (cp = p; *cp;)
+	    xputwchar(*cp++);
+	cleanup_until(p);
     }
 }
 
 
-void
-fmthist(fmt, ptr, buf, bufsiz)
-    int fmt;
-    ptr_t ptr;
-    char *buf;
-    size_t bufsiz;
+char *
+fmthist(int fmt, ptr_t ptr)
 {
-    struct Hist *hp = (struct Hist *) ptr;
+    struct Hist *hp = ptr;
+    char *buf;
+
     switch (fmt) {
     case 'h':
-	(void) xsnprintf(buf, bufsiz, "%6d", hp->Hnum);
-	break;
+	return xasprintf("%6d", hp->Hnum);
     case 'R':
 	if (HistLit && hp->histline)
-	    (void) xsnprintf(buf, bufsiz, "%S", hp->histline);
+	    return xasprintf("%S", hp->histline);
 	else {
-	    Char ibuf[INBUFSIZE], *ip;
+	    Char *istr, *ip;
 	    char *p;
-	    (void) sprlex(ibuf, sizeof(ibuf), &hp->Hlex);
-	    for (p = buf, ip = ibuf; (*p++ = (CHAR & *ip++)) != '\0'; )
-		continue;
+
+	    istr = sprlex(&hp->Hlex);
+	    buf = xmalloc(Strlen(istr) * MB_LEN_MAX + 1);
+
+	    for (p = buf, ip = istr; *ip != '\0'; ip++)
+		p += one_wctomb(p, CHAR & *ip);
+
+	    *p = '\0';
+	    xfree(istr);
+	    return buf;
 	}
-	break;
     default:
+	buf = xmalloc(1);
 	buf[0] = '\0';
-	break;
+	return buf;
     }
-	
 }
 
 void
-rechist(fname, ref)
-    Char *fname;
-    int ref;
+rechist(Char *fname, int ref)
 {
     Char    *snum;
     int     fp, ftmp, oldidfds;
@@ -417,10 +398,11 @@ rechist(fname, ref)
     }
     else
 	fname = globone(fname, G_ERROR);
+    cleanup_push(fname, xfree);
 
     /*
      * The 'savehist merge' feature is intended for an environment
-     * with numerous shells beeing in simultaneous use. Imagine
+     * with numerous shells being in simultaneous use. Imagine
      * any kind of window system. All these shells 'share' the same 
      * ~/.history file for recording their command line history. 
      * Currently the automatic merge can only succeed when the shells
@@ -439,29 +421,28 @@ rechist(fname, ref)
      */
     oldidfds = didfds;
     didfds = 0;
-    if ((shist = adrof(STRsavehist)) != NULL)
+    if ((shist = adrof(STRsavehist)) != NULL && shist->vec != NULL)
 	if (shist->vec[1] && eq(shist->vec[1], STRmerge))
 	    loadhist(fname, 1);
-    fp = creat(short2str(fname), 0600);
+    fp = xcreat(short2str(fname), 0600);
     if (fp == -1) {
 	didfds = oldidfds;
+	cleanup_until(fname);
 	return;
     }
     ftmp = SHOUT;
     SHOUT = fp;
     dumphist[2] = snum;
     dohist(dumphist, NULL);
-    (void) close(fp);
+    xclose(fp);
     SHOUT = ftmp;
     didfds = oldidfds;
-    xfree((ptr_t) fname);
+    cleanup_until(fname);
 }
 
 
 void
-loadhist(fname, mflg)
-    Char *fname;
-    bool mflg;
+loadhist(Char *fname, int mflg)
 {
     static Char   *loadhist_cmd[] = {STRsource, NULL, NULL, NULL};
     loadhist_cmd[1] = mflg ? STRmm : STRmh;
