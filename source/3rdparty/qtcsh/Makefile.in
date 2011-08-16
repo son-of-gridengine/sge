@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 2009-03-07 01:43:46 ron Exp $
+# $tcsh: Makefile.in,v 3.40 2009/06/24 22:09:05 christos Exp $
 #	Makefile.in	4.3	6/11/83
 #
 # C Shell with process control; VM/UNIX VAX Makefile
@@ -8,8 +8,8 @@
 # things; Paul Placeway, CIS Dept., Ohio State University
 #
 SHELL=/bin/sh
-VERSION=6.08
-BUILD=tcsh
+VERSION=@PACKAGE_VERSION@
+BUILD=tcsh$(EXEEXT)
 VPATH=@srcdir@
 srcdir=@srcdir@
 
@@ -136,7 +136,7 @@ CFLAGS = @CFLAGS@		# This is set by autoconf.
 #DFLAGS=
 #DFLAGS=-D_PATH_TCSHELL='"${DESTBIN}/tcsh"'
 ## The following is set by autoconf.
-DFLAGS = -D_PATH_TCSHELL='"${DESTBIN}/tcsh"' @DFLAGS@ @CPPFLAGS@
+DFLAGS = -D_PATH_TCSHELL='"${bindir}/tcsh"' @DFLAGS@ @CPPFLAGS@
 
 
 ################################################################
@@ -153,6 +153,13 @@ LDFLAGS= $(SGE_LOPTS)		## This is set by autoconf.
 #LDFLAGS= -Wl,-s,-n		## Stripped, shared text (Unicos)
 #LDFLAGS= -s -static		## Link statically. (linux)
 #LDFLAGS= -s -N			## Impure executable (linux)
+
+################################################################
+## SBINLDFLAGS.  Flags to build a tcsh suitable for installation in
+##		 in /sbin under Solaris with gcc. See the "tcsh.sbin"
+##		 target.
+################################################################
+SBINLDFLAGS=-Wl,-R/etc/lib,-I/etc/lib/ld.so.1,-ldl,-Bstatic
 
 ################################################################
 ## LIBES.  Pick one, or roll your own.
@@ -223,9 +230,9 @@ LIBES= @LIBS@	 			 ## This is set by autoconf.
 #         $(AFSLIBDIR)/afs/util.a $(AFS33LIB) $(AFSAUXLIB)
 #
 
-
 EXTRAFLAGS = @HESDEF@ $(AFSDEF) @GRDDEF@ -I../../../libs/gdi
-EXTRALIBS = @HESLIB@ $(AFSLIB) @GRDLIB@
+EXTRALIBS = @HESLIB@ $(AFSLIB) @LIBICONV@ @GRDLIB@
+
 
 
 # The difficult choice of a c-compiler...
@@ -241,6 +248,7 @@ CPP = @CPP@ # This is set by autoconf.
 # The -B tells gcc to use /bin/ld. This is to avoid using the gnu ld, which
 # on the suns does not know how to make dynamically linked binaries.
 CC = @CC@ # This is set by autoconf.
+#CC= gcc -Wall -Wmissing-prototypes -Wstrict-prototypes -Wpointer-arith -Werror -Wmissing-declarations -Wredundant-decls -Wnested-externs -Wsign-compare -Wcast-qual -Wreturn-type -Wswitch -Wshadow -Wwrite-strings -Wextra
 #CC=	gcc -Wall -pipe -B/bin/	# -ansi -pedantic
 #CC=	gcc -m486 -pipe -Wall # Generate code for Intel 486 (linux)
 #CC=	shlicc 	# BSDI2.1 w/ shared libraries
@@ -270,13 +278,14 @@ P=
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
-mandir=@mandir@
+mandir=@datarootdir@/man
 MANSECT=1
 DESTBIN=${DESTDIR}${bindir}
 DESTMAN=${DESTDIR}${mandir}/man${MANSECT}
 # DESTMAN=${DESTDIR}/catman/man${MANSECT}	 # A/UX
 # DESTMAN=${DESTDIR}/usr/share/man/man${MANSECT} # Stardent Vistra (SysVR4)
 # DESTMAN=/usr/catman/1l			 # Amiga unix (SysVR4)
+EXEEXT=@EXEEXT@
 FTPAREA=/usr/spool/ftp
 
 ASSRCS=	sh.c sh.dir.c sh.dol.c sh.err.c sh.exec.c sh.char.c \
@@ -288,11 +297,11 @@ PSSRCS= sh.decls.h glob.c glob.h mi.termios.c mi.wait.h mi.varargs.h ma.setp.c \
 	vms.termcap.c
 SHSRCS= ${ASSRCS} ${PSSRCS}
 SHOBJS=	sh.${SUF} sh.dir.${SUF} sh.dol.${SUF} sh.err.${SUF} sh.exec.${SUF} \
-	sh.char.${SUF} sh.exp.${SUF} sh.func.${SUF} sh.glob.${SUF} \
-	sh.hist.${SUF} sh.init.${SUF} sh.lex.${SUF} sh.misc.${SUF} \
-	sh.parse.${SUF} sh.print.${SUF} sh.proc.${SUF} sh.sem.${SUF} \
-	sh.set.${SUF} sh.time.${SUF} glob.${SUF} mi.termios.${SUF} \
-	ma.setp.${SUF} vms.termcap.${SUF}
+	sh.char.${SUF} sh.exp.${SUF} sh.file.${SUF} sh.func.${SUF} \
+	sh.glob.${SUF} sh.hist.${SUF} sh.init.${SUF} sh.lex.${SUF} \
+	sh.misc.${SUF} sh.parse.${SUF} sh.print.${SUF} sh.proc.${SUF} \
+	sh.sem.${SUF} sh.set.${SUF} sh.time.${SUF} glob.${SUF} \
+	mi.termios.${SUF} ma.setp.${SUF} vms.termcap.${SUF}
 
 TWSRCS= tw.decls.h tw.h tw.help.c tw.init.c tw.parse.c tw.spell.c \
 	tw.comp.c tw.color.c
@@ -305,11 +314,11 @@ EDOBJS=	ed.chared.${SUF} ed.refresh.${SUF} ed.screen.${SUF} ed.init.${SUF} \
 	ed.inputl.${SUF} ed.defns.${SUF} ed.xmap.${SUF} ed.term.${SUF}
 
 TCSRCS= tc.alloc.c tc.bind.c tc.const.c tc.decls.h tc.disc.c \
-	tc.func.c tc.os.c tc.os.h tc.printf.c tc.prompt.c \
+	tc.func.c tc.nls.c tc.os.c tc.os.h tc.printf.c tc.prompt.c \
 	tc.sched.c tc.sig.c tc.sig.h tc.str.c sh.types.h tc.vers.c tc.wait.h \
 	tc.who.c tc.h
 TCOBJS=	tc.alloc.${SUF} tc.bind.${SUF} tc.const.${SUF} tc.defs.${SUF} \
-	tc.disc.${SUF} tc.func.${SUF} tc.os.${SUF} tc.printf.${SUF} \
+	tc.disc.${SUF} tc.func.${SUF} tc.nls.${SUF} tc.os.${SUF} tc.printf.${SUF} \
 	tc.prompt.${SUF} tc.sched.${SUF} tc.sig.${SUF} tc.str.${SUF} \
 	tc.vers.${SUF} tc.who.${SUF} 
 
@@ -318,14 +327,19 @@ AVSRCS= Fixes MAKEDIFFS MAKESHAR NewThings README FAQ \
 	WishList config_f.h eight-bit.me glob.3 patchlevel.h \
 	pathnames.h tcsh.man Ported src.desc Imakefile imake.config \
 	README.imake complete.tcsh vmsreadme.txt termcap.vms snames.h \
-	host.defs gethost.c tcsh.man2html configure.in configure config.h.in
+	host.defs gethost.c tcsh.man2html configure.in configure config.h.in \
+	tests/testsuite.at
+TESTFILES= tests/aliases.at tests/arguments.at tests/commands.at \
+	tests/expr.at tests/lexical.at tests/mb-eucjp.at tests/mb-utf8.at \
+	tests/noexec.at tests/syntax.at tests/subst.at tests/variables.at \
+	tests/sh.dol.at
 
 VHSRCS=${PVSRCS} ${AVSRCS}
 
 CONFSRCS=config/* 
 
 ALLSRCS=  ${SHSRCS} ${TWSRCS} ${EDSRCS} ${TCSRCS} ${VHSRCS}
-DISTSRCS= ${PSSRCS} ${TWSRCS} ${EDSRCS} ${TCSRCS} ${AVSRCS}
+DISTSRCS= ${PSSRCS} ${TWSRCS} ${EDSRCS} ${TCSRCS} ${AVSRCS} $(TESTFILES)
 
 
 OBJS= ${SHOBJS} ${TWOBJS} ${EDOBJS} ${TCOBJS}
@@ -333,34 +347,46 @@ OBJS= ${SHOBJS} ${TWOBJS} ${EDOBJS} ${TCOBJS}
 
 all: ${BUILD}
 
-tcsh:$(P) ${OBJS} 
-	rm -f tcsh core
-	${CC} -o tcsh ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
+tcsh$(EXEEXT):$(P) ${OBJS} 
+	rm -f tcsh$(EXEEXT) core
+	${CC} -o tcsh$(EXEEXT) ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
+
+tcsh.sbin:$(P) ${OBJS} 
+	rm -f tcsh.sbin core
+	${CC} -o tcsh.sbin ${SBINLDFLAGS} ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
 
 # Purify
 pure:$(P) ${OBJS} 
-	rm -f tcsh core
-	purify `echo ${CC} | sed -e s,-B/bin/,,` -o tcsh ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
+	rm -f tcsh$(EXEEXT) core
+	purify `echo ${CC} | sed -e s,-B/bin/,,` -o tcsh$(EXEEXT) ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
 # OS/2
-tcsh.exe: tcsh
-	emxbind tcsh
+#tcsh.exe: tcsh
+#	emxbind tcsh
 
 gethost:  gethost.c sh.err.h tc.const.h sh.h
 	rm -f gethost
 	${CC} -o gethost ${LDFLAGS} ${CFLAGS} ${CPPFLAGS} ${DFLAGS} ${EXTRAFLAGS} $(srcdir)/gethost.c ${LIBES} ${EXTRALIBS}
 
 tc.defs.c:	gethost host.defs
-	@rm -f $@
-	@echo "/* Do not edit this file, make creates it */" > $@
-	./gethost $(srcdir)/host.defs >> $@
+	@rm -f $@.tmp
+	@echo "/* Do not edit this file, make creates it */" > $@.tmp
+	./gethost $(srcdir)/host.defs >> $@.tmp
+	@if [ -f $@ ] && cmp -s $@.tmp $@; then echo $@ unchanged.; rm -f $@.tmp; else mv -f $@.tmp $@; echo $@ recreated.; fi
 
 tcsh.ps: tcsh.man
 	rm -f tcsh.ps
 	-ptroff -t -man $(srcdir)/tcsh.man > tcsh.ps
 
-
 .c.${SUF}:
 	${CC} ${CF} ${CFLAGS} ${CPPFLAGS} ${DFLAGS} ${EXTRAFLAGS} $<
+
+.SUFFIXES: .s .i
+
+.c.i:
+	${CC} -E ${CFLAGS} ${CPPFLAGS} ${DFLAGS} ${EXTRAFLAGS} $< | cat -s > $@
+
+.c.s:
+	${CC} -S ${CFLAGS} ${CPPFLAGS} ${DFLAGS} ${EXTRAFLAGS} $<
 
 # _VMS_POSIX #module addition
 #.c.${SUF}:
@@ -398,31 +424,53 @@ tcsh.ps: tcsh.man
 ##	co $<
 
 ed.defns.h: ed.defns.c
-	@rm -f $@
-	@echo '/* Do not edit this file, make creates it. */' > $@
-	@echo '#ifndef _h_ed_defns' >> $@
-	@echo '#define _h_ed_defns' >> $@
-	grep '[FV]_' $(srcdir)/ed.defns.c | grep '^#define' >> $@
-	@echo '#endif /* _h_ed_defns */' >> $@
+	@rm -f $@.tmp
+	@echo '/* Do not edit this file, make creates it. */' > $@.tmp
+	@echo '#ifndef _h_ed_defns' >> $@.tmp
+	@echo '#define _h_ed_defns' >> $@.tmp
+	grep '[FV]_' $(srcdir)/ed.defns.c | grep '^#define' >> $@.tmp
+	@echo '#endif /* _h_ed_defns */' >> $@.tmp
+	@if [ -f $@ ] && cmp -s $@.tmp $@; then echo $@ unchanged.; rm -f $@.tmp; else mv -f $@.tmp $@; echo $@ recreated.; fi
 
 sh.err.h: sh.err.c
-	@rm -f $@
-	@echo '/* Do not edit this file, make creates it. */' > $@
-	@echo '#ifndef _h_sh_err' >> $@
-	@echo '#define _h_sh_err' >> $@
-	grep 'ERR_' $(srcdir)/sh.err.c | grep '^#define' >> $@
-	@echo '#endif /* _h_sh_err */' >> $@
+	@rm -f $@.tmp
+	@echo '/* Do not edit this file, make creates it. */' > $@.tmp
+	@echo '#ifndef _h_sh_err' >> $@.tmp
+	@echo '#define _h_sh_err' >> $@.tmp
+	grep 'ERR_' $(srcdir)/sh.err.c | grep '^#define' >> $@.tmp
+	@echo '#endif /* _h_sh_err */' >> $@.tmp
+	@if [ -f $@ ] && cmp -s $@.tmp $@; then echo $@ unchanged.; rm -f $@.tmp; else mv -f $@.tmp $@; echo $@ recreated.; fi
 
 tc.const.h: tc.const.c sh.char.h config.h config_f.h sh.types.h sh.err.h
-	@rm -f $@
-	@echo '/* Do not edit this file, make creates it. */' > $@
-	@echo '#ifndef _h_tc_const' >> $@
-	@echo '#define _h_tc_const' >> $@
+	@rm -f $@.tmp
+	@echo '/* Do not edit this file, make creates it. */' > $@.tmp
+	@echo '#ifndef _h_tc_const' >> $@.tmp
+	@echo '#define _h_tc_const' >> $@.tmp
 	${CPP} $(CPPFLAGS) ${DFLAGS} ${EXTRAFLAGS} -D_h_tc_const\
-	    $(srcdir)/tc.const.c | grep 'Char STR' | \
-	    sed -e 's/Char \([a-zA-Z0-9_]*\)\[\].*/extern Char \1[];/' | \
-	    sort >> $@
-	@echo '#endif /* _h_tc_const */' >> $@
+	    $(srcdir)/tc.const.c | \
+	    sed -n -e 's/^\(Char STR[a-zA-Z0-9_]*\) *\[ *\].*/extern \1[];/p' | \
+	    sort >> $@.tmp
+	@echo '#endif /* _h_tc_const */' >> $@.tmp
+	@if [ -f $@ ] && cmp -s $@.tmp $@; then echo $@ unchanged.; rm -f $@.tmp; else mv -f $@.tmp $@; echo $@ recreated.; fi
+
+$(srcdir)/tests/package.m4: $(srcdir)/configure.in
+	{								   \
+	  echo '# Signature of the current package.';			   \
+	  echo 'm4_define([AT_PACKAGE_NAME],      [@PACKAGE_NAME@])';	   \
+	  echo 'm4_define([AT_PACKAGE_TARNAME],   [@PACKAGE_TARNAME@])';   \
+	  echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])';   \
+	  echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])';	   \
+	  echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
+	} >$(srcdir)/tests/package.m4
+
+$(srcdir)/tests/testsuite: $(srcdir)/tests/package.m4 $(srcdir}/tests/testsuite.at $(TESTFILES)
+	autom4te --language=autotest -I $(srcdir)/tests \
+		$(srcdir)/tests/testsuite.at -o $@.tmp
+	mv $@.tmp $@
+
+atconfig: config.status
+	$(SHELL) ./config.status ./atconfig
+
 
 csh.prof: ${OBJS} sh.prof.${SUF} mcrt0.${SUF}
 	rm -f csh.prof
@@ -463,18 +511,36 @@ vgrind:
 
 install-strip: install
 
-install: tcsh 
-	mkdir -p ${DESTBIN}
-	-mv -f ${DESTBIN}/tcsh  ${DESTBIN}/tcsh.old
-	cp tcsh ${DESTBIN}/tcsh
-	-strip ${DESTBIN}/tcsh
-	chmod 555 ${DESTBIN}/tcsh
+install: tcsh$(EXEEXT) 
+	-mkdir -p ${DESTBIN}
+	-mv -f ${DESTBIN}/tcsh$(EXEEXT)  ${DESTBIN}/tcsh.old
+	cp tcsh$(EXEEXT) ${DESTBIN}/tcsh$(EXEEXT)
+	-strip ${DESTBIN}/tcsh$(EXEEXT)
+	chmod 755 ${DESTBIN}/tcsh$(EXEEXT)
 
 install.man: tcsh.man
-	mkdir -p ${DESTMAN}
+	-mkdir -p ${DESTMAN}
 	-rm -f ${DESTMAN}/tcsh.${MANSECT}
 	cp $(srcdir)/tcsh.man ${DESTMAN}/tcsh.${MANSECT}
 	chmod 444 ${DESTMAN}/tcsh.${MANSECT}
+
+install.cygwin: install install.man
+	-mkdir -p ${DESTDIR}${prefix}/share/doc/tcsh
+	cp ${srcdir}/FAQ ${srcdir}/Fixes ${DESTDIR}${prefix}/share/doc/tcsh
+	cp ${srcdir}/NewThings ${srcdir}/README ${DESTDIR}${prefix}/share/doc/tcsh
+	cp ${srcdir}/WishList ${srcdir}/Y2K ${DESTDIR}${prefix}/share/doc/tcsh
+	perl ${srcdir}/tcsh.man2html ${srcdir}/tcsh.man
+	cp -rp tcsh.html ${DESTDIR}${prefix}/share/doc/tcsh
+	-mkdir -p ${DESTDIR}/etc/defaults/etc/profile.d
+	-mkdir -p ${DESTDIR}/etc/profile.d
+	-mkdir -p ${DESTDIR}/etc/postinstall
+	-mkdir -p ${DESTDIR}/etc/preremove
+	cp -p ${srcdir}/cygwin/csh.cshrc ${DESTDIR}/etc/defaults/etc
+	cp -p ${srcdir}/cygwin/csh.login ${DESTDIR}/etc/defaults/etc
+	cp -p ${srcdir}/cygwin/bindkey.tcsh ${DESTDIR}/etc/defaults/etc/profile.d
+	cp -p ${srcdir}/complete.tcsh ${DESTDIR}/etc/defaults/etc/profile.d
+	cp -p ${srcdir}/cygwin/postinstall.sh ${DESTDIR}/etc/postinstall/tcsh.sh
+	cp -p ${srcdir}/cygwin/preremove.sh ${DESTDIR}/etc/preremove/tcsh.sh
 
 # Amiga Unix
 #install.man: tcsh.man
@@ -489,15 +555,21 @@ install.man: tcsh.man
 #	chmod 444 ${DESTMAN}/tcsh.${MANSECT}.Z
 
 clean:
-	${RM} -f a.out strings x.c xs.c tcsh tcsh.a _MAKE_LOG core gethost
-	${RM} -f *.${SUF} sh.prof.c ed.defns.h tc.const.h sh.err.h tc.defs.c
+	${RM} -f a.out strings x.c xs.c tcsh$(EXEEXT) tcsh.a _MAKE_LOG gethost
+	${RM} -f *.${SUF} *.i *.s
+	${RM} -f sh.prof.c ed.defns.h tc.const.h sh.err.h tc.defs.c
 	${RM} -f tcsh.*.m tcsh.*.cat
 
 veryclean: clean
-	${RM} -f config.h config.status config.cache config.log Makefile tcsh.ps
+	${RM} -f Makefile config.h config_p.h
+	${RM} -f config.status config.cache config.log tcsh.ps
+	${RM} -f missing
+	${RM} -rf autom4te.cache
 	${RM} -f *~ #*
 
 distclean: veryclean
+
+cleandir: veryclean
 
 tags:	/tmp
 	${CTAGS} sh*.c
@@ -505,7 +577,7 @@ tags:	/tmp
 tar.Z:
 	rm -f tcsh-${VERSION}.tar.Z
 	rm -rf tcsh-${VERSION} 
-	mkdir tcsh-${VERSION} tcsh-${VERSION}/config
+	-mkdir tcsh-${VERSION} tcsh-${VERSION}/config tcsh-${VERSION}/tests
 	cp ${ALLSRCS} tcsh-${VERSION}
 	cp ${CONFSRCS} tcsh-${VERSION}/config
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -515,7 +587,7 @@ tar.Z:
 tar.gz:
 	rm -f tcsh-${VERSION}.tar.gz
 	rm -rf tcsh-${VERSION} 
-	mkdir tcsh-${VERSION} tcsh-${VERSION}/config
+	-mkdir tcsh-${VERSION} tcsh-${VERSION}/config tcsh-${VERSION}/tests
 	cp ${ALLSRCS} tcsh-${VERSION}
 	cp ${CONFSRCS} tcsh-${VERSION}/config
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -525,7 +597,7 @@ tar.gz:
 shar:
 	rm -f tcsh-*.shar
 	rm -rf tcsh-${VERSION} 
-	mkdir tcsh-${VERSION} tcsh-${VERSION}/config
+	-mkdir tcsh-${VERSION} tcsh-${VERSION}/config tcsh-${VERSION}/tests
 	cp ${ALLSRCS} tcsh-${VERSION}
 	cp ${CONFSRCS} tcsh-${VERSION}/config
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -540,11 +612,11 @@ catalogs:
 tcsh-${VERSION}.tar.Z:
 	rm -rf tcsh-${VERSION} 
 	rm -f tcsh-${VERSION}.tar tcsh-${VERSION}.tar.Z DIFFS.[123]
-	mkdir tcsh-${VERSION}
+	-mkdir tcsh-${VERSION} tcsh-${VERSION}/tests
 	./MAKEDIFFS bsd
 	mv DIFFS.1 DIFFS.2 DIFFS.3 tcsh-${VERSION}
 	cp ${DISTSRCS} tcsh-${VERSION}
-	mkdir tcsh-${VERSION}/config
+	-mkdir tcsh-${VERSION}/config
 	cp ${CONFSRCS} tcsh-${VERSION}/config
 	cp Makefile tcsh-${VERSION}/Makefile.new
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -554,11 +626,11 @@ tcsh-${VERSION}.tar.Z:
 tcsh.tahoe-${VERSION}.tar.Z:
 	rm -rf tcsh.tahoe-${VERSION} 
 	rm -f tcsh.tahoe-${VERSION}.tar tcsh.tahoe-${VERSION}.tar.Z DIFFS.[123]
-	mkdir tcsh.tahoe-${VERSION}
+	-mkdir tcsh.tahoe-${VERSION}
 	./MAKEDIFFS tahoe
 	mv DIFFS.1 DIFFS.2 DIFFS.3 tcsh.tahoe-${VERSION}
 	cp ${DISTSRCS} tcsh.tahoe-${VERSION}
-	mkdir tcsh.tahoe-${VERSION}/config
+	-mkdir tcsh.tahoe-${VERSION}/config
 	cp ${CONFSRCS} tcsh.tahoe-${VERSION}/config
 	cp Makefile tcsh.tahoe-${VERSION}/Makefile.new
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -568,11 +640,11 @@ tcsh.tahoe-${VERSION}.tar.Z:
 tcsh.reno-${VERSION}.tar.Z:
 	rm -rf tcsh.reno-${VERSION} 
 	rm -f tcsh.reno-${VERSION}.tar tcsh.reno-${VERSION}.tar.Z DIFFS.[123]
-	mkdir tcsh.reno-${VERSION}
+	-mkdir tcsh.reno-${VERSION}
 	./MAKEDIFFS reno
 	mv DIFFS.1 DIFFS.2 DIFFS.3 tcsh.reno-${VERSION}
 	cp ${DISTSRCS} tcsh.reno-${VERSION}
-	mkdir tcsh.reno-${VERSION}/config
+	-mkdir tcsh.reno-${VERSION}/config
 	cp ${CONFSRCS} tcsh.reno-${VERSION}/config
 	cp Makefile tcsh.reno-${VERSION}/Makefile.new
 	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
@@ -593,12 +665,15 @@ $(srcdir)/stamp-h.in: $(srcdir)/configure.in
 	cd $(srcdir) && autoheader
 	@echo timestamp > $(srcdir)/stamp-h.in
 
+check: atconfig $(srcdir)/tests/testsuite
+	$(SHELL) $(srcdir)/tests/testsuite
+
 #
 # Dependencies
 #
 config.h: config_f.h
 
-TCH=tc.h tc.const.h tc.decls.h tc.os.h tc.sig.h
+TCH=tc.h tc.const.h tc.decls.h tc.nls.h tc.os.h tc.sig.h
 SHH=sh.h sh.types.h sh.char.h sh.err.h sh.dir.h sh.proc.h pathnames.h \
     sh.decls.h ${TCH}
 TWH=tw.h tw.decls.h
@@ -615,7 +690,7 @@ ${OBJS}: config.h ${SHH}
 
 # TWH
 TWINC=ed.chared.${SUF} ed.inputl.${SUF} sh.exec.${SUF} sh.func.${SUF} \
-      sh.set.${SUF} tc.func.${SUF} tw.color.${SUF}
+      sh.set.${SUF} tc.func.${SUF} tc.nls.${SUF} tw.color.${SUF}
 ${TWOBJS} ${TWINC}: ${TWH}
 
 # glob.h
