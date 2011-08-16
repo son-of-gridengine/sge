@@ -1,4 +1,4 @@
-/* $Header: /var/lib/cvs/gridengine/source/3rdparty/qtcsh/sh.print.c,v 1.1 2001-07-18 11:06:05 root Exp $ */
+/* $Header: /p/tcsh/cvsroot/tcsh/sh.print.c,v 3.33 2006/08/23 15:03:14 christos Exp $ */
 /*
  * sh.print.c: Primitive Output routines.
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,17 +32,15 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.print.c,v 1.1 2001-07-18 11:06:05 root Exp $")
+RCSID("$tcsh: sh.print.c,v 3.33 2006/08/23 15:03:14 christos Exp $")
 
 #include "ed.h"
 
 extern int Tty_eight_bit;
-extern int Tty_raw_mode;
-extern Char GettingInput;
 
 int     lbuffed = 1;		/* true if line buffered */
 
-static	void	p2dig	__P((int));
+static	void	p2dig	(unsigned int);
 
 /*
  * C Shell
@@ -54,10 +48,9 @@ static	void	p2dig	__P((int));
 
 #if defined(BSDLIMIT) || defined(RLIMIT_CPU)
 void
-psecs(l)
-    long    l;
+psecs(unsigned long l)
 {
-    register int i;
+    int i;
 
     i = (int) (l / 3600);
     if (i) {
@@ -76,19 +69,18 @@ minsec:
 
 #endif
 
-void
-pcsecs(l)			/* PWP: print mm:ss.dd, l is in sec*100 */
+void			/* PWP: print mm:ss.dd, l is in sec*100 */
 #ifdef BSDTIMES
-    long    l;
+pcsecs(unsigned long l)
 #else /* BSDTIMES */
 # ifndef POSIX
-    time_t  l;
+pcsecs(time_t l)
 # else /* POSIX */
-    clock_t l;
+pcsecs(clock_t l)
 # endif /* POSIX */
 #endif /* BSDTIMES */
 {
-    register int i;
+    int i;
 
     i = (int) (l / 360000);
     if (i) {
@@ -108,49 +100,75 @@ minsec:
 }
 
 static void 
-p2dig(i)
-    register int i;
+p2dig(unsigned i)
 {
 
-    xprintf("%d%d", i / 10, i % 10);
+    xprintf("%u%u", i / 10, i % 10);
 }
 
 char    linbuf[2048];		/* was 128 */
 char   *linp = linbuf;
-bool    output_raw = 0;		/* PWP */
-bool    xlate_cr   = 0;		/* HE */
+int    output_raw = 0;		/* PWP */
+int    xlate_cr   = 0;		/* HE */
+
+/* For cleanup_push() */
+void
+output_raw_restore(void *xorig)
+{
+    int *orig;
+
+    orig = xorig;
+    output_raw = *orig;
+}
+
+#ifdef WIDE_STRINGS
+void
+putwraw(Char c)
+{
+    char buf[MB_LEN_MAX];
+    size_t i, len;
+    
+    len = one_wctomb(buf, c & CHAR);
+    for (i = 0; i < len; i++)
+	putraw((unsigned char)buf[i] | (c & ~CHAR));
+}
 
 void
-xputchar(c)
-    register int c;
+xputwchar(Char c)
 {
-    int     atr = 0;
+    char buf[MB_LEN_MAX];
+    size_t i, len;
+    
+    len = one_wctomb(buf, c & CHAR);
+    for (i = 0; i < len; i++)
+	xputchar((unsigned char)buf[i] | (c & ~CHAR));
+}
+#endif
 
-    atr |= c & ATTRIBUTES & TRIM;
+void
+xputchar(int c)
+{
+    int     atr;
+
+    atr = c & ATTRIBUTES & TRIM;
     c &= CHAR | QUOTE;
     if (!output_raw && (c & QUOTE) == 0) {
-	if (Iscntrl(c)) {
+	if (iscntrl(c) && (ASC(c) < 0x80 || MB_CUR_MAX == 1)) {
+	    if (c != '\t' && c != '\n'
 #ifdef COLORCAT
-	    if (c != '\t' && c != '\n' && !(adrof(STRcolorcat) && c=='\033') && (xlate_cr || c != '\r')) {
-#else
-	    if (c != '\t' && c != '\n' && (xlate_cr || c != '\r')) {
+	        && !(adrof(STRcolorcat) && c == CTL_ESC('\033'))
 #endif
+		&& (xlate_cr || c != '\r'))
+	    {
 		xputchar('^' | atr);
-#ifndef _OSD_POSIX
-		if (c == ASCII)
-		    c = '?';
-		else
-		    c |= 0100;
-#else /*_OSD_POSIX*/
 		if (c == CTL_ESC('\177'))
 		    c = '?';
 		else
-		    c =_toebcdic[_toascii[c]|0100];
-#endif /*_OSD_POSIX*/
-
+		    /* Note: for IS_ASCII, this compiles to: c = c | 0100 */
+		    c = CTL_ESC(ASC(c)|0100);
 	    }
 	}
-	else if (!Isprint(c)) {
+	else if (!isprint(c) && (ASC(c) < 0x80 || MB_CUR_MAX == 1)) {
 	    xputchar('\\' | atr);
 	    xputchar((((c >> 6) & 7) + '0') | atr);
 	    xputchar((((c >> 3) & 7) + '0') | atr);
@@ -170,8 +188,7 @@ xputchar(c)
 }
 
 int
-putraw(c)
-    register int c;
+putraw(int c)
 {
     if (haderr ? (didfds ? is2atty : isdiagatty) :
 	(didfds ? is1atty : isoutatty)) {
@@ -186,8 +203,7 @@ putraw(c)
 }
 
 int
-putpure(c)
-    register int c;
+putpure(int c)
 {
     c &= CHAR;
 
@@ -198,17 +214,16 @@ putpure(c)
 }
 
 void
-drainoline()
+drainoline(void)
 {
     linp = linbuf;
 }
 
 void
-flush()
+flush(void)
 {
     int unit;
     static int interrupted = 0;
-    size_t sz;
 
     /* int lmode; */
 
@@ -218,7 +233,7 @@ flush()
 	return;
     if (interrupted) {
 	interrupted = 0;
-	linp = linbuf;		/* avoid resursion as stderror calls flush */
+	linp = linbuf;		/* avoid recursion as stderror calls flush */
 	stderror(ERR_SILENT);
     }
     interrupted = 1;
@@ -232,12 +247,11 @@ flush()
 	lmode & LFLUSHO) {
 	lmode = LFLUSHO;
 	(void) ioctl(unit, TIOCLBIC, (ioclt_t) & lmode);
-	(void) write(unit, "\n", 1);
+	(void) xwrite(unit, "\n", 1);
     }
 #endif
 #endif
-    sz = (size_t) (linp - linbuf);
-    if (write(unit, linbuf, sz) == -1)
+    if (xwrite(unit, linbuf, linp - linbuf) == -1)
 	switch (errno) {
 #ifdef EIO
 	/* We lost our tty */
@@ -258,6 +272,12 @@ flush()
 #endif
 #ifdef EBADF
 	case EBADF:
+#endif
+#ifdef ESTALE
+	/*
+	 * Lost our file descriptor, exit (IRIS4D)
+	 */
+	case ESTALE:
 #endif
 	/*
 	 * Over our quota, writing the history file

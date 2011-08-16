@@ -1,4 +1,4 @@
-/* $Header: /var/lib/cvs/gridengine/source/3rdparty/qtcsh/sh.misc.c,v 1.1 2001-07-18 11:06:05 root Exp $ */
+/* $Header: /p/tcsh/cvsroot/tcsh/sh.misc.c,v 3.45 2006/10/14 17:57:21 christos Exp $ */
 /*
  * sh.misc.c: Miscelaneous functions
  */
@@ -14,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,61 +32,61 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.misc.c,v 1.1 2001-07-18 11:06:05 root Exp $")
+RCSID("$tcsh: sh.misc.c,v 3.45 2006/10/14 17:57:21 christos Exp $")
 
-static	int	renum	__P((int, int));
-static  Char  **blkend	__P((Char **));
-static  Char  **blkcat	__P((Char **, Char **));
+static	int	renum	(int, int);
+static  Char  **blkend	(Char **);
+static  Char  **blkcat	(Char **, Char **);
+static	int	xdup2	(int, int);
 
 /*
  * C Shell
  */
 
 int
-any(s, c)
-    register char *s;
-    register int c;
+any(const char *s, Char c)
 {
     if (!s)
 	return (0);		/* Check for nil pointer */
     while (*s)
-	if (*s++ == c)
+	if ((Char)*s++ == c)
 	    return (1);
     return (0);
 }
 
 void
-setzero(cp, i)
-    char   *cp;
-    int     i;
+setzero(void *p, size_t size)
 {
-    if (i != 0)
-	do
-	    *cp++ = 0;
-	while (--i);
+    memset(p, 0, size);
+}
+
+char *
+strnsave(const char *s, size_t len)
+{
+    char *r;
+
+    r = xmalloc(len + 1);
+    memcpy(r, s, len);
+    r[len] = '\0';
+    return r;
 }
 
 char   *
-strsave(s)
-    register const char *s;
+strsave(const char *s)
 {
-    char   *n;
-    register char *p;
+    char   *r;
+    size_t size;
 
     if (s == NULL)
-	s = (const char *) "";
-    for (p = (char *) s; *p++ != '\0';)
-	continue;
-    n = p = (char *) xmalloc((size_t)
-			     ((((const char *) p) - s) * sizeof(char)));
-    while ((*p++ = *s++) != '\0')
-	continue;
-    return (n);
+	s = "";
+    size = strlen(s) + 1;
+    r = xmalloc(size);
+    memcpy(r, s, size);
+    return (r);
 }
 
 static Char  **
-blkend(up)
-    register Char **up;
+blkend(Char **up)
 {
 
     while (*up)
@@ -100,8 +96,7 @@ blkend(up)
 
 
 void
-blkpr(av)
-    register Char **av;
+blkpr(Char *const *av)
 {
 
     for (; *av; av++) {
@@ -111,24 +106,23 @@ blkpr(av)
     }
 }
 
-void
-blkexpand(av, str)
-    register Char **av;
-    Char *str;
+Char *
+blkexpand(Char *const *av)
 {
-    *str = '\0';
+    struct Strbuf buf = Strbuf_INIT;
+
     for (; *av; av++) {
-	(void) Strcat(str, *av);
+	Strbuf_append(&buf, *av);
 	if (av[1])
-	    (void) Strcat(str, STRspace);
+	    Strbuf_append1(&buf, ' ');
     }
+    return Strbuf_finish(&buf);
 }
 
 int
-blklen(av)
-    register Char **av;
+blklen(Char **av)
 {
-    register int i = 0;
+    int i = 0;
 
     while (*av++)
 	i++;
@@ -136,11 +130,9 @@ blklen(av)
 }
 
 Char  **
-blkcpy(oav, bv)
-    Char  **oav;
-    register Char **bv;
+blkcpy(Char **oav, Char **bv)
 {
-    register Char **av = oav;
+    Char **av = oav;
 
     while ((*av++ = *bv++) != NULL)
 	continue;
@@ -148,8 +140,7 @@ blkcpy(oav, bv)
 }
 
 static Char  **
-blkcat(up, vp)
-    Char  **up, **vp;
+blkcat(Char **up, Char **vp)
 {
 
     (void) blkcpy(blkend(up), vp);
@@ -157,91 +148,94 @@ blkcat(up, vp)
 }
 
 void
-blkfree(av0)
-    Char  **av0;
+blkfree(Char **av0)
 {
-    register Char **av = av0;
+    Char **av = av0;
 
     if (!av0)
 	return;
     for (; *av; av++)
-	xfree((ptr_t) * av);
-    xfree((ptr_t) av0);
+	xfree(*av);
+    xfree(av0);
+}
+
+void
+blk_cleanup(void *ptr)
+{
+    blkfree(ptr);
+}
+
+void
+blk_indirect_cleanup(void *xptr)
+{
+    Char ***ptr;
+
+    ptr = xptr;
+    blkfree(*ptr);
+    xfree(ptr);
 }
 
 Char  **
-saveblk(v)
-    register Char **v;
+saveblk(Char **v)
 {
-    register Char **newv =
-    (Char **) xcalloc((size_t) (blklen(v) + 1), sizeof(Char **));
-    Char  **onewv = newv;
+    Char **newv, **onewv;
+
+    if (v == NULL)
+	return NULL;
+
+    onewv = newv = xcalloc(blklen(v) + 1, sizeof(Char **));
 
     while (*v)
 	*newv++ = Strsave(*v++);
     return (onewv);
 }
 
-#if !defined(SHORT_STRINGS) && !defined(POSIX)
+#ifndef HAVE_STRSTR
 char   *
-strstr(s, t)
-    register const char *s, *t;
+strstr(const char *s, const char *t)
 {
     do {
-	register const char *ss = s;
-	register const char *tt = t;
+	const char *ss = s;
+	const char *tt = t;
 
 	do
 	    if (*tt == '\0')
-		return ((char *) s);
+		return (s);
 	while (*ss++ == *tt++);
     } while (*s++ != '\0');
     return (NULL);
 }
+#endif /* !HAVE_STRSTR */
 
-#endif /* !SHORT_STRINGS && !POSIX */
-
-#ifndef SHORT_STRINGS
 char   *
-strspl(cp, dp)
-    char   *cp, *dp;
+strspl(const char *cp, const char *dp)
 {
     char   *ep;
-    register char *p, *q;
+    size_t cl, dl;
 
     if (!cp)
 	cp = "";
     if (!dp)
 	dp = "";
-    for (p = cp; *p++ != '\0';)
-	continue;
-    for (q = dp; *q++ != '\0';)
-	continue;
-    ep = (char *) xmalloc((size_t) (((p - cp) + (q - dp) - 1) * sizeof(char)));
-    for (p = ep, q = cp; (*p++ = *q++) != '\0';)
-	continue;
-    for (p--, q = dp; (*p++ = *q++) != '\0';)
-	continue;
+    cl = strlen(cp);
+    dl = strlen(dp);
+    ep = xmalloc((cl + dl + 1) * sizeof(char));
+    memcpy(ep, cp, cl);
+    memcpy(ep + cl, dp, dl + 1);
     return (ep);
 }
 
-#endif /* !SHORT_STRINGS */
-
 Char  **
-blkspl(up, vp)
-    register Char **up, **vp;
+blkspl(Char **up, Char **vp)
 {
-    register Char **wp =
-    (Char **) xcalloc((size_t) (blklen(up) + blklen(vp) + 1),
-		      sizeof(Char **));
+    Char **wp = xcalloc(blklen(up) + blklen(vp) + 1, sizeof(Char **));
 
     (void) blkcpy(wp, up);
     return (blkcat(wp, vp));
 }
 
 Char
-lastchr(cp)
-    register Char *cp;
+lastchr(Char *cp)
 {
 
     if (!cp)
@@ -258,15 +252,21 @@ lastchr(cp)
  * any units which may have been left open accidentally.
  */
 void
-closem()
+closem(void)
 {
-    register int f;
+    int f, num_files;
 
+#ifdef NLS_BUGS
+#ifdef NLS_CATALOGS
+    nlsclose();
+#endif /* NLS_CATALOGS */
+#endif /* NLS_BUGS */
 #ifdef YPBUGS
     /* suggested by Justin Bur; thanks to Karl Kleinpaste */
     fix_yp_bugs();
 #endif /* YPBUGS */
-    for (f = 0; f < NOFILE; f++)
+    num_files = NOFILE;
+    for (f = 0; f < num_files; f++)
 	if (f != SHIN && f != SHOUT && f != SHDIAG && f != OLDSTD &&
 	    f != FSHTTY 
 #ifdef MALLOC_TRACE
@@ -274,12 +274,17 @@ closem()
 #endif /* MALLOC_TRACE */
 	    )
 	  {
-	    (void) close(f);
+	    xclose(f);
 #ifdef NISPLUS
 	    if(f < 3)
-		(void) open(_PATH_DEVNULL, O_RDONLY);
+		(void) xopen(_PATH_DEVNULL, O_RDONLY|O_LARGEFILE);
 #endif /* NISPLUS */
 	  }
+#ifdef NLS_BUGS
+#ifdef NLS_CATALOGS
+    nlsinit();
+#endif /* NLS_CATALOGS */
+#endif /* NLS_BUGS */
 }
 
 #ifndef CLOSE_ON_EXEC
@@ -290,9 +295,9 @@ closem()
  * shell fd's being in units 16-19 which are closed automatically!
  */
 void
-closech()
+closech(void)
 {
-    register int f;
+    int f, num_files;
 
     if (didcch)
 	return;
@@ -303,29 +308,27 @@ closech()
     OLDSTD = 0;
     isoutatty = isatty(SHOUT);
     isdiagatty = isatty(SHDIAG);
-    for (f = 3; f < NOFILE; f++)
-	(void) close(f);
+    num_files = NOFILE;
+    for (f = 3; f < num_files; f++)
+	xclose(f);
 }
 
 #endif /* CLOSE_ON_EXEC */
 
 void
-donefds()
+donefds(void)
 {
 
-    (void) close(0);
-    (void) close(1);
-    (void) close(2);
+    xclose(0);
+    xclose(1);
+    xclose(2);
     didfds = 0;
 #ifdef NISPLUS
     {
-	int fd = open(_PATH_DEVNULL, O_RDONLY);
-	(void) dup2(fd, 1);
-	(void) dup2(fd, 2);
-	if (fd != 0) {
-	    (void) dup2(fd, 0);
-	    (void) close(fd);
-	}
+	int fd = xopen(_PATH_DEVNULL, O_RDONLY|O_LARGEFILE);
+	(void)dcopy(fd, 1);
+	(void)dcopy(fd, 2);
+	(void)dmove(fd, 0);
     }
 #endif /*NISPLUS*/    
 }
@@ -333,60 +336,57 @@ donefds()
 /*
  * Move descriptor i to j.
  * If j is -1 then we just want to get i to a safe place,
- * i.e. to a unit > 2.  This also happens in dcopy.
+ * i.e. to a unit > FSAFE.  This also happens in dcopy.
  */
 int
-dmove(i, j)
-    register int i, j;
+dmove(int i, int j)
 {
 
     if (i == j || i < 0)
 	return (i);
-#ifdef HAVEDUP2
+#ifdef HAVE_DUP2
     if (j >= 0) {
-	(void) dup2(i, j);
+	(void) xdup2(i, j);
 	if (j != i)
-	    (void) close(i);
+	    xclose(i);
 	return (j);
     }
 #endif
     j = dcopy(i, j);
     if (j != i)
-	(void) close(i);
+	xclose(i);
     return (j);
 }
 
 int
-dcopy(i, j)
-    register int i, j;
+dcopy(int i, int j)
 {
 
-    if (i == j || i < 0 || (j < 0 && i > 2))
+    if (i == j || i < 0 || (j < 0 && i > FSAFE))
 	return (i);
     if (j >= 0) {
-#ifdef HAVEDUP2
-	(void) dup2(i, j);
+#ifdef HAVE_DUP2
+	(void) xdup2(i, j);
 	return (j);
 #else
-	(void) close(j);
+	xclose(j);
 #endif
     }
     return (renum(i, j));
 }
 
 static int
-renum(i, j)
-    register int i, j;
+renum(int i, int j)
 {
-    register int k = dup(i);
+    int k = dup(i);
 
     if (k < 0)
 	return (-1);
-    if (j == -1 && k > 2)
+    if (j == -1 && k > FSAFE)
 	return (k);
     if (k != j) {
 	j = renum(k, j);
-	(void) close(k);
+	xclose(k);
 	return (j);
     }
     return (k);
@@ -398,20 +398,17 @@ renum(i, j)
  * as well as by commands like "repeat".
  */
 void
-lshift(v, c)
-    register Char **v;
-    register int c;
+lshift(Char **v, int c)
 {
-    register Char **u;
+    Char **u;
 
     for (u = v; *u && --c >= 0; u++)
-	xfree((ptr_t) *u);
+	xfree(*u);
     (void) blkcpy(v, u);
 }
 
 int
-number(cp)
-    Char   *cp;
+number(Char *cp)
 {
     if (!cp)
 	return (0);
@@ -427,34 +424,27 @@ number(cp)
 }
 
 Char  **
-copyblk(v)
-    register Char **v;
+copyblk(Char **v)
 {
-    register Char **nv =
-    (Char **) xcalloc((size_t) (blklen(v) + 1), sizeof(Char **));
+    Char **nv = xcalloc(blklen(v) + 1, sizeof(Char **));
 
     return (blkcpy(nv, v));
 }
 
-#ifndef SHORT_STRINGS
 char   *
-strend(cp)
-    register char *cp;
+strend(const char *cp)
 {
     if (!cp)
-	return (cp);
+	return ((char *)(intptr_t)cp);
     while (*cp)
 	cp++;
-    return (cp);
+    return ((char *)(intptr_t)cp);
 }
 
-#endif /* SHORT_STRINGS */
-
 Char   *
-strip(cp)
-    Char   *cp;
+strip(Char *cp)
 {
-    register Char *dp = cp;
+    Char *dp = cp;
 
     if (!cp)
 	return (cp);
@@ -464,10 +454,9 @@ strip(cp)
 }
 
 Char   *
-quote(cp)
-    Char   *cp;
+quote(Char *cp)
 {
-    register Char *dp = cp;
+    Char *dp = cp;
 
     if (!cp)
 	return (cp);
@@ -476,33 +465,28 @@ quote(cp)
     return (cp);
 }
 
-Char   *
-quote_meta(d, s)
-    Char   *d;
-    const Char   *s;
+const Char *
+quote_meta(struct Strbuf *buf, const Char *s)
 {
-    Char *r = d;
+    buf->len = 0;
     while (*s != '\0') {
 	if (cmap(*s, _META | _DOL | _QF | _QB | _ESC | _GLOB))
-		*d++ = '\\';
-	*d++ = *s++;
+	    Strbuf_append1(buf, '\\');
+	Strbuf_append1(buf, *s++);
     }
-    *d = '\0';
-    return r;
+    Strbuf_terminate(buf);
+    return buf->s;
 }
 
 void
-udvar(name)
-    Char   *name;
+udvar(Char *name)
 {
-
     setname(short2str(name));
     stderror(ERR_NAME | ERR_UNDVAR);
 }
 
 int
-prefix(sub, str)
-    register Char *sub, *str;
+prefix(const Char *sub, const Char *str)
 {
 
     for (;;) {
@@ -513,4 +497,176 @@ prefix(sub, str)
 	if ((*sub++ & TRIM) != (*str++ & TRIM))
 	    return (0);
     }
+}
+#ifndef WINNT_NATIVE
+char *
+areadlink(const char *path)
+{
+    char *buf;
+    size_t size;
+    ssize_t res;
+
+    size = MAXPATHLEN + 1;
+    buf = xmalloc(size);
+    while ((size_t)(res = readlink(path, buf, size)) == size) {
+	size *= 2;
+	buf = xrealloc(buf, size);
+    }
+    if (res == -1) {
+	int err;
+
+	err = errno;
+	xfree(buf);
+	errno = err;
+	return NULL;
+    }
+    buf[res] = '\0';
+    return xrealloc(buf, res + 1);
+}
+#endif /*!WINNT_NATIVE*/
+
+void
+xclose(int fildes)
+{
+    if (fildes < 0)
+	return;
+    while (close(fildes) == -1 && errno == EINTR)
+	handle_pending_signals();
+}
+
+void
+xclosedir(DIR *dirp)
+{
+    while (closedir(dirp) == -1 && errno == EINTR)
+	handle_pending_signals();
+}
+
+int
+xcreat(const char *path, mode_t mode)
+{
+    int res;
+
+    while ((res = creat(path, mode)) == -1 && errno == EINTR)
+	handle_pending_signals();
+    return res;
+}
+
+#ifdef HAVE_DUP2
+static int
+xdup2(int fildes, int fildes2)
+{
+    int res;
+
+    while ((res = dup2(fildes, fildes2)) == -1 && errno == EINTR)
+	handle_pending_signals();
+    return res;
+}
+#endif
+
+struct group *
+xgetgrgid(gid_t xgid)
+{
+    struct group *res;
+
+    errno = 0;
+    while ((res =
+#ifdef INTERIX
+            getgrgid_nomembers(xgid)
+#else
+            getgrgid(xgid)
+#endif
+            ) == NULL && errno == EINTR) {
+	handle_pending_signals();
+	errno = 0;
+    }
+    return res;
+}
+
+struct passwd *
+xgetpwnam(const char *name)
+{
+    struct passwd *res;
+
+    errno = 0;
+    while ((res = getpwnam(name)) == NULL && errno == EINTR) {
+	handle_pending_signals();
+	errno = 0;
+    }
+    return res;
+}
+
+struct passwd *
+xgetpwuid(uid_t xuid)
+{
+    struct passwd *res;
+
+    errno = 0;
+    while ((res = getpwuid(xuid)) == NULL && errno == EINTR) {
+	handle_pending_signals();
+	errno = 0;
+    }
+    return res;
+}
+
+int
+xopen(const char *path, int oflag, ...)
+{
+    int res;
+
+    if ((oflag & O_CREAT) == 0) {
+	while ((res = open(path, oflag)) == -1 && errno == EINTR)
+	    handle_pending_signals();
+    } else {
+	va_list ap;
+	mode_t mode;
+
+	va_start(ap, oflag);
+	/* "int" should actually be "mode_t after default argument
+	   promotions". "int" is the best guess we have, "mode_t" used to be
+	   "unsigned short", which we obviously can't use. */
+	mode = va_arg(ap, int);
+	va_end(ap);
+	while ((res = open(path, oflag, mode)) == -1 && errno == EINTR)
+	    handle_pending_signals();
+    }
+    return res;
+}
+
+ssize_t
+xread(int fildes, void *buf, size_t nbyte)
+{
+    ssize_t res;
+
+    /* This is where we will be blocked most of the time, so handle signals
+       that didn't interrupt any system call. */
+    do
+      handle_pending_signals();
+    while ((res = read(fildes, buf, nbyte)) == -1 && errno == EINTR);
+    return res;
+}
+
+#ifdef POSIX
+int
+xtcsetattr(int fildes, int optional_actions, const struct termios *termios_p)
+{
+    int res;
+
+    while ((res = tcsetattr(fildes, optional_actions, termios_p)) == -1 &&
+	   errno == EINTR)
+	handle_pending_signals();
+    return res;
+}
+#endif
+
+ssize_t
+xwrite(int fildes, const void *buf, size_t nbyte)
+{
+    ssize_t res;
+
+    /* This is where we will be blocked most of the time, so handle signals
+       that didn't interrupt any system call. */
+    do
+      handle_pending_signals();
+    while ((res = write(fildes, buf, nbyte)) == -1 && errno == EINTR);
+    return res;
 }

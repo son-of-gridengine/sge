@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/sh.char.h,v 3.35 2008/09/25 14:41:34 christos Exp $ */
 /*
  * sh.char.h: Table for spotting special characters quickly
  * 	      Makes for very obscure but efficient coding.
@@ -14,11 +15,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -40,6 +37,13 @@
 # include <appkit/NXCType.h>
 #else
 # include <ctype.h>
+# ifdef WIDE_STRINGS
+#  ifdef HAVE_WCTYPE_H
+#   include <wctype.h>
+#  else
+#   include <wchar.h>
+#  endif
+# endif
 #endif
 
 typedef unsigned char tcshuc;
@@ -48,7 +52,6 @@ typedef unsigned char tcshuc;
 #endif /* _MINIX */
 extern unsigned short _cmap[];
 #if defined(DSPMBYTE)
-extern unsigned short _mbmap[];
 # define CHECK_MBYTEVAR	STRdspmbyte
 #endif
 extern unsigned short _cmap_c[];
@@ -57,9 +60,13 @@ extern short _enable_mbdisp;
 extern unsigned short _mbmap[];
 extern unsigned short _mbmap_euc[];
 extern unsigned short _mbmap_sjis[];
+extern unsigned short _mbmap_big5[];
+extern unsigned short _mbmap_utf8[];
 /* VARIABLE Check str */
 /* same compiler require #define even not define DSPMBYTE */
+#undef	_MB1
 #define _MB1	0x0001
+#undef	_MB2
 #define _MB2	0x0002
 
 #ifndef NLS
@@ -67,68 +74,133 @@ extern tcshuc _cmap_lower[], _cmap_upper[];
 
 #endif
 
+#ifndef __QNXNTO__
+#undef	_QF
 #define	_QF	0x0001		/* '" (Forward quotes) */
+#undef	_QB
 #define	_QB	0x0002		/* ` (Backquote) */
+#undef	_SP
 #define	_SP	0x0004		/* space and tab */
+#else
+#undef	_XD
+#define	_XD	0x0001		/* As in <ctype.h> */
+#undef	_UP
+#define	_UP	0x0002		/* As in <ctype.h> */
+#undef	_SP
+#define	_SP	0x0004		/* As in <ctype.h> */
+#endif
+#undef	_NL
 #define	_NL	0x0008		/* \n */
+#undef	_META
 #define	_META	0x0010		/* lex meta characters, sp #'`";&<>()|\t\n */
+#undef	_GLOB
 #define	_GLOB	0x0020		/* glob characters, *?{[` */
+#undef	_ESC
 #define	_ESC	0x0040		/* \ */
+#undef	_DOL
 #define	_DOL	0x0080		/* $ */
+#undef	_DIG
 #define	_DIG  	0x0100		/* 0-9 */
-#define	_LET  	0x0200		/* a-z, A-Z, _ */
-#define	_UP   	0x0400		/* A-Z */
-#define	_DOW  	0x0800		/* a-z */
+#undef	_LET
+#define	_LET  	0x0200		/* a-z, A-Z, _, or locale-specific */
+#ifndef __QNXNTO__
+#undef	_UP
+#define	_UP   	0x0400		/* A-Z, or locale-specific */
+#else
+#undef	_QF
+#define	_QF	0x0400		/* '" (Forward quotes) */
+#endif
+#undef	_DOW
+#define	_DOW  	0x0800		/* a-z, or locale-specific */
+#ifndef __QNXNTO__
+#undef	_XD
 #define	_XD 	0x1000		/* 0-9, a-f, A-F */
+#else
+#undef	_QB
+#define	_QB	0x1000		/* 0-9, a-f, A-F */
+#endif
+#undef	_CMD
 #define	_CMD	0x2000		/* lex end of command chars, ;&(|` */
+#undef	_CTR
 #define _CTR	0x4000		/* control */
+#undef	_PUN
 #define _PUN	0x8000		/* punctuation */
 
-#if defined(SHORT_STRINGS) && defined(KANJI)
-#define ASC(ch) ch
-#define CTL_ESC(ch) ch
-#define cmap(c, bits)	\
-	((((c) & QUOTE) || ((c & 0x80) && adrof(STRnokanji))) ? \
-	0 : (_cmap[(tcshuc)(c)] & (bits)))
+#ifdef IS_ASCII
+# define ASC(ch) (ch)
+# define CTL_ESC(ch) (ch)
 #else
-#ifndef _OSD_POSIX
-#define ASC(ch) ch
-#define CTL_ESC(ch) ch
-#define cmap(c, bits)	\
-	(((c) & QUOTE) ? 0 : (_cmap[(tcshuc)(c)] & (bits)))
-#else /*_OSD_POSIX*/
+# ifdef _OSD_POSIX
 /* "BS2000 OSD" is a POSIX on a main frame using a EBCDIC char set */
-extern unsigned short _toascii[256];
-extern unsigned short _toebcdic[256];
+#   include <ascii_ebcdic.h>
+# else
+/* "OS/390 USS" is a POSIX on a main frame using an IBM1047 char set */
+# endif
+  extern unsigned short _toascii[256];
+  extern unsigned short _toebcdic[256];
 
 /* mainly for comparisons if (ASC(ch)=='\177')... */
-#define ASC(ch)     _toascii[(tcshuc)ch]
+#  define ASC(ch)     _toascii[(tcshuc)(ch)]
 
 /* Literal escapes ('\010') must be mapped to EBCDIC,
  * for C-Escapes   ('\b'), the compiler already does it.
  */
-#define CTL_ESC(ch) _toebcdic[(tcshuc)ch]
+#  define CTL_ESC(ch) _toebcdic[(tcshuc)(ch)]
+#endif /*IS_ASCII*/
 
-#define cmap(c, bits)	\
-	(((c) & QUOTE) ? 0 : (_cmap[_toascii[(tcshuc)(c)]] & (bits)))
-#endif /*_OSD_POSIX*/
+#ifdef WIDE_STRINGS
+# define cmap(c, bits)	\
+	(((c) < 0) ? 0 : \
+	((c) & QUOTE) || (c) >= 0x0080 ? 0 : (_cmap[(tcshuc)ASC(c)] & (bits)))
+#elif defined(SHORT_STRINGS) && defined(KANJI)
+#  define cmap(c, bits)	\
+	(((c) < 0) ? 0 : \
+	(((c) & QUOTE) || ((ASC(c) & 0x80) && adrof(STRnokanji))) ? \
+	0 : (_cmap[(tcshuc)ASC(c)] & (bits)))
+#else /* SHORT_STRINGS && KANJI */
+# define cmap(c, bits)	\
+	(((c) < 0) ? 0 : \
+	((c) & QUOTE) ? 0 : (_cmap[(tcshuc)ASC(c)] & (bits)))
+#endif /* SHORT_STRINGS && KANJI */
+
+#define isglob(c)	cmap((c), _GLOB)
+#define isspc(c)	cmap((c), _SP)
+#define ismeta(c)	cmap((c), _META)
+#define iscmdmeta(c)	cmap((c), _CMD)
+#ifdef WIDE_STRINGS
+#define letter(c)	(((c) & QUOTE) ? 0 :  \
+			 (iswalpha((tcshuc) (c)) || (c) == '_'))
+#define alnum(c)	(((c) & QUOTE) ? 0 :  \
+		         (iswalnum((tcshuc) (c)) || (c) == '_'))
+#else
+#define letter(c)	(((Char)(c) & QUOTE) ? 0 :  \
+			 ((isalpha((tcshuc) (c)) && !(cmap((c), _PUN))) \
+			  || (c) == '_'))
+#define alnum(c)	(((Char)(c) & QUOTE) ? 0 :  \
+		         ((isalnum((tcshuc) (c)) && !(cmap((c), _PUN))) \
+			  || (c) == '_'))
+
 #endif
-
-#define isglob(c)	cmap(c, _GLOB)
-#define isspc(c)	cmap(c, _SP)
-#define ismeta(c)	cmap(c, _META)
-#define iscmdmeta(c)	cmap(c, _CMD)
-#define letter(c)	(((Char)(c) & QUOTE) ? 0 : \
-			 (isalpha((tcshuc) (c)) || (c) == '_'))
-#define alnum(c)	(((Char)(c) & QUOTE) ? 0 : \
-		         (isalnum((tcshuc) (c)) || (c) == '_'))
 
 #if defined(DSPMBYTE)
 # define IsmbyteU(c)	(Ismbyte1((Char)(c))||(Ismbyte2((Char)(c))&&((c)&0200)))
 #endif
 
 #ifdef NLS
-# ifdef NeXT
+# ifdef WIDE_STRINGS
+#  define Isspace(c)	(((c) & QUOTE) ? 0 : iswspace(c))
+#  define Isdigit(c)	(((c) & QUOTE) ? 0 : iswdigit(c))
+#  define Isalpha(c)	(((c) & QUOTE) ? 0 : iswalpha(c))
+#  define Islower(c)	(((c) & QUOTE) ? 0 : iswlower(c))
+#  define Isupper(c)	(((c) & QUOTE) ? 0 : iswupper(c))
+#  define Tolower(c) 	(((c) & QUOTE) ? 0 : (wchar_t)towlower(c))
+#  define Toupper(c) 	(((c) & QUOTE) ? 0 : (wchar_t)towupper(c))
+#  define Isxdigit(c)	(((c) & QUOTE) ? 0 : iswxdigit(c))
+#  define Isalnum(c)	(((c) & QUOTE) ? 0 : iswalnum(c))
+#  define Iscntrl(c) 	(((c) & QUOTE) ? 0 : iswcntrl(c))
+#  define Isprint(c) 	(((c) & QUOTE) ? 0 : iswprint(c))
+#  define Ispunct(c) 	(((c) & QUOTE) ? 0 : iswpunct(c))
+# elif defined (NeXT)
 #  define Isspace(c)	(((Char)(c) & QUOTE) ? 0 : NXIsSpace((unsigned) (c)))
 #  define Isdigit(c)	(((Char)(c) & QUOTE) ? 0 : NXIsDigit((unsigned) (c)))
 #  define Isalpha(c)	(((Char)(c) & QUOTE) ? 0 : NXIsAlpha((unsigned) (c)))
@@ -149,7 +221,7 @@ extern unsigned short _toebcdic[256];
 #endif /* !defined(DSPMBYTE) */
 #  define Ispunct(c) 	(((Char)(c) & QUOTE) ? 0 : NXIsPunct((unsigned) (c)))
 # else /* !NeXT */
-#  ifndef WINNT
+#  ifndef WINNT_NATIVE
 #   define Isspace(c)	(((Char)(c) & QUOTE) ? 0 : isspace((tcshuc) (c)))
 #   define Isdigit(c)	(((Char)(c) & QUOTE) ? 0 : isdigit((tcshuc) (c)))
 #   define Isalpha(c)	(((Char)(c) & QUOTE) ? 0 : isalpha((tcshuc) (c)))
@@ -190,7 +262,7 @@ extern unsigned short _toebcdic[256];
 #   define Isprint(c)	( (IsprintM(c)) || (_enable_mbdisp&&(IsmbyteU((c)))) )
 #endif /* !defined(DSPMBYTE) */
 #    define Ispunct(c) 	(((Char)(c) & QUOTE) ? 0 : ispunct((tcshuc) (c)))
-#  else /* WINNT */
+#  else /* WINNT_NATIVE */
 #   define Isspace(c) (((Char)(c) & QUOTE) ? 0 : isspace( oem_it((tcshuc)(c))))
 #   define Isdigit(c) (((Char)(c) & QUOTE) ? 0 : isdigit( oem_it((tcshuc)(c))))
 #   define Isalpha(c) (((Char)(c) & QUOTE) ? 0 : isalpha( oem_it((tcshuc)(c))))
@@ -210,34 +282,28 @@ extern unsigned short _toebcdic[256];
 #   define Iscntrl(c) (((Char)(c) & QUOTE) ? 0 : iscntrl( oem_it((tcshuc)(c))))
 #   define Isprint(c) (((Char)(c) & QUOTE) ? 0 : isprint( oem_it((tcshuc)(c))))
 #endif /* !defined(DSPMBYTE) */
-#  endif /* WINNT */
+#  endif /* WINNT_NATIVE */
 # endif /* !NeXT */
 #else /* !NLS */
-# define Isspace(c)	cmap(c, _SP|_NL)
-# define Isdigit(c)	cmap(c, _DIG)
-# define Isalpha(c)	(cmap(c,_LET) && !(((c) & META) && AsciiOnly))
-# define Islower(c)	(cmap(c,_DOW) && !(((c) & META) && AsciiOnly))
-# define Isupper(c)	(cmap(c, _UP) && !(((c) & META) && AsciiOnly))
-#ifndef _OSD_POSIX
-# define Tolower(c)	(_cmap_lower[(tcshuc)(c)])
-# define Toupper(c)	(_cmap_upper[(tcshuc)(c)])
-#else /*_OSD_POSIX*/
-/* "BS2000 OSD" is a POSIX on a main frame using a EBCDIC char set */
-# define Tolower(c)     (_cmap_lower[_toascii[(tcshuc)(c)]])
-# define Toupper(c)     (_cmap_upper[_toascii[(tcshuc)(c)]])
-#endif /*_OSD_POSIX*/
-# define Isxdigit(c)	cmap(c, _XD)
-# define Isalnum(c)	(cmap(c, _DIG|_LET) && !(((Char)(c) & META) && AsciiOnly))
+# define Isspace(c)	cmap((c), _SP|_NL)
+# define Isdigit(c)	cmap((c), _DIG)
+# define Isalpha(c)	(cmap((c),_LET) && !(((c) & META) && AsciiOnly))
+# define Islower(c)	(cmap((c),_DOW) && !(((c) & META) && AsciiOnly))
+# define Isupper(c)	(cmap((c), _UP) && !(((c) & META) && AsciiOnly))
+# define Tolower(c)	(_cmap_lower[ASC(c)])
+# define Toupper(c)	(_cmap_upper[ASC(c)])
+# define Isxdigit(c)	cmap((c), _XD)
+# define Isalnum(c)	(cmap((c), _DIG|_LET) && !(((Char)(c) & META) && AsciiOnly))
 #if defined(DSPMBYTE)
-# define IscntrlM(c)	(cmap(c,_CTR) && !(((c) & META) && AsciiOnly))
+# define IscntrlM(c)	(cmap((c),_CTR) && !(((c) & META) && AsciiOnly))
 # define Iscntrl(c)	( (IscntrlM(c)) && !(_enable_mbdisp&&(IsmbyteU((c)))) )
-# define IsprintM(c)	(!cmap(c,_CTR) && !(((c) & META) && AsciiOnly))
+# define IsprintM(c)	(!cmap((c),_CTR) && !(((c) & META) && AsciiOnly))
 # define Isprint(c)	( (IsprintM(c)) || (_enable_mbdisp&&(IsmbyteU((c)))) )
 #else
-# define Iscntrl(c)	(cmap(c,_CTR) && !(((c) & META) && AsciiOnly))
-# define Isprint(c)	(!cmap(c,_CTR) && !(((c) & META) && AsciiOnly))
+# define Iscntrl(c)	(cmap((c),_CTR) && !(((c) & META) && AsciiOnly))
+# define Isprint(c)	(!cmap((c),_CTR) && !(((c) & META) && AsciiOnly))
 #endif /* !defined(DSPMBYTE) */
-# define Ispunct(c)	(cmap(c,_PUN) && !(((c) & META) && AsciiOnly))
+# define Ispunct(c)	(cmap((c),_PUN) && !(((c) & META) && AsciiOnly))
 
 #endif /* !NLS */
 
