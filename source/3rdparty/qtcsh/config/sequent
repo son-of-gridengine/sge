@@ -29,15 +29,6 @@
 #endif /* _SEQUENT_ */
 
 /*
- * POSIXSIGS	Use the POSIX signal facilities to emulate BSD signals.
- */
-#ifdef _SEQUENT_
-# define POSIXSIGS
-#else /* _SEQUENT_ */
-# undef POSIXSIGS
-#endif /* _SEQUENT_ */
-
-/*
  * VFORK	This machine has a vfork().  
  *		It used to be that for job control to work, this define
  *		was mandatory. This is not the case any more.
@@ -59,16 +50,9 @@
 #define BSDJOBS
 
 /*
- * BSDSIGS	You have 4.2-style signals, rather than USG style.
- *		Note: POSIX systems should not define this unless they
- *		have sigvec() and friends (ie: 4.3BSD-RENO, HP-UX).
- */
-#define BSDSIGS
-
-/*
  * BSDTIMES	You have BSD-style process time stuff (like rusage)
  *		This may or may not be true.  For example, Apple Unix
- *		(OREO) has BSDJOBS and BSDSIGS but not BSDTIMES.
+ *		(OREO) has BSDJOBS but not BSDTIMES.
  */
 #ifdef _SEQUENT_
 # undef BSDTIMES
@@ -83,16 +67,6 @@
 # undef BSDLIMIT
 #else /* _SEQUENT_ */
 # define BSDLIMIT
-#endif /* _SEQUENT_ */
-
-/*
- * BSDNICE	Your system uses setpriority() instead of nice, to
- *		change a processes scheduling priority
- */
-#ifdef _SEQUENT_
-# undef BSDNICE
-#else /* _SEQUENT_ */
-# define BSDNICE
 #endif /* _SEQUENT_ */
 
 /*
@@ -132,35 +106,6 @@
 #endif /* _SEQUENT_ */
   
 /*
- * SIGVOID	Define this if your signal handlers return void.  On older
- *		systems, signal returns int, but on newer ones, it returns void.
- */
-#ifdef _SEQUENT_
-# define SIGVOID 
-#else /* _SEQUENT_ */
-# undef SIGVOID 
-#endif /* _SEQUENT_ */
-
-/*
- * HAVEDUP2	Define this if your system supports dup2().
- */
-#define HAVEDUP2
-
-/*
- * UTHOST	Does the utmp file have a host field?
- */
-#define UTHOST
-
-/*
- * DIRENT	Your system has <dirent.h> instead of <sys/dir.h>
- */
-#ifdef _SEQUENT_
-#define DIRENT
-#else /* _SEQUENT_ */
-#undef DIRENT
-#endif /* _SEQUENT_ */
-
-/*
  * BSD	Your system has <strings.h> instead of <string.h>
  */
 #ifdef _SEQUENT_
@@ -170,14 +115,10 @@
 #endif /* _SEQUENT_ */
 
 /****************** local defines *********************/
-/****************** configurable hacks ****************/
-/* have been moved to config_f.h */
-#include "config_f.h"
 
 #ifdef _SEQUENT_
 #define NAMEI_BUG
 #else /* _SEQUENT_ */
-#undef NLS
 #undef NLS_CATALOGS
 #endif /* _SEQUENT_ */
 #endif /* _h_config */

@@ -1,6 +1,9 @@
+# $tcsh: Makefile,v 1.14 2006/03/02 18:46:45 christos Exp $
 
-SUBDIRS=	C german french italian ja greek spanish
-#GENCAT=	gencat -new
+SUBDIRS=	C et finnish french german greek italian ja pl russian \
+		spanish ukrainian
+#GENCAT=	gencat --new
+CHARSET=	charset
 GENCAT=		gencat
 
 catalogs:
@@ -8,7 +11,7 @@ catalogs:
 	do \
 	    echo "$$i"; \
 	    cd $$i; \
-	    cat set[0-9] set[0-9][0-9] > ../../tcsh.$$i.m; \
+	    cat ${CHARSET} set[0-9] set[0-9][0-9] > ../../tcsh.$$i.m; \
 	    cd ..; \
 	    ${GENCAT} ../tcsh.$$i.cat ../tcsh.$$i.m; \
 	done
