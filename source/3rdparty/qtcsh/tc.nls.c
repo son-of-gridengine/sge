@@ -1,6 +1,6 @@
-/* $Header: /p/tcsh/cvsroot/tcsh/tc.h,v 3.8 2006/01/12 19:55:38 christos Exp $ */
+/* $Header: /p/tcsh/cvsroot/tcsh/tc.nls.c,v 3.21 2006/09/26 16:45:30 christos Exp $ */
 /*
- * tc.h: Tcsh includes
+ * tc.nls.c: NLS handling
  */
 /*-
  * Copyright (c) 1980, 1991 The Regents of the University of California.
@@ -30,51 +30,90 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-#ifndef _h_tc
-#define _h_tc
+#include "sh.h"
 
-#ifndef _h_tc_const
-/* Don't include it while we are making it. */
-# include "tc.const.h"
-#endif /* _h_tc_const */
-#include "tc.os.h"
-#include "tc.sig.h"
-#include "tc.decls.h"
+RCSID("$tcsh: tc.nls.c,v 3.21 2006/09/26 16:45:30 christos Exp $")
 
-extern size_t tlength;
-
-#define FMT_PROMPT	0
-#define FMT_WHO		1
-#define FMT_HISTORY	2
-#define FMT_SCHED	3
-
-struct strbuf {
-    char *s;
-    size_t len;			/* Valid characters */
-    size_t size;		/* Allocated characters */
-};
-
-struct Strbuf {
-    Char *s;
-    size_t len;			/* Valid characters */
-    size_t size;		/* Allocated characters */
-};
-
-/* We don't have explicit initializers for variables with static storage
-   duration, so these values should be equivalent to default initialization. */
-#define strbuf_INIT { NULL, 0, 0 }
-#define Strbuf_INIT { NULL, 0, 0 }
-extern const struct strbuf strbuf_init;
-extern const struct Strbuf Strbuf_init;
-
-/* A string vector in progress */
-struct blk_buf
+#ifdef WIDE_STRINGS
+int
+NLSWidth(Char c)
 {
-    Char **vec;
-    size_t len;			/* Valid strings */
-    size_t size;		/* Allocated space for string pointers */
-};
+# ifdef HAVE_WCWIDTH
+    int l;
+    if (c & INVALID_BYTE)
+	return 1;
+    l = wcwidth(c);
+    return l >= 0 ? l : 0;
+# else
+    return iswprint(c) != 0;
+# endif
+}
 
-#define BLK_BUF_INIT { NULL, 0, 0 }
+int
+NLSStringWidth(const Char *s)
+{
+    int w = 0, l;
+    Char c;
 
-#endif /* _h_tc */
+    while (*s) {
+	c = *s++;
+#ifdef HAVE_WCWIDTH
+	if ((l = wcwidth(c)) < 0)
+		l = 2;
+#else
+	l = iswprint(c) != 0;
+#endif
+	w += l;
+    }
+    return w;
+}
+#endif
+
+Char *
+NLSChangeCase(const Char *p, int mode)
+{
+    Char c, *n, c2 = 0;
+    const Char *op = p;
+
+    for (; (c = *p) != 0; p++) {
+        if (mode == 0 && Islower(c)) {
+	    c2 = Toupper(c);
+	    break;
+        } else if (mode && Isupper(c)) {
+	    c2 = Tolower(c);
+	    break;
+	}
+    }
+    if (!*p)
+	return 0;
+    n = Strsave(op);
+    n[p - op] = c2;
+    return n;
+}
+
+int
+NLSClassify(Char c, int nocomb)
+{
+    int w;
+    if (c & INVALID_BYTE)
+	return NLSCLASS_ILLEGAL;
+    w = NLSWidth(c);
+    if ((w > 0 && !(Iscntrl(c) && (c & CHAR) < 0x100)) || (Isprint(c) && !nocomb))
+	return w;
+    if (Iscntrl(c) && (c & CHAR) < 0x100) {
+	if (c == '\n')
+	    return NLSCLASS_NL;
+	if (c == '\t')
+	    return NLSCLASS_TAB;
+	return NLSCLASS_CTRL;
+    }
+#ifdef WIDE_STRINGS
+    if (c >= 0x1000000)
+	return NLSCLASS_ILLEGAL4;
+    if (c >= 0x10000)
+	return NLSCLASS_ILLEGAL3;
+#endif
+    if (c >= 0x100)
+	return NLSCLASS_ILLEGAL2;
+    return NLSCLASS_ILLEGAL;
+}
