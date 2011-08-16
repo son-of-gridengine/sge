@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/ed.term.h,v 1.18 2007/07/05 14:13:06 christos Exp $ */
 /*
  * ed.term.h: Local terminal header
  */
@@ -13,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -453,9 +450,10 @@
 /*
  * fix for hpux10 inconsistency: it has VWERASE, but TIOCSLTC returns
  * EINVAL if one tries to change it
+ * Also for RH6.2 on the alpha, defined TIOCGLTC, but does not have
+ * struct ltchars
  */
-#if defined(hpux) && defined(VSUSP) && defined(VDSUSP) && defined(VWERASE) && d
-efined(VLNEXT)
+#if (defined(hpux) && defined(VSUSP) && defined(VDSUSP) && defined(VWERASE) && defined(VLNEXT)) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) || defined(__QNXNTO__)
 # undef TIOCGLTC       /* not really needed */
 # undef TIOCSLTC
 #endif
@@ -487,5 +485,38 @@ efined(VLNEXT)
 #define C_TIME		24
 #define C_NCC		25
 #define C_SH(A)		(1 << (A))
+
+/*
+ * Terminal dependend data structures
+ */
+typedef struct {
+#ifdef WINNT_NATIVE
+    int dummy;
+#else /* !WINNT_NATIVE */
+# if defined(POSIX) || defined(TERMIO)
+#  ifdef POSIX
+    struct termios d_t;
+#  else
+    struct termio d_t;
+#  endif /* POSIX */
+# else /* SGTTY */
+#  ifdef TIOCGETP
+    struct sgttyb d_t;
+#  endif /* TIOCGETP */
+#  ifdef TIOCGETC
+    struct tchars d_tc;
+#  endif /* TIOCGETC */
+#  ifdef TIOCGPAGE
+    struct ttypagestat d_pc;
+#  endif /* TIOCGPAGE */
+#  ifdef TIOCLGET
+    int d_lb;
+#  endif /* TIOCLGET */
+# endif /* POSIX || TERMIO */
+# ifdef TIOCGLTC
+    struct ltchars d_ltc;
+# endif /* TIOCGLTC */
+#endif /* WINNT_NATIVE */
+} ttydata_t;
 
 #endif /* _h_ed_term */

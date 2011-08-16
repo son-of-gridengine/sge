@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/ed.inputl.c,v 3.70 2009/06/25 21:15:37 christos Exp $ */
 /*
  * ed.inputl.c: Input line handling.
  */
@@ -13,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -35,36 +32,36 @@
  */
 #include "sh.h"
 
-RCSID("$Id: ed.inputl.c,v 1.1 2001-07-18 11:06:04 root Exp $")
+RCSID("$tcsh: ed.inputl.c,v 3.70 2009/06/25 21:15:37 christos Exp $")
 
 #include "ed.h"
 #include "ed.defns.h"		/* for the function names */
 #include "tw.h"			/* for twenex stuff */
 
-#define OKCMD (INBUFSIZE+INBUFSIZE)
+#define OKCMD INT_MAX
 
 /* ed.inputl -- routines to get a single line from the input. */
 
-extern bool tellwhat;
-extern bool MapsAreInited;
-extern bool Tty_raw_mode;
+extern int MapsAreInited;
 
 /* mismatched first character */
-static Char mismatch[] = 
-    {'!', '^' , '\\', '-', '%', '\0', '"', '\'', '`', '\0' };
+static Char mismatch[] = { '\\', '-', '%', '\0' };
+/* don't Strchr() for '\0', obey current history character settings */
+#define MISMATCH(c) ((c) == '\0' || (c) == HIST || (c) == HISTSUB || \
+			Strchr(mismatch, (c)))
 
-static	int	Repair		__P((void));
-static	int	GetNextCommand	__P((KEYCMD *, Char *));
-static	int	SpellLine	__P((int));
-static	int	CompleteLine	__P((void));
-static	void	RunCommand	__P((Char *));
-static  void 	doeval1		__P((Char **));
+static	int	Repair		(void);
+static	int	GetNextCommand	(KEYCMD *, Char *);
+static	int	SpellLine	(int);
+static	int	CompleteLine	(void);
+static	void	RunCommand	(Char *);
+static  void 	doeval1		(Char **);
 
-static bool rotate = 0;
+static int rotate = 0;
 
 
 static int
-Repair()
+Repair(void)
 {
     if (NeedsRedraw) {
 	ClearLines();
@@ -80,11 +77,10 @@ Repair()
 
 /* CCRETVAL */
 int
-Inputl()
+Inputl(void)
 {
     CCRETVAL retval;
     KEYCMD  cmdnum = 0;
-    extern KEYCMD NumFuns;
     unsigned char tch;		/* the place where read() goes */
     Char    ch;
     int     num;		/* how many chars we have read at NL */
@@ -94,12 +90,13 @@ Inputl()
     struct varent *matchbeep = adrof(STRmatchbeep);
     struct varent *imode = adrof(STRinputmode);
     Char   *SaveChar, *CorrChar;
-    Char    Origin[INBUFSIZE], Change[INBUFSIZE];
     int     matchval;		/* from tenematch() */
+    int     nr_history_exp;     /* number of (attempted) history expansions */
     COMMAND fn;
     int curlen = 0;
     int newlen;
     int idx;
+    Char *autoexpand;
 
     if (!MapsAreInited)		/* double extra just in case */
 	ed_InitMaps();
@@ -109,7 +106,7 @@ Inputl()
     if (GettingInput)
 	MacroLvl = -1;		/* editor was interrupted during input */
 
-    if (imode) {
+    if (imode && imode->vec != NULL) {
 	if (!Strcmp(*(imode->vec), STRinsert))
 	    inputmode = MODE_INSERT;
 	else if (!Strcmp(*(imode->vec), STRoverwrite))
@@ -138,13 +135,20 @@ Inputl()
 
     GettingInput = 1;
     NeedsRedraw = 0;
+    tellwhat = 0;
 
-    if (tellwhat) {
-	copyn(InputBuf, WhichBuf, INBUFSIZE);
-	LastChar = InputBuf + (LastWhich - WhichBuf);
-	Cursor = InputBuf + (CursWhich - WhichBuf);
-	tellwhat = 0;
-	Hist_num = HistWhich;
+    if (RestoreSaved) {
+	copyn(InputBuf, SavedBuf.s, INBUFSIZE);/*FIXBUF*/
+	LastChar = InputBuf + LastSaved;
+	Cursor = InputBuf + CursSaved;
+	Hist_num = HistSaved;
+	HistSaved = 0;
+	RestoreSaved = 0;
+    }
+    if (HistSaved) {
+	Hist_num = HistSaved;
+	GetHistLine();
+	HistSaved = 0;
     }
     if (Expand) {
 	(void) e_up_hist(0);
@@ -162,7 +166,7 @@ Inputl()
 	    xprintf("Cursor > InputLim\r\n");
 	if (LastChar > InputLim)
 	    xprintf("LastChar > InputLim\r\n");
-	if (InputLim != &InputBuf[INBUFSIZE - 2])
+	if (InputLim != &InputBuf[INBUFSIZE - 2])/*FIXBUF*/
 	    xprintf("InputLim != &InputBuf[INBUFSIZE-2]\r\n");
 	if ((!DoingArg) && (Argument != 1))
 	    xprintf("(!DoingArg) && (Argument != 1)\r\n");
@@ -215,12 +219,7 @@ Inputl()
 
 	case CC_WHICH:		/* tell what this command does */
 	    tellwhat = 1;
-	    copyn(WhichBuf, InputBuf, INBUFSIZE);
-	    LastWhich = WhichBuf + (LastChar - InputBuf);
-	    CursWhich = WhichBuf + (Cursor - InputBuf);
 	    *LastChar++ = '\n';	/* for the benifit of CSH */
-	    HistWhich = Hist_num;
-	    Hist_num = 0;	/* for the history commands */
 	    num = (int) (LastChar - InputBuf);	/* number characters read */
 	    break;
 
@@ -228,62 +227,75 @@ Inputl()
 	    curlen = 0;
 	    curchoice = -1;
 	    matchval = 1;
-	    if (crct && (!Strcmp(*(crct->vec), STRcmd) ||
+	    if (crct && crct->vec != NULL && (!Strcmp(*(crct->vec), STRcmd) ||
 			 !Strcmp(*(crct->vec), STRall))) {
+		Char *Origin;
+
                 PastBottom();
-		copyn(Origin, InputBuf, INBUFSIZE);
+		Origin = Strsave(InputBuf);
+		cleanup_push(Origin, xfree);
 		SaveChar = LastChar;
 		if (SpellLine(!Strcmp(*(crct->vec), STRcmd)) == 1) {
+		    Char *Change;
+
                     PastBottom();
-		    copyn(Change, InputBuf, INBUFSIZE);
+		    Change = Strsave(InputBuf);
+		    cleanup_push(Change, xfree);
 		    *Strchr(Change, '\n') = '\0';
 		    CorrChar = LastChar;	/* Save the corrected end */
 		    LastChar = InputBuf;	/* Null the current line */
 		    SoundBeep();
 		    printprompt(2, short2str(Change));
+		    cleanup_until(Change);
 		    Refresh();
-		    if (read(SHIN, (char *) &tch, 1) < 0)
+		    if (xread(SHIN, &tch, 1) < 0) {
 #ifdef convex
 		        /*
 			 * need to print error message in case file
 			 * is migrated
 			 */
-                        if (errno && errno != EINTR)
+                        if (errno)
                             stderror(ERR_SYSTEM, progname, strerror(errno));
 #else
+			cleanup_until(Origin);
 			break;
 #endif
+		    }
 		    ch = tch;
 		    if (ch == 'y' || ch == ' ') {
 			LastChar = CorrChar;	/* Restore the corrected end */
-			xprintf(CGETS(6, 2, "yes\n"));
+			xprintf("%s", CGETS(6, 2, "yes\n"));
 		    }
 		    else {
-			copyn(InputBuf, Origin, INBUFSIZE);
+			Strcpy(InputBuf, Origin);
 			LastChar = SaveChar;
 			if (ch == 'e') {
-			    xprintf(CGETS(6, 3, "edit\n"));
+			    xprintf("%s", CGETS(6, 3, "edit\n"));
 			    *LastChar-- = '\0';
 			    Cursor = LastChar;
 			    printprompt(3, NULL);
 			    ClearLines();
 			    ClearDisp();
 			    Refresh();
+			    cleanup_until(Origin);
 			    break;
 			}
 			else if (ch == 'a') {
-			    xprintf(CGETS(6, 4, "abort\n"));
+			    xprintf("%s", CGETS(6, 4, "abort\n"));
 		            LastChar = InputBuf;   /* Null the current line */
 			    Cursor = LastChar;
 			    printprompt(0, NULL);
 			    Refresh();
+			    cleanup_until(Origin);
 			    break;
 			}
-			xprintf(CGETS(6, 5, "no\n"));
+			xprintf("%s", CGETS(6, 5, "no\n"));
 		    }
 		    flush();
 		}
-	    } else if (crct && !Strcmp(*(crct->vec), STRcomplete)) {
+		cleanup_until(Origin);
+	    } else if (crct && crct->vec != NULL &&
+		!Strcmp(*(crct->vec), STRcomplete)) {
                 if (LastChar > InputBuf && LastChar[-1] == '\n') {
                     LastChar[-1] = '\0';
                     LastChar--;
@@ -297,9 +309,9 @@ Inputl()
                     PastBottom();
 		}
 		if (matchval == 0) {
-		    xprintf(CGETS(6, 6, "No matching command\n"));
+		    xprintf("%s", CGETS(6, 6, "No matching command\n"));
 		} else if (matchval == 2) {
-		    xprintf(CGETS(6, 7, "Ambiguous command\n"));
+		    xprintf("%s", CGETS(6, 7, "Ambiguous command\n"));
 		}
 	        if (NeedsRedraw) {
 		    ClearLines();
@@ -386,56 +398,73 @@ Inputl()
 	    curlen = (int) (LastChar - InputBuf);
 
 
-	    if (adrof(STRautoexpand))
-		(void) e_expand_history(0);
-	    /*
-	     * Modified by Martin Boyer (gamin@ireq-robot.hydro.qc.ca):
-	     * A separate variable now controls beeping after
-	     * completion, independently of autolisting.
-	     */
-	    expnum = (int) (Cursor - InputBuf);
-	    switch (matchval = tenematch(InputBuf, Cursor-InputBuf, fn)){
-	    case 1:
-		if (non_unique_match && matchbeep &&
-		    (Strcmp(*(matchbeep->vec), STRnotunique) == 0))
-		    SoundBeep();
-		break;
-	    case 0:
-		if (matchbeep) {
-		    if (Strcmp(*(matchbeep->vec), STRnomatch) == 0 ||
-			Strcmp(*(matchbeep->vec), STRambiguous) == 0 ||
-			Strcmp(*(matchbeep->vec), STRnotunique) == 0)
+	    nr_history_exp = 0;
+	    autoexpand = varval(STRautoexpand);
+	    if (autoexpand != STRNULL)
+		nr_history_exp += ExpandHistory();
+
+	    /* try normal expansion only if no history references were found */
+	    if (nr_history_exp == 0 ||
+		Strcmp(autoexpand, STRonlyhistory) != 0) {
+		/*
+		 * Modified by Martin Boyer (gamin@ireq-robot.hydro.qc.ca):
+		 * A separate variable now controls beeping after
+		 * completion, independently of autolisting.
+		 */
+		expnum = (int) (Cursor - InputBuf);
+		switch (matchval = tenematch(InputBuf, Cursor-InputBuf, fn)){
+		case 1:
+		    if (non_unique_match && matchbeep &&
+			matchbeep->vec != NULL &&
+			(Strcmp(*(matchbeep->vec), STRnotunique) == 0))
 			SoundBeep();
-		}
-		else
-		    SoundBeep();
-		break;
-	    default:
-		if (matchval < 0) {	/* Error from tenematch */
-		    curchoice = -1;
-		    SoundBeep();
+		    break;
+		case 0:
+		    if (matchbeep && matchbeep->vec != NULL) {
+			if (Strcmp(*(matchbeep->vec), STRnomatch) == 0 ||
+			    Strcmp(*(matchbeep->vec), STRambiguous) == 0 ||
+			    Strcmp(*(matchbeep->vec), STRnotunique) == 0)
+			    SoundBeep();
+		    }
+		    else
+			SoundBeep();
+		    break;
+		default:
+		    if (matchval < 0) {	/* Error from tenematch */
+			curchoice = -1;
+			SoundBeep();
+			break;
+		    }
+		    if (matchbeep && matchbeep->vec != NULL) {
+			if ((Strcmp(*(matchbeep->vec), STRambiguous) == 0 ||
+			     Strcmp(*(matchbeep->vec), STRnotunique) == 0))
+			    SoundBeep();
+		    }
+		    else
+			SoundBeep();
+		    /*
+		     * Addition by David C Lawrence <tale@pawl.rpi.edu>: If an 
+		     * attempted completion is ambiguous, list the choices.  
+		     * (PWP: this is the best feature addition to tcsh I have 
+		     * seen in many months.)
+		     */
+		    if (autol && autol->vec != NULL && 
+			(Strcmp(*(autol->vec), STRambiguous) != 0 || 
+					 expnum == Cursor - InputBuf)) {
+			if (adrof(STRhighlight) && MarkIsSet) {
+			    /* clear highlighting before showing completions */
+			    MarkIsSet = 0;
+			    ClearLines();
+			    ClearDisp();
+			    Refresh();
+			    MarkIsSet = 1;
+			}
+			PastBottom();
+			fn = (retval == CC_COMPLETE_ALL) ? LIST_ALL : LIST;
+			(void) tenematch(InputBuf, Cursor-InputBuf, fn);
+		    }
 		    break;
 		}
-		if (matchbeep) {
-		    if ((Strcmp(*(matchbeep->vec), STRambiguous) == 0 ||
-			 Strcmp(*(matchbeep->vec), STRnotunique) == 0))
-			SoundBeep();
-		}
-		else
-		    SoundBeep();
-		/*
-		 * Addition by David C Lawrence <tale@pawl.rpi.edu>: If an 
-		 * attempted completion is ambiguous, list the choices.  
-		 * (PWP: this is the best feature addition to tcsh I have 
-		 * seen in many months.)
-		 */
-		if (autol && (Strcmp(*(autol->vec), STRambiguous) != 0 || 
-				     expnum == Cursor - InputBuf)) {
-		    PastBottom();
-		    fn = (retval == CC_COMPLETE_ALL) ? LIST_ALL : LIST;
-		    (void) tenematch(InputBuf, Cursor-InputBuf, fn);
-		}
-		break;
 	    }
 	    if (NeedsRedraw) {
 		PastBottom();
@@ -530,6 +559,11 @@ Inputl()
 
 	case CC_ERROR:
 	default:		/* functions we don't know about */
+	    if (adrof(STRhighlight)) {
+		ClearLines();
+		ClearDisp();
+		Refresh();
+	    }
 	    DoingArg = 0;
 	    Argument = 1;
 	    SoundBeep();
@@ -546,8 +580,7 @@ Inputl()
 }
 
 void
-PushMacro(str)
-    Char   *str;
+PushMacro(Char *str)
 {
     if (str != NULL && MacroLvl + 1 < MAXMACROLEVELS) {
 	MacroLvl++;
@@ -559,72 +592,60 @@ PushMacro(str)
     }
 }
 
+struct eval1_state
+{
+    Char **evalvec, *evalp;
+};
+
+static void
+eval1_cleanup(void *xstate)
+{
+    struct eval1_state *state;
+
+    state = xstate;
+    evalvec = state->evalvec;
+    evalp = state->evalp;
+    doneinp = 0;
+}
+
 /*
  * Like eval, only using the current file descriptors
  */
-static Char **gv = NULL, **gav = NULL;
-
 static void
-doeval1(v)
-    Char **v;
+doeval1(Char **v)
 {
-    Char  **oevalvec;
-    Char   *oevalp;
-    int     my_reenter;
-    Char  **savegv;
-    jmp_buf_t osetexit;
+    struct eval1_state state;
+    Char  **gv;
+    int gflag;
 
-    oevalvec = evalvec;
-    oevalp = evalp;
-    savegv = gv;
-    gav = v;
-
-
-    gflag = 0, tglob(gav);
+    gflag = tglob(v);
     if (gflag) {
-	gv = gav = globall(gav);
-	gargv = 0;
-	if (gav == 0)
+	gv = v = globall(v, gflag);
+	if (v == 0)
 	    stderror(ERR_NOMATCH);
-	gav = copyblk(gav);
+	v = copyblk(v);
     }
     else {
 	gv = NULL;
-	gav = copyblk(gav);
-	trim(gav);
+	v = copyblk(v);
+	trim(v);
     }
-
-    getexit(osetexit);
-
-    /* PWP: setjmp/longjmp bugfix for optimizing compilers */
-#ifdef cray
-    my_reenter = 1;             /* assume non-zero return val */
-    if (setexit() == 0) {
-        my_reenter = 0;         /* Oh well, we were wrong */
-#else /* !cray */
-    if ((my_reenter = setexit()) == 0) {
-#endif /* cray */
-	evalvec = gav;
-	evalp = 0;
-	process(0);
-    }
-
-    evalvec = oevalvec;
-    evalp = oevalp;
-    doneinp = 0;
-
     if (gv)
-	blkfree(gv);
+	cleanup_push(gv, blk_cleanup);
 
-    gv = savegv;
-    resexit(osetexit);
-    if (my_reenter)
-	stderror(ERR_SILENT);
+    state.evalvec = evalvec;
+    state.evalp = evalp;
+    evalvec = v;
+    evalp = 0;
+    cleanup_push(&state, eval1_cleanup);
+    process(0);
+    cleanup_until(&state);
+    if (gv)
+	cleanup_until(gv);
 }
 
 static void
-RunCommand(str)
-    Char *str;
+RunCommand(Char *str)
 {
     Char *cmd[2];
 
@@ -637,7 +658,7 @@ RunCommand(str)
     GettingInput = 0;
 
     doeval1(cmd);
-    
+
     (void) Rawmode();
     GettingInput = 1;
 
@@ -648,9 +669,7 @@ RunCommand(str)
 }
 
 static int
-GetNextCommand(cmdnum, ch)
-    KEYCMD *cmdnum;
-    register Char *ch;
+GetNextCommand(KEYCMD *cmdnum, Char *ch)
 {
     KEYCMD  cmd = 0;
     int     num;
@@ -660,7 +679,13 @@ GetNextCommand(cmdnum, ch)
 	    return num;
 	}
 #ifdef	KANJI
-	if (!adrof(STRnokanji) && (*ch & META)) {
+	if (
+#ifdef DSPMBYTE
+	     _enable_mbdisp &&
+#else
+	     MB_LEN_MAX == 1 &&
+#endif
+	     !adrof(STRnokanji) && (*ch & META)) {
 	    MetaNext = 0;
 	    cmd = F_INSERT;
 	    break;
@@ -677,12 +702,16 @@ GetNextCommand(cmdnum, ch)
 	if (*ch < NT_NUM_KEYS)
 	    cmd = CurrentKeyMap[*ch];
 	else
+#ifdef WINNT_NATIVE
 	    cmd = CurrentKeyMap[(unsigned char) *ch];
+#else
+	    cmd = F_INSERT;
+#endif
 	if (cmd == F_XKEY) {
 	    XmapVal val;
 	    CStr cstr;
 	    cstr.buf = ch;
-	    cstr.len = Strlen(ch);
+	    cstr.len = 1;
 	    switch (GetXkey(&cstr, &val)) {
 	    case XK_CMD:
 		cmd = val.cmd;
@@ -705,14 +734,29 @@ GetNextCommand(cmdnum, ch)
     return OKCMD;
 }
 
-int
-GetNextChar(cp)
-    register Char *cp;
-{
-    register int num_read;
-    int     tried = 0;
-    unsigned char tcp;
+static Char ungetchar;
+static int haveungetchar;
 
+void
+UngetNextChar(Char cp)
+{
+    ungetchar = cp;
+    haveungetchar = 1;
+}
+
+int
+GetNextChar(Char *cp)
+{
+    int num_read;
+    int     tried = 0;
+    char cbuf[MB_LEN_MAX];
+    size_t cbp;
+
+    if (haveungetchar) {
+	haveungetchar = 0;
+	*cp = ungetchar;
+	return 1;
+    }
     for (;;) {
 	if (MacroLvl < 0) {
 	    if (!Load_input_line())
@@ -732,36 +776,50 @@ GetNextChar(cp)
     if (Rawmode() < 0)		/* make sure the tty is set up correctly */
 	return 0;		/* oops: SHIN was closed */
 
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     __nt_want_vcode = 1;
-#endif /* WINNT */
-    while ((num_read = read(SHIN, (char *) &tcp, 1)) == -1) {
-	if (errno == EINTR)
-	    continue;
-	if (!tried && fixio(SHIN, errno) != -1)
-	    tried = 1;
-	else {
-#ifdef convex
-            /* need to print error message in case the file is migrated */
-            if (errno != EINTR)
-                stderror(ERR_SYSTEM, progname, strerror(errno));
-#endif  /* convex */
-#ifdef WINNT
-	    __nt_want_vcode = 0;
-#endif /* WINNT */
-	    *cp = '\0';
-	    return -1;
+#endif /* WINNT_NATIVE */
+#ifdef SIG_WINDOW
+    if (windowchg)
+	(void) check_window_size(0);	/* for window systems */
+#endif /* SIG_WINDOW */
+    cbp = 0;
+    for (;;) {
+	while ((num_read = xread(SHIN, cbuf + cbp, 1)) == -1) {
+	    if (!tried && fixio(SHIN, errno) != -1)
+		tried = 1;
+	    else {
+# ifdef convex
+		/* need to print error message in case the file is migrated */
+		stderror(ERR_SYSTEM, progname, strerror(errno));
+# endif  /* convex */
+# ifdef WINNT_NATIVE
+		__nt_want_vcode = 0;
+# endif /* WINNT_NATIVE */
+		*cp = '\0'; /* Loses possible partial character */
+		return -1;
+	    }
 	}
+	if (AsciiOnly) {
+	    *cp = (unsigned char)*cbuf;
+	} else {
+	    cbp++;
+	    if (normal_mbtowc(cp, cbuf, cbp) == -1) {
+		reset_mbtowc();
+		if (cbp < MB_CUR_MAX)
+		    continue; /* Maybe a partial character */
+		/* And drop the following bytes, if any */
+		*cp = (unsigned char)*cbuf | INVALID_BYTE;
+	    }
+	}
+	break;
     }
-#ifdef WINNT
+#ifdef WINNT_NATIVE
+    /* This is the part that doesn't work with WIDE_STRINGS */
     if (__nt_want_vcode == 2)
 	*cp = __nt_vcode;
-    else
-	*cp = tcp;
     __nt_want_vcode = 0;
-#else
-    *cp = tcp;
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
     return num_read;
 }
 
@@ -775,8 +833,7 @@ GetNextChar(cp)
  *  1: Something was corrected
  */
 static int
-SpellLine(cmdonly)
-    int     cmdonly;
+SpellLine(int cmdonly)
 {
     int     endflag, matchval;
     Char   *argptr, *OldCursor, *OldLastChar;
@@ -800,17 +857,14 @@ SpellLine(cmdonly)
 		Cursor--;
 	    endflag = 0;
 	}
-	/* Obey current history character settings */
-	mismatch[0] = HIST;
-	mismatch[1] = HISTSUB;
-	if (!Strchr(mismatch, *argptr) &&
+	if (!MISMATCH(*argptr) &&
 	    (!cmdonly || starting_a_command(argptr, InputBuf))) {
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 	    /*
 	     * This hack avoids correcting drive letter changes
 	     */
 	    if((Cursor - InputBuf) != 2 || (char)InputBuf[1] != ':')
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 	    {
 #ifdef HASH_SPELL_CHECK
 		Char save;
@@ -858,7 +912,7 @@ SpellLine(cmdonly)
  *  2: Several commands matched
  */
 static int
-CompleteLine()
+CompleteLine(void)
 {
     int     endflag, tmatch;
     Char   *argptr, *OldCursor, *OldLastChar;
@@ -881,7 +935,7 @@ CompleteLine()
 		Cursor--;
 	    endflag = 0;
 	}
-	if (!Strchr(mismatch, *argptr) && starting_a_command(argptr, InputBuf)) {
+	if (!MISMATCH(*argptr) && starting_a_command(argptr, InputBuf)) {
 	    tmatch = tenematch(InputBuf, Cursor - InputBuf, RECOGNIZE);
 	    if (tmatch <= 0) {
                 return 0;
