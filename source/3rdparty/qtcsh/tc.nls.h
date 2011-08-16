@@ -1,6 +1,7 @@
-/* $Header: /p/tcsh/cvsroot/tcsh/tc.h,v 3.8 2006/01/12 19:55:38 christos Exp $ */
+/* $Header: /p/tcsh/cvsroot/tcsh/tc.nls.h,v 3.13 2006/02/14 14:07:36 christos Exp $ */
 /*
- * tc.h: Tcsh includes
+ * tc.nls.h: NLS support
+ *
  */
 /*-
  * Copyright (c) 1980, 1991 The Regents of the University of California.
@@ -30,51 +31,30 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-#ifndef _h_tc
-#define _h_tc
+#ifndef _h_tc_nls
+#define _h_tc_nls
 
-#ifndef _h_tc_const
-/* Don't include it while we are making it. */
-# include "tc.const.h"
-#endif /* _h_tc_const */
-#include "tc.os.h"
-#include "tc.sig.h"
-#include "tc.decls.h"
+#include "sh.h"
 
-extern size_t tlength;
+#ifdef WIDE_STRINGS
+extern int NLSWidth(Char);
+extern int NLSStringWidth (const Char *);
+#else
+# define NLSStringWidth(s) Strlen(s)
+# define NLSWidth(c) 1
+#endif
 
-#define FMT_PROMPT	0
-#define FMT_WHO		1
-#define FMT_HISTORY	2
-#define FMT_SCHED	3
+extern Char *NLSChangeCase (const Char *, int);
+extern int NLSClassify (Char, int);
 
-struct strbuf {
-    char *s;
-    size_t len;			/* Valid characters */
-    size_t size;		/* Allocated characters */
-};
+#define NLSCLASS_CTRL		(-1)
+#define NLSCLASS_TAB		(-2)
+#define NLSCLASS_NL		(-3)
+#define NLSCLASS_ILLEGAL	(-4)
+#define NLSCLASS_ILLEGAL2	(-5)
+#define NLSCLASS_ILLEGAL3	(-6)
+#define NLSCLASS_ILLEGAL4	(-7)
 
-struct Strbuf {
-    Char *s;
-    size_t len;			/* Valid characters */
-    size_t size;		/* Allocated characters */
-};
+#define NLSCLASS_ILLEGAL_SIZE(x) (-(x) - (-(NLSCLASS_ILLEGAL) - 1))
 
-/* We don't have explicit initializers for variables with static storage
-   duration, so these values should be equivalent to default initialization. */
-#define strbuf_INIT { NULL, 0, 0 }
-#define Strbuf_INIT { NULL, 0, 0 }
-extern const struct strbuf strbuf_init;
-extern const struct Strbuf Strbuf_init;
-
-/* A string vector in progress */
-struct blk_buf
-{
-    Char **vec;
-    size_t len;			/* Valid strings */
-    size_t size;		/* Allocated space for string pointers */
-};
-
-#define BLK_BUF_INIT { NULL, 0, 0 }
-
-#endif /* _h_tc */
+#endif

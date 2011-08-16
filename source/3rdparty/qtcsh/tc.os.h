@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/tc.os.h,v 3.102 2007/07/05 14:13:06 christos Exp $ */
 /*
  * tc.os.h: Shell os dependent defines
  */
@@ -13,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,11 +33,6 @@
 #ifndef _h_tc_os
 #define _h_tc_os
 
-#ifndef WINNT
-#define NEEDstrerror		/* Too hard to find which systems have it */
-#endif /* WINNT */
-
-
 #ifdef notdef 
 /*
  * for SVR4 and linux we used to fork pipelines backwards. 
@@ -49,6 +41,11 @@
  */
 # define BACKPIPE
 #endif /* notdef */
+
+#ifdef __CYGWIN__
+#  undef NOFILE
+#  define NOFILE sysconf(_SC_OPEN_MAX)
+#endif
 
 #ifdef INTERIX
 #  undef NEEDstrerror
@@ -59,8 +56,6 @@
 #  define  NOFILE 64
 # endif /* NOFILE */
 # define  nice(a)       setprio((getpid()),a)
-# undef   NEEDstrerror    /* won't get sensible error messages otherwise */
-# define  NEEDgethostname 
 # include <sys/time.h>    /* for time stuff in tc.prompt.c */
 # include <limits.h>
 #endif /* atp vmsposix */
@@ -85,17 +80,6 @@
 # define NOFILE 256
 #endif /* NOFILE */
 
-#if defined(INTERIX) || defined(linux) || defined(__NetBSD__) || defined(__FreeBSD__) || SYSVREL >= 4 
-# undef NEEDstrerror
-#endif /* linux || __NetBSD__ || __FreeBSD__ || SYSVREL >= 4 */
-
-#if !defined(pyr) && !defined(sinix)
-/* Pyramid's cpp complains about the next line */
-# if defined(BSD) && BSD >= 199306
-#  undef NEEDstrerror
-# endif /* BSD && BSD >= 199306 */
-#endif /* pyr */
-
 #ifdef OREO
 # include <sys/time.h>
 # ifdef notdef
@@ -108,21 +92,12 @@
 # endif /* POSIX */
 #endif /* OREO */
 
-#ifndef NCARGS
-# ifdef _SC_ARG_MAX
-#  define NCARGS sysconf(_SC_ARG_MAX)
-# else /* !_SC_ARG_MAX */
-#  ifdef ARG_MAX
-#   define NCARGS ARG_MAX
-#  else /* !ARG_MAX */
-#   ifdef _MINIX
-#    define NCARGS 80
-#   else /* !_MINIX */
-#    define NCARGS 1024
-#   endif /* _MINIX */
-#  endif /* ARG_MAX */
-# endif /* _SC_ARG_MAX */
-#endif /* NCARGS */
+#ifdef __QNXNTO__
+#include <sys/resource.h>
+#include <fcntl.h>
+#undef O_TEXT
+#undef O_BINARY
+#endif
 
 #ifdef convex
 # include <sys/dmon.h>
@@ -160,12 +135,9 @@ struct ucred {
 #  include <sys/bsdtty.h>
 # endif /* !hp9000s500 && !(SIGRTMAX || SIGRTMIN) */
 
-# ifndef POSIX
-#  ifdef BSDJOBS
-#   define getpgrp(a) getpgrp2(a)
-#   define setpgrp(a, b) setpgrp2(a, b)
-#  endif /* BSDJOBS */
-# endif	/* POSIX */
+# ifndef TIOCSTI
+#  include <sys/strtio.h>
+# endif
 #endif /* hpux */
 
 /*
@@ -193,10 +165,10 @@ struct ucred {
  * #if (SYSVREL > 0) && defined(TIOCGWINSZ)
  * If that breaks on your machine, let me know.
  *
- * It would break on linux, where all this is
+ * It would break on glibc, where all this is
  * defined in <termios.h>. Wrapper added.
  */
-#if !defined(linux) && !defined(_VMS_POSIX)
+#if !defined(linux) && !defined(__GNU__) && !defined(__GLIBC__) && !defined(_VMS_POSIX)
 # if defined(INTEL) || defined(u3b2) || defined (u3b5) || defined(ub15) || defined(u3b20d) || defined(ISC) || defined(SCO) || defined(tower32)
 #  ifdef TIOCGWINSZ
 /*
@@ -205,26 +177,12 @@ struct ucred {
 #   include <sys/stream.h>
 #   include <sys/ptem.h>
 #  endif /* TIOCGWINSZ */
-#  ifndef ODT
-#   define NEEDgethostname
-#  endif /* ODT */
 # endif /* INTEL || u3b2 || u3b5 || ub15 || u3b20d || ISC || SCO || tower32 */
-#endif /* !linux && !_VMS_POSIX */
-
-#if defined(UNIXPC) || defined(COHERENT)
-# define NEEDgethostname
-#endif /* UNIXPC || COHERENT */
+#endif /* !glibc && !_VMS_POSIX */
 
 #ifdef IRIS4D
 # include <sys/time.h>
 # include <sys/resource.h>
-# ifndef POSIX
-/*
- * BSDsetpgrp() and BSDgetpgrp() are BSD versions of setpgrp, etc.
- */
-#  define setpgrp BSDsetpgrp
-#  define getpgrp BSDgetpgrp
-# endif /* POSIX */
 #endif /* IRIS4D */
 
 /*
@@ -236,9 +194,12 @@ struct ucred {
  *
  * From: scott@craycos.com (Scott Bolte)
  */
-#ifndef WINNT
+#ifndef WINNT_NATIVE
 # ifdef F_SETFD
-#  define close_on_exec(fd, v) fcntl((fd), F_SETFD, v)
+#  ifndef FD_CLOEXEC
+#   define FD_CLOEXEC 1
+#  endif
+#  define close_on_exec(fd, v) fcntl((fd), F_SETFD, ((v) ? FD_CLOEXEC : 0))
 # else /* !F_SETFD */
 #  ifdef FIOCLEX
 #   define close_on_exec(fd, v) ioctl((fd), ((v) ? FIOCLEX : FIONCLEX), NULL)
@@ -246,9 +207,9 @@ struct ucred {
 #   define close_on_exec(fd, v)	/* Nothing */
 #  endif /* FIOCLEX */
 # endif /* F_SETFD */
-#else /* WINNT */
+#else /* WINNT_NATIVE */
 # define close_on_exec(fd, v) nt_close_on_exec((fd),(v))
-#endif /* !WINNT */
+#endif /* !WINNT_NATIVE */
 
 /*
  * Stat
@@ -269,19 +230,7 @@ struct ucred {
 # endif /* S_IFMT */
 #endif /* ISC */
 
-#if defined(uts) || defined(UTekV) || defined(sysV88)
-/*
- * The uts 2.1.2 macros (Amdahl) are busted!
- * You should fix <sys/stat.h>, cause other programs will break too!
- *
- * From: creiman@ncsa.uiuc.edu (Charlie Reiman)
- */
-
-/*
- * The same applies to Motorola MPC (System V/88 R32V2, UTekV 3.2e) 
- * workstations, the stat macros are broken.
- * Kaveh Ghazi (ghazi@caip.rutgers.edu)
- */
+#ifdef STAT_MACROS_BROKEN
 # undef S_ISDIR
 # undef S_ISCHR
 # undef S_ISBLK
@@ -290,7 +239,7 @@ struct ucred {
 # undef S_ISNAM
 # undef S_ISLNK
 # undef S_ISSOCK
-#endif /* uts || UTekV || sysV88 */
+#endif /* STAT_MACROS_BROKEN */
 
 #ifdef S_IFMT
 # if !defined(S_ISDIR) && defined(S_IFDIR)
@@ -442,18 +391,11 @@ struct ucred {
 # endif /* SEEK_END */
 #endif /* L_XTND */
 
-#ifdef _SEQUENT_
-# define NEEDgethostname
-#endif /* _SEQUENT_ */
-
-#if defined(BSD) && defined(POSIXJOBS) && !defined(BSD4_4) && !defined(__hp_osf)
+#if !defined (HAVE_SETPGID) && !defined (SETPGRP_VOID)
 # define setpgid(pid, pgrp)	setpgrp(pid, pgrp)
-#endif /* BSD && POSIXJOBS && && !BSD4_4 && !__hp_osf */
+#endif
 
 #if defined(BSDJOBS) && !(defined(POSIX) && defined(POSIXJOBS))
-# if !defined(_AIX370) && !defined(_AIXPS2)
-#  define setpgid(pid, pgrp)	setpgrp(pid, pgrp)
-# endif /* !_AIX370 && !_AIXPS2 */
 # define NEEDtcgetpgrp
 #endif /* BSDJOBS && !(POSIX && POSIXJOBS) */
 
@@ -463,11 +405,6 @@ struct ucred {
  */
 # define NEEDtcgetpgrp
 #endif /* RENO */
-
-#ifdef DGUX
-# define setpgrp(a, b) setpgrp2(a, b)
-# define getpgrp(a) getpgrp2(a)
-#endif /* DGUX */
 
 #ifdef SXA
 # ifndef _BSDX_
@@ -480,8 +417,6 @@ struct ucred {
 #endif /* SXA */
 
 #if defined(_MINIX) || defined(__EMX__)
-# define NEEDgethostname
-# define NEEDnice
 # define HAVENOLIMIT
 /*
  * Minix does not have these, so...
@@ -493,23 +428,6 @@ struct ucred {
 /* XXX: How can we get the tty name in emx? */
 # define ttyname(fd) (isatty(fd) ? "/dev/tty" : NULL)
 #endif /* __EMX__ */
-
-#ifndef POSIX
-# define mygetpgrp()    getpgrp(0)
-#else /* POSIX */
-# if (defined(BSD) && !defined(BSD4_4)) || defined(SUNOS4) || defined(IRIS4D) || defined(DGUX) || defined(HPRT)
-#  define mygetpgrp()    getpgrp(0)
-# else /* !((BSD && !BSD4_4) || SUNOS4 || IRIS4D || DGUX || HPRT) */
-#  define mygetpgrp()    getpgrp()
-# endif	/* (BSD && BSD4_4) || SUNOS4 || IRISD || DGUX  || HPRT */
-#endif /* POSIX */
-
-
-#if !defined(SOLARIS2) && !defined(sinix) && !defined(BSD4_4) && !defined(WINNT)
-# if (SYSVREL > 0 && !defined(OREO) && !defined(sgi) && !defined(linux) && !defined(sinix) && !defined(_AIX) &&!defined(_UWIN)) || defined(NeXT)
-#  define NEEDgetcwd
-# endif /* (SYSVREL > 0 && !OREO && !sgi && !linux && !sinix && !_AIX && !_UWIN) || NeXT */
-#endif
 
 #ifndef S_IFLNK
 # define lstat stat
@@ -530,11 +448,15 @@ typedef struct timeval timeval_t;
 # define free tcsh_free
 #endif /* NeXT */
 
-#if !defined(_AIX) && !defined(BSD4_4) && !defined(__linux__) && !defined(__hpux) && !defined(sgi) && !defined(INTERIX)
-#ifndef NEEDgethostname
-extern int gethostname __P((char *, int));
-#endif /* NEEDgethostname */
-#endif /* !BDS4_4 && !__linux__ && !__hpux && !sgi */
+#if defined(HAVE_GETHOSTNAME) && !HAVE_DECL_GETHOSTNAME
+extern int gethostname (char *, int);
+#endif
+
+#ifndef GETPGRP_VOID
+# define mygetpgrp()    getpgrp(0)
+#else
+# define mygetpgrp()    getpgrp()
+#endif
 
 #if !defined(POSIX) || defined(SUNOS4) || defined(UTekV) || defined(sysV88)
 extern time_t time();
@@ -544,59 +466,26 @@ extern int atoi();
 extern char *ttyname();
 # endif /* __EMX__ */
 
+
 # if defined(SUNOS4)
 #  ifndef toupper
-extern int toupper __P((int));
+extern int toupper (int);
 #  endif /* toupper */
 #  ifndef tolower
-extern int tolower __P((int));
+extern int tolower (int);
 #  endif /* tolower */
-extern caddr_t sbrk __P((int));
-#  if SYSVREL == 0 && !defined(__lucid)
-extern int qsort();
-#  endif /* SYSVREL == 0 && !__lucid */
+extern caddr_t sbrk (int);
 # else /* !SUNOS4 */
-#  ifndef WINNT
-#   ifndef hpux
-#    if __GNUC__ != 2
-extern int abort();
-#    endif /* __GNUC__ != 2 */
-#    ifndef fps500
-extern int qsort();
-#    endif /* !fps500 */
-#   else /* !hpux */
+#  ifndef WINNT_NATIVE
+#   ifdef hpux
 extern void abort();
 extern void qsort();
 #   endif /* hpux */
-#  endif /* !WINNT */
+#  endif /* !WINNT_NATIVE */
 # endif	/* SUNOS4 */
 #ifndef _CX_UX
 extern void perror();
 #endif
-
-# ifdef BSDSIGS
-#  if defined(_AIX370) || defined(MACH) || defined(NeXT) || defined(_AIXPS2) || defined(ardent) || defined(SUNOS4) || defined(HPBSD) || defined(__MACHTEN__)
-extern int sigvec();
-extern int sigpause();
-#  else	/* !(_AIX370 || MACH || NeXT || _AIXPS2 || ardent || SUNOS4 || HPBSD) */
-#   if (!defined(apollo) || !defined(__STDC__)) && !defined(__DGUX__) && !defined(fps500)
-extern sigret_t sigvec();
-#ifndef _CX_UX
-extern void sigpause();
-#endif /* _CX_UX */
-#   endif /* (!apollo || !__STDC__) && !__DGUX__ && !fps500 */
-#  endif /* _AIX370 || MACH || NeXT || _AIXPS2 || ardent || SUNOS4 || HPBSD */
-extern sigmask_t sigblock();
-extern sigmask_t sigsetmask();
-# endif	/* BSDSIGS */
-
-# ifndef killpg
-extern int killpg();
-# endif	/* killpg */
-
-# ifndef lstat
-extern int lstat();
-# endif	/* lstat */
 
 # ifdef BSD
 extern uid_t getuid(), geteuid();
@@ -610,46 +499,13 @@ extern memalign_t calloc();
 extern void free();
 # endif	/* SYSMALLOC */
 
-# ifdef BSDTIMES
-extern int getrlimit();
-extern int setrlimit();
-extern int getrusage();
-extern int gettimeofday();
-# endif	/* BSDTIMES */
-
-# if defined(NLS) && !defined(NOSTRCOLL) && !defined(NeXT)
-extern int strcoll();
-# endif /* NLS && !NOSTRCOLL && !NeXT */
-
 # ifdef BSDJOBS
 #  ifdef BSDTIMES
 #   ifdef __MACHTEN__
 extern pid_t wait3();
-#   else
-#   ifndef HPBSD
-extern int wait3();
-#   endif /* HPBSD */
 #   endif /* __MACHTEN__ */
-#  else	/* !BSDTIMES */
-#   if !defined(POSIXJOBS) && !defined(_SEQUENT_)
-extern int wait3();
-#   else /* POSIXJOBS || _SEQUENT_ */
-extern int waitpid();
-#   endif /* POSIXJOBS || _SEQUENT_ */
 #  endif /* BSDTIMES */
-# else /* !BSDJOBS */
-#  if SYSVREL < 3
-extern int ourwait();
-#  else	/* SYSVREL >= 3 */
-extern int wait();
-#  endif /* SYSVREL < 3 */
 # endif	/* BSDJOBS */
-
-# ifdef BSDNICE
-extern int setpriority();
-# else /* !BSDNICE */
-extern int nice();
-# endif	/* BSDNICE */
 
 # if (!defined(fps500) && !defined(apollo) && !defined(__lucid) && !defined(HPBSD) && !defined(DECOSF1))
 extern void setpwent();
@@ -658,12 +514,12 @@ extern void endpwent();
 
 # ifndef __STDC__
 extern struct passwd *getpwuid(), *getpwnam(), *getpwent();
-#  ifdef PW_SHADOW
+#  ifdef HAVE_SHADOW_H
 extern struct spwd *getspnam(), *getspent();
-#  endif /* PW_SHADOW */
-#  ifdef PW_AUTH
+#  endif /* HAVE_SHADOW_H */
+#  if defined(HAVE_AUTH_H) && defined(HAVE_GETAUTHUID)
 extern struct authorization *getauthuid();
-#  endif /* PW_AUTH */
+#  endif /* HAVE_AUTH_H && HAVE_GETAUTHUID */
 # endif /* __STDC__ */
 
 # ifndef getcwd
@@ -690,68 +546,63 @@ extern char *ttyname();
 /*
  * Somehow these are missing
  */
-extern int ioctl __P((int, int, ...));
-extern int readlink __P((const char *, char *, size_t));
-extern void setgrent __P((void));
-extern void endgrent __P((void));
+extern int ioctl (int, int, ...);
+extern int readlink (const char *, char *, size_t);
+extern void setgrent (void);
+extern void endgrent (void);
 # ifdef REMOTEHOST
 #  ifndef _SOCKLEN_T	/* Avoid Solaris 2.7 bogosity. */
 struct sockaddr;
-extern int getpeername __P((int, struct sockaddr *, int *));
+extern int getpeername (int, struct sockaddr *, int *);
 #  endif /* _SOCKLEN_T */
 # endif /* REMOTEHOST */
 #endif /* SUNOS4 && __GNUC__ == 2 */
 
 #if (defined(BSD) && !defined(BSD4_4)) || defined(SUNOS4) 
 # if defined(__alpha) && defined(__osf__) && DECOSF1 < 200
-extern void bcopy	__P((const void *, void *, size_t));
+extern void bcopy	(const void *, void *, size_t);
 #  define memmove(a, b, c) (bcopy((char *) (b), (char *) (a), (int) (c)), a)
 # endif /* __alpha && __osf__ && DECOSF1 < 200 */
 #endif /* (BSD && !BSD4_4) || SUNOS4 */
 
-#if !defined(hpux) && !defined(COHERENT) && ((SYSVREL < 4) || defined(_SEQUENT_)) && !defined(BSD4_4) && !defined(memmove)
-# define NEEDmemmove
-#endif /* !hpux && !COHERENT && (SYSVREL < 4 || _SEQUENT_) && !BSD4_4 && !memmove */
-
-#if defined(UTek) || defined(pyr)
-# define NEEDmemset
-#else /* !UTek && !pyr */
-# ifdef SUNOS4
-#  include <memory.h>	/* memset should be declared in <string.h> but isn't */
-# endif /* SUNOS4 */
-#endif /* UTek || pyr */
+#ifdef SUNOS4
+# include <memory.h>	/* memset should be declared in <string.h> but isn't */
+#endif /* SUNOS4 */
 
 #if SYSVREL == 4
 # ifdef REMOTEHOST
 /* Irix6 defines getpeername(int, void *, int *) which conflicts with
    the definition below. */
-#  if !defined(__sgi) && !defined(_OSD_POSIX)
+#  if !defined(__sgi) && !defined(_OSD_POSIX) && !defined(__MVS__)
 #   ifndef _SOCKLEN_T	/* Avoid Solaris 2.7 bogosity. */
 struct sockaddr;
-extern int getpeername __P((int, struct sockaddr *, int *));
+extern int getpeername (int, struct sockaddr *, int *);
 #   endif /* _SOCKLEN_T */
-#  endif /* !__sgi && !_OSD_POSIX */
+#  endif /* !__sgi && !_OSD_POSIX && !__MVS__ */
 # endif /* REMOTEHOST */
 # ifndef BSDTIMES
-extern int getrlimit __P((int, struct rlimit *));
-extern int setrlimit __P((int, const struct rlimit *));
+extern int getrlimit (int, struct rlimit *);
+extern int setrlimit (int, const struct rlimit *);
 # endif /* !BSDTIMES */
-# if !defined(IRIS4D) && !defined(SOLARIS2)
-extern int wait3();	/* I think some bizarre systems still need this */
-# endif /* !IRIS4D && !SOLARIS2 */
 # if defined(SOLARIS2)
-#  undef NEEDstrerror
-extern char *strerror __P((int));
+extern char *strerror (int);
 # endif /* SOLARIS2 */
 #endif /* SYSVREL == 4 */
 
 #if defined(__alpha) && defined(__osf__) && DECOSF1 < 200
 /* These are ok for 1.3, but conflict with the header files for 2.0 */
-extern int gethostname __P((char *, int));
-extern char *sbrk __P((ssize_t));
-extern int ioctl __P((int, unsigned long, char *));
-extern pid_t vfork __P((void));
-extern int killpg __P((pid_t, int));
+extern char *sbrk (ssize_t);
+extern int ioctl (int, unsigned long, char *);
+extern pid_t vfork (void);
+extern int killpg (pid_t, int);
 #endif /* __osf__ && __alpha && DECOSF1 < 200 */
+
+#ifndef va_copy
+# ifdef __va_copy
+#  define va_copy(DEST, SRC) __va_copy(DEST, SRC)
+# else
+#  define va_copy(DEST, SRC) memcpy(&(DEST), &(SRC), sizeof(va_list))
+# endif
+#endif
 
 #endif /* _h_tc_os */
