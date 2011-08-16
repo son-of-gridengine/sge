@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/tc.str.c,v 3.30 2009/06/25 21:27:38 christos Exp $ */
 /*
  * tc.str.c: Short string package
  * 	     This has been a lesson of how to write buggy code!
@@ -14,11 +15,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -36,24 +33,77 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.str.c,v 1.1 2001-07-18 11:06:05 root Exp $")
+#include <limits.h>
+
+RCSID("$tcsh: tc.str.c,v 3.30 2009/06/25 21:27:38 christos Exp $")
 
 #define MALLOC_INCR	128
+#ifdef WIDE_STRINGS
+#define MALLOC_SURPLUS	MB_LEN_MAX /* Space for one multibyte character */
+#else
+#define MALLOC_SURPLUS	0
+#endif
+
+#ifdef WIDE_STRINGS
+size_t
+one_mbtowc(wchar_t *pwc, const char *s, size_t n)
+{
+    int len;
+
+    len = rt_mbtowc(pwc, s, n);
+    if (len == -1) {
+        reset_mbtowc();
+	*pwc = (unsigned char)*s | INVALID_BYTE;
+    }
+    if (len <= 0)
+	len = 1;
+    return len;
+}
+
+size_t
+one_wctomb(char *s, wchar_t wchar)
+{
+    int len;
+
+    if (wchar & INVALID_BYTE) {
+	s[0] = wchar & 0xFF;
+	len = 1;
+    } else {
+	len = wctomb(s, wchar);
+	if (len == -1)
+	    s[0] = wchar;
+	if (len <= 0)
+	    len = 1;
+    }
+    return len;
+}
+
+int
+rt_mbtowc(wchar_t *pwc, const char *s, size_t n)
+{
+    int ret;
+    char back[MB_LEN_MAX];
+
+    ret = mbtowc(pwc, s, n);
+    if (ret > 0 && (wctomb(back, *pwc) != ret || memcmp(s, back, ret) != 0))
+	ret = -1;
+    return ret;
+}
+#endif
 
 #ifdef SHORT_STRINGS
 Char  **
-blk2short(src)
-    register char **src;
+blk2short(char **src)
 {
     size_t     n;
-    register Char **sdst, **dst;
+    Char **sdst, **dst;
 
     /*
      * Count
      */
     for (n = 0; src[n] != NULL; n++)
 	continue;
-    sdst = dst = (Char **) xmalloc((size_t) ((n + 1) * sizeof(Char *)));
+    sdst = dst = xmalloc((n + 1) * sizeof(Char *));
 
     for (; *src != NULL; src++)
 	*dst++ = SAVE(*src);
@@ -62,18 +112,17 @@ blk2short(src)
 }
 
 char  **
-short2blk(src)
-    register Char **src;
+short2blk(Char **src)
 {
     size_t     n;
-    register char **sdst, **dst;
+    char **sdst, **dst;
 
     /*
      * Count
      */
     for (n = 0; src[n] != NULL; n++)
 	continue;
-    sdst = dst = (char **) xmalloc((size_t) ((n + 1) * sizeof(char *)));
+    sdst = dst = xmalloc((n + 1) * sizeof(char *));
 
     for (; *src != NULL; src++)
 	*dst++ = strsave(short2str(*src));
@@ -82,74 +131,66 @@ short2blk(src)
 }
 
 Char   *
-str2short(src)
-    register const char *src;
+str2short(const char *src)
 {
-    static Char *sdst;
-    static size_t dstsize = 0;
-    register Char *dst, *edst;
+    static struct Strbuf buf; /* = Strbuf_INIT; */
 
     if (src == NULL)
 	return (NULL);
 
-    if (sdst == (NULL)) {
-	dstsize = MALLOC_INCR;
-	sdst = (Char *) xmalloc((size_t) (dstsize * sizeof(Char)));
-    }
+    buf.len = 0;
+    while (*src) {
+	Char wc;
 
-    dst = sdst;
-    edst = &dst[dstsize];
-    while ((unsigned char) *src) {
-	*dst++ = (Char) ((unsigned char) *src++);
-	if (dst == edst) {
-	    dstsize += MALLOC_INCR;
-	    sdst = (Char *) xrealloc((ptr_t) sdst,
-				     (size_t) (dstsize * sizeof(Char)));
-	    edst = &sdst[dstsize];
-	    dst = &edst[-MALLOC_INCR];
-	}
+	src += one_mbtowc(&wc, src, MB_LEN_MAX);
+	Strbuf_append1(&buf, wc);
     }
-    *dst = 0;
-    return (sdst);
+    Strbuf_terminate(&buf);
+    return buf.s;
 }
 
 char   *
-short2str(src)
-    register const Char *src;
+short2str(const Char *src)
 {
     static char *sdst = NULL;
     static size_t dstsize = 0;
-    register char *dst, *edst;
+    char *dst, *edst;
 
     if (src == NULL)
 	return (NULL);
 
     if (sdst == NULL) {
 	dstsize = MALLOC_INCR;
-	sdst = (char *) xmalloc((size_t) (dstsize * sizeof(char)));
+	sdst = xmalloc((dstsize + MALLOC_SURPLUS) * sizeof(char));
     }
     dst = sdst;
     edst = &dst[dstsize];
     while (*src) {
-	*dst++ = (char) *src++;
-	if (dst == edst) {
+	dst += one_wctomb(dst, *src & CHAR);
+	src++;
+	if (dst >= edst) {
+	    char *wdst = dst;
+	    char *wedst = edst;
+
 	    dstsize += MALLOC_INCR;
-	    sdst = (char *) xrealloc((ptr_t) sdst,
-				     (size_t) (dstsize * sizeof(char)));
+	    sdst = xrealloc(sdst, (dstsize + MALLOC_SURPLUS) * sizeof(char));
 	    edst = &sdst[dstsize];
 	    dst = &edst[-MALLOC_INCR];
+	    while (wdst > wedst) {
+		dst++;
+		wdst--;
+	    }
 	}
     }
     *dst = 0;
     return (sdst);
 }
 
+#ifndef WIDE_STRINGS
 Char   *
-s_strcpy(dst, src)
-    register Char *dst;
-    register const Char *src;
+s_strcpy(Char *dst, const Char *src)
 {
-    register Char *sdst;
+    Char *sdst;
 
     sdst = dst;
     while ((*dst++ = *src++) != '\0')
@@ -158,12 +199,9 @@ s_strcpy(dst, src)
 }
 
 Char   *
-s_strncpy(dst, src, n)
-    register Char *dst;
-    register const Char *src;
-    register size_t n;
+s_strncpy(Char *dst, const Char *src, size_t n)
 {
-    register Char *sdst;
+    Char *sdst;
 
     if (n == 0)
 	return(dst);
@@ -180,38 +218,25 @@ s_strncpy(dst, src, n)
 }
 
 Char   *
-s_strcat(dst, src)
-    register Char *dst;
-    register const Char *src;
+s_strcat(Char *dst, const Char *src)
 {
-    register short *sdst;
-
-    sdst = dst;
-    while (*dst++)
-	continue;
-    --dst;
-    while ((*dst++ = *src++) != '\0')
-	continue;
-    return (sdst);
+    Strcpy(Strend(dst), src);
+    return dst;
 }
 
 #ifdef NOTUSED
 Char   *
-s_strncat(dst, src, n)
-    register Char *dst;
-    register const Char *src;
-    register size_t n;
+s_strncat(Char *dst, const Char *src, size_t n)
 {
-    register Char *sdst;
+    Char *sdst;
 
     if (n == 0) 
 	return (dst);
 
     sdst = dst;
 
-    while (*dst++)
-	continue;
-    --dst;
+    while (*dst)
+	dst++;
 
     do 
 	if ((*dst++ = *src++) == '\0')
@@ -226,37 +251,32 @@ s_strncat(dst, src, n)
 #endif
 
 Char   *
-s_strchr(str, ch)
-    register const Char *str;
-    int ch;
+s_strchr(const Char *str, int ch)
 {
     do
 	if (*str == ch)
-	    return ((Char *) str);
+	    return ((Char *)(intptr_t)str);
     while (*str++);
     return (NULL);
 }
 
 Char   *
-s_strrchr(str, ch)
-    register const Char *str;
-    int ch;
+s_strrchr(const Char *str, int ch)
 {
-    register const Char *rstr;
+    const Char *rstr;
 
     rstr = NULL;
     do
 	if (*str == ch)
 	    rstr = str;
     while (*str++);
-    return ((Char *) rstr);
+    return ((Char *)(intptr_t)rstr);
 }
 
 size_t
-s_strlen(str)
-    register const Char *str;
+s_strlen(const Char *str)
 {
-    register size_t n;
+    size_t n;
 
     for (n = 0; *str++; n++)
 	continue;
@@ -264,8 +284,7 @@ s_strlen(str)
 }
 
 int
-s_strcmp(str1, str2)
-    register const Char *str1, *str2;
+s_strcmp(const Char *str1, const Char *str2)
 {
     for (; *str1 && *str1 == *str2; str1++, str2++)
 	continue;
@@ -285,9 +304,7 @@ s_strcmp(str1, str2)
 }
 
 int
-s_strncmp(str1, str2, n)
-    register const Char *str1, *str2;
-    register size_t n;
+s_strncmp(const Char *str1, const Char *str2, size_t n)
 {
     if (n == 0)
 	return (0);
@@ -311,93 +328,148 @@ s_strncmp(str1, str2, n)
     } while (--n != 0);
     return(0);
 }
+#endif /* not WIDE_STRINGS */
+
+int
+s_strcasecmp(const Char *str1, const Char *str2)
+{
+#ifdef WIDE_STRINGS
+    wchar_t l1 = 0, l2 = 0;
+    for (; *str1 && ((*str1 == *str2 && (l1 = l2 = 0) == 0) || 
+	(l1 = towlower(*str1)) == (l2 = towlower(*str2))); str1++, str2++)
+	continue;
+    
+#else
+    unsigned char c1, c2, l1 = 0, l2 = 0;
+    for (; *str1 && ((*str1 == *str2 && (l1 = l2 = 0) == 0) || 
+	((c1 = (unsigned char)*str1) == *str1 &&
+	 (c2 = (unsigned char)*str2) == *str2 &&
+	(l1 = tolower(c1)) == (l2 = tolower(c2)))); str1++, str2++)
+	continue;
+#endif
+    /*
+     * The following case analysis is necessary so that characters which look
+     * negative collate low against normal characters but high against the
+     * end-of-string NUL.
+     */
+    if (*str1 == '\0' && *str2 == '\0')
+	return (0);
+    else if (*str1 == '\0')
+	return (-1);
+    else if (*str2 == '\0')
+	return (1);
+    else if (l1 == l2)	/* They are zero when they are equal */
+	return (*str1 - *str2);
+    else
+	return (l1 - l2);
+}
 
 Char   *
-s_strsave(s)
-    register const Char *s;
+s_strnsave(const Char *s, size_t len)
+{
+    Char *n;
+
+    n = xmalloc((len + 1) * sizeof (*n));
+    memcpy(n, s, len * sizeof (*n));
+    n[len] = '\0';
+    return n;
+}
+
+Char   *
+s_strsave(const Char *s)
 {
     Char   *n;
-    register Char *p;
+    size_t size;
 
-    if (s == 0)
+    if (s == NULL)
 	s = STRNULL;
-    for (p = (Char *) s; *p++;)
-	continue;
-    n = p = (Char *) xmalloc((size_t) 
-			     ((((const Char *) p) - s) * sizeof(Char)));
-    while ((*p++ = *s++) != '\0')
-	continue;
+    size = (Strlen(s) + 1) * sizeof(*n);
+    n = xmalloc(size);
+    memcpy(n, s, size);
     return (n);
 }
 
 Char   *
-s_strspl(cp, dp)
-    const Char   *cp, *dp;
+s_strspl(const Char *cp, const Char *dp)
 {
-    Char   *ep;
-    register Char *p, *q;
+    Char *res, *ep;
+    const Char *p, *q;
 
     if (!cp)
 	cp = STRNULL;
     if (!dp)
 	dp = STRNULL;
-    for (p = (Char *) cp; *p++;)
+    for (p = cp; *p++;)
 	continue;
-    for (q = (Char *) dp; *q++;)
+    for (q = dp; *q++;)
 	continue;
-    ep = (Char *) xmalloc((size_t)
-			  (((((const Char *) p) - cp) + 
-			    (((const Char *) q) - dp) - 1) * sizeof(Char)));
-    for (p = ep, q = (Char*) cp; (*p++ = *q++) != '\0';)
+    res = xmalloc(((p - cp) + (q - dp) - 1) * sizeof(Char));
+    for (ep = res, q = cp; (*ep++ = *q++) != '\0';)
 	continue;
-    for (p--, q = (Char *) dp; (*p++ = *q++) != '\0';)
+    for (ep--, q = dp; (*ep++ = *q++) != '\0';)
 	continue;
-    return (ep);
+    return (res);
 }
 
 Char   *
-s_strend(cp)
-    register const Char *cp;
+s_strend(const Char *cp)
 {
     if (!cp)
-	return ((Char *) cp);
+	return ((Char *)(intptr_t) cp);
     while (*cp)
 	cp++;
-    return ((Char *) cp);
+    return ((Char *)(intptr_t) cp);
 }
 
 Char   *
-s_strstr(s, t)
-    register const Char *s, *t;
+s_strstr(const Char *s, const Char *t)
 {
     do {
-	register const Char *ss = s;
-	register const Char *tt = t;
+	const Char *ss = s;
+	const Char *tt = t;
 
 	do
 	    if (*tt == '\0')
-		return ((Char *) s);
+		return ((Char *)(intptr_t) s);
 	while (*ss++ == *tt++);
     } while (*s++ != '\0');
     return (NULL);
 }
 
-#endif				/* SHORT_STRINGS */
+#else /* !SHORT_STRINGS */
+char *
+caching_strip(const char *s)
+{
+    static char *buf = NULL;
+    static size_t buf_size = 0;
+    size_t size;
+
+    if (s == NULL)
+      return NULL;
+    size = strlen(s) + 1;
+    if (buf_size < size) {
+	buf = xrealloc(buf, size);
+	buf_size = size;
+    }
+    memcpy(buf, s, size);
+    strip(buf);
+    return buf;
+}
+#endif
 
 char   *
-short2qstr(src)
-    register const Char *src;
+short2qstr(const Char *src)
 {
     static char *sdst = NULL;
     static size_t dstsize = 0;
-    register char *dst, *edst;
+    char *dst, *edst;
 
     if (src == NULL)
 	return (NULL);
 
     if (sdst == NULL) {
 	dstsize = MALLOC_INCR;
-	sdst = (char *) xmalloc((size_t) (dstsize * sizeof(char)));
+	sdst = xmalloc((dstsize + MALLOC_SURPLUS) * sizeof(char));
     }
     dst = sdst;
     edst = &dst[dstsize];
@@ -406,21 +478,157 @@ short2qstr(src)
 	    *dst++ = '\\';
 	    if (dst == edst) {
 		dstsize += MALLOC_INCR;
-		sdst = (char *) xrealloc((ptr_t) sdst,
-					 (size_t) (dstsize * sizeof(char)));
+		sdst = xrealloc(sdst,
+				(dstsize + MALLOC_SURPLUS) * sizeof(char));
 		edst = &sdst[dstsize];
 		dst = &edst[-MALLOC_INCR];
 	    }
 	}
-	*dst++ = (char) *src++;
-	if (dst == edst) {
+	dst += one_wctomb(dst, *src & CHAR);
+	src++;
+	if (dst >= edst) {
+	    ptrdiff_t i = dst - edst;
 	    dstsize += MALLOC_INCR;
-	    sdst = (char *) xrealloc((ptr_t) sdst,
-				     (size_t) (dstsize * sizeof(char)));
+	    sdst = xrealloc(sdst, (dstsize + MALLOC_SURPLUS) * sizeof(char));
 	    edst = &sdst[dstsize];
-	    dst = &edst[-MALLOC_INCR];
+	    dst = &edst[-MALLOC_INCR + i];
 	}
     }
     *dst = 0;
     return (sdst);
 }
+
+struct blk_buf *
+bb_alloc()
+{
+    return xcalloc(1, sizeof(struct blk_buf));
+}
+
+static void
+bb_store(struct blk_buf *bb, Char *str)
+{
+    if (bb->len == bb->size) { /* Keep space for terminating NULL */
+	if (bb->size == 0)
+	    bb->size = 16; /* Arbitrary */
+	else
+	    bb->size *= 2;
+	bb->vec = xrealloc(bb->vec, bb->size * sizeof (*bb->vec));
+    }
+    bb->vec[bb->len] = str;
+}
+
+void
+bb_append(struct blk_buf *bb, Char *str)
+{
+    bb_store(bb, str);
+    bb->len++;
+}
+
+void
+bb_cleanup(void *xbb)
+{
+    struct blk_buf *bb;
+    size_t i;
+
+    bb = xbb;
+    for (i = 0; i < bb->len; i++)
+	xfree(bb->vec[i]);
+    xfree(bb->vec);
+}
+
+void
+bb_free(void *bb)
+{
+    bb_cleanup(bb);
+    xfree(bb);
+}
+
+Char **
+bb_finish(struct blk_buf *bb)
+{
+    bb_store(bb, NULL);
+    return xrealloc(bb->vec, (bb->len + 1) * sizeof (*bb->vec));
+}
+
+#define DO_STRBUF(STRBUF, CHAR, STRLEN)				\
+								\
+struct STRBUF *							\
+STRBUF##_alloc(void)						\
+{								\
+    return xcalloc(1, sizeof(struct STRBUF));			\
+}								\
+								\
+static void							\
+STRBUF##_store1(struct STRBUF *buf, CHAR c)			\
+{								\
+    if (buf->size == buf->len) {				\
+	if (buf->size == 0)					\
+	    buf->size = 64; /* Arbitrary */			\
+	else							\
+	    buf->size *= 2;					\
+	buf->s = xrealloc(buf->s, buf->size * sizeof(*buf->s));	\
+    }								\
+    buf->s[buf->len] = c;					\
+}								\
+								\
+/* Like strbuf_append1(buf, '\0'), but don't advance len */	\
+void								\
+STRBUF##_terminate(struct STRBUF *buf)				\
+{								\
+    STRBUF##_store1(buf, '\0');					\
+}								\
+								\
+void								\
+STRBUF##_append1(struct STRBUF *buf, CHAR c)			\
+{								\
+    STRBUF##_store1(buf, c);					\
+    buf->len++;							\
+}								\
+								\
+void								\
+STRBUF##_appendn(struct STRBUF *buf, const CHAR *s, size_t len)	\
+{								\
+    if (buf->size < buf->len + len) {				\
+	if (buf->size == 0)					\
+	    buf->size = 64; /* Arbitrary */			\
+	while (buf->size < buf->len + len)			\
+	    buf->size *= 2;					\
+	buf->s = xrealloc(buf->s, buf->size * sizeof(*buf->s));	\
+    }								\
+    memcpy(buf->s + buf->len, s, len * sizeof(*buf->s));	\
+    buf->len += len;						\
+}								\
+								\
+void								\
+STRBUF##_append(struct STRBUF *buf, const CHAR *s)		\
+{								\
+    STRBUF##_appendn(buf, s, STRLEN(s));			\
+}								\
+								\
+CHAR *								\
+STRBUF##_finish(struct STRBUF *buf)				\
+{								\
+    STRBUF##_append1(buf, 0);					\
+    return xrealloc(buf->s, buf->len * sizeof(*buf->s));	\
+}								\
+								\
+void								\
+STRBUF##_cleanup(void *xbuf)					\
+{								\
+    struct STRBUF *buf;						\
+								\
+    buf = xbuf;							\
+    xfree(buf->s);						\
+}								\
+								\
+void								\
+STRBUF##_free(void *xbuf)					\
+{								\
+    STRBUF##_cleanup(xbuf);					\
+    xfree(xbuf);						\
+}								\
+								\
+const struct STRBUF STRBUF##_init /* = STRBUF##_INIT; */
+
+DO_STRBUF(strbuf, char, strlen);
+DO_STRBUF(Strbuf, Char, Strlen);

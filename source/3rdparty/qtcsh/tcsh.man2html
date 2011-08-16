@@ -1,5 +1,5 @@
-#!/usr/local/bin/perl
-# $Id: tcsh.man2html,v 1.1 2001-07-18 11:06:06 root Exp $
+: # -*- perl -*-
+# $tcsh: tcsh.man2html,v 1.14 2006/03/02 18:46:45 christos Exp $
 
 # tcsh.man2html, Dave Schweisguth <dcs@proton.chem.yale.edu>
 #
@@ -22,8 +22,8 @@
 
 # Emulate #!/usr/local/bin/perl on systems without #!
 
-eval '(exit $?0)' && eval 'exec /usr/local/bin/perl -S $0 ${1+"$@"}'
-& eval 'exec /usr/local/bin/perl -S $0 $argv:q' if 0;
+eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}'
+& eval 'exec perl -S $0 $argv:q' if 0;
 
 ### Constants
 
@@ -368,7 +368,7 @@ print <<EOP;
 Here are the <A HREF="$outfile">nroff manpage</A> (175K)
 from which this HTML version was generated,
 the <A HREF="$script">Perl script</A> which did the conversion
-and the <A HREF="file://ftp.astron.com/pub/tcsh/">
+and the <A HREF="ftp://ftp.astron.com/pub/tcsh/">
 complete source code</A> for <I>tcsh</I>.
 <HR>
 <I>tcsh</I> is maintained by
@@ -538,7 +538,6 @@ sub printsectionbody {
 		    }
 
 		    # Line break
-
 		    s/^\.br.*/<BR>/;
 
 		    # More nroff special characters
@@ -801,32 +800,26 @@ There are three <I>tcsh</I> mailing lists:
 <DD>
 The <I>tcsh</I> maintainers and testers' mailing list.
 <DT>
-<I>tcsh-diffs@mx.gw.com</I>
-<DD>
-The same as <I>tcsh@mx.gw.com</I>, plus diffs for each new
-patchlevel of <I>tcsh</I>.
-<DT>
 <I>tcsh-bugs@mx.gw.com</I>
 <DD>
-Bug reports.
+Open bug and user comment discussion.
 </DL>
-You can subscribe to any of these lists by sending mail to
-<I><A HREF="mailto:listserv@mx.gw.com">listserv@mx.gw.com</A></I> with the
-text "subscribe &lt;list name&gt; &lt;your name&gt;" on a line by
-itself in the body. &lt;list name&gt; is the name of the mailing list,
-without "@mx.gw.com", and &lt;your name&gt; is your real name, not your
-email address. You can also ask the list server for help by sending
-only the word "help".
+You can subscribe to either of these lists by visiting
+<I><A HREF="http://mx.gw.com/">http://mx.gw.com/</A></I>
+<P>
+To file a bug report or a feature suggestion (preferably
+with code), please visit
+<I><A HREF="http://bugs.gw.com/">http://bugs.gw.com/</A></I>
 <P>
 <A HREF="TOPFILEHERE">Up</A>
 </BODY>
 END
-#!/usr/local/bin/perl
+: # -*- perl -*-
 
 # Emulate #!/usr/local/bin/perl on systems without #!
 
-eval '(exit $?0)' && eval 'exec /usr/local/bin/perl -S $0 ${1+"$@"}'
-& eval 'exec /usr/local/bin/perl -S $0 $argv:q' if 0;
+eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}'
+& eval 'exec perl -S $0 $argv:q' if 0;
 
 # Setup
 
