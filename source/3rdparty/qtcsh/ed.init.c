@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/ed.init.c,v 3.60 2006/08/24 20:56:31 christos Exp $ */
 /*
  * ed.init.c: Editor initializations
  */
@@ -13,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -35,10 +32,9 @@
  */
 #include "sh.h"
 
-RCSID("$Id: ed.init.c,v 1.1 2001-07-18 11:06:04 root Exp $")
+RCSID("$tcsh: ed.init.c,v 3.60 2006/08/24 20:56:31 christos Exp $")
 
 #include "ed.h"
-#include "ed.term.h"
 #include "tc.h"
 #include "ed.defns.h"
 
@@ -54,12 +50,11 @@ static unsigned char vdisable;	/* The value of _POSIX_VDISABLE from
 
 int     Tty_eight_bit = -1;	/* does the tty handle eight bits */
 
-extern bool GotTermCaps;
+extern int GotTermCaps;
 
 static ttydata_t extty, edtty, tstty;
 #define qutty tstty
 
-extern int insource;
 #define SHTTY (insource ? OLDSTD : SHIN)
 
 #define uc unsigned char
@@ -95,20 +90,13 @@ static unsigned char ttychars[NN_IO][C_NCC] = {
 
 #ifdef SIG_WINDOW
 void
-check_window_size(force)
-    int     force;
+check_window_size(int force)
 {
-#ifdef BSDSIGS
-    sigmask_t omask;
-#endif /* BSDSIGS */
     int     lins, cols;
 
     /* don't want to confuse things here */
-#ifdef BSDSIGS
-    omask = sigblock(sigmask(SIG_WINDOW)) & ~sigmask(SIG_WINDOW);
-#else /* BSDSIGS */
-    (void) sighold(SIG_WINDOW);
-#endif /* BSDSIGS */
+    pintr_disabled++;
+    cleanup_push(&pintr_disabled, disabled_cleanup);
     /*
      * From: bret@shark.agps.lanl.gov (Bret Thaeler) Avoid sunview bug, where a
      * partially hidden window gets a SIG_WINDOW every time the text is
@@ -126,33 +114,22 @@ check_window_size(force)
 	else
 	    ChangeSize(lins, cols);
     }
-#ifdef BSDSIGS
-    (void) sigsetmask(omask);	/* can change it again */
-#else				/* BSDSIGS */
-    (void) sigrelse(SIG_WINDOW);
-#endif /* BSDSIGS */
+    windowchg = 0;
+    cleanup_until(&pintr_disabled);	/* can change it again */
 }
 
-sigret_t
+void
 /*ARGSUSED*/
-window_change(snum)
-int snum;
+window_change(int snum)
 {
-#ifdef UNRELSIGS 
-    /* If we were called as a signal handler, restore it. */
-    if (snum > 0)
-      sigset(snum, window_change);
-#endif /* UNRELSIGS */
-    check_window_size(0);
-#ifndef SIGVOID
-    return (snum);
-#endif 
+    USE(snum);
+    windowchg = 1;
 }
 
 #endif /* SIG_WINDOW */
 
 void
-ed_set_tty_eight_bit()
+ed_set_tty_eight_bit(void)
 {
     if (tty_getty(SHTTY, &extty) == -1) {
 #ifdef DEBUG_TTY
@@ -165,8 +142,7 @@ ed_set_tty_eight_bit()
 
 			
 int
-ed_Setup(rst)
-    int rst;
+ed_Setup(int rst)
 {
     static int havesetup = 0;
     struct varent *imode;
@@ -175,7 +151,7 @@ ed_Setup(rst)
 	return(0);
 
 #if defined(POSIX) && defined(_PC_VDISABLE) && !defined(BSD4_4) && \
-    !defined(WINNT)
+    !defined(WINNT_NATIVE)
     { 
 	long pcret;
 
@@ -191,11 +167,11 @@ ed_Setup(rst)
 		    ttychars[EX_IO][rst] = vdisable;
 	    }
     }
-#else /* ! POSIX || !_PC_VDISABLE || BSD4_4 || WINNT */
+#else /* ! POSIX || !_PC_VDISABLE || BSD4_4 || WINNT_NATIVE */
     vdisable = (unsigned char) _POSIX_VDISABLE;
-#endif /* POSIX && _PC_VDISABLE && !BSD4_4 && !WINNT */
+#endif /* POSIX && _PC_VDISABLE && !BSD4_4 && !WINNT_NATIVE */
 	
-    if ((imode = adrof(STRinputmode)) != NULL) {
+    if ((imode = adrof(STRinputmode)) != NULL && imode->vec != NULL) {
 	if (!Strcmp(*(imode->vec), STRinsert))
 	    inputmode = MODE_INSERT;
 	else if (!Strcmp(*(imode->vec), STRoverwrite))
@@ -206,8 +182,9 @@ ed_Setup(rst)
     ed_InitMaps();
     Hist_num = 0;
     Expand = 0;
+    SetKillRing(getn(varval(STRkillring)));
 
-#ifndef WINNT
+#ifndef WINNT_NATIVE
     if (tty_getty(SHTTY, &extty) == -1) {
 # ifdef DEBUG_TTY
 	xprintf("ed_Setup: tty_getty: %s\n", strerror(errno));
@@ -284,24 +261,49 @@ ed_Setup(rst)
 	tty_setchar(&extty, ttychars[EX_IO]);
 
 # ifdef SIG_WINDOW
-    (void) sigset(SIG_WINDOW, window_change);	/* for window systems */
-# endif 
-#else /* WINNT */
+    {
+	sigset_t set;
+	(void)signal(SIG_WINDOW, window_change);	/* for window systems */
+	sigemptyset(&set);
+	sigaddset(&set, SIG_WINDOW);
+	(void)sigprocmask(SIG_UNBLOCK, &set, NULL);
+    }
+# endif
+#else /* WINNT_NATIVE */
 # ifdef DEBUG
     if (rst)
 	xprintf("rst received in ed_Setup() %d\n", rst);
 # endif
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
     havesetup = 1;
     return(0);
 }
 
 void
-ed_Init()
+ed_Init(void)
 {
     ResetInLine(1);		/* reset the input pointers */
     GettingInput = 0;		/* just in case */
-    LastKill = KillBuf;		/* no kill buffer */
+#ifdef notdef
+    /* XXX This code was here before the kill ring:
+    LastKill = KillBuf;		/ * no kill buffer * /
+       If there was any reason for that other than to make sure LastKill
+       was initialized, the code below should go in here instead - but
+       it doesn't seem reasonable to lose the entire kill ring (which is
+       "self-initializing") just because you set $term or whatever, so
+       presumably this whole '#ifdef notdef' should just be taken out.  */
+
+    {				/* no kill ring - why? */
+	int i;
+	for (i = 0; i < KillRingMax; i++) {
+	    xfree(KillRing[i].buf);
+	    KillRing[i].buf = NULL;
+	    KillRing[i].len = 0;
+	}
+	YankPos = KillPos = 0;
+	KillRingLen = 0;
+    }
+#endif
 
 #ifdef DEBUG_EDIT
     CheckMaps();		/* do a little error checking on key maps */
@@ -319,7 +321,7 @@ ed_Init()
 	GetTermCaps();		/* does the obvious, but gets term type each
 				 * time */
 
-#ifndef WINNT
+#ifndef WINNT_NATIVE
 # if defined(TERMIO) || defined(POSIX)
     edtty.d_t.c_iflag &= ~ttylist[ED_IO][M_INPUT].t_clrmask;
     edtty.d_t.c_iflag |=  ttylist[ED_IO][M_INPUT].t_setmask;
@@ -354,21 +356,21 @@ ed_Init()
 # endif /* POSIX || TERMIO */
 
     tty_setchar(&edtty, ttychars[ED_IO]);
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 }
 
 /* 
  * Check and re-init the line. set the terminal into 1 char at a time mode.
  */
 int
-Rawmode()
+Rawmode(void)
 {
     if (Tty_raw_mode)
 	return (0);
 
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     do_nt_raw_mode();
-#else /* !WINNT */
+#else /* !WINNT_NATIVE */
 # ifdef _IBMR2
     tty_setdisc(SHTTY, ED_IO);
 # endif /* _IBMR2 */
@@ -494,7 +496,6 @@ Rawmode()
 # endif /* TERMIO || POSIX */
 
 	{
-	    extern int didsetty;
 	    int i;
 
 	    tty_getchar(&tstty, ttychars[TS_IO]);
@@ -540,19 +541,20 @@ Rawmode()
 # endif /* DEBUG_TTY */
 	return(-1);
     }
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
     Tty_raw_mode = 1;
     flush();			/* flush any buffered output */
     return (0);
 }
 
 int
-Cookedmode()
+Cookedmode(void)
 {				/* set tty in normal setup */
-#ifdef WINNT
+#ifdef WINNT_NATIVE
     do_nt_cooked_mode();
 #else
-    signalfun_t orig_intr;
+    sigset_t set, oset;
+    int res;
 
 # ifdef _IBMR2
     tty_setdisc(SHTTY, EX_IO);
@@ -562,77 +564,48 @@ Cookedmode()
 	return (0);
 
     /* hold this for reseting tty */
-# ifdef BSDSIGS
-    orig_intr = (signalfun_t) signal(SIGINT, SIG_IGN);
-# else
-#  ifdef SIG_HOLD
-    /*
-     * sigset doesn't return the previous handler if the signal is held,
-     * it will return SIG_HOLD instead. So instead of restoring the
-     * the signal we would end up installing a blocked SIGINT with a
-     * SIG_IGN signal handler. This is what happened when Cookedmode
-     * was called from sched_run, disabling interrupt for the rest
-     * of your session.
-     *
-     * This is what we do:
-     * - if the signal is blocked, keep it that way
-     * - else set it to SIG_IGN
-     *
-     * Casper Dik (casper@fwi.uva.nl)
-     */
-    orig_intr = (signalfun_t) sigset(SIGINT, SIG_HOLD);
-    if (orig_intr != SIG_HOLD)
-	(void) sigset(SIGINT, SIG_IGN); /* returns SIG_HOLD */
-#  else /* !SIG_HOLD */
-    /*
-     * No SIG_HOLD; probably no reliable signals as well.
-     */
-    orig_intr = (signalfun_t) sigset(SIGINT, SIG_IGN);
-#  endif /* SIG_HOLD */
-# endif /* BSDSIGS */
-    if (tty_setty(SHTTY, &extty) == -1) {
+    sigemptyset(&set);
+    sigaddset(&set, SIGINT);
+    (void)sigprocmask(SIG_BLOCK, &set, &oset);
+    cleanup_push(&oset, sigprocmask_cleanup);
+    res = tty_setty(SHTTY, &extty);
+    cleanup_until(&oset);
+    if (res == -1) {
 # ifdef DEBUG_TTY
 	xprintf("Cookedmode: tty_setty: %s\n", strerror(errno));
 # endif /* DEBUG_TTY */
 	return -1;
     }
-# ifdef BSDSIGS
-    (void) signal(SIGINT, orig_intr);	/* take these again */
-# else
-    (void) sigset(SIGINT, orig_intr);	/* take these again */
-# endif /* BSDSIGS */
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
     Tty_raw_mode = 0;
     return (0);
 }
 
 void
-ResetInLine(macro)
-    int macro;
+ResetInLine(int macro)
 {
     Cursor = InputBuf;		/* reset cursor */
     LastChar = InputBuf;
-    InputLim = &InputBuf[INBUFSIZE - 2];
+    InputLim = &InputBuf[INBUFSIZE - 2];/*FIXBUF*/
     Mark = InputBuf;
+    MarkIsSet = 0;
     MetaNext = 0;
     CurrentKeyMap = CcKeyMap;
     AltKeyMap = 0;
     Hist_num = 0;
     DoingArg = 0;
     Argument = 1;
-#ifdef notdef
-    LastKill = KillBuf;		/* no kill buffer */
-#endif 
     LastCmd = F_UNASSIGNED;	/* previous command executed */
+    IncMatchLen = 0;
     if (macro)
 	MacroLvl = -1;		/* no currently active macros */
 }
 
-static Char *Input_Line = NULL;
 int
-Load_input_line()
+Load_input_line(void)
 {
+    static Char *Input_Line = NULL;
 #ifdef SUNOS4
     long chrs = 0;
 #else /* !SUNOS4 */
@@ -644,7 +617,7 @@ Load_input_line()
 #endif /* SUNOS4 */
 
     if (Input_Line)
-	xfree((ptr_t) Input_Line);
+	xfree(Input_Line);
     Input_Line = NULL;
 
     if (Tty_raw_mode)
@@ -653,9 +626,9 @@ Load_input_line()
 #if defined(FIONREAD) && !defined(OREO)
     (void) ioctl(SHIN, FIONREAD, (ioctl_t) &chrs);
     if (chrs > 0) {
-	char    buf[BUFSIZE];
+        char    buf[BUFSIZE];
 
-	chrs = read(SHIN, buf, (size_t) min(chrs, BUFSIZE - 1));
+	chrs = xread(SHIN, buf, min(chrs, BUFSIZE - 1));
 	if (chrs > 0) {
 	    buf[chrs] = '\0';
 	    Input_Line = Strsave(str2short(buf));
@@ -681,12 +654,12 @@ Load_input_line()
  * (via Hans J Albertsson (thanks))
  */
 void
-QuoteModeOn()
+QuoteModeOn(void)
 {
     if (MacroLvl >= 0)
 	return;
 
-#ifndef WINNT
+#ifndef WINNT_NATIVE
     qutty = edtty;
 
 #if defined(TERMIO) || defined(POSIX)
@@ -714,13 +687,13 @@ QuoteModeOn()
 #endif /* DEBUG_TTY */
 	return;
     }
-#endif /* !WINNT */
+#endif /* !WINNT_NATIVE */
     Tty_quote_mode = 1;
     return;
 }
 
 void
-QuoteModeOff()
+QuoteModeOff(void)
 {
     if (!Tty_quote_mode)
 	return;

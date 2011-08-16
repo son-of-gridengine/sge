@@ -155,7 +155,7 @@ MODELS	:	vax, DECstation
 COMPILER:	cc, gcc
 CFLAGS	:	-O -Olimit 2000 (cc), normal (gcc)
 LIBES	:	-ltermcap
-OS	:	ultrix 3.0 (vax), 4.0, 4.1, 4.2, 4.3, 4.4
+OS	:	ultrix 3.0 (vax), 4.0, 4.1, 4.2, 4.3, 4.4, 4.5
 CONFIG	:	ultrix 
 ENVIRON	:	n/a
 NOTES	:	pcc broken: typedef void sigret_t (vax); 
@@ -163,9 +163,9 @@ NOTES	:	mips compiler on ultrix 3.5 needs -Dvoid=int
 NOTES	:	vax compiler on ultrix 3.0 needs -Dvoid=int
 NOTES	:	Does Ultrix 4.x still need YPBUGS?
 NOTES	:	Ultrix4.2 may need NAMEI_BUG
-VERSION	:	6.07.11
+VERSION	:	6.09.00
 
-VENDOR	:	apple
+VENDOR	:	Apple
 MODELS	:	macII
 COMPILER:	cc
 CFLAGS	:	normal		(-ZP)
@@ -192,6 +192,19 @@ NOTES	:	aix 3.2 may need NAMEI_BUG
 NOTES	:	aix 3.2 may need _BSD_INCLUDES defined in h
 NOTES	:	aix 4.1 does not need -lbsd anymore.
 VERSION	:	6.06.00 (rs6000)
+
+VENDOR	:	ibm
+MODELS	:	ibm390
+COMPILER:	c89
+CFLAGS	:	normal
+LIBES	:	-lcurses
+OS	:	os390 R 2.7
+CONFIG	:	os390
+ENVIRON	:	USS (formerly OpenEdition, aka POSIX)
+NOTES	:	Used GNU make for OS/390.
+NOTES	:	Use `CFLAGS="" ./configure` to avoid -g and make binary
+NOTES	:	half as large.
+VERSION	:	6.09.00
 
 VENDOR	:	ibm
 MODELS	:	rt
@@ -340,6 +353,17 @@ ENVIRON	:	n/a
 NOTES	:	none
 VERSION	:	6.08
 
+VENDOR  :       Cray Research
+MODELS  :       SV1, probably also SV2
+COMPILER:       cc
+CFLAGS  :       normal
+LIBES   :       -ltermlib
+OS      :       Unicos 10.0.1.0
+CONFIG  :       cray
+ENVIRON :       n/a
+NOTES   :       none
+VERSION :       6.11
+
 VENDOR	:	pyramid
 MODELS	:	MIS4/2T 
 COMPILER:	cc
@@ -375,8 +399,18 @@ CFLAGS	:	-O3 -pipe -g -arch ppc -arch i386 -UNeXT
 OS	:	Rhapsody 5
 CONFIG	:	rhapsody
 ENVIRON	:	n/a
-NOTES	:	CFLAGS="-O3 -pipe -g -arch ppc -arch i386 -UNeXT" configure && make
+NOTES	:	CFLAGS="-O3 -pipe -g -UNeXT" configure && make
 VERSION	:	6.08.00
+
+VENDOR	:	Apple
+MODELS	:	any
+COMPILER:	cc
+CFLAGS	:	-O3 -pipe -g -arch ppc -arch i386
+OS	:	Darwin
+CONFIG	:	darwin
+ENVIRON	:	n/a
+NOTES	:	CFLAGS="-O3 -pipe -g -arch ppc -arch i386 -UNeXT" configure && make
+VERSION	:	6.11.05
 
 VENDOR	:	Heurikon
 MODELS	:	HK68
@@ -1014,3 +1048,15 @@ CONFIG	:	superux8
 ENVIRON	:	n/a
 NOTES	:	none
 VERSION	:	6.08.01
+
+VENDOR	:	Unixware 7.1.0
+MODELS	:	all
+COMPILER:	gcc
+CFLAGS	:	normal
+LIBES	:	-ltermlib -lsocket -lgen
+OS	:	Unixware 7.1.0  
+CONFIG	:	svr5
+ENVIRON :	n/a
+NOTES	:	none
+VERSION :	6.09.00
+

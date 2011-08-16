@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/ed.h,v 3.50 2007/07/05 14:13:06 christos Exp $ */
 /*
  * ed.h: Editor declarations and globals
  */
@@ -13,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -40,14 +37,16 @@
 # define EXTERN extern
 #endif
 
-#define TABSIZE		8	/* usually 8 spaces/tab */
 #define MAXMACROLEVELS	10	/* max number of nested kbd macros */
 
-#ifndef WINNT
+#ifndef WINNT_NATIVE
 # define NT_NUM_KEYS	256
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
-extern int errno;
+#ifdef __QNXNTO__
+#undef min
+#undef max
+#endif
 
 /****************************************************************************/
 /* stuff for the different states returned by the character editor routines */
@@ -59,12 +58,12 @@ extern int errno;
 #define KEYCMD   unsigned char	/* size needed to index into CcFuncTbl */
  /* Must be unsigned 		       */
 
-typedef CCRETVAL(*PFCmd) __P((int));	/* pointer to function returning CCRETVAL */
+typedef CCRETVAL(*PFCmd) (Char); /* pointer to function returning CCRETVAL */
 
 struct KeyFuncs {		/* for the "bind" shell command */
-    char   *name;		/* function name for bind command */
+    const char *name;		/* function name for bind command */
     int     func;		/* function numeric value */
-    char   *desc;		/* description of function */
+    const char *desc;		/* description of function */
 };
 
 extern PFCmd CcFuncTbl[];	/* table of available commands */
@@ -105,7 +104,7 @@ typedef struct {
     int   len;
 } CStr;
 
-typedef union Xmapval {		/* value passed to the Xkey routines */
+typedef union {		/* value passed to the Xkey routines */
     KEYCMD cmd;
     CStr str;
 } XmapVal;
@@ -123,105 +122,80 @@ EXTERN KEYCMD *CurrentKeyMap;	/* current command key map */
 EXTERN int inputmode;		/* insert, replace, replace1 mode */
 EXTERN Char GettingInput;	/* true if getting an input line (mostly) */
 EXTERN Char NeedsRedraw;	/* for editor and twenex error messages */
-EXTERN Char InputBuf[INBUFSIZE];	/* the real input data */
+EXTERN Char InputBuf[INBUFSIZE];	/* the real input data *//*FIXBUF*/
 EXTERN Char *LastChar, *Cursor;	/* point to the next open space */
 EXTERN Char *InputLim;		/* limit of size of InputBuf */
 EXTERN Char MetaNext;		/* flags for ^V and ^[ functions */
 EXTERN Char AltKeyMap;		/* Using alternative command map (for vi mode) */
 EXTERN Char VImode;		/* true if running in vi mode (PWP 6-27-88) */
 EXTERN Char *Mark;		/* the emacs "mark" (dot is Cursor) */
+EXTERN char MarkIsSet;		/* true if the mark has been set explicitly */
 EXTERN Char DoingArg;		/* true if we have an argument */
 EXTERN int Argument;		/* "universal" argument value */
 EXTERN KEYCMD LastCmd;		/* previous command executed */
-EXTERN Char KillBuf[INBUFSIZE];	/* kill buffer */
-EXTERN Char *LastKill;		/* points to end of kill buffer */
+EXTERN CStr *KillRing;		/* kill ring */
+EXTERN int KillRingMax;		/* max length of kill ring */
+EXTERN int KillRingLen;		/* current length of kill ring */
+EXTERN int KillPos;		/* points to next kill */
+EXTERN int YankPos;		/* points to next yank */
 
-EXTERN Char UndoBuf[INBUFSIZE];
+EXTERN Char UndoBuf[INBUFSIZE];/*FIXBUF*/
 EXTERN Char *UndoPtr;
 EXTERN int  UndoSize;
 EXTERN int  UndoAction;
 
-EXTERN Char HistBuf[INBUFSIZE];	/* history buffer */
-EXTERN Char *LastHist;		/* points to end of history buffer */
+EXTERN struct Strbuf HistBuf; /* = Strbuf_INIT; history buffer */
 EXTERN int Hist_num;		/* what point up the history we are at now. */
-EXTERN Char WhichBuf[INBUFSIZE];	/* buffer for which command */
-EXTERN Char *LastWhich;		/* points to end of which buffer */
-EXTERN Char *CursWhich;		/* points to the cursor point in which buf */
-EXTERN int HistWhich;		/* Hist_num is saved in this */
+/* buffer for which command and others */
+EXTERN struct Strbuf SavedBuf; /* = Strbuf_INIT; */
+EXTERN size_t LastSaved;	/* points to end of saved buffer */
+EXTERN size_t CursSaved;	/* points to the cursor point in saved buf */
+EXTERN int HistSaved;		/* Hist_num is saved in this */
+EXTERN char RestoreSaved;	/* true if SavedBuf should be restored */
+EXTERN int IncMatchLen;		/* current match length during incremental search */
 EXTERN char Expand;		/* true if we are expanding a line */
 extern Char HistLit;		/* true if history lines are shown literal */
 EXTERN Char CurrentHistLit;	/* Literal status of current show history line */
+extern int Tty_raw_mode;
 
 /*
  * These are truly extern
  */
 extern int MacroLvl;
+extern Char *litptr;	 /* Entries start at offsets divisible by LIT_FACTOR */
+#define LIT_FACTOR 4
+extern int didsetty;
 
 EXTERN Char *KeyMacro[MAXMACROLEVELS];
 
+/* CHAR_DBWIDTH in Display and Vdisplay means the non-first column of a character
+   that is wider than one "regular" position. The cursor should never point
+   in the middle of a multiple-column character. */
 EXTERN Char **Display;		/* display buffer seed vector */
 EXTERN int CursorV,		/* real cursor vertical (line) */
         CursorH,		/* real cursor horisontal (column) */
         TermV,			/* number of real screen lines
 				 * (sizeof(DisplayBuf) / width */
         TermH;			/* screen width */
-EXTERN Char **Vdisplay;		/* new buffer */
+EXTERN Char **Vdisplay;	/* new buffer */
 
 /* Variables that describe terminal ability */
 EXTERN int T_Lines, T_Cols;	/* Rows and Cols of the terminal */
 EXTERN Char T_CanIns;		/* true if I can insert characters */
 EXTERN Char T_CanDel;		/* dito for delete characters */
-EXTERN Char T_Tabs;		/* true if tty interface is passing tabs */
-EXTERN Char T_Margin;		
+EXTERN char T_Tabs;		/* true if tty interface is passing tabs */
+EXTERN char T_Margin;
 #define MARGIN_AUTO  1		/* term has auto margins */
 #define MARGIN_MAGIC 2		/* concept glitch */
 EXTERN speed_t T_Speed;		/* Tty input Baud rate */
 EXTERN Char T_CanCEOL;		/* true if we can clear to end of line */
 EXTERN Char T_CanUP;		/* true if this term can do reverse linefeen */
-EXTERN Char T_HasMeta;		/* true if we have a meta key */
+EXTERN char T_HasMeta;		/* true if we have a meta key */
 
 /* note the extra characters in the Strchr() call in this macro */
 #define isword(c)	(Isalpha(c)||Isdigit(c)||Strchr(word_chars,c))
 #define min(x,y)	(((x)<(y))?(x):(y))
 #define max(x,y)	(((x)>(y))?(x):(y))
-
-/*
- * Terminal dependend data structures
- */
-typedef struct {
-#ifdef WINNT
-    int dummy;
-#else /* !WINNT */
-# if defined(POSIX) || defined(TERMIO)
-#  ifdef POSIX
-    struct termios d_t;
-#  else
-    struct termio d_t;
-#  endif /* POSIX */
-# else /* SGTTY */
-#  ifdef TIOCGETP
-    struct sgttyb d_t;
-#  endif /* TIOCGETP */
-#  ifdef TIOCGETC
-    struct tchars d_tc;
-#  endif /* TIOCGETC */
-#  ifdef TIOCGPAGE
-    struct ttypagestat d_pc;
-#  endif /* TIOCGPAGE */
-#  ifdef TIOCLGET
-    int d_lb;
-#  endif /* TIOCLGET */
-# endif /* POSIX || TERMIO */
-/* GRIDWARE AA 4/2000: linux define for suppressing TIOCGLTC from gcc */
-#ifndef linux
-# ifdef TIOCGLTC
-    struct ltchars d_ltc;
-# endif /* TIOCGLTC */
-#else
-#undef TIOCGLTC
-#endif
-#endif /* WINNT */
-} ttydata_t;
 
 #define MODE_INSERT	0
 #define MODE_REPLACE	1
@@ -247,12 +221,35 @@ typedef struct {
 # define M_NN		3
 #endif /* TERMIO */
 typedef struct { 
-    char *t_name;
-    int  t_setmask;
-    int  t_clrmask;
+    const char *t_name;
+    unsigned int  t_setmask;
+    unsigned int  t_clrmask;
 } ttyperm_t[NN_IO][M_NN];
 
 extern ttyperm_t ttylist;
+#include "ed.term.h"
 #include "ed.decls.h"
+
+#ifndef POSIX
+/*
+ * We don't prototype these, cause some systems have them wrong!
+ */
+extern int   tgetent	();
+extern char *tgetstr	();
+extern int   tgetflag	();
+extern int   tgetnum	();
+extern char *tgoto	();
+# define PUTPURE putpure
+# define PUTRAW putraw
+#else
+extern int   tgetent	(char *, const char *);
+extern char *tgetstr	(const char *, char **);
+extern int   tgetflag	(const char *);
+extern int   tgetnum	(const char *);
+extern char *tgoto	(const char *, int, int);
+extern void  tputs	(const char *, int, void (*)(int));
+# define PUTPURE ((void (*)(int)) putpure)
+# define PUTRAW ((void (*)(int)) putraw)
+#endif
 
 #endif /* _h_ed */

@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/ed.defns.c,v 3.46 2006/03/02 18:46:44 christos Exp $ */
 /*
  * ed.defns.c: Editor function definitions and initialization
  */
@@ -13,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -35,11 +32,11 @@
  */
 #include "sh.h"
 
-RCSID("$Id: ed.defns.c,v 1.1 2001-07-18 11:06:04 root Exp $")
+RCSID("$tcsh: ed.defns.c,v 3.46 2006/03/02 18:46:44 christos Exp $")
 
 #include "ed.h"
 
-static	void		ed_InitMetaBindings 	__P((void));
+static	void		ed_InitMetaBindings 	(void);
 
 PFCmd   CcFuncTbl[] = {		/* table of available commands */
     e_unassigned,
@@ -268,16 +265,26 @@ PFCmd   CcFuncTbl[] = {		/* table of available commands */
 #define		F_COMMAND_NORM	111
     e_dabbrev_expand,
 #define		F_DABBREV_EXPAND	112
-	e_copy_to_clipboard,
-#define		F_COPY_CLIP		113
-	e_paste_from_clipboard,
+    e_copy_to_clipboard,
+#define		F_COPY_CLIP	113
+    e_paste_from_clipboard,
 #define		F_PASTE_CLIP	114
-	e_dosify_next,
+    e_dosify_next,
 #define		F_DOSIFY_NEXT	115
-	e_dosify_prev,
+    e_dosify_prev,
 #define		F_DOSIFY_PREV	116
+    e_page_up,
+#define		F_PAGE_UP	117
+    e_page_down,
+#define		F_PAGE_DOWN	118
+    e_yank_pop,
+#define		F_YANK_POP	119
+    e_newline_hold,
+#define		F_NEWLINE_HOLD	120
+    e_newline_down_hist,
+#define		F_NEWLINE_DOWN_HIST	121
     0				/* DUMMY VALUE */
-#define		F_NUM_FNS	117
+#define		F_NUM_FNS	122
 
 };
 
@@ -288,11 +295,11 @@ KEYCMD  CcAltMap[NT_NUM_KEYS];		/* the alternative key map */
 #define	F_NUM_FUNCNAMES	(F_NUM_FNS + 2)
 struct KeyFuncs FuncNames[F_NUM_FUNCNAMES];
 
-#ifdef WINNT
+#ifdef WINNT_NATIVE
 extern KEYCMD CcEmacsMap[];
 extern KEYCMD CcViMap[];
 extern KEYCMD  CcViCmdMap[];
-#else /* !WINNT*/
+#else /* !WINNT_NATIVE*/
 KEYCMD  CcEmacsMap[] = {
 /* keymap table, each index into above tbl; should be 256*sizeof(KEYCMD)
    bytes long */
@@ -490,7 +497,7 @@ KEYCMD  CcEmacsMap[] = {
     F_UNASSIGNED,		/* M-> */
     F_WHICH,			/* M-? */
     F_UNASSIGNED,		/* M-@ */
-    F_UNASSIGNED,		/* M-A */
+    F_NEWLINE_HOLD,		/* M-A */
     F_WORDBACK,			/* M-B */
     F_CASECAPITAL,		/* M-C */
     F_DELWORDNEXT,		/* M-D */
@@ -514,7 +521,7 @@ KEYCMD  CcEmacsMap[] = {
     F_UNASSIGNED,		/* M-V */
     F_COPYREGION,		/* M-W */
     F_UNASSIGNED,		/* M-X */
-    F_UNASSIGNED,		/* M-Y */
+    F_YANK_POP,			/* M-Y */
     F_UNASSIGNED,		/* M-Z */
     F_XKEY,			/* M-[ *//* extended key esc -mf Oct 87 */
     F_UNASSIGNED,		/* M-\ */
@@ -522,7 +529,7 @@ KEYCMD  CcEmacsMap[] = {
     F_UNASSIGNED,		/* M-^ */
     F_LAST_ITEM,		/* M-_ */
     F_UNASSIGNED,		/* M-` */
-    F_UNASSIGNED,		/* M-a */
+    F_NEWLINE_HOLD,		/* M-a */
     F_WORDBACK,			/* M-b */
     F_CASECAPITAL,		/* M-c */
     F_DELWORDNEXT,		/* M-d */
@@ -546,7 +553,7 @@ KEYCMD  CcEmacsMap[] = {
     F_UNASSIGNED,		/* M-v */
     F_COPYREGION,		/* M-w */
     F_UNASSIGNED,		/* M-x */
-    F_UNASSIGNED,		/* M-y */
+    F_YANK_POP,			/* M-y */
     F_UNASSIGNED,		/* M-z */
     F_UNASSIGNED,		/* M-{ */
     F_UNASSIGNED,		/* M-| */
@@ -1113,19 +1120,19 @@ KEYCMD  CcViCmdMap[] = {
     F_UNASSIGNED,		/* M-~ */
     F_UNASSIGNED		/* M-^? */
 };
-#endif /* WINNT */
+#endif /* WINNT_NATIVE */
 
 
 void
-editinit()
+editinit(void)
 {
     struct KeyFuncs *f;
 
-#if defined(NLS_CATALOGS) || defined(WINNT)
+#if defined(NLS_CATALOGS) || defined(WINNT_NATIVE)
     int i;
 
     for (i = 0; i < F_NUM_FUNCNAMES; i++)
-	xfree((ptr_t) FuncNames[i].desc);
+	xfree((ptr_t)(intptr_t)FuncNames[i].desc);
 #endif
 
     f = FuncNames;
@@ -1403,6 +1410,16 @@ editinit()
     f->name = "newline";
     f->func = F_NEWLINE;
     f->desc = CSAVS(3, 52, "Execute command");
+
+    f++;
+    f->name = "newline-and-hold";
+    f->func = F_NEWLINE_HOLD;
+    f->desc = CSAVS(3, 122, "Execute command and keep current line");
+
+    f++;
+    f->name = "newline-and-down-history";
+    f->func = F_NEWLINE_DOWN_HIST;
+    f->desc = CSAVS(3, 123, "Execute command and move to next history line");
 
     f++;
     f->name = "normalize-path";
@@ -1731,21 +1748,44 @@ editinit()
     f->desc = CSAVS(3, 114, "Paste cut buffer at cursor position");
 
     f++;
+    f->name = "yank-pop";
+    f->func = F_YANK_POP;
+    f->desc = CSAVS(3, 115,
+	"Replace just-yanked text with yank from earlier kill");
+
+    f++;
     f->name = "e_copy_to_clipboard";
     f->func = F_COPY_CLIP;
-    f->desc = CSAVS(3, 115, "(win32 only)Copy cut buffer to system clipboard");
+    f->desc = CSAVS(3, 116,
+	"(WIN32 only) Copy cut buffer to system clipboard");
+
     f++;
     f->name = "e_paste_from_clipboard";
     f->func = F_PASTE_CLIP;
-    f->desc = CSAVS(3, 116, "(win32 only)Paste clipboard buffer at cursor position");
+    f->desc = CSAVS(3, 117,
+	"(WIN32 only) Paste clipboard buffer at cursor position");
+
     f++;
     f->name = "e_dosify_next";
     f->func = F_DOSIFY_NEXT;
-    f->desc = CSAVS(3, 117, "(win32 only)Convert each '/' in next word to '\\\\'");
+    f->desc = CSAVS(3, 118,
+	"(WIN32 only) Convert each '/' in next word to '\\\\'");
+
     f++;
     f->name = "e_dosify_prev";
     f->func = F_DOSIFY_PREV;
-    f->desc = CSAVS(3, 118, "(win32 only)Convert each '/' in previous word to '\\\\'");
+    f->desc = CSAVS(3, 119,
+	"(WIN32 only) Convert each '/' in previous word to '\\\\'");
+
+    f++;
+    f->name = "e_page_up";
+    f->func = F_PAGE_UP;
+    f->desc = CSAVS(3, 120, "(WIN32 only) Page visible console window up");
+
+    f++;
+    f->name = "e_page_down";
+    f->func = F_PAGE_DOWN;
+    f->desc = CSAVS(3, 121, "(WIN32 only) Page visible console window down");
 
     f++;
     f->name = NULL;
@@ -1759,7 +1799,7 @@ editinit()
 
 #ifdef DEBUG_EDIT
 void
-CheckMaps()
+CheckMaps(void)
 {		/* check the size of the key maps */
     int     c1 = (NT_NUM_KEYS * sizeof(KEYCMD));
 
@@ -1786,29 +1826,29 @@ CheckMaps()
 
 #endif
 
-bool    MapsAreInited = 0;
-bool    NLSMapsAreInited = 0;
-bool    NoNLSRebind;
+int    MapsAreInited = 0;
+int    NLSMapsAreInited = 0;
+int    NoNLSRebind;
 
 void
-ed_InitNLSMaps()
+ed_InitNLSMaps(void)
 {
-    register int i;
+    int i;
 
     if (AsciiOnly)
 	return;
     if (NoNLSRebind)
 	return;
     for (i = 0200; i <= 0377; i++) {
-	if (Isprint(i)) {
-	    CcKeyMap[i] = F_INSERT;
+	if (Isprint(CTL_ESC(i))) {
+	    CcKeyMap[CTL_ESC(i)] = F_INSERT;
 	}
     }
     NLSMapsAreInited = 1;
 }
 
 static void
-ed_InitMetaBindings()
+ed_InitMetaBindings(void)
 {
     Char    buf[3];
     int     i;
@@ -1816,13 +1856,13 @@ ed_InitMetaBindings()
     KEYCMD *map;
 
     map = CcKeyMap;
-    for (i = 0; i <= 0377 && CcKeyMap[i] != F_METANEXT; i++)
+    for (i = 0; i <= 0377 && CcKeyMap[CTL_ESC(i)] != F_METANEXT; i++)
 	continue;
     if (i > 0377) {
-	for (i = 0; i <= 0377 && CcAltMap[i] != F_METANEXT; i++)
+	for (i = 0; i <= 0377 && CcAltMap[CTL_ESC(i)] != F_METANEXT; i++)
 	    continue;
 	if (i > 0377) {
-	    i = CTL_ESC('\033');
+	    i = '\033';
 	    if (VImode)
 		map = CcAltMap;
 	}
@@ -1830,27 +1870,23 @@ ed_InitMetaBindings()
 	    map = CcAltMap;
 	}
     }
-    buf[0] = (Char) i;
+    buf[0] = (Char)CTL_ESC(i);
     buf[2] = 0;
     cstr.buf = buf;
     cstr.len = 2;
     for (i = 0200; i <= 0377; i++) {
-	if (map[i] != F_INSERT && map[i] != F_UNASSIGNED && map[i] != F_XKEY) {
-#ifndef _OSD_POSIX
-	    buf[1] = i & ASCII;
-#else
-	    buf[1] = _toebcdic[_toascii[i] & ASCII];
-#endif
-	    AddXkey(&cstr, XmapCmd((int) map[i]), XK_CMD);
+	if (map[CTL_ESC(i)] != F_INSERT && map[CTL_ESC(i)] != F_UNASSIGNED && map[CTL_ESC(i)] != F_XKEY) {
+	    buf[1] = CTL_ESC(i & ASCII);
+	    AddXkey(&cstr, XmapCmd((int) map[CTL_ESC(i)]), XK_CMD);
 	}
     }
     map[buf[0]] = F_XKEY;
 }
 
 void
-ed_InitVIMaps()
+ed_InitVIMaps(void)
 {
-    register int i;
+    int i;
 
     VImode = 1;
     ResetXmap();
@@ -1865,7 +1901,7 @@ ed_InitVIMaps()
 }
 
 void
-ed_InitEmacsMaps()
+ed_InitEmacsMaps(void)
 {
     int     i;
     Char    buf[3];
@@ -1908,11 +1944,11 @@ ed_InitEmacsMaps()
 }
 
 void
-ed_InitMaps()
+ed_InitMaps(void)
 {
     if (MapsAreInited)
 	return;
-#ifdef _OSD_POSIX
+#ifndef IS_ASCII
     /* This machine has an EBCDIC charset. The assumptions made for the
      * initialized keymaps therefore don't hold, since they are based on
      * ASCII (or ISO8859-1).
@@ -1922,7 +1958,7 @@ ed_InitMaps()
     {
 	KEYCMD temp[NT_NUM_KEYS];
 	static KEYCMD *const list[3] = { CcEmacsMap, CcViMap, CcViCmdMap };
-	register int i, table;
+	int i, table;
 
 	for (table=0; table<3; ++table)
 	{
@@ -1936,7 +1972,7 @@ ed_InitMaps()
 	    }
 	}
     }
-#endif /* _OSD_POSIX */
+#endif /* !IS_ASCII */
 
 #ifdef VIDEFAULT
     ed_InitVIMaps();

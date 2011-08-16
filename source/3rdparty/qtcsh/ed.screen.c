@@ -1,3 +1,4 @@
+/* $Header: /p/tcsh/cvsroot/tcsh/ed.screen.c,v 3.76 2009/06/25 21:15:37 christos Exp $ */
 /*
  * ed.screen.c: Editor/termcap-curses interface
  */
@@ -13,11 +14,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -35,34 +32,11 @@
  */
 #include "sh.h"
 
-RCSID("$Id: ed.screen.c,v 1.1 2001-07-18 11:06:04 root Exp $")
+RCSID("$tcsh: ed.screen.c,v 3.76 2009/06/25 21:15:37 christos Exp $")
 
 #include "ed.h"
 #include "tc.h"
 #include "ed.defns.h"
-
-#ifndef POSIX
-/*
- * We don't prototype these, cause some systems have them wrong!
- */
-extern int   tgetent	__P(());
-extern char *tgetstr	__P(());
-extern int   tgetflag	__P(());
-extern int   tgetnum	__P(());
-extern char *tgoto	__P(());
-# define PUTPURE putpure
-# define PUTRAW putraw
-#else
-extern int   tgetent	__P((char *, char *));
-extern char *tgetstr	__P((char *, char **));
-extern int   tgetflag	__P((char *));
-extern int   tgetnum	__P((char *));
-extern char *tgoto	__P((char *, int, int));
-extern void  tputs	__P((char *, int, void (*)(int)));
-# define PUTPURE ((void (*)__P((int))) putpure)
-# define PUTRAW ((void (*)__P((int))) putraw)
-#endif
-
 
 /* #define DEBUG_LITERAL */
 
@@ -79,9 +53,9 @@ extern void  tputs	__P((char *, int, void (*)(int)));
 #define Str(a) tstr[a].str
 #define Val(a) tval[a].val
 
-static struct {
-    char   *b_name;
-    int     b_rate;
+static const struct {
+    const char   *b_name;
+    speed_t b_rate;
 }       baud_rate[] = {
 
 #ifdef B0
@@ -150,46 +124,50 @@ static struct {
     { NULL, 0 }
 };
 
-#define T_al	0
-#define T_bl	1
-#define T_cd	2
-#define T_ce	3
-#define T_ch	4
-#define T_cl	5
-#define	T_dc	6
-#define	T_dl	7
-#define	T_dm	8
-#define	T_ed	9
-#define	T_ei	10
-#define	T_fs	11
-#define	T_ho	12
-#define	T_ic	13
-#define	T_im	14 
-#define	T_ip	15
-#define	T_kd	16
-#define	T_kl	17
-#define T_kr	18
-#define T_ku	19
-#define T_md	20
-#define T_me	21
-#define T_nd	22
-#define T_se	23
-#define T_so	24
-#define T_ts	25
-#define T_up	26
-#define T_us	27
-#define T_ue	28
-#define T_vb	29
-#define T_DC	30
-#define T_DO	31
-#define T_IC	32
-#define T_LE	33
-#define T_RI	34
-#define T_UP	35
-#define T_str	36
+#define T_at7   0
+#define T_al	1
+#define T_bl	2
+#define T_cd	3
+#define T_ce	4
+#define T_ch	5
+#define T_cl	6
+#define	T_dc	7
+#define	T_dl	8
+#define	T_dm	9
+#define	T_ed	10
+#define	T_ei	11
+#define	T_fs	12
+#define	T_ho	13
+#define	T_ic	14
+#define	T_im	15 
+#define	T_ip	16
+#define	T_kd	17
+#define T_kh    18
+#define	T_kl	19
+#define T_kr	20
+#define T_ku	21
+#define T_md	22
+#define T_me	23
+#define T_mr    24
+#define T_nd	25
+#define T_se	26
+#define T_so	27
+#define T_ts	28
+#define T_up	29
+#define T_us	30
+#define T_ue	31
+#define T_vb	32
+#define T_DC	33
+#define T_DO	34
+#define T_IC	35
+#define T_LE	36
+#define T_RI	37
+#define T_UP	38
+#define T_str   39
+
 static struct termcapstr {
-    char   *name;
-    char   *long_name;
+    const char   *name;
+    const char   *long_name;
     char   *str;
 } tstr[T_str + 1];
 
@@ -202,22 +180,22 @@ static struct termcapstr {
 #define T_xn	5
 #define T_val	6
 static struct termcapval {
-    char   *name;
-    char   *long_name;
+    const char   *name;
+    const char   *long_name;
     int     val;
 } tval[T_val + 1];
 
 void
-terminit()
+terminit(void)
 {
 #ifdef NLS_CATALOGS
     int i;
 
     for (i = 0; i < T_str + 1; i++)
-	xfree((ptr_t) tstr[i].long_name);
+	xfree((ptr_t)(intptr_t)tstr[i].long_name);
 
     for (i = 0; i < T_val + 1; i++)
-	xfree((ptr_t) tval[i].long_name);
+	xfree((ptr_t)(intptr_t)tval[i].long_name);
 #endif
 
     tstr[T_al].name = "al";
@@ -328,6 +306,15 @@ terminit()
     tstr[T_UP].name = "UP";
     tstr[T_UP].long_name = CSAVS(4, 36, "cursor up multiple");
 
+    tstr[T_kh].name = "kh";
+    tstr[T_kh].long_name = CSAVS(4, 43, "send cursor home");
+
+    tstr[T_at7].name = "@7";
+    tstr[T_at7].long_name = CSAVS(4, 44, "send cursor end");
+
+    tstr[T_mr].name = "mr";
+    tstr[T_mr].long_name = CSAVS(4, 45, "begin reverse video");
+
     tstr[T_str].name = NULL;
     tstr[T_str].long_name = NULL;
 
@@ -367,148 +354,95 @@ terminit()
  * No Wrap         no      --              yes             yes
  */
 
-static bool me_all = 0;		/* does two or more of the attributes use me */
+static int me_all = 0;		/* does two or more of the attributes use me */
 
-static	void	ReBufferDisplay	__P((void));
-static	void	TCalloc		__P((struct termcapstr *, char *)); 
+static	void	ReBufferDisplay	(void);
+static	void	TCset		(struct termcapstr *, const char *);
 
 
 static void
-TCalloc(t, cap)
-    struct termcapstr *t;
-    char   *cap;
+TCset(struct termcapstr *t, const char *cap)
 {
-    static char termcap_alloc[TC_BUFSIZE];
-    char    termbuf[TC_BUFSIZE];
-    struct termcapstr *ts;
-    static int tloc = 0;
-    int     tlen, clen;
-
     if (cap == NULL || *cap == '\0') {
+	xfree(t->str);
 	t->str = NULL;
-	return;
+    } else {
+	size_t size;
+
+	size = strlen(cap) + 1;
+	t->str = xrealloc(t->str, size);
+	memcpy(t->str, cap, size);
     }
-    else
-	clen = strlen(cap);
-
-    if (t->str == NULL)
-	tlen = 0;
-    else
-	tlen = strlen(t->str);
-
-    /*
-     * New string is shorter; no need to allocate space
-     */
-    if (clen <= tlen) {
-	(void) strcpy(t->str, cap);
-	return;
-    }
-
-    /*
-     * New string is longer; see if we have enough space to append
-     */
-    if (tloc + 3 < TC_BUFSIZE) {
-	(void) strcpy(t->str = &termcap_alloc[tloc], cap);
-	tloc += clen + 1;	/* one for \0 */
-	return;
-    }
-
-    /*
-     * Compact our buffer; no need to check compaction, cause we know it
-     * fits...
-     */
-    tlen = 0;
-    for (ts = tstr; ts->name != NULL; ts++)
-	if (t != ts && ts->str != NULL && ts->str[0] != '\0') {
-	    char   *ptr;
-
-	    for (ptr = ts->str; *ptr != '\0'; termbuf[tlen++] = *ptr++)
-		continue;
-	    termbuf[tlen++] = '\0';
-	}
-    (void) memmove((ptr_t) termcap_alloc, (ptr_t) termbuf, (size_t) TC_BUFSIZE);
-    tloc = tlen;
-    if (tloc + 3 >= TC_BUFSIZE) {
-	stderror(ERR_NAME | ERR_TCNOSTR);
-	return;
-    }
-    (void) strcpy(t->str = &termcap_alloc[tloc], cap);
-    tloc += clen + 1;		/* one for \0 */
-    return;
 }
 
 
 /*ARGSUSED*/
 void
-TellTC(what)
-    char   *what;
+TellTC(void)
 {
     struct termcapstr *t;
+    char *first, *s;
 
-    USE(what);
-    xprintf(CGETS(7, 1, "\n\tTcsh thinks your terminal has the\n"));
-    xprintf(CGETS(7, 2, "\tfollowing characteristics:\n\n"));
+    xprintf("%s", CGETS(7, 1, "\n\tTcsh thinks your terminal has the\n"));
+    xprintf("%s", CGETS(7, 2, "\tfollowing characteristics:\n\n"));
     xprintf(CGETS(7, 3, "\tIt has %d columns and %d lines\n"),
 	    Val(T_co), Val(T_li));
-    xprintf(CGETS(7, 4, "\tIt has %s meta key\n"), T_HasMeta ?
-	    CGETS(7, 5, "a") : CGETS(7, 6, "no"));
-    xprintf(CGETS(7, 7, "\tIt can%s use tabs\n"), T_Tabs ?
-	    "" : CGETS(7, 8, " not"));
-    xprintf(CGETS(7, 9, "\tIt %s automatic margins\n"),
-		    (T_Margin&MARGIN_AUTO)?
-		    CGETS(7, 10, "has"):
-		    CGETS(7, 11, "does not have"));
-    if (T_Margin & MARGIN_AUTO)
-	xprintf(CGETS(7, 12, "\tIt %s magic margins\n"),
-			(T_Margin & MARGIN_MAGIC) ?
-			CGETS(7, 10, "has"):
-			CGETS(7, 11, "does not have"));
-
-    for (t = tstr; t->name != NULL; t++)
-	xprintf("\t%36s (%s) == %s\n", t->long_name, t->name,
-		t->str && *t->str ? t->str : CGETS(7, 13, "(empty)"));
+    s = strsave(T_HasMeta ? CGETS(7, 5, "a") : CGETS(7, 6, "no"));
+    cleanup_push(s, xfree);
+    first = s;
+    xprintf(CGETS(7, 4, "\tIt has %s meta key\n"), s);
+    s = strsave(T_Tabs ? "" : CGETS(7, 8, " not"));
+    cleanup_push(s, xfree);
+    xprintf(CGETS(7, 7, "\tIt can%s use tabs\n"), s);
+    s = strsave((T_Margin&MARGIN_AUTO) ?
+		CGETS(7, 10, "has") : CGETS(7, 11, "does not have"));
+    cleanup_push(s, xfree);
+    xprintf(CGETS(7, 9, "\tIt %s automatic margins\n"), s);
+    if (T_Margin & MARGIN_AUTO) {
+        s = strsave((T_Margin & MARGIN_MAGIC) ?
+			CGETS(7, 10, "has") : CGETS(7, 11, "does not have"));
+	cleanup_push(s, xfree);
+	xprintf(CGETS(7, 12, "\tIt %s magic margins\n"), s);
+    }
+    for (t = tstr; t->name != NULL; t++) {
+        s = strsave(t->str && *t->str ? t->str : CGETS(7, 13, "(empty)"));
+	cleanup_push(s, xfree);
+	xprintf("\t%36s (%s) == %s\n", t->long_name, t->name, s);
+	cleanup_until(s);
+    }
     xputchar('\n');
+    cleanup_until(first);
 }
 
 
 static void
-ReBufferDisplay()
+ReBufferDisplay(void)
 {
-    register int i;
-    Char  **b;
-    Char  **bufp;
+    int i;
+    Char **b;
 
     b = Display;
     Display = NULL;
-    if (b != NULL) {
-	for (bufp = b; *bufp != NULL; bufp++)
-	    xfree((ptr_t) * bufp);
-	xfree((ptr_t) b);
-    }
+    blkfree(b);
     b = Vdisplay;
     Vdisplay = NULL;
-    if (b != NULL) {
-	for (bufp = b; *bufp != NULL; bufp++)
-	    xfree((ptr_t) * bufp);
-	xfree((ptr_t) b);
-    }
+    blkfree(b);
     TermH = Val(T_co);
-    TermV = (INBUFSIZE * 4) / TermH + 1;
-    b = (Char **) xmalloc((size_t) (sizeof(Char *) * (TermV + 1)));
+    TermV = (INBUFSIZE * 4) / TermH + 1;/*FIXBUF*/
+    b = xmalloc(sizeof(*b) * (TermV + 1));
     for (i = 0; i < TermV; i++)
-	b[i] = (Char *) xmalloc((size_t) (sizeof(Char) * (TermH + 1)));
+	b[i] = xmalloc(sizeof(*b[i]) * (TermH + 1));
     b[TermV] = NULL;
     Display = b;
-    b = (Char **) xmalloc((size_t) (sizeof(Char *) * (TermV + 1)));
+    b = xmalloc(sizeof(*b) * (TermV + 1));
     for (i = 0; i < TermV; i++)
-	b[i] = (Char *) xmalloc((size_t) (sizeof(Char) * (TermH + 1)));
+	b[i] = xmalloc(sizeof(*b[i]) * (TermH + 1));
     b[TermV] = NULL;
     Vdisplay = b;
 }
 
 void
-SetTC(what, how)
-    char   *what, *how;
+SetTC(char *what, char *how)
 {
     struct termcapstr *ts;
     struct termcapval *tv;
@@ -521,7 +455,7 @@ SetTC(what, how)
 	if (strcmp(ts->name, what) == 0)
 	    break;
     if (ts->name != NULL) {
-	TCalloc(ts, how);
+	TCset(ts, how);
 	/*
 	 * Reset variables
 	 */
@@ -557,10 +491,10 @@ SetTC(what, how)
 		stderror(ERR_SETTCUS, tv->name);
 		return;
 	    }
-	    T_Tabs = (Char) Val(T_pt);
-	    T_HasMeta = (Char) Val(T_km);
-	    T_Margin = (Char) Val(T_am) ? MARGIN_AUTO : 0;
-	    T_Margin |= (Char) Val(T_xn) ? MARGIN_MAGIC : 0;
+	    T_Tabs = Val(T_pt);
+	    T_HasMeta = Val(T_km);
+	    T_Margin = Val(T_am) ? MARGIN_AUTO : 0;
+	    T_Margin |= Val(T_xn) ? MARGIN_MAGIC : 0;
 	    if (tv == &tval[T_am] || tv == &tval[T_xn]) 
 		ChangeSize(Val(T_li), Val(T_co));
 	    return;
@@ -583,33 +517,27 @@ SetTC(what, how)
  * Print the termcap string out with variable substitution
  */
 void
-EchoTC(v)
-    Char  **v;
+EchoTC(Char **v)
 {
-    char   *cap, *scap, cv[BUFSIZE];
+    char   *cap, *scap, *cv;
     int     arg_need, arg_cols, arg_rows;
     int     verbose = 0, silent = 0;
     char   *area;
-    static char *fmts = "%s\n", *fmtd = "%d\n";
+    static const char fmts[] = "%s\n", fmtd[] = "%d\n";
     struct termcapstr *t;
     char    buf[TC_BUFSIZE];
+    Char **globbed;
 
     area = buf;
 
     setname("echotc");
 
-    tglob(v);
-    if (gflag) {
-	v = globall(v);
-	if (v == 0)
-	    stderror(ERR_NAME | ERR_NOMATCH);
-    }
-    else
-	v = gargv = saveblk(v);
-    trim(v);
+    v = glob_all_or_error(v);
+    globbed = v;
+    cleanup_push(globbed, blk_cleanup);
 
     if (!*v || *v[0] == '\0')
-	return;
+	goto end;
     if (v[0][0] == '-') {
 	switch (v[0][1]) {
 	case 'v':
@@ -625,31 +553,28 @@ EchoTC(v)
 	v++;
     }
     if (!*v || *v[0] == '\0')
-	return;
-    (void) strcpy(cv, short2str(*v));
+	goto end;
+    cv = strsave(short2str(*v));
+    cleanup_push(cv, xfree);
     if (strcmp(cv, "tabs") == 0) {
 	xprintf(fmts, T_Tabs ? CGETS(7, 14, "yes") :
 		CGETS(7, 15, "no"));
-	flush();
-	return;
+	goto end_flush;
     }
     else if (strcmp(cv, "meta") == 0) {
 	xprintf(fmts, Val(T_km) ? CGETS(7, 14, "yes") :
 		CGETS(7, 15, "no"));
-	flush();
-	return;
+	goto end_flush;
     }
     else if (strcmp(cv, "xn") == 0) {
 	xprintf(fmts, T_Margin & MARGIN_MAGIC ? CGETS(7, 14, "yes") :
 		CGETS(7, 15,  "no"));
-	flush();
-	return;
+	goto end_flush;
     }
     else if (strcmp(cv, "am") == 0) {
 	xprintf(fmts, T_Margin & MARGIN_AUTO ? CGETS(7, 14, "yes") :
 		CGETS(7, 15, "no"));
-	flush();
-	return;
+	goto end_flush;
     }
     else if (strcmp(cv, "baud") == 0) {
 	int     i;
@@ -657,22 +582,19 @@ EchoTC(v)
 	for (i = 0; baud_rate[i].b_name != NULL; i++)
 	    if (T_Speed == baud_rate[i].b_rate) {
 		xprintf(fmts, baud_rate[i].b_name);
-		flush();
-		return;
+		goto end_flush;
 	    }
 	xprintf(fmtd, 0);
-	flush();
-	return;
+	goto end_flush;
     }
-    else if (strcmp(cv, "rows") == 0 || strcmp(cv, "lines") == 0) {
+    else if (strcmp(cv, "rows") == 0 || strcmp(cv, "lines") == 0 ||
+	strcmp(cv, "li") == 0) {
 	xprintf(fmtd, Val(T_li));
-	flush();
-	return;
+	goto end_flush;
     }
-    else if (strcmp(cv, "cols") == 0) {
+    else if (strcmp(cv, "cols") == 0 || strcmp(cv, "co") == 0) {
 	xprintf(fmtd, Val(T_co));
-	flush();
-	return;
+	goto end_flush;
     }
 
     /* 
@@ -688,11 +610,11 @@ EchoTC(v)
 	scap = tgetstr(cv, &area);
     if (!scap || scap[0] == '\0') {
 	if (tgetflag(cv)) {
-	    xprintf(CGETS(7, 14, "yes\n"));
-	    return;
+	    xprintf("%s", CGETS(7, 14, "yes\n"));
+	    goto end;
 	}
 	if (silent)
-	    return;
+	    goto end;
 	else
 	    stderror(ERR_NAME | ERR_TCCAP, cv);
     }
@@ -733,7 +655,7 @@ EchoTC(v)
 	v++;
 	if (*v && *v[0]) {
 	    if (silent)
-		return;
+		goto end;
 	    else
 		stderror(ERR_NAME | ERR_TCARGS, cv, arg_need);
 	}
@@ -748,7 +670,7 @@ EchoTC(v)
 	v++;
 	if (*v && *v[0]) {
 	    if (silent)
-		return;
+		goto end;
 	    else
 		stderror(ERR_NAME | ERR_TCARGS, cv, arg_need);
 	}
@@ -763,7 +685,7 @@ EchoTC(v)
 	v++;
 	if (!*v || *v[0] == '\0') {
 	    if (silent)
-		return;
+		goto end;
 	    else
 		stderror(ERR_NAME | ERR_TCNARGS, cv, 2);
 	}
@@ -771,7 +693,7 @@ EchoTC(v)
 	v++;
 	if (!*v || *v[0] == '\0') {
 	    if (silent)
-		return;
+		goto end;
 	    else
 		stderror(ERR_NAME | ERR_TCNARGS, cv, 2);
 	}
@@ -779,21 +701,20 @@ EchoTC(v)
 	v++;
 	if (*v && *v[0]) {
 	    if (silent)
-		return;
+		goto end;
 	    else
 		stderror(ERR_NAME | ERR_TCARGS, cv, arg_need);
 	}
 	(void) tputs(tgoto(scap, arg_cols, arg_rows), arg_rows, PUTRAW);
 	break;
     }
+ end_flush:
     flush();
-    if (gargv) {
-	blkfree(gargv);
-	gargv = 0;
-    }
+ end:
+    cleanup_until(globbed);
 }
 
-bool    GotTermCaps = 0;
+int    GotTermCaps = 0;
 
 static struct {
     Char   *name;
@@ -802,18 +723,22 @@ static struct {
     int	    type;
 } arrow[] = {
 #define A_K_DN	0
-    { STRdown,	T_kd },
+    { STRdown,	T_kd, { 0 }, 0 },
 #define A_K_UP	1
-    { STRup,	T_ku },
+    { STRup,	T_ku, { 0 }, 0 },
 #define A_K_LT	2
-    { STRleft,	T_kl },
+    { STRleft,	T_kl, { 0 }, 0 },
 #define A_K_RT	3
-    { STRright,	T_kr }
+    { STRright, T_kr, { 0 }, 0 },
+#define A_K_HO  4
+    { STRhome,  T_kh, { 0 }, 0 },
+#define A_K_EN  5
+    { STRend,   T_at7, { 0 }, 0}
 };
-
+#define A_K_NKEYS 6
 
 void
-ResetArrowKeys()
+ResetArrowKeys(void)
 {
     arrow[A_K_DN].fun.cmd = F_DOWN_HIST;
     arrow[A_K_DN].type    = XK_CMD;
@@ -827,32 +752,45 @@ ResetArrowKeys()
     arrow[A_K_RT].fun.cmd = F_CHARFWD;
     arrow[A_K_RT].type    = XK_CMD;
 
+    arrow[A_K_HO].fun.cmd = F_TOBEG;
+    arrow[A_K_HO].type    = XK_CMD;
+
+    arrow[A_K_EN].fun.cmd = F_TOEND;
+    arrow[A_K_EN].type    = XK_CMD;
 }
 
 void
-DefaultArrowKeys() 
+DefaultArrowKeys(void)
 {
     static Char strA[] = {033, '[', 'A', '\0'};
     static Char strB[] = {033, '[', 'B', '\0'};
     static Char strC[] = {033, '[', 'C', '\0'};
     static Char strD[] = {033, '[', 'D', '\0'};
+    static Char strH[] = {033, '[', 'H', '\0'};
+    static Char strF[] = {033, '[', 'F', '\0'};
     static Char stOA[] = {033, 'O', 'A', '\0'};
     static Char stOB[] = {033, 'O', 'B', '\0'};
     static Char stOC[] = {033, 'O', 'C', '\0'};
     static Char stOD[] = {033, 'O', 'D', '\0'};
+    static Char stOH[] = {033, 'O', 'H', '\0'};
+    static Char stOF[] = {033, 'O', 'F', '\0'};
 
     CStr cs;
-#ifdef _OSD_POSIX
+#ifndef IS_ASCII
     if (strA[0] == 033)
     {
 	strA[0] = CTL_ESC('\033');
 	strB[0] = CTL_ESC('\033');
 	strC[0] = CTL_ESC('\033');
 	strD[0] = CTL_ESC('\033');
+	strH[0] = CTL_ESC('\033');
+	strF[0] = CTL_ESC('\033');
 	stOA[0] = CTL_ESC('\033');
 	stOB[0] = CTL_ESC('\033');
 	stOC[0] = CTL_ESC('\033');
 	stOD[0] = CTL_ESC('\033');
+	stOH[0] = CTL_ESC('\033');
+	stOF[0] = CTL_ESC('\033');
     }
 #endif
 
@@ -862,33 +800,38 @@ DefaultArrowKeys()
     cs.buf = strB; AddXkey(&cs, &arrow[A_K_DN].fun, arrow[A_K_DN].type);
     cs.buf = strC; AddXkey(&cs, &arrow[A_K_RT].fun, arrow[A_K_RT].type);
     cs.buf = strD; AddXkey(&cs, &arrow[A_K_LT].fun, arrow[A_K_LT].type);
+    cs.buf = strH; AddXkey(&cs, &arrow[A_K_HO].fun, arrow[A_K_HO].type);
+    cs.buf = strF; AddXkey(&cs, &arrow[A_K_EN].fun, arrow[A_K_EN].type);
     cs.buf = stOA; AddXkey(&cs, &arrow[A_K_UP].fun, arrow[A_K_UP].type);
     cs.buf = stOB; AddXkey(&cs, &arrow[A_K_DN].fun, arrow[A_K_DN].type);
     cs.buf = stOC; AddXkey(&cs, &arrow[A_K_RT].fun, arrow[A_K_RT].type);
     cs.buf = stOD; AddXkey(&cs, &arrow[A_K_LT].fun, arrow[A_K_LT].type);
- 
+    cs.buf = stOH; AddXkey(&cs, &arrow[A_K_HO].fun, arrow[A_K_HO].type);
+    cs.buf = stOF; AddXkey(&cs, &arrow[A_K_EN].fun, arrow[A_K_EN].type);
+
     if (VImode) {
 	cs.len = 2;
 	cs.buf = &strA[1]; AddXkey(&cs, &arrow[A_K_UP].fun, arrow[A_K_UP].type);
 	cs.buf = &strB[1]; AddXkey(&cs, &arrow[A_K_DN].fun, arrow[A_K_DN].type);
 	cs.buf = &strC[1]; AddXkey(&cs, &arrow[A_K_RT].fun, arrow[A_K_RT].type);
 	cs.buf = &strD[1]; AddXkey(&cs, &arrow[A_K_LT].fun, arrow[A_K_LT].type);
+	cs.buf = &strH[1]; AddXkey(&cs, &arrow[A_K_HO].fun, arrow[A_K_HO].type);
+	cs.buf = &strF[1]; AddXkey(&cs, &arrow[A_K_EN].fun, arrow[A_K_EN].type);
 	cs.buf = &stOA[1]; AddXkey(&cs, &arrow[A_K_UP].fun, arrow[A_K_UP].type);
 	cs.buf = &stOB[1]; AddXkey(&cs, &arrow[A_K_DN].fun, arrow[A_K_DN].type);
 	cs.buf = &stOC[1]; AddXkey(&cs, &arrow[A_K_RT].fun, arrow[A_K_RT].type);
 	cs.buf = &stOD[1]; AddXkey(&cs, &arrow[A_K_LT].fun, arrow[A_K_LT].type);
+	cs.buf = &stOH[1]; AddXkey(&cs, &arrow[A_K_HO].fun, arrow[A_K_HO].type);
+	cs.buf = &stOF[1]; AddXkey(&cs, &arrow[A_K_EN].fun, arrow[A_K_EN].type);
     }
 }
 
 
 int
-SetArrowKeys(name, fun, type)
-    CStr *name;
-    XmapVal *fun;
-    int type;
+SetArrowKeys(const CStr *name, XmapVal *fun, int type)
 {
     int i;
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < A_K_NKEYS; i++)
 	if (Strcmp(name->buf, arrow[i].name) == 0) {
 	    arrow[i].fun  = *fun;
 	    arrow[i].type = type;
@@ -898,22 +841,20 @@ SetArrowKeys(name, fun, type)
 }
 
 int
-IsArrowKey(name)
-    Char *name;
+IsArrowKey(Char *name)
 {
     int i;
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < A_K_NKEYS; i++)
 	if (Strcmp(name, arrow[i].name) == 0)
 	    return 1;
     return 0;
 }
 
 int
-ClearArrowKeys(name)
-    CStr *name;
+ClearArrowKeys(const CStr *name)
 {
     int i;
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < A_K_NKEYS; i++)
 	if (Strcmp(name->buf, arrow[i].name) == 0) {
 	    arrow[i].type = XK_NOD;
 	    return 0;
@@ -922,24 +863,19 @@ ClearArrowKeys(name)
 }
 
 void
-PrintArrowKeys(name)
-    CStr *name;
+PrintArrowKeys(const CStr *name)
 {
     int i;
 
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < A_K_NKEYS; i++)
 	if (name->len == 0 || Strcmp(name->buf, arrow[i].name) == 0)
-	    if (arrow[i].type != XK_NOD) {
-		CStr cs;
-		cs.buf = arrow[i].name;
-		cs.len = Strlen(cs.buf);
-		(void) printOne(&cs, &arrow[i].fun, arrow[i].type);
-	    }
+	    if (arrow[i].type != XK_NOD)
+		printOne(arrow[i].name, &arrow[i].fun, arrow[i].type);
 }
 
 
 void
-BindArrowKeys()
+BindArrowKeys(void)
 {
     KEYCMD *map, *dmap;
     int     i, j;
@@ -953,7 +889,7 @@ BindArrowKeys()
 
     DefaultArrowKeys();
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < A_K_NKEYS; i++) {
 	p = tstr[arrow[i].key].str;
 	if (p && *p) {
 	    j = (unsigned char) *p;
@@ -990,8 +926,7 @@ BindArrowKeys()
 static Char cur_atr = 0;	/* current attributes */
 
 void
-SetAttributes(atr)
-    int     atr;
+SetAttributes(Char atr)
 {
     atr &= ATTRIBUTES;
     if (atr != cur_atr) {
@@ -1056,16 +991,32 @@ SetAttributes(atr)
     }
 }
 
+int highlighting = 0;
+
+void
+StartHighlight()
+{
+    (void) tputs(Str(T_mr), 1, PUTPURE);
+    highlighting = 1;
+}
+
+void
+StopHighlight()
+{
+    (void) tputs(Str(T_me), 1, PUTPURE);
+    highlighting = 0;
+}
+
 /* PWP 6-27-88 -- if the tty driver thinks that we can tab, we ask termcap */
 int
-CanWeTab()
+CanWeTab(void)
 {
     return (Val(T_pt));
 }
 
+/* move to line <where> (first line == 0) as efficiently as possible; */
 void
-MoveToLine(where)		/* move to line <where> (first line == 0) */
-    int     where;		/* as efficiently as possible; */
+MoveToLine(int where)		
 {
     int     del;
 
@@ -1082,13 +1033,17 @@ MoveToLine(where)		/* move to line <where> (first line == 0) */
 
     del = where - CursorV;
 
-#ifndef WINNT
     if (del > 0) {
 	while (del > 0) {
 	    if ((T_Margin & MARGIN_AUTO) && Display[CursorV][0] != '\0') {
+		size_t h;
+
+		for (h = TermH - 1; h > 0 && Display[CursorV][h] == CHAR_DBWIDTH;
+		     h--)
+		    ;
 		/* move without newline */
-		MoveToChar(TermH - 1);
-		so_write(&Display[CursorV][CursorH], 1); /* updates CursorH/V*/
+		MoveToChar(h);
+		so_write(&Display[CursorV][CursorH], TermH - CursorH); /* updates CursorH/V*/
 		del--;
 	    }
 	    else {
@@ -1114,21 +1069,15 @@ MoveToLine(where)		/* move to line <where> (first line == 0) */
 		    (void) tputs(Str(T_up), 1, PUTPURE);
 	}
     }
-#else /* WINNT */
-    NT_MoveToLineOrChar(del, 1);
-#endif /* !WINNT */
     CursorV = where;		/* now where is here */
 }
 
 void
-MoveToChar(where)		/* move to character position (where) */
-    int     where;
+MoveToChar(int where)		/* move to character position (where) */
 {				/* as efficiently as possible */
-#ifndef WINNT
     int     del;
 
 mc_again:
-#endif /* WINNT */
     if (where == CursorH)
 	return;
 
@@ -1146,7 +1095,6 @@ mc_again:
 	return;
     }
 
-#ifndef WINNT
     del = where - CursorH;
 
     if ((del < -4 || del > 4) && GoodStr(T_ch))
@@ -1158,12 +1106,14 @@ mc_again:
 	    if ((del > 4) && GoodStr(T_RI))
 		(void) tputs(tgoto(Str(T_RI), del, del), del, PUTPURE);
 	    else {
-		if (T_Tabs) {	/* if I can do tabs, use them */
-		    if ((CursorH & 0370) != (where & 0370)) {
+		/* if I can do tabs, use them */
+		if (T_Tabs) {
+		    if ((CursorH & 0370) != (where & ~0x7)
+			&& Display[CursorV][where & ~0x7] != CHAR_DBWIDTH) {
 			/* if not within tab stop */
-			for (i = (CursorH & 0370); i < (where & 0370); i += 8)
+			for (i = (CursorH & 0370); i < (where & ~0x7); i += 8)
 			    (void) putraw('\t');	/* then tab over */
-			CursorH = where & 0370;
+			CursorH = where & ~0x7;
 			/* Note: considering that we often want to go to
 			   TermH - 1 for the wrapping, it would be nice to
 			   optimize this case by tabbing to the last column
@@ -1193,17 +1143,14 @@ mc_again:
 	    }
 	}
     }
-#else /* WINNT */
-    NT_MoveToLineOrChar(where, 0);
-#endif /* !WINNT */
     CursorH = where;		/* now where is here */
 }
 
 void
-so_write(cp, n)
-    register Char *cp;
-    register int n;
+so_write(Char *cp, int n)
 {
+    int cur_pos, prompt_len = 0, region_start = 0, region_end = 0;
+
     if (n <= 0)
 	return;			/* catch bugs */
 
@@ -1215,34 +1162,55 @@ so_write(cp, n)
 	return;
     }
 
-    do {
-	if (*cp & LITERAL) {
-	    extern Char *litptr[];
-	    Char   *d;
+    if (adrof(STRhighlight)) {
+	/* find length of prompt */
+	Char *promptc;
+	for (promptc = Prompt; *promptc; promptc++);
+	prompt_len = promptc - Prompt;
 
-#ifdef DEBUG_LITERAL
-	    xprintf("so: litnum %d, litptr %x\r\n",
-		    *cp & CHAR, litptr[*cp & CHAR]);
-#endif /* DEBUG_LITERAL */
-#if defined(WINNT) && !defined(COLOR_LS_F)
-	    {
-		char buf[256], *ptr = &buf[0];
-		for (d = litptr[*cp++ & CHAR]; *d & LITERAL; d++)
-		    *ptr++ = (*d & CHAR);
-		flush();
-		set_cons_attr(buf);
-	    }
-#else /* !WINNT || COLOR_LS_F */
-	    for (d = litptr[*cp++ & CHAR]; *d & LITERAL; d++)
-		(void) putraw(*d & CHAR);
-#endif /* WINNT && !COLOR_LS_F */
-	    (void) putraw(*d);
-
+	/* find region start and end points */
+	if (IncMatchLen) {
+	    region_start = (Cursor - InputBuf) + prompt_len;
+	    region_end = region_start + IncMatchLen;
+	} else if (MarkIsSet) {
+	    region_start = (min(Cursor, Mark) - InputBuf) + prompt_len;
+	    region_end   = (max(Cursor, Mark) - InputBuf) + prompt_len;
 	}
-	else
-	    (void) putraw(*cp++);
+    }
+
+    do {
+	if (adrof(STRhighlight)) {
+	    cur_pos = CursorV * TermH + CursorH;
+	    if (!highlighting &&
+		cur_pos >= region_start && cur_pos < region_end)
+		StartHighlight();
+	    else if (highlighting && cur_pos >= region_end)
+		StopHighlight();
+
+	    /* don't highlight over the cursor. the highlighting's reverse
+	     * video would cancel it out. :P */
+	    if (highlighting && cur_pos == (Cursor - InputBuf) + prompt_len)
+		StopHighlight();
+	}
+
+	if (*cp != CHAR_DBWIDTH) {
+	    if (*cp & LITERAL) {
+		Char   *d;
+#ifdef DEBUG_LITERAL
+		xprintf("so: litnum %d\r\n", (int)(*cp & ~LITERAL));
+#endif /* DEBUG_LITERAL */
+		for (d = litptr + (*cp & ~LITERAL) * LIT_FACTOR; *d; d++)
+		    (void) putwraw(*d);
+	    }
+	    else
+		(void) putwraw(*cp);
+	}
+	cp++;
 	CursorH++;
     } while (--n);
+
+    if (adrof(STRhighlight) && highlighting)
+	StopHighlight();
 
     if (CursorH >= TermH) { /* wrap? */
 	if (T_Margin & MARGIN_AUTO) { /* yes */
@@ -1250,12 +1218,16 @@ so_write(cp, n)
 	    CursorV++;
 	    if (T_Margin & MARGIN_MAGIC) {
 		/* force the wrap to avoid the "magic" situation */
-		Char c;
-		if ((c = Display[CursorV][CursorH]) != '\0')
-		    so_write(&c, 1);
-		else
+		Char xc;
+		if ((xc = Display[CursorV][CursorH]) != '\0') {
+		    so_write(&xc, 1);
+		    while(Display[CursorV][CursorH] == CHAR_DBWIDTH)
+			CursorH++;
+		}
+		else {
 		    (void) putraw(' ');
-		CursorH = 1;
+		    CursorH = 1;
+		}
 	    }
 	}
 	else			/* no wrap, but cursor stays on screen */
@@ -1265,8 +1237,7 @@ so_write(cp, n)
 
 
 void
-DeleteChars(num)		/* deletes <num> characters */
-    int     num;
+DeleteChars(int num)		/* deletes <num> characters */
 {
     if (num <= 0)
 	return;
@@ -1304,10 +1275,10 @@ DeleteChars(num)		/* deletes <num> characters */
 	(void) tputs(Str(T_ed), 1, PUTPURE);
 }
 
+/* Puts terminal in insert character mode, or inserts num characters in the
+   line */
 void
-Insert_write(cp, num)		/* Puts terminal in insert character mode, */
-    register Char *cp;
-    register int num;		/* or inserts num characters in the line */
+Insert_write(Char *cp, int num)
 {
     if (num <= 0)
 	return;
@@ -1337,10 +1308,7 @@ Insert_write(cp, num)		/* Puts terminal in insert character mode, */
     if (GoodStr(T_im) && GoodStr(T_ei)) { /* if I have insert mode */
 	(void) tputs(Str(T_im), 1, PUTPURE);
 
-	CursorH += num;
-	do 
-	    (void) putraw(*cp++);
-	while (--num);
+	so_write(cp, num);	/* this updates CursorH/V */
 
 	if (GoodStr(T_ip))	/* have to make num chars insert */
 	    (void) tputs(Str(T_ip), 1, PUTPURE);
@@ -1353,9 +1321,7 @@ Insert_write(cp, num)		/* Puts terminal in insert character mode, */
 	if (GoodStr(T_ic))	/* have to make num chars insert */
 	    (void) tputs(Str(T_ic), 1, PUTPURE);	/* insert a char */
 
-	(void) putraw(*cp++);
-
-	CursorH++;
+	so_write(cp++, 1);	/* this updates CursorH/V */
 
 	if (GoodStr(T_ip))	/* have to make num chars insert */
 	    (void) tputs(Str(T_ip), 1, PUTPURE);/* pad the inserted char */
@@ -1364,11 +1330,11 @@ Insert_write(cp, num)		/* Puts terminal in insert character mode, */
 
 }
 
+/* clear to end of line.  There are num characters to clear */
 void
-ClearEOL(num)			/* clear to end of line.  There are num */
-    int     num;		/* characters to clear */
+ClearEOL(int num)
 {
-    register int i;
+    int i;
 
     if (num <= 0)
 	return;
@@ -1383,7 +1349,7 @@ ClearEOL(num)			/* clear to end of line.  There are num */
 }
 
 void
-ClearScreen()
+ClearScreen(void)
 {				/* clear the whole screen and home */
     if (GoodStr(T_cl))
 	/* send the clear screen code */
@@ -1400,7 +1366,7 @@ ClearScreen()
 }
 
 void
-SoundBeep()
+SoundBeep(void)
 {				/* produce a sound */
     beep_cmd ();
     if (adrof(STRnobeep))
@@ -1412,15 +1378,11 @@ SoundBeep()
 	/* what termcap says we should use */
 	(void) tputs(Str(T_bl), 1, PUTPURE);
     else
-#ifndef WINNT
 	(void) putraw(CTL_ESC('\007'));	/* an ASCII bell; ^G */
-#else /* WINNT */
-	MessageBeep(MB_ICONQUESTION);
-#endif /* !WINNT */
 }
 
 void
-ClearToBottom()
+ClearToBottom(void)
 {				/* clear to the bottom of the screen */
     if (GoodStr(T_cd))
 	(void) tputs(Str(T_cd), Val(T_li), PUTPURE);
@@ -1429,10 +1391,10 @@ ClearToBottom()
 }
 
 void
-GetTermCaps()
+GetTermCaps(void)
 {				/* read in the needed terminal capabilites */
-    register int i;
-    char   *ptr;
+    int i;
+    const char   *ptr;
     char    buf[TC_BUFSIZE];
     static char bp[TC_BUFSIZE];
     char   *area;
@@ -1440,17 +1402,14 @@ GetTermCaps()
 
 
 #ifdef SIG_WINDOW
-# ifdef BSDSIGS
-    sigmask_t omask;
-# endif /* BSDSIGS */
+    sigset_t oset, set;
     int     lins, cols;
 
     /* don't want to confuse things here */
-# ifdef BSDSIGS
-    omask = sigblock(sigmask(SIG_WINDOW)) & ~sigmask(SIG_WINDOW);
-# else /* BSDSIGS */
-    (void) sighold(SIG_WINDOW);
-# endif /* BSDSIGS */
+    sigemptyset(&set);
+    sigaddset(&set, SIG_WINDOW);
+    (void)sigprocmask(SIG_BLOCK, &set, &oset);
+    cleanup_push(&oset, sigprocmask_cleanup);
 #endif /* SIG_WINDOW */
     area = buf;
 
@@ -1490,7 +1449,7 @@ GetTermCaps()
 	Val(T_co) = 80;		/* do a dumb terminal */
 	Val(T_pt) = Val(T_km) = Val(T_li) = 0;
 	for (t = tstr; t->name != NULL; t++)
-	    TCalloc(t, NULL);
+	    TCset(t, NULL);
     }
     else {
 	/* Can we tab */
@@ -1502,7 +1461,7 @@ GetTermCaps()
 	Val(T_co) = tgetnum("co");
 	Val(T_li) = tgetnum("li");
 	for (t = tstr; t->name != NULL; t++)
-	    TCalloc(t, tgetstr(t->name, &area));
+	    TCset(t, tgetstr(t->name, &area));
     }
     if (Val(T_co) < 2)
 	Val(T_co) = 80;		/* just in case */
@@ -1512,10 +1471,10 @@ GetTermCaps()
     T_Cols = (Char) Val(T_co);
     T_Lines = (Char) Val(T_li);
     if (T_Tabs)
-	T_Tabs = (Char) Val(T_pt);
-    T_HasMeta = (Char) Val(T_km);
-    T_Margin = (Char) Val(T_am) ? MARGIN_AUTO : 0;
-    T_Margin |= (Char) Val(T_xn) ? MARGIN_MAGIC : 0;
+	T_Tabs = Val(T_pt);
+    T_HasMeta = Val(T_km);
+    T_Margin = Val(T_am) ? MARGIN_AUTO : 0;
+    T_Margin |= Val(T_xn) ? MARGIN_MAGIC : 0;
     T_CanCEOL = GoodStr(T_ce);
     T_CanDel = GoodStr(T_dc) || GoodStr(T_DC);
     T_CanIns = GoodStr(T_im) || GoodStr(T_ic) || GoodStr(T_IC);
@@ -1548,11 +1507,7 @@ GetTermCaps()
     (void) GetSize(&lins, &cols);	/* get the correct window size */
     ChangeSize(lins, cols);
 
-# ifdef BSDSIGS
-    (void) sigsetmask(omask);	/* can change it again */
-# else /* BSDSIGS */
-    (void) sigrelse(SIG_WINDOW);
-# endif /* BSDSIGS */
+    cleanup_until(&oset);		/* can change it again */
 #else /* SIG_WINDOW */
     ChangeSize(Val(T_li), Val(T_co));
 #endif /* SIG_WINDOW */
@@ -1567,8 +1522,7 @@ GetTermCaps()
  *	is not a tty, but it will work in most cases.
  */
 int
-GetSize(lins, cols)
-    int    *lins, *cols;
+GetSize(int *lins, int *cols)
 {
     *cols = Val(T_co);
     *lins = Val(T_li);
@@ -1606,11 +1560,10 @@ GetSize(lins, cols)
     return (Val(T_co) != *cols || Val(T_li) != *lins);
 }
 
-#endif /* SIGWINDOW */
+#endif /* SIG_WINDOW */
 
 void
-ChangeSize(lins, cols)
-    int     lins, cols;
+ChangeSize(int lins, int cols)
 {
     /*
      * Just in case
@@ -1618,9 +1571,6 @@ ChangeSize(lins, cols)
     Val(T_co) = (cols < 2) ? 80 : cols;
     Val(T_li) = (lins < 1) ? 24 : lins;
 
-#ifdef WINNT
-      nt_set_size(lins,cols);
-#endif /* WINNT */
 #ifdef KNOWsize
     /*
      * We want to affect the environment only when we have a valid
@@ -1633,27 +1583,31 @@ ChangeSize(lins, cols)
      * our only chance to get the window size right.
      */
     if (Val(T_co) == cols && Val(T_li) == lins) {
-	Char    buf[10];
+	Char   *p;
 	char   *tptr;
 
 	if (getenv("COLUMNS")) {
-	    (void) Itoa(Val(T_co), buf, 0, 0);
-	    tsetenv(STRCOLUMNS, buf);
+	    p = Itoa(Val(T_co), 0, 0);
+	    cleanup_push(p, xfree);
+	    tsetenv(STRCOLUMNS, p);
+	    cleanup_until(p);
 	}
 
 	if (getenv("LINES")) {
-	    (void) Itoa(Val(T_li), buf, 0, 0);
-	    tsetenv(STRLINES, buf);
+	    p = Itoa(Val(T_li), 0, 0);
+	    cleanup_push(p, xfree);
+	    tsetenv(STRLINES, p);
+	    cleanup_until(p);
 	}
 
 	if ((tptr = getenv("TERMCAP")) != NULL) {
 	    /* Leave 64 characters slop in case we enlarge the termcap string */
-	    Char    termcap[1024+64], backup[1024+64], *ptr;
-	    int     i;
+	    Char    termcap[TC_BUFSIZE+64], backup[TC_BUFSIZE+64], *ptr;
+	    Char buf[4];
 
 	    ptr = str2short(tptr);
-	    (void) Strncpy(termcap, ptr, 1024);
-	    termcap[1023] = '\0';
+	    (void) Strncpy(termcap, ptr, TC_BUFSIZE);
+	    termcap[TC_BUFSIZE-1] = '\0';
 
 	    /* update termcap string; first do columns */
 	    buf[0] = 'c';
@@ -1664,11 +1618,12 @@ ChangeSize(lins, cols)
 		(void) Strcpy(backup, termcap);
 	    }
 	    else {
-		i = (int) (ptr - termcap + Strlen(buf));
-		(void) Strncpy(backup, termcap, (size_t) i);
-		backup[i] = '\0';
-		(void) Itoa(Val(T_co), buf, 0, 0);
-		(void) Strcat(backup + i, buf);
+		size_t len = (ptr - termcap) + Strlen(buf);
+		(void) Strncpy(backup, termcap, len);
+		backup[len] = '\0';
+		p = Itoa(Val(T_co), 0, 0);
+		(void) Strcat(backup + len, p);
+		xfree(p);
 		ptr = Strchr(ptr, ':');
 		(void) Strcat(backup, ptr);
 	    }
@@ -1682,19 +1637,20 @@ ChangeSize(lins, cols)
 		(void) Strcpy(termcap, backup);
 	    }
 	    else {
-		i = (int) (ptr - backup + Strlen(buf));
-		(void) Strncpy(termcap, backup, (size_t) i);
-		termcap[i] = '\0';
-		(void) Itoa(Val(T_li), buf, 0, 0);
-		(void) Strcat(termcap, buf);
+		size_t len = (ptr - backup) + Strlen(buf);
+		(void) Strncpy(termcap, backup, len);
+		termcap[len] = '\0';
+		p = Itoa(Val(T_li), 0, 0);
+		(void) Strcat(termcap, p);
+		xfree(p);
 		ptr = Strchr(ptr, ':');
 		(void) Strcat(termcap, ptr);
 	    }
 	    /*
-	     * Chop the termcap string at 1024 characters to avoid core-dumps
-	     * in the termcap routines
+	     * Chop the termcap string at TC_BUFSIZE-1 characters to avoid
+	     * core-dumps in the termcap routines
 	     */
-	    termcap[1023] = '\0';
+	    termcap[TC_BUFSIZE - 1] = '\0';
 	    tsetenv(STRTERMCAP, termcap);
 	}
     }

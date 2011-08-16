@@ -1,4 +1,4 @@
-/* $Header: /var/lib/cvs/gridengine/source/3rdparty/qtcsh/snames.h,v 1.1 2001-07-18 11:06:05 root Exp $ */
+/* $Header: /p/tcsh/cvsroot/tcsh/snames.h,v 1.4 2008/10/17 20:25:00 christos Exp $ */
 /*
  * snames.h: Short names for old compilers
  */
@@ -38,6 +38,7 @@
 #define	e_delwordnext		edelwrdnext
 #define	e_delwordprev		edelwrdprev
 #define	e_expand		eexp
+#define	e_expand_history_rne	eexphistrne
 #define	e_expand_history	eexphistory
 #define	e_expand_vars		eexpvars
 #define	e_tty_starto		ettystarto

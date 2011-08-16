@@ -1,7 +1,7 @@
 XCOMM
-XCOMM $Id: Imakefile,v 1.1 2001-07-18 11:06:04 root Exp $
+XCOMM $tcsh: Imakefile,v 1.86 2007/03/19 23:25:02 christos Exp $
 XCOMM
-XCOMM Imakefile for tcsh 6.08
+XCOMM Imakefile for tcsh 6.12
 XCOMM Marc Horowitz, MIT SIPB
 XCOMM
 
@@ -41,12 +41,12 @@ ones.  Please send in your fixes and additions! */
 #  define ConfigH sysv4
 # endif
 
-# ifdef LinuxArchitecture
+# if defined(LinuxArchitecture) || defined(GNUArchitecture)
 #  define ConfigH linux
 # endif
 
 # ifdef AlphaArchitecture
-#  ifndef LinuxArchitecture
+#  if !defined(LinuxArchitecture) && !defined(GNUArchitecture)
 #    define ConfigH decosf1
 #  endif
 #  if !HasGcc
@@ -210,6 +210,10 @@ EXTF=mi.termios.c mi.wait.h mi.varargs.h vms.termcap.c
 # ifdef FreeBSDArchitecture
 #  define ConfigH bsd4.4
 # endif /* FreeBsdArchitecture */
+
+# ifdef MidnightBSDArchitecture
+#  define ConfigH bsd4.4
+# endif /* MidnightBsdArchitecture */
 
 # ifdef i386SVR4Architecture
 #  define ConfigH sysv4
@@ -480,18 +484,20 @@ LDLIBS = MyLibs
 #endif
 
 SUF = o
-VERSION = 6.08
+VERSION = 6.12
 
-SHSRCS=	sh.c sh.dir.c sh.dol.c sh.err.c sh.exec.c sh.char.c \
-	sh.exp.c sh.file.c sh.func.c sh.glob.c sh.hist.c sh.init.c \
-	sh.lex.c sh.misc.c sh.parse.c sh.print.c sh.proc.c sh.sem.c \
-	sh.set.c sh.time.c sh.char.h sh.dir.h sh.proc.h sh.h \
-	sh.decls.h glob.c glob.h ${SYSSRCS}
+SHSRCS=	sh.c sh.dir.c sh.dol.c sh.err.c sh.exec.c \
+	sh.char.c sh.exp.c sh.file.c sh.func.c \
+	sh.glob.c sh.hist.c sh.init.c sh.lex.c \
+	sh.misc.c sh.parse.c sh.print.c sh.proc.c \
+	sh.sem.c sh.set.c sh.time.c glob.c \
+	sh.char.h sh.dir.h sh.proc.h sh.h \
+	sh.decls.h glob.h ${SYSSRCS}
 SHOBJS=	sh.${SUF} sh.dir.${SUF} sh.dol.${SUF} sh.err.${SUF} sh.exec.${SUF} \
-	sh.char.${SUF} sh.exp.${SUF} sh.func.${SUF} sh.glob.${SUF} \
-	sh.hist.${SUF} sh.init.${SUF} sh.lex.${SUF} sh.misc.${SUF} \
-	sh.parse.${SUF} sh.print.${SUF} sh.proc.${SUF} sh.sem.${SUF} \
-	sh.set.${SUF} sh.time.${SUF} glob.${SUF} ${SYSOBJS}
+	sh.char.${SUF} sh.exp.${SUF} sh.file.${SUF} sh.func.${SUF} \
+	sh.glob.${SUF} sh.hist.${SUF} sh.init.${SUF} sh.lex.${SUF} \
+	sh.misc.${SUF} sh.parse.${SUF} sh.print.${SUF} sh.proc.${SUF} \
+	sh.sem.${SUF} sh.set.${SUF} sh.time.${SUF} glob.${SUF} ${SYSOBJS}
 
 TWSRCS= tw.decls.h tw.h tw.help.c tw.init.c tw.parse.c tw.spell.c \
 	tw.comp.c tw.color.c

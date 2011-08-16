@@ -3051,7 +3051,9 @@ if ( "$QTCSH" == 1) then
 	! -r $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH/Makefile ) then
       mkdir -p $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH
       cd $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH
-      env REMOTE=sge CC="$CC" CFLAGS="${CFLAGS} ${NOERR_CFLAG}" SGE_ARCH=$buildarch \
+      # _GNU_SOURCE is defined by config.h, so we get wranings if we keep it
+      # in CFLAGS here.
+      env REMOTE=sge CC="$CC" CFLAGS="${CFLAGS} -U_GNU_SOURCE ${NOERR_CFLAG}" SGE_ARCH=$buildarch \
        ../configure --with-sge=${COMPILE_ARCH} --srcdir=..
    endif
 
