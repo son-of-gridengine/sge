@@ -12,13 +12,38 @@
 /*
  * POSIX	This system supports IEEE Std 1003.1-1988 (POSIX).
  */
-#undef POSIX
+#define POSIX
+
+#if defined(__hpux) && !defined(hpux)
+# define hpux
+#endif /* __hpux && !hpux */
+
+#if __STDC__ && !defined(__GNUC__)
+# define _POSIX_SOURCE
+# ifndef _HPUX_SOURCE
+# define  _HPUX_SOURCE
+# endif /* !_HPUX_SOURCE */
+#endif
+
+/*
+ * We need to define the following, otherwise we get:
+ * #error "Large Files (ILP32) not supported in strict ANSI mode."
+ */
+#ifndef __STDC_EXT__
+#define __STDC_EXT__ 
+#endif
+
+/* for access to large files from 32 bit apps
+ * define the following.  Removes the need to 
+ * redefine stat, fstat and lstat in sh.h
+ */
+#define _FILE_OFFSET_BITS 64
 
 /*
  * POSIXJOBS	This system supports the optional IEEE Std 1003.1-1988 (POSIX)
  *		job control facilities.
  */
-#undef POSIXJOBS
+#define POSIXJOBS
 
 /*
  * VFORK	This machine has a vfork().  
@@ -33,13 +58,13 @@
  *		Note that some machines eg. rs6000 have a vfork, but not
  *		with the berkeley semantics, so we cannot use it there either.
  */
-#undef VFORK
+#define VFORK
 
 /*
  * BSDJOBS	You have BSD-style job control (both process groups and
  *		a tty that deals correctly
  */
-#undef BSDJOBS
+#define BSDJOBS
 
 /*
  * BSDTIMES	You have BSD-style process time stuff (like rusage)
@@ -51,7 +76,7 @@
 /*
  * BSDLIMIT	You have BSD-style resource limit stuff (getrlimit/setrlimit)
  */
-#undef BSDLIMIT
+#define BSDLIMIT
 
 /*
  * TERMIO	You have struct termio instead of struct sgttyb.
@@ -71,17 +96,17 @@
 #define SYSVREL	3
 
 /*
- * YPBUGS	Work around Sun YP bugs that cause expansion of ~username
- *		to send command output to /dev/null
+ * ECHO_STYLE	Optionally change the behavior of the builtin echo
+ *		BOTH_ECHO: Support both bsd options (-n) and sysv escapes (\nnn)
+ *		BSD_ECHO:  Support only -n
+ *		SYSV_ECHO: Support only sysv escapes (\nnn)
+ *		NONE_ECHO: Pure echo.
  */
-#undef YPBUGS
+#define ECHO_STYLE BOTH_ECHO	/* Both BSD and SYSV options */
 
 /****************** local defines *********************/
-/*
- *		The preprocessor only defines 'unix' and 'ns32000', 
- * 		which is not enough to decide about HOSTTYPE. 
- */
-#define OPUS
+#define NAMEI_BUG	/* Great! you broke that one too */
 
-#undef NLS_CATALOGS
+#define HPUXVERSION  1100 /* For HP-UX version 8.00 */
+
 #endif /* _h_config */
