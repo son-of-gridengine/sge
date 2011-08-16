@@ -22,15 +22,6 @@
 #define POSIXJOBS
 
 /*
- * POSIXSIGS	Use the POSIX signal facilities to emulate BSD signals.
- */
-#ifdef _CX_UX
-# define POSIXSIGS
-#else
-# undef POSIXSIGS
-#endif
-
-/*
  * VFORK	This machine has a vfork().  
  *		It used to be that for job control to work, this define
  *		was mandatory. This is not the case any more.
@@ -52,16 +43,9 @@
 #define BSDJOBS
 
 /*
- * BSDSIGS	You have 4.2-style signals, rather than USG style.
- *		Note: POSIX systems should not define this unless they
- *		have sigvec() and friends (ie: 4.3BSD-RENO, HP-UX).
- */
-#define BSDSIGS
-
-/*
  * BSDTIMES	You have BSD-style process time stuff (like rusage)
  *		This may or may not be true.  For example, Apple Unix
- *		(OREO) has BSDJOBS and BSDSIGS but not BSDTIMES.
+ *		(OREO) has BSDJOBS but not BSDTIMES.
  */
 #define BSDTIMES
 
@@ -69,12 +53,6 @@
  * BSDLIMIT	You have BSD-style resource limit stuff (getrlimit/setrlimit)
  */
 #define BSDLIMIT
-
-/*
- * BSDNICE	Your system uses setpriority() instead of nice, to
- *		change a processes scheduling priority
- */
-#define BSDNICE
 
 /*
  * TERMIO	You have struct termio instead of struct sgttyb.
@@ -103,26 +81,6 @@
  */
 #undef YPBUGS
 
-/*
- * SIGVOID	Define this if your signal handlers return void.  On older
- *		systems, signal returns int, but on newer ones, it returns void.
- */
-#undef SIGVOID 
-
-/*
- * HAVEDUP2	Define this if your system supports dup2().
- */
-#define HAVEDUP2
-
-/*
- * UTHOST	Does the utmp file have a host field?
- */
-#define UTHOST
-
-/*
- * DIRENT	Your system has <dirent.h> instead of <sys/dir.h>
- */
-#define DIRENT
 
 #ifdef _CX_UX
 /*
@@ -137,11 +95,6 @@
 
 
 /****************** local defines *********************/
-#define NOSTRCOLL
-/****************** configurable hacks ****************/
-/* have been moved to config_f.h */
-#include "config_f.h"
-
 /*
  * It appears like 5.x defines hcx and does not define _CX_UX and
  * 7.x defines _CX_UX and does not define hcx. In tcsh we currently

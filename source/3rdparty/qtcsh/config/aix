@@ -41,15 +41,6 @@
 #endif
 
 /*
- * POSIXSIGS	Use the POSIX signal facilities to emulate BSD signals.
- */
-#ifdef _AIX32
-#define POSIXSIGS
-#else
-#undef POSIXSIGS
-#endif
-
-/*
  * VFORK	This machine has a vfork().  
  *		It used to be that for job control to work, this define
  *		was mandatory. This is not the case any more.
@@ -75,17 +66,9 @@
 #endif
 
 /*
- * BSDSIGS	You have 4.2-style signals, rather than USG style.
- *		Note: POSIX systems should not define this unless they
- *		have sigvec() and friends (ie: 4.3BSD-RENO, HP-UX).
- */
-/* AIX 3.2.5 might need undef'ing this */
-#define BSDSIGS
-
-/*
  * BSDTIMES	You have BSD-style process time stuff (like rusage)
  *		This may or may not be true.  For example, Apple Unix
- *		(OREO) has BSDJOBS and BSDSIGS but not BSDTIMES.
+ *		(OREO) has BSDJOBS but not BSDTIMES.
  */
 #ifndef aiws
 # define BSDTIMES
@@ -101,16 +84,6 @@
 #else
 # undef BSDLIMIT
 #endif 
-
-/*
- * BSDNICE	Your system uses setpriority() instead of nice, to
- *		change a processes scheduling priority
- */
-#ifndef aiws
-# define BSDNICE
-#else
-# undef BSDNICE
-#endif
 
 /*
  * TERMIO	You have struct termio instead of struct sgttyb.
@@ -143,35 +116,6 @@
  */
 #undef YPBUGS
 
-/*
- * SIGVOID	Define this if your signal handlers return void.  On older
- *		systems, signal returns int, but on newer ones, it returns void.
- */
-#if (defined(_AIX) && defined(_I386)) || defined(aiws)
-# undef SIGVOID
-#else /* _AIX && _I386 */
-# define SIGVOID 
-#endif /* (_AIX && _I386) || aiws */
-
-/*
- * HAVEDUP2	Define this if your system supports dup2().
- */
-#define HAVEDUP2
-
-/*
- * UTHOST	Does the utmp file have a host field?
- */
-#ifndef aiws
-# define UTHOST
-#else
-# undef UTHOST
-#endif
-
-/*
- * DIRENT	Your system has <dirent.h> instead of <sys/dir.h>
- */
-#define DIRENT
-
 /****************** local defines *********************/
 /*
  * IBMAIX	You are running aix on the ps2, rs6000, on ibm370
@@ -202,17 +146,6 @@
 # define _ALL_SOURCE	/* for window size etc, extra tty chars etc. */
 #endif
 
-#ifdef NLS
-# undef NLS	/* Let us decide in config_f.h... */
-#endif /* NLS */
-
-/*
- * NOSTRCOLL	We don't have strcoll()
- */
-#ifndef _IBMR2
-# define NOSTRCOLL	/* only the rs6000 has strcoll() */
-#endif
-
 /*
  * Function pointer comparisons are broken
  */
@@ -223,13 +156,7 @@
 /* > 2GB file support (stat64 etc.) */
 #define _LARGE_FILES
 
-/****************** configurable hacks ****************/
-/* have been moved to config_f.h */
-
-#include "config_f.h"
-
 #if defined(_AIXPS2) || defined(aiws)
-# undef NLS
 # undef NLS_CATALOGS
 #endif
 
