@@ -3046,6 +3046,12 @@ if ( "$QTCSH" == 1) then
    else if ( "$COMPILE_ARCH" == "WIN32_X86" ) then
       set SGE_LIBS = "$SGE_LIBS $WINGRIDLIB"
    endif
+   # On Red Hat 6, including Xft.h, as motif does, fails without this.
+   if ( -d /usr/include/freetype2 ) then
+      set FT_INC = "-I/usr/include/freetype2"
+   else
+      set FT_INC = ""
+   endif
 
    if ( ! -d $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH || \
 	! -r $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH/Makefile ) then
@@ -3053,8 +3059,8 @@ if ( "$QTCSH" == 1) then
       cd $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH
       # _GNU_SOURCE is defined by config.h, so we get wranings if we keep it
       # in CFLAGS here.
-      env REMOTE=sge CC="$CC" CFLAGS="${CFLAGS} -U_GNU_SOURCE ${NOERR_CFLAG}" SGE_ARCH=$buildarch \
-       ../configure --with-sge=${COMPILE_ARCH} --srcdir=..
+      env REMOTE=sge CC="$CC" CFLAGS="${CFLAGS} -U_GNU_SOURCE ${NOERR_CFLAG} $FT_INC" \
+       SGE_ARCH=$buildarch ../configure --with-sge=${COMPILE_ARCH} --srcdir=..
    endif
 
    cd $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH

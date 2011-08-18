@@ -100,6 +100,7 @@ Summary: Gridengine qmon monitor
 Group: Development/Libraries
 License: BSD and LGPLv2+ and MIT and SISSL
 Requires: %{name} = %{version}-%{release}
+Requires: xorg-x11-fonts-ISO8859-1-100dpi xorg-x11-fonts-ISO8859-1-75dpi
 
 %description qmon
 The qmon graphical graphical interface to Grid Engine.
@@ -183,8 +184,8 @@ echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
   rm -r util/gui-installer util/sgeSMF
   rm start_gui_installer
   rm util/resources/loadsensors/interix-loadsensor.sh # uses ksh
-  for l in lib/*/libdrmaa.so.1; do
-    ( cd $(dirname $l); ln -sf libdrmaa.so.1 libdrmaa.so; )
+  for l in lib/*/libdrmaa.so.1.0; do
+    ( cd $(dirname $l); ln -sf libdrmaa.so.1.0 libdrmaa.so )
   done
   gzip man/man*/*
 )
@@ -280,6 +281,11 @@ makewhatis %{sge_home}/man
 %{sge_mandir}/man8/sge_shadowd.8.gz
 
 %changelog
+* Thu Aug 18 2011 Orion Poplawski <orion@cora.nwra.com> 8.0.0pre_b
+- Add Requires: xorg-x11-fonts-ISO8859-1-100dpi xorg-x11-fonts-ISO8859-1-75dpi
+  to qmon package
+  [From the EPEL 6 package.]
+
 * Sat Jun 18 2011 Dave Love <d.love@liverpool.ac.uk> 8.0.0a
 - Add --without java (adapted from Jesse Becker <hawson@gmail.com>).
 - Use csh -f.  Add Prefix.  Use -fno-strict-aliasing.
