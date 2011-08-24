@@ -2089,14 +2089,14 @@ msgstr ""
 #: ../src/cod_qmod_qmaster.c:1293
 #, c-format
 msgid ""
-"no need to suspend queue \"%-.100s\" it's already suspended on subordinate\n"
+"no need to suspend queue \"%-.100s\" as it's already suspended on subordinate\n"
 msgstr ""
 
 #
 #: ../src/cod_qmod_qmaster.c:1295
 #, c-format
 msgid ""
-"no need to suspend queue \"%-.100s\" it's already suspended by "
+"no need to suspend queue \"%-.100s\" as it's already suspended by "
 "administrator\n"
 msgstr ""
 
@@ -3375,7 +3375,7 @@ msgstr ""
 #
 #: ../src/job_exit.c:126
 #, c-format
-msgid "received JOB_EXIT for job %ld.%ld which ist NOT running\n"
+msgid "received JOB_EXIT for job %ld.%ld which is NOT running\n"
 msgstr ""
 
 #
@@ -3847,7 +3847,7 @@ msgstr ""
 #
 #: ../src/parse_qconf.c:375
 #, c-format
-msgid "%s is no exec host\n"
+msgid "%s is not exec host\n"
 msgstr ""
 
 #
@@ -4248,7 +4248,7 @@ msgstr ""
 #
 #: ../src/parse_qconf.c:6064
 #, c-format
-msgid "denied: host \"%s\" is no admin host\n"
+msgid "denied: host \"%s\" is not admin host\n"
 msgstr ""
 
 #
@@ -6619,7 +6619,7 @@ msgstr ""
 
 #
 #: ../src/time_event.c:61
-msgid "received unkown event\n"
+msgid "received unknown event\n"
 msgstr ""
 
 #
@@ -6675,7 +6675,7 @@ msgstr ""
 
 #
 #: ../src/unparse_job_cull.c:464
-msgid "Error formatting job argumentents\n"
+msgid "Error formatting job arguments\n"
 msgstr ""
 
 #
@@ -8457,13 +8457,13 @@ msgstr ""
 #
 #: ../utilib/cod_text.c:65
 #, c-format
-msgid "denied: host \"%-.100s\" is no admin host\n"
+msgid "denied: host \"%-.100s\" is not admin host\n"
 msgstr ""
 
 #
 #: ../utilib/cod_text.c:68
 #, c-format
-msgid "denied: host \"%-.100s\" is no submit host\n"
+msgid "denied: host \"%-.100s\" is not submit host\n"
 msgstr ""
 
 #
@@ -9044,7 +9044,7 @@ msgstr ""
 #, c-format
 msgid ""
 "cannot run in queue \"%-.100s\" because not in queue list of ckpt interface "
-"defintion \"%-.100s\""
+"definition \"%-.100s\""
 msgstr ""
 
 #
@@ -9285,7 +9285,7 @@ msgstr ""
 #: ../utilib/cod_text.c:489
 msgid ""
 "Jobs can not run because queue is not in queue list of ckpt interface "
-"defintion"
+"definition"
 msgstr ""
 
 #
@@ -9321,7 +9321,7 @@ msgstr ""
 
 #
 #: ../utilib/cod_text.c:510
-msgid "Jobs can not run because the resource requirements can not be satified"
+msgid "Jobs can not run because the resource requirements can not be satisfied"
 msgstr ""
 
 #
@@ -9334,7 +9334,7 @@ msgstr ""
 #: ../utilib/cod_text.c:516
 msgid ""
 "Jobs can not run globally because the resource requirements can not be "
-"satified"
+"satisfied"
 msgstr ""
 
 #
@@ -9359,7 +9359,7 @@ msgstr ""
 
 #
 #: ../utilib/cod_text.c:534
-msgid "Jobs can not run because queues are in alarm starte"
+msgid "Jobs can not run because queues are in alarm state"
 msgstr ""
 
 #
@@ -9651,7 +9651,7 @@ msgstr ""
 
 #
 #: ../utilbin/permutation.c:146
-msgid "with range s.th. like a-k\n"
+msgid "with range something like a-k\n"
 msgstr ""
 
 #
@@ -9835,7 +9835,7 @@ msgstr ""
 
 #
 #: ../cull/src/cull_lerrno.c:46
-msgid "descriptor is NULL, empty describtor"
+msgid "descriptor is NULL, empty descriptor"
 msgstr ""
 
 #
@@ -10543,7 +10543,7 @@ msgstr ""
 #
 #: ../schedd/cod_c_event.c:306
 #, c-format
-msgid "smallest event number %ld is greater than number %ld i'm waiting for\n"
+msgid "smallest event number %ld is greater than number %ld I'm waiting for\n"
 msgstr ""
 
 #
