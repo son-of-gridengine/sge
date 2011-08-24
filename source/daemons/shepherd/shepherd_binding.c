@@ -127,7 +127,12 @@ int do_core_binding(void)
       if ((amount = binding_linear_parse_amount(binding)) < 0) {
          shepherd_trace("do_core_binding: couldn't parse the amount of cores from config file");
          return -1;
-      } 
+      }
+      /* special case, reduced to the job's slot count on this host */
+      if (BIND_INFINITY == amount) {
+	 char *slots = get_conf_val("host_slots");
+	 amount = atoi(slots);
+      }
 
       /* get the socket to begin binding with (choosen by execution daemon) */
       if ((socket = binding_linear_parse_socket_offset(binding)) < 0) {
