@@ -71,6 +71,7 @@ Usage: qsched [OPTION...]
   -j <jid_list>  - comma-separated list of JIDs to view
   -f             - print all available data for each job
   -s j           - sort by JID
+  -q             - sort by queue
   -d             - print debugging info
   -h             - print this message
 

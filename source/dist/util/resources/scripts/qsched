@@ -17,7 +17,7 @@
 
 # User command to interrogate contents of schedule.last file
 #
-# $Id: qsched 1337 2011-03-01 13:51:43Z issmcd $
+# $Id: qsched 1826 2011-06-30 11:15:34Z issmcd $
 
 use strict;
 use IO::File;
@@ -33,9 +33,13 @@ my $max_attempts   = 2;
 my $retry_interval = 1;
 my $jids;
 my $old_seconds    = 1200;
-my $trim_string    = '\.leeds\.ac\.uk$';
+my $trim_string    = '\.example.com$';
 my @suffix_two     = ("", "K", "M", "G");
 my @suffix_ten     = ("", "k", "m", "g");
+
+my %minimum_free;
+$minimum_free{"h_vmem"} = expand_suffix("1G");
+$minimum_free{"slots"}  = 1;
 
 my %opts;
 $opts{user}     = $USER;
@@ -47,6 +51,7 @@ GetOptions(
     's|sort:s'    => \$opts{sort},
     'd|debug'     => \$opts{debug},
     'h|help'      => \$opts{help},
+    'q|queues'    => \$opts{queues},
 );
 
 $opts{all} = 1 if ($opts{user} eq '*');
@@ -59,6 +64,7 @@ if ($opts{help}) {
     print "  -j <jid_list>  - comma-separated list of JIDs to view\n";
     print "  -f             - print all available data for each job\n";
     print "  -s j           - sort by JID\n";
+    print "  -q             - sort by queue";
     print "  -d             - print debugging info\n";
     print "  -h             - print this message\n";
     exit 0;
@@ -72,10 +78,14 @@ my $fh = open_file($sched_data);
 warn_and_exit("ABORT: Could not read scheduler data") if (! $fh);
 
 my $queue = queue_data();
-my $users = job_to_user($queue);
 my $sched = sched_data($fh); # WARNING: data lags other sources by a few minutes
 
-print_data($sched, $users);
+if ($opts{queues}) {
+    print_queues($sched, $queue);
+} else {
+    my $users = job_to_user($queue);
+    print_data($sched, $users);
+}
 
 # Warn if data file was rather old
 my $time = time() - stat($fh)->mtime;
@@ -97,6 +107,56 @@ sub job_to_user {
     }
 
     return \%users;
+}
+
+#DEBUG - still need to:
+#  - format output properly
+#  - switches to control minimum_free settings
+#  - include job times
+#  - too big: split into functions
+sub print_queues {
+    my($sched, $queue) = @_;
+
+    # Sort reservations by queue
+    my %qreserv;
+    foreach my $job (sort keys %{$sched}) {
+        foreach my $task (sort keys %{$sched->{$job}}) {
+            foreach my $qinst (keys %{$sched->{$job}{$task}{Q}}) {
+                push(@{$qreserv{$qinst}}, { job => $job, task => $task });
+            }
+        }
+    }
+
+    # Check each queue instance
+    foreach my $qinst (sort keys %{$queue->{queue_info}->{"Queue-List"}}) {
+        my $qresource = $queue->{queue_info}->{"Queue-List"}->{$qinst}->{resource};
+
+        my $report = 1;
+
+        foreach my $res (keys %{$qresource}) {
+            if (defined($minimum_free{$res})) {
+                if (expand_suffix($qresource->{$res}{content}) < expand_suffix($minimum_free{$res})) {
+                    $report = 0;
+                }
+            }
+        }
+
+        if ($report) {
+            print trim_irrelev($qinst) .":";
+
+            # Resources
+            foreach my $res (keys %{$qresource}) {
+                print " $res=". $qresource->{$res}{content};
+            }
+
+            # Scheduled jobs
+            foreach my $j (@{$qreserv{trim_irrelev($qinst)}}) {
+                print " ". $j->{job} .".". $j->{task};
+            }
+
+            print "\n";
+        }
+    }
 }
 
 sub print_data {
@@ -398,7 +458,7 @@ sub queue_data {
 
     # Obtain queue instance data
     my $fh = IO::File->new;
-    $fh->open("qstat -ext -u \\\* -xml |") || die("Problem executing qstat: $!");
+    $fh->open("qstat -F h_vmem,slots -f -ext -u \\\* -xml |") || die("Problem executing qstat: $!");
 
     my $doc = $xs->XMLin($fh);
 
@@ -408,7 +468,7 @@ sub queue_data {
 sub expand_suffix {
     my($number) = @_;
 
-    if ($number =~ /^(\d+)(\S+)?$/) {
+    if ($number =~ /^([0-9.]+)(\S+)?$/) {
         my $amount    = $1;
         my $multipler = $2;
 
