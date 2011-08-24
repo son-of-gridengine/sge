@@ -521,7 +521,7 @@ Possible values for \fBbinding_strategy\fP are as follows:
 .sp
 .nf
 .ta \w''u
-    linear:<amount>[:<socket>,<core>]
+    linear:[<amount>[:<socket>,<core>]]
     striding:<amount>:<n>[:<socket>,<core>]
     explicit:[<socket>,<core>;...]<socket>,<core>
 .fi
@@ -533,14 +533,18 @@ starting point for the first core to bind on.
 \fBlinear\fP means that xxQS_NAMExx tries to bind the job on \fBamount\fP
 successive cores. If \fBsocket\fP and \fBcore\fP are omitted then xxQS_NAMExx
 first allocates successive cores on the first empty socket found.
-Empty means that there are no jobs bound to the socket by xxQS_NAMExx.
+("Empty" means that there are no jobs bound to the socket by xxQS_NAMExx.)
 If this is not  possible, or is not sufficient, xxQS_NAMExx tries to find
 (further) cores on the socket with the most unbound cores, and so on.
 If the number of allocated cores is lower than requested cores, no
 binding is done for the job. If \fBsocket\fP and \fBcore\fP are specified,
 then xxQS_NAMExx tries to find empty cores with this
 starting point. If this is not possible then binding is not done on
-the host concerned.
+the host concerned.  \fBamount\fP may be omitted or specified as
+\fBslots\fP.  In that case it will be taken as the number of slots
+assigned to the job on a per-host basis, on the assumption that slots
+are equivalent to cores; this allows binding to work when parallel
+jobs run across nodes with variable slot counts.
 .sp
 \fBstriding\fP means that xxQS_NAMExx tries to find cores with a certain offset.
 It will select \fBamount\fP of empty cores with an offset of \fBn\fP-1 cores
@@ -1729,6 +1733,7 @@ instances as parameter with the name \fBS\fP.
 .M jsv 1 .)
 .\"
 .IP "\fB\-t n[\-m[:s]]\fP"
+.\" https://arc.liv.ac.uk/trac/SGE/ticket/800
 Available for \fIqsub\fP and \fIqalter\fP only.
 .sp 1
 Submits a so called \fIArray Job\fP, i.e. an array of identical tasks being

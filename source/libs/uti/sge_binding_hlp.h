@@ -90,5 +90,9 @@ const char* binding_get_topology_for_job(const char *binding_result);
 
 bool topology_string_to_socket_core_lists(const char* topology, int** sockets,
                                      int** cores, int* amount);
+
+/* Used as an "infinite" value.  The number of cores it's used for is
+   defined as u_long32, but is treated as signed in the code.  */
+#define BIND_INFINITY 0x7fffffff
 #endif /* __SGE_BINDING_HLP_H */
 
