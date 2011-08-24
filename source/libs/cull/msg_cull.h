@@ -121,7 +121,7 @@
 #define MSG_CULL_LEELEMNULL              _MESSAGE(41091, _("element is NULL"))
 #define MSG_CULL_LENAMENOT               _MESSAGE(41092, _("name not in descriptor contained"))
 #define MSG_CULL_LENAMEOUT               _MESSAGE(41093, _("name out of namespaces"))
-#define MSG_CULL_LEDESCRNULL             _MESSAGE(41094, _("descriptor is NULL, empty describtor"))
+#define MSG_CULL_LEDESCRNULL             _MESSAGE(41094, _("descriptor is NULL, empty descriptor"))
 #define MSG_CULL_LENEGPOS                _MESSAGE(41095, _("negative position is not allowed"))
 #define MSG_CULL_LESTRDUP                _MESSAGE(41096, _("strdup failure"))
 #define MSG_CULL_LEFILENULL              _MESSAGE(41097, _("file pointer is NULL"))
@@ -184,7 +184,7 @@
 /*
 ** cull_pack.c, macros for cull_pack_strerror()
 */
-#define MSG_CULL_PACK_SUCCESS             _MESSAGE(41153, _("packing successfull"))
+#define MSG_CULL_PACK_SUCCESS             _MESSAGE(41153, _("packing successful"))
 #define MSG_CULL_PACK_ENOMEM              _MESSAGE(41154, _("can't allocate memory"))
 #define MSG_CULL_PACK_FORMAT              _MESSAGE(41155, _("invalid input parameter"))
 #define MSG_CULL_PACK_BADARG              _MESSAGE(41156, _("bad argument"))

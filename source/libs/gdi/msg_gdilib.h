@@ -65,7 +65,7 @@
 /* 
 ** gdilib/sge_qexec.c
 */
-#define MSG_GDI_INVALIDPARAMETER_SS                      _MESSAGE(43066, _("invalid paramter to "SFQ": "SFQ))
+#define MSG_GDI_INVALIDPARAMETER_SS                      _MESSAGE(43066, _("invalid parameter to "SFQ": "SFQ))
 #define MSG_GDI_RESOLVINGUIDTOUSERNAMEFAILED_IS          _MESSAGE(43067, _("failed resolving uid %d to username: "SFN))
 #define MSG_GDI_MISSINGINENVIRONMENT_S                   _MESSAGE(43068, _("missing "SFQ" in environment"))
 #define MSG_GDI_STRINGISINVALID_SS                       _MESSAGE(43069, _("string "SFQ" in env var "SFQ" is not a valid job/taskid"))
