@@ -107,7 +107,7 @@
 #define MSG_UTILBIN_PERMUSAGE2   _MESSAGE(57030, _("silent mode"))
 #define MSG_UTILBIN_PERMUSAGE3   _MESSAGE(57031, _("sleep 'n' seconds after 1 second work"))
 #define MSG_UTILBIN_PERMUSAGE4   _MESSAGE(57032, _("do work 'n' times using 'n' processes"))
-#define MSG_UTILBIN_PERMUSAGE5   _MESSAGE(57033, _("with range s.th. like a-k"))
+#define MSG_UTILBIN_PERMUSAGE5   _MESSAGE(57033, _("with range something like a-k"))
 
 
 /*
@@ -183,7 +183,7 @@
  * utilbin/sge_passwd
  */
 #define MSG_PWD_ONLY_USER_SS        _MESSAGE(57310,         _(SFN": only the user "SFQ" or \"root\" can change this password"))
-#define MSG_PWD_ONLY_ROOT_S         _MESSAGE(57311,         _(SFN": only \"root\" has the permission to delete entrys"))
+#define MSG_PWD_ONLY_ROOT_S         _MESSAGE(57311,         _(SFN": only \"root\" has the permission to delete entries"))
 #define MSG_PWD_SWITCH_ADMIN_S      _MESSAGE(57312,         _(SFN": can't switch to admin_user"))
 #define MSG_PWD_CHANGED             _MESSAGE(57313,         _("Password changed"))
 #define MSG_PWD_INVALID_S           _MESSAGE(57314,         _(SFN": Invalid password"))
@@ -195,7 +195,7 @@
 #define MSG_PWD_LOAD_PRIV_SSS       _MESSAGE(57320,         _(SFN": can't load private key "SFQ" to decrypt password. SSL error: "SFN))
 #define MSG_PWD_DECR_SS             _MESSAGE(57321,         _(SFN": error decrypting password - keylength mismatch. SSL error: "SFN))
 #define MSG_PWD_MALLOC_SS           _MESSAGE(57322,         _(SFN": malloc failed. SSL error: "SFN))
-#define MSG_PWD_LOAD_PUB_SS         _MESSAGE(57323,         _(SFN": can't load public key "SFQ" to ecrypt password"))
+#define MSG_PWD_LOAD_PUB_SS         _MESSAGE(57323,         _(SFN": can't load public key "SFQ" to encrypt password"))
 #define MSG_PWD_OPEN_SGEPASSWD_SSI  _MESSAGE(57325,         _(SFN": can't open sgepasswd file: "SFN" (%d)"))
 #define MSG_PWD_WRITE_SGEPASSWD_SSI _MESSAGE(57326,         _(SFN": can't write to sgepasswd file: "SFN" (%d)"))
 #define MSG_PWD_CLOSE_SGEPASSWD_SSI _MESSAGE(57327,         _(SFN": error closing sgepasswd file: "SFN" (%d)"))
@@ -210,7 +210,7 @@
 /*
  * utilbin/authuser
  */
-#define MSG_AUTHUSER_PAM_NOT_AVAILABLE    _MESSAGE(213001, _("pam not available"))
+#define MSG_AUTHUSER_PAM_NOT_AVAILABLE    _MESSAGE(213001, _("PAM not available"))
 #define MSG_AUTHUSER_USER_UNKNOWN_S       _MESSAGE(213002, _("user "SFN" unknown")) 
 #define MSG_AUTHUSER_NO_SHADOW_ENTRY_S    _MESSAGE(213003, _("user "SFN" has no shadow entry"))
 #define MSG_AUTHUSER_CRYPT_FAILED_S       _MESSAGE(213004, _("crypt failed: "SFN))
@@ -218,7 +218,7 @@
 #define MSG_AUTHUSER_PAM_ERROR_S          _MESSAGE(213006, _("PAM error: "SFN)) 
 
 #define MSG_AUTUSER_INVAILD_ARG_COUNT     _MESSAGE(213101, _("invalid number of arguments"))
-#define MSG_AUTUSER_MISSING_PAM_SERVICE   _MESSAGE(213102, _("missing pam service name"))
+#define MSG_AUTUSER_MISSING_PAM_SERVICE   _MESSAGE(213102, _("missing PAM service name"))
 #define MSG_AUTUSER_UNKNOWN_PARAM_S       _MESSAGE(213103, _("Unknown param "SFN))
 #define MSG_AUTUSER_UNKNOWN_AUTH_METHOD_S _MESSAGE(213104, _("Unknown <auth_method> "SFN))
 #define MSG_AUTHUSER_NO_PW_ENTRY_SS       _MESSAGE(213105, _("password: can not get password entry of user "SFN": "SFN))

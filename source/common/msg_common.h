@@ -103,7 +103,7 @@
 #define MSG_PARSE_XOPTIONMUSTHAVEARGUMENT_S _MESSAGE(23062, _("ERROR! "SFN" option must have argument"))
 #define MSG_PARSE_XOPTIONALREADYSETOVERWRITINGSETING_S _MESSAGE(23063, _(SFQ" option has already been set, overriding previous setting"))
 #define MSG_SGETEXT_MUSTBEMANAGERORUSER_SS  _MESSAGE(23065, _("denied: "SFQ" must be manager or in userset "SFQ))
-#define MSG_FILE_ERRORCLOSEINGXY_SS         _MESSAGE(23066, _("error closeing "SFN": "SFN))
+#define MSG_FILE_ERRORCLOSEINGXY_SS         _MESSAGE(23066, _("error closing "SFN": "SFN))
 
 /*
 ** parse_qsub.c
@@ -275,7 +275,7 @@
 /*
 ** sge_schedd_conf.c
 */
-#define MSG_GDI_INVALIDPOLICYSTRING     _MESSAGE(23288, _("Invalid policy hierachy string. Disabling policy hierachy."))
+#define MSG_GDI_INVALIDPOLICYSTRING     _MESSAGE(23288, _("Invalid policy hierarchy string. Disabling policy hierarchy."))
 #define MSG_GDI_INVALIDHALFLIFE_DECAY _MESSAGE(23289, _("Invalid halflife_day_list. Ignoring the setting."))
 
 /*
@@ -1001,7 +1001,7 @@
 #define MSG_GDI_UTEXT_jsv_OPT_YN                         _MESSAGE(23513, _("job submission verification script to be used"))
 
 #define MSG_GDI_USAGE_sst_OPT                         "[-sst]"
-#define MSG_GDI_UTEXT_sst_OPT                         _MESSAGE(23514, _("show a formated sharetree"))
+#define MSG_GDI_UTEXT_sst_OPT                         _MESSAGE(23514, _("show a formatted sharetree"))
 
 #define MSG_GDI_USAGE_suspend_remote_OPT                 "[-suspend_remote y[es]|n[o]]"
 #define MSG_GDI_UTEXT_suspend_remote_OPT                 _MESSAGE(23515, _("suspend qrsh client as also the process on execution host"))
@@ -1141,7 +1141,7 @@
 
 /* =================================================
  * please do not enter new messages after this point,
- * if they are global messages (meaningfull for all modules)
+ * if they are global messages (meaningful for all modules)
  * enter them in the section global error messages
  * else above global messages, or better move your module
  * to some library!

@@ -125,22 +125,22 @@
 #define MSG_SCHEDD_INFO_NOTPARALLELQUEUE              _MESSAGE(47094, _("Jobs can not run because queue instance is not a parallel queue") )  
 #define MSG_SCHEDD_INFO_NOTINQUEUELSTOFPE             _MESSAGE(47095, _("Jobs can not run because queue instance is not in queue list of PE") )  
 #define MSG_SCHEDD_INFO_NOTACKPTQUEUE                 _MESSAGE(47096, _("Jobs can not run because queue instance is not of type checkpointing") )  
-#define MSG_SCHEDD_INFO_NOTINQUEUELSTOFCKPT           _MESSAGE(47097, _("Jobs can not run because queue instance is not in queue list of ckpt interface defintion"))
+#define MSG_SCHEDD_INFO_NOTINQUEUELSTOFCKPT           _MESSAGE(47097, _("Jobs can not run because queue instance is not in queue list of ckpt interface definition"))
 #define MSG_SCHEDD_INFO_QUEUENOTINTERACTIVE           _MESSAGE(47098, _("Jobs can not run because queue instance is not interactive") )  
 #define MSG_SCHEDD_INFO_NOTASERIALQUEUE               _MESSAGE(47099, _("Jobs can not run because queue instance is not of type batch or transfer"))
 #define MSG_SCHEDD_INFO_NOTPARALLELJOB                _MESSAGE(47100, _("Jobs can not run in queue instance because the job is not parallel"))
 #define MSG_SCHEDD_INFO_NOTREQFORCEDRES               _MESSAGE(47101, _("Jobs can not run because they do not request 'forced' resource") )   
 #define MSG_SCHEDD_INFO_WOULDSETQEUEINALARM           _MESSAGE(47102, _("Jobs would set queue in load alarm state") )     
 #define MSG_SCHEDD_INFO_NOSLOTSINQUEUE                _MESSAGE(47103, _("Jobs can not run because queue has 0 slots") )    
-#define MSG_SCHEDD_INFO_CANNOTRUNINQUEUE              _MESSAGE(47104, _("Jobs can not run because the resource requirements can not be satified"))
+#define MSG_SCHEDD_INFO_CANNOTRUNINQUEUE              _MESSAGE(47104, _("Jobs can not run because the resource requirements can not be satisfied"))
 #define MSG_SCHEDD_INFO_NORESOURCESPE                 _MESSAGE(47105, _("Jobs can not run because resources requested are not available for parallel job"))
-#define MSG_SCHEDD_INFO_CANNOTRUNGLOBALLY             _MESSAGE(47106, _("Jobs can not run globally because the resource requirements can not be satified"))
+#define MSG_SCHEDD_INFO_CANNOTRUNGLOBALLY             _MESSAGE(47106, _("Jobs can not run globally because the resource requirements can not be satisfied"))
 #define MSG_SCHEDD_INFO_NOFORCEDRES                   _MESSAGE(47107, _("Jobs can not run because they do not request 'forced' resource"))
 #define MSG_SCHEDD_INFO_NOGLOBFORCEDRES               _MESSAGE(47108, _("Jobs can not run globally because they do not request 'forced' resource"))
 #define MSG_SCHEDD_INFO_CKPTNOTFOUND                  _MESSAGE(47109, _("Jobs can not run because requested ckpt object not found") )  
 #define MSG_SCHEDD_INFO_PESLOTSNOTINRANGE             _MESSAGE(47110, _("Jobs can not run because available slots combined under PE are not in range of job") ) 
 #define MSG_SCHEDD_INFO_NOACCESSTOPE                  _MESSAGE(47111, _("Jobs can not run because they have no access to pe") )     
-#define MSG_SCHEDD_INFO_QUEUEINALARM                  _MESSAGE(47112, _("Jobs can not run because queue instances are in alarm starte") )      
+#define MSG_SCHEDD_INFO_QUEUEINALARM                  _MESSAGE(47112, _("Jobs can not run because queue instances are in alarm state") )      
 #define MSG_SCHEDD_INFO_QUEUEOVERLOADED               _MESSAGE(47113, _("Jobs can not run because queue instances are overloaded") ) 
 #define MSG_SCHEDD_INFO_ALLALARMOVERLOADED            _MESSAGE(47114, _("Jobs can not run because all queue instances are overloaded or full") )    
 #define MSG_SCHEDD_INFO_TURNEDOFF                     _MESSAGE(47115, _("(Collecting of scheduler job information is turned off)") )         
@@ -251,7 +251,7 @@
 /* 
 ** schedd/sge_select_queue.c
 */
-#define MSG_SCHEDD_WHYEXCEEDINVALIDLOAD_SS            _MESSAGE(47310, _("invalid load value "SFQ" for theshold "SFN))
+#define MSG_SCHEDD_WHYEXCEEDINVALIDLOAD_SS            _MESSAGE(47310, _("invalid load value "SFQ" for threshold "SFN))
 #define MSG_SCHEDD_WHYEXCEEDINVALIDTHRESHOLD_SS       _MESSAGE(47311, _("invalid threshold value "SFN"="SFN))
 #define MSG_SCHEDD_WHYEXCEEDINVALIDLOADADJUST_SS      _MESSAGE(47312, _("invalid load adjustment value "SFN"="SFN))
 #define MSG_SCHEDD_WHYEXCEEDBOOLVALUE_SSSSS           _MESSAGE(47313, _(SFN"="SFN" ("SN_UNLIMITED") "SFN" "SFN))
@@ -286,7 +286,7 @@
  * libs/sched/sge_complex_schedd.c
  */
 #define MSG_GDI_NO_ATTRIBUTE_S                        _MESSAGE(47370, _("denied: attribute "SFQ" is no complex attribute"))
-#define MSG_COMPLEX_MISSING                           _MESSAGE(47371, _("name filter in get_attribute_list is not big enought"))
+#define MSG_COMPLEX_MISSING                           _MESSAGE(47371, _("name filter in get_attribute_list is not big enough"))
 
 /*
  * sgeobj/sge_schedd_conf.c 

@@ -55,7 +55,7 @@
 #define MSG_BERKELEY_CANNOTCHECKPOINT_IS _MESSAGE(70023, _("error checkpointing berkeley db: (%d) "SFN))
 #define MSG_BERKELEY_TRANSACTIONEINVAL _MESSAGE(70024, _("invalid transaction command"))
 #define MSG_BERKELEY_USINGBDBVERSION_S _MESSAGE(70025, _("using BerkeleyDB version "SFN))
-#define MSG_BERKELEY_WRONGBDBVERSIONEXPECTING_SDD  _MESSAGE(70026, _("wrong BerkeleyDB version: Using "SFN", but exect major version = %d, minor version >= %d"))
+#define MSG_BERKELEY_WRONGBDBVERSIONEXPECTING_SDD  _MESSAGE(70026, _("wrong BerkeleyDB version: Using "SFN", but expect major version = %d, minor version >= %d"))
 #define MSG_BERKELEY_PACKERROR_SS _MESSAGE(70027, _("error packing object with key "SFQ": "SFN))
 #define MSG_BERKELEY_PACKINITERROR_SS _MESSAGE(70028, _("error initializing packing buffer for object with key "SFQ": "SFN))
 #define MSG_BERKELEY_UNPACKERROR_SS _MESSAGE(70029, _("error unpacking object with key "SFQ": "SFN))

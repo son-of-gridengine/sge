@@ -213,7 +213,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
    /* From here only the son --------------------------------------*/
    if (!script_file) {
       /* output error and exit */
-      shepherd_error(1, "received NULL als script file");
+      shepherd_error(1, "received NULL as script file");
    }   
 
    /*
