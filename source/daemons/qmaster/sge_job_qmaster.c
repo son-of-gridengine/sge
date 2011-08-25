@@ -2228,8 +2228,6 @@ int *trigger
       lList *master_centry_list = *object_type_get_master_list(SGE_TYPE_CENTRY);
 
       if ((pos=lGetPosViaElem(jep, JB_hard_resource_list, SGE_NO_ABORT))>=0) {
-         bool is_changed = false;
-
          DPRINTF(("got new JB_hard_resource_list\n")); 
          if (centry_list_fill_request(lGetList(jep, JB_hard_resource_list), 
                                       alpp, master_centry_list, 
@@ -2243,11 +2241,11 @@ int *trigger
          /* to prevent inconsistent consumable mgmnt:
             - deny resource requests changes on consumables for running jobs (IZ #251)
             - a better solution is to store for each running job the amount of resources */
-            
-         is_changed = is_changes_consumables(alpp, lGetList(jep, JB_hard_resource_list), 
-                                                  lGetList(new_job, JB_hard_resource_list));
-         if (is_running && is_changed) {
-            DRETURN(STATUS_EUNKNOWN);   
+
+         if (is_running &&
+             is_changes_consumables(alpp, lGetList(jep, JB_hard_resource_list),
+                                    lGetList(new_job, JB_hard_resource_list))) {
+            DRETURN(STATUS_EUNKNOWN);
          }
 
          if (!centry_list_is_correct(lGetList(jep, JB_hard_resource_list), alpp)) {
