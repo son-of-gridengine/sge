@@ -2,13 +2,11 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
-.\" Copyright (C), 2011 Dave Love
+.\" Copyright (C), 2011 Dave Love, University of Liverpool
 .\"
 .\" Portions of this code are Copyright 2011 Univa Inc.
 .\"
 .\"___INFO__MARK_END__
-.\"
-.\" $RCSfile: submit.1,v $     Last Update: $Date: 2011-06-22 13:05:09 $     Revision: $Revision: 1.103 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -33,7 +31,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH SUBMIT 1 "$Date: 2011-06-22 13:05:09 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH SUBMIT 1 "$Date: 2011-07-19 15:34:20 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qsub, qsh, qlogin, qrsh, qalter, qresub \- submit jobs to xxQS_NAMExx
 .\"
@@ -1181,9 +1179,9 @@ serial job multiple \fB\-l\fP switches refine the definition
 for the sought queue.
 .sp 1
 .I Qalter
-allows changing the value of this option even while the job is running, but only if the 
-initial list of resources does not contain a resource that
-is marked as consumable. However the modification will only be  
+allows changing the value of this option even while the job is
+running, but only if no change is made to requests for resources
+marked as consumable.  However the modification will only be  
 effective after a restart or migration of the job.
 .sp 1
 If this option or a corresponding value in \fIqmon\fP is specified 
@@ -1639,7 +1637,8 @@ requirements" for execution, or "nice-to-have, but not
 essential". If the \fB\-hard\fP flag (see above) is encountered at a later
 stage of the scan, all resource requests following it once
 again become "essential". The \fB\-hard\fP and \fB\-soft\fP
-options in effect act as "toggles" during the scan.
+options in effect act as "toggles" during the scan.  However, requests
+for consumable resources cannot be soft.
 .sp 1
 If this option or a corresponding value in \fIqmon\fP is specified then
 the corresponding \fB\-q\fP and \fB\-l\fP resource requirements will be
