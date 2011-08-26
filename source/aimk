@@ -835,20 +835,20 @@ while ($#argv >= 1 && $?found)
       set PARALLEL = "-j $argv[1]"
       breaksw
    case  "-po"
-      if ( $buildarch == lx-x86 ) then
+      if ( $buildarch == lx-x86 || $buildarch != lx-amd64) then
          scripts/msgmerge.csh merge
          echo ""
          echo "==========READY FOR TRANSLATION========="
          echo ""
       else
-         echo "Must be done on Linux"
+         echo "Must be done on GNU/Linux"
          exit 1
       endif
       exit 0
       breaksw
    case  "-pot"
-      if ( $buildarch != "lx-x86" ) then
-         echo "Must be done on lx-x86 architecture"
+      if ( $buildarch != "lx-x86" && $buildarch != lx-amd64) then
+         echo "Must be done on GNU/Linux"
          exit 1
       endif
       if ( $?TCLSHPATH ) then
@@ -860,7 +860,7 @@ while ($#argv >= 1 && $?found)
       echo "Adding script messages"
       setenv BUILDARCH $BUILDARCH
       foreach f ( dist/inst_sge  dist/util/setfileperm.sh dist/util/arch_variables \
-                  dist/util/qhold.sh dist/util/sgeCA/sge_ca )
+                  dist/util/sgeCA/sge_ca )
          set pf = "/tmp/`basename $f`.pot"
          tclsh scripts/infotext_msg_parse.tcl -F $pf $f
          echo "Appending script pot file $pf"
