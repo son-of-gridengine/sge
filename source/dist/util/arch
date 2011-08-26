@@ -179,6 +179,12 @@ Linux)
    alpha)
       lxmachine=alpha
       ;;
+   arm)
+      lxmachine=arm
+      ;;
+   armel)
+      lxmachine=armel
+      ;;
    sparc)
       lxmachine=sparc
       ;;
@@ -202,6 +208,9 @@ Linux)
       ;;
    mips)
       lxmachine=mips
+      ;;
+   mips)
+      lxmachine=mipsel
       ;;
    mips64)
       lxmachine=mips64
