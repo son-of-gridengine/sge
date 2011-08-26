@@ -33,9 +33,9 @@
 
 set cmd = $1 
 setenv ARCH `./aimk -no-mk`
-set MSGMERGE = ./3rdparty/gettext/${ARCH}/bin/msgmerge
-set MSGFMT = ./3rdparty/gettext/${ARCH}/bin/msgfmt
-set MSGUNIQ = ./3rdparty/gettext/${ARCH}/bin/msguniq
+set MSGMERGE = msgmerge
+set MSGFMT = msgfmt
+set MSGUNIQ = msguniq
 #set MSGFMT = /usr/bin/msgfmt
 #set MSGFMT = /home/codine/gettext/${ARCH}/bin/msgfmt
 #set MSGFMT = /usr/bin/msgfmt

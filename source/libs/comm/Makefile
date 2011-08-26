@@ -133,7 +133,7 @@ commlib_clean: commlistslib_clean
 commlib_depend: commlistslib_depend
 		$(DEPEND) -f$(COMMLIB_DIR)/commlib_dependencies $(COMMLIB_DIR)/*.c
 
-commlib_messages: commlistslib_messages commlib_messages
+commlib_messages: commlistslib_messages
 	@echo Creating $@
 	@for i in `ls $(COMMLIB_DIR)/*.c`; do \
 	   $(CC) $(CFLAGS) -DEXTRACT_MESSAGES -E $$i | $(XGETTEXT) - ;\
