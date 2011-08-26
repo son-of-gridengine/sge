@@ -281,6 +281,11 @@ makewhatis %{sge_home}/man
 %{sge_mandir}/man8/sge_shadowd.8.gz
 
 %changelog
+* Thu Aug 18 2011 Dave Love <d.love@liverpool.ac.uk> 8.0.0pre_b
+- Add Requires: xorg-x11-fonts-ISO8859-1-100dpi xorg-x11-fonts-ISO8859-1-75dpi
+  to qmon package [from the EPEL 6 package (Orion Poplawski)].
+- Fix libdrmaa symlink [from Florian La Roche].
+
 * Sat Jun 18 2011 Dave Love <d.love@liverpool.ac.uk> 8.0.0a
 - Add --without java (adapted from Jesse Becker <hawson@gmail.com>).
 - Use csh -f.  Add Prefix.  Use -fno-strict-aliasing.
