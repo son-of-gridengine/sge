@@ -515,7 +515,7 @@ SetSpoolingOptionsDynamic()
 {
    suggested_method=$1
    if [ -z "$suggested_method" ]; then
-      suggested_method=berkeleydb
+      suggested_method=classic
    fi
    if [ "$AUTO" = "true" ]; then
       if [ "$SPOOLING_METHOD" != "berkeleydb" -a "$SPOOLING_METHOD" != "classic" ]; then
@@ -1341,8 +1341,8 @@ AddHosts()
                 "installation with <qconf -ah hostname> for adding and <qconf -dh hostname>\n" \
                 "for removing this host\n\nAttention: This is not the shadow host installation\n" \
                 "procedure.\n You still have to install the shadow host separately\n\n"
-      $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n \
-                "Do you want to add your shadow host(s) now? (y/n) [y] >> "
+      $INFOTEXT -auto $AUTO -ask "y" "n" -def "n" -n \
+                "Do you want to add your shadow host(s) now? (y/n) [n] >> "
       ret=$?
       if [ "$ret" = 0 ]; then
          $CLEAR
@@ -1386,25 +1386,25 @@ AddHosts()
       if [ -f $TMPL -o -f $TMPL2 ]; then
          $INFOTEXT "\nCan't delete template files >%s< or >%s<" "$TMPL" "$TMPL2"
       else
-		   #Issue if old qmaster is running, new installation succeeds, but in fact the old qmaster is still running!
-		   #Reinstall can cause, that these already exist. So we skip them if they already exist.
-		   if [ x`$SGE_BIN/qconf -shgrpl 2>/dev/null | grep '^@allhosts$'` = x ]; then
+	 #Issue if old qmaster is running, new installation succeeds, but in fact the old qmaster is still running!
+         #Reinstall can cause, that these already exist. So we skip them if they already exist.
+	 if [ x`$SGE_BIN/qconf -shgrpl 2>/dev/null | grep '^@allhosts$'` = x ]; then
             PrintHostGroup @allhosts > $TMPL
             Execute $SGE_BIN/qconf -Ahgrp $TMPL
-			else
-			   $INFOTEXT "Skipping creation of <allhosts> hostgroup as it already exists"
-				$INFOTEXT -log "Skipping creation of <allhosts> hostgroup as it already exists"
-			fi
-			if [ x`$SGE_BIN/qconf -sql 2>/dev/null | grep '^all.q$'` = x ]; then
+	 else
+	    $INFOTEXT "Skipping creation of <allhosts> hostgroup as it already exists"
+	    $INFOTEXT -log "Skipping creation of <allhosts> hostgroup as it already exists"
+	 fi
+	 if [ x`$SGE_BIN/qconf -sql 2>/dev/null | grep '^all.q$'` = x ]; then
             Execute $SGE_BIN/qconf -sq > $TMPL
             Execute sed -e "/qname/s/template/all.q/" \
                         -e "/hostlist/s/NONE/@allhosts/" \
                         -e "/pe_list/s/NONE/make/" $TMPL > $TMPL2
             Execute $SGE_BIN/qconf -Aq $TMPL2
-			else
-			   $INFOTEXT "Skipping creation of <all.q> queue as it already exists"
-				$INFOTEXT -log "Skipping creation of <all.q> queue  as it already exists"
-			fi
+	 else
+	    $INFOTEXT "Skipping creation of <all.q> queue as it already exists"
+	    $INFOTEXT -log "Skipping creation of <all.q> queue  as it already exists"
+	 fi
          rm -f $TMPL $TMPL2        
       fi
 
