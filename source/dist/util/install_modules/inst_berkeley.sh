@@ -40,14 +40,14 @@
 SpoolingQueryChange()
 {
    if [ -z "$1" ]; then
-      SPOOLING_DIR=$SGE_ROOT/$SGE_CELL/spooldb
+      SPOOLING_DIR="$SGE_ROOT/$SGE_CELL/spooldb"
    else
       SPOOLING_DIR="$1"
    fi
 
    if [ -f "$SGE_ROOT/$SGE_CELL/common/bootstrap" ]; then
-      ignore_fqdn=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep "ignore_fqdn" | awk '{ print $2 }'`
-      default_domain=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep "default_domain" | awk '{ print $2 }'`
+      ignore_fqdn=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep "ignore_fqdn" | awk '{ print $2 }'`
+      default_domain=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep "default_domain" | awk '{ print $2 }'`
    else
       if [ "$IGNORE_FQDN_DEFAULT" != "true" -a "$IGNORE_FQDN_DEFAULT" != "false" ]; then
          SelectHostNameResolving
@@ -200,7 +200,7 @@ CreateRPCServerScript()
    pid=$$
    TMP_DIR=/tmp/$pid
    TMP_RC=/tmp/$pid/sgebdb
-   RPCSCRIPT=$SGE_ROOT/$COMMONDIR/sgebdb
+   RPCSCRIPT="$SGE_ROOT/$COMMONDIR/sgebdb"
    ExecuteAsAdmin mkdir -p $TMP_DIR
    ExecuteAsAdmin sed -e "s%GENROOT%${SGE_ROOT_VAL}%g" \
                       -e "s%GENCELL%${SGE_CELL_VAL}%g" \
@@ -259,7 +259,7 @@ ExecuteRPCServerScript()
          exit 1
       fi
    else
-      ExecuteAsAdmin $SGE_ROOT/$SGE_CELL/common/sgebdb $1
+      ExecuteAsAdmin "$SGE_ROOT/$SGE_CELL/common/sgebdb" $1
    fi
 }
 

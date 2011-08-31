@@ -90,7 +90,7 @@ ShutdownMaster()
    if [ "$euid" != 0 -o "$SGE_ENABLE_SMF" != "true" ]; then
       $INFOTEXT "Shutting down qmaster!"
       $INFOTEXT -log "Shutting down qmaster!"
-      spool_dir_master=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep qmaster_spool_dir | awk '{ print $2 }'`
+      spool_dir_master=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep qmaster_spool_dir | awk '{ print $2 }'`
       master_pid=`cat $spool_dir_master/qmaster.pid`
 
       `qconf -km`
@@ -110,19 +110,19 @@ ShutdownMaster()
       $INFOTEXT "sge_qmaster is down!"
    fi
 
-   master_spool=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep qmaster_spool_dir | awk '{ print $2 }'`
-   reporting=$SGE_ROOT/$SGE_CELL/reporting
+   master_spool=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep qmaster_spool_dir | awk '{ print $2 }'`
+   reporting="$SGE_ROOT/$SGE_CELL/reporting"
    
    toDelete="accounting act_qmaster bootstrap cluster_name configuration jmx local_conf qtask sched_configuration sgeCA sge_request sgemaster"
    
    RemoveRcScript $HOST master $euid
 
-   if [ -f $SGE_ROOT/$SGE_CELL/common/sgebdb ]; then
+   if [ -f "$SGE_ROOT/$SGE_CELL/common/sgebdb" ]; then
       $INFOTEXT "Berkeley db server is being used with this installation"
       $INFOTEXT "Skipping removal of berkeley spool directory"
       $INFOTEXT "Uninstall the berkeley db server before removing the spool directory"
    else
-      berkeley_spool=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep spooling_params | awk '{ print $2 }'`
+      berkeley_spool=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep spooling_params | awk '{ print $2 }'`
 
       $INFOTEXT "Removing berkeley spool directory!"
       $INFOTEXT -log "Removing berkeley spool directory!"
@@ -139,10 +139,10 @@ ShutdownMaster()
 
    for path in $toDelete
    do
-     if [ -f $SGE_ROOT/$SGE_CELL/common/$path ]; then
+     if [ -f "$SGE_ROOT/$SGE_CELL/common/$path" ]; then
          $INFOTEXT "Removing $path"
          $INFOTEXT -log "Removing $SGE_ROOT/$SGE_CELL/common/$path"
-         ExecuteAsAdmin $RM -rf $SGE_ROOT/$SGE_CELL/common/$path
+         ExecuteAsAdmin $RM -rf "$SGE_ROOT/$SGE_CELL/common/$path"
       fi
    done
 }

@@ -71,7 +71,7 @@ GetCell()
     SGE_CELL_VAL=$CELL_NAME
     $INFOTEXT -log "Using >%s< as CELL_NAME." "$CELL_NAME"
 
-    if [ -f $SGE_ROOT/$SGE_CELL/common/bootstrap -a "$QMASTER" = "install" ]; then
+    if [ -f "$SGE_ROOT/$SGE_CELL/common/bootstrap" -a "$QMASTER" = "install" ]; then
        $INFOTEXT -log "The cell name you have used and the bootstrap already exists!"
        $INFOTEXT -log "It seems that you already have an installed system."
        $INFOTEXT -log "An installation may cause that data loss!"
@@ -101,7 +101,7 @@ GetCell()
       eval SGE_CELL=$INP
       SGE_CELL_VAL=`eval echo $SGE_CELL`
       if [ "$QMASTER" = "install" ]; then
-         if [ -d $SGE_ROOT/$SGE_CELL/common ]; then
+         if [ -d "$SGE_ROOT/$SGE_CELL/common" ]; then
             $CLEAR
             $INFOTEXT "\nThe \"common\" directory in cell >%s< already exists!" $SGE_CELL_VAL
             $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n "Do you want to select another cell name? (y/n) [y] >> "
@@ -109,7 +109,7 @@ GetCell()
                is_done="false"
             else
                with_bdb=0
-               if [ ! -f $SGE_ROOT/$SGE_CELL/common/bootstrap -a -f $SGE_ROOT/$SGE_CELL/common/sgebdb ]; then
+               if [ ! -f "$SGE_ROOT/$SGE_CELL/common/bootstrap" -a -f "$SGE_ROOT/$SGE_CELL/common/sgebdb" ]; then
                   $INFOTEXT -n "Do you want to keep this directory? Choose\n" \
                                "(YES option) - if you have installed BDB server.\n" \
                                "(NO option)  - to delete the whole directory!\n"
@@ -125,11 +125,11 @@ GetCell()
                SearchForExistingInstallations "qmaster shadowd execd dbwriter"
                if [ $sel_ret = 0 -a $with_bdb = 0 ]; then
                   $INFOTEXT "Deleting bootstrap and cluster_name files!"
-                  ExecuteAsAdmin rm -f $SGE_ROOT/$SGE_CELL_VAL/common/bootstrap
-                  ExecuteAsAdmin rm -f $SGE_ROOT/$SGE_CELL_VAL/common/cluster_name
+                  ExecuteAsAdmin rm -f "$SGE_ROOT/$SGE_CELL_VAL/common/bootstrap"
+                  ExecuteAsAdmin rm -f "$SGE_ROOT/$SGE_CELL_VAL/common/cluster_name"
                elif [ $sel_ret -ne 0 ]; then
-                  $INFOTEXT "Deleting directory \"%s\" now!" $SGE_ROOT/$SGE_CELL_VAL
-                  Removedir $SGE_ROOT/$SGE_CELL_VAL
+                  $INFOTEXT "Deleting directory \"%s\" now!" "$SGE_ROOT/$SGE_CELL_VAL"
+                  Removedir "$SGE_ROOT/$SGE_CELL_VAL"
                fi
                if [ $sel_ret = 0 ]; then
                   Overwrite="true"
@@ -330,7 +330,7 @@ SetPermissions()
 
       $CLEAR
 
-      util/setfileperm.sh -auto $SGE_ROOT
+      util/setfileperm.sh -auto "$SGE_ROOT"
 
       $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to continue >> "
    else
@@ -922,7 +922,7 @@ GetConfiguration()
       fi
       
       if [ -z "$1" ]; then
-         default_value=$SGE_ROOT_VAL/$SGE_CELL_VAL/spool
+         default_value="$SGE_ROOT_VAL/$SGE_CELL_VAL/spool"
       else
          default_value="$1"
       fi
@@ -1031,7 +1031,7 @@ AddActQmaster()
 AddDefaultComplexes()
 {
    $INFOTEXT "Adding default complex attributes"
-   ExecuteAsAdmin $SPOOLDEFAULTS complexes $SGE_ROOT_VAL/util/resources/centry
+   ExecuteAsAdmin $SPOOLDEFAULTS complexes "$SGE_ROOT_VAL/util/resources/centry"
 
 }
 
@@ -1105,7 +1105,7 @@ AddPEFiles()
 {
    $INFOTEXT "Adding default parallel environments (PE)"
    $INFOTEXT -log "Adding default parallel environments (PE)"
-   ExecuteAsAdmin $SPOOLDEFAULTS pes $SGE_ROOT_VAL/util/resources/pe
+   ExecuteAsAdmin $SPOOLDEFAULTS pes "$SGE_ROOT_VAL/util/resources/pe"
 }
 
 
@@ -1115,7 +1115,7 @@ AddPEFiles()
 AddDefaultUsersets()
 {
       $INFOTEXT "Adding SGE default usersets"
-      ExecuteAsAdmin $SPOOLDEFAULTS usersets $SGE_ROOT_VAL/util/resources/usersets
+      ExecuteAsAdmin $SPOOLDEFAULTS usersets "$SGE_ROOT_VAL/util/resources/usersets"
 }
 
 
@@ -1127,12 +1127,12 @@ CreateSettingsFile()
    $INFOTEXT "Creating settings files for >.profile/.cshrc<"
 
    if [ $RECREATE_SETTINGS = "false" ]; then
-      if [ -f $SGE_ROOT/$SGE_CELL/common/settings.sh ]; then
-         ExecuteAsAdmin $RM $SGE_ROOT/$SGE_CELL/common/settings.sh
+      if [ -f "$SGE_ROOT/$SGE_CELL/common/settings.sh" ]; then
+         ExecuteAsAdmin $RM "$SGE_ROOT/$SGE_CELL/common/settings.sh"
       fi
   
-      if [ -f $SGE_ROOT/$SGE_CELL/common/settings.csh ]; then
-         ExecuteAsAdmin $RM $SGE_ROOT/$SGE_CELL/common/settings.csh
+      if [ -f "$SGE_ROOT/$SGE_CELL/common/settings.csh" ]; then
+         ExecuteAsAdmin $RM "$SGE_ROOT/$SGE_CELL/common/settings.csh"
       fi
    fi
 
@@ -1146,10 +1146,10 @@ CreateSettingsFile()
       export SGE_QMASTER_PORT
    fi
 
-   ExecuteAsAdmin util/create_settings.sh $SGE_ROOT_VAL/$COMMONDIR
+   ExecuteAsAdmin util/create_settings.sh "$SGE_ROOT_VAL/$COMMONDIR"
 
-   SetPerm $SGE_ROOT_VAL/$COMMONDIR/settings.sh
-   SetPerm $SGE_ROOT_VAL/$COMMONDIR/settings.csh
+   SetPerm "$SGE_ROOT_VAL/$COMMONDIR/settings.sh"
+   SetPerm "$SGE_ROOT_VAL/$COMMONDIR/settings.csh"
 
    $INFOTEXT -wait -auto $AUTO -n "\nHit <RETURN> to continue >> "
 }
@@ -1866,7 +1866,7 @@ GetJvmLib()
       if [ x`echo $SGE_ARCH | grep 64` != x ]; then
          FLAGS="-d64"
       fi         
-      jvm_lib_path=`$java_bin $FLAGS -jar $SGE_ROOT/util/DetectJvmLibrary.jar 2>/dev/null`
+      jvm_lib_path=`$java_bin $FLAGS -jar "$SGE_ROOT/util/DetectJvmLibrary.jar" 2>/dev/null`
       if [ -z "$jvm_lib_path" ]; then
          java_home=""
       fi
@@ -1895,7 +1895,7 @@ IsJavaBinSuitable()
          if [ -n "$jvm_lib_path" ]; then
             #Verify we can load it
             if [ "$SGE_ARCH" != "win32-x86" ]; then
-               $SGE_ROOT/utilbin/$SGE_ARCH/valid_jvmlib "$jvm_lib_path" >/dev/null 2>&1
+               "$SGE_ROOT/utilbin/$SGE_ARCH/valid_jvmlib" "$jvm_lib_path" >/dev/null 2>&1
                return $?
             else
                return 0
@@ -1998,7 +1998,7 @@ HaveSuitableJavaBin() {
       if [ -z "$SGE_ROOT" ]; then
          SGE_ROOT="."
       fi
-      SGE_ARCH=`$SGE_ROOT/util/arch`
+      SGE_ARCH=`"$SGE_ROOT/util/arch"`
    fi
    
    #Default paths to look for Java
@@ -2111,7 +2111,7 @@ SetLibJvmPath() {
    jvm_lib_path=""
    if [ -n "$SGE_JVM_LIB_PATH" -a "$SGE_ARCH" != "win32-x86" ]; then
       #verify we got a correct platform library
-      $SGE_ROOT/utilbin/$SGE_ARCH/valid_jvmlib "$SGE_JVM_LIB_PATH" >/dev/null 2>&1
+      "$SGE_ROOT/utilbin/$SGE_ARCH/valid_jvmlib" "$SGE_JVM_LIB_PATH" >/dev/null 2>&1
       if [ $? -ne 0 ]; then
          $INFOTEXT -log -n "Specified JVM library %s is not correct. Will try to find another one.\n" "$SGE_JVM_LIB_PATH"
          SGE_JVM_LIB_PATH=""         
@@ -2120,7 +2120,7 @@ SetLibJvmPath() {
    
    if [ "$AUTO" = true -a -n "$SGE_JVM_LIB_PATH" ]; then
       #Try to load the library and try to autodetect a correct one if this one cannot be loaded
-      $SGE_ROOT/utilbin/$SGE_ARCH/valid_jvmlib "$SGE_JVM_LIB_PATH" >/dev/null 2>&1
+      "$SGE_ROOT/utilbin/$SGE_ARCH/valid_jvmlib" "$SGE_JVM_LIB_PATH" >/dev/null 2>&1
       if [ $? -ne 0 ]; then
           $INFOTEXT -log -n "Warning: Specified JVM library %s could not be loaded. Installer will now \n" \
                             "try to detect a new suitable one!"
@@ -2192,7 +2192,7 @@ SetLibJvmPath() {
             continue
          fi
          #Try to load the library and demand a correct one
-         $SGE_ROOT/utilbin/$SGE_ARCH/valid_jvmlib "$jvm_lib_path" >/dev/null 2>&1
+         "$SGE_ROOT/utilbin/$SGE_ARCH/valid_jvmlib" "$jvm_lib_path" >/dev/null 2>&1
          if [ $? -ne 0 ]; then
             $INFOTEXT "Warning: Cannot load JVM library %s. Maybe you used a 32-bit Java library on a 64-bit system?" "$jvm_lib_path"
             continue
@@ -2222,7 +2222,7 @@ GetJMXPort() {
                 "NOTE: Java 1.5 or later is required for the JMX MBean server.\n\n"
    #Shadowds keep qmaster setting, JMX for all or JMX for nobody
    if [ "$1" = "shadowd" ]; then
-      default_value=`BootstrapGetValue $SGE_ROOT/$SGE_CELL/common "jvm_threads"`
+      default_value=`BootstrapGetValue "$SGE_ROOT/$SGE_CELL/common" "jvm_threads"`
       if [ -z "$default_value" -o "$default_value" = 0 ]; then 
          SGE_ENABLE_JMX="false"
       else
@@ -2252,15 +2252,15 @@ GetJMXPort() {
          SetLibJvmPath
          # Autodetect shadowd configs from qmaster, except for libjvm
          if [ "$1" = "shadowd" ]; then            
-            SGE_JMX_PORT=`PropertiesGetValue $SGE_ROOT/$SGE_CELL/common/jmx/management.properties com.sun.grid.jgdi.management.jmxremote.port`
+            SGE_JMX_PORT=`PropertiesGetValue "$SGE_ROOT/$SGE_CELL/common/jmx/management.properties" com.sun.grid.jgdi.management.jmxremote.port`
             if [ -z "$SGE_ADDITIONAL_JVM_ARGS" ]; then
                global_value=`$SGE_BIN/qconf -sconf 2>/dev/null | grep additional_jvm_args | awk '{print $2}' 2>/dev/null`
                SGE_ADDITIONAL_JVM_ARGS="${global_value:--Xmx256m}"
             fi
-            SGE_JMX_SSL=`PropertiesGetValue $SGE_ROOT/$SGE_CELL/common/jmx/management.properties com.sun.grid.jgdi.management.jmxremote.ssl`
-            SGE_JMX_SSL_CLIENT=`PropertiesGetValue $SGE_ROOT/$SGE_CELL/common/jmx/management.properties com.sun.grid.jgdi.management.jmxremote.ssl.need.client.auth`
-            SGE_JMX_SSL_KEYSTORE=`PropertiesGetValue $SGE_ROOT/$SGE_CELL/common/jmx/management.properties com.sun.grid.jgdi.management.jmxremote.ssl.serverKeystore`
-            SGE_JMX_SSL_KEYSTORE_PW=`PropertiesGetValue $SGE_ROOT/$SGE_CELL/common/jmx/management.properties com.sun.grid.jgdi.management.jmxremote.ssl.serverKeystorePassword`            
+            SGE_JMX_SSL=`PropertiesGetValue "$SGE_ROOT/$SGE_CELL/common/jmx/management.properties" com.sun.grid.jgdi.management.jmxremote.ssl`
+            SGE_JMX_SSL_CLIENT=`PropertiesGetValue "$SGE_ROOT/$SGE_CELL/common/jmx/management.properties" com.sun.grid.jgdi.management.jmxremote.ssl.need.client.auth`
+            SGE_JMX_SSL_KEYSTORE=`PropertiesGetValue "$SGE_ROOT/$SGE_CELL/common/jmx/management.properties" com.sun.grid.jgdi.management.jmxremote.ssl.serverKeystore`
+            SGE_JMX_SSL_KEYSTORE_PW=`PropertiesGetValue "$SGE_ROOT/$SGE_CELL/common/jmx/management.properties" com.sun.grid.jgdi.management.jmxremote.ssl.serverKeystorePassword`
          else
             #QMASTER must also provide a default memory limit for JMX thread
             SGE_ADDITIONAL_JVM_ARGS="${SGE_ADDITIONAL_JVM_ARGS:--Xmx256m}"
@@ -2291,12 +2291,12 @@ GetJMXPort() {
          sge_jvm_lib_path=""
          
          if [ "$1" = "shadowd" ]; then
-            sge_jmx_port=`PropertiesGetValue $SGE_ROOT/$SGE_CELL/common/jmx/management.properties com.sun.grid.jgdi.management.jmxremote.port`
+            sge_jmx_port=`PropertiesGetValue "$SGE_ROOT/$SGE_CELL/common/jmx/management.properties" com.sun.grid.jgdi.management.jmxremote.port`
             sge_additional_jvm_args=`$SGE_BIN/qconf -sconf 2>/dev/null| grep additional_jvm_args | awk '{print $2}'` 
-            sge_jmx_ssl=`PropertiesGetValue $SGE_ROOT/$SGE_CELL/common/jmx/management.properties com.sun.grid.jgdi.management.jmxremote.ssl`
-            sge_jmx_ssl_client=`PropertiesGetValue $SGE_ROOT/$SGE_CELL/common/jmx/management.properties com.sun.grid.jgdi.management.jmxremote.ssl.need.client.auth`
-            sge_jmx_ssl_keystore=`PropertiesGetValue $SGE_ROOT/$SGE_CELL/common/jmx/management.properties com.sun.grid.jgdi.management.jmxremote.ssl.serverKeystore`
-            sge_jmx_ssl_keystore_pw=`PropertiesGetValue $SGE_ROOT/$SGE_CELL/common/jmx/management.properties com.sun.grid.jgdi.management.jmxremote.ssl.serverKeystorePassword`
+            sge_jmx_ssl=`PropertiesGetValue "$SGE_ROOT/$SGE_CELL/common/jmx/management.properties" com.sun.grid.jgdi.management.jmxremote.ssl`
+            sge_jmx_ssl_client=`PropertiesGetValue "$SGE_ROOT/$SGE_CELL/common/jmx/management.properties" com.sun.grid.jgdi.management.jmxremote.ssl.need.client.auth`
+            sge_jmx_ssl_keystore=`PropertiesGetValue "$SGE_ROOT/$SGE_CELL/common/jmx/management.properties" com.sun.grid.jgdi.management.jmxremote.ssl.serverKeystore`
+            sge_jmx_ssl_keystore_pw=`PropertiesGetValue "$SGE_ROOT/$SGE_CELL/common/jmx/management.properties" com.sun.grid.jgdi.management.jmxremote.ssl.serverKeystorePassword`
             $INFOTEXT -e "Please give some basic parameters for JMX MBean server\n" \
             "We may ask for \n" \
             "   - JAVA_HOME\n" \
