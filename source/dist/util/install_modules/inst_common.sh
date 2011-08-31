@@ -195,21 +195,21 @@ Makedir()
           if [ "$ADMINUSER" = "default" ]; then
              Execute $CHOWN -R root $chown_dir
           else
-		       group=`$SGE_UTILBIN/checkuser -gid $ADMINUSER`
+                       group=`$SGE_UTILBIN/checkuser -gid $ADMINUSER`
              Execute $CHOWN -R $ADMINUSER:$group $chown_dir
           fi
-	       Execute $CHMOD -R $DIRPERM $chown_dir
+               Execute $CHMOD -R $DIRPERM $chown_dir
        else
           ExecuteAsAdmin $MKDIR -p $dir
-		    ExecuteAsAdmin $CHMOD -R $DIRPERM $chown_dir
+                    ExecuteAsAdmin $CHMOD -R $DIRPERM $chown_dir
        fi
    fi
 
-	if [ "`$SGE_UTILBIN/filestat -owner $dir`" != "$ADMINUSER" ]; then
-	    Execute $CHMOD $DIRPERM $dir
-	else
+        if [ "`$SGE_UTILBIN/filestat -owner $dir`" != "$ADMINUSER" ]; then
+            Execute $CHMOD $DIRPERM $dir
+        else
        ExecuteAsAdmin $CHMOD $DIRPERM $dir
-	fi
+        fi
 }
 
 #-------------------------------------------------------------------------
@@ -253,7 +253,7 @@ ExecuteAsAdmin()
       if [ -f $SGE_UTILBIN/adminrun ]; then
          $SGE_UTILBIN/adminrun $ADMINUSER "$@"
       else
-         $SGE_ROOT/utilbin/$SGE_ARCH/adminrun $ADMINUSER "$@"
+         "$SGE_ROOT"/utilbin/$SGE_ARCH/adminrun $ADMINUSER "$@"
       fi
    fi
 
@@ -307,7 +307,7 @@ ExecuteAsAdminForUpgrade()
       if [ -f $SGE_UTILBIN/adminrun ]; then
          $SGE_UTILBIN/adminrun $ADMINUSER $cmd $1 "$2"
       else
-         $SGE_ROOT/utilbin/$SGE_ARCH/adminrun $ADMINUSER $cmd $1 "$2"
+         "$SGE_ROOT"/utilbin/$SGE_ARCH/adminrun $ADMINUSER $cmd $1 "$2"
       fi
    fi
 
@@ -361,7 +361,7 @@ SetCellDependentVariables()
 #
 CheckPath()
 {
-      MYTEMP=`echo $SGE_ROOT | sed 's/\/$//'`
+      MYTEMP=`echo "$SGE_ROOT" | sed 's/\/$//'`
       SGE_ROOT=$MYTEMP
       export SGE_ROOT
 }
@@ -800,8 +800,8 @@ CheckConfigFile()
          $INFOTEXT -log "Your >SGE_ROOT< entry is not set!"
          is_valid="false"
       elif [ ! -d "$SGE_ROOT" ]; then
-         $INFOTEXT -e "Your >SGE_ROOT< directory %s does not exist!" $SGE_ROOT
-         $INFOTEXT -log "Your >SGE_ROOT< directory %s does not exist!" $SGE_ROOT
+         $INFOTEXT -e "Your >SGE_ROOT< directory %s does not exist!" "$SGE_ROOT"
+         $INFOTEXT -log "Your >SGE_ROOT< directory %s does not exist!" "$SGE_ROOT"
          is_valid="false"
       fi
       if [ -z "$SGE_CELL" ]; then
@@ -809,8 +809,8 @@ CheckConfigFile()
          $INFOTEXT -log "Your >SGE_CELL< entry is not set!"
          is_valid="false"
       elif [ ! -d "$SGE_ROOT/$SGE_CELL" ]; then
-         $INFOTEXT -e "Your >SGE_CELL< directory %s does not exist!" $SGE_ROOT/$SGE_CELL
-         $INFOTEXT -log "Your >SGE_CELL< directory %s does not exist!" $SGE_ROOT/$SGE_CELL
+         $INFOTEXT -e "Your >SGE_CELL< directory %s does not exist!" "$SGE_ROOT"/$SGE_CELL
+         $INFOTEXT -log "Your >SGE_CELL< directory %s does not exist!" "$SGE_ROOT"/$SGE_CELL
          is_valid="false"
       fi
       if [ -z "$BACKUP_DIR" ]; then
@@ -890,8 +890,8 @@ CheckConfigFile()
          $INFOTEXT -log "Your >SGE_ROOT< entry is not set!"
          is_valid="false"
       elif [ ! -d "$SGE_ROOT" ]; then
-         $INFOTEXT -e "Your >SGE_ROOT< directory %s does not exist!" $SGE_ROOT
-         $INFOTEXT -log "Your >SGE_ROOT< directory %s does not exist!" $SGE_ROOT
+         $INFOTEXT -e "Your >SGE_ROOT< directory %s does not exist!" "$SGE_ROOT"
+         $INFOTEXT -log "Your >SGE_ROOT< directory %s does not exist!" "$SGE_ROOT"
          is_valid="false"
       fi
       if [ -z "$SGE_CELL" ]; then
@@ -905,10 +905,10 @@ CheckConfigFile()
       # if we have a bdb server, the cell directory already exists - this is OK.
       # if we have no bdb server, and the cell directory exists, stop the installation.
       if [ -d "$SGE_ROOT/$SGE_CELL" -a \( -z "$DB_SPOOLING_SERVER" -o "$DB_SPOOLING_SERVER" = "none" \) ]; then
-         $INFOTEXT -e "Your >CELL_NAME< directory %s already exist!" $SGE_ROOT/$SGE_CELL
+         $INFOTEXT -e "Your >CELL_NAME< directory %s already exist!" "$SGE_ROOT"/$SGE_CELL
          $INFOTEXT -e "The automatic installation stops, if the >SGE_CELL< directory already exists"
          $INFOTEXT -e "to ensure, that existing installations are not overwritten!"
-         $INFOTEXT -log "Your >CELL_NAME< directory %s already exist!" $SGE_ROOT/$SGE_CELL
+         $INFOTEXT -log "Your >CELL_NAME< directory %s already exist!" "$SGE_ROOT"/$SGE_CELL
          $INFOTEXT -log "The automatic installation stops, if the >SGE_CELL< directory already exists"
          $INFOTEXT -log "to ensure, that existing installations are not overwritten!"
          is_valid="false"
@@ -1562,19 +1562,19 @@ CheckForLocalHostResolving()
       *)
          isIp=`IsIpAddress $cmp `
          if [ $? -eq 1 ]; then
-	    if [ $hostok = true ]; then
-	       notok=false
-	       break
-	    fi
-	    ipok=true
+            if [ $hostok = true ]; then
+               notok=false
+               break
+            fi
+            ipok=true
          else
-	    if [ $ipok = true ]; then
-	       notok=false
-	       break
-	    fi
-	    hostok=true
+            if [ $ipok = true ]; then
+               notok=false
+               break
+            fi
+            hostok=true
          fi
-	 ;;
+         ;;
       esac
    done
 
@@ -1627,27 +1627,27 @@ ProcessSGERoot()
                          "Please enter a correct path for SGE_ROOT.\n"
             $INFOTEXT -n "If this directory is not correct (e.g. it may contain an automounter\n" \
                          "prefix) enter the correct path to this directory or hit <RETURN>\n" \
-                         "to use default [%s] >> " $SGE_ROOT
+                         "to use default [%s] >> " "$SGE_ROOT"
 
-            eval SGE_ROOT=`Enter $SGE_ROOT`
+            eval SGE_ROOT=`Enter "$SGE_ROOT"`
          done
          export SGE_ROOT
       else
          $CLEAR
          $INFOTEXT -u "\nChecking \$SGE_ROOT directory"
          $ECHO
-         SGE_ROOT_VAL=`eval echo $SGE_ROOT`
+         SGE_ROOT_VAL=`eval echo "$SGE_ROOT"`
 
          $INFOTEXT -n "The Grid Engine root directory is:\n\n" \
                       "   \$SGE_ROOT = %s\n\n" \
                       "If this directory is not correct (e.g. it may contain an automounter\n" \
                       "prefix) enter the correct path to this directory or hit <RETURN>\n" \
-                      "to use default [%s] >> " $SGE_ROOT_VAL $SGE_ROOT_VAL
+                      "to use default [%s] >> " "$SGE_ROOT_VAL" "$SGE_ROOT_VAL"
 
-         eval SGE_ROOT=`Enter $SGE_ROOT_VAL`
+         eval SGE_ROOT=`Enter "$SGE_ROOT_VAL"`
          $ECHO
       fi
-      SGE_ROOT_VAL=`eval echo $SGE_ROOT`
+      SGE_ROOT_VAL=`eval echo "$SGE_ROOT"`
 
       # Need to check for correct SGE_ROOT directory in case of qmaster install
       if [ "$QMASTER" = "install" ]; then
@@ -1660,7 +1660,7 @@ ProcessSGERoot()
                  $SGE_UTILBIN/adminrun $ADMINUSER $TOUCH "$SGE_ROOT_VAL"/tst$$ 2> /dev/null > /dev/null
             fi
          else
-            touch $SGE_ROOT_VAL/tst$$ 2> /dev/null > /dev/null
+            touch "$SGE_ROOT_VAL"/tst$$ 2> /dev/null > /dev/null
          fi
          ret=$?
          # check if we have write permission
@@ -1670,7 +1670,7 @@ ProcessSGERoot()
                       "This may be a permission problem (e.g. no read/write permission\n" \
                       "on a NFS mounted filesystem).\n" \
                       "Please check your permissions. You may cancel the installation now\n" \
-                      "and restart it or continue and try again.\n" $SGE_ROOT_VAL
+                      "and restart it or continue and try again.\n" "$SGE_ROOT_VAL"
             $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to continue >> "
             unset SGE_ROOT
             if [ "$AUTO" = true ]; then
@@ -1679,7 +1679,7 @@ ProcessSGERoot()
                       "This may be a permission problem (e.g. no read/write permission\n" \
                       "on a NFS mounted filesystem).\n" \
                       "Please check your permissions. You may cancel the installation now\n" \
-                      "and restart it or continue and try again.\n" $SGE_ROOT_VAL
+                      "and restart it or continue and try again.\n" "$SGE_ROOT_VAL"
                exit 2
             fi
             $CLEAR
@@ -1689,15 +1689,15 @@ ProcessSGERoot()
                RestoreStdout
             fi
             $INFOTEXT "Your \$SGE_ROOT environment variable\n\n   \$SGE_ROOT = %s\n\n" \
-                        "doesn't match the current directory.\n" $SGE_ROOT_VAL
-            ExecuteAsAdmin $RM -f $SGE_ROOT_VAL/tst$$
+                        "doesn't match the current directory.\n" "$SGE_ROOT_VAL"
+            ExecuteAsAdmin $RM -f "$SGE_ROOT_VAL"/tst$$
             unset SGE_ROOT
             if [ "$AUTO" = true ]; then
                exit 2
             fi
             $INFOTEXT -wait -n "Hit <RETURN> to continue >> "
          else
-            ExecuteAsAdmin $RM -f $SGE_ROOT_VAL/tst$$
+            ExecuteAsAdmin $RM -f "$SGE_ROOT_VAL"/tst$$
             check_done=true
          fi
       else
@@ -1710,14 +1710,14 @@ ProcessSGERoot()
             output_username="root"
          fi
          RestoreStdout
-         $INFOTEXT "Your selected \$SGE_ROOT directory: %s\n is not readable/writeable for user: %s" $SGE_ROOT_VAL $output_username
+         $INFOTEXT "Your selected \$SGE_ROOT directory: %s\n is not readable/writeable for user: %s" "$SGE_ROOT_VAL" $output_username
          exit 2
       fi
    done
 
    CheckPath
-   $INFOTEXT "Your \$SGE_ROOT directory: %s\n" $SGE_ROOT_VAL
-   $INFOTEXT -log "Your \$SGE_ROOT directory: %s" $SGE_ROOT_VAL
+   $INFOTEXT "Your \$SGE_ROOT directory: %s\n" "$SGE_ROOT_VAL"
+   $INFOTEXT -log "Your \$SGE_ROOT directory: %s" "$SGE_ROOT_VAL"
    $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to continue >> "
    $CLEAR
 }
@@ -1775,7 +1775,7 @@ SetupRcScriptNames61()
       MoveLog
       exit 1
    fi
-   SGE_STARTUP_FILE=$SGE_ROOT/$SGE_CELL/common/$STARTUP_FILE_NAME
+   SGE_STARTUP_FILE="$SGE_ROOT"/$SGE_CELL/common/$STARTUP_FILE_NAME
 }
 
 #-------------------------------------------------------------------------
@@ -1833,7 +1833,7 @@ SetupRcScriptNames()
       MoveLog
       exit 1
    fi
-   SGE_STARTUP_FILE=$SGE_ROOT/$SGE_CELL/common/$script_name
+   SGE_STARTUP_FILE="$SGE_ROOT"/$SGE_CELL/common/$script_name
 }
 
 #-------------------------------------------------------------------------
@@ -1975,7 +1975,7 @@ RemoveRC_SMF()
 SearchForExistingInstallations()
 {
    #Check services with the old clustername we are about to delete
-   SGE_CLUSTER_NAME=`cat $SGE_ROOT/$SGE_CELL/common/cluster_name 2>/dev/null`
+   SGE_CLUSTER_NAME=`cat "$SGE_ROOT"/$SGE_CELL/common/cluster_name 2>/dev/null`
    if [ -z "$SGE_CLUSTER_NAME" ]; then
       return
    fi
@@ -2028,7 +2028,7 @@ SearchForExistingInstallations()
 #
 ProcessSGEClusterName()
 {
-   TMP_CLUSTER_NAME=`cat $SGE_ROOT/$SGE_CELL/common/cluster_name 2>/dev/null`
+   TMP_CLUSTER_NAME=`cat "$SGE_ROOT"/$SGE_CELL/common/cluster_name 2>/dev/null`
    # We always use the name in cluster_name file
    if [ -n "$TMP_CLUSTER_NAME" ]; then
       SGE_CLUSTER_NAME=$TMP_CLUSTER_NAME
@@ -2098,9 +2098,9 @@ ProcessSGEClusterName()
    done
 
    #Only BDB or qmaster installation can create cluster_name file
-   if [ \( "$1" = "bdb" -o "$1" = "qmaster" -o "$UPDATE" = "true" \) -a ! -f $SGE_ROOT/$SGE_CELL/common/cluster_name ]; then
+   if [ \( "$1" = "bdb" -o "$1" = "qmaster" -o "$UPDATE" = "true" \) -a ! -f "$SGE_ROOT"/$SGE_CELL/common/cluster_name ]; then
       Makedir "$SGE_ROOT/$SGE_CELL/common"
-      SafelyCreateFile $SGE_ROOT/$SGE_CELL/common/cluster_name 644 "$SGE_CLUSTER_NAME"
+      SafelyCreateFile "$SGE_ROOT"/$SGE_CELL/common/cluster_name 644 "$SGE_CLUSTER_NAME"
    fi
 
    $ECHO
@@ -2184,13 +2184,13 @@ GiveHints()
                 "   - \$SGE_EXECD_PORT   (if you haven't added the service >sge_execd<)\n" \
                 "   - \$PATH/\$path       (to find the Grid Engine binaries)\n" \
                 "   - \$MANPATH          (to access the manual pages)\n" \
-                $SGE_ROOT_VAL/$SGE_CELL_VAL/common/settings.csh \
-                $SGE_ROOT_VAL/$SGE_CELL_VAL/common/settings.sh
+                "$SGE_ROOT_VAL"/$SGE_CELL_VAL/common/settings.csh \
+                "$SGE_ROOT_VAL"/$SGE_CELL_VAL/common/settings.sh
 
       $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to see where Grid Engine logs messages >> "
       $CLEAR
 
-      tmp_spool=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep qmaster_spool_dir | awk '{ print $2 }'`
+      tmp_spool=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep qmaster_spool_dir | awk '{ print $2 }'`
       master_spool=`dirname $tmp_spool`
 
       $INFOTEXT -u "\nGrid Engine messages"
@@ -2211,7 +2211,7 @@ GiveHints()
       $INFOTEXT -u "\nGrid Engine startup scripts"
       $INFOTEXT "\nGrid Engine startup scripts can be found at:\n\n" \
                 "   %s (qmaster)\n" \
-                "   %s (execd)\n" $SGE_ROOT/$SGE_CELL/common/sgemaster $SGE_ROOT/$SGE_CELL/common/sgeexecd
+                "   %s (execd)\n" "$SGE_ROOT"/$SGE_CELL/common/sgemaster "$SGE_ROOT"/$SGE_CELL/common/sgeexecd
 
       $INFOTEXT -auto $AUTO -ask "y" "n" -def "n" -n \
                 "Do you want to see previous screen about using Grid Engine again (y/n) [n] >> "
@@ -2322,7 +2322,7 @@ CreateSGEStartUpScripts()
       Execute rm ${TMP_SGE_STARTUP_FILE}.1
    fi
 
-   SGE_STARTUP_FILE=$SGE_ROOT/$SGE_CELL/common/$STARTUP_FILE_NAME
+   SGE_STARTUP_FILE="$SGE_ROOT"/$SGE_CELL/common/$STARTUP_FILE_NAME
 
    if [ $create = true ]; then
 
@@ -2443,7 +2443,7 @@ InstallRcScript()
    if [ "$SGE_ENABLE_SMF" = "true" ]; then
       #DBwriter does not have CLUSTER NAME at this point
       if [ -z "$SGE_CLUSTER_NAME" ]; then
-         SGE_CLUSTER_NAME=`cat $SGE_ROOT/$SGE_CELL/common/cluster_name 2>/dev/null`
+         SGE_CLUSTER_NAME=`cat "$SGE_ROOT"/$SGE_CELL/common/cluster_name 2>/dev/null`
       fi
       if [ "$AUTO" = "true" ]; then
          OLD_INFOTEXT=$INFOTEXT
@@ -2461,7 +2461,7 @@ InstallRcScript()
             MoveLog
          fi
          exit 1
-		fi
+                fi
       return
    fi
 
@@ -2849,14 +2849,14 @@ BackupConfig()
                 if [ $AUTO != "true" ]; then
                    SGE_ROOT=`pwd`
                 fi
-   $INFOTEXT -n "\nPlease enter your SGE_ROOT directory. \nDefault: [%s]" $SGE_ROOT
-                SGE_ROOT=`Enter $SGE_ROOT`
+   $INFOTEXT -n "\nPlease enter your SGE_ROOT directory. \nDefault: [%s]" "$SGE_ROOT"
+                SGE_ROOT=`Enter "$SGE_ROOT"`
    $INFOTEXT -n "\nPlease enter your SGE_CELL name. Default: [default]"
                 if [ $AUTO != "true" ]; then
                    SGE_CELL=`Enter default`
                 fi
 
-   $INFOTEXT -log "SGE_ROOT: %s" $SGE_ROOT
+   $INFOTEXT -log "SGE_ROOT: %s" "$SGE_ROOT"
    $INFOTEXT -log "SGE_CELL: %s" $SGE_CELL
 
    BackupCheckBootStrapFile
@@ -2914,8 +2914,8 @@ RestoreConfig()
    $INFOTEXT -wait -n "Hit, <ENTER> to continue!"
    $CLEAR
                 SGE_ROOT=`pwd`
-   $INFOTEXT -n "\nPlease enter your SGE_ROOT directory. \nDefault: [%s]" $SGE_ROOT
-                SGE_ROOT=`Enter $SGE_ROOT`
+   $INFOTEXT -n "\nPlease enter your SGE_ROOT directory. \nDefault: [%s]" "$SGE_ROOT"
+                SGE_ROOT=`Enter "$SGE_ROOT"`
    $INFOTEXT -n "\nPlease enter your SGE_CELL name. Default: [default]"
                 SGE_CELL=`Enter default`
 
@@ -2928,7 +2928,7 @@ RestoreConfig()
    if [ $? = 0 ]; then
       ExtractBackup
 
-      cd $SGE_ROOT
+      cd "$SGE_ROOT"
       RestoreCheckBootStrapFile "/tmp/bup_tmp_$DATE/"
       #CheckArchBins
 
@@ -2950,26 +2950,26 @@ RestoreConfig()
 
          SwitchArchRst /tmp/bup_tmp_$DATE/
 
-            if [ -d $SGE_ROOT/$SGE_CELL ]; then
-               if [ -d $SGE_ROOT/$SGE_CELL/common ]; then
+            if [ -d "$SGE_ROOT"/$SGE_CELL ]; then
+               if [ -d "$SGE_ROOT"/$SGE_CELL/common ]; then
                   :
                else
-                  ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL/common
+                  ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL/common
                fi
             else
-               ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL
-               ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL/common
+               ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL
+               ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL/common
             fi
 
          for f in $BUP_COMMON_FILE_LIST; do
             if [ -f /tmp/bup_tmp_$DATE/$f ]; then
-               ExecuteAsAdmin $CP /tmp/bup_tmp_$DATE/$f $SGE_ROOT/$SGE_CELL/common/
+               ExecuteAsAdmin $CP /tmp/bup_tmp_$DATE/$f "$SGE_ROOT"/$SGE_CELL/common/
             fi
          done
 
          for f in $BUP_COMMON_DIR_LIST; do
             if [ -d /tmp/bup_tmp_$DATE/$f ]; then
-               ExecuteAsAdmin $CPR /tmp/bup_tmp_$DATE/$f $SGE_ROOT/$SGE_CELL/common/
+               ExecuteAsAdmin $CPR /tmp/bup_tmp_$DATE/$f "$SGE_ROOT"/$SGE_CELL/common/
             fi
          done
 
@@ -2990,20 +2990,20 @@ RestoreConfig()
             fi
          done
       else
-         if [ -d $SGE_ROOT/$SGE_CELL ]; then
-            if [ -d $SGE_ROOT/$SGE_CELL/common ]; then
+         if [ -d "$SGE_ROOT"/$SGE_CELL ]; then
+            if [ -d "$SGE_ROOT"/$SGE_CELL/common ]; then
                :
             else
-               ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL/common
+               ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL/common
             fi
          else
-            ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL
-            ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL/common
+            ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL
+            ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL/common
          fi
 
          for f in $BUP_CLASSIC_COMMON_FILE_LIST; do
             if [ -f /tmp/bup_tmp_$DATE/$f ]; then
-               ExecuteAsAdmin $CP /tmp/bup_tmp_$DATE/$f $SGE_ROOT/$SGE_CELL/common/
+               ExecuteAsAdmin $CP /tmp/bup_tmp_$DATE/$f "$SGE_ROOT"/$SGE_CELL/common/
             fi
          done
 
@@ -3031,21 +3031,21 @@ RestoreConfig()
 
          for f in $BUP_CLASSIC_DIR_LIST; do
             if [ -d /tmp/bup_tmp_$DATE/$f ]; then
-               if [ -d $SGE_ROOT/$SGE_CELL/common/$f ]; then
+               if [ -d "$SGE_ROOT"/$SGE_CELL/common/$f ]; then
                   #move the old configuration to keep backup
-                  ExecuteAsAdmin mv -f $SGE_ROOT/$SGE_CELL/common/$f $SGE_ROOT/$SGE_CELL/common/$f.bak
+                  ExecuteAsAdmin mv -f "$SGE_ROOT"/$SGE_CELL/common/$f "$SGE_ROOT"/$SGE_CELL/common/$f.bak
                fi
-               ExecuteAsAdmin $CPR /tmp/bup_tmp_$DATE/$f $SGE_ROOT/$SGE_CELL/common
+               ExecuteAsAdmin $CPR /tmp/bup_tmp_$DATE/$f "$SGE_ROOT"/$SGE_CELL/common
             fi
          done
 
          for f in $BUP_CLASSIC_COMMON_FILE_LIST; do
             if [ -d /tmp/bup_tmp_$DATE/$f ]; then
-               if [ -f $SGE_ROOT/$SGE_CELL/common/$f ]; then
+               if [ -f "$SGE_ROOT"/$SGE_CELL/common/$f ]; then
                   #move the old configuration to keep backup
-                  ExecuteAsAdmin m -f $SGE_ROOT/$SGE_CELL/common/$f $SGE_ROOT/$SGE_CELL/common/$f.bak
+                  ExecuteAsAdmin m -f "$SGE_ROOT"/$SGE_CELL/common/$f "$SGE_ROOT"/$SGE_CELL/common/$f.bak
                fi
-               ExecuteAsAdmin $CP /tmp/bup_tmp_$DATE/$f $SGE_ROOT/$SGE_CELL/common
+               ExecuteAsAdmin $CP /tmp/bup_tmp_$DATE/$f "$SGE_ROOT"/$SGE_CELL/common
             fi
          done
 
@@ -3057,8 +3057,8 @@ RestoreConfig()
       loop_stop="false"
       while [ $loop_stop = "false" ]; do
          $INFOTEXT -n "\nPlease enter the full path to your backup files." \
-                      "\nDefault: [%s]" $SGE_ROOT/backup
-         bup_file=`Enter $SGE_ROOT/backup`
+                      "\nDefault: [%s]" "$SGE_ROOT"/backup
+         bup_file=`Enter "$SGE_ROOT"/backup`
 
          if [ -d $bup_file ]; then
             loop_stop="true"
@@ -3089,20 +3089,20 @@ RestoreConfig()
 
          SwitchArchRst $bup_file
 
-            if [ -d $SGE_ROOT/$SGE_CELL ]; then
-               if [ -d $SGE_ROOT/$SGE_CELL/common ]; then
+            if [ -d "$SGE_ROOT"/$SGE_CELL ]; then
+               if [ -d "$SGE_ROOT"/$SGE_CELL/common ]; then
                   :
                else
-                  ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL/common
+                  ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL/common
                fi
             else
-               ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL
-               ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL/common
+               ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL
+               ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL/common
             fi
 
          for f in $BUP_COMMON_FILE_LIST; do
             if [ -f $bup_file/$f ]; then
-               ExecuteAsAdmin $CP $bup_file/$f $SGE_ROOT/$SGE_CELL/common/
+               ExecuteAsAdmin $CP $bup_file/$f "$SGE_ROOT"/$SGE_CELL/common/
             fi
          done
 
@@ -3124,20 +3124,20 @@ RestoreConfig()
          done
       else
 
-         if [ -d $SGE_ROOT/$SGE_CELL ]; then
-            if [ -d $SGE_ROOT/$SGE_CELL/common ]; then
+         if [ -d "$SGE_ROOT"/$SGE_CELL ]; then
+            if [ -d "$SGE_ROOT"/$SGE_CELL/common ]; then
                :
             else
-               ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL/common
+               ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL/common
             fi
          else
-            ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL
-            ExecuteAsAdmin $MKDIR $SGE_ROOT/$SGE_CELL/common
+            ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL
+            ExecuteAsAdmin $MKDIR "$SGE_ROOT"/$SGE_CELL/common
          fi
 
          for f in $BUP_CLASSIC_COMMON_FILE_LIST; do
             if [ -f $bup_file/$f ]; then
-               ExecuteAsAdmin $CP $bup_file/$f $SGE_ROOT/$SGE_CELL/common/
+               ExecuteAsAdmin $CP $bup_file/$f "$SGE_ROOT"/$SGE_CELL/common/
             fi
          done
 
@@ -3165,21 +3165,21 @@ RestoreConfig()
 
          for f in $BUP_CLASSIC_DIR_LIST; do
             if [ -d $bup_file/$f ]; then
-               if [ -d $SGE_ROOT/$SGE_CELL/common/$f ]; then
+               if [ -d "$SGE_ROOT"/$SGE_CELL/common/$f ]; then
                   #move the old configuration to keep backup
-                  ExecuteAsAdmin mv -f $SGE_ROOT/$SGE_CELL/common/$f $SGE_ROOT/$SGE_CELL/common/$f.bak
+                  ExecuteAsAdmin mv -f "$SGE_ROOT"/$SGE_CELL/common/$f "$SGE_ROOT"/$SGE_CELL/common/$f.bak
                fi
-               ExecuteAsAdmin $CPR $bup_file/$f $SGE_ROOT/$SGE_CELL/common
+               ExecuteAsAdmin $CPR $bup_file/$f "$SGE_ROOT"/$SGE_CELL/common
             fi
          done
 
          for f in $BUP_CLASSIC_COMMON_FILE_LIST; do
             if [ -f $bup_file/$f ]; then
-               if [ -f $SGE_ROOT/$SGE_CELL/common/$f ]; then
+               if [ -f "$SGE_ROOT"/$SGE_CELL/common/$f ]; then
                   #move the old configuration to keep backup
-                  ExecuteAsAdmin mv -f $SGE_ROOT/$SGE_CELL/common/$f $SGE_ROOT/$SGE_CELL/common/$f.bak
+                  ExecuteAsAdmin mv -f "$SGE_ROOT"/$SGE_CELL/common/$f "$SGE_ROOT"/$SGE_CELL/common/$f.bak
                fi
-               ExecuteAsAdmin $CP $bup_file/$f $SGE_ROOT/$SGE_CELL/common
+               ExecuteAsAdmin $CP $bup_file/$f "$SGE_ROOT"/$SGE_CELL/common
             fi
          done
 
@@ -3448,8 +3448,8 @@ RemoveRcScript()
 
 CheckMasterHost()
 {
-   if [ -f $SGE_ROOT/$SGE_CELL/common/act_qmaster ]; then
-      MASTER=`cat $SGE_ROOT/$SGE_CELL/common/act_qmaster`
+   if [ -f "$SGE_ROOT"/$SGE_CELL/common/act_qmaster ]; then
+      MASTER=`cat "$SGE_ROOT"/$SGE_CELL/common/act_qmaster`
    else
       $INFOTEXT -n "Can't find the act_qmaster file! Check your installation!"
    fi
@@ -3468,10 +3468,10 @@ CheckMasterHost()
 
 BackupCheckBootStrapFile()
 {
-   if [ -f $SGE_ROOT/$SGE_CELL/common/bootstrap ]; then
-      spooling_method=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep "spooling_method" | awk '{ print $2 }'`
-      db_home=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep "spooling_params" | awk '{ print $2 }'`
-      master_spool=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep "qmaster_spool_dir" | awk '{ print $2 }'`
+   if [ -f "$SGE_ROOT"/$SGE_CELL/common/bootstrap ]; then
+      spooling_method=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_method" | awk '{ print $2 }'`
+      db_home=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_params" | awk '{ print $2 }'`
+      master_spool=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "qmaster_spool_dir" | awk '{ print $2 }'`
       GetAdminUser
 
       if [ `echo $db_home | cut -d":" -f2` = "$db_home" ]; then
@@ -3483,8 +3483,8 @@ BackupCheckBootStrapFile()
          BDB_SERVER=`$SGE_UTILBIN/gethostbyname -aname $BDB_SERVER`
          BDB_BASEDIR=`echo $db_home | cut -d":" -f2`
 
-         if [ -f $SGE_ROOT/$SGE_CELL/common/sgebdb ]; then
-            BDB_HOME=`cat $SGE_ROOT/$SGE_CELL/common/sgebdb | grep $BDB_BASEDIR | grep BDBHOMES | cut -d" " -f2 | sed -e s/\"//`
+         if [ -f "$SGE_ROOT"/$SGE_CELL/common/sgebdb ]; then
+            BDB_HOME=`cat "$SGE_ROOT"/$SGE_CELL/common/sgebdb | grep $BDB_BASEDIR | grep BDBHOMES | cut -d" " -f2 | sed -e s/\"//`
          else
             $INFOTEXT -n "Your Berkeley DB home directory could not be detected!\n"
             $INFOTEXT -n "Please enter your Berkeley DB home directory >>" BDB_HOME=`Enter `
@@ -3511,10 +3511,10 @@ BackupCheckBootStrapFile()
       db_home=$BDB_HOME
       fi
    else
-      $INFOTEXT -n "bootstrap file could not be found in:\n %s !\n" $SGE_ROOT/$SGE_CELL/common
+      $INFOTEXT -n "bootstrap file could not be found in:\n %s !\n" "$SGE_ROOT"/$SGE_CELL/common
       $INFOTEXT -n "please check your installation! Exiting backup!\n"
 
-      $INFOTEXT -log "bootstrap file could not be found in:\n %s !\n" $SGE_ROOT/$SGE_CELL/common
+      $INFOTEXT -log "bootstrap file could not be found in:\n %s !\n" "$SGE_ROOT"/$SGE_CELL/common
       $INFOTEXT -log "please check your installation! Exiting backup!\n"
 
       exit 1
@@ -3527,10 +3527,10 @@ SetBackupDir()
    $CLEAR
    loop_stop=false
    while [ $loop_stop = "false" ]; do
-      $INFOTEXT -n "\nWhere do you want to save the backup files? \nDefault: [%s]" $SGE_ROOT/backup
+      $INFOTEXT -n "\nWhere do you want to save the backup files? \nDefault: [%s]" "$SGE_ROOT"/backup
 
                    if [ $AUTO != "true" ]; then
-                      backup_dir=`Enter $SGE_ROOT/backup`
+                      backup_dir=`Enter "$SGE_ROOT"/backup`
                       if [ -d $backup_dir ]; then
                          $INFOTEXT -n "\n The directory [%s] \nalready exists!\n" $backup_dir
                          $INFOTEXT  -auto $AUTO -ask "y" "n" -def "n" -n "Do you want to overwrite the existing backup directory? (y/n) [n] >>"
@@ -3596,7 +3596,7 @@ CreateTarArchive()
                       "in: \n%s\n" $backup_dir
        fi
 
-      cd $SGE_ROOT
+      cd "$SGE_ROOT"
          $INFOTEXT -n "\n... backup completed"
       $INFOTEXT -n "\nAll information is saved in \n[%s]\n\n" $backup_dir/$bup_file".gz[Z]"
 
@@ -3604,7 +3604,7 @@ CreateTarArchive()
       RMF="rm -fR"
       ExecuteAsAdmin $RMF $DATE.dump.tar $DATE.dump $BUP_COMMON_FILE_LIST $BUP_SPOOL_FILE_LIST $BUP_COMMON_DIR_LIST
 
-      cd $SGE_ROOT
+      cd "$SGE_ROOT"
 
       if [ $AUTO = "true" ]; then
          MoveLog
@@ -3627,16 +3627,16 @@ DoBackup()
       SwitchArchBup
 
       for f in $BUP_BDB_COMMON_FILE_LIST_TMP; do
-         if [ -f $SGE_ROOT/$SGE_CELL/common/$f ]; then
+         if [ -f "$SGE_ROOT"/$SGE_CELL/common/$f ]; then
             BUP_COMMON_FILE_LIST="$BUP_COMMON_FILE_LIST $f"
-            ExecuteAsAdmin $CPF $SGE_ROOT/$SGE_CELL/common/$f $backup_dir
+            ExecuteAsAdmin $CPF "$SGE_ROOT"/$SGE_CELL/common/$f $backup_dir
          fi
       done
 
       for f in $BUP_BDB_COMMON_DIR_LIST_TMP; do
-         if [ -d $SGE_ROOT/$SGE_CELL/common/$f ]; then
+         if [ -d "$SGE_ROOT"/$SGE_CELL/common/$f ]; then
             BUP_COMMON_DIR_LIST="$BUP_COMMON_DIR_LIST $f"
-            ExecuteAsAdmin $CPFR $SGE_ROOT/$SGE_CELL/common/$f $backup_dir
+            ExecuteAsAdmin $CPFR "$SGE_ROOT"/$SGE_CELL/common/$f $backup_dir
          fi
       done
 
@@ -3648,9 +3648,9 @@ DoBackup()
       done
    else
       for f in $BUP_CLASSIC_COMMON_FILE_LIST_TMP; do
-         if [ -f $SGE_ROOT/$SGE_CELL/common/$f ]; then
+         if [ -f "$SGE_ROOT"/$SGE_CELL/common/$f ]; then
             BUP_COMMON_FILE_LIST="$BUP_COMMON_FILE_LIST $f"
-            ExecuteAsAdmin $CPF $SGE_ROOT/$SGE_CELL/common/$f $backup_dir
+            ExecuteAsAdmin $CPF "$SGE_ROOT"/$SGE_CELL/common/$f $backup_dir
          fi
       done
 
@@ -3663,9 +3663,9 @@ DoBackup()
       done
 
       for f in $BUP_CLASSIC_DIR_LIST_TMP; do
-         if [ -d $SGE_ROOT/$SGE_CELL/common/$f ]; then
+         if [ -d "$SGE_ROOT"/$SGE_CELL/common/$f ]; then
             BUP_COMMON_DIR_LIST="$BUP_COMMON_DIR_LIST $f"
-            ExecuteAsAdmin $CPFR $SGE_ROOT/$SGE_CELL/common/$f $backup_dir
+            ExecuteAsAdmin $CPFR "$SGE_ROOT"/$SGE_CELL/common/$f $backup_dir
          fi
       done
    fi
@@ -3676,8 +3676,8 @@ ExtractBackup()
       loop_stop=false
       while [ $loop_stop = "false" ]; do
          $INFOTEXT -n "\nPlease enter the full path and name of your backup file." \
-                      "\nDefault: [%s]" $SGE_ROOT/backup/backup.tar.gz
-         bup_file=`Enter $SGE_ROOT/backup/backup.tar.gz`
+                      "\nDefault: [%s]" "$SGE_ROOT"/backup/backup.tar.gz
+         bup_file=`Enter "$SGE_ROOT"/backup/backup.tar.gz`
 
          if [ -f $bup_file ]; then
             loop_stop="true"
@@ -3950,7 +3950,7 @@ CopyCaToHostType()
 CopyCaFromQmaster()
 {
    # TODO: PrimaryMaster?
-   QMASTER_HOST=`cat $SGE_ROOT/$SGE_CELL/common/act_qmaster 2>/dev/null`
+   QMASTER_HOST=`cat "$SGE_ROOT"/$SGE_CELL/common/act_qmaster 2>/dev/null`
    #Skip qmaster host
    if [ x`ResolveHosts $HOST` = x`ResolveHosts $QMASTER_HOST` ]; then
       return
@@ -4039,7 +4039,7 @@ MakeUserKs()
       fi
       $INFOTEXT "\nGenerating keystore for $ADMINUSER ..."
       ExecuteAsAdmin echo "$keystore_pw" > $tmp_file ; keystore_pw=""
-      $SGE_ROOT/util/sgeCA/sge_ca -ks $ADMINUSER -kspwf $tmp_file
+      "$SGE_ROOT"/util/sgeCA/sge_ca -ks $ADMINUSER -kspwf $tmp_file
       ExecuteAsAdmin rm -f $tmp_file
       ADMINUSER="$OLD_ADMINUSER"
   fi
@@ -4103,18 +4103,18 @@ EnterSecurePassword()
 GetAdminUser()
 {
    if [ "$AUTO" = true ]; then
-	   #For auto we use template, since SGE_CELL might not yet exist
-	   TMP_CELL=$CELL_NAME
+           #For auto we use template, since SGE_CELL might not yet exist
+           TMP_CELL=$CELL_NAME
    else
-	   TMP_CELL=$SGE_CELL
+           TMP_CELL=$SGE_CELL
    fi
    #Try to get admin user from a bootstrap file
-   TMP_ADMINUSER=`cat $SGE_ROOT/$TMP_CELL/common/bootstrap 2>/dev/null | grep "admin_user" | awk '{ print $2 }'`
+   TMP_ADMINUSER=`cat "$SGE_ROOT"/$TMP_CELL/common/bootstrap 2>/dev/null | grep "admin_user" | awk '{ print $2 }'`
    if [ -n "$TMP_ADMINUSER" ]; then
       ADMINUSER=$TMP_ADMINUSER
    elif [ "$AUTO" = true -o "$AUTOGUI" = true ]; then
-	   #For auto installations, if no bootstrap file use the value from the template
-	   ADMINUSER=$ADMIN_USER
+           #For auto installations, if no bootstrap file use the value from the template
+           ADMINUSER=$ADMIN_USER
    fi
    euid=`$SGE_UTILBIN/uidgid -euid`
 
@@ -4292,20 +4292,20 @@ DoRemoteActionForHosts()
      $INFOTEXT "\nProcessing $host ..."
      if [ -f "$SGE_ROOT/$SGE_CELL/win_hosts_to_update" ]; then
         host_uqdn=`echo $host | sed -e "s%[.].*$%%"`
-        cat $SGE_ROOT/$SGE_CELL/win_hosts_to_update | grep $host > /dev/null 2>&1
-	if [ "$?" -eq 0 -a $HOST != $host ]; then
-	   #We want to connect to a Windows host only if not already there (but as who?)
-	   host_str=`echo $host_uqdn | tr "[a-z]" "[A-Z]"`
-	   if [ -n "$SGE_WIN_ADMIN" ]; then
-	      user="${host_str}+$SGE_WIN_ADMIN"
-	   else
-	      #We need to ask
-	      AUTO=false
-	      $INFOTEXT -n "Provide a valid Windows administrator user name for host %s \n[%s] >> "  "$host" "$host_str+Administrator"
-	      eval user=`Enter "$host_str+Administrator"`
-	      AUTO=true
-	   fi
-	fi
+        cat "$SGE_ROOT"/$SGE_CELL/win_hosts_to_update | grep $host > /dev/null 2>&1
+        if [ "$?" -eq 0 -a $HOST != $host ]; then
+           #We want to connect to a Windows host only if not already there (but as who?)
+           host_str=`echo $host_uqdn | tr "[a-z]" "[A-Z]"`
+           if [ -n "$SGE_WIN_ADMIN" ]; then
+              user="${host_str}+$SGE_WIN_ADMIN"
+           else
+              #We need to ask
+              AUTO=false
+              $INFOTEXT -n "Provide a valid Windows administrator user name for host %s \n[%s] >> "  "$host" "$host_str+Administrator"
+              eval user=`Enter "$host_str+Administrator"`
+              AUTO=true
+           fi
+        fi
      fi
      DoRemoteAction "$host" "$user" "$cmd"
   done
@@ -4327,7 +4327,7 @@ ManipulateOneDaemonType()
       version=""
    fi
 
-   if [ -f $SGE_ROOT/$SGE_CELL/common/bootstrap ]; then
+   if [ -f "$SGE_ROOT"/$SGE_CELL/common/bootstrap ]; then
       GetAdminUser
    else
       $INFOTEXT "\nObviously there was no qmaster installation for this cell yet. The file\n\n" \
@@ -4340,8 +4340,8 @@ ManipulateOneDaemonType()
       exit 1
    fi
 
-   if [ -f $SGE_ROOT/$SGE_CELL/common/settings.sh ]; then
-      . $SGE_ROOT/$SGE_CELL/common/settings.sh
+   if [ -f "$SGE_ROOT"/$SGE_CELL/common/settings.sh ]; then
+      . "$SGE_ROOT"/$SGE_CELL/common/settings.sh
    else
       $INFOTEXT "\nThe file\n\n" \
                 "   %s\n\nwhich is required to set the environment variables does not exist. Exit." \
@@ -4353,30 +4353,30 @@ ManipulateOneDaemonType()
    if [ "$ALL_RC" = true ]; then
       case $type in
       qmaster)
-	 list=""
+         list=""
          #Install all qmaster/shadowd hosts
          if [ -f "$SGE_ROOT/$SGE_CELL/common/shadow_masters" ]; then
             list=`cat "$SGE_ROOT/$SGE_CELL/common/shadow_masters"`
          elif [ -f "$SGE_ROOT/$SGE_CELL/common/act_qmaster" ]; then
             list=`cat "$SGE_ROOT/$SGE_CELL/common/act_qmaster"`
          fi
-	 start_cmd="$SGE_ROOT/$SGE_CELL/common/sgemaster"
-	 ;;
+         start_cmd="$SGE_ROOT/$SGE_CELL/common/sgemaster"
+         ;;
       execd)
          list=`$SGE_BIN/qconf -sel`
-	 start_cmd="$SGE_ROOT/$SGE_CELL/common/sgeexecd"
-	 ;;
+         start_cmd="$SGE_ROOT/$SGE_CELL/common/sgeexecd"
+         ;;
       bdb)
-         list=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep "spooling_params" | awk '{ print $2}' 2>/dev/null`
-	 db_server_host=`echo "$SPOOLING_ARGS" | awk -F: '{print $1}'`
+         list=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_params" | awk '{ print $2}' 2>/dev/null`
+         db_server_host=`echo "$SPOOLING_ARGS" | awk -F: '{print $1}'`
          db_server_spool_dir=`echo "$SPOOLING_ARGS" | awk -F: '{print $2}'`
          if [ -z "$db_server_spool_dir" ]; then #local bdb spooling
-	    $INFOTEXT -log "Your cluster does not use BDB server spooling!"
-	    return 1
-	 fi
-	 list="$db_server_host"
-	 start_cmd="$SGE_ROOT/$SGE_CELL/common/sgebdb"
-	 ;;
+            $INFOTEXT -log "Your cluster does not use BDB server spooling!"
+            return 1
+         fi
+         list="$db_server_host"
+         start_cmd="$SGE_ROOT/$SGE_CELL/common/sgebdb"
+         ;;
       *)
          $INFOTEXT "Unknown type %s in ManipulateOneTypeRC" "$type"
          exit 1
@@ -4394,11 +4394,11 @@ ManipulateOneDaemonType()
    fi
 
    #Basic command settings
-   rc_cmd=". $SGE_ROOT/$SGE_CELL/common/settings.sh ; . $SGE_ROOT/util/arch_variables ;\
-. $SGE_ROOT/util/install_modules/inst_common.sh ; . $SGE_ROOT/util/install_modules/inst_qmaster.sh ; \
-. $SGE_ROOT/util/install_modules/inst_berkeley.sh ; . $SGE_ROOT/util/install_modules/inst_execd.sh ; \
+   rc_cmd=". '$SGE_ROOT'/$SGE_CELL/common/settings.sh ; . '$SGE_ROOT'/util/arch_variables ;\
+. '$SGE_ROOT'/util/install_modules/inst_common.sh ; . '$SGE_ROOT'/util/install_modules/inst_qmaster.sh ; \
+. '$SGE_ROOT'/util/install_modules/inst_berkeley.sh ; . '$SGE_ROOT'/util/install_modules/inst_execd.sh ; \
 AUTO=true ; export AUTO ; SGE_ENABLE_SMF=true ; export SGE_ENABLE_SMF ; euid=$euid ; \
-cd $SGE_ROOT ; BasicSettings ; SetUpInfoText ; CheckForSMF ; "
+cd '$SGE_ROOT' ; BasicSettings ; SetUpInfoText ; CheckForSMF ; "
    if [ "$SMF_FLAGS" = -nosmf ]; then
       rc_cmd="$rc_cmd SGE_ENABLE_SMF=false ; "
    fi
@@ -4410,15 +4410,15 @@ cd $SGE_ROOT ; BasicSettings ; SetUpInfoText ; CheckForSMF ; "
    fi
 
    if [ "$DEL_EXECD_SPOOL" = true ]; then        #DELETE EXECD SPOOL DIRS
-      cmd=". $SGE_ROOT/$SGE_CELL/common/settings.sh ; . $SGE_ROOT/util/arch_variables ; . $SGE_ROOT/util/install_modules/inst_common.sh ; \
-cd $SGE_ROOT && RemoteExecSpoolDirDelete"
+      cmd=". '$SGE_ROOT'/$SGE_CELL/common/settings.sh ; . '$SGE_ROOT'/util/arch_variables ; . '$SGE_ROOT'/util/install_modules/inst_common.sh ; \
+cd '$SGE_ROOT' && RemoteExecSpoolDirDelete"
       $INFOTEXT -u "Initializing all local execd spool directories:"
       DoRemoteActionForHosts "$list" default "$cmd"
    fi
 
    if [ "$UPDATE_WIN" = true ]; then                   #UPDATE WINDOWS HELPER SERVICE ON ALL WINDOWS EXECDs
-      cmd=". $SGE_ROOT/$SGE_CELL/common/settings.sh ; . $SGE_ROOT/util/arch_variables ; . $SGE_ROOT/util/install_modules/inst_common.sh ; \
-. $SGE_ROOT/util/install_modules/inst_execd.sh ; cd $SGE_ROOT ; AUTO=true ; ECHO=echo ;BasicSettings ; SetUpInfoText ; SAVED_PATH=$PATH ; SetupWinSvc update"
+      cmd=". '$SGE_ROOT'/$SGE_CELL/common/settings.sh ; . '$SGE_ROOT'/util/arch_variables ; . '$SGE_ROOT'/util/install_modules/inst_common.sh ; \
+. '$SGE_ROOT'/util/install_modules/inst_execd.sh ; cd '$SGE_ROOT' ; AUTO=true ; ECHO=echo ;BasicSettings ; SetUpInfoText ; SAVED_PATH=$PATH ; SetupWinSvc update"
       $INFOTEXT -u "Updating Windows helper service on all Windows hosts:"
       DoRemoteActionForHosts "$list" $ADMINUSER "$cmd"
    fi
@@ -4450,7 +4450,7 @@ RemoteExecSpoolDirDelete()
       Removedir "$local_dir/$HOST"
    elif [ ! -d "$local_dir" ]; then
       LOCAL_EXECD_SPOOL=$local_dir
-      . $SGE_ROOT/util/install_modules/inst_execd.sh
+      . "$SGE_ROOT"/util/install_modules/inst_execd.sh
       MakeLocalSpoolDir
    fi
 }
