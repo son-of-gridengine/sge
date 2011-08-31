@@ -123,7 +123,7 @@ FetchHostname()
 SGE_ROOT=$SGE_ROOT; export SGE_ROOT;\
 SGE_CELL=$SGE_CELL; export SGE_CELL;\
 SGE_REMOTE_FLAG=REMOTE_EXECD_UNINSTALL; export SGE_REMOTE_FLAG;\
-cd $SGE_ROOT; ./inst_sge -ux $REMOTE_UNINST_ARGS\""
+cd  '$SGE_ROOT'; ./inst_sge -ux $REMOTE_UNINST_ARGS\""
             #In case we failed we better remove admin host
             qconf -dh $h >/dev/null 2>&1
          fi
@@ -293,8 +293,8 @@ RemoveSpoolDir()
    SPOOL_DIR=`qconf -sconf $exechost | grep execd_spool_dir | awk '{ print $2 }'`
 
    #Check that configuration is no longer needed
-   if [ x`cat $SGE_ROOT/$SGE_CELL/common/shadow_masters 2>/dev/null | grep "^${exechost}$"` = x -a \
-        x`cat $SGE_ROOT/$SGE_CELL/common/act_qmaster    2>/dev/null | grep "^${exechost}$"` = x ]; then
+   if [ x`cat "$SGE_ROOT/$SGE_CELL/common/shadow_masters" 2>/dev/null | grep "^${exechost}$"` = x -a \
+        x`cat "$SGE_ROOT/$SGE_CELL/common/act_qmaster"    2>/dev/null | grep "^${exechost}$"` = x ]; then
       $INFOTEXT "Delete configuration for host \"%s\"!" $exechost
       $INFOTEXT -log "Delete configuration for host \"%s\"!" $exechost
       qconf -dconf $exechost

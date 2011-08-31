@@ -198,7 +198,7 @@ CheckCellDirectory()
 CheckCSP()
 {
    if [ "$SGE_ARCH" = "win32-x86" ]; then
-      util/certtool.sh $SGE_ROOT $SGE_CELL
+      util/certtool.sh "$SGE_ROOT" $SGE_CELL
    fi
 
    if [ $CSP = false ]; then
@@ -248,7 +248,7 @@ CheckHostNameResolving()
    loop_counter=0
    loop_max=10
    done=false
-   . $SGE_ROOT/util/install_modules/inst_qmaster.sh
+   . "$SGE_ROOT/util/install_modules/inst_qmaster.sh"
    while [ $done = false ]; do
       $CLEAR
       
@@ -295,7 +295,7 @@ CheckHostNameResolving()
             exit 1
          fi
       else
-         ignore_fqdn=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep "^ignore_fqdn" | awk '{print $2}'| egrep -i "true|1"`
+         ignore_fqdn=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep "^ignore_fqdn" | awk '{print $2}'| egrep -i "true|1"`
 
          if [ "$ignore_fqdn" != "" ]; then
             ignore_fqdn=true
@@ -303,7 +303,7 @@ CheckHostNameResolving()
             ignore_fqdn=false
          fi
 
-         default_domain=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep "^default_domain" | awk '{print $2}' | tr "[A-Z]" "[a-z]"`
+         default_domain=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep "^default_domain" | awk '{print $2}' | tr "[A-Z]" "[a-z]"`
          if [ "$default_domain" = NONE ]; then
             default_domain=none
          fi
@@ -446,7 +446,7 @@ StartExecd()
    $INFOTEXT "\nStarting execution daemon. Please wait ..."
    if [ "$SGE_ENABLE_SMF" = "true" ]; then
       if [ -z "$SGE_CLUSTER_NAME" ]; then
-         SGE_CLUSTER_NAME=`cat $SGE_ROOT/$SGE_CELL/common/cluster_name 2>/dev/null`
+         SGE_CLUSTER_NAME=`cat "$SGE_ROOT/$SGE_CELL/common/cluster_name" 2>/dev/null`
       fi
       $SVCADM enable -s "svc:/application/sge/execd:$SGE_CLUSTER_NAME"
       if [ $? -ne 0 ]; then
@@ -478,14 +478,14 @@ AddQueue()
 
    #exechost=`$SGE_UTILBIN/gethostname -aname | cut -f1 -d.`
 
-   ignore_fqdn=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep "^ignore_fqdn" | awk '{print $2}'| egrep -i "true|1"`
+   ignore_fqdn=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep "^ignore_fqdn" | awk '{print $2}'| egrep -i "true|1"`
    if [ "$ignore_fqdn" != "" ]; then
       ignore_fqdn=true
    else
       ignore_fqdn=false
    fi
 
-   default_domain=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep "^default_domain" | awk '{print $2}' | tr "[A-Z]" "[a-z]"`
+   default_domain=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep "^default_domain" | awk '{print $2}' | tr "[A-Z]" "[a-z]"`
    if [ "$default_domain" = NONE ]; then
       default_domain=none
    fi
@@ -798,8 +798,8 @@ CheckWinAdminUser()
       return
    fi
 
-   if [ -f $SGE_ROOT/$SGE_CELL/common/bootstrap ]; then
-      win_admin_user=`cat $SGE_ROOT/$SGE_CELL/common/bootstrap | grep admin_user | awk '{ print $2 }'`
+   if [ -f "$SGE_ROOT/$SGE_CELL/common/bootstrap" ]; then
+      win_admin_user=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep admin_user | awk '{ print $2 }'`
       if [ "$win_admin_user" = "default" -o "$win_admin_user" = "root" -o "$win_admin_user" = "none" ]; then
          ADMINUSER=default
       fi
@@ -990,19 +990,19 @@ CopyIBMLoadSensor()
    fi
 
    # check if the loadsensor is already copied by another installation
-   if [ -f $SGE_ROOT/bin/$SGE_ARCH/qloadsensor ]; then
+   if [ -f "$SGE_ROOT/bin/$SGE_ARCH/qloadsensor" ]; then
       return 
    fi 
       
    # check if it is possible to copy it into dir as current user 
-   if [ -w $SGE_ROOT/bin/$SGE_ARCH/ ]; then 
+   if [ -w "$SGE_ROOT/bin/$SGE_ARCH/" ]; then 
       # directory has write permissions but user could be mapped to nobody 
       # or filesystem could be read-only 
-      touch $SGE_ROOT/bin/$SGE_ARCH/qloadsensortest > /dev/null 2>&1 
+      touch "$SGE_ROOT/bin/$SGE_ARCH/qloadsensortest" > /dev/null 2>&1 
       if [ "$?" -eq 0 ]; then 
-         rm $SGE_ROOT/bin/$SGE_ARCH/qloadsensortest
-         cp $SGE_ROOT/util/resources/loadsensors/ibm-loadsensor $SGE_ROOT/bin/$SGE_ARCH/qloadsensor
-         chmod 755 $SGE_ROOT/bin/$SGE_ARCH/qloadsensor
+         rm "$SGE_ROOT/bin/$SGE_ARCH/qloadsensortest"
+         cp "$SGE_ROOT/util/resources/loadsensors/ibm-loadsensor" "$SGE_ROOT/bin/$SGE_ARCH/qloadsensor"
+         chmod 755 "$SGE_ROOT/bin/$SGE_ARCH/qloadsensor"
          return
       fi 
    fi   
