@@ -1653,7 +1653,12 @@ ProcessSGERoot()
       if [ "$QMASTER" = "install" ]; then
          # create a file in SGE_ROOT
          if [ "$ADMINUSER" != default ]; then
-            $SGE_UTILBIN/adminrun $ADMINUSER $TOUCH $SGE_ROOT_VAL/tst$$ 2> /dev/null > /dev/null
+            if $SGE_UTILBIN/adminrun $ADMINUSER $TOUCH "$SGE_ROOT_VAL"/tst$$ 2> /dev/null > /dev/null; then
+               :
+            else
+               chown $ADMINUSER "$SGE_ROOT_VAL" &&
+                 $SGE_UTILBIN/adminrun $ADMINUSER $TOUCH "$SGE_ROOT_VAL"/tst$$ 2> /dev/null > /dev/null
+            fi
          else
             touch $SGE_ROOT_VAL/tst$$ 2> /dev/null > /dev/null
          fi
@@ -3335,6 +3340,7 @@ RemoveRcScript()
       # scripts. So we need to check if the links were deleted.
       # See RedHat: https://bugzilla.redhat.com/bugzilla/long_list.cgi?buglist=106193
       if [ -f "/etc/redhat-release" -o -f "/etc/fedora-release" ]; then
+         # fixme: use chkconfig
          RCD_PREFIX="/etc/rc.d"
          # Are all startup links correctly removed?
          for runlevel in 3 5; do
@@ -3384,6 +3390,11 @@ RemoveRcScript()
    elif [ "$RC_FILE" = "freebsd" ]; then
       echo  rm -f $RC_PREFIX/sge${RC_SUFFIX}
       Execute rm -f $RC_PREFIX/sge${RC_SUFFIX}
+   elif [ "$RC_FILE" = "update-rc.d" ]; then
+      echo rm -f $RC_PREFIX/$STARTUP_FILE_NAME
+      echo /usr/sbin/update-rc.d sge${RC_SUFFIX} remove
+      Execute rm -f $RC_PREFIX/$STARTUP_FILE_NAME
+      Execute /usr/sbin/update-rc.d sge${RC_SUFFIX} remove
    elif [ "$RC_FILE" = "SGE" ]; then
       if [ -z "$v61" ]; then
          RC_DIR="$RC_DIR.$SGE_CLUSTER_NAME"
