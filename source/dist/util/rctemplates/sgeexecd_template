@@ -300,7 +300,7 @@ if [ "$#" -gt 2 -o "$1" = "-h" -o "$1" = "help" ]; then
    usage
 fi
 
-startup=false
+startup=true
 execd=true
 softstop=false
 stop=false
@@ -311,8 +311,10 @@ for i in $*; do
       startup=true
    elif [ "$i" = stop ]; then
       stop=true
+      startup=false
    elif [ "$i" = softstop ]; then
       softstop=true
+      startup=false
    elif [ "$i" = -nosmf ]; then
       noSMF=true
    elif [ "$i" = restart ]; then
@@ -342,39 +344,7 @@ UQHOST=`$utilbin_dir/gethostname -name | cut -f1 -d.`
 
 DetectSMFService execd
 
-if [ "$startup" = true ]; then
-      #We want to use smf
-      if [ \( -z "$SMF_FMRI" -o "$SMF_FMRI" != "$service" \) -a -n "$service" ]; then
-         svcadm enable -st $service
-         exit $?
-      fi
-      # execution daemon is started on this host!
-      if [ "$SGE_EXECD_PORT" = "" ]; then
-         ping_port=`$utilbin_dir/getservbyname -number sge_execd`
-      else
-         ping_port=$SGE_EXECD_PORT
-      fi
-      echo "   starting sge_execd"
-      exec 1>/dev/null 2>&1
-      $bin_dir/sge_execd
-      [ $? -eq 0 -a -d /var/lock/subsys ] && touch /var/lock/subsys/sgeexecd
-      
-      #Don't exit until daemon is up
-      $bin_dir/qping -info "$HOST" "$ping_port" execd 1 > /dev/null 2>&1
-      ret=$?
-      loop=0
-      while [ $ret -ne 0 -a $loop -ne 61 ]; do
-         sleep 1
-         $bin_dir/qping -info "$HOST" "$ping_port" execd 1 > /dev/null 2>&1
-         ret=$?
-         loop=`expr $loop + 1`
-      done
-      if [ $loop -eq 61 ]; then
-         echo "Execd did not start in 61 seconds!"
-         exit 1
-      fi
-      exit 0
-else
+if [ $stop = true -o $softstop = true ]; then
    # Shutdown execution daemon
    if [ $execd = true ]; then
       GetExecdSpoolDir
@@ -401,10 +371,44 @@ else
       fi
       if [ $softstop = false ]; then
          # Send SIGTERM to all shepherds (send SIGTSTP which is converted to SIGTERM by shepherd)
-         for jobid in `ls $execd_spool_dir/active_jobs`; do
+         for jobid in `ls $execd_spool_dir/active_jobs 2>/dev/null`; do
             echo "   Shutting down Grid Engine shepherd of job $jobid"
             Shutdown sge_shepherd $execd_spool_dir/active_jobs/$jobid/pid TSTP 
          done
       fi
    fi
+fi
+
+if [ "$startup" = true ]; then
+      #We want to use smf
+      if [ \( -z "$SMF_FMRI" -o "$SMF_FMRI" != "$service" \) -a -n "$service" ]; then
+         svcadm enable -st $service
+         exit $?
+      fi
+      # execution daemon is started on this host!
+      if [ "$SGE_EXECD_PORT" = "" ]; then
+         ping_port=`$utilbin_dir/getservbyname -number sge_execd`
+      else
+         ping_port=$SGE_EXECD_PORT
+      fi
+      echo "   starting sge_execd"
+      exec 1>/dev/null 2>&1
+      $bin_dir/sge_execd
+      [ $? -eq 0 -a -d /var/lock/subsys ] && touch /var/lock/subsys/sgeexecd
+
+      #Don't exit until daemon is up
+      $bin_dir/qping -info "$HOST" "$ping_port" execd 1 > /dev/null 2>&1
+      ret=$?
+      loop=0
+      while [ $ret -ne 0 -a $loop -ne 61 ]; do
+         sleep 1
+         $bin_dir/qping -info "$HOST" "$ping_port" execd 1 > /dev/null 2>&1
+         ret=$?
+         loop=`expr $loop + 1`
+      done
+      if [ $loop -eq 61 ]; then
+         echo "Execd did not start in 61 seconds!"
+         exit 1
+      fi
+      exit 0
 fi
