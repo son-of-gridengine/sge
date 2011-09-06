@@ -42,6 +42,7 @@
 #elif defined(LINUX)
 #  include <sys/vfs.h>
 #  include "sge_string.h"
+#  include <mntent.h>
 #else
 #  include <sys/types.h>
 #  include <sys/statvfs.h>
@@ -70,7 +71,6 @@ int main(int argc, char *argv[]) {
 #if defined(LINUX)
    struct statfs buf;
    FILE *fd = NULL;
-   char buffer[BUF_SIZE];
    ret = statfs(argv[1], &buf);
 #elif defined(DARWIN) || defined(FREEBSD) || (defined(NETBSD) && !defined(ST_RDONLY))
    struct statfs buf;
@@ -134,41 +134,36 @@ int main(int argc, char *argv[]) {
       /*
        * Linux is not able to detect the right nfs version form the statfs struct.
        * f_type always returns nfs, even when it's a nfs4. We are looking into
-       * the /etc/mtab file until we found a better solution to do this.
+       * the /etc/mtab (or equivalent) file until we found a better solution
+       * to do this.
        */
-      fd = fopen("/etc/mtab", "r");
+      fd = setmntent(_PATH_MOUNTED, "r");
       if (fd == NULL) {
          fprintf(stderr, "file system type could not be detected\n");
          printf("unknown fs\n");
          return 1;
       } else {
          bool found_line = false;
+	 struct mntent *ent;
          sge_strip_white_space_at_eol(argv[1]);
          sge_strip_slash_at_eol(argv[1]);
 
-         while (fgets(buffer, sizeof(buffer), fd) != NULL) {
-            char* export = NULL; /* where is the nfs exported*/
-            char* mountpoint = NULL; /*where is it mounted to */
-            char* fstype = NULL; /*type of exported file system */
-
-            export = sge_strtok(buffer, " \t");
-            mountpoint = sge_strtok(NULL, " \t");
-            fstype = sge_strtok(NULL, " \t");
+         while ((ent = getmntent(fd)) != NULL) {
 
             /* search only in valid lines that contain NFS4 mounts */
-            if (mountpoint != NULL && fstype != NULL && strcmp(fstype, "nfs4") == 0) {
+            if (ent->mnt_dir != NULL && ent->mnt_type != NULL && strcmp(ent->mnt_type, "nfs4") == 0) {
                /* search mountpoint in given path */
-               char *pos = strstr(argv[1], mountpoint);
+               char *pos = strstr(argv[1], ent->mnt_dir);
                if (pos == argv[1]) {
                   /* we found the mountpoint at the start of the given path, this is it! */
                   found_line = true;
-                  printf ("%s\n", fstype);
+                  printf ("%s\n", ent->mnt_type);
                   break;
                }
             }
          }
 
-         fclose(fd);
+         (void) endmntent(fd);
          if (found_line == false) { /*if type could not be detected via /etc/mtab, then we have to print out "nfs"*/
             printf("nfs\n");
          }
