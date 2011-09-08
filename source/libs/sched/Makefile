@@ -196,7 +196,7 @@ simple_scheduler: simple_scheduler.o sig_handlers.o $(SCHEDLIB) $(GDILIB) $(CULL
 	$(LD_WRAPPER) $(CC) $(CFLAGS) -o simple_scheduler $(LFLAGS) simple_scheduler.o sig_handlers.o $(SCHEDLIB) $(GDILIB) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(LIBS)
 
 test_resource_utilization: test_resource_utilization.o sge_mt_init.o $(SCHEDLIB) $(SGEOBJDLIB) $(SGEOBJLIB) $(GDILIB) $(CULLLIB) $(UTILIB) $(WINGRIDLIB_DEP) $(COMMLIB) $(COMMLISTSLIB)  
-	$(LD_WRAPPER) $(CC) $(CFLAGS) -o test_resource_utilization $(LFLAGS) test_resource_utilization.o sge_mt_init.o $(SCHEDLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB) $(DLLIB) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(LIBS) $(SECLIB)
+	$(LD_WRAPPER) $(CC) $(CFLAGS) -o test_resource_utilization $(LFLAGS) test_resource_utilization.o sge_mt_init.o $(SCHEDLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB) $(COMMLIB) $(DLLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(LIBS) $(SECLIB)
 
 test_eval_performance: test_eval_performance.o $(SCHEDLIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB) $(UTILIB) $(WINGRIDLIB_DEP) $(COMMLIB) $(COMMLISTSLIB) 
 	$(LD_WRAPPER) $(CC) $(CFLAGS) -o test_eval_performance $(LFLAGS) test_eval_performance.o $(SCHEDLIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(DLLIB) $(SECLIB) $(LIBS)
