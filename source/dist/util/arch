@@ -239,7 +239,7 @@ Linux)
    # http://sourceware.org/git/?p=glibc.git;a=blob_plain;f=FAQ;hb=HEAD
    if [ "$unsupported" != "UNSUPPORTED-" ]; then
       case $osrelease in
-      2.4.*|2.6.*)
+      2.4.*|2.6.*|3.*)
          # verify the GNU C lib version
          # we expect libc version to be
          # >= 2.3 - this is our supported lx-* platform
