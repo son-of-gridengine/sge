@@ -4252,7 +4252,8 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
 /*-----------------------------------------------------------------------------*/
       /* "-secl" */
       if (strcmp("-secl", *spp) == 0) {
-         show_eventclients(ctx);
+         if (!show_eventclients(ctx))
+	    sge_parse_return = 1;
          spp++;
          continue;
       }
@@ -4269,7 +4270,8 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
 /*----------------------------------------------------------------------------*/
       /* "-sep" */
       if (strcmp("-sep", *spp) == 0) {
-         show_processors(ctx, has_binding_param);
+         if (!show_processors(ctx, has_binding_param))
+	    sge_parse_return = 1;
          spp++;
          continue;
       }
@@ -7250,12 +7252,10 @@ static const char *write_attr_tmp_file(const char *name, const char *value,
    int my_errno;
    DENTER(TOP_LAYER, "write_attr_tmp_file");
 
-   if (sge_tmpnam(filename, error_message) == NULL) {
+   errno = 0;
+   if ((fp = sge_tmpnam(filename, error_message)) == NULL) {
       DRETURN(NULL);
    }
-
-   errno = 0;
-   fp = fopen(filename, "w");
    my_errno = errno;
 
    if (fp == NULL) {
