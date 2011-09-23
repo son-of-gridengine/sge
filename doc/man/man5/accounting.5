@@ -148,7 +148,8 @@ The integral memory usage in Gbytes seconds.  The value may be affected by the
 ACCT_RESERVED_USAGE execd parameter (see
 .M sge_conf 5 ).
 .SS "\fBio\fP"
-The amount of data transferred in input/output operations (if available).
+The amount of data transferred in input/output operations (if
+available, otherwise 0).
 .SS "\fBcategory\fP"
 A string specifying the job category.
 This contains a space-separated pseudo options list for the sub, with
@@ -194,7 +195,7 @@ Present only for interactive jobs.
 The advance reservation into which the job was submitted (only if one
 was specified).
 .SS "\fBiow\fP"
-The i/o wait time in seconds.
+The input/output wait time in seconds (if available, otherwise 0).
 .SS "\fBpe_taskid\fP"
 If this identifier is set, the task was part of a parallel job, and was
 passed to xxQS_NAMExx via the \fBqrsh \-inherit\fP interface.

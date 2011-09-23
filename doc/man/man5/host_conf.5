@@ -185,9 +185,13 @@ detected by
 on the corresponding host.  This may include "hardware threads"
 reported by the operating system.
 .SS "\fBusage_scaling\fP"
+The \fBusage_scaling\fP parameter scales the usage figures, but only
+for the purposes of share tree calculations, i.e. a scaling factor of
+0 means that use of the relevant host(s) will be ignored for share
+tree purposes (e.g. if hosts are dedicated for a specific use).
 The format is equivalent to
 .B load_scaling
-(see above), the only valid attributes to be scaled however are
+(see above).  However, the only valid attributes to be scaled are
 .B cpu
 for CPU time consumption,
 .B mem

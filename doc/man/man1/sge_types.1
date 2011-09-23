@@ -5,7 +5,7 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: sge_types.1,v $     Last Update: $Date: 2009-05-28 16:56:18 $     Revision: $Revision: 1.25 $
+.\" $RCSfile: sge_types.1,v $     Last Update: $Date: 2011-06-22 13:19:12 $     Revision: $Revision: 1.25 $
 .\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
@@ -13,7 +13,7 @@
 .de SB		\" small and bold
 .if !"\\$1"" \\s-2\\fB\&\\$1\\s0\\fR\\$2 \\$3 \\$4 \\$5
 ..
-.\"
+.\" "
 .de T		\" switch to typewriter font
 .ft CW		\" probably want CW if you don't have TA font
 ..
@@ -30,7 +30,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH xxQS_NAME_Sxx_TYPES 1 "$Date: 2009-05-28 16:56:18 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH xxQS_NAME_Sxx_TYPES 1 "$Date: 2011-06-22 13:19:12 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .\"
 .SH NAME
 sge_types - xxQS_NAMExx type descriptions 
@@ -192,7 +192,7 @@ user or of the xxQS_NAMExx user object described in
 .fi
 .\"
 .SS "\fBuserset_name\fP"
-A user set name is the name of an xxQS_NAMExx access list or department described in
+A user set name is the name of a xxQS_NAMExx access list or department described in
 .M access_list 5 . 
 .PP
 \fIuserset_name\fP := \fIobject_name\fP
@@ -257,16 +257,16 @@ When patterns are used the following definitions apply:
 "*"	matches any character and any number of characters 
 	(between 0 and inv).
 "?"	matches any character. It cannot be no character.
-"."	is the character ".". It has no other meaning
-"\\"	escape character. "\\\\" = "\\", "\\*" = "*", "\\?" = "?"
+"."	is the character ".". It has no other meaning.
+"\\"	escape character; "\\\\" = "\\", "\\*" = "*", "\\?" = "?".
 "[...]"	specifies an array or a range of allowed 
 	characters for one character at a specific position.
-        Character ranges may be specified using the a-z notation.
+        Character ranges may be specified using the a\-z notation.
         The caret symbol (^) is \fBnot\fP interpreted as a logical
         not; it is interpreted literally.
 
 For more details please see 
-.M fnmatch 5
+.M fnmatch 5 .
 .\"
 
 .fi
