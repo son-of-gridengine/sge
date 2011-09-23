@@ -13,6 +13,29 @@ made without raising Trac tickets.)  Changes due to Univa (or Sun) are
 tagged as "[U]", and items partially due to them or appearing first in
 this version are tagged as "[(U)]".
 
+Version 8.0.0b
+--------------
+
+* Bug fixes
+
+  * Build/installation fixes [including #424, #1349] [(U)]
+  * Fix execd init script [#1348]
+  * Man and other documentation fixes [including #614, #764] [(U)]
+  * Fix contents of admin mail properly [#1307, #1345]
+  * Fix qalter messages for -tc
+  * Fix build with -DSGE_PQS_API
+  * Fix group ids for submitted jobs [U]
+
+* Enhancements
+
+  * Update qsched and add man page
+
+* Other changes (possibly-incompatible)
+
+  * Avoid the use of /bin/ksh [#1306]
+  * Change installation defaults to classic spooling, not adding
+    shadow hosts, and not JMX. [(U)]
+
 Version 8.0.0a
 --------------
 
