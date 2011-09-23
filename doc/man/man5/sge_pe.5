@@ -321,6 +321,27 @@ reserved usage will only be reported by the master task of the parallel job.
 No per-parallel task usage records will be sent from execd to qmaster, which
 can significantly reduce load on the qmaster when running large,
 tightly integrated parallel jobs.
+.SS "\fBqsort_args \fIlibrary qsort-function \fR[\fParg1 \fR...]\fP"
+Only available if the system was compiled with the
+.B PE_qsort_args
+flag to enable customizing the queue sorting.
+.I library
+is the path to the qsort dynamic library,
+.I qsort-function
+is the name of the qsort function implemented by the library, and the
+.IR arg s
+are arguments passed to
+.IR qsort ,
+and substitutions from the hard requested resource list for the job
+are made for any strings of the form
+.RI $ resource ,
+where
+.I resource
+is the full name of the resource as defined in the
+.M complex 5
+list.  If
+.I resource
+is not requested in the job, a null string is substituted.
 .\"
 .\"
 .SH RESTRICTIONS

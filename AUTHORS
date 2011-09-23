@@ -1,4 +1,4 @@
-Apart from the employees of Genias, Gridware, and Sun, the following
+Apart from the employees of Genias, Gridware, Sun, and Univa, the following
 community members are known to have contributed to the distribution in
 some way.  Thanks to them all, and please report any omissions.
 Thanks also to the authors of the "3rdparty" code used.
@@ -9,7 +9,9 @@ Thanks also to the authors of the "3rdparty" code used.
   Bill Barth
   Chris Dagdigian
   Dave Love
+  Florian LaRoche
   Goeran Uddeborg
+  Ilya Barygin
   Jesse Becker
   John Marshall
   Kevin Buckley
@@ -37,3 +39,5 @@ The following are only identified by email address or sunsource id.
   skeno@foi.se
   tholzer@wetafx.co.nz
   uddeborg@carmen.se
+
+Helpful bug reports from:  Adam DeConinck, Jesse Becker

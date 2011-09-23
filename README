@@ -4,4 +4,5 @@ See http://arc.liv.ac.uk/projects/SGE.
 
 See source/README.BUILD for information on building and
 http://wikis.sun.com/display/gridengine62u5/Installing for
-installation; the GUI installer may or may not be available.
+installation; the GUI installer may or may not be available,
+depending on the platform and packaging.

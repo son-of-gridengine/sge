@@ -69,8 +69,8 @@ This "enhanced queue configuration specifier syntax" takes the form
 where \fIhost_id\fP is a \fBhost_identifier\fP, as defined in 
 .M sge_types 1 ,
 and \fIparameter_value\fP is of the correct form for each parameter,
-as described below.  Spaces are allowed around "\fb,\fP" but not
-inside "\fb[]\fP", except within list-valued \fIparameter_value\fPs.
+as described below.  Spaces are allowed around "\fB,\fP" but not
+inside "\fB[]\fP", except within list-valued \fIparameter_value\fPs.
 .PP
 An entry without brackets is always required as the
 default setting for all queue instances which don't override it.
@@ -236,15 +236,20 @@ execute at the same time, i.e.
 .B slots
 (see below) should be set to 1 for this queue. 
 .SS "\fBqtype\fP"
-The type of queue. Currently
-.I batch, interactive
-or a combination in a comma separated list, or
-.I NONE.
+The type of queue.  Currently
+.IR batch ,
+.IR interactive ,
+a combination in a comma-separated list of both, or
+.IR NONE .
 .PP
-Jobs that need to be scheduled immediately (\fIqsh\fP, \fIqlogin\fP, \fIqrsh\fP
-and \fIqsub\fP with option \fI-now yes\fP) can ONLY be scheduled on
+Jobs submitted with option \fB\-now y\fP can only be scheduled on
 .I interactive
-queues.
+queues, and \fB\-now n\fP targets
+.I batch
+queues.  \fB\-now y\fP is the default for \fIqsh\fP, \fIqrsh\fP, and
+\fIqlogin\fP, while \fB\-now n\fP is the default for \fIqsub\fP.
+Nevertheless, the option can be applied to all commands, with either
+argument, to direct jobs to specific queue types.
 .PP
 The formerly supported types parallel and checkpointing are not allowed 
 anymore. A queue
