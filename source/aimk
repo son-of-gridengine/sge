@@ -243,8 +243,8 @@ usage:
    echo "-spool-targets    -> only create qmaster, spooldefaults and spoolinit"
    echo "-univaman         -> create Univa branded man pages (with -man)"
    echo "-system-libs      -> use dynamic system libraries (specifically libssl)"
-   echo "-tight-ssh        -> compile SSH daemon with tight SGE integration
-                              (normally obsoleted by sge-sshd-control PAM module)"
+   echo "-tight-ssh        -> compile SSH daemon with tight SGE integration"
+   echo "                     (normally obsoleted by sge-sshd-control PAM module)"
    echo "-umap             -> compile with usermapping and hostgroup feature (currently broken)"
    echo "-with-jemalloc    -> build SGE with the jemalloc library (default on GNU/Linux)"
   exit
