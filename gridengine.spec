@@ -225,6 +225,7 @@ makewhatis %{sge_home}/man
 %exclude %{sge_mandir}/man8/sge_*shepherd.8.gz
 %exclude %{sge_mandir}/man8/sge_shadowd.8.gz
 %exclude %{sge_mandir}/man8/pam*8.gz
+%exclude %{sge_mandir}/man3
 %exclude %{sge_home}/utilbin/*/rshd
 %exclude %{sge_lib}/*/pam*
 %exclude %{sge_home}/pvm/src
