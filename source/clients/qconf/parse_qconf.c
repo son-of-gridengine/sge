@@ -7252,10 +7252,12 @@ static const char *write_attr_tmp_file(const char *name, const char *value,
    int my_errno;
    DENTER(TOP_LAYER, "write_attr_tmp_file");
 
-   errno = 0;
-   if ((fp = sge_tmpnam(filename, error_message)) == NULL) {
+   if (sge_tmpnam(filename, error_message) == NULL) {
       DRETURN(NULL);
    }
+
+   errno = 0;
+   fp = fopen(filename, "w");
    my_errno = errno;
 
    if (fp == NULL) {
