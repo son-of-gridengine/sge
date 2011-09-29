@@ -1159,7 +1159,7 @@ and
 The syntax of the \fBjsv_url\fP is specified in 
 .M sge_types 1 .
 .\"
-.IP "\fB\-l resource=value\fP,..."
+.IP "\fB\-l resource=expression\fP,..."
 Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
 \fIqalter\fP only.
 .sp 1
@@ -1170,7 +1170,11 @@ the previous definition is replaced by the specified one.
 .sp 1
 .M complex 5
 describes how a list of available resources and their
-associated valid value specifiers can be obtained.
+associated valid value specifiers can be obtained, and section
+"MATCHING TYPES" in
+.M sge_types 1
+describes the possible forms of the expression for the requested
+resources.
 .sp 1
 There may be multiple \fB\-l\fP switches in a single
 command. You may request multiple \fB\-l\fP options to be
@@ -1730,7 +1734,8 @@ instances as parameter with the name \fBS\fP.
 .\"
 .IP "\fB\-t n[\-m[:s]]\fP"
 .\" https://arc.liv.ac.uk/trac/SGE/ticket/800
-Available for \fIqsub\fP and \fIqalter\fP only.
+.\" Available for \fIqsub\fP and \fIqalter\fP only.
+Available for \fIqsub\fP only.
 .sp 1
 Submits a so called \fIArray Job\fP, i.e. an array of identical tasks being
 differentiated only by an index number and being treated by xxQS_NAMExx
@@ -2234,36 +2239,37 @@ If the response time of the client JSV is greater than this timeout value, then 
 JSV will attempt to be re-started. The default value is 10 seconds, and this value 
 must be greater than 0. If the timeout has been reached, the JSV will only try to 
 re-start once, if the timeout is reached again an error will occur.
-.IP "\fBxxQS_NAME_Sxx_COMPLEX_\fIcomplex\fP" 1.5i
-Passing a name of the form \fBxxQS_NAME_Sxx_COMPLEX_\fIcomplex\fP to a job with
-the \fB\-v\fP switch, where
-.I complex
-is the name of a defined
-.M complex 5 ,
-causes environment variable
-.I complex
-to be defined in the job's environment with the value of that complex
-which was requested by the job explicitly with
-.B \-l
-or implicitly via
-.M xxqs_name_sxx_request 4 ,
-for instance.  E.g.
-.PP
-.nf
-.RS
-.RS
-qsub \-l arch=sol\-amd64 \-v SGE_COMPLEX_arch
-.RE
-.RE
-.fi
-.PP
-.RS
-.RS
-would put
-.B arch=sol\-amd64
-in the submitted job's environment.
-.RE
-.RE
+.\" No longer works
+\" .IP "\fBxxQS_NAME_Sxx_COMPLEX_\fIcomplex\fP" 1.5i
+\" Passing a name of the form \fBxxQS_NAME_Sxx_COMPLEX_\fIcomplex\fP to a job with
+\" the \fB\-v\fP switch, where
+\" .I complex
+\" is the name of a defined
+\" .M complex 5 ,
+\" causes environment variable
+\" .I complex
+\" to be defined in the job's environment with the value of that complex
+\" which was requested by the job explicitly with
+\" .B \-l
+\" or implicitly via
+\" .M xxqs_name_sxx_request 4 ,
+\" for instance.  E.g.
+\" .PP
+\" .nf
+\" .RS
+\" .RS
+\" qsub \-l arch=sol\-amd64 \-v SGE_COMPLEX_arch
+\" .RE
+\" .RE
+\" .fi
+\" .PP
+\" .RS
+\" .RS
+\" would put
+\" .B arch=sol\-amd64
+\" in the submitted job's environment.
+\" .RE
+\" .RE
 .IP "\fBxxQS_NAME_Sxx_BINDING" 1.5i
 The selected operating system internal processor numbers (see above).
 .\"
@@ -2413,7 +2419,7 @@ The next example is a more complex xxQS_NAMExx script.
 .M xxqs_name_sxx_request 5 ,
 .M xxqs_name_sxx_pe 5 ,
 .M complex 5 ,
-.M xxqs_name_sxx_request 5 .
+.M xxqs_name_sxx_types 5 .
 .\"
 .\"
 .SH "COPYRIGHT"
