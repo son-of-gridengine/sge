@@ -319,7 +319,22 @@ If the \fB\-xml\fP parameter is combined with \fB\-ncb\fP then the XML output do
 not contain tags with information about job to core binding.
 You can also find schema files with the suffix "_ncb" in the directory
 $SGE_ROOT/util/resources/schemas/qstat that describe that changes.
-.br
+.\"
+.sp
+The following two debugging options are available only when the
+environment variable
+.B MORE_INFO
+is defined.
+.IP "\fB\-dj\fP"
+Displays the full
+.B global_job_list
+internal state.
+.\"
+.IP "\fB\-dq\fP"
+.\" fixme: no-op?
+Displays the full
+.B global_queue_list
+Internal state.
 .\"
 .\"
 .SH "OUTPUT FORMATS"
@@ -808,7 +823,13 @@ The job's \fB\-p\fP priority as specified by the user.
 .\"
 .\"
 .SH "ENVIRONMENTAL VARIABLES"
-.\" 
+.\"
+.IP "\fBMORE_INFO\fP"
+If defined, enable the debugging
+.B \-dj
+and
+.B \-dq
+options, as above.
 .IP "\fBxxQS_NAME_Sxx_ROOT\fP" 1.5i
 Specifies the location of the xxQS_NAMExx standard configuration
 files.
