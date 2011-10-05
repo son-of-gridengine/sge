@@ -38,16 +38,15 @@
 %define username sgeadmin
 
 Name:    gridengine
-Version: 8.0.0b
+Version: 8.0.0pre_c
 Release: 1%{?dist}
 Summary: Grid Engine - Distributed Resource Manager
 
 Group:   Applications/System
 # per 3rd_party_licscopyrights
-License: (BSD and LGPLv2+ and MIT and SISSL) and GPLv2+ and BSD with advertising
+License: (BSD and LGPLv2+ and MIT and SISSL) and GPLv2+ and GFDLv3+ and BSD with advertising
 URL:     https://arc.liv.ac.uk/trac/SGE
-Source:  sge-%{version}.tar.gz
-Packager: Dave Love <d.love@liverpool.ac.uk>
+Source:  https://arc.liv.ac.uk/downloads/SGE/releases/%{version}/sge-%{version}.tar.gz
 Prefix: %{sge_home}
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -70,6 +69,8 @@ BuildRequires: elfutils-libelf-devel, net-tools, man, gzip
 BuildRequires: fedora-usermgmt-devel
 %endif
 Requires: binutils, ncurses, shadow-utils
+# for makewhatis
+Requires: man
 
 %description
 Grid Engine (often known as SGE) is a distributed resource manager,
@@ -131,6 +132,14 @@ Requires(preun): %{name} = %{version}-%{release}
 
 %description qmaster
 Programs needed to run a Grid Engine master host.
+
+%package drmaa4ruby
+Summary: Ruby binding for DRMAA library
+Group: Development/Libraries
+License: SISSL
+
+%description drmaa4ruby
+This binding is presuambly not Grid Engine-specific.
 
 %prep
 
@@ -229,6 +238,8 @@ makewhatis %{sge_home}/man
 %exclude %{sge_home}/utilbin/*/rshd
 %exclude %{sge_lib}/*/pam*
 %exclude %{sge_home}/pvm/src
+%exclude %{sge_bin}/process-scheduler-log %{sge_bin}/qsched
+%exclude %{sge_home}/util/resources/drmaa4ruby
 %{sge_bin}
 %{sge_lib}
 %{sge_home}/ckpt
@@ -277,11 +288,23 @@ makewhatis %{sge_home}/man
 %{sge_bin}/*/qacct
 %{sge_bin}/*/sge_qmaster
 %{sge_bin}/*/sge_shadowd
+%{sge_bin}/process-scheduler-log
+%{sge_bin}/qsched
 %{sge_home}/install_qmaster
 %{sge_mandir}/man8/sge_qmaster.8.gz
 %{sge_mandir}/man8/sge_shadowd.8.gz
 
+%files drmaa4ruby
+%defattr(-,root,root,-)
+%{sge_home}/util/resources/drmaa4ruby
+
 %changelog
+* Mon Oct  3 2011 Dave Love <d.love@liverpool.ac.uk> - 8.0.0pre_c-1
+- Update version; don't use Packager; fix Source.
+- Require man.
+- New package drmaa4ruby.
+- Move qsched to qmaster package.
+
 * Thu Aug 18 2011 Dave Love <d.love@liverpool.ac.uk> 8.0.0pre_b
 - Add Requires: xorg-x11-fonts-ISO8859-1-100dpi xorg-x11-fonts-ISO8859-1-75dpi
   to qmon package [from the EPEL 6 package (Orion Poplawski)].
