@@ -98,13 +98,6 @@
 #include "msg_daemons_common.h"
 #include "msg_execd.h"
 
-#if defined(BINDING_SOLARIS)
-#  include "uti/sge_uidgid.h"
-#  include <sys/processor.h>
-#  include <sys/types.h>
-#  include <sys/pset.h>
-#endif 
-
 #ifdef COMPILE_DC
 #  include "ptf.h"
 static void unregister_from_ptf(u_long32 jobid, u_long32 jataskid, const char *pe_task_id, lListElem *jr);
@@ -120,7 +113,7 @@ static void build_derived_final_usage(lListElem *jr, u_long32 job_id, u_long32 j
 
 static void examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lListElem *jep, lListElem *jatep, lListElem *petep, pid_t *pids, int npids);
 
-#if defined(PLPA_LINUX) || defined(BINDING_SOLARIS)
+#if defined(PLPA_LINUX)
 static void update_used_cores(const char* path_to_config, lListElem** jr);
 #endif
 
@@ -1464,7 +1457,7 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
             /* here we will call a ptf function to get */
             /* the first usage data after restart      */
 
-#if defined(PLPA_LINUX) || defined(BINDING_SOLARIS)
+#if defined(PLPA_LINUX)
             {
                /* do accounting of bound cores */ 
                dstring fconfig = DSTRING_INIT;
@@ -1519,7 +1512,7 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
    DRETURN_VOID;
 }
 
-#if defined(PLPA_LINUX) || defined(BINDING_SOLARIS)
+#if defined(PLPA_LINUX)
 static void update_used_cores(const char* path_to_config, lListElem** jr)
 {
    const char* binding_cfg;
@@ -2183,73 +2176,7 @@ static void clean_up_binding(char* binding)
       /* no binding was instructed */
       DRETURN_VOID;
    }
-   
-#if defined(BINDING_SOLARIS)
-   if (strstr(binding, "psrset:") != NULL) {
-      /* we are on Solaris and a processor set was created -> deaccount it and delete it */
-      int processor_set_id = -1;
 
-      /* check if just the enviroment variable SGE_BINDING was set 
-         or the pe_hostfile was written */
-      if ((strstr(binding,"env_") != NULL) || (strstr(binding,"pe_") != NULL)) {
-
-         char* topo;
-         /* no processor set was created */
-         DPRINTF(("Environment variable or pe_hostfile was set for binding"));
-         /* do not delete processor set (because it was not created) 
-            but free resources */
-         if ((sge_strtok(binding, ":") != NULL) 
-             && (sge_strtok(NULL, ":") != NULL) 
-             && (topo = sge_strtok(NULL, ":")) != NULL) {
-            
-             /* update the string which represents the currently used cores 
-                on execution daemon host */
-             free_topology(topo, -1);
-         }
-
-      } else if (sge_strtok(binding, ":") != NULL) {
-         /* parse the psrset number right after "psrset:" */
-         /* parse the rest of the line */
-         char* pset_id;
-         /* topology used by job */ 
-         char* topo; 
-
-         if ((pset_id = sge_strtok(NULL, ":")) != NULL) {
-            /* finally get the processor set id */
-            processor_set_id = atoi(pset_id);
-            /* check if a processor set was created (is not the case 
-               when the job was using ALL available cores -> no 
-               processor set can be created because it is not allowed 
-               from OS) */
-            if (processor_set_id != -1) {
-
-               /* must be root in order to delete processor set */
-               sge_switch2start_user();
-            
-               if (pset_destroy((psetid_t)processor_set_id) != 0) {
-                  /* couldn't delete pset */
-                  INFO((SGE_EVENT, "Couldn't delete processor set"));
-               }
-
-               sge_switch2admin_user();
-
-               /* release the resources used by the job */
-               if ((topo = sge_strtok(NULL, ":")) != NULL) {
-                  /* update the string which represents the currently used cores 
-                     on execution daemon host */
-                  free_topology(topo, -1);
-               } else {
-                  WARNING((SGE_EVENT, "No resource string found in config entry binding"));
-               }
-            } else {
-               /* processor set id was -1 -> we don't have to delete it */
-               DPRINTF(("No processor set was generated for this job!"));
-            }
-         }
-      }
-
-   }
-#endif
 
 #if defined(PLPA_LINUX)
    /* on Linux the used topology can be found just after the last ":" */

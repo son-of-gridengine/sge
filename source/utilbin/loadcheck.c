@@ -65,15 +65,11 @@ void usage(void);
 void print_mem_load(char *, char *, int, double, char*);
 void check_core_binding(void);
 
-#if defined(BINDING_SOLARIS)
-void test_solaris_binding(void);
-#endif 
-
 #if defined(PLPA_LINUX)
 void test_linux_plpa(void);
 #endif 
 
-#if defined(BINDING_SOLARIS) || defined(PLPA_LINUX)
+#if defined(PLPA_LINUX)
 void fill_socket_core_topology(dstring* msocket, dstring* mcore, dstring* mthread, dstring* mtopology);
 #endif
 
@@ -91,7 +87,7 @@ int main(int argc, char *argv[])
    double avg[3];
    int loads;
    char *name = NULL;
-#if defined(PLPA_LINUX) || defined(BINDING_SOLARIS)
+#if defined(PLPA_LINUX)
    dstring msocket   = DSTRING_INIT;
    dstring mcore     = DSTRING_INIT;
    dstring mthread   = DSTRING_INIT;
@@ -183,7 +179,7 @@ int main(int argc, char *argv[])
 #endif
    }
 
-#if defined(PLPA_LINUX) || defined(BINDING_SOLARIS)
+#if defined(PLPA_LINUX)
    fill_socket_core_topology(&msocket, &mcore, &mthread, &mtopology);
    if ((pos && !strcmp("m_socket", argv[pos])) || !pos) {
       printf("m_socket        %s\n", sge_dstring_get_string(&msocket));
@@ -239,7 +235,7 @@ int main(int argc, char *argv[])
 #ifndef WINDOWS
       DEXIT;
 #endif
-#if defined(PLPA_LINUX) || defined(BINDING_SOLARIS)
+#if defined(PLPA_LINUX)
       sge_dstring_free(&mcore);
       sge_dstring_free(&msocket);
       sge_dstring_free(&mthread);
@@ -277,7 +273,7 @@ int main(int argc, char *argv[])
 #ifndef WINDOWS
    DEXIT;
 #endif
-#if defined(PLPA_LINUX) || defined(BINDING_SOLARIS)
+#if defined(PLPA_LINUX)
    sge_dstring_free(&mcore);
    sge_dstring_free(&msocket);
    sge_dstring_free(&mthread);
@@ -327,15 +323,6 @@ void check_core_binding()
       test_linux_plpa();
       #endif
 
-   #elif defined(SOLARIS)
-
-      #if defined(BINDING_SOLARIS)
-      printf("Your SGE Solaris version has built-in core binding functionality!\n");
-      test_solaris_binding();
-      #else
-      printf("Your SGE Solaris version has no built-in core binding functionality!\n");
-      #endif
-
    #else 
       printf("Your SGE does currently not support core binding on this platform!\n");
    #endif
@@ -380,7 +367,7 @@ void test_linux_plpa()
          for (c = 0; c < get_amount_of_plpa_cores(s); c++) {
             int* proc_ids  = NULL;
             int amount     = 0;
-            if (get_processor_ids_linux(s, c, &proc_ids, &amount)) {
+            if (get_processor_ids(s, c, &proc_ids, &amount)) {
                int i = 0;
                printf("Internal processor ids for socket %5d core %5d: ", s , c);
                for (i = 0; i < amount; i++) {
@@ -401,67 +388,7 @@ void test_linux_plpa()
 }
 #endif
 
-#if defined(BINDING_SOLARIS)
-/****** loadcheck/test_solaris_binding() ***************************************
-*  NAME
-*     test_solaris_binding() -- Tests Solaris binding and topology information. 
-*
-*  SYNOPSIS
-*     void test_solaris_binding() 
-*
-*  FUNCTION
-*     Tests Solaris binding and checks the amount of cores and sockets 
-*     on the system as well as the topology information. 
-*
-*  INPUTS
-*
-*  RESULT
-*     void - returns nothing 
-*
-*******************************************************************************/
-void test_solaris_binding()
-{
-   char* topology = NULL;
-   int length;
-   int sockets, cores, s;
-
-   /* get amount of sockets */
-   sockets = get_execd_amount_of_sockets();
-   printf("Amount of sockets:\t\t%d\n", sockets);
-   
-   /* get amount of cores   */
-   cores = get_execd_amount_of_cores();
-   printf("Amount of cores:\t\t%d\n", cores);
-
-   /* get topology */
-   if (get_execd_topology(&topology, &length)) {
-      int** matrix   = NULL;
-      int mlength    = 0;
-      int* cores     = NULL;
-      int size;
-
-      printf("Topology:\t\t\t%s\n", topology);
-      
-      if (!generate_chipID_coreID_matrix(&matrix, &mlength)) {
-         printf("Couldn't get valid information from kstat cpu_info!\n");
-         sge_free(&topology);
-         return;
-      }
-
-      printf("Dumping internal (kstat) matrix:\n");
-      for (s = 0; s < mlength; s++) {
-         printf("chip_id: %5d core_id: %5d processor_id: %5d\n", 
-                  (matrix[s])[0], (matrix[s])[1], (matrix[s])[2]);
-      }
-      free_matrix(matrix, mlength);
-   } else {
-      printf("Couldn't get the topology string!\n");
-   }
-  
-}
-#endif
-
-#if defined(PLPA_LINUX) || defined(BINDING_SOLARIS)
+#if defined(PLPA_LINUX)
 /****** loadcheck/fill_socket_core_topology() **********************************
 *  NAME
 *     fill_socket_core_topology() -- Get load values regarding processor topology. 

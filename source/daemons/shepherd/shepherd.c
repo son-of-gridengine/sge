@@ -907,9 +907,6 @@ int main(int argc, char **argv)
     */ 
 #if defined(PLPA_LINUX)
    do_core_binding();
-#elif defined(BINDING_SOLARIS)
-   /*switch later to startuser */
-   do_core_binding();
 #endif    
 
    /*

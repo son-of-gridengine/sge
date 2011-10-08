@@ -46,12 +46,6 @@
 #include "uti/msg_utilib.h" 
 #include "uti/sge_mtutil.h"
 
-#if defined(BINDING_SOLARIS)
-#  include <sys/processor.h>
-#  include <sys/types.h>
-#  include <sys/pset.h>
-#endif 
-
 static bool is_digit(const char* position, const char stopchar);
 
 /****** sge_binding_hlp/parse_binding_parameter_string() ***********************
@@ -429,12 +423,12 @@ int get_amount_of_plpa_cores(int socket_number)
    return 0;
 }
 
-/****** sge_binding_hlp/get_amount_of_plpa_threads() **************************************
+/****** sge_binding_hlp/get_number_of_threads() **************************************
 *  NAME
-*     get_amount_of_plpa_threads() -- Get amount of threads a specific core supports.
+*     get_number_of_threads() -- Get amount of threads a specific core supports.
 *
 *  SYNOPSIS
-*     int get_amount_of_plpa_threads(int socket_number, int core_number)
+*     int get_number_of_threads(int socket_number, int core_number)
 *
 *  FUNCTION
 *     Returns the amount of threads a specific core supports.
@@ -447,16 +441,16 @@ int get_amount_of_plpa_cores(int socket_number)
 *     int - Amount of threads a specific core supports.
 *
 *  NOTES
-*     MT-NOTE: get_amount_of_plpa_threads() is MT safe
+*     MT-NOTE: get_number_of_threads() is MT safe
 *
 *******************************************************************************/
-int get_amount_of_plpa_threads(int socket_number, int core_number) {
+int get_number_of_threads(int socket_number, int core_number) {
    int amount = 0;
    int *ids   = NULL;
 
    /* get all processor ids on the system for a given core */
    if (has_core_binding() && _has_topology_information()
-         && get_processor_ids_linux(socket_number, core_number, &ids, &amount)) {
+         && get_processor_ids(socket_number, core_number, &ids, &amount)) {
       sge_free(&ids);
       return amount;
    }
@@ -548,12 +542,12 @@ int get_processor_id(int socket_number, int core_number)
 
 }
 
-/****** sge_binding_hlp/get_processor_ids_linux() ******************************
+/****** sge_binding_hlp/get_processor_ids() ******************************
 *  NAME
-*     get_processor_ids_linux() -- Get internal processor ids for a specific core.
+*     get_processor_ids() -- Get internal processor ids for a specific core.
 *
 *  SYNOPSIS
-*     bool get_processor_ids_linux(int socket_number, int core_number, int** 
+*     bool get_processor_ids(int socket_number, int core_number, int** 
 *     proc_ids, int* amount) 
 *
 *  FUNCTION
@@ -572,10 +566,10 @@ int get_processor_id(int socket_number, int core_number)
 *     bool - Returns true when processor ids where found otherwise false.
 *
 *  NOTES
-*     MT-NOTE: get_processor_ids_linux() is MT safe 
+*     MT-NOTE: get_processor_ids() is MT safe 
 *
 *******************************************************************************/
-bool get_processor_ids_linux(int socket_number, int core_number, int** proc_ids, int* amount)
+bool get_processor_ids(int socket_number, int core_number, int** proc_ids, int* amount)
 {
    int retval = true;
 
@@ -727,7 +721,7 @@ bool get_topology_linux(char** topology, int* length)
                   sge_dstring_append_char(&d_topology, *c);
                   (*length)++;
                   /* check if the core has threads */
-                  if (get_processor_ids_linux(ctr_sockets, ctr_cores, &proc_ids, &amount_of_threads) 
+                  if (get_processor_ids(ctr_sockets, ctr_cores, &proc_ids, &amount_of_threads) 
                         && amount_of_threads > 1) {
                      /* print the threads */
                      for (ctr_threads = 0; ctr_threads < amount_of_threads; ctr_threads++) { 
@@ -1044,7 +1038,7 @@ bool binding_explicit_has_correct_syntax(const char* parameter, dstring* error)
    }
 
    /* check if there are <socket,core> pairs requested multiple times */
-   amount = get_explicit_amount(parameter, true);
+   amount = get_explicit_number(parameter, true);
   
    if (check_explicit_binding_string(parameter, amount, true) == false) {
       sge_dstring_sprintf(error, MSG_SYN_EXPLICIT_PAIRSNOTUNIQUE);
@@ -1369,12 +1363,12 @@ topology_string_to_socket_core_lists(const char* topology, int** sockets,
    return retval;
 }
 
-/****** sge_binding_hlp/get_explicit_amount() **********************************
+/****** sge_binding_hlp/get_explicit_number() **********************************
 *  NAME
-*     get_explicit_amount() -- Counts the amount of <socket,core> pairs.
+*     get_explicit_number() -- Counts the amount of <socket,core> pairs.
 *
 *  SYNOPSIS
-*     int get_explicit_amount(const char* expl) 
+*     int get_explicit_number(const char* expl) 
 *
 *  FUNCTION
 *     Counts the amount of <socket,core> pairs in the binding explicit request.
@@ -1387,13 +1381,13 @@ topology_string_to_socket_core_lists(const char* topology, int** sockets,
 *     int - amount of <socket,core> pairs in explicit binding request string
 *
 *  NOTES
-*     MT-NOTE: get_explicit_amount() is MT safe
+*     MT-NOTE: get_explicit_number() is MT safe
 *
 *  SEE ALSO
 *     sge_binding_hlp/check_explicit_binding_string()
 *******************************************************************************/
 int
-get_explicit_amount(const char* expl, const bool with_explicit_prefix) {
+get_explicit_number(const char* expl, const bool with_explicit_prefix) {
 
    int amount = 0;
    char* pair = NULL;
@@ -1447,7 +1441,7 @@ get_explicit_amount(const char* expl, const bool with_explicit_prefix) {
 *     MT-NOTE: check_explicit_binding_string() is MT safe
 *
 *  SEE ALSO
-*     sge_binding_hlp/get_explicit_amount()
+*     sge_binding_hlp/get_explicit_number()
 *******************************************************************************/
 bool
 check_explicit_binding_string(const char* expl, const int amount, 
