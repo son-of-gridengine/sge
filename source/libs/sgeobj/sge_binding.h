@@ -70,7 +70,7 @@
 int get_execd_amount_of_cores(void);
 
 /* get the amount of sockets of the execution host */
-int get_execd_amount_of_sockets(void);
+int get_number_of_sockets(void);
 
 /* get the amount of hardware supported threads for the specific exec host */
 int get_total_number_of_threads(void);

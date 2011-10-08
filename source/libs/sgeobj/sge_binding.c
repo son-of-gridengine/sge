@@ -79,10 +79,10 @@ static bool account_all_threads_after_core(char** topology, const int core_pos);
 
 /****** sge_binding/get_execd_amount_of_cores() ************************************
 *  NAME
-*     get_execd_amount_of_threads() -- Returns the amount of hw supported threads. 
+*     get_total_number_of_threads() -- Returns the amount of hw supported threads. 
 *
 *  SYNOPSIS
-*     int get_execd_amount_of_threads() 
+*     int get_total_number_of_threads() 
 *
 *  FUNCTION
 *     Retrieves the amount of hardware supported threads 
@@ -92,10 +92,10 @@ static bool account_all_threads_after_core(char** topology, const int core_pos);
 *     int - The amount of threads the current host has. 
 *
 *  NOTES
-*     MT-NOTE: get_execd_amount_of_threads() is MT safe 
+*     MT-NOTE: get_total_number_of_threads() is MT safe 
 *
 *******************************************************************************/
-int get_execd_amount_of_threads() {
+int get_total_number_of_threads() {
 #if defined(PLPA_LINUX) 
       return get_total_amount_of_plpa_threads();
 #else   
