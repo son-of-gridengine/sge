@@ -86,10 +86,10 @@ bool get_linear_automatic_socket_core_list_and_account(const int amount,
       char** topo_by_job, int* topo_by_job_length);
 
 /* functions related to get load values for execd (see load_avg.c) */
-/* get the amount of cores available on the execution host */ 
+/* get the number of cores available on the execution host */
 int getExecdAmountOfCores(void);
 
-/* get the amount of sockets of the execution host */
+/* get the number of sockets of the execution host */
 int getExecdAmountOfSockets(void);
 
 /* get the topology string with all cores installed on the system */
@@ -115,8 +115,6 @@ bool initialize_topology(void);
 
 /* free cores on execution host which were used by a job */
 bool free_topology(const char* topology, const int topology_length);
-
-#endif
 
 bool
 binding_print_to_string(const lListElem *this_list, dstring * string);

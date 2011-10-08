@@ -738,7 +738,7 @@ bool is_cqueue_selected(lList *queue_list)
 *     int qinstance_slots_reserved_now(const lListElem *this_elem) 
 *
 *  FUNCTION
-*     rturns the current amount of reserved slots
+*     returns the current number of reserved slots
 *
 *  INPUTS
 *     const lListElem *this_elem - queue elem (QU_Type)

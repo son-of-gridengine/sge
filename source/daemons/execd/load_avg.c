@@ -559,14 +559,13 @@ lList *sge_build_load_report(const char* qualified_hostname, const char* binary_
 
 /****** load_avg/sge_get_sockets() *********************************************
 *  NAME
-*     sge_get_sockets() -- Appends the amount of sockets on a Linux platform 
+*     sge_get_sockets() -- Appends the number of sockets
 *
 *  SYNOPSIS
 *     static int sge_get_sockets(const char* qualified_hostname, lList **lpp) 
 *
 *  FUNCTION
-*     Appends to the given list of load values the amount of sockets on 
-*     Linux platform only
+*     Appends to the given list of load values the number of sockets
 *
 *  INPUTS
 *     const char* qualified_hostname - Hostname 
@@ -585,10 +584,10 @@ static int sge_get_sockets(const char* qualified_hostname, lList **lpp) {
    
    DENTER(TOP_LAYER, "sge_get_sockets");
    
-   /* get total amount of sockets installed on system */ 
+   /* get total number of sockets installed on system */
    sockets = get_execd_amount_of_sockets();
    
-   /* append the amount of sockets to the load report list */
+   /* append the number of sockets to the load report list */
    sge_add_int2load_report(lpp, LOAD_ATTR_SOCKETS, sockets, qualified_hostname);
 
    DRETURN(0);
@@ -596,14 +595,14 @@ static int sge_get_sockets(const char* qualified_hostname, lList **lpp) {
 
 /****** load_avg/sge_get_cores() ***********************************************
 *  NAME
-*     sge_get_cores() -- ??? 
+*     sge_get_cores() -- Appends the number of cores
 *
 *  SYNOPSIS
 *     static int sge_get_cores(const char* qualified_hostname, lList **lpp) 
 *
 *  FUNCTION
-*     Appends to the given list of load values the amount of cores 
-*     on current system (Linux platform only). For other OSs it is 0.
+*     Appends to the given list of load values the number of cores
+*     on current system.
 *
 *  INPUTS
 *     const char* qualified_hostname - Hostname 
@@ -622,10 +621,10 @@ static int sge_get_cores(const char* qualified_hostname, lList **lpp) {
    
    DENTER(TOP_LAYER, "sge_get_cores");
 
-   /* get the total amount of cores */
+   /* get the total number of cores */
    cores = get_total_number_of_cores();
-   
-   /* append the amount of cores to the list */
+
+   /* append the number of cores to the list */
    sge_add_int2load_report(lpp, LOAD_ATTR_CORES, cores, qualified_hostname);
    
    DRETURN(0);
@@ -633,13 +632,13 @@ static int sge_get_cores(const char* qualified_hostname, lList **lpp) {
 
 /****** load_avg/sge_get_hwthreads() ***********************************************
 *  NAME
-*     sge_get_hwthreads() -- Sets the amount of threads.
+*     sge_get_hwthreads() -- Sets the number of threads.
 *
 *  SYNOPSIS
 *     static int sge_get_hwthreads(const char* qualified_hostname, lList **lpp)
 *
 *  FUNCTION
-*     Appends to the given list of load values the amount of threads.
+*     Appends to the given list of load values the number of threads.
 *
 *  INPUTS
 *     const char* qualified_hostname - name of the host
@@ -658,9 +657,9 @@ static int sge_get_hwthreads(const char* qualified_hostname, lList **lpp)
    int hwthreads = 0;
    DENTER(TOP_LAYER, "sge_get_hwthreads");
 
-   /* get the total amount of threads */
-   hwthreads = get_execd_amount_of_threads();
-   /* append the amount of threads to the list */
+   /* get the total number of threads */
+   hwthreads = get_total_number_of_threads();
+   /* append the number of threads to the list */
    sge_add_int2load_report(lpp, LOAD_ATTR_THREADS, hwthreads, qualified_hostname);
 
    DRETURN(0);
@@ -669,8 +668,8 @@ static int sge_get_hwthreads(const char* qualified_hostname, lList **lpp)
 static int sge_get_topology(const char* qualified_hostname, lList **lpp) {
 
    /* Because the linux topology is a list with an undefined length 
-     (each socket could have a differnt amount of cores, so we need 
-     for each socket the amount of cores) we put the whole topology 
+     (each socket could have a differnt number of cores, so we need
+     for each socket the number of cores) we put the whole topology
      in a String value. 
      The format is following: SCCSCC 
             s(cc)s(cc) or sccscc or 22? 

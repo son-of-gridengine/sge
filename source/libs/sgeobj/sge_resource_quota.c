@@ -779,7 +779,7 @@ rqs_get_rue_string(dstring *name, const lListElem *rule, const char *user,
 *     *granted, lListElem *pe, lList *centry_list, int slots) 
 *
 *  FUNCTION
-*     iterater over all rules in the given rule set and debit the amount of slots
+*     iterater over all rules in the given rule set and debit the number of slots
 *     in the relevant rule
 *
 *  INPUTS
@@ -1152,11 +1152,11 @@ static bool rqs_match_user_host_scope(lList *scope, int filter_type, const char 
                break;
             } else {
                if (strcmp(value, cp) == 0) {
-                  /* amount of sets is equal */
+                  /* number of sets is equal */
                   found = true;
                   break;
                } else {
-                  /* amount of sets does not overlap. We can not reject in
+                  /* number of sets does not overlap. We can not reject in
                      xscope context and have to wave through */
                   found = false;
                   break;

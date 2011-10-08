@@ -1714,7 +1714,7 @@ static void destribute_ftickets(lList *root, int dependent){
 *
 *  INPUTS
 *     sge_ref_t *job_ref     - array of pointers to the job reference structure 
-*     int num_jobs           - amount of elements in the job_ref array 
+*     int num_jobs           - number of elements in the job_ref array
 *     sge_fcategory_t **root - root pointer to the functional category list 
 *     sge_ref_list_t ** ref_array - has to be a pointer to NULL pointer. The memory 
 *                                   will be allocated
@@ -3881,7 +3881,7 @@ sge_build_sgeee_orders(scheduler_all_data_t *lists, lList *running_jobs, lList *
 
 
 /*
- * check for the amount of pending ticket orders should be checked.
+ * check for the number of pending ticket orders should be checked.
  * If the report_pjob_ticktes has changed to false, we need to send 
  * ORT_clear_pri_info to the qmaster to remove the pticket values. 
  * This prevents qstat from reporting wrong pticket values. Its only done

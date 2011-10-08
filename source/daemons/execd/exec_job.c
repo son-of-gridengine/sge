@@ -412,8 +412,6 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       }
       
       /***************** core binding part ************************************/
-      /* binding strategy: SOLARIS -> create processor set id  
-                           LINUX   -> use setaffinity */
       if (mconf_get_enable_binding()) {
 
 #if defined(HAVE_HWLOC)
@@ -583,8 +581,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       }
 
       {
-	 /* REQNAME is obsolete, but kept for compatibility (see
-	    IZ3287).  */
+         /* REQNAME is obsolete, but kept for compatibility (see
+            IZ3287).  */
          const char *reqname = petep == NULL ? lGetString(jep, JB_job_name) : lGetString(petep, PET_name);
          if (reqname != NULL) {
             var_list_set_string(&environmentList, "REQNAME", reqname);

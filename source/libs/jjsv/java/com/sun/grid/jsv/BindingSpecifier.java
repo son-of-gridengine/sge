@@ -310,7 +310,7 @@ public final class BindingSpecifier implements Cloneable, Serializable {
 
 
     /**
-     * Returns the amount of cores
+     * Returns the number of cores
      * @return core amount
      */
     public int getAmount() {

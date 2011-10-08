@@ -172,7 +172,7 @@ debit_scheduled_job(const sge_assignment_t *a, int *sort_hostlist,
 /*
  * Here
  *
- *   - we reduce the amount of free slots in the queue.
+ *   - we reduce the number of free slots in the queue.
  *   - we activte suspend_on_subordinate to prevent
  *     scheduling on queues that will get suspended
  *   - we debit consumable resouces of queue
