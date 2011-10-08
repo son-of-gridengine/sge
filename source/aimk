@@ -1627,7 +1627,7 @@ case LINUXSPARC64:
 
    if ( $MAKEJEMALLOCLIB == 1 ) then
       set LIBRARY_LIBS = "$LIBS"
-      set JEMALLOC_CFLAGS  = "-Wno-error -DMOZ_MEMORY_LINUX"
+      set JEMALLOC_CFLAGS  = "-DMOZ_MEMORY_LINUX"
       set LIBS = "-ljemalloc $LIBS"
    endif
 
@@ -2550,6 +2550,9 @@ if ( "$MAKEJEMALLOCLIB" == 1 ) then
       breaksw
    endsw
 
+   if ($CC == gcc) then
+      set JEMALLOC_CFLAGS = "$JEMALLOC_CFLAGS -Wno-all"
+   endif
    $MAKE $MAKEOPT -f $SOURCE/3rdparty/jemalloc/Makefile "MAKE=$MAKE" "CC=$CC" \
       "COMPILE_ARCH=$COMPILE_ARCH" "JEMALLOC_CFLAGS=$JEMALLOC_CFLAGS" \
       "CC=$CC" "CFLAGS=$CFLAGS" "SOURCE=$SOURCE" "SDIR=$SDIR" \
