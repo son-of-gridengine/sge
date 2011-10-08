@@ -687,7 +687,7 @@ int pe_set_slots_used(lListElem *pe, int slots)
 
 /****** sgeobj/pe/pe_debit_slots() ********************************************
 *  NAME
-*     pe_debit_slots() -- Debit pos/neg amount of slots from PE
+*     pe_debit_slots() -- Debit pos/neg number of slots from PE
 *
 *  SYNOPSIS
 *     void pe_debit_slots(lListElem *pep, int slots, u_long32 job_id) 

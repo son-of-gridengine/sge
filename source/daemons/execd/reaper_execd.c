@@ -1968,7 +1968,7 @@ lListElem *jr
    double_print_time_to_dstring(ru_cpu, &cpu_string);
    double_print_memory_to_dstring(ru_maxvmem, &maxvmem_string);
 
-	/* send job exit mail only for master task */ 
+        /* send job exit mail only for master task */
    if ((VALID(MAIL_AT_EXIT, mail_options)) && !failed && !pe_task_id_str) {
       dstring utime_string = DSTRING_INIT;
       dstring stime_string = DSTRING_INIT;

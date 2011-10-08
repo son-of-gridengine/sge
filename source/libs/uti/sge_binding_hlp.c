@@ -37,7 +37,6 @@
 
 /* this code is used by shepherd */
 #include <ctype.h>
-
 #include <pthread.h>
 
 #include "uti/sge_rmon.h"
@@ -110,7 +109,7 @@ static bool is_digit(const char* position, const char stopchar);
 *  OUTPUT 
 *     u_long32* type          - type of binding (pe = 0| env = 1|set = 2)
 *     dstring* strategy       - binding strategy string
-*     int* amount             - amount of cores to bind to 
+*     int* amount             - number of cores to bind to
 *     int* stepsize           - step size between cores (or -1)
 *     int* firstsocket        - first socket to use (or -1)
 *     int* firstcore          - first core to use (on "first socket") (or -1)
@@ -149,7 +148,7 @@ bool parse_binding_parameter_string(const char* parameter, binding_type_t* type,
       *amount = binding_linear_parse_number(parameter);
 
       if (*amount  < 0) {
-         /* couldn't parse amount of cores */
+         /* couldn't parse number of cores */
          sge_dstring_sprintf(error, "couldn't parse amount (linear)");
          return false;
       }
@@ -193,7 +192,7 @@ bool parse_binding_parameter_string(const char* parameter, binding_type_t* type,
       *amount = binding_striding_parse_number(parameter);
       
       if (*amount  < 0) {
-         /* couldn't parse amount of cores */
+         /* couldn't parse number of cores */
          sge_dstring_sprintf(error, "couldn't parse amount (striding)");
          return false;
       }
@@ -202,7 +201,7 @@ bool parse_binding_parameter_string(const char* parameter, binding_type_t* type,
 
       if (*stepsize < 0) {
          /* no given stepsize does lead to stepsize 0 which will 
-            be extended on the execution host to <amount of cores per socket>. 
+            be extended on the execution host to <number of cores per socket>.
             When using a start socket,core the stepsize 0 has to be 
             included (binding striding:<amount>:0:<socket>,<core>.*/
          /* *stepsize = 0; */
@@ -297,7 +296,6 @@ bool has_topology_information(void)
 }
 
 
-
 /****** sge_binding_hlp/has_core_binding() *****************************************
 *  NAME
 *     has_core_binding() -- Check if core binding system call is supported. 
@@ -310,8 +308,6 @@ bool has_topology_information(void)
 *     supported this does not mean that topology information (about socket 
 *     and core amount) is available (which is needed for internal functions 
 *     in order to perform a correct core binding).
-*     Nevertheless a bitmask could be generated and core binding could be 
-*     performed with this selfcreated bitmask.
 *
 *  RESULT
 *     bool - True if core binding could be done. False if not. 
@@ -341,11 +337,11 @@ bool has_core_binding(void)
 *     int get_total_number_of_threads()
 *
 *  FUNCTION
-*     Returns the total amount of threads all CPUs on the host do
+*     Returns the total number of threads all CPUs on the host do
 *     support.
 *
 *  RESULT
-*     int - Total amount of harware supported threads the system supports.
+*     int - Total number of hardware supported threads the system supports.
 *
 *  NOTES
 *     MT-NOTE: get_total_number_of_threads() is MT safe
@@ -367,10 +363,10 @@ int get_total_number_of_threads(void) {
 *     int get_total_number_of_cores()
 *
 *  FUNCTION
-*     Returns the total amount of cores per socket. 
+*     Returns the total number of cores per socket.
 *
 *  RESULT
-*     int - Total amount of cores installed on the system. 
+*     int - Total number of cores installed on the system.
 *
 *  NOTES
 *     MT-NOTE: get_total_number_of_cores() is MT safe
@@ -394,7 +390,7 @@ int get_total_number_of_cores(void)
 *     int get_number_of_cores(int socket_number)
 *
 *  FUNCTION
-*     Returns the amount of cores for a specific socket.
+*     Returns the number of cores for a specific socket.
 *
 *  INPUTS
 *     int socket_number - Logical socket number starting at 0.
@@ -420,13 +416,13 @@ int get_number_of_cores(int socket_number)
 
 /****** sge_binding_hlp/get_number_of_threads() **************************************
 *  NAME
-*     get_number_of_threads() -- Get amount of threads a specific core supports.
+*     get_number_of_threads() -- Get number of threads a specific core supports.
 *
 *  SYNOPSIS
 *     int get_number_of_threads(int socket_number, int core_number)
 *
 *  FUNCTION
-*     Returns the amount of threads a specific core supports.
+*     Returns the number of threads a specific core supports.
 *
 *  INPUTS
 *     int socket_number - Logical socket number starting at 0.
@@ -459,10 +455,10 @@ int get_number_of_threads(int socket_number, int core_number) {
 *     int get_number_of_sockets()
 *
 *  FUNCTION
-*     Returns the amount of sockets available on this system. 
+*     Returns the number of sockets available on this system.
 *
 *  RESULT
-*     int - The amount of available sockets on system. 0 in case of 
+*     int - The number of available sockets on system. 0 in case of
 *                  of an error.
 *
 *  NOTES
@@ -480,21 +476,21 @@ int get_number_of_sockets(void)
 
 /****** sge_binding_hlp/get_processor_id() *****************************************
 *  NAME
-*     get_processor_id() -- Converts a logical socket and core number into a Linux internal. 
+*     get_processor_id() -- Converts a logical socket and core number into a system internal.
 *
 *  SYNOPSIS
 *     int get_processor_id(int socket_number, int core_number) 
 *
 *  FUNCTION
 *     Converts a logical socket and core number (this is beginning at 0 and 
-*     without holes) into the Linux internal processor number.  
+*     without holes) into the internal processor number.
 *
 *  INPUTS
 *     int socket_number - Socket (starting at 0) to search for core. 
 *     int core_number   - Core number (starting at 0) to get id for. 
 *
 *  RESULT
-*     int - Linux internal processor number or negative number on error. 
+*     int - internal processor number or negative number on error.
 *
 *  NOTES
 *     MT-NOTE: get_processor_id() is MT safe 
@@ -520,11 +516,11 @@ int get_processor_id(int socket_number, int core_number)
 *     get_processor_ids() -- Get internal processor ids for a specific core.
 *
 *  SYNOPSIS
-*     bool get_processor_ids(int socket_number, int core_number, int** 
+*     bool get_processor_ids(int socket_number, int core_number, int**
 *     proc_ids, int* amount) 
 *
 *  FUNCTION
-*     Get the Linux internal processor ids for a given core (specified by a socket, 
+*     Get the internal processor ids for a given core (specified by a socket,
 *     core pair). 
 *
 *  INPUTS
@@ -532,7 +528,7 @@ int get_processor_id(int socket_number, int core_number)
 *     int core_number   - Logical core number on the socket (starting at 0 without holes) 
 *
 *  OUTPUTS
-*     int** proc_ids    - Array of Linux internal processor ids.
+*     int** proc_ids    - Array of internal processor ids.
 *     int* amount       - Size of the proc_ids array.
 *
 *  RESULT
@@ -676,7 +672,7 @@ bool get_topology(char** topology, int* length)
 *     int binding_linear_parse_number(const char* parameter)
 *
 *  FUNCTION
-*    Parses a string in order to get the amount of cores requested. 
+*    Parses a string in order to get the number of cores requested.
 * 
 *    The string has following format: "linear:<amount>[:<socket>,<core>]" 
 *
@@ -688,7 +684,7 @@ bool get_topology(char** topology, int* length)
 *           if a value < 0 then there was a parsing error
 *
 *  NOTES
-*     MT-NOTE: binding_linear_parse_amount() is MT safe 
+*     MT-NOTE: binding_linear_parse_number() is MT safe
 *
 *******************************************************************************/
 int binding_linear_parse_number(const char* parameter)
@@ -702,7 +698,7 @@ int binding_linear_parse_number(const char* parameter)
    if (parameter != NULL && strstr(parameter, "linear") != NULL) {
       /* get number after linear: and before \0 or : */ 
       /* Use an "infinite" value to signify using the number of slots
-	 to remain compatible, rather than changing types.  */
+         to remain compatible, rather than changing types.  */
       if (sge_strtok(parameter, ":") == NULL)
          nn = BIND_INFINITY;
       else {
@@ -1082,7 +1078,7 @@ int binding_striding_parse_first_socket(const char* parameter)
 *     int binding_striding_parse_number(const char* parameter)
 *
 *  FUNCTION
-*     Parses the amount of cores to bind to out of "striding:" parameter string.
+*     Parses the number of cores to bind to out of "striding:" parameter string.
 *
 *     The string is expected to have following syntax: 
 *    
@@ -1092,7 +1088,7 @@ int binding_striding_parse_first_socket(const char* parameter)
 *     const char* parameter - Points to the string with the query. 
 *
 *  RESULT
-*     int - Returns the amount of cores to bind to otherwise -1.
+*     int - Returns the number of cores to bind to otherwise -1.
 *
 *  NOTES
 *     MT-NOTE: binding_striding_parse_number() is not MT safe
@@ -1283,20 +1279,20 @@ topology_string_to_socket_core_lists(const char* topology, int** sockets,
 
 /****** sge_binding_hlp/get_explicit_number() **********************************
 *  NAME
-*     get_explicit_number() -- Counts the amount of <socket,core> pairs.
+*     get_explicit_number() -- Counts the number of <socket,core> pairs.
 *
 *  SYNOPSIS
 *     int get_explicit_number(const char* expl)
 *
 *  FUNCTION
-*     Counts the amount of <socket,core> pairs in the binding explicit request.
+*     Counts the number of <socket,core> pairs in the binding explicit request.
 *
 *  INPUTS
 *     const char* expl - pointer to explicit binding request string
 *     const bool with_explicit_prefix - does string start with "explicit:"?
 *
 *  RESULT
-*     int - amount of <socket,core> pairs in explicit binding request string
+*     int - number of <socket,core> pairs in explicit binding request string
 *
 *  NOTES
 *     MT-NOTE: get_explicit_number() is MT safe
@@ -1349,7 +1345,7 @@ get_explicit_number(const char* expl, const bool with_explicit_prefix) {
 *
 *  INPUTS
 *     const char* expl - pointer to the explicit binding request
-*     const int amount - expected amount of pairs
+*     const int amount - expected number of pairs
 *     const bool with_explicit_prefix - expl start with "excplicit:"
 *
 *  RESULT
@@ -1415,7 +1411,7 @@ check_explicit_binding_string(const char* expl, const int amount,
       pair_number++;
    }
 
-   /* check if amount of pairs did match */
+   /* check if number of pairs did match */
    if (success == true && pair_number != amount) {
       success = false;
    }
@@ -1480,4 +1476,3 @@ static bool is_digit(const char* position, const char stopchar) {
 
    return true;
 }
-

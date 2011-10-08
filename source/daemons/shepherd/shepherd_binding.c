@@ -65,7 +65,7 @@ static bool add_proc_ids_linux(int socket, int core, int** proc_id, int* proc_id
 #if defined(PLPA_LINUX)
 /****** shepherd_binding/do_core_binding() *************************************
 *  NAME
-*     do_core_binding() -- Performs the core binding task for the Linux OS. 
+*     do_core_binding() -- Performs the core binding task.
 *
 *  SYNOPSIS
 *     int do_core_binding(void) 
@@ -75,15 +75,10 @@ static bool add_proc_ids_linux(int socket, int core, int** proc_id, int* proc_id
 *     the binding is communicated from execd to shepherd in the config 
 *     file value "binding". If there is "NULL" no core binding is done. 
 * 
-*     This function is Linux specific.
-*
 *     If there is any instruction the bookkeeping for these cores is already 
 *     done. In case of Solaris the processor set is already created by 
-*     execution daemon. Hence shepherd has just to add itself to it.
-*     In case of Linux the whole binding is done by shepherd. In each case 
-*     the binding is inherited from shepherd to the job it starts.
-*
-*     DG TODO change return value to bool
+*     execution daemon.  The binding is inherited from shepherd by the job
+*     it starts.
 * 
 *  RESULT
 *     int - Returns 0 in case of success and a negative value in case of problems. 
@@ -288,7 +283,7 @@ int do_core_binding(void)
 *     proc_id_size) 
 *
 *  FUNCTION
-*     Adds the Linux internal processor ids of a specific core (which is described 
+*     Adds the internal processor ids of a specific core (which is described
 *     via the logicial socket and core number) to an array. The length of the array 
 *     is updated. If the array point to NULL then a new array is allocated. The array 
 *     has to be freed from outside. 
@@ -298,7 +293,7 @@ int do_core_binding(void)
 *     int core          - Logical core number on the given socket (beginning with 0) 
 *
 *  OUTPUTS
-*     int** proc_id     - Array of Linux internal processor ids. 
+*     int** proc_id     - Array of internal processor ids.
 *     int* proc_id_size - Size of the array. 
 *
 *  RESULT
@@ -355,14 +350,14 @@ static bool add_proc_ids_linux(int socket, int core, int** proc_id, int* proc_id
 *
 *  SYNOPSIS
 *     bool binding_set_linear(int first_socket, int first_core, int 
-*     amount_of_cores, int offset) 
+*     number_of_cores, int offset)
 *
 *  FUNCTION
 *     Binds current process (shepherd) to a set of cores. All processes 
-*     started by the current process are inheriting the core binding (Linux).
+*     started by the current process inherit the core binding.
 *     
 *     The core binding is done in a linear manner, that means that 
-*     the process is bound to 'amount_of_cores' cores using one core 
+*     the process is bound to 'number_of_cores' cores using one core
 *     after another starting at socket 'first_socket' (usually 0) and 
 *     core = 'first_core' (usually 0) + 'offset'. If the core number 
 *     is higher than the number of cores which are provided by socket 
@@ -372,7 +367,7 @@ static bool add_proc_ids_linux(int socket, int core, int** proc_id, int* proc_id
 *  INPUTS
 *     int first_socket    - The first socket (starting at 0) to bind to. 
 *     int first_core      - The first core to bind. 
-*     int amount_of_cores - The amount of cores to bind to. 
+*     int number_of_cores - The number_of_cores of cores to bind to.
 *     int offset          - The user specified core number offset. 
 *     binding_type_t type - The type of binding ONLY FOR EXECD ( set | env | pe )
 *                           
@@ -390,7 +385,8 @@ static bool binding_set_linear_linux(int first_socket, int first_core,
    /* sets bitmask in a linear manner        */ 
    /* first core is on exclusive host 0      */ 
    /* first core could be set from scheduler */ 
-   /* offset is the first core to start with (make sense only with exclusive host) */
+   /* offset is the first core to start with (makes sense only with
+      exclusive host) */
    dstring error = DSTRING_INIT;
 
    if (_has_core_binding(&error) == true) {
@@ -532,12 +528,12 @@ static bool binding_set_linear_linux(int first_socket, int first_core,
 *     socket is examined.
 *
 *     If the system is out of cores and there are still some cores to select 
-*     (because of the amount_of_cores parameter) no core binding will be performed.
+*     (because of the number_of_cores parameter) no core binding will be performed.
 *    
 *  INPUTS
 *     int first_socket    - first socket to begin with  
 *     int first_core      - first core to start with  
-*     int amount_of_cores - total amount of cores to be used 
+*     int number_of_cores - total number of cores to be used
 *     int offset          - core offset for first core (increments first core used) 
 *     int stepsize        - step size
 *     int type            - type of binding (set or env or pe)
@@ -777,9 +773,6 @@ static bool bind_process_to_mask(const pid_t pid, const plpa_cpu_set_t cpuset)
 *     The elements on the same position of these lists are reflecting 
 *     a tuple. Therefore the length of the lists must be the same.
 *
-*     Binding is currently done on Linux hosts only where the machine topology 
-*     can be retrieved with PLPA library. It also does require this library.
-*
 *  INPUTS
 *     int* list_of_sockets - List of sockets in the same order as list of cores. 
 *     int samount          - Length of the list of sockets. 
@@ -788,7 +781,7 @@ static bool bind_process_to_mask(const pid_t pid, const plpa_cpu_set_t cpuset)
 *     int type             - Type of binding ( set | env | pe ).
 *
 *  RESULT
-*     bool - true when the current process was bound like specified with the 
+*     bool - true when the current process was bound as specified with the
 *            input parameter
 *
 *  NOTES
@@ -801,7 +794,7 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
    /* return value: successful bound or not */ 
    bool bound = false;
 
-   /* check if we have exactly the same amount of sockets as cores */
+   /* check if we have exactly the same number of sockets as cores */
    if (camount != samount) {
       shepherd_trace("binding_explicit: bug: amount of sockets != amount of cores");
       return false;
@@ -811,7 +804,6 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
       shepherd_trace("binding_explicit: wrong input values");
    }   
    
-   /* do only on linux when we have core binding feature in kernel */
    if (has_core_binding() == true) {
       
       if (_has_topology_information()) {
@@ -832,7 +824,6 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
          /* go through all socket,core tuples and get the processor id */
          for (pr_id_ctr = 0; pr_id_ctr < camount; pr_id_ctr++) { 
 
-            /* get the processor id */
             /* get the OS internal processor ids */ 
             if (add_proc_ids_linux(list_of_sockets[pr_id_ctr], list_of_cores[pr_id_ctr], 
                                     &proc_id, &proc_id_size) != true) {
@@ -889,8 +880,8 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
 *     bool create_binding_env_linux(const int* proc_id, const int amount) 
 *
 *  FUNCTION
-*     Creates the SGE_BINDING environment variable on Linux operating system. 
-*     This environment variable contains a space separated list of Linux 
+*     Creates the SGE_BINDING environment variable.
+*     This environment variable contains a space-separated list of
 *     internal processor ids given as input parameter.
 *
 *  INPUTS

@@ -3695,7 +3695,7 @@ static int get_soft_violations(sge_assignment_t *a, lListElem *hep, lListElem *q
 *                *assignment) 
 *
 *  FUNCTION
-*     We tag the amount of available slots for that job at global, host and 
+*     We tag the number of available slots for that job at global, host and
 *     queue level under consideration of all constraints of the job. We also 
 *     mark those queues that are suitable as a master queue as possible master 
 *     queues and count the number of violations of the job's soft request. 
