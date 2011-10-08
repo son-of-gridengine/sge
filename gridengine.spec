@@ -52,7 +52,7 @@ Prefix: %{sge_home}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: /bin/csh, openssl-devel, db4-devel, ncurses-devel, pam-devel
-BuildRequires: libXmu-devel, libXpm-devel
+BuildRequires: libXmu-devel, libXpm-devel, hwloc-devel >= 1.1
 # This used to test %{?rhel}, but that's not defined on RHEL 5, and
 # I don't know whether _host_vendor distinguishes Fedora and RHEL.
 %if 0%{?fedora}
@@ -299,6 +299,9 @@ makewhatis %{sge_home}/man
 %{sge_home}/util/resources/drmaa4ruby
 
 %changelog
+* Sat Oct  8 2011 Dave Love <d.love@liverpool.ac.uk> - 8.0.0pre_c-1
+- Depend on hwloc.
+
 * Mon Oct  3 2011 Dave Love <d.love@liverpool.ac.uk> - 8.0.0pre_c-1
 - Update version; don't use Packager; fix Source.
 - Require man.

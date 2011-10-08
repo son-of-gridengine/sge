@@ -28,6 +28,7 @@
  *   All Rights Reserved.
  * 
  *   Portions of this code are Copyright 2011 Univa Inc.
+ *   Copyright (C) 2011 Dave Love, University of Liverpool
  * 
  ************************************************************************/
 /*___INFO__MARK_END__*/
@@ -231,7 +232,6 @@ bool get_execd_topology_in_use(char** topology)
    return retval;   
 }
 
-#if defined(PLPA_LINUX)
 /* gets the positions in the topology string from a given <socket>,<core> pair */
 static int get_position_in_topology(const int socket, const int core, const char* topology, 
    const int topology_length);
@@ -243,15 +243,11 @@ static bool account_job_on_topology(char** topology, const int topology_length,
 /* DG TODO length should be an output */
 static bool is_starting_point(const char* topo, const int length, const int pos, 
    const int amount, const int stepsize, char** topo_account); 
-#endif
 
 /* find next core in topology string */
 #if 0
 static bool go_to_next_core(const char* topology, const int pos, int* new_pos); 
 #endif
-
-
-#if defined(PLPA_LINUX)
 
 
 /****** sge_binding/account_job() **********************************************
@@ -281,7 +277,6 @@ bool account_job(const char* job_topology)
    
    if (logical_used_topology_length == 0 || logical_used_topology == NULL) {
 
-#if defined(PLPA_LINUX) 
       /* initialize without any usage */
       get_topology_linux(&logical_used_topology, 
               &logical_used_topology_length); 
@@ -519,24 +514,9 @@ bool free_topology(const char* topology, const int topology_length)
    return true;
 }
 
-#endif
-
-/* ---------------------------------------------------------------------------*/
-/* ---------------------------------------------------------------------------*/
-/*                    Beginning of LINUX related functions                    */
-/* ---------------------------------------------------------------------------*/
-/* ---------------------------------------------------------------------------*/
-
-/* ---------------------------------------------------------------------------*/
-/* ---------------------------------------------------------------------------*/
-/*                    Ending of LINUX related functions                       */
-/* ---------------------------------------------------------------------------*/
-/* ---------------------------------------------------------------------------*/
-
 /* ---------------------------------------------------------------------------*/
 /*                   Bookkeeping of cores in use by SGE                       */ 
 /* ---------------------------------------------------------------------------*/
-#if defined(PLPA_LINUX)
 
 bool get_linear_automatic_socket_core_list_and_account(const int amount, 
       int** list_of_sockets, int* samount, int** list_of_cores, int* camount, 
@@ -630,7 +610,7 @@ static bool get_socket_with_most_free_cores(const char* topology, const int topo
                int* socket_number) 
 {
    /* get the socket which offers most free cores */
-   int highest_amount_of_cores = 0;
+   int highest_number_of_cores = 0;
    *socket_number              = 0;
    int current_socket          = -1;
    int i;
@@ -650,8 +630,8 @@ static bool get_socket_with_most_free_cores(const char* topology, const int topo
          current_free_cores++;
          
          /* remember if the socket offers more free cores */
-         if (current_free_cores > highest_amount_of_cores) {
-            highest_amount_of_cores = current_free_cores;
+         if (current_free_cores > highest_number_of_cores) {
+            highest_number_of_cores = current_free_cores;
             *socket_number          = current_socket;
          }
 
@@ -659,7 +639,7 @@ static bool get_socket_with_most_free_cores(const char* topology, const int topo
 
    }
 
-   if (highest_amount_of_cores <= 0) {
+   if (highest_number_of_cores <= 0) {
       /* there is no core free */
       return false;
    } else {
@@ -734,7 +714,7 @@ static int account_cores_on_socket(char** topology, const int topology_length,
       
       int core_counter = 0;   /* current core number on the socket */
       i++;                    /* just forward to the first core on the socket */  
-      retval  = 0;            /* need to initialize the amount of cores we found */
+      retval  = 0;            /* need to initialize the number of cores we found */
 
       for (; i < topology_length && (*topology)[i] != '\0'; i++) {
          if ((*topology)[i] == 'C') {
@@ -1222,7 +1202,7 @@ static int get_position_in_topology(const int socket, const int core,
    return retval;
 }
 
-bool initialize_topology() {
+bool initialize_topology(void) {
    
    /* this is done when execution daemon starts        */
    
@@ -1235,7 +1215,6 @@ bool initialize_topology() {
    return false;
 }
 
-#endif
 
 /* ---------------------------------------------------------------------------*/
 /*               End of bookkeeping of cores in use by GE                     */
@@ -1292,15 +1271,15 @@ binding_print_to_string(const lListElem *this_elem, dstring *string) {
          sge_dstring_sprintf_append(string, "%s:"sge_U32CFormat,
             "linear", sge_u32c(lGetUlong(this_elem, BN_parameter_n)));
       } else if (strcmp(strategy, "linear") == 0) {
-	 unsigned n = sge_u32c(lGetUlong(this_elem, BN_parameter_n));
-	 if (BIND_INFINITY == n)
+         unsigned n = sge_u32c(lGetUlong(this_elem, BN_parameter_n));
+         if (BIND_INFINITY == n)
             sge_dstring_sprintf_append(string, "linear:slots:"sge_U32CFormat","sge_U32CFormat,
                sge_u32c(lGetUlong(this_elem, BN_parameter_socket_offset)),
                sge_u32c(lGetUlong(this_elem, BN_parameter_core_offset)));
          else
-	    sge_dstring_sprintf_append(string, "%s:"sge_U32CFormat":"sge_U32CFormat","sge_U32CFormat,
+            sge_dstring_sprintf_append(string, "%s:"sge_U32CFormat":"sge_U32CFormat","sge_U32CFormat,
                "linear", sge_u32c(lGetUlong(this_elem, BN_parameter_n)),
-	       sge_u32c(lGetUlong(this_elem, BN_parameter_socket_offset)),
+               sge_u32c(lGetUlong(this_elem, BN_parameter_socket_offset)),
                sge_u32c(lGetUlong(this_elem, BN_parameter_core_offset)));
       } else if (strcmp(strategy, "striding_automatic") == 0) {
          sge_dstring_sprintf_append(string, "%s:"sge_U32CFormat":"sge_U32CFormat,
