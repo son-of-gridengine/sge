@@ -31,7 +31,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH SUBMIT 1 "$Date: 2011-07-19 15:34:20 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH SUBMIT 1 "$Date: 2011-10-08 19:34:26 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qsub, qsh, qlogin, qrsh, qalter, qresub \- submit jobs to xxQS_NAMExx
 .\"
@@ -460,9 +460,11 @@ A job can request a specific processor core binding (processor affinity)
 with this parameter. This request is neither a hard nor a soft request,
 it is a hint for the execution host to do this if possible.
 Please note that the requested binding strategy is not used for
-resource  selection  within  xxQS_NAMExx.  As a result an execution host
+resource selection within xxQS_NAMExx.  As a result an execution host
 might be selected where xxQS_NAMExx does not even know the hardware topology
-and therefore is not able to apply the requested binding.
+and therefore is not able to apply the requested binding.  (The
+binding facility depends on the platform, and on xxQS_NAMExx being
+compiled with appropriate support.)
 .sp
 To make xxQS_NAMExx select hardware on which the binding can be applied,
 please use the \fB\-l\fP switch in combination with the complex
@@ -497,21 +499,13 @@ its sub-tasks within the set of bound cores it inherits.  How
 xxQS_NAMExx does this depends on the underlying hardware architecture
 of the execution host where the submitted job will be started.
 .sp
-On Solaris 10 hosts a processor set will be created
-where the job can run exclusively.
-Because of operating system limitations at least one core
-must remain unbound. This resource could, of course, be
-used by an unbound job.
+Binding will be done to restrict the job to run exclusively on the
+selected cores, if possible on the platform; otherwise bound processes
+may still be able to use other cores.  The operating system will
+probably allow other unbound processes to use these cores.
 .sp
-On Linux hosts a processor affinity mask will be set to
-restrict the job to run exclusively on the selected cores.
-The operating system allows other unbound processes
-to use these cores.
-Please note that the binding requires a Linux kernel
-version of 2.6.16 or greater. It might be possible to use
-a lower version number, but in that case additional
-kernel patches have to be applied. The \fBloadcheck\fP tool in the
-utilbin directory can be used to check the host's capabilities.
+The \fBloadcheck\fP tool in the
+\fButilbin\fP directory can be used to check the host's capabilities.
 You can also use \fB\-sep\fP in combination with \fB\-cb\fP of
 .M qconf 5
 to find whether xxQS_NAMExx is able to recognize the
@@ -521,16 +515,18 @@ Possible values for \fBbinding_strategy\fP are as follows:
 .sp
 .nf
 .ta \w''u
-    linear:[<amount>[:<socket>,<core>]]
-    striding:<amount>:<n>[:<socket>,<core>]
+    linear:[<number>[:<socket>,<core>]]
+    striding:<number>:<n>[:<socket>,<core>]
     explicit:[<socket>,<core>;...]<socket>,<core>
 .fi
 .sp
 For the binding strategies "linear" and "striding" there is an optional
 socket and core pair attached. These denote the mandatory
-starting point for the first core to bind on.
+starting point for the first core to bind on.  Logical socket and core
+numbers are used, per
+.M hwloc 7 .
 .sp
-\fBlinear\fP means that xxQS_NAMExx tries to bind the job on \fBamount\fP
+\fBlinear\fP means that xxQS_NAMExx tries to bind the job on \fBnumber\fP
 successive cores. If \fBsocket\fP and \fBcore\fP are omitted then xxQS_NAMExx
 first allocates successive cores on the first empty socket found.
 ("Empty" means that there are no jobs bound to the socket by xxQS_NAMExx.)
@@ -540,16 +536,16 @@ If the number of allocated cores is lower than requested cores, no
 binding is done for the job. If \fBsocket\fP and \fBcore\fP are specified,
 then xxQS_NAMExx tries to find empty cores with this
 starting point. If this is not possible then binding is not done on
-the host concerned.  \fBamount\fP may be omitted or specified as
+the host concerned.  \fBnumber\fP may be omitted or specified as
 \fBslots\fP.  In that case it will be taken as the number of slots
 assigned to the job on a per-host basis, on the assumption that slots
 are equivalent to cores; this allows binding to work when parallel
 jobs run across nodes with variable slot counts.
 .sp
 \fBstriding\fP means that xxQS_NAMExx tries to find cores with a certain offset.
-It will select \fBamount\fP of empty cores with an offset of \fBn\fP-1 cores
+It will select \fBnumber\fP of empty cores with an offset of \fBn\fP\-1 cores
 in between. Start point for the search algorithm is socket 0 core 0. As soon as
-\fBamount\fP cores are found they will be used to do the job binding.
+\fBnumber\fP cores are found they will be used to do the job binding.
 If there are not enough empty cores, or if correct offset cannot
 be achieved, then no binding will be done on the host concerned.
 .sp

@@ -37,16 +37,12 @@
 
 /*___INFO__MARK_END__*/
 
-#if ( defined(LINUXAMD64) || defined(LINUX86) ) && !defined(ULINUX86_24) && !defined(LINUXIA64_24) && !defined(ULINUXAMD64_24) && defined(PLPA)
-#  define PLPA_LINUX
-#endif
-
 #include "uti/sge_dstring.h"
 #include "uti/sge_binding_parse.h"
 
-#if defined(PLPA_LINUX)
-#  include <plpa.h>
-#  include <dlfcn.h>
+#if defined(HAVE_HWLOC)
+#  include <hwloc.h>
+hwloc_topology_t sge_hwloc_topology;
 #endif 
 
 /* functions related for parsing command line (see parse_qsub.c) */
@@ -57,11 +53,11 @@ bool parse_binding_parameter_string(const char* parameter, binding_type_t* type,
 
 binding_type_t binding_parse_type(const char* parameter);
 
-int binding_linear_parse_amount(const char* parameter);
+int binding_linear_parse_number(const char* parameter);
 int binding_linear_parse_core_offset(const char* parameter);
 int binding_linear_parse_socket_offset(const char* parameter);
 
-int binding_striding_parse_amount(const char* parameter);
+int binding_striding_parse_number(const char* parameter);
 int binding_striding_parse_first_core(const char* parameter);
 int binding_striding_parse_first_socket(const char* parameter);
 int binding_striding_parse_step_size(const char* parameter);
@@ -70,18 +66,17 @@ bool binding_explicit_has_correct_syntax(const char* parameter, dstring* error);
 int get_explicit_number(const char* expl, const bool with_explicit_prefix);
 bool check_explicit_binding_string(const char* expl, const int amount, const bool with_explicit_prefix);
 
-#if defined(PLPA_LINUX)
+#if defined(HAVE_HWLOC)
 
-bool _has_topology_information(void);
-bool _has_core_binding(dstring* error);
-bool get_topology_linux(char** topology, int* length);
+bool has_topology_information(void);
+bool get_topology(char** topology, int* length);
 int get_processor_id(int socket_number, int core_number);
-bool get_processor_ids_linux(int socket_number, int core_number, int** proc_ids, int* amount);
-int get_amount_of_plpa_cores(int socket_number);
-int get_amount_of_plpa_threads(int socket_number, int core_number);
-int get_total_amount_of_plpa_cores(void);
-int get_total_amount_of_plpa_threads(void);
-int get_amount_of_plpa_sockets(void);
+bool get_processor_ids(int socket_number, int core_number, int** proc_ids, int* amount);
+int get_number_of_cores(int socket_number);
+int get_number_of_threads(int socket_number, int core_number);
+int get_total_number_of_cores(void);
+int get_total_number_of_threads(void);
+int get_number_of_sockets(void);
 bool has_core_binding(void);
 
 #endif
