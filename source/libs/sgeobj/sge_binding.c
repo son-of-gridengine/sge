@@ -158,7 +158,7 @@ int get_execd_amount_of_sockets()
 }
 
 
-bool get_execd_topology(char** topology, int* length)
+bool get_topology(char** topology, int* length)
 {
    bool success = false;
 
@@ -402,14 +402,14 @@ bool binding_explicit_check_and_account(const int* list_of_sockets, const int sa
    /* check if the topology which is used already is accessable */
    if (logical_used_topology == NULL) {
       /* we have no topology string at the moment (should be initialized before) */
-      if (!get_execd_topology(&logical_used_topology, &logical_used_topology_length)) {
+      if (!get_topology(&logical_used_topology, &logical_used_topology_length)) {
          /* couldn't even get the topology string */
          return false;
       }
    }
    
    /* create output string */ 
-   get_execd_topology(topo_used_by_job, topo_used_by_job_length);
+   get_topology(topo_used_by_job, topo_used_by_job_length);
 
    /* go through the <socket>,<core> pair list */
    for (i = 0; i < samount; i++) {
@@ -548,7 +548,7 @@ bool get_linear_automatic_socket_core_list_and_account(const int amount,
    /* temp topology string where accounting is done on     */
    char* tmp_topo_busy = NULL;
 
-   /* amount of cores we could account already             */
+   /* number of cores we could account already             */
    int used_cores      = 0;
 
    /* the numbers of the sockets which are completely free */
@@ -582,7 +582,7 @@ bool get_linear_automatic_socket_core_list_and_account(const int amount,
       
       /* the socket which offers some cores */
       int socket_free = 0;
-      /* the amount of cores we still need */
+      /* the number of cores we still need */
       int needed_cores = amount - used_cores;
 
       while (needed_cores > 0) {
@@ -748,7 +748,7 @@ static int account_cores_on_socket(char** topology, const int topology_length,
             /* store the logical <socket,core> tuple inside the lists */
             (*list_of_sockets)[(*list_of_sockets_size) - 1]   = socket_number;
             (*list_of_cores)[(*list_of_cores_size) - 1]       = core_counter;
-            /* increase the amount of cores we've collected so far */
+            /* increase the number of cores we've collected so far */
             retval++;
             /* move forward to the next core */
             core_counter++;
@@ -783,7 +783,7 @@ static bool get_free_sockets(const char* topology, const int topology_length,
 {
    /* temporary counter */
    int i, j;
-   /* this amount of sockets we discovered already */ 
+   /* this number of sockets we discovered already */
    int socket_number  = 0;
 
    (*sockets) = NULL;
@@ -819,7 +819,7 @@ static bool get_free_sockets(const char* topology, const int topology_length,
             (*sockets_size)++;
          }
          
-         /* increment the amount of sockets we discovered so far */
+         /* increment the number of sockets we discovered so far */
          socket_number++;
 
       } /* end if this is a socket */
@@ -905,7 +905,7 @@ bool get_striding_first_socket_first_core_and_account(const int amount, const in
 
    if (logical_used_topology == NULL) {
       /* we have no topology string at the moment (should be initialized before) */
-      if (!get_execd_topology(&logical_used_topology, &logical_used_topology_length)) {
+      if (!get_topology(&logical_used_topology, &logical_used_topology_length)) {
          /* couldn't even get the topology string */
          return false;
       }
@@ -1227,7 +1227,7 @@ bool initialize_topology() {
    /* this is done when execution daemon starts        */
    
    if (logical_used_topology == NULL) {
-      if (get_execd_topology(&logical_used_topology, &logical_used_topology_length)) {
+      if (get_topology(&logical_used_topology, &logical_used_topology_length)) {
          return true;
       }
    }

@@ -532,7 +532,7 @@ bool job_is_ja_task_defined(const lListElem *job, u_long32 ja_task_number)
 *     u_long32 job_get_ja_tasks(const lListElem *job) 
 *
 *  FUNCTION
-*     This function returns the overall amount of tasks in an array job. 
+*     This function returns the overall number of tasks in an array job.
 *
 *  INPUTS
 *     const lListElem *job - JB_Type 
@@ -569,7 +569,7 @@ u_long32 job_get_ja_tasks(const lListElem *job)
 *     u_long32 job_get_not_enrolled_ja_tasks(const lListElem *job) 
 *
 *  FUNCTION
-*     This function returns the amount of tasks not enrolled in the
+*     This function returns the number of tasks not enrolled in the
 *     JB_ja_tasks sublist. 
 *
 *  INPUTS
@@ -620,7 +620,7 @@ u_long32 job_get_not_enrolled_ja_tasks(const lListElem *job)
 *     u_long32 job_get_not_enrolled_ja_tasks(const lListElem *job) 
 *
 *  FUNCTION
-*     This function returns the amount of tasks enrolled in the
+*     This function returns the number of tasks enrolled in the
 *     JB_ja_tasks sublist. 
 *
 *  INPUTS

@@ -494,7 +494,7 @@ int sge_reset_job_category()
 *
 *  FUNCTION
 *     Copies jobs based on the max nr open slots and the categories. Each
-*     category will get max amount of slots pending jobs. Even if there are
+*     category will get max number of slots pending jobs. Even if there are
 *     no open slots available, it will generate at least minJobPerCategory
 *     jobs for each category.
 *

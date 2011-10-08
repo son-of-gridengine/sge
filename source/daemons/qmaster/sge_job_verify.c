@@ -752,7 +752,7 @@ static bool check_binding_param_consistency(lListElem* binding_elem)
    if ((strcmp(strategy, "striding") == 0)
          || (strcmp(strategy, "striding_automatic") == 0)) {
 
-      /* the amount of cores requested must be > 0 */
+      /* the number of cores requested must be > 0 */
       if (lGetUlong(binding_elem, BN_parameter_n) == 0) {
          ERROR((SGE_EVENT, MSG_JSV_BINDING_REJECTED_SS, "BN_parameter_n", "0"));
          DRETURN(false);

@@ -344,7 +344,7 @@ int utilization_add(lListElem *cr, u_long32 start_time, u_long32 duration, doubl
       if (end_time < lGetUlong(this, RDE_time)) {
          break;
       }
-      /* increment amount of elements in-between */
+      /* increment number of elements in-between */
       lAddDouble(this, RDE_amount, utilization);
       prev = this;
       this = lNext(this);
@@ -905,7 +905,7 @@ int rc_add_job_utilization(lListElem *jep, u_long32 task_id, const char *type,
 *     bool is_master_task  - is this the master task going to be debit
 *
 *  RESULT
-*     static int - amount of modified limits
+*     static int - number of modified limits
 *
 *  NOTES
 *     MT-NOTE: rqs_add_job_utilization() is MT safe 
