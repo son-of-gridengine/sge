@@ -81,7 +81,7 @@ bool get_execd_topology(char** topology, int* length);
 /* get the topology string where all cores currently in use are marked */
 bool get_execd_topology_in_use(char** topology);
 
-#if defined(PLPA_LINUX) || defined(BINDING_SOLARIS)
+#if defined(PLPA_LINUX)
 bool account_job(const char* job_topology);
  
 bool binding_set_striding(int first_socket, int first_core, int amount_of_cores,
@@ -133,23 +133,6 @@ bool initialize_topology(void);
 /* free cores on execution host which were used by a job */
 bool free_topology(const char* topology, const int topology_length);
 
-#endif
-
-#if defined(BINDING_SOLARIS)
-
-int create_processor_set_striding_solaris(const int first_socket,
-   const int first_core, const int amount, const int step_size, 
-   const binding_type_t type, char** env);
-
-int create_processor_set_explicit_solaris(const int* list_of_sockets,
-   const int samount, const int* list_of_cores, const int camount,
-   const binding_type_t type, char** env);
-
-/* matrix represents internal kstat structure */
-bool generate_chipID_coreID_matrix(int*** matrix, int* length);
-
-/* frees the memory allocated by the topology matrix */
-void free_matrix(int** matrix, const int length);
 #endif
 
 bool
