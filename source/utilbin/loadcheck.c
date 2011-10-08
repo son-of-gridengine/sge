@@ -28,6 +28,7 @@
  *   All Rights Reserved.
  * 
  *  Portions of this code are Copyright 2011 Univa Inc.
+ *   Copyright (C) 2011 Dave Love, University of Liverpool
  * 
  ************************************************************************/
 /*___INFO__MARK_END__*/
@@ -56,22 +57,17 @@
 #include <io.h>
 #endif
 
-#if defined(PLPA_LINUX)
-/* for linux kernel version */
+/* In POSIX, but possibly not on all relevant platforms -- let's see.  */
 #include <sys/utsname.h>
-#endif
 
 void usage(void);
 void print_mem_load(char *, char *, int, double, char*);
 void check_core_binding(void);
 
-#if defined(PLPA_LINUX)
-void test_linux_plpa(void);
-#endif 
-
-#if defined(PLPA_LINUX)
+void test_binding(void);
 void fill_socket_core_topology(dstring* msocket, dstring* mcore, dstring* mthread, dstring* mtopology);
-#endif
+
+static bool can_bind, has_topology;
 
 void usage()
 {
@@ -87,19 +83,17 @@ int main(int argc, char *argv[])
    double avg[3];
    int loads;
    char *name = NULL;
-#if defined(PLPA_LINUX)
    dstring msocket   = DSTRING_INIT;
    dstring mcore     = DSTRING_INIT;
    dstring mthread   = DSTRING_INIT;
    dstring mtopology = DSTRING_INIT;
-#endif
 
 #ifdef SGE_LOADMEM
    sge_mem_info_t mem_info;
 #endif
 
 #ifdef SGE_LOADCPU
-	double total = 0.0;	
+   double total = 0.0;
 #endif
 
    int i, pos = 0, print_as_int = 0, precision = 0, core_binding = 0;
@@ -117,6 +111,8 @@ int main(int argc, char *argv[])
                          (textdomain_func_type)     textdomain);
    sge_init_language(NULL,NULL);   
 #endif /* __SGE_COMPILE_WITH_GETTEXT__  */
+   can_bind = has_core_binding();
+   has_topology = has_topology_information();
    if (argc == 2 && !strcmp(argv[1], "-cb")) {
       core_binding = 1;
    } else {
@@ -179,40 +175,41 @@ int main(int argc, char *argv[])
 #endif
    }
 
-#if defined(PLPA_LINUX)
-   fill_socket_core_topology(&msocket, &mcore, &mthread, &mtopology);
-   if ((pos && !strcmp("m_socket", argv[pos])) || !pos) {
-      printf("m_socket        %s\n", sge_dstring_get_string(&msocket));
+   if (true == has_topology) {
+      fill_socket_core_topology(&msocket, &mcore, &mthread, &mtopology);
+      if ((pos && !strcmp("m_socket", argv[pos])) || !pos) {
+        printf("m_socket        %s\n", sge_dstring_get_string(&msocket));
+      }
+      if ((pos && !strcmp("m_core", argv[pos])) || !pos) {
+        printf("m_core          %s\n", sge_dstring_get_string(&mcore));
+      }
+      if ((pos && !strcmp("m_thread", argv[pos])) || !pos) {
+        printf("m_thread        %s\n", sge_dstring_get_string(&mthread));
+      }
+      if ((pos && !strcmp("m_topology", argv[pos])) || !pos) {
+        printf("m_topology      %s\n", sge_dstring_get_string(&mtopology));
+      }
    }
-   if ((pos && !strcmp("m_core", argv[pos])) || !pos) {
-      printf("m_core          %s\n", sge_dstring_get_string(&mcore));
+   else {
+      if ((pos && !strcmp("m_socket", argv[pos])) || !pos) {
+        printf("m_socket        -\n");
+      }
+      if ((pos && !strcmp("m_core", argv[pos])) || !pos) {
+        printf("m_core          -\n");
+      }
+      if ((pos && !strcmp("m_thread", argv[pos])) || !pos) {
+        printf("m_thread        -\n");
+      }
+      if ((pos && !strcmp("m_topology", argv[pos])) || !pos) {
+        printf("m_topology      -\n");
+      }   
    }
-   if ((pos && !strcmp("m_thread", argv[pos])) || !pos) {
-      printf("m_thread        %s\n", sge_dstring_get_string(&mthread));
-   }
-   if ((pos && !strcmp("m_topology", argv[pos])) || !pos) {
-      printf("m_topology      %s\n", sge_dstring_get_string(&mtopology));
-   }   
-#else 
-   if ((pos && !strcmp("m_socket", argv[pos])) || !pos) {
-      printf("m_socket        -\n");
-   }
-   if ((pos && !strcmp("m_core", argv[pos])) || !pos) {
-      printf("m_core          -\n");
-   }
-   if ((pos && !strcmp("m_thread", argv[pos])) || !pos) {
-      printf("m_thread        -\n");
-   }
-   if ((pos && !strcmp("m_topology", argv[pos])) || !pos) {
-      printf("m_topology      -\n");
-   }   
-#endif 
 
 #if defined(WINDOWS)
    loads = 0;
    avg[0] = avg[1] = avg[2] = 0;
 #else
-	loads = sge_getloadavg(avg, 3);
+   loads = sge_getloadavg(avg, 3);
 #endif
 
    if (loads>0 && ((pos && !strcmp("load_short", argv[pos])) || !pos)) 
@@ -235,12 +232,10 @@ int main(int argc, char *argv[])
 #ifndef WINDOWS
       DEXIT;
 #endif
-#if defined(PLPA_LINUX)
       sge_dstring_free(&mcore);
       sge_dstring_free(&msocket);
       sge_dstring_free(&mthread);
       sge_dstring_free(&mtopology);
-#endif
       return 1;
    }
 
@@ -273,13 +268,11 @@ int main(int argc, char *argv[])
 #ifndef WINDOWS
    DEXIT;
 #endif
-#if defined(PLPA_LINUX)
    sge_dstring_free(&mcore);
    sge_dstring_free(&msocket);
    sge_dstring_free(&mthread);
    sge_dstring_free(&mtopology);
-#endif
-	return 0;
+   return 0;
 }
 
 void print_mem_load(
@@ -312,24 +305,15 @@ char *m
 *******************************************************************************/
 void check_core_binding()
 {
-   /* try if it is possible to use plpa in case of Linux */
-   
-   #if defined(LINUX) 
-   
-      #if !defined(PLPA_LINUX)
-      printf("Your SGE Linux version has no built-in core binding functionality!\n");
-      #else
-      printf("Your SGE Linux version has built-in core binding functionality!\n");   
-      test_linux_plpa();
-      #endif
-
-   #else 
-      printf("Your SGE does currently not support core binding on this platform!\n");
-   #endif
+#if !defined(HAVE_HWLOC)
+  printf("Your SGE has no core binding functionality (not built with hwloc).\n");
+#else
+  printf("Your SGE has core binding functionality (built with hwloc).\n");
+  test_binding();
+#endif
 }
 
-#if defined(PLPA_LINUX)
-void test_linux_plpa()
+void test_binding()
 {
    dstring error  = DSTRING_INIT;
    char* topology = NULL;
@@ -338,23 +322,22 @@ void test_linux_plpa()
    struct utsname name;
 
    if (uname(&name) != -1) {
-      printf("Your Linux kernel version is: %s\n", name.release);
+      printf("Your kernel version is: %s\n", name.release);
    }
 
-   if (!_has_core_binding(&error)) {
-      printf("Your Linux kernel seems not to offer core binding capabilities for PLPA!\nReason: %s\n", 
-               sge_dstring_get_string(&error));
+   if (!has_core_binding()) {
+      printf("Your system seems not to offer core binding capabilities!");
    }
 
-   if (!_has_topology_information()) {
-      printf("No topology information could by retrieved by PLPA!\n");
+   if (!has_topology_information()) {
+      printf("No topology information could by retrieved!\n");
    } else {
-      /* get amount of sockets */
-      printf("Amount of sockets:\t\t%d\n", get_amount_of_plpa_sockets());
-      /* get amount of cores   */
-      printf("Amount of cores:\t\t%d\n", get_total_amount_of_plpa_cores());
-      /* the amount of threads must be shown as well */
-      printf("Amount of threads:\t\t%d\n", get_total_amount_of_plpa_threads());
+      /* get number of sockets */
+      printf("Number of sockets:\t\t%d\n", get_number_of_sockets());
+      /* get number of cores   */
+      printf("Number of cores:\t\t%d\n", get_total_number_of_cores());
+      /* the number of threads must be shown as well */
+      printf("Number of threads:\t\t%d\n", get_total_number_of_threads());
       /* get topology */
       get_topology_linux(&topology, &length);
       printf("Topology:\t\t\t%s\n", topology);
@@ -363,8 +346,8 @@ void test_linux_plpa()
 
       /* for each socket,core pair get the internal processor number */
       /* try multi-mapping */
-      for (s = 0; s < get_amount_of_plpa_sockets(); s++) {
-         for (c = 0; c < get_amount_of_plpa_cores(s); c++) {
+      for (s = 0; s < get_number_of_sockets(); s++) {
+         for (c = 0; c < get_number_of_cores(s); c++) {
             int* proc_ids  = NULL;
             int amount     = 0;
             if (get_processor_ids(s, c, &proc_ids, &amount)) {
@@ -386,9 +369,7 @@ void test_linux_plpa()
 
    return;
 }
-#endif
 
-#if defined(PLPA_LINUX)
 /****** loadcheck/fill_socket_core_topology() **********************************
 *  NAME
 *     fill_socket_core_topology() -- Get load values regarding processor topology. 
@@ -401,8 +382,8 @@ void test_linux_plpa()
 *     Gets the values regarding processor topology. 
 *
 *  OUTPUTS 
-*     dstring* msocket   - The amount of sockets the host have. 
-*     dstring* mcore     - The amount of cores the host have.
+*     dstring* msocket   - The number of sockets the host have.
+*     dstring* mcore     - The number of cores the host have.
 *     dstring* mtopology - The topology the host have. 
 *
 *  RESULT
@@ -427,5 +408,3 @@ void fill_socket_core_topology(dstring* msocket, dstring* mcore, dstring* mthrea
    sge_dstring_append(mtopology, topo);
    sge_free(&topo);
 }
-
-#endif

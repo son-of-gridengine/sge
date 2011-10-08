@@ -59,10 +59,6 @@
 #if defined(LINUX)
 #  include <dlfcn.h>
 #endif
-
-#if defined(PLPA_LINUX) 
-#  include <plpa.h>
-#endif
  
 /* functions related to get load values for execd (see load_avg.c) */
 
@@ -81,15 +77,14 @@ bool get_execd_topology(char** topology, int* length);
 /* get the topology string where all cores currently in use are marked */
 bool get_execd_topology_in_use(char** topology);
 
-#if defined(PLPA_LINUX)
 bool account_job(const char* job_topology);
  
-bool binding_set_striding(int first_socket, int first_core, int amount_of_cores,
+bool binding_set_striding(int first_socket, int first_core, int number_of_cores,
       int offset, int stepsize, char** reason);
 
-bool binding_one_per_socket(int first_socket, int amount_of_sockets, int n);
+bool binding_one_per_socket(int first_socket, int number_of_sockets, int n);
 
-bool binding_n_per_socket(int first_socket, int amount_of_sockets, int n);
+bool binding_n_per_socket(int first_socket, int number_of_sockets, int n);
 
 bool binding_explicit_exctract_sockets_cores(const char* parameter, int** list_of_sockets, 
    int* samount, int** list_of_cores, int* camount);

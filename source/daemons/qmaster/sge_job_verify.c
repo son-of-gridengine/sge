@@ -804,7 +804,7 @@ static bool check_binding_param_consistency(lListElem* binding_elem)
       }
 
       expl = lGetString(binding_elem, BN_parameter_explicit);
-      amount = get_explicit_amount(expl, false);
+      amount = get_explicit_number(expl, false);
 
       if (check_explicit_binding_string(expl, amount, false) == false) {
          DRETURN(false);
