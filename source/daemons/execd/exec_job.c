@@ -117,28 +117,23 @@ static int get_nhosts(lList *gdil_list);
 /* from execd.c import the working dir of the execd */
 extern char execd_spool_dir[SGE_PATH_MAX];
 
-#if defined(PLPA_LINUX) 
 /* creates string with core binding which is written to job "config" file */
-static bool create_binding_strategy_string_linux(dstring* result, 
-                                                 lListElem *jep, 
-                                                 char** rankfileinput);
+static bool create_binding_strategy_string(dstring* result, lListElem *jep,
+                                           char** rankfileinput);
 
 /* generates the config file string (binding elem) for shepherd */
-static bool linear_linux(dstring* result, lListElem* binding_elem, 
-                                    const bool automatic);
+static bool linear(dstring* result, lListElem* binding_elem,
+                   const bool automatic);
 
 /* generates the config file string (binding elem) for shepherd */
-static bool striding_linux(dstring* result, lListElem* binding_elem, 
-                                    const bool automatic); 
+static bool striding(dstring* result, lListElem* binding_elem,
+                     const bool automatic);
 
 /* generates the config file string (binding elem) for shepherd */
-static bool explicit_linux(dstring* result, lListElem* binding_elem); 
-#endif 
+static bool explicit(dstring* result, lListElem* binding_elem);
 
-#if defined(PLPA_LINUX) 
 static bool parse_job_accounting_and_create_logical_list(const char* binding_string,
                                                          char** rankfileinput);
-#endif
 
 
 #if COMPILE_DC
@@ -421,7 +416,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
                            LINUX   -> use setaffinity */
       if (mconf_get_enable_binding()) {
 
-#if defined(PLPA_LINUX)
+#if defined(HAVE_HWLOC)
          dstring pseudo_usage = DSTRING_INIT;
          lListElem* jr        = NULL;
 
@@ -429,8 +424,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
             in order to fulfill the selected strategy. if strategy is not 
             applicable or in case of errors "NULL" is written to this 
             line in the "config" file */
-         create_binding_strategy_string_linux(&core_binding_strategy_string, jep, 
-                                           &rankfileinput);
+         create_binding_strategy_string(&core_binding_strategy_string, jep,
+                                        &rankfileinput);
  
          if (sge_dstring_get_string(&core_binding_strategy_string) != NULL
                && strcmp(sge_dstring_get_string(&core_binding_strategy_string), "NULL") != 0) {
@@ -985,7 +980,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          }
 
          if (mconf_get_ignore_ngroups_max_limit() == true) {
-         	fprintf(fp, "skip_ngroups_max_silently=yes\n");
+                fprintf(fp, "skip_ngroups_max_silently=yes\n");
          }
          
          lFreeList(&rlp);
@@ -1860,7 +1855,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
 
       char ccname[1024];
       sprintf(ccname, "KRB5CCNAME=FILE:/tmp/krb5cc_%s_" sge_u32, "sge",
-	      job_id);
+              job_id);
       putenv(ccname);
    }
 
@@ -2011,14 +2006,14 @@ lList *gdil_orig  /* JG_Type */
    DRETURN(nhosts);
 }
 
+#ifdef HAVE_HWLOC
 /* creates binding string for config file */
-#if defined(PLPA_LINUX)
-/****** exec_job/create_binding_strategy_string_linux() ************************
+/****** exec_job/create_binding_strategy_string() ************************
 *  NAME
-*     create_binding_strategy_string_linux() -- Creates the core binding strategy string. 
+*     create_binding_strategy_string() -- Creates the core binding strategy string.
 *
 *  SYNOPSIS
-*     static bool create_binding_strategy_string_linux(dstring* result, 
+*     static bool create_binding_strategy_string(dstring* result,
 *     lListElem *jep, char** rankfileinput) 
 *
 *  FUNCTION
@@ -2038,11 +2033,11 @@ lList *gdil_orig  /* JG_Type */
 *     static bool - returns true in case of success otherwise false
 *
 *  NOTES
-*     MT-NOTE: create_binding_strategy_string_linux() is not MT safe 
+*     MT-NOTE: create_binding_strategy_string() is not MT safe
 *
 *******************************************************************************/
-static bool create_binding_strategy_string_linux(dstring* result, lListElem *jep, 
-                                                   char** rankfileinput)
+static bool create_binding_strategy_string(dstring* result, lListElem *jep,
+                                           char** rankfileinput)
 {
    /* temporary result string with or without "env:" prefix (when environment 
       variable for binding should be set or not) */
@@ -2053,7 +2048,7 @@ static bool create_binding_strategy_string_linux(dstring* result, lListElem *jep
    lListElem *binding_elem = NULL;
    lList *binding = lGetList(jep, JB_binding);
 
-   DENTER(TOP_LAYER, "create_binding_strategy_string_linux");
+   DENTER(TOP_LAYER, "create_binding_strategy_string");
 
    if (binding != NULL) {
       /* get sublist */
@@ -2074,23 +2069,23 @@ static bool create_binding_strategy_string_linux(dstring* result, lListElem *jep
 
          if (strcmp(lGetString(binding_elem, BN_strategy), "linear") == 0) {
             
-            retval = linear_linux(&tmp_result, binding_elem, false);
+            retval = linear(&tmp_result, binding_elem, false);
 
          } else if (strcmp(lGetString(binding_elem, BN_strategy), "linear_automatic") == 0) {
             
-            retval = linear_linux(&tmp_result, binding_elem, true);
+            retval = linear(&tmp_result, binding_elem, true);
 
          } else if (strcmp(lGetString(binding_elem, BN_strategy), "striding") == 0) {
             
-            retval = striding_linux(&tmp_result, binding_elem, false); 
+            retval = striding(&tmp_result, binding_elem, false);
          
          } else if (strcmp(lGetString(binding_elem, BN_strategy), "striding_automatic") == 0) {
             
-            retval = striding_linux(&tmp_result, binding_elem, true); 
+            retval = striding(&tmp_result, binding_elem, true);
             
          } else if (strcmp(lGetString(binding_elem, BN_strategy), "explicit") == 0) {
 
-            retval = explicit_linux(&tmp_result, binding_elem);
+            retval = explicit(&tmp_result, binding_elem);
 
          } else {
             
@@ -2131,13 +2126,14 @@ static bool create_binding_strategy_string_linux(dstring* result, lListElem *jep
 
    DRETURN(retval);
 }
+#endif
 
-/****** exec_job/linear_linux() ************************************************
+/****** exec_job/linear() ************************************************
 *  NAME
-*     linear_linux() -- Creates a binding request string from request (CULL list). 
+*     linear() -- Creates a binding request string from request (CULL list).
 *
 *  SYNOPSIS
-*     static bool linear_linux(dstring* result, lListElem* binding_elem, const 
+*     static bool linear(dstring* result, lListElem* binding_elem, const
 *     bool automatic) 
 *
 *  FUNCTION
@@ -2167,10 +2163,10 @@ static bool create_binding_strategy_string_linux(dstring* result, lListElem *jep
 *     static bool - True in case core binding was possible.
 *
 *  NOTES
-*     MT-NOTE: linear_linux() is not MT safe 
+*     MT-NOTE: linear() is not MT safe
 *
 *******************************************************************************/
-static bool linear_linux(dstring* result, lListElem* binding_elem, 
+static bool linear(dstring* result, lListElem* binding_elem,
                            const bool automatic)
 {
    int first_socket       = 0;
@@ -2182,7 +2178,7 @@ static bool linear_linux(dstring* result, lListElem* binding_elem,
    int topo_job_length    = 0;
    bool retval;
 
-   DENTER(TOP_LAYER, "linear_linux");
+   DENTER(TOP_LAYER, "linear");
    
    amount = (int) lGetUlong(binding_elem, BN_parameter_n);
 
@@ -2273,12 +2269,12 @@ static bool linear_linux(dstring* result, lListElem* binding_elem,
 }
 
 
-/****** exec_job/striding_linux() **********************************************
+/****** exec_job/striding() **********************************************
 *  NAME
-*     striding_linux() -- Creates a binding request string from request (CULL list).
+*     striding() -- Creates a binding request string from request (CULL list).
 *
 *  SYNOPSIS
-*     static bool striding_linux(dstring* result, lListElem* binding_elem, 
+*     static bool striding(dstring* result, lListElem* binding_elem,
 *     const bool automatic) 
 *
 *  FUNCTION
@@ -2303,10 +2299,10 @@ static bool linear_linux(dstring* result, lListElem* binding_elem,
 *     static bool - true in case of success otherwise false
 *
 *  NOTES
-*     MT-NOTE: striding_linux() is not MT safe 
+*     MT-NOTE: striding() is not MT safe
 *
 *******************************************************************************/
-static bool striding_linux(dstring* result, lListElem* binding_elem, 
+static bool striding(dstring* result, lListElem* binding_elem,
                                     const bool automatic) 
 {
    int first_socket        = 0;
@@ -2321,7 +2317,7 @@ static bool striding_linux(dstring* result, lListElem* binding_elem,
    int amount = (int) lGetUlong(binding_elem, BN_parameter_n);
    int step_size = (int) lGetUlong(binding_elem, BN_parameter_striding_step_size);
    
-   DENTER(TOP_LAYER, "striding_linux");
+   DENTER(TOP_LAYER, "striding");
 
    if (automatic == false) {
 
@@ -2367,12 +2363,12 @@ static bool striding_linux(dstring* result, lListElem* binding_elem,
 }
 
 
-/****** exec_job/explicit_linux() **********************************************
+/****** exec_job/explicit() **********************************************
 *  NAME
-*     explicit_linux() -- Creates a binding request string from request (CULL list).
+*     explicit() -- Creates a binding request string from request (CULL list).
 *
 *  SYNOPSIS
-*     static bool explicit_linux(dstring* result, lListElem* binding_elem) 
+*     static bool explicit(dstring* result, lListElem* binding_elem)
 *
 *  FUNCTION
 *     Tries to allocate processor cores according the request in the binding_elem.
@@ -2396,10 +2392,10 @@ static bool striding_linux(dstring* result, lListElem* binding_elem,
 *     static bool - true in case of success otherwise false
 *
 *  NOTES
-*     MT-NOTE: explicit_linux() is not MT safe 
+*     MT-NOTE: explicit() is not MT safe
 *
 *******************************************************************************/
-static bool explicit_linux(dstring* result, lListElem* binding_elem) 
+static bool explicit(dstring* result, lListElem* binding_elem)
 {
    /* pointer to string which contains the <socket>,<core> pairs */
    const char* request = NULL;
@@ -2414,7 +2410,7 @@ static bool explicit_linux(dstring* result, lListElem* binding_elem)
    int socket_list_length, core_list_length;
    bool retval;
 
-   DENTER(TOP_LAYER, "explicit_linux");
+   DENTER(TOP_LAYER, "explicit");
 
    request = (char*) lGetString(binding_elem, BN_parameter_explicit);
 
@@ -2455,10 +2451,7 @@ static bool explicit_linux(dstring* result, lListElem* binding_elem)
    DRETURN(retval); 
 }
 
-#endif
 
-
-#if defined(PLPA_LINUX)
 /****** exec_job/parse_job_accounting_and_create_logical_list() ****************
 *  NAME
 *     parse_job_accounting_and_create_logical_list() -- Creates the core list out of accounting string. 
@@ -2487,8 +2480,8 @@ static bool explicit_linux(dstring* result, lListElem* binding_elem)
 static bool parse_job_accounting_and_create_logical_list(const char* binding_string,
                                                          char** rankfileinput)
 {
+#ifdef HAVE_HWLOC
    bool retval;
-
    int* sockets = NULL;
    int* cores   = NULL;
    int amount   = 0;
@@ -2546,8 +2539,8 @@ static bool parse_job_accounting_and_create_logical_list(const char* binding_str
       *rankfileinput = sge_strdup(NULL, "<NULL>");
       retval = true;
    }
-   
    DRETURN(retval);
-}
-
+#else
+   return false;
 #endif
+}
