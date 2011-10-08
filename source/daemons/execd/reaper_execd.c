@@ -113,9 +113,7 @@ static void build_derived_final_usage(lListElem *jr, u_long32 job_id, u_long32 j
 
 static void examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lListElem *jep, lListElem *jatep, lListElem *petep, pid_t *pids, int npids);
 
-#if defined(PLPA_LINUX)
 static void update_used_cores(const char* path_to_config, lListElem** jr);
-#endif
 
 static void clean_up_binding(char* binding);
 /* TODO: global c file with #define JAPI_SINGLE_SESSION_KEY "JAPI_SSK" */
@@ -1457,7 +1455,7 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
             /* here we will call a ptf function to get */
             /* the first usage data after restart      */
 
-#if defined(PLPA_LINUX)
+#if defined(HAVE_HWLOC)
             {
                /* do accounting of bound cores */ 
                dstring fconfig = DSTRING_INIT;
@@ -1512,9 +1510,9 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
    DRETURN_VOID;
 }
 
-#if defined(PLPA_LINUX)
 static void update_used_cores(const char* path_to_config, lListElem** jr)
 {
+#ifdef HAVE_HWLOC
    const char* binding_cfg;
    
    DENTER(TOP_LAYER, "update_used_cores");
@@ -1561,10 +1559,9 @@ static void update_used_cores(const char* path_to_config, lListElem** jr)
    } else {
       DPRINTF(("couldnt read config in\n"));
    }
-
    DRETURN_VOID;
-}
 #endif
+}
 
 /************************************************************/
 /* fill dusage with:                                        */ 
@@ -2178,9 +2175,9 @@ static void clean_up_binding(char* binding)
    }
 
 
-#if defined(PLPA_LINUX)
-   /* on Linux the used topology can be found just after the last ":" */
-   /* -> find the used topology and release it */
+#if defined(HAVE_HWLOC)
+   /* The topology used can be found just after the last ":" */
+   /* -> find the topology used and release it */
    
    if (strstr(binding, ":") != NULL) {
       /* there was an order from execd to shepherd for binding */

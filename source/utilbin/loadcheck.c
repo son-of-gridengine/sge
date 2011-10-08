@@ -339,7 +339,7 @@ void test_binding()
       /* the number of threads must be shown as well */
       printf("Number of threads:\t\t%d\n", get_total_number_of_threads());
       /* get topology */
-      get_topology_linux(&topology, &length);
+      get_topology(&topology, &length);
       printf("Topology:\t\t\t%s\n", topology);
       sge_free(&topology); 
       printf("Mapping of logical socket and core numbers to internal\n");
@@ -396,10 +396,10 @@ void fill_socket_core_topology(dstring* msocket, dstring* mcore, dstring* mthrea
    char* topo = NULL;
    int length = 0;
 
-   ms = get_execd_amount_of_sockets();
-   mc = get_execd_amount_of_cores();
-   mt = get_execd_amount_of_threads();
-   if (!get_execd_topology(&topo, &length) || topo == NULL) {
+   ms = get_number_of_sockets();
+   mc = get_total_number_of_cores();
+   mt = get_total_number_of_threads();
+   if (!get_topology(&topo, &length) || topo == NULL) {
       topo = sge_strdup(NULL, "-");
    }
    sge_dstring_sprintf(msocket, "%d", ms);
