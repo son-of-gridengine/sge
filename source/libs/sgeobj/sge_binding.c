@@ -55,8 +55,6 @@ static char* logical_used_topology = NULL;
 
 static int logical_used_topology_length = 0;
 
-#if defined(PLPA_LINUX)
-
 /* creates a string with the topology used from a single job */
 static bool create_topology_used_per_job(char** accounted_topology, 
                int* accounted_topology_length, char* logical_used_topology, 
@@ -73,112 +71,6 @@ static bool get_socket_with_most_free_cores(const char* topology, const int topo
                int* socket_number);
 
 static bool account_all_threads_after_core(char** topology, const int core_pos);
-
-#endif
-
-/* arch independent functions */
-
-/****** sge_binding/get_execd_amount_of_cores() ************************************
-*  NAME
-*     get_execd_amount_of_threads() -- Returns the amount of hw supported threads. 
-*
-*  SYNOPSIS
-*     int get_execd_amount_of_threads() 
-*
-*  FUNCTION
-*     Retrieves the amount of hardware supported threads 
-*     the current execution host offers.
-*
-*  RESULT
-*     int - The amount of threads the current host has. 
-*
-*  NOTES
-*     MT-NOTE: get_execd_amount_of_threads() is MT safe 
-*
-*******************************************************************************/
-int get_execd_amount_of_threads() {
-#if defined(PLPA_LINUX) 
-      return get_total_amount_of_plpa_threads();
-#else   
-      return 0;
-#endif  
-}
-
-/****** sge_binding/get_execd_amount_of_cores() ************************************
-*  NAME
-*     get_execd_amount_of_cores() -- Returns the total amount of cores the host has. 
-*
-*  SYNOPSIS
-*     int get_execd_amount_of_cores() 
-*
-*  FUNCTION
-*     Retrieves the total amount of cores the current host has.
-*
-*  RESULT
-*     int - The amount of cores the current host has. 
-*
-*  NOTES
-*     MT-NOTE: get_execd_amount_of_cores() is MT safe 
-*
-*******************************************************************************/
-int get_execd_amount_of_cores() 
-{
-#if defined(PLPA_LINUX) 
-      return get_total_amount_of_plpa_cores();
-#else   
-      return 0;
-#endif  
-}
-
-/****** sge_binding/get_execd_amount_of_sockets() **********************************
-*  NAME
-*    get_execd_amount_of_sockets() -- The total amount of sockets in the system. 
-*
-*  SYNOPSIS
-*     int get_execd_amount_of_sockets() 
-*
-*  FUNCTION
-*     Calculates the total amount of sockets available in the system. 
-*
-*  INPUTS
-*
-*  RESULT
-*     int - The total amount of sockets available in the system.
-*
-*  NOTES
-*     MT-NOTE: get_execd_amount_of_sockets() is MT safe 
-*
-*******************************************************************************/
-int get_execd_amount_of_sockets()
-{
-#if defined(PLPA_LINUX) 
-   return get_amount_of_plpa_sockets();
-#else
-   return 0;
-#endif
-}
-
-
-bool get_execd_topology(char** topology, int* length)
-{
-   bool success = false;
-
-   /* topology must be a NULL pointer */
-   if (topology != NULL && (*topology) == NULL) {
-#if defined(PLPA_LINUX)  
-      if (get_topology_linux(topology, length) == true) {
-         success = true;
-      } else {
-         success = false;
-      }   
-#else 
-      /* currently other architectures are not supported */
-      success = false;
-#endif
-   }
-
-  return success; 
-}
 
 
 /****** sge_binding/getExecdTopologyInUse() ************************************
@@ -216,11 +108,8 @@ bool get_execd_topology_in_use(char** topology)
    }   
 
    if (logical_used_topology_length == 0 || logical_used_topology == NULL) {
-#if defined(PLPA_LINUX) 
       /* initialize without any usage */
-      get_topology_linux(&logical_used_topology, 
-              &logical_used_topology_length); 
-#endif
+      get_execd_topology(&logical_used_topology, &logical_used_topology_length);
    }
 
    if (logical_used_topology_length > 0) {
@@ -274,18 +163,19 @@ static bool go_to_next_core(const char* topology, const int pos, int* new_pos);
 *******************************************************************************/
 bool account_job(const char* job_topology)
 {
-   
+   int gotit = false;
    if (logical_used_topology_length == 0 || logical_used_topology == NULL) {
 
       /* initialize without any usage */
-      get_topology_linux(&logical_used_topology, 
-              &logical_used_topology_length); 
-#endif
-
+      gotit = get_execd_topology(&logical_used_topology,
+                           &logical_used_topology_length);
    }
-
-   return account_job_on_topology(&logical_used_topology, strlen(logical_used_topology), 
-                           job_topology, strlen(job_topology)); 
+   if (gotit)
+      return account_job_on_topology(&logical_used_topology,
+                                     strlen(logical_used_topology),
+                                     job_topology, strlen(job_topology));
+   else
+     return false;
 }
 
 /****** sge_binding/account_job_on_topology() **********************************

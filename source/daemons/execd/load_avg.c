@@ -57,7 +57,6 @@
 #include "sgeobj/sge_qinstance.h"
 #include "sgeobj/sge_pe.h"
 #include "sgeobj/sge_report.h"
-#include "sgeobj/sge_binding.h"
 #include "sgeobj/sge_ja_task.h"
 #include "sgeobj/sge_pe_task.h"
 #include "sgeobj/sge_usage.h"
@@ -624,7 +623,7 @@ static int sge_get_cores(const char* qualified_hostname, lList **lpp) {
    DENTER(TOP_LAYER, "sge_get_cores");
 
    /* get the total amount of cores */
-   cores = get_execd_amount_of_cores();
+   cores = get_total_number_of_cores();
    
    /* append the amount of cores to the list */
    sge_add_int2load_report(lpp, LOAD_ATTR_CORES, cores, qualified_hostname);
@@ -688,7 +687,7 @@ static int sge_get_topology(const char* qualified_hostname, lList **lpp) {
 
    DENTER(TOP_LAYER, "sge_get_topology");
    
-   if (get_execd_topology(&topology, &topology_length)) {
+   if (get_topology(&topology, &topology_length)) {
       /* add topology to return value */
       sge_add_str2load_report(lpp, LOAD_ATTR_TOPOLOGY, topology, qualified_hostname);
 
