@@ -849,10 +849,10 @@ int main(int argc, char **argv)
       shepherd_error(1, "can't switch to admin user: sge_switch2admin_user() failed");
    }
 
-	/* finalize initialization of shepherd_trace - give the trace file
-	 * to the job owner so not only root/admin user but also he can use
-	 * the trace file later.
-	 */
+   /* finalize initialization of shepherd_trace - give the trace file
+    * to the job owner so not only root/admin user but also he can use
+    * the trace file later.
+    */
    shepherd_trace_chown(get_conf_val("job_owner"));
    /*
     * Close trace file to force a new open() with super user credentials for
@@ -905,9 +905,7 @@ int main(int argc, char **argv)
    /* 
     * Perform core binding (do not use processor set together with core binding) 
     */ 
-#if defined(PLPA_LINUX)
    do_core_binding();
-#endif    
 
    /*
     * this blocks sge_shepherd until the first time the token is
@@ -1058,7 +1056,7 @@ int main(int argc, char **argv)
       shepherd_read_exit_status_file(&return_code);
    } else {
       /* ensure an exit status file exists */
-		shepherd_write_exit_status("0");
+      shepherd_write_exit_status("0");
       return_code = 0;
    }
 
@@ -1071,7 +1069,7 @@ int main(int argc, char **argv)
          close_parent_loop(exit_status_for_qrsh);
       }
    }
-	
+
    shepherd_trace_exit( );
    return return_code;
 }
@@ -1119,7 +1117,7 @@ int ckpt_type
 #if defined(IRIX)
    ash_t ash = 0;
 #elif defined(NECSX4) || defined(NECSX5)
-	id_t jobid = 0;
+   id_t jobid = 0;
 #elif defined(CRAY)
    int jobid = 0;
 #endif
@@ -1168,8 +1166,8 @@ int ckpt_type
       sscanf(get_conf_val("ckpt_osjobid"), "%lld", &ash);
       shepherd_trace("reusing old array session handle %lld", ash);
 #elif defined(NECSX4) || defined(NECSX5)
-		sscanf(get_conf_val("ckpt_osjobid"), "%ld", &jobid);
-		shepherd_trace("reusing old super-ux jobid %lld", jobid); 
+      sscanf(get_conf_val("ckpt_osjobid"), "%ld", &jobid);
+      shepherd_trace("reusing old super-ux jobid %lld", jobid); 
 #elif defined(CRAY)
       sscanf(get_conf_val("ckpt_osjobid"),  "%d", &jobid);
       shepherd_trace("reusing old unicos jobid %d", jobid);
@@ -2930,8 +2928,8 @@ static int start_async_command(const char *descr, char *cmd)
    /* the getpwnam is only a verification - the result is not used - free it */
    sge_free(&buffer);
 
-	/* Create "error" and "exit_status" files here */
-	shepherd_error_init();
+   /* Create "error" and "exit_status" files here */
+   shepherd_error_init();
                             
    if ((pid = fork()) == -1) {
       shepherd_trace("can't fork for starting %s command", descr);
@@ -3034,9 +3032,9 @@ shepherd_signal_job(pid_t pid, int sig) {
    static int first = 1;
 #  if defined(IRIX)
    static ash_t osjobid = 0;
-#	elif defined(NECSX4) || defined(NECSX5)
+#  elif defined(NECSX4) || defined(NECSX5)
    char err_str[512];
-	static id_t osjobid = 0;
+   static id_t osjobid = 0;
 #  elif defined(CRAY)
    static int osjobid = 0;
 #  endif

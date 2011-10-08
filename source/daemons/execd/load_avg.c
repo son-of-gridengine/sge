@@ -585,7 +585,7 @@ static int sge_get_sockets(const char* qualified_hostname, lList **lpp) {
    DENTER(TOP_LAYER, "sge_get_sockets");
    
    /* get total number of sockets installed on system */
-   sockets = get_execd_amount_of_sockets();
+   sockets = get_number_of_sockets();
    
    /* append the number of sockets to the load report list */
    sge_add_int2load_report(lpp, LOAD_ATTR_SOCKETS, sockets, qualified_hostname);

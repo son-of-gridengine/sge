@@ -40,7 +40,7 @@
 #include "basis_types.h"
 #include "uti/config_file.h"
 
-int do_core_binding(void);
+bool do_core_binding(void);
 
 #endif /* __SGE_BINDING_H */
 
