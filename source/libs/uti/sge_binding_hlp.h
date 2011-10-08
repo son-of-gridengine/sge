@@ -41,10 +41,6 @@
 #  define PLPA_LINUX
 #endif
 
-#if defined(SOLARIS86) || defined(SOLARISAMD64) || defined(SOLARIS64)
-#   define BINDING_SOLARIS
-#endif 
-
 #include "uti/sge_dstring.h"
 #include "uti/sge_binding_parse.h"
 
@@ -71,7 +67,7 @@ int binding_striding_parse_first_socket(const char* parameter);
 int binding_striding_parse_step_size(const char* parameter);
 
 bool binding_explicit_has_correct_syntax(const char* parameter, dstring* error);
-int get_explicit_amount(const char* expl, const bool with_explicit_prefix);
+int get_explicit_number(const char* expl, const bool with_explicit_prefix);
 bool check_explicit_binding_string(const char* expl, const int amount, const bool with_explicit_prefix);
 
 #if defined(PLPA_LINUX)
