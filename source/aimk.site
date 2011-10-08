@@ -181,3 +181,6 @@ endsw
 
 # The specific version of libssl.so to be loaded at runtime can be defined
 # set argv = ( -DLIBSSL_VER='\".0.9.8\"' $argv )
+
+# Location of hwloc include and lib directories (if not on system path)
+set HWLOC_DIR = ""
