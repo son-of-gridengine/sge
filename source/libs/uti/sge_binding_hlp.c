@@ -690,31 +690,22 @@ bool get_topology(char** topology, int* length)
 int binding_linear_parse_number(const char* parameter)
 {
    int retval = -1;
-   int nn = -1;
 
    /* expect string "linear" or "linear:<amount>" or linear 
       "linear:<amount>:<firstsocket>,<firstcore>" */
 
    if (parameter != NULL && strstr(parameter, "linear") != NULL) {
       /* get number after linear: and before \0 or : */ 
-      /* Use an "infinite" value to signify using the number of slots
-         to remain compatible, rather than changing types.  */
-      if (sge_strtok(parameter, ":") == NULL)
-         nn = BIND_INFINITY;
-      else {
+      if (sge_strtok(parameter, ":") != NULL) {
          char* n = sge_strtok(NULL, ":");
-         if (0 == strcmp("slots", n))
-            nn = BIND_INFINITY;
-         else if (is_digit(n, ':'))
-            nn = atoi(n);
-      }
-      /* check if we got an amount */
-      if (nn != -1) {
-         /* check when something follows after an additional ":"
-            if it is also a digit (the socket number) */
-         char* socket = sge_strtok(NULL, ":");
-         if (socket == NULL || is_digit(socket, ',')) {
-            return nn;
+         /* check if amount is given and it is a digit */
+         if (is_digit(n, ':')) {
+            /* check when something follows after an additional ":" 
+               if it is also a digit (the socket number) */
+            char* socket = sge_strtok(NULL, ":");
+            if (socket == NULL || is_digit(socket, ',')) {   
+               return atoi(n);
+            }
          }
       }
    }

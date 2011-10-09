@@ -536,11 +536,7 @@ If the number of allocated cores is lower than requested cores, no
 binding is done for the job. If \fBsocket\fP and \fBcore\fP are specified,
 then xxQS_NAMExx tries to find empty cores with this
 starting point. If this is not possible then binding is not done on
-the host concerned.  \fBnumber\fP may be omitted or specified as
-\fBslots\fP.  In that case it will be taken as the number of slots
-assigned to the job on a per-host basis, on the assumption that slots
-are equivalent to cores; this allows binding to work when parallel
-jobs run across nodes with variable slot counts.
+the host concerned.
 .sp
 \fBstriding\fP means that xxQS_NAMExx tries to find cores with a certain offset.
 It will select \fBnumber\fP of empty cores with an offset of \fBn\fP\-1 cores
