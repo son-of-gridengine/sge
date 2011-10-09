@@ -1161,13 +1161,7 @@ binding_print_to_string(const lListElem *this_elem, dstring *string) {
          sge_dstring_sprintf_append(string, "%s:"sge_U32CFormat,
             "linear", sge_u32c(lGetUlong(this_elem, BN_parameter_n)));
       } else if (strcmp(strategy, "linear") == 0) {
-         unsigned n = sge_u32c(lGetUlong(this_elem, BN_parameter_n));
-         if (BIND_INFINITY == n)
-            sge_dstring_sprintf_append(string, "linear:slots:"sge_U32CFormat","sge_U32CFormat,
-               sge_u32c(lGetUlong(this_elem, BN_parameter_socket_offset)),
-               sge_u32c(lGetUlong(this_elem, BN_parameter_core_offset)));
-         else
-            sge_dstring_sprintf_append(string, "%s:"sge_U32CFormat":"sge_U32CFormat","sge_U32CFormat,
+        sge_dstring_sprintf_append(string, "%s:"sge_U32CFormat":"sge_U32CFormat","sge_U32CFormat,
                "linear", sge_u32c(lGetUlong(this_elem, BN_parameter_n)),
                sge_u32c(lGetUlong(this_elem, BN_parameter_socket_offset)),
                sge_u32c(lGetUlong(this_elem, BN_parameter_core_offset)));
