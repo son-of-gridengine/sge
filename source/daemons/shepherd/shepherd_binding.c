@@ -714,7 +714,8 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
          }
 
          hwloc_bitmap_free(cpuset);
-          
+         /* Fixme:  Maybe free topology at this stage, but it probably
+            doesn't use a significant amount of space.  */
       } else {
          /* has no topology information */
          shepherd_trace("binding_explicit: no topology information");

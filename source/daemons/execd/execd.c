@@ -40,6 +40,7 @@
 #include "uti/sge_stdlib.h"
 #include "uti/sge_log.h"
 #include "uti/sge_time.h"
+#include "uti/sge_binding_hlp.h"
 
 #include "gdi/sge_gdi.h"
 #include "gdi/sge_gdi2.h"
@@ -170,7 +171,7 @@ int main(int argc, char **argv)
 #if defined(LINUX)
    gen_procList ();
 #endif
-
+   init_topology();
    prof_mt_init();
 
    set_thread_name(pthread_self(),"Execd Thread");
