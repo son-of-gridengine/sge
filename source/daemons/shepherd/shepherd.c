@@ -733,6 +733,7 @@ int main(int argc, char **argv)
    dstring ds;
    char buffer[256];
 
+   init_topology();
    sge_mt_init();
 
    if (argc >= 2) {

@@ -78,6 +78,7 @@ int get_total_number_of_cores(void);
 int get_total_number_of_threads(void);
 int get_number_of_sockets(void);
 bool has_core_binding(void);
+void init_topology(void);
 
 #endif
 
