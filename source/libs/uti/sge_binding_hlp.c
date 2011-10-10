@@ -49,16 +49,23 @@
 
 #ifdef HAVE_HWLOC
 static int initialized = 0;
+#endif
 
-static hwloc_topology_t
+/* Intended to be called at the start of the program, with topology
+   shared between any threads.  */
+void
 init_topology(void)
 {
-  if (0 == hwloc_topology_init(&sge_hwloc_topology) &&
-      0 == hwloc_topology_load(sge_hwloc_topology))
-     return sge_hwloc_topology;
-  return NULL;
+#ifdef HAVE_HWLOC
+  initialized = 1;
+  if (hwloc_topology_init(&sge_hwloc_topology) != 0 ||
+      hwloc_topology_load(sge_hwloc_topology) != 0)
+     sge_hwloc_topology = 0;
+#endif
+  return;
 }
 
+#ifdef HAVE_HWLOC
 static int get_total_number_of(hwloc_obj_type_t obj_type) {
   int number = 0;
 
