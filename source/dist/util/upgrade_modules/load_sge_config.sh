@@ -60,28 +60,28 @@ Usage()
 
 <backup_dir>            Directory from which to read the backup
 -log I|W|C              Show only Info, Warning, or Critical messages
--mode upgrade|copy      Copy means local execd spool directoriess will be
+-mode upgrade|copy      Copy means local execd spool directories will be
                         changed (default upgrade)
 -newijs true|false      Whether to use new interactive job support
-                        (default false)
+                        (default true)
 -execd_spool_dir <dir>  Changes the global execution daemon spooling directory
 -admin_mail <address>   Change address for admin mail
 -gid_range <min>-<max>  Change the group ID range used
 
 
 Example:
-   $myname config_dir -log C -mode copy -newijs true -execd_spool_dir /sge/real_execd_spool -admin_mail user@host.com -gid_range 23000-24000
+   $myname config_dir -log C -mode copy -newijs false -execd_spool_dir /sge/real_execd_spool -admin_mail user@host.com -gid_range 23000-24000
 Loads the configuration according to the following rules:
    Shows only critical errors
    Uses copy upgrade mode (local execd spool dirs will be changed)
-   Enables new interactive job support
+   Disables new interactive job support (e.g. to use ssh)
    Changes the global execution daemon spooling directory
    Sets the address to which to send mail
    Sets the group ID range"
 }
 
 
-#All logging is done by this functions
+#All logging is done by this function
 LogIt()
 {
    urgency="${1:?Urgency is required [I,W,C]}"
@@ -107,7 +107,7 @@ LogIt()
 #Remove line with maching expression
 RemoveLineWithMatch()
 {
-   remFile="${1:?Need the file name to operate}"
+   remFile="${1:?Need the file name to operate on}"
    remExpr="${2:?Need an expression, where to remove lines}"
 
    #Return if no match
@@ -123,9 +123,9 @@ RemoveLineWithMatch()
 
 ReplaceLineWithMatch()
 {
-   repFile="${1:?Need the file name to operate}"
-   repExpr="${2:?Need an expression, where to replace}" 
-   replace="${3:?Need the replacement text}" 
+   repFile="${1:?Need the file name to operate on}"
+   repExpr="${2:?Need an expression, where to replace}"
+   replace="${3:?Need the replacement text}"
 
    #Return if no match
    grep ${repExpr} $repFile >/dev/null 2>&1
@@ -143,7 +143,7 @@ ReplaceLineWithMatch()
          if [ $? -ne 0 ]; then
             SEP="?"
          else
-            LogIt "C" "$repExpr $replace contains |,% and ? character cannot use sed"
+            LogIt "C" "$repExpr $replace contains |,% and ? character -- cannot use sed"
          fi
       fi
    fi
@@ -154,10 +154,10 @@ ReplaceLineWithMatch()
 
 ReplaceOrAddLine()
 {
-   repFile="${1:?Need the file name to operate}"
+   repFile="${1:?Need the file name to operate on}"
    repExpr="${2:?Need an expression, where to replace}" 
    replace="${3:?Need the replacement text}" 
-   
+
    #Does the pattern exists
    grep "${repExpr}" "${repFile}" > /dev/null 2>&1
    if [ $? -eq 0 ]; then #match
@@ -761,7 +761,7 @@ shift
 
 LOGGER_LEVEL="W"
 mode=upgrade
-newIJS=false
+newIJS=true
 EXECD_SPOOL_DIR=""
 ADMIN_MAIL=""
 GID_RANGE=""

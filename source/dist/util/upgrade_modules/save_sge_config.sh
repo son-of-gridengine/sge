@@ -60,7 +60,7 @@ Usage()
              "Usage: $myname <backup_dir>|[-help]
 
 <backup_dir> ... Directory in which to store the backup.
-                The directory must either be empty or not exists at all."
+                The directory must either be empty or not exist at all."
 }
 
 #Dump list to dir
