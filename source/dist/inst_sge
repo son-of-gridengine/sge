@@ -1338,8 +1338,7 @@ if [ $SHADOW = "install" ]; then
       $INFOTEXT -u "\nShadow Master Host Setup"   
       $INFOTEXT -wait -auto $AUTO -n "\nMake sure, that the host, you wish to configure as a " \
                       "shadow host,\n has read/write permissions to the qmaster spool " \
-                      "and SGE_ROOT/<cell>/common \ndirectory! For using a shadow master it " \
-                      "is recommended to set up a \nBerkeley DB Spooling Server\n\n Hit <RETURN> to continue >> "
+                      "and SGE_ROOT/<cell>/common \ndirectory!\n\n Hit <RETURN> to continue >> "
       CheckWhoInstallsSGE
       CheckForLocalHostResolving
       ProcessSGERoot
