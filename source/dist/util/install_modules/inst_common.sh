@@ -496,7 +496,7 @@ ErrUsage()
 {
    myname=`basename $0`
    $INFOTEXT -e \
-             "Usage: %s -m|-um|-x|-ux [all]|-sm|-usm|-s|-db|-udb|-bup|-rst| \n" \
+             "Usage: %s -m|-um|-x|-ux [all]|-sm|-usm|-s|-udb|-bup|-rst| \n" \
              "       -copycerts <host|hostlist>|-v|-upd|-upd-execd|-upd-rc|-upd-win| \n" \
              "       -post_upd|-start-all|-rccreate|[-host <hostname>] [-resport] [-rsh] \n" \
              "       [-auto <filename>] [-nr] [-winupdate] [-winsvc] [-uwinsvc] [-csp] \n" \
@@ -508,7 +508,6 @@ ErrUsage()
              "   -sm        install shadow host\n" \
              "   -usm       uninstall shadow host\n" \
              "   -s         install submit host(s)\n" \
-             "   -db        install Berkeley DB on separate spooling server\n" \
              "   -udb       uninstall Berkeley DB RPC spooling server\n" \
              "   -bup       backup of your configuration\n" \
              "   -rst       restore configuration from backup\n" \
@@ -553,7 +552,6 @@ ErrUsage()
              "   inst_sge -ux -host hostname\n" \
              "                     Uninstalls execd on given execution host\n" \
              "   inst_sge -ux all  Uninstalls all registered execution hosts\n" \
-             "   inst_sge -db      Install a Berkeley DB Server on local host\n" \
              "   inst_sge -sm      Install a Shadow Master Host on local host\n" \
              "   inst_sge -copycerts host or inst_sge -copycerts \"host1 host2\"\n" $myname
 
