@@ -34,7 +34,7 @@
 
 #include "gdi/version.h"
 
-const char GDI_VERSION[] = "8.0.0b";
+const char GDI_VERSION[] = "8.0.0c";
 
 const gdi_ulong32 GRM_GDI_VERSION = 0x10003000;
 
@@ -70,10 +70,10 @@ vdict_t GRM_GDI_VERSION_ARRAY[] =
 };
 
 #ifdef ADD_UNIVA_COPYRIGHT
-const char GE_LONGNAME[] = "Son of Grid Engine";
+const char GE_LONGNAME[] = "Grid Engine";
 const char GE_SHORTNAME[] = "SGE";
 #else
-const char GE_LONGNAME[] = "Grid Engine";
+const char GE_LONGNAME[] = "Son of Grid Engine";
 const char GE_SHORTNAME[] = "SGE";
 #endif
 
