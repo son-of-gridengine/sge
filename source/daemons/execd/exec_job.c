@@ -38,6 +38,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
 
 #ifdef __sgi
 #   include <sys/schedctl.h>
@@ -119,11 +120,12 @@ extern char execd_spool_dir[SGE_PATH_MAX];
 
 /* creates string with core binding which is written to job "config" file */
 static bool create_binding_strategy_string(dstring* result, lListElem *jep,
-                                           char** rankfileinput);
+                                           char** rankfileinput,
+                                           unsigned host_slots);
 
 /* generates the config file string (binding elem) for shepherd */
 static bool linear(dstring* result, lListElem* binding_elem,
-                   const bool automatic);
+                   const bool automatic, unsigned host_slots);
 
 /* generates the config file string (binding elem) for shepherd */
 static bool striding(dstring* result, lListElem* binding_elem,
@@ -410,20 +412,42 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       for_each (gdil_ep, gdil) {
          pe_slots += (int)lGetUlong(gdil_ep, JG_slots);
       }
-      
+
       /***************** core binding part ************************************/
       if (mconf_get_enable_binding()) {
 
 #if defined(HAVE_HWLOC)
          dstring pseudo_usage = DSTRING_INIT;
          lListElem* jr        = NULL;
+         unsigned slots;
+         char thishost[SGE_PATH_MAX];
+
+         host_slots = 0;
+         if (gethostname(thishost, SGE_PATH_MAX) != 0)
+            host_slots = BIND_INFINITY;
+         else {
+            if (!sge_hostcmp(lGetHost(master_q, QU_qhostname), thishost)
+                != 0) {
+               /* This is the master node.  This duplicates work below,
+                  but we need the number now in case of linear:slots
+                  binding.  */
+               for_each (gdil_ep, gdil) {
+                  slots = (int)lGetUlong(gdil_ep, JG_slots);
+                  if (!sge_hostcmp(lGetHost(master_q, QU_qhostname),
+                                   lGetHost(gdil_ep, JG_qhostname)))
+                     host_slots += slots;
+               }
+            }
+            if (!host_slots)       /* slave node */
+               host_slots = pe_slots;
+         }
 
          /* check, depending on the used topology, which cores are can be used 
             in order to fulfill the selected strategy. if strategy is not 
             applicable or in case of errors "NULL" is written to this 
             line in the "config" file */
          create_binding_strategy_string(&core_binding_strategy_string, jep,
-                                        &rankfileinput);
+                                        &rankfileinput, host_slots);
  
          if (sge_dstring_get_string(&core_binding_strategy_string) != NULL
                && strcmp(sge_dstring_get_string(&core_binding_strategy_string), "NULL") != 0) {
@@ -2012,7 +2036,7 @@ lList *gdil_orig  /* JG_Type */
 *
 *  SYNOPSIS
 *     static bool create_binding_strategy_string(dstring* result,
-*     lListElem *jep, char** rankfileinput) 
+*     lListElem *jep, char** rankfileinput, unsigned host_slots)
 *
 *  FUNCTION
 *     Creates the core binding strategy string depending on the given request in
@@ -2021,7 +2045,8 @@ lList *gdil_orig  /* JG_Type */
 *     
 *
 *  INPUTS
-*     lListElem *jep       - CULL list with the core binding request 
+*     lListElem *jep       - CULL list with the core binding request
+*     host_slots           - number of slots on this host
 *
 *  OUTPUTS
 *     dstring* result      - Contains the string which is written in config file. 
@@ -2035,7 +2060,8 @@ lList *gdil_orig  /* JG_Type */
 *
 *******************************************************************************/
 static bool create_binding_strategy_string(dstring* result, lListElem *jep,
-                                           char** rankfileinput)
+                                           char** rankfileinput,
+                                           unsigned host_slots)
 {
    /* temporary result string with or without "env:" prefix (when environment 
       variable for binding should be set or not) */
@@ -2067,11 +2093,11 @@ static bool create_binding_strategy_string(dstring* result, lListElem *jep,
 
          if (strcmp(lGetString(binding_elem, BN_strategy), "linear") == 0) {
             
-            retval = linear(&tmp_result, binding_elem, false);
+            retval = linear(&tmp_result, binding_elem, false, host_slots);
 
          } else if (strcmp(lGetString(binding_elem, BN_strategy), "linear_automatic") == 0) {
             
-            retval = linear(&tmp_result, binding_elem, true);
+            retval = linear(&tmp_result, binding_elem, true, host_slots);
 
          } else if (strcmp(lGetString(binding_elem, BN_strategy), "striding") == 0) {
             
@@ -2165,7 +2191,7 @@ static bool create_binding_strategy_string(dstring* result, lListElem *jep,
 *
 *******************************************************************************/
 static bool linear(dstring* result, lListElem* binding_elem,
-                           const bool automatic)
+                   const bool automatic, unsigned host_slots)
 {
    int first_socket       = 0;
    int first_core         = 0;
@@ -2179,6 +2205,9 @@ static bool linear(dstring* result, lListElem* binding_elem,
    DENTER(TOP_LAYER, "linear");
    
    amount = (int) lGetUlong(binding_elem, BN_parameter_n);
+   /* special case, reduced to the job's slot count on this host */ 
+   if (BIND_INFINITY == amount) amount = host_slots;
+   DPRINTF(("Implicit linear binding number set to %d", amount));
 
    /* check if first socket and first core have to be determined by execd or 
       not */
@@ -2192,7 +2221,7 @@ static bool linear(dstring* result, lListElem* binding_elem,
       shephered */
    
    if (automatic == true) {   
-      /* user has not specified where to begin, this has now beeing 
+      /* user has not specified where to begin, this is now being
          figured out automatically */
       int* list_of_sockets = NULL;
       int samount          = 0;
