@@ -1,5 +1,5 @@
-			Grid Engine Build Page
-			----------------------
+                        Grid Engine Build Page
+                        ----------------------
 
 Content
 -------
@@ -49,19 +49,26 @@ Content
    To compile and install Grid Engine, the following steps need to be
    carried out:
 
-      - get and compile openSSL library (optional); actually, it is
-        recommended to use the system's shared library, which means
-        installing the openssl development package against which to
-        build (openssl-devel on RedHat, libssl-dev on Debian)
-      - install the Berkeleydb library (optional), preferably as your
-        OS's development package of it (openssl-devel on RedHat,
-        libdb-dev on Debian)
+      - To provide CSP security, install the openSSL library
+        <http://www.openssl.org/>, preferably as your OS's packaged
+        version (openssl-devel on Red Hat, libssl-dev on Debian).
+        Otherwise build with aimk -no-secure.
+      - To provide BDB spooling install the Berkeleydb library
+        <http://www.oracle.com/technetwork/database/berkeleydb/overview/>,
+        preferably as your OS's packaged version (db4-devel on Red Hat,
+        libdb-dev on Debian).  Otherwise build with aimk -spool-classic.
       - You may also need development packages of ncurses and (on
         GNU/Linux) pam.  For building the qmon GUI, you need
         development packages of lesstif or openmotif (non-free
         software), libXmu, and libXpm.
+      - To provide core-binding support, you need hwloc
+        <http://www.open-mpi.org/projects/hwloc/>, preferably as your
+        OS's packaged version (hwloc-devel from EPEL on Red Hat,
+        libhwloc-dev on Debian).  You need at least version 1.1, but
+        should probably use the most recent version.  Otherwise build
+        with aimk -no-hwloc.
       - To make the basic Java targets, as well as a Java 1.6 JDK
-        (e.g. openjdk) you will need ant, ant-nodeps (RedHat)/ant-optional
+        (e.g. openjdk) you will need ant, ant-nodeps (Red Hat)/ant-optional
         (Debian), javacc and junit packages.  The GUI installer requires
         IzPack (http://izpack.org) and swing-layout
         (http://swing-layout.dev.java.net).  The herd library requires a
@@ -160,7 +167,7 @@ Content
 
    Useful aimk options:
 
-      -no-qmon  	don't compile qmon
+      -no-qmon          don't compile qmon
       -no-qmake         don't compile qmake
       -no-qtcsh         don't compile qtcsh
       -no-remote        don't compile remote modules rsh, rshd, rlogin
