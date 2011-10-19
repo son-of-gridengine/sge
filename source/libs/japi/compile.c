@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
       drmaa_set_attribute(jt, DRMAA_JOIN_FILES, "y", NULL, 0);
       drmaa_set_attribute(jt, DRMAA_JOB_NAME, name, NULL, 0);
 
-      sprintf(nat_spec, "-b no -S /bin/csh %s", ns);
+      sprintf(nat_spec, "-b no -S /bin/sh %s", ns);
       drmaa_set_attribute(jt, DRMAA_NATIVE_SPECIFICATION, nat_spec, NULL, 0);
 
       sprintf(output_file, ":%s/build_%s.log", jobwd, arch);
