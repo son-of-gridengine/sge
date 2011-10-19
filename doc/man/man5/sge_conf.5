@@ -1464,8 +1464,8 @@ less accurate or would not happen if PDC is turned off completely.
 .IP "\fIENABLE_BINDING\fP"
 If this parameter is set, then xxQS_NAMExx enables the core binding module
 within the execution daemon to apply binding parameters that are specified
-at submission time of a job. This parameter is not set by default, and
-therefore all binding-related information will be ignored.
+at submission time of a job. This parameter is set by default if
+xxQS_NAMExx was compiled with support for core binding.
 Find more information for job to core binding in the section \fI\-binding\fP of
 .M qsub 1 .
 .PP
