@@ -173,11 +173,7 @@ static long ptf_min_priority = -999;
 static int max_dynamic_event_clients = 1000;
 static bool keep_active = false;
 static bool enable_windomacc = false;
-#ifdef LINUX
-static bool enable_binding = true;
-#else
 static bool enable_binding = false;
-#endif
 static bool enable_addgrp_kill = false;
 static u_long32 pdc_interval = 1;
 static char s_descriptors[100];
@@ -813,8 +809,8 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_WRITE);
       sge_free_saved_vars(conf_context);
       conf_context = NULL;
-     
-#ifdef LINUX
+
+#ifdef LINUX			/* fixme -- should be glibc or similar */
       /* enable/disable GNU malloc library facility for recording of all 
          memory allocation/deallocation 
          requires MALLOC_TRACE in environment (see mtrace(3) under Linux) */
@@ -846,10 +842,8 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       ptf_min_priority = -999;
       keep_active = false;
       enable_windomacc = false;
-#ifdef LINUX
+#ifdef HAVE_HWLOC
       enable_binding = true;
-#else
-      enable_binding = false;
 #endif
       enable_addgrp_kill = false;
       use_qsub_gid = false;

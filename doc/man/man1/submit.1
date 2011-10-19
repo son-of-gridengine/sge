@@ -493,7 +493,7 @@ For more information about the $pe_hostfile check
 binding strategy is applied by xxQS_NAMExx.  Each shepherd (on the
 master host, or those connected to with qrsh \-inherit) is bound to
 the relevant cores.  The binding is inherited by the task that is
-started, so that processes or threads it spawns are confined to those
+started, so that processes or threads it spawns are bound to those
 cores, but it is up to the task to make any more specific bindings of
 its sub-tasks within the set of bound cores it inherits.  How
 xxQS_NAMExx does this depends on the underlying hardware architecture
@@ -502,7 +502,10 @@ of the execution host where the submitted job will be started.
 Binding will be done to restrict the job to run exclusively on the
 selected cores, if possible on the platform; otherwise bound processes
 may still be able to use other cores.  The operating system will
-probably allow other unbound processes to use these cores.
+probably allow other unbound processes to use these cores.  Note that
+if all cores on a node are specified to be bound by one job, that is
+probably equivalent to no binding, with the task free to use all the
+cores.
 .sp
 The \fBloadcheck\fP tool in the
 \fButilbin\fP directory can be used to check the host's capabilities.
@@ -510,6 +513,8 @@ You can also use \fB\-sep\fP in combination with \fB\-cb\fP of
 .M qconf 5
 to find whether xxQS_NAMExx is able to recognize the
 hardware topology.
+.M hwloc-ps 1
+can be used to check the bindings in force on a host.
 .sp
 Possible values for \fBbinding_strategy\fP are as follows:
 .sp
@@ -526,21 +531,27 @@ starting point for the first core to bind on.  Logical socket and core
 numbers are used, per
 .M hwloc 7 .
 .sp
-\fBlinear\fP means that xxQS_NAMExx tries to bind the job on \fBnumber\fP
-successive cores. If \fBsocket\fP and \fBcore\fP are omitted then xxQS_NAMExx
+\fBlinear\fP means that xxQS_NAMExx tries to bind the job on \fInumber\fP
+successive cores. If \fIsocket\fP and \fIcore\fP are omitted then xxQS_NAMExx
 first allocates successive cores on the first empty socket found.
 ("Empty" means that there are no jobs bound to the socket by xxQS_NAMExx.)
 If this is not  possible, or is not sufficient, xxQS_NAMExx tries to find
 (further) cores on the socket with the most unbound cores, and so on.
-If the number of allocated cores is lower than requested cores, no
-binding is done for the job. If \fBsocket\fP and \fBcore\fP are specified,
+If \fIsocket\fP and \fIcore\fP are specified,
 then xxQS_NAMExx tries to find empty cores with this
-starting point. If this is not possible then binding is not done on
-the host concerned.  \fBamount\fP may be omitted or specified as
+starting point. If the binding request cannot be satisfied, then
+binding is not done on the host concerned.  \fInumber\fP may be
+omitted or specified as
 \fBslots\fP.  In that case it will be taken as the number of slots
-assigned to the job on a per-host basis, on the assumption that slots
-are equivalent to cores; this allows binding to work when parallel
-jobs run across nodes with variable slot counts.
+assigned to the job on a per-host basis, on the assumption that one
+slot per core is used.  That allows binding to work when parallel
+jobs run across nodes with variable slot counts per node.
+Multiple processing units (hardware threads) per core are currently not taken
+into account in this, but systems running such parallel jobs will
+typically have only a single thread per core.  \fB\-binding linear\fP
+is a reasonable overall default for
+.M sge_request 5
+in many cases.
 .sp
 \fBstriding\fP means that xxQS_NAMExx tries to find cores with a certain offset.
 It will select \fBnumber\fP of empty cores with an offset of \fBn\fP\-1 cores

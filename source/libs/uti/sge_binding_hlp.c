@@ -481,43 +481,6 @@ int get_number_of_sockets(void)
 #endif
 }
 
-/****** sge_binding_hlp/get_processor_id() *****************************************
-*  NAME
-*     get_processor_id() -- Converts a logical socket and core number into a system internal.
-*
-*  SYNOPSIS
-*     int get_processor_id(int socket_number, int core_number) 
-*
-*  FUNCTION
-*     Converts a logical socket and core number (this is beginning at 0 and 
-*     without holes) into the internal processor number.
-*
-*  INPUTS
-*     int socket_number - Socket (starting at 0) to search for core. 
-*     int core_number   - Core number (starting at 0) to get id for. 
-*
-*  RESULT
-*     int - internal processor number or negative number on error.
-*
-*  NOTES
-*     MT-NOTE: get_processor_id() is MT safe 
-*
-*******************************************************************************/
-int get_processor_id(int socket_number, int core_number) 
-{
-#ifdef HAVE_HWLOC
-   hwloc_obj_t core =
-     hwloc_get_obj_below_by_type(sge_hwloc_topology, HWLOC_OBJ_SOCKET,
-                                 socket_number, HWLOC_OBJ_CORE, core_number);
-   if (core)
-      return core->os_index;
-   else
-      return -2;                /* processor id couldn't retrieved */
-#else
-   return -1;
-#endif
-}
-
 /****** sge_binding_hlp/get_processor_ids() ******************************
 *  NAME
 *     get_processor_ids() -- Get internal processor ids for a specific core.
@@ -568,8 +531,9 @@ bool get_processor_ids(int socket_number, int core_number, int** proc_ids, int* 
    for (i = 0; i < count; i++)
       (*proc_ids)[i] = children[i]->os_index;
    return true;
-#endif
+#else
    return false;
+#endif
 }
 
 /****** sge_binding_hlp/get_topology() ***********************************
@@ -699,7 +663,7 @@ int binding_linear_parse_number(const char* parameter)
    int retval = -1;
    int nn = -1;
 
-   /* expect string "linear" or "linear:<number>" or linear
+   /* expect string "linear" or "linear:<number>" or "linear:slots" or
       "linear:<number>:<firstsocket>,<firstcore>" */
 
    if (parameter != NULL && strstr(parameter, "linear") != NULL) {
