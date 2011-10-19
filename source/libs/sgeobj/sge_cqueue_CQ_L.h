@@ -143,7 +143,7 @@ LISTDEF(CQ_Type)
    SGE_MAP_D(CQ_notify, AINTER_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "00:00:60", "hostname", "notify")
 
    SGE_MAP_D(CQ_tmpdir, ASTR_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "/tmp", "hostname", "tmpDir") 
-   SGE_MAP_D(CQ_shell, ASTR_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "/bin/csh", "hostname", "shell")
+   SGE_MAP_D(CQ_shell, ASTR_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "/bin/sh", "hostname", "shell")
    SGE_MAP_D(CQ_calendar, ASTR_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "NONE", "hostname", "calendar")
    SGE_MAP_D(CQ_priority, ASTR_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "0", "hostname", "priority")
    SGE_MAP_D(CQ_processors, ASTR_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "UNDEFINED", "hostname", "processors")   
