@@ -43,7 +43,10 @@
 #if defined(HAVE_HWLOC)
 #  include <hwloc.h>
 hwloc_topology_t sge_hwloc_topology;
-#endif 
+#  if HWLOC_API_VERSION < 0x00010100
+#     error "need hwloc version >= 1.1"
+#  endif
+#endif
 
 /* functions related for parsing command line (see parse_qsub.c) */
 /* shepherd also needs them */
@@ -70,7 +73,6 @@ bool check_explicit_binding_string(const char* expl, const int amount, const boo
 
 bool has_topology_information(void);
 bool get_topology(char** topology, int* length);
-int get_processor_id(int socket_number, int core_number);
 bool get_processor_ids(int socket_number, int core_number, int** proc_ids, int* amount);
 int get_number_of_cores(int socket_number);
 int get_number_of_threads(int socket_number, int core_number);

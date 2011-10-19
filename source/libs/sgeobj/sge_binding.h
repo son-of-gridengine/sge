@@ -55,10 +55,6 @@
 #include "sgeobj/sge_binding_BN_L.h"
 
 #include "err_trace.h"
-
-#if defined(LINUX)
-#  include <dlfcn.h>
-#endif
  
 /* functions related to get load values for execd (see load_avg.c) */
 
