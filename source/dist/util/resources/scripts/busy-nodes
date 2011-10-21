@@ -29,7 +29,7 @@ esac
 # is busy.
 qhost -j |
   awk '
-/^ *job-ID|^HOSTNAME|^ *-/ {node = ""} # header
+/^ *job-ID|^HOSTNAME|^ *-/ {}   # header
 
 /^[^[:blank:]]/ {node = $1}	# node
 
