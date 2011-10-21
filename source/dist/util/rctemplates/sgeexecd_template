@@ -266,7 +266,8 @@ GetPathToUtilbin()
 # get the execution daemon spooling dir from configuration
 GetExecdSpoolDir()
 {
-   EXECD_SPOOL_DIR=`$bin_dir/qconf -sconf $UQHOST | grep execd_spool_dir | awk '{ print $2 }'`
+   EXECD_SPOOL_DIR=`$bin_dir/qconf -sconf $UQHOST 2>/dev/null |
+      grep execd_spool_dir | awk '{ print $2 }'`
    if [ "$EXECD_SPOOL_DIR" = "" ]; then
       EXECD_SPOOL_DIR=`$bin_dir/qconf -sconf | grep execd_spool_dir | awk '{ print $2 }'`
    fi
