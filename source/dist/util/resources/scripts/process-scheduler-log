@@ -34,6 +34,9 @@ $0 = "process-scheduler-log";
 
 my $poll_interval = 60;
 my $sge_common    = "${SGE_ROOT}/${SGE_CELL}/common";
+my $sge_arch      = `${SGE_ROOT}/util/arch`;
+chomp($sge_arch);
+my $sge_hostname  = "${SGE_ROOT}/utilbin/$sge_arch/gethostname";
 #
 my $schedule_info = "$sge_common/schedule";
 my $schedule_out  = "$sge_common/schedule.last";
@@ -42,7 +45,7 @@ my $ext_tmp       = "tmp";
 my $ext_old       = "old";
 my $pidfile       = "/var/run/sgeprocschedlog.pid";
 
-my $hostname = `hostname -f`;
+my $hostname = `$sge_hostname -aname`;
 chomp($hostname);
 
 my %opts;
