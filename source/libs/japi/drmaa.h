@@ -33,6 +33,8 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+#include <string.h>             /* for size_t */
+
 #ifdef  __cplusplus
 extern "C" {
 #endif
