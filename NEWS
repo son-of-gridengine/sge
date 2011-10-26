@@ -1,10 +1,11 @@
-Notable changes since Sun's 6.2u5 release
------------------------------------------
+Notable changes in Son of Grid Engine
+-------------------------------------
 
-For earlier changes, see Changelog in the source distribution, and the
-bug lists at
-http://arc.liv.ac.uk/SGE/howto/Installation,%20Upgrade,%20Patches
-for detailed change information see https://arc.liv.ac.uk/trac/SGE/log/sge/
+For earlier changes (comprising Sun Grid Engine), see Changelog in the
+source distribution, and the bug lists at
+http://arc.liv.ac.uk/SGE/howto/Installation,%20Upgrade,%20Patches for
+detailed change information see
+https://arc.liv.ac.uk/trac/SGE/log/sge/
 
 "[#<n>]" below refers to ticket <n> at
 https://arc.liv.ac.uk/trac/SGE/ticket/<n>.  (The issues fixed by Univa
@@ -12,6 +13,52 @@ changes aren't publicly available, and many other changes have been
 made without raising Trac tickets.)  Changes due to Univa (or Sun) are
 tagged as "[U]", and items partially due to them or appearing first in
 this version are tagged as "[(U)]".
+
+Version 8.0.0c
+--------------
+
+* Bug fixes
+
+  * Man and other documentation fixes
+  * Build/installation fixes (particularly for Red Hat 6 and Linux 3)
+  * Fix group ids for submitted jobs [U]
+  * Fix default value of boolean with JSV [U]
+  * Windows fixes for helper crashes and Vista GUI jobs [U]
+  * Ensure parallel jobs are dispatched to the least loaded host [U]
+  * Correct ownership of qsub -pty output file; was owned by admin user [U]
+  * Fix format of Windows loadcheck.exe output [U]
+  * Read from stderr even if stdout is already closed in IJS [U]
+  * Fix PDC_INTERVAL=NEVER execd parameter [U]
+  * Fix accounting information for Windows GUI jobs [U]
+  * Increase default MAX_DYN_EC qmaster param [U]
+  * Fix qsub -sync y error message and enforce MAX_DYN_EC correctly [U]
+  * Fix job validation (-w e) behaviour [#716] [U]
+  * Fix qrsh input redirection [U]
+  * Avoid warning when submitting a qrsh job [U]
+  * Print start time in qstat -j -xml output [U]
+  * Don't raise an error changing resource request on waiting job [#806]
+  * Don't exit 0 on error with qconf -secl or -sep
+  * Include string.h in drmaa.h [#712]
+  * Fix process-scheduler-log with host aliases
+
+* Enhancements
+
+  * Base qmake and qtcsh on the current gmake and tcsh source [#289,
+    #504, #832]
+  * Support "-binding linear" and "-binding linear:slots"
+  * Use the hwloc library for all topology information and core
+    binding, supporting more operating systems (now: AIX, Darwin,
+    FreeBSD, GNU/Linux, HPUX, MS Windows, OSF/1, Solaris), and more
+    hardware types (specifically AMD Magny Cours and similar)
+  * Add task number to execd "exceeds job ... limit"
+
+* Other changes (possibly-incompatible)
+
+  * Modify default paths in build files and elsewhere [U]
+  * Assorted message fixes
+  * In RPMs, move qsched to qmaster package, and separate drmaa4ruby
+  * Default to newijs in load_sge_config.sh
+  * Default to sh, not csh for configured shell
 
 Version 8.0.0b
 --------------
