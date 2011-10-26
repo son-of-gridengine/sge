@@ -38,7 +38,7 @@
 %define username sgeadmin
 
 Name:    gridengine
-Version: 8.0.0pre_c
+Version: 8.0.0c
 Release: 1%{?dist}
 Summary: Grid Engine - Distributed Resource Manager
 
@@ -238,7 +238,8 @@ makewhatis %{sge_home}/man
 %exclude %{sge_home}/utilbin/*/rshd
 %exclude %{sge_lib}/*/pam*
 %exclude %{sge_home}/pvm/src
-%exclude %{sge_bin}/process-scheduler-log %{sge_bin}/qsched
+%exclude %{sge_bin}/process-scheduler-log
+%exclude %{sge_bin}/qsched
 %exclude %{sge_home}/util/resources/drmaa4ruby
 %{sge_bin}
 %{sge_lib}
