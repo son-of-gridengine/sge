@@ -30,9 +30,11 @@ esac
 # is busy.
 qhost -j |
   awk '
-/^ *job-ID|^HOSTNAME|^ *-/ {}           # header
+/^HOSTNAME|^-/ {node=""}	# header
 
-/^[^[:blank:]]/ {			# node
+/^[[:blank:]]+(job-ID|-)/ {next}# header
+
+/^[^-[:blank:]]/ {		# node
     if (node) {
 	printf ("%s%s", sep, node)	# from previous line
        'sep=$sep'			# shell substitution!
