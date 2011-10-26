@@ -41,9 +41,11 @@ fi
 # is busy.
 qhost -j |
   awk '
-/^ *job-ID|^HOSTNAME|^ *-/ {}	        # header
+/^HOSTNAME|^-/ {node=""}	# header
 
-/^[^[:blank:]]/ {node = $1}	        # node
+/^[[:blank:]]+(job-ID|-)/ {next}# header
+
+/^[^[:blank:]]/ {node = $1}	# node
 
 /^[[:blank:]]+[0-9]/ {		        # job
     if (node && ($1 == "'$jobid'")) {   # shell substitution!
