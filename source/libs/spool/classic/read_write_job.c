@@ -688,13 +688,15 @@ int job_remove_spool_file(u_long32 jobid, u_long32 ja_taskid,
          }
 
          /*
-          * Following sge_rmdir call may fail. We can ignore this error.
-          * This is only an indicator that another task is running which has 
-          * been spooled in the directory.
+          * The following rmdir call may fail.  We can ignore
+          * ENOTEMPTY as that's only an indicator that another task is
+          * running which has been spooled in the directory.
           */  
          DPRINTF(("try to remove "SFN"\n", task_spool_dir));
-         if (sge_rmdir(task_spool_dir, &error_msg)) {
-            ERROR((SGE_EVENT, MSG_JOB_CANNOT_REMOVE_SS, MSG_JOB_TASK_SPOOL_FILE, error_msg_buffer));
+         if (rmdir(task_spool_dir)) {
+            if (errno != ENOTEMPTY)
+               ERROR((SGE_EVENT, MSG_JOB_CANNOT_REMOVE_SS,
+                      MSG_JOB_TASK_SPOOL_FILE, strerror(errno)));
          } 
 
          /* 
@@ -735,16 +737,22 @@ int job_remove_spool_file(u_long32 jobid, u_long32 ja_taskid,
       try_to_remove_sub_dirs = 1;
    }
    /*
-    * Following sge_rmdir calls may fail. We can ignore these errors.
-    * This is only an indicator that another job is running which has been
-    * spooled in the same directory.
-    */
+    * The following rmdir calls may fail.  We can ignore ENOTEMPTY as
+    * that's only an indicator that another task is running which has
+    * been spooled in the directory.
+    */  
    if (try_to_remove_sub_dirs) {
       DPRINTF(("try to remove "SFN"\n", spool_dir_third));
 
-      if (!sge_rmdir(spool_dir_third, NULL)) {
+      if (!rmdir(spool_dir_third)) {
+         if (ENOTEMPTY == errno)
+            ERROR((SGE_EVENT, MSG_JOB_CANNOT_REMOVE_SS,
+                   MSG_JOB_TASK_SPOOL_FILE, strerror(errno)));
          DPRINTF(("try to remove "SFN"\n", spool_dir_second));
-         sge_rmdir(spool_dir_second, NULL); 
+         if (!rmdir(spool_dir_second))
+            if (ENOTEMPTY == errno)
+               ERROR((SGE_EVENT, MSG_JOB_CANNOT_REMOVE_SS,
+                      MSG_JOB_TASK_SPOOL_FILE, strerror(errno)));
       }
    }
 
