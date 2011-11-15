@@ -172,7 +172,7 @@ sub do_load_sensor_install {
   mkdir "/tmp/hadoop_load_sensor_setup.$$";
   open FILE, ">/tmp/hadoop_load_sensor_setup.$$/global";
 
-  print FILE `qconf -sconf | awk '{ if (\$1 == "load_sensor") { print \$1, "$ENV{PWD}/load_sensor.sh" } else { print \$1, \$2 } }'`;
+  print FILE `qconf -sconf | awk '{ if (\$1 == "load_sensor") { print \$1, "$ENV{PWD}/load_sensor.sh" } else { print } }'`;
 
   close FILE;
 
@@ -188,7 +188,7 @@ sub do_load_sensor_uninstall {
   mkdir "/tmp/hadoop_load_sensor_setup.$$";
   open FILE, ">/tmp/hadoop_load_sensor_setup.$$/global";
 
-  print FILE `qconf -sconf | awk '{ if (\$1 == "load_sensor") { print \$1, "none" } else { print \$1, \$2 } }'`;
+  print FILE `qconf -sconf | awk '{ if (\$1 == "load_sensor") { print \$1, "none" } else { print } }'`;
 
   close FILE;
 
