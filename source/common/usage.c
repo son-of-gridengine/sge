@@ -1350,11 +1350,11 @@ void sge_usage(u_long32 prog_number, FILE *fp) {
    if (VALID_OPT(pty_OPT, prog_number)) {
       PRINTITD(MSG_GDI_USAGE_pty_OPT, MSG_GDI_UTEXT_pty_OPT );
    }
-
+#if 0				/* unimplemented Univa extension */
    if (VALID_OPT(suspend_remote_OPT, prog_number)) {
       PRINTITD(MSG_GDI_USAGE_suspend_remote_OPT, MSG_GDI_UTEXT_suspend_remote_OPT );
    }
-
+#endif
    fprintf(fp, "\n");
    print_marked(prog_number, fp);
 
