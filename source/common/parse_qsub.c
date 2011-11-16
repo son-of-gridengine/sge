@@ -1878,6 +1878,7 @@ DTRACE;
       }
 /*-----------------------------------------------------------------------------*/
       /* "-suspend_remote" - accept, but do nothing, must be handled by caller */
+      /* fixme:  only a Univa stub -- needs implementing */
 
       if(!strcmp("-suspend_remote", *sp)) {
          /* next field is "y|n" */
