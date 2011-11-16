@@ -717,7 +717,8 @@ sge_gdi_ctx_setup(sge_gdi_ctx_class_t *thiz, int prog_number, const char* compon
 
       size = get_pw_buffer_size();
       buffer = sge_malloc(size);
-      if (getpwuid_r((uid_t)getuid(), &pwentry, buffer, size, &pwd) == 0) {
+      if (getpwuid_r((uid_t)getuid(), &pwentry, buffer, size, &pwd) == 0 &&
+          pwd) {
          es->component_username = sge_strdup(es->component_username, pwd->pw_name);
          sge_free(&buffer);
       } else {
