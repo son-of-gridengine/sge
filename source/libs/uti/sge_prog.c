@@ -554,7 +554,7 @@ void sge_getme(u_long32 program_number)
 
       size = get_pw_buffer_size();
       buffer = sge_malloc(size);
-      SGE_ASSERT(getpwuid_r((uid_t)uti_state_get_uid(), &pwentry, buffer, size, &paswd) == 0)
+      SGE_ASSERT(getpwuid_r((uid_t)uti_state_get_uid(), &pwentry, buffer, size, &paswd) == 0 && paswd)
       uti_state_set_user_name(paswd->pw_name);
       sge_free(&buffer);
    }
@@ -884,7 +884,8 @@ static bool sge_prog_state_setup(sge_prog_state_class_t *thiz, sge_env_state_cla
 
       size = get_pw_buffer_size();
       buffer = sge_malloc(size);
-      if ((getpwuid_r((uid_t)getuid(), &pwentry, buffer, size, &paswd)) != 0) {
+      if ((getpwuid_r((uid_t)getuid(), &pwentry, buffer, size, &paswd)) != 0
+          && paswd) {
          eh->error(eh, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR, "getpwuid failed");
          ret = false;
       } else {
