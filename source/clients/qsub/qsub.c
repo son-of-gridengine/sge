@@ -171,13 +171,6 @@ main(int argc, char **argv)
    }
 
    /*
-    * Check if -terse is requested
-    */
-   if (opt_list_has_X(opts_cmdline, "-terse")) {
-      has_terse = true;
-   }
-
-   /*
     * We will only read commandline options from scripfile if the script
     * itself should not be handled as binary
     */
@@ -202,6 +195,13 @@ main(int argc, char **argv)
     */
    opt_list_merge_command_lines(&opts_all, &opts_defaults, 
                                 &opts_scriptfile, &opts_cmdline);
+
+   /*
+    * Check if -terse is requested
+    */
+   if (opt_list_has_X(opts_cmdline, "-terse")) {
+      has_terse = true;
+   }
 
    /* If "-sync y" is set, wait for the job to end. */   
    /* Remove all -sync switches since cull_parse_job_parameter()
