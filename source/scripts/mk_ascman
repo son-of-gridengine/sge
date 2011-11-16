@@ -8,7 +8,7 @@
 # Requires groff to be installed and accessible.
 #
 # $1 = directory where aimk is installed
-# $2 = "ge" or "uge"
+# $2 = "ge" or "sge"
 # $3 = 0 or 1 - flag if man pages in ASCII format should be created
 # $4 = 0 or 1 - flag if man pages in HTML format  should be created
 # $5 = 0 or 1 - checkout man pages with "-kv" flag
@@ -83,11 +83,6 @@ if ( $MANMODE == "ge" || $MANMODE == "sge") then
    set xxQS_NAME_Sxx = "SGE"
    set xxqs_name_sxx = "sge"
    set xxRELxx = "SGE 8.0.0d"
-else if ( $MANMODE == "uge" ) then
-   set xxQS_NAMExx = "Univa Grid Engine"
-   set xxQS_NAME_Sxx = "SGE"
-   set xxqs_name_sxx = "sge"
-   set xxRELxx = "UGE 8.0.0"
 else
    echo error wrong MANMODE=$MANMODE. Exit
    exit 1

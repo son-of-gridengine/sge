@@ -153,10 +153,6 @@ while ($i <= $#argv)
    set i = `expr $i + 1`
 end
 
-# Initialize extern variables from aimk.*
-set UGE_LIBS         = 0   # Path to Univa Extensions
-set UGE_EXT          = 0   # Trigger if Univa Extensions should be built
-
 # Source variables for definition of site dependent paths of software here
 #
 if ( -f aimk.site ) then
@@ -414,11 +410,6 @@ set KLIBS             = ""
 
 # CRYPT
 set AUTHLIBS          = "-lpam"
-
-# Extensions
-set UGE_CFLAGS = ""
-set UGE_LFLAGS = ""
-set UGE_SHARED_LFLAGS = ""
 
 # SPOOLING - default method is dynamic spooling, 
 # spooling methods berkeleydb and classic
@@ -919,9 +910,6 @@ while ($#argv >= 1 && $?found)
       else
          set COMPILE_DIR = ${BUILDARCH}_$SPOOLING_METHOD
       endif 
-      breaksw
-   case "-univaman":
-      set SGE_PRODUCT_MODE=uge
       breaksw
    case "-system-libs":
       set SYSTEM_LIBS = 1
@@ -2080,32 +2068,7 @@ set DEPEND_FLAGS = "`echo $DEPEND_FLAGS | sed -e 's/-[^DI][^ ]*//g'`"
 set ARCH_STRING  = SGE_ARCH_STRING='\"'${buildarch}'\"'
 set CFLAGS       = "-D$ARCH_STRING $CFLAGS"
 set DEPEND_FLAGS = "-D$ARCH_STRING $DEPEND_FLAGS"
-
-if ( $UGE_EXT == 1 ) then
-  if ( -d $UGE_LIBS ) then
-     # Source variables for definition of site dependent paths of software here
-     # as well as private settings (sourced from aimk.site)
-     #
-     if ( -f $UGE_LIBS/aimk.site ) then
-        source $UGE_LIBS/aimk.site
-     endif
-
-     set LFLAGS   = "$LFLAGS $UGE_LFLAGS"
-     set SHARED_LFLAGS   = "$SHARED_LFLAGS $UGE_SHARED_LFLAGS"
-     set LIBS_DIR = "$UGE_LIBS"
-     set CFLAGS = "$CFLAGS $UGE_CFLAGS"
-  else
-     echo "error: couldn't find  UGE_LIBS"
-     echo "error: please"
-     echo "error: (a) update UGE_LIBS in aimk.site or aimk.private accordingly"
-     echo "error: (b) do not use aimk option -uge-ext"
-     exit 1
-  endif
-else
-  # Not currently used in this version.  Would have caused an include loop
-  # without UGE_EXT where it was used.
-  set LIBS_DIR = ${SDIR}
-endif
+set LIBS_DIR = ${SDIR}
 
 if ( $JNI == 1 ) then
 
