@@ -361,7 +361,7 @@ int sge_switch2admin_user(void)
     * doesn't have his primary group set before booting finished.
     * This problem occurs solely when the execd is started by a RC script
     * during boot time.
-    * But we don't need to switch to the UGE admin user anyway, as spooling
+    * But we don't need to switch to the SGE admin user anyway, as spooling
     * always has to be done locally, so we can just skip it always.
     */
    if (get_admin_user(&uid, &gid) == ESRCH) {
@@ -445,7 +445,7 @@ int sge_switch2start_user(void)
     * doesn't have his primary group set before booting finished.
     * This problem occurs solely when the execd is started by a RC script
     * during boot time.
-    * But we don't need to switch to the UGE admin user anyway, as spooling
+    * But we don't need to switch to the SGE admin user anyway, as spooling
     * always has to be done locally, so we can just skip it always.
     */
  
