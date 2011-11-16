@@ -42,9 +42,6 @@ SGE_INSPECT_SRC_DIR="../nbgui"
 
 SRCDIR=`pwd`
 SRCDIR=`dirname $SRCDIR`
-if [ -d $SRCDIR/uge-extensions ]; then
-   LICENSE_FILE="$SRCDIR/uge-extensions/copyright/License/LICENSE.txt"
-fi
 # Location of a license file
 LICENSE_FILE="$SRCDIR/doc/LICENCE.txt"
 
