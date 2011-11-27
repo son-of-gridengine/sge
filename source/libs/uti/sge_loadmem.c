@@ -939,7 +939,8 @@ int sge_loadmem(sge_mem_info_t *mem_info)
 {
  perfstat_memory_total_t minfo;
 
- perfstat_memory_total(NULL, &minfo, sizeof(perfstat_memory_total_t), 1);
+ if (perfstat_memory_total(NULL, &minfo, sizeof(perfstat_memory_total_t), 1) == -1)
+  return -1;
 
  mem_info->mem_total = (minfo.real_total*(4096/1024))/1024;
  mem_info->mem_free  = (minfo.real_free* (4096/1024))/1024;
