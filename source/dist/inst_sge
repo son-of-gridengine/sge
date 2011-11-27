@@ -724,10 +724,10 @@ if [ "$UPDATE" = true ]; then
    if [ "$POST_UPDATE" != true ]; then
       $INFOTEXT -n "\nIf loading the configuration succeeded run these additional commands:\n" \
       "REQUIRED:\n" \
-      "inst_sge -upd-execd\n" \
+      "./inst_sge -upd-execd\n" \
       "   This command initializes all execd spool directories.\n"
       if [ "$WINDOWS_SUPPORT" = true ]; then
-          $INFOTEXT -n "inst_sge -upd-win\n" \
+          $INFOTEXT -n "./inst_sge -upd-win\n" \
           "   This command connects to all Windows execution hosts and installs \n" \
           "   the new Windows helper service on each host.\n" \
           "   WARNING: If a helper service from a previous release is running \n" \
@@ -745,13 +745,13 @@ if [ "$UPDATE" = true ]; then
       "   libjvm_path and additional_jvm_args to reflect your host specific jvm\n" \
       "   settings.\n"
       $INFOTEXT -n "OPTIONAL:\n" \
-      "inst_sge -upd-rc\n" \
+      "./inst_sge -upd-rc\n" \
       "   This command creates new autostart scripts for the new cluster\n" \
       "   and removes any conflicting files.\n" \
       "   TIP: To disable SMF on Solaris systems, use the command\n" \
-      "        inst_sge -upd-rc -nosmf\n" \
+      "        ./inst_sge -upd-rc -nosmf\n" \
       "\n" \
-      "TIP: Use inst_sge -post-upd to do all above actions\n" \
+      "TIP: Use ./inst_sge -post-upd to do all above actions\n" \
       "TIP: Add the -noremote flag to the above commands to perform the action\n" \
       "     only on the current host without making any remote connections\n"
       exit $exit_val
