@@ -31,7 +31,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH SUBMIT 1 "$Date: 2011-10-14 22:22:41 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH SUBMIT 1 "$Date: 2011-11-27 11:25:08 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qsub, qsh, qlogin, qrsh, qalter, qresub \- submit jobs to xxQS_NAMExx
 .\"
@@ -207,7 +207,7 @@ is invoked, the command interpreter pointed to by
 .B QRSH_WRAPPER
 will be executed to run
 .I qrsh
-commands instead of the users login shell or any shell specified in the
+commands instead of the user's login shell or any shell specified in the
 .I qrsh
 command-line.
 The options \fB\-cwd\fP,  \fB\-v\fP,  \fB\-V\fP,  and \fB\-display\fP only 
@@ -2102,7 +2102,7 @@ The xxQS_NAMExx architecture name of the node on which the job is
 running. The name is compiled-in into the
 .M xxqs_name_sxx_execd 8
 binary.
-.IP "xxQS_NAME_Sxx_BINDING" 1.5i
+.IP "\fBxxQS_NAME_Sxx_BINDING\fP" 1.5i
 Contains the selected operating system internal processor numbers.
 There might be more than the number of selected cores in the presence
 of SMT or CMT because each core could be represented by multiple
@@ -2116,7 +2116,7 @@ Only set for checkpointing jobs. Contains path \fIckpt_dir\fP
 (see
 .M checkpoint 5 )
 of the checkpoint interface.
-.IP xxQS_NAME_Sxx_CWD_PATH 1.5i
+.IP \fBxxQS_NAME_Sxx_CWD_PATH\fP 1.5i
 Specifies the current working directory where the job was started.
 .IP \fBxxQS_NAME_Sxx_STDERR_PATH\fP 1.5i
 The pathname of the file to which the standard error stream of the job is
@@ -2250,39 +2250,6 @@ If the response time of the client JSV is greater than this timeout value, then 
 JSV will attempt to be re-started. The default value is 10 seconds, and this value 
 must be greater than 0. If the timeout has been reached, the JSV will only try to 
 re-start once, if the timeout is reached again an error will occur.
-.\" No longer works
-\" .IP "\fBxxQS_NAME_Sxx_COMPLEX_\fIcomplex\fP" 1.5i
-\" Passing a name of the form \fBxxQS_NAME_Sxx_COMPLEX_\fIcomplex\fP to a job with
-\" the \fB\-v\fP switch, where
-\" .I complex
-\" is the name of a defined
-\" .M complex 5 ,
-\" causes environment variable
-\" .I complex
-\" to be defined in the job's environment with the value of that complex
-\" which was requested by the job explicitly with
-\" .B \-l
-\" or implicitly via
-\" .M xxqs_name_sxx_request 4 ,
-\" for instance.  E.g.
-\" .PP
-\" .nf
-\" .RS
-\" .RS
-\" qsub \-l arch=sol\-amd64 \-v SGE_COMPLEX_arch
-\" .RE
-\" .RE
-\" .fi
-\" .PP
-\" .RS
-\" .RS
-\" would put
-\" .B arch=sol\-amd64
-\" in the submitted job's environment.
-\" .RE
-\" .RE
-.IP "\fBxxQS_NAME_Sxx_BINDING" 1.5i
-The selected operating system internal processor numbers (see above).
 .\"
 .\"
 .SH RESTRICTIONS
