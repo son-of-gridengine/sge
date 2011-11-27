@@ -1,189 +1,186 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta http-equiv="CONTENT-TYPE" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.76C-CCK-MCD Netscape [en] (X11; U; SunOS 5.8 sun4u) [Netscape]">
    <meta name="CREATED" content="20010611;10370600">
    <meta name="CHANGEDBY" content="Andre Alefeld">
    <meta name="CHANGED" content="20010611;11590200">
+    <title>SGE Security</title>
 </head>
 <body>
 
 <h2>
-<b><font color="#990000">SECURITY</font></b></h2>
-<font color="#000000">In default mode Grid Engine is installed without
+SECURITY</h2>
+<p><em>In default mode Grid Engine is installed without
 any additional security measures.&nbsp; The assumption is made that the
-Grid Engine cluster is not exposed to any malicious attacks.</font>
-<br><font color="#000000">The hosts that belong to the Grid Engine cluster
+Grid Engine cluster is not exposed to any malicious attacks.</em>
+<p>The hosts that belong to the Grid Engine cluster
 are classified into four categories, where a host can belong to more than
-one of them:</font>
-<ul>
-<li>
-<font color="#000000">master host</font></li>
+one of them:</p>
+<dl>
+<dt>
+master host</dt>
 
-<br><font color="#000000">Here run the Grid Engine master daemon sge_qmaster
-and the scheduler sge_schedd.</font>
-<li>
-<font color="#000000">execution hosts</font></li>
+<dd>Here run the Grid Engine master daemon sge_qmaster
+and the scheduler sge_schedd.
+<dt>
+execution hosts</dt>
 
-<br><font color="#000000">Here run the Grid Engine execution daemons sge_execd.
-These nodes are allowed to execute Grid Engine jobs.</font>
-<li>
-<font color="#000000">administrative hosts</font></li>
+<dd>Here run the Grid Engine execution daemons sge_execd.
+These nodes are allowed to execute Grid Engine jobs.
+<dt>
+administrative hosts</dt>
 
-<br><font color="#000000">Administrative tasks like the granting of permissions
-and the maintenance of resources are only allowed from these hosts.</font>
-<li>
-<font color="#000000">submit hosts</font></li>
+<dd>Administrative tasks like the granting of permissions
+and the maintenance of resources are only allowed from these hosts.
+<dt>
+submit hosts</dt>
 
-<br><font color="#000000">Submit hosts allow for submitting and controlling
-batch jobs.</font></ul>
-<font color="#000000">Apart from the host based access restrictions the
-users are classified into the categories:</font>
-<ul>
-<li>
-<font color="#000000">managers</font></li>
+<dd>Submit hosts allow for submitting and controlling
+batch jobs.</dl>
+<p>
+Apart from the host based access restrictions the
+users are classified into the categories:</p>
+<dl>
+<dt>
+managers</dt>
 
-<br><font color="#000000">They have full capabilities to manipulate Grid
-Engine.</font>
-<li>
-<font color="#000000">operators</font></li>
+<dd>They have full capabilities to manipulate Grid
+Engine.</dd>
+<dt>
+operators</dt>
 
-<br><font color="#000000">They can perform the same commands as managers
-apart from adding/deleting/modifying queues.</font>
-<li>
-<font color="#000000">owners</font></li>
+<dd>They can perform the same commands as managers
+apart from adding/deleting/modifying queues.</dd>
+<dd>
+owners</dd>
 
-<br><font color="#000000">They can suspend/unsuspend or enable/disable
-the queues they are registered as owners.</font>
-<li>
-<font color="#000000">users</font></li>
+<dd>They can suspend/unsuspend or enable/disable
+the queues they are registered as owners.</dd>
 
-<br><font color="#000000">They must have a valid login on at least one
+<dt>users</dt>
+
+<dd>They must have a valid login on at least one
 submit and one execution host. Their access can be limited to a subset
-of them by installing access lists.</font></ul>
-<font color="#000000">These mechanisms rely on the assumption that the
+of them by installing access lists.</dd></dl>
+<p>
+These mechanisms rely on the assumption that the
 user is who he claims to be and the host is the host that it claims to
-be and that this information can be trusted.</font>
-<br><font color="#000000">To enhance the security standard there exist
-currently three approaches:</font>
+be and that this information can be trusted.
+<br>To enhance the security standard there exist
+currently three approaches:
 <ul>
 <li>
-<font color="#000000"><a href="#Enhanced Security Using Reserved Ports">Grid
-Engine using reserved ports</a></font></li>
+<a href="#Enhanced Security Using Reserved Ports">Grid
+Engine using reserved ports</a></li>
 
 <li>
-<font color="#000000"><a href="#Enhanced Security Using Kerberos/DCE Authentication">Grid
-Engine version using Kerberos/DCE authentication</a></font></li>
+<a href="#Enhanced Security Using Kerberos/DCE Authentication">Grid
+Engine version using Kerberos/DCE authentication</a></li>
 
 <li>
-<font color="#000000"><a href="#Enhanced Security Using Kerberos">Grid
-Engine version using Kerberos</a></font></li>
+<a href="#Enhanced Security Using Kerberos">Grid
+Engine version using Kerberos</a></li>
 
 <li>
-<font color="#000000"><a href="#Enhanced Security Using OpenSSL">Grid Engine
-version using SSL&nbsp; (work in progress)</a></font></li>
+<a href="#Enhanced Security Using OpenSSL">Grid Engine
+version using SSL&nbsp; (work in progress)</a></li>
 </ul>
-<a NAME="Enhanced Security Using Reserved Ports"></a><font color="#990000">Enhanced
-Security Using Reserved Ports</font>
-<p><font color="#000000">The simplest security mechanism is the communication
+<h3>
+<a NAME="Enhanced Security Using Reserved Ports">Enhanced
+Security Using Reserved Ports</a></h3>
+<p>The simplest security mechanism is the communication
 between Grid Engine components over reserved ports. So any client who is
-not communicating</font>
-<br><font color="#000000">from a priviledged port number is rejected. The
+not communicating
+<br>from a priviledged port number is rejected. The
 mechanism used is very similar to the authentication mechanism known from
-the rsh/rlogin command suite.</font>
-<br><font color="#000000">To make use of this security mechanism the following
-steps are necessary:</font>
+the rsh/rlogin command suite.
+<br>To make use of this security mechanism the following
+steps are necessary:
 <ul>
 <li>
-<font color="#000000">the shared Grid Engine installation directory must
-be exported setuid root</font></li>
-</ul>
-
-<ul>
+the shared Grid Engine installation directory must
+be exported setuid root</li>
 <li>
-<font color="#000000">the installation is performed as root with './install_qmaster
--resport' for qmaster and './install_execd -resport' for execd</font></li>
-
-<br><font color="#000000">The client binaries are installed setuid root
-to be able to connect to Grid Engine from reserved ports.</font>
-<br>&nbsp;
+the installation is performed as root with './install_qmaster
+-resport' for qmaster and './install_execd -resport' for execd.
+<br>The client binaries are installed setuid root
+to be able to connect to Grid Engine from reserved ports.
 <li>
-<font color="#000000">if you are setting up a system with shared libraries,
+if you are setting up a system with shared libraries,
 the libraries must be copied to a 'safe' place. The dynamic loader requires
-in general that</font></li>
+in general that</li>
 
-<br><font color="#000000">the libraries are installed under /usr/lib or
-some other trusted system path.</font></ul>
-<font color="#000000">What can you expect ?</font>
-<p><font color="#000000">The communication over reserved ports assures
+<br>the libraries are installed under /usr/lib or
+some other trusted system path.</ul>
+What can you expect ?
+<p>The communication over reserved ports assures
 that only messages that are send from a port in the range 0-1023 are accepted.
-This means that only</font>
-<br><font color="#000000">a program that has been setuid root can send
+This means that only
+<br>a program that has been setuid root can send
 such messages. So it can be assured that the client programs you are using
-are the ones that have been</font>
-<br><font color="#000000">installed by the Grid Engine administrator.</font>
-<br><font color="#000000">This implies that the following criteria must
-be valid:</font>
+are the ones that have been
+<br>installed by the Grid Engine administrator.
+<br>This implies that the following criteria must
+be valid:
 <ul>
 <li>
-<font color="#000000">there is no possibility to replace a host in the
+there is no possibility to replace a host in the
 network by another machine e.g. a Linux laptop where the intruder can install
-its</font></li>
+its</li>
 
-<br><font color="#000000">own version of Grid Engine binaries and setuid
-root them.</font>
+<br>own version of Grid Engine binaries and setuid
+root them.
 <li>
-<font color="#000000">the Grid Engine executables/libraries should not
-be replaceable by someone else than root (this must be checked during installation)</font></li>
+the Grid Engine executables/libraries should not
+be replaceable by someone else than root (this must be checked during installation)</li>
 
 <li>
-<font color="#000000">all hosts where root access can be gained are trusted</font></li>
+all hosts where root access can be gained are trusted</li>
 </ul>
-<font color="#000000">Here are the steps that are performed by a Grid Engine
-command as qsub using reserved ports:</font>
+Here are the steps that are performed by a Grid Engine
+command as qsub using reserved ports:
 <ul>
 <li>
-<font color="#000000">qsub is started as setuid root program</font></li>
+qsub is started as setuid root program</li>
 
 <li>
-<font color="#000000">qsub changes its effective user id to the users id
-after starting</font></li>
+qsub changes its effective user id to the users id
+after starting</li>
 
 <li>
-<font color="#000000">client specific processing is executed and a message
-for qmaster is prepared</font></li>
+client specific processing is executed and a message
+for qmaster is prepared</li>
 
 <li>
-<font color="#000000">change the effective user id to root and get a socket
+change the effective user id to root and get a socket
 file descriptor in the priviledged port space, change back to the user's
-id</font></li>
+id</li>
 
 <li>
-<font color="#000000">send the message to qmaster using the file descriptor
-in the priviledged port space</font></li>
+send the message to qmaster using the file descriptor
+in the priviledged port space</li>
 
 <li>
-<font color="#000000">qmaster receives the message, if it has not been
-send from the priviledged port space it will be rejected</font></li>
+qmaster receives the message, if it has not been
+send from the priviledged port space it will be rejected</li>
 
 <li>
-<font color="#000000">check the standard Grid Engine host and user permissions
-and allow or reject the request</font></li>
+check the standard Grid Engine host and user permissions
+and allow or reject the request</li>
 
 <li>
-<font color="#000000">qmaster processes the request and sends back any
-answers</font></li>
+qmaster processes the request and sends back any
+answers</li>
 </ul>
-<font color="#000000">This applies to any other client command.</font>
-<p><a NAME="Enhanced Security Using Kerberos/DCE Authentication"></a><font color="#990000">Enhanced
-Security Using Kerberos/DCE Authentication</font>
+This applies to any other client command.
+<h3><a NAME="Enhanced Security Using Kerberos/DCE Authentication"></a>Enhanced
+Security Using Kerberos/DCE Authentication</h3>
 <p>This GSS-API Kerberos implementation has used regularly in Grid Engine 5.3
 development and test environments and is used full-time at least one production
 site which is running Grid Engine 5.3.  This
 implementation is different than the
-<font color="#990000">Enhanced Security Using Kerberos</font>
+<cite>Enhanced Security Using Kerberos</cite>
 implementation described below in that it is not a full Kerberos implementation
 but uses Kerberos to authenticate users submitting jobs and to forward user
 credentials with the job by calling security sub-programs at the appropriate times.
@@ -201,12 +198,12 @@ stand-alone.  Details on how to use this implementation can be found in
 gridengine/source/security/gss/doc/gss_customer.html.
 <p>Before you start digging into this, make sure how Kerberos/DCE functions
 in general. There are many good sites out there in Netland.
-<br><font color="#000000">Grid Engine can be run in a Kerberos/DCE environment
+<br>Grid Engine can be run in a Kerberos/DCE environment
 using the corresponding authentication mechanisms. A detailed description
-how to integrate Grid Engine in such an enviroment can be found <a href="gss/doc/gss.html">here</a>.</font>
+how to integrate Grid Engine in such an enviroment can be found <a href="gss/doc/gss.html">here</a>.
 
-<p><a NAME="Enhanced Security Using Kerberos"></a><font color="#990000">Enhanced
-Security Using Kerberos</font>
+<h3><a NAME="Enhanced Security Using Kerberos"></a>Enhanced
+Security Using Kerberos</h3>
 
 <p>This implementation isn't really usable in its current form. This code was
 developed around 1997
@@ -226,7 +223,7 @@ option, because we didn't supply the source code to customers.
 If you need Kerberos to authenticate users who are submitting jobs to allow Grid
 Engine jobs to run with Kerberos credentials (which have been forwarded and are
 protected by encryption), then the 
-<font color="#990000">Enhanced Security Using Kerberos/DCE Authentication</font>
+<cite>Enhanced Security Using Kerberos/DCE Authentication</cite>
 implementation is the way to
 go.  Full authentication and encrypted communication via Kerberos between all
 Grid Engine clients (e.g. qmon, qstat) and deamons would require using the
@@ -241,9 +238,9 @@ and a setup example can be found in the following documents:
 <a href="krb/doc/Implementation.html">Implementation</a></li>
 </ul>
 
-<p><a NAME="Enhanced Security Using OpenSSL"></a><font color="#990000">Enhanced
-Security Using SSL</font>
-<p><font color="#000000">A prototype of Grid Engine supporting SSL has
+<h3><a NAME="Enhanced Security Using OpenSSL"></a>Enhanced
+Security Using SSL</h3>
+<p>A prototype of Grid Engine supporting SSL has
 been developed in the context of a diploma thesis. Although the original
 work is a bit outdated and needs adaption to the newest SSL libraries,
 it is certainly a good starting point. The original diploma thesis (in
@@ -251,7 +248,7 @@ german) outlining the architecture of this security approach can be found
 <a href="sec/doc/diplomarbeit.ps">here.</a>
 <p>The Certificate Security Protocol has been reworked and a description 
 how to deploy this version can be found <a href="sec/csp.html">here</a>
-</font>
+
 <center>
 <p>Copyright 2001 Sun Microsystems, Inc. All rights reserved.</center>
 
