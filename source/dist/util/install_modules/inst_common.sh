@@ -2173,7 +2173,7 @@ GiveHints()
                 "   source %s\n\n" \
                 "if you are a csh/tcsh user or\n\n" \
                 "   # . %s\n\n" \
-                "if you are a sh/ksh user.\n\n" \
+                "if you are a sh/bash/ksh user.\n\n" \
                 "This will set or expand the following environment variables:\n\n" \
                 "   - \$SGE_ROOT         (always necessary)\n" \
                 "   - \$SGE_CELL         (if you are using a cell other than >default<)\n" \
@@ -2199,8 +2199,8 @@ GiveHints()
                    "   E.g.: svcs -l svc:/application/sge/qmaster:%s\n\n" $SGE_CLUSTER_NAME
       else
          $INFOTEXT "\nGrid Engine messages can be found at:\n\n" \
-                   "   /tmp/qmaster_messages (during qmaster startup)\n" \
-                   "   /tmp/execd_messages   (during execution daemon startup)\n\n"
+                   "   /tmp/qmaster_messages.<N> (during qmaster startup)\n" \
+                   "   /tmp/execd_messages.<N>   (during execution daemon startup)\n\n"
       fi
       $INFOTEXT "After startup the daemons log their messages in their spool directories.\n\n" \
                 "   Qmaster:     %s\n" \
