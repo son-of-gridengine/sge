@@ -44,6 +44,8 @@
 #include "uti/sge_prog.h"
 #include "uti/sge_os.h"
 #include "uti/sge_stdio.h"
+#include "uti/config_file.h"
+#include "uti/sge_uidgid.h"
 
 #include "sgeobj/sge_conf.h"
 #include "sgeobj/sge_job.h"
@@ -216,6 +218,15 @@ const char *buf
       }
 
       close(pipefds[1]);
+
+      /* switch user */
+      {
+        char *user = parse_script_params((char **)&mailer);
+        if (user != NULL) {
+           char err_str[256];
+           sge_set_uid_gid_addgrp(user, NULL, 0, 0, 0, err_str, 0, 0, false);
+        }
+      }
 
       if (mailer_has_subj_line) {
          DPRINTF(("%s mail -s %s %s", mailer, subj, user_str));  
