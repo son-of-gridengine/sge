@@ -40,6 +40,7 @@
 #include "uti/sge_log.h"
 #include "uti/sge_parse_num_par.h"
 #include "uti/config_file.h"
+#include "uti/sge_uidgid.h"
 
 #include "basis_types.h"
 #include "err_trace.h"
@@ -640,3 +641,81 @@ bool parse_int_param(const char *input, const char *variable,
    DEXIT;
    return ret;
 }
+
+/****** uti/parse_script_params() *****************************************
+*  NAME
+*     parse_script_params() -- Parse prolog/epilog/pe_start/pe_stop line from
+*                              config
+*
+*  SYNOPSIS
+*     char *parse_script_params(char **script_file)
+*
+*  FUNCTION
+*     Parses the config value for prolog/epilog/pe_start or pe_stop.
+*     Retrieves the target user (as whom the script should be run) and
+*     eats the target user from the config value string, so that the path of
+*     the script file remains.
+*
+*  INPUTS
+*     char **script_file - Pointer to the string containing the conf value.
+*                          syntax: [<user>@]<path>, e.g. joe@/home/joe/script
+*
+*  OUTPUT
+*     char **script_file - Pointer to the string containing the script path.
+*
+*  RESULT
+*     char* - If one is given, the name of the user.
+*             Else NULL.
+*******************************************************************************/
+char*
+parse_script_params(char **script_file)
+{
+   char* target_user = NULL;
+   char* s;
+
+   /* syntax is [<user>@]<path> <arguments> */
+   s = strpbrk(*script_file, "@ ");
+   if (s && *s == '@') {
+      *s = '\0';
+      target_user = *script_file;
+      *script_file = &s[1];
+   }
+   return target_user;
+}
+
+#if 0
+bool parse_string_param(const char *input, const char *variable, char *value)
+{
+   bool ret = false;
+
+   DENTER(BASIS_LAYER, "parse_string_param");
+   if (input != NULL && variable != NULL && value != NULL) {
+      int var_len = strlen(variable);
+      /* Test that 'variable' is the left side of the = in 'input.' */
+      /* We don't have to guard against an overrun in input[var_len] because we
+       * know that input is at least as long as var_len when we pass the
+       * strncasecmp(), so the worst that input[var_len] could be is \0. */
+      if ((strncasecmp(input, variable, var_len) == 0) &&
+         ((input[var_len] == '=') || (input[var_len] == '\0'))) {
+         const char *s;
+         ret = false;
+         /* search position of = */
+         s = strchr(input, '=');
+         /* only variable name in input */
+         if (s != NULL) {
+            dstring l = DSTRING_INIT;
+            s++;                /* skip = */
+            if (strncmp("\"", s, 1) == 0) {
+              s++;
+              if ((l = strnchr(s, "=")) != NULL) {
+
+              }
+            }
+         }
+         DPRINTF(("%s = %s\n", variable, value));
+      }
+   }
+   DEXIT;
+   return ret;
+}
+#endif

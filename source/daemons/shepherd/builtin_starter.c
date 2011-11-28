@@ -108,7 +108,6 @@ static int inherit_environ = -1;
 
 /* static functions */
 static char **read_job_args(char **args, int extra_args);
-static char *parse_script_params(char **script_file);
 static void setup_environment (void);
 static bool inherit_env(void);
 static void start_qlogin_job(const char *shell_path);
@@ -1814,47 +1813,6 @@ int type
    }
 
    return path;
-}
-
-/****** Shepherd/parse_script_params() *****************************************
-*  NAME
-*     parse_script_params() -- Parse prolog/epilog/pe_start/pe_stop line from
-*                              config
-*
-*  SYNOPSIS
-*     static char *parse_script_params(char **script_file)
-*
-*  FUNCTION
-*     Parses the config value for prolog/epilog/pe_start or pe_stop.
-*     Retrieves the target user (as whom the script should be run) and
-*     eats the target user from the config value string, so that the path of
-*     the script file remains.
-*
-*  INPUTS
-*     char **script_file - Pointer to the string containing the conf value.
-*                          syntax: [<user>@]<path>, e.g. joe@/home/joe/script
-*
-*  OUTPUT
-*     char **script_file - Pointer to the string containing the script path.
-* 
-*  RESULT
-*     char* - If one is given, the name of the user.
-*             Else NULL.
-*******************************************************************************/
-static char*
-parse_script_params(char **script_file) 
-{
-   char* target_user = NULL;
-   char* s;
-
-   /* syntax is [<user>@]<path> <arguments> */
-   s = strpbrk(*script_file, "@ ");
-   if (s && *s == '@') {
-      *s = '\0';
-      target_user = *script_file; 
-      *script_file = &s[1];
-   }
-   return target_user;
 }
 
 /****** Shepherd/inherit_env() *************************************************

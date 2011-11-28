@@ -541,7 +541,8 @@ static int check_config(lList **alpp, lListElem *conf)
          if (!ok) {
             DRETURN(STATUS_EEXIST);
          }
-      } else if (!strcmp(name, "prolog") || !strcmp(name, "epilog")) {
+      } else if (!strcmp(name, "prolog") || !strcmp(name, "epilog")
+                 || !strcmp(name, "mailer")) {
          if (strcasecmp(value, "none")) {
             const char *t, *script = value;
 

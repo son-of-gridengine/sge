@@ -52,6 +52,7 @@ bool parse_bool_param(const char *string, const char *variable, bool *value);
 bool parse_int_param(const char *input, const char *variable, 
                      int *value, int type);
 bool parse_time_param(const char *input, const char *variable, u_long32 *value);
+char* parse_script_params(char **script_file);
 
 extern void (*config_errfunc)(const char *);
 
