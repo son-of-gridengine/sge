@@ -3,7 +3,8 @@ Industry Standards Source License; see the file SISSL.  If copyright
 notices are missing, Fritz Ferstl says at
 http://lists.alioth.debian.org/pipermail/pkg-gridengine-devel/2007-June/000021.html
 "Yes, you can assume that everything not explicitly licensed is
-copyrighted by Sun and is under the SISSL."
+copyrighted by Sun and is under the SISSL."  See also
+http://lists.alioth.debian.org/pipermail/pkg-gridengine-devel/2007-June/000023.html
 
 It is unclear what the effect is of its the `Standards' language.  At
 the time of writing (January 2011) the reference to the "Reference
