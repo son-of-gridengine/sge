@@ -14,6 +14,21 @@ made without raising Trac tickets.)  Changes due to Univa (or Sun) are
 tagged as "[U]", and items partially due to them or appearing first in
 this version are tagged as "[(U)]".
 
+Version 8.0.0d
+--------------
+
+* Bug fixes
+
+  * Man and fixes
+  * Fix building with older gcc versions
+  * Provide load average in qstat XML output [#446, #454]
+  * Partially back out Univa change which broke classic spooling
+  * Fix -terse in sge_request [#777]
+
+* Other changes (possibly-incompatible)
+
+  * Message fixes
+
 Version 8.0.0c
 --------------
 
