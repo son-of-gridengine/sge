@@ -68,10 +68,10 @@ typedef enum {
 } sge_locktype_t;
 
 void 
-sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sge_locker_t anID);
+sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func);
 
 void 
-sge_unlock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sge_locker_t anID);
+sge_unlock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func);
 
 sge_locker_t 
 sge_locker_id(void);
@@ -82,7 +82,7 @@ sge_locker_id(void);
 
 #define SGE_LOCK(type, mode) \
 { \
-   sge_lock(type, mode, SGE_FUNC, sge_locker_id()); \
+   sge_lock(type, mode, SGE_FUNC); \
 }
 
 #if defined(SGE_UNLOCK)
@@ -91,7 +91,7 @@ sge_locker_id(void);
 
 #define SGE_UNLOCK(type, mode) \
 { \
-   sge_unlock(type, mode, SGE_FUNC, sge_locker_id()); \
+   sge_unlock(type, mode, SGE_FUNC); \
 }
 
 #endif /* _SGE_LOCK_H_ */

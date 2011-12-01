@@ -136,8 +136,7 @@ static sge_locker_t (*id_callback)(void) = id_callback_impl;
 *     sge_lock() -- Acquire lock
 *
 *  SYNOPSIS
-*     void sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, sge_locker_t 
-*     anID) 
+*     void sge_lock(sge_locktype_t aType, sge_lockmode_t aMode)
 *
 *  FUNCTION
 *     Acquire lock. If the lock is already held, block the caller until lock
@@ -150,7 +149,6 @@ static sge_locker_t (*id_callback)(void) = id_callback_impl;
 *  INPUTS
 *     sge_locktype_t aType - lock to acquire
 *     sge_lockmode_t aMode - lock mode
-*     sge_locker_t anID    - locker id
 *
 *  RESULT
 *     void - none
@@ -159,7 +157,7 @@ static sge_locker_t (*id_callback)(void) = id_callback_impl;
 *     MT-NOTE: sge_lock() is MT safe 
 *******************************************************************************/
 #ifdef SGE_LOCK_DEBUG
-void sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sge_locker_t anID)
+void sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func)
 {
    int res = -1;
 
@@ -212,7 +210,7 @@ void sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sge_
 } /* sge_lock */
 
 #else
-void sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sge_locker_t anID)
+void sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func)
 {
    int res = -1;
 
@@ -286,8 +284,7 @@ void sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sge_
 *     sge_unlock() -- Release lock
 *
 *  SYNOPSIS
-*     void sge_unlock(sge_locktype_t aType, sge_lockmode_t aMode, sge_locker_t 
-*     anID) 
+*     void sge_unlock(sge_locktype_t aType, sge_lockmode_t aMode)
 *
 *  FUNCTION
 *     Release lock. 
@@ -298,7 +295,6 @@ void sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sge_
 *  INPUTS
 *     sge_locktype_t aType - lock to release
 *     sge_lockmode_t aMode - lock mode in which the lock has been acquired 
-*     sge_locker_t anID    - locker id
 *
 *  RESULT
 *     void - none
@@ -307,7 +303,7 @@ void sge_lock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sge_
 *     MT-NOTE: sge_unlock() is MT safe 
 *******************************************************************************/
 #ifdef SGE_LOCK_DEBUG
-void sge_unlock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sge_locker_t anID)
+void sge_unlock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func)
 {
    int res = -1;
    DENTER(TOP_LAYER, "sge_unlock");
@@ -335,7 +331,7 @@ void sge_unlock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sg
    DRETURN_VOID;
 } /* sge_unlock */
 #else
-void sge_unlock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func, sge_locker_t anID)
+void sge_unlock(sge_locktype_t aType, sge_lockmode_t aMode, const char *func)
 {
    int res = -1;
    
