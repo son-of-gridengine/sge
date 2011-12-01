@@ -746,13 +746,13 @@ int job_remove_spool_file(u_long32 jobid, u_long32 ja_taskid,
       DPRINTF(("try to remove "SFN"\n", spool_dir_third));
 
       errno = 0;
-      if (!rmdir(spool_dir_third)) {
+      if (rmdir(spool_dir_third)) {
          if (errno != ENOTEMPTY)
             ERROR((SGE_EVENT, MSG_JOB_CANNOT_REMOVE_SS,
                    MSG_JOB_TASK_SPOOL_FILE, strerror(errno)));
          DPRINTF(("try to remove "SFN"\n", spool_dir_second));
          errno = 0;
-         if (!rmdir(spool_dir_second))
+         if (rmdir(spool_dir_second))
             if (errno != ENOTEMPTY)
                ERROR((SGE_EVENT, MSG_JOB_CANNOT_REMOVE_SS,
                       MSG_JOB_TASK_SPOOL_FILE, strerror(errno)));
