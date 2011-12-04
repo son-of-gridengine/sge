@@ -78,17 +78,7 @@ AIX)
       ARCH=UNSUPPORTED-rs6000
       ;;
    4)
-      case $osrelease in
-      1)
-         ARCH=UNSUPPORTED-aix41
-         ;;
-      2)
-         ARCH=UNSUPPORTED-aix42
-         ;;
-      3)
-         ARCH=aix43
-         ;;
-      esac
+      ARCH=UNSUPPORTED-aix4
       ;;
    5|6|7)
       ARCH=aix51
