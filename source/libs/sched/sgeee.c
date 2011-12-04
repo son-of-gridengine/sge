@@ -30,6 +30,13 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+/* For fair share, Shannon Davidson referenced J. Kay and P. Lauder,
+   `A Fair Share Scheduler', Communications of the ACM, 31(1):44-55
+   (1988) <http://www.cs.su.oz.au/~piers/papers/Share/share.html>.
+   Maybe the subsequent
+   <https://www.it.usyd.edu.au/~piers/papers/Share/share2.html> is
+   relevant.  */
+
 #define SGE_INCLUDE_QUEUED_JOBS
 
 #include <stdio.h>
@@ -93,7 +100,7 @@ typedef struct {
 } sge_task_ref_t;
 
 /*
- * sge_ref_t - this structure is used in the SGEEE
+ * sge_ref_t - this structure is used in the
  * scheduler to keep references to all the objects
  * associated with a job.  An array is built containing
  * one of these structures for each job/array we
@@ -4095,7 +4102,7 @@ void sge_do_priority_job(lListElem *jep)
 *	   - don't decay and sum usage
 *	   - don't update qmaster
 *
-*    On a SGEEE scheduling interval:
+*    On a scheduling interval:
 *	   - calculate tickets for new and running jobs
 *	   - decay and sum usage
 *	   - handle finished jobs
@@ -4134,7 +4141,7 @@ int sgeee_scheduler(scheduler_all_data_t *lists,
    do_nurg  = (sconf_get_weight_urgency() != 0  || report_priority) ? true : false;
    do_nprio = (sconf_get_weight_priority() != 0 || report_priority) ? true : false;
 
-   /* clear SGEEE fields for queued jobs */
+   /* clear fields for queued jobs */
    for_each(job, pending_jobs) {   
       sge_clear_job(job, false);
    }
@@ -4283,14 +4290,14 @@ static void sge_do_sgeee_priority(lList *job_list, double min_tix, double max_ti
 
 /****** sgeee/sgeee_priority() *************************************************
 *  NAME
-*     sgeee_priority() -- Compute final GEEE priority 
+*     sgeee_priority() -- Compute final GE priority 
 *
 *  SYNOPSIS
 *     static void sgeee_priority(lListElem *task, u_long32 jobid, double nsu, 
 *     double min_tix, double max_tix) 
 *
 *  FUNCTION
-*     The GEEE priority is computed for the task based on the already known
+*     The GE priority is computed for the task based on the already known
 *     ticket amount and already normalized urgency value. The ticket amount
 *     is normalized based on the ticket range passed. The weights for
 *     ticket and urgency value are applied.
@@ -4324,11 +4331,11 @@ static void sgeee_priority(lListElem *task, u_long32 jobid, double nsu,
 
    /* combine per task NTA with per job normalized static urgency 
       (NSU) and per job normalized POSIX priority (NPRI) into
-      SGEEE priority */
+      SGE priority */
    geee_priority = weight_urgency * nsu + weight_ticket * nta +
                    weight_priority * npri;
 /*
-   DPRINTF(("SGEEE priority (" sge_u32 "."sge_u32 ") %f = %f * %f + %f * %f + %f * %f\n",
+   DPRINTF(("SGE priority (" sge_u32 "."sge_u32 ") %f = %f * %f + %f * %f + %f * %f\n",
       jobid, lGetUlong(task, JAT_task_number), geee_priority, 
       weight_urgency, nsu, weight_ticket, nta, weight_priority, npri));
 */
@@ -4687,7 +4694,7 @@ main(int argc, char **argv)
       lSetDouble(usage, UA_value, rand());
 
 
-   /* call the SGEEE scheduler */
+   /* call the scheduler */
 
    sge_setup_lists(lists, lists->job_list, NULL);
 

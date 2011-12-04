@@ -34,28 +34,32 @@
 
 #include <sys/types.h>
 
+/* The unused layers/classes below are kept for future or temporary use. */
+
 /* different layers for monitoring */
 #define N_LAYER          8
 
-#define TOP_LAYER        0 /* t */
-#define CULL_LAYER       1 /* c */
-#define BASIS_LAYER      2 /* b */
-#define GUI_LAYER        3 /* g */
-#define UNUSED0_LAYER    4 /* u */
-#define COMMD_LAYER      5 /* h */
-#define GDI_LAYER        6 /* a */
-#define PACK_LAYER       7 /* p */
+#define TOP_LAYER        0 /* t */ /* general stuff */
+#define CULL_LAYER       1 /* c */ /* CULL (not used consistently?) */
+#define BASIS_LAYER      2 /* b */ /* low level (string-handling etc) */
+#define GUI_LAYER        3 /* g */ /* qmon */
+#define UNUSED0_LAYER    4 /* u */ /* unused */
+#if 0
+#define COMMD_LAYER      5 /* h */ /* obsolete -- layer could be re-used */
+#endif
+#define GDI_LAYER        6 /* a */ /* GDI (mainly libs/gdi and some clients) */
+#define PACK_LAYER       7 /* p */ /* (un)packing network data (cull/pack.c) */
 
 /* different classes of monitoring messages */
-#define TRACE            1 /* t */
-#define INFOPRINT        2 /* i */
-#define JOBTRACE         4 /* j */
-#define SPECIAL	         8 /* s */
-#define TIMING          16 /* m */
+#define TRACE            1 /* t */ /* function enter/exit */
+#define INFOPRINT        2 /* i */ /* general information */
+#define JOBTRACE         4 /* j */ /* unused */
+#define SPECIAL	         8 /* s */ /* unused */
+#define TIMING          16 /* m */ /* only time taken by execd to start job */
 
-#define LOCK	        32 /* X */
-#define FREE_CLASS_Y	64 /* Y */
-#define FREE_CLASS_Z   128 /* Z */
+#define LOCK	        32 /* X */ /* locking/mutex information */
+#define FREE_CLASS_Y	64 /* Y */ /* unused */
+#define FREE_CLASS_Z   128 /* Z */ /* unused */
 
 #define NO_LEVEL  256  
 

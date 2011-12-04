@@ -35,12 +35,11 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * The ParallelEnvironment object represents the parallel environment settings
- * for a job.  It contains the name of the parallel environment to be used and
- * the minimum and maximum number of parallel processes to be started.  The
- * minimum and maximum number of processes are set to 1 by default.
- * @see JobDescription#getParallelEnvironment()
- * @see JobDescription#setParallelEnvironment(com.sun.grid.jsv.ParallelEnvironment)
+ * The BindingSpecifier object represents the core binding settings
+ * for a job.  It contains the binding type, strategy, and strategy
+ * parameters.
+ * @see JobDescription#getBindingSpecifier()
+ * @see JobDescription#setBindingSpecifier()(com.sun.grid.jsv.BindingSpecifier)
  * @since 6.2u5
  */
 public final class BindingSpecifier implements Cloneable, Serializable {

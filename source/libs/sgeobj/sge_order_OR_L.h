@@ -62,7 +62,7 @@ LISTDEF(OR_Type)
    SGE_ULONG(OR_ja_task_number, CULL_DEFAULT)       /* which JobArray task */
    SGE_ULONG(OR_job_version, CULL_DEFAULT)  /* which job version */
    SGE_LIST(OR_queuelist, OQ_Type, CULL_DEFAULT)     /* associated queue list */
-   SGE_DOUBLE(OR_ticket, CULL_DEFAULT)      /* SGEEE job tickets */
+   SGE_DOUBLE(OR_ticket, CULL_DEFAULT)      /* job tickets */
    SGE_LIST(OR_joker, CULL_ANY_SUBTYPE, CULL_DEFAULT)         
       /* 
        * Type of this sublist depends on OR_type!  

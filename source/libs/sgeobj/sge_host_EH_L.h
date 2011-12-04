@@ -54,7 +54,7 @@ enum {
    EH_consumable_config_list, /* consumable resources of host
                                * CE_Type */
    EH_usage_scaling_list,    /* HS_Type - directly user controlled exec
-                              * host only SGEEE only scaling of usage
+                              * host only scaling of usage
                               * spooled */
    EH_load_list,             /* HL_Type exec host only list of load values 
                               * reported for exechost spooled (not
@@ -81,12 +81,12 @@ enum {
    EH_seq_no,                /* suitability of this host for a job only
                               * scheduler local not spooled */
    EH_real_name,             /* in case of pseudo host: real name spooled */
-   EH_sge_load,              /* SGEEE load calculated from load values
+   EH_sge_load,              /* load calculated from load values
                               * scheduler local */
-   EH_sge_ticket_pct,        /* percentage of total SGEEE tickets scheduler
-                              * local */
-   EH_sge_load_pct,          /* percentage of total SGEEE load scheduler
-                              * local */
+   EH_sge_ticket_pct,        /* percentage of total tickets
+                              * scheduler local */
+   EH_sge_load_pct,          /* percentage of total load
+                              * scheduler local */
 
    EH_featureset_id,         /* supported feature-set id; not spooled */
    EH_scaled_usage_list,     /* scaled usage for jobs on a host - used by

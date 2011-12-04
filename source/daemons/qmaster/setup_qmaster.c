@@ -207,7 +207,9 @@ int sge_setup_qmaster(sge_gdi_ctx_class_t *ctx, char* anArgv[])
 *     sge_qmaster_thread_init() -- Initialize a qmaster thread.
 *
 *  SYNOPSIS
-*     int sge_qmaster_thread_init(bool switch_to_admin_user) 
+*     int sge_qmaster_thread_init(sge_gdi_ctx_class_t **ctx_ref,
+*                                 u_long32 prog_id, u_long32 thread_id,
+*                                 bool switch_to_admin_user)
 *
 *  FUNCTION
 *     Subsume functions which need to be called immediately after thread
@@ -856,11 +858,11 @@ static int setup_qmaster(sge_gdi_ctx_class_t *ctx)
     * Initialize Master lists and hash tables, if necessary 
     */
 
-/** This is part is making the scheduler a
+/** This part is making the scheduler a
   * lot slower that it was before. This was an enhancement introduced
   * in cvs revision 1.35
-  * It might be added again, when hte hashing problem on large job lists
-  * with only a view owners is solved.
+  * It might be added again, when the hashing problem on large job lists
+  * with only a few owners is solved.
   */
 #if 0
     if (*(object_base[SGE_TYPE_JOB].list) == NULL) {

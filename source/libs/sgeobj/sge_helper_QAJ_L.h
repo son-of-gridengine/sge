@@ -48,8 +48,8 @@ enum {
    QAJ_queue,                /* qname */
    QAJ_group,
    QAJ_owner,
-   QAJ_project,              /* SGEEE project */
-   QAJ_department,           /* SGEEE department */
+   QAJ_project,              /* project */
+   QAJ_department,           /* department */
    QAJ_ru_wallclock,
    QAJ_ru_utime,
    QAJ_ru_stime,

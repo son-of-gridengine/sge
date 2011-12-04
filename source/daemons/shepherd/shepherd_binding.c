@@ -612,7 +612,8 @@ static bool bind_process_to_mask(const hwloc_cpuset_t cpuset)
 {
    /* we only need core binding capabilites, no topology is required */
    if (!has_core_binding()) return false;
-   /*  */
+   /* Try strict binding first; fall back to non-strict if it isn't
+      available.  */
    if (!hwloc_set_cpubind(sge_hwloc_topology, cpuset, HWLOC_CPUBIND_STRICT) ||
        !hwloc_set_cpubind(sge_hwloc_topology, cpuset, 0))
       return true;

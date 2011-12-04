@@ -57,7 +57,7 @@
 *     daemon. It containes one CULL element of type 'SU_Type' for each
 *     user which submittet a job.
 *     Enties within this list have to be updated when a new job 
-*     enters/leaves the SGE/SGEEE system
+*     enters/leaves the SGE system
 *
 *  SEE ALSO
 *     sgeobj/suser/SU_Type

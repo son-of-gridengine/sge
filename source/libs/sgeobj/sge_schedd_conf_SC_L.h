@@ -88,9 +88,7 @@ enum {
 LISTDEF(SC_Type)
    JGDI_ROOT_OBJ(SchedConf, SGE_SC_LIST, MODIFY | GET)
    JGDI_EVENT_OBJ(MODIFY(sgeE_SCHED_CONF))
-   /*
-    * configuration values used by both SGE and SGEEE
-    */
+
    SGE_STRING_D(SC_algorithm, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, "default")
    SGE_STRING_D(SC_schedule_interval, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, "0:0:15")
    SGE_ULONG_D(SC_maxujobs, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 0)
@@ -105,12 +103,9 @@ LISTDEF(SC_Type)
                                                                          * to run the scheduler                        */
    SGE_STRING_D(SC_params, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, "none")
 
-   /* 
-    * SGEEE specific configuration values
-    */
    SGE_STRING_D(SC_reprioritize_interval, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, "0:0:0")
    SGE_ULONG_D(SC_halftime, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 168)
-   SGE_MAP(SC_usage_weight_list, UA_Type, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF)   /* SGEEE - UA_Type; gives    *
+   SGE_MAP(SC_usage_weight_list, UA_Type, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF)   /* UA_Type; gives    *
                                                                          * weights for building the  * 
                                                                          * usage usage = cpu * w_cpu *
                                                                          * + xxx * w_xxx + ...       */
@@ -141,15 +136,15 @@ LISTDEF(SC_Type)
    SGE_STRING_D(SC_halflife_decay_list,CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, "none")        /* A list of halflife decay values (UA_Type)*/
    SGE_STRING_D(SC_policy_hierarchy,CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, "OFS")            /* defines the order of the ticket         *
                                                                                                    * computation                             */
-   SGE_DOUBLE_D(SC_weight_ticket, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 0.01)               /* weight in SGEEE priority formula applied */
+   SGE_DOUBLE_D(SC_weight_ticket, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 0.01)               /* weight in priority formula applied */
                                                                                                   /* on normalized ticket amount             */
-   SGE_DOUBLE_D(SC_weight_waiting_time, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 0.0)          /* weight applied in SGEEE static urgency  *
+   SGE_DOUBLE_D(SC_weight_waiting_time, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 0.0)          /* weight applied in static urgency  *
                                                                                                    * formula on waiting time                 */
-   SGE_DOUBLE_D(SC_weight_deadline, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 3600000.0)        /* dividend used in SGEEE static urgency   *
+   SGE_DOUBLE_D(SC_weight_deadline, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 3600000.0)        /* dividend used in static urgency   *
                                                                                                    * formula with deadline initiation time   */
-   SGE_DOUBLE_D(SC_weight_urgency, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 0.1)               /* weight in SGEEE priority formula applied *
+   SGE_DOUBLE_D(SC_weight_urgency, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 0.1)               /* weight in priority formula applied *
                                                                                                    * on normalized urgency                   */
-   SGE_DOUBLE_D(SC_weight_priority, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 1.0)              /* weight in SGEEE priority formula applied *
+   SGE_DOUBLE_D(SC_weight_priority, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 1.0)              /* weight in priority formula applied *
                                                                                                    * on normalized posix priority */
    SGE_ULONG_D(SC_max_reservation, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, 0)                 /* Maximum number of reservations within a *
                                                                                                    * schedule run. The value U_LONG32_MAX    *

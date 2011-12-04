@@ -270,8 +270,8 @@ enum {
    secl_OPT,     /* show event client list */
    kec_OPT,      /* kill event client */
 
-   cu_OPT,       /* SGEEE sharetree - clear all user/project usage */
-   R_OPT,        /* SGEEE sharetree - clear all user/project usage */
+   cu_OPT,       /* sharetree - clear all user/project usage */
+   R_OPT,        /* sharetree - clear all user/project usage */
 
    /* added for resource quota sets */
    srqs_OPT,     /* show resource quota set */
