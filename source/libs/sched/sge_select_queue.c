@@ -2267,7 +2267,7 @@ sge_load_alarm(char *reason, lListElem *qep, lList *threshold,
       u_long32 relop, type;
 
       name = lGetString(tep, CE_name);
-      /* complex attriute definition */
+      /* complex attribute definition */
 
       if (!(cep = centry_list_locate(centry_list, name))) { 
          if (reason)
@@ -3701,13 +3701,13 @@ static int get_soft_violations(sge_assignment_t *a, lListElem *hep, lListElem *q
 *     queues and count the number of violations of the job's soft request. 
 *     The method below is named comprehensive since it does the tagging game
 *     for the whole parallel job and under consideration of all available 
-*     resources that could help to suffice the jobs request. This is necessary 
-*     to prevent consumable resource limited at host/global level multiple 
+*     resources that could help to satisfy the job's request. This is necessary
+*     to prevent consumable resource limitation at host/global level multiple
 *     times. 
 *
 *     While tagging we also set queues QU_host_seq_no based on the sort 
 *     order of each host. Assumption is the host list passed is sorted 
-*     according the load formula. 
+*     according to the load formula.
 *
 *  INPUTS
 *     sge_assignment_t *assignment - ??? 
@@ -3716,7 +3716,7 @@ static int get_soft_violations(sge_assignment_t *a, lListElem *hep, lListElem *q
 *  RESULT
 *     static dispatch_t - 0 ok got an assignment
 *                         1 no assignment at the specified time
-*                        -1 assignment will never be possible for all jobs of that category
+*.                       -1 assignment will never be possible for all jobs of that category
 *                        -2 assignment will never be possible for that particular job
 *
 *  NOTES
@@ -4948,10 +4948,6 @@ parallel_assignment(sge_assignment_t *a, category_use_t *use_category, int *avai
    int pslots = a->slots;
    int pslots_qend = 0;
 
-#ifdef SGE_PQS_API
-   const char *qsort_args;
-#endif
-
    DENTER(TOP_LAYER, "parallel_assignment");
 
    if (a == NULL) {
@@ -4972,6 +4968,21 @@ parallel_assignment(sge_assignment_t *a, category_use_t *use_category, int *avai
       DRETURN(DISPATCH_NOT_AT_TIME);
    }
 
+#ifdef SGE_PQS_API
+   {
+      const char *qsort_args;
+
+      /* if dynamic qsort function was supplied, call it */
+      if ((qsort_args=lGetString(a->pe, PE_qsort_args)) != NULL) {
+
+         ret = sge_call_pe_qsort(a, qsort_args);
+         if (ret!=0) {
+            DRETURN(ret);
+         }
+      }
+   }
+#endif
+
    /* depends on a correct host order */
    ret = parallel_tag_queues_suitable4job(a, use_category, available_slots);
 
@@ -4988,17 +4999,6 @@ parallel_assignment(sge_assignment_t *a, category_use_t *use_category, int *avai
    }
 
    /* DG TODO here ok to create the rankfile list if neccessary? */
-
-#ifdef SGE_PQS_API
-   /* if dynamic qsort function was supplied, call it */
-   if ((qsort_args=lGetString(a->pe, PE_qsort_args)) != NULL) {
-
-      ret = sge_call_pe_qsort(a, qsort_args);
-      if (ret!=0) {
-         DRETURN(ret);
-      }
-   }
-#endif
 
    DRETURN(ret);
 }
@@ -5481,7 +5481,7 @@ parallel_available_slots(const sge_assignment_t *a, int *slots, int *slots_qend)
 
    sge_get_double_qattr() 
 
-   writes actual value of the queue attriute into *uvalp 
+   writes actual value of the queue attribute into *uvalp
 
    returns:
       0 ok, value in *uvalp is valid
@@ -6716,18 +6716,19 @@ sge_dlib(const char *key, const char *lib_name, const char *fn_name,
    /* open the library */
    new_lib_handle = dlopen(lib_name, RTLD_LAZY);
    if (!new_lib_handle) {
-      error = dlerror();
-      ERROR((SGE_EVENT, "Unable to open library %s for %s - %s\n",
-             lib_name, key, error));
+      if ((error = dlerror()))
+         ERROR((SGE_EVENT, "Unable to open library %s for %s - %s\n",
+                lib_name, key, error));
       DRETURN(NULL);
    }
 
    /* search library for the function name */
    new_fn_handle = dlsym(new_lib_handle, fn_name);
-   if (((error = dlerror()) != NULL) || !new_fn_handle) {
-      dlclose(new_lib_handle);
-      ERROR((SGE_EVENT, "Unable to locate function %s in library %s for %s - %s\n",
-             fn_name, lib_name, key, error));
+   if (!new_fn_handle) {
+      if ((error = dlerror()) != NULL)
+         ERROR((SGE_EVENT,
+                "Unable to locate function %s in library %s for %s - %s\n",
+                fn_name, lib_name, key, error));
       DRETURN(NULL);
    }
 
@@ -6751,6 +6752,9 @@ sge_dlib(const char *key, const char *lib_name, const char *fn_name,
        (new_cache->key = strdup(key)) == NULL ||
        (new_cache->lib_name = strdup(lib_name)) == NULL ||
        (new_cache->fn_name = strdup(fn_name)) == NULL) {
+      sge_free(&(new_cache->key));
+      sge_free(&(new_cache->lib_name));
+      sge_free(&new_cache);
       ERROR((SGE_EVENT, "Memory allocation problem in sge_dl\n"));
       DRETURN(NULL);
    }
@@ -6888,14 +6892,21 @@ sge_call_pe_qsort(sge_assignment_t *a, const char *qsort_args)
       pqs_params.pe_qsort_argv = qsort_argv;
       pqs_params.num_queues = num_queues;
       pqs_params.qlist = (pqs_queue_t *)malloc(num_queues * sizeof(pqs_queue_t));
+      if (!pqs_params.qlist) {
+         ERROR((SGE_EVENT, "Memory allocation problem in sge_call_pe_qsort\n"));
+         goto ERROR;
+      }
 
       qp = pqs_params.qlist;
       for_each(q, a->queue_list) {
+         int qslots = 0, qslots_qend = 0;
+
+         parallel_queue_slots(a, q, &qslots, &qslots_qend, false);
          qp->queue_name = lGetString(q, QU_qname);
          qp->host_name = lGetHost(q, QU_qhostname);
          qp->host_seqno = lGetUlong(q, QU_host_seq_no);
          qp->queue_seqno = lGetUlong(q, QU_seq_no);
-         qp->available_slots = lGetUlong(q, QU_tag);
+         qp->available_slots = qslots;
          qp->soft_violations = lGetUlong(q, QU_soft_violation);
          qp->new_seqno = 0;
          qp++;
@@ -6910,11 +6921,11 @@ sge_call_pe_qsort(sge_assignment_t *a, const char *qsort_args)
              argc<(sizeof(qsort_argv)/sizeof(char *)-1)) {
          qsort_argv[argc++] = tok;
       }
-
+      qsort_argv[argc] = NULL;
       /*
        * Call the dynamic queue sort function
        */
-
+      err_str[0] = '\0';
       ret = (*pqs_qsort)(&pqs_params, 0, err_str, sizeof(err_str)-1);
 
       if (err_str[0]) {
@@ -6932,6 +6943,8 @@ sge_call_pe_qsort(sge_assignment_t *a, const char *qsort_args)
             qp++;
          }
       }
+      else if (err_str[0])
+         ERROR((SGE_EVENT, "%s", err_str));
 
       sge_free(&(pqs_params.qlist));
    } 
@@ -6940,6 +6953,7 @@ sge_call_pe_qsort(sge_assignment_t *a, const char *qsort_args)
       ret = 0; /* schedule anyway with normal queue/host sort */
    }
 
+ ERROR:
    if (cntx) {
       sge_free_saved_vars(cntx);
    }   
