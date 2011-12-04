@@ -236,7 +236,6 @@ usage:
    echo "-spool-berkeleydb -> use berkeleydb spooling"
    echo "-spool-classic    -> use classic flatfile spooling"
    echo "-spool-targets    -> only create qmaster, spooldefaults and spoolinit"
-   echo "-univaman         -> create Univa branded man pages (with -man)"
    echo "-system-libs      -> use dynamic system libraries (specifically libssl)"
    echo "-tight-ssh        -> compile SSH daemon with tight SGE integration"
    echo "                     (normally obsoleted by sge-sshd-control PAM module)"

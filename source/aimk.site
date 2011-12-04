@@ -91,27 +91,6 @@ set KRB_HOME = /usr
 #
 #set TCLSHPATH = ""
 
-#
-# Location of a copyright.h file which containes a copyright string
-# which should be included in each binary part of Grid Engine
-#
-set COPYRIGHT_DIR = ""
-
-#
-# Location of a copyright.h file which containes a copyright string
-# which is included in each binary part of Univa Grid Engine (the version
-# which Univa is releasing
-#
-set UNIVA_COPYRIGHT_DIR  = ""
-set BASEDIR = `pwd`
-set BASEDIR = `dirname $BASEDIR`
-set BASEDIR = `dirname $BASEDIR`
-if ( -d $BASEDIR/uge-extensions ) then
-   set UGE_EXT = 1
-   set UGE_LIBS = $BASEDIR/uge-extensions
-   set UNIVA_COPYRIGHT_DIR = $UGE_LIBS/copyright
-endif
-
 # for some platforms we cannot use dynamic loading of the spooling libraries.
 # fallback to berkeleydb spooling
 switch ($BUILDARCH)
