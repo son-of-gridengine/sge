@@ -97,10 +97,6 @@ TARGET_BITS=
 # Map buildarch into uppercase BUILDARCH
 #
 case $buildarch in
-   aix43):
-      BUILDARCH=AIX43
-      TARGET_BITS=TARGET_32BIT
-      ;;
    aix51)
       BUILDARCH=AIX51
       TARGET_BITS=TARGET_32BIT

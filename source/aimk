@@ -1017,7 +1017,6 @@ if ( $JAVA > 0 || $BUILDJAVADOC == 1 || $JNI == 1 ) then
 endif
 
 switch ($BUILDARCH)
-case AIX43:
 case AIX51:
    set MAKEWINGRIDLIB   = 0
    set MAKEWINGRIDAPP   = 0
@@ -1028,7 +1027,8 @@ case AIX51:
    set XLIBD    = ""
    set XLFLAGS  = "$XLIBD"
    set XLIBS    = "-lXm  -lXt -lXext -lX11 -lm -liconv -lc"
-   set HWLOC = 1
+   set LIBS     = "$LIBS -lperfstat"
+   set HWLOC    = 1
 
    if ( $CC == "gcc" ) then
       if ( $OPTIMIZATION == 1 ) then
@@ -1065,7 +1065,7 @@ case AIX51:
      set AUTHLIBS = ""
    endif
 
-   set CFLAGS   = "$OFLAG -DAIX -D$BUILDARCH -D_LARGE_FILES -DUSE_STDARG -DUSE_SGE_UNSETENV -DGETHOSTBYADDR_R5 -DGETHOSTBYNAME_R3 $DEBUG_FLAG $CFLAGS"
+   set CFLAGS   = "$OFLAG -DAIX -D$BUILDARCH -D_LARGE_FILES -DUSE_STDARG -DUSE_SGE_UNSETENV -DGETHOSTBYADDR_R5 -DGETHOSTBYNAME_R3 $DEBUG_FLAG $CFLAGS -DHAS_AIX_PERFLIB"
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
    set XCFLAGS  = "$XCFLAGS -DNeedFunctionPrototypes -DNeedVarargsPrototypes $XMTDEF $XINCD"
 
