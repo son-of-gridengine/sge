@@ -2088,7 +2088,11 @@ if ( $JNI == 1 ) then
              breaksw
          case sol-sparc64:
          case usol-sparc64:
-             set JAVA_LIB_ARCH = sparcv9
+             if ($FORCE_32BIT == 1) then
+                set JAVA_LIB_ARCH = sparc
+             else
+                set JAVA_LIB_ARCH = sparcv9
+             endif
              breaksw
          case lx-sparc:
          case sol-sparc:
@@ -2098,7 +2102,11 @@ if ( $JNI == 1 ) then
          case lx-amd64:
          case ulx-amd64:
          case sol-amd64:
-             set JAVA_LIB_ARCH = amd64
+             if ($FORCE_32BIT == 1) then
+                set JAVA_LIB_ARCH = i386
+             else
+                set JAVA_LIB_ARCH = amd64
+             endif
              breaksw
          case lx-ia64:
              set JAVA_LIB_ARCH = ia64
@@ -2107,7 +2115,11 @@ if ( $JNI == 1 ) then
              set JAVA_LIB_ARCH = ppc
              breaksw
          case lx-ppc64:
-             set JAVA_LIB_ARCH = ppc64
+             if ($FORCE_32BIT == 1) then
+                set JAVA_LIB_ARCH = ppc
+             else
+                set JAVA_LIB_ARCH = ppc64
+             endif
              breaksw
          case hp11:
              set JAVA_LIB_ARCH = PA_RISC
