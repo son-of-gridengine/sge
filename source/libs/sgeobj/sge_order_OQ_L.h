@@ -58,10 +58,10 @@ LISTDEF(OQ_Type)
    SGE_ULONG(OQ_slots, CULL_DEFAULT)        /* number of slots on this queue */
    SGE_STRING(OQ_dest_queue, CULL_DEFAULT)  /* queue where job has to run */
    SGE_ULONG(OQ_dest_version, CULL_DEFAULT) /* version of this queue */
-   SGE_DOUBLE(OQ_ticket, CULL_DEFAULT)       /* total SGEEE tickets for slots */
-   SGE_DOUBLE(OQ_oticket, CULL_DEFAULT)      /* total SGEEE override tickets */
-   SGE_DOUBLE(OQ_fticket, CULL_DEFAULT)      /* total SGEEE functional tickets */
-   SGE_DOUBLE(OQ_sticket, CULL_DEFAULT)      /* total SGEEE sharetree tickets */
+   SGE_DOUBLE(OQ_ticket, CULL_DEFAULT)       /* total tickets for slots */
+   SGE_DOUBLE(OQ_oticket, CULL_DEFAULT)      /* total override tickets */
+   SGE_DOUBLE(OQ_fticket, CULL_DEFAULT)      /* total functional tickets */
+   SGE_DOUBLE(OQ_sticket, CULL_DEFAULT)      /* total sharetree tickets */
 LISTEND 
 
 NAMEDEF(OQN)

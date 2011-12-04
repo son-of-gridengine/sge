@@ -72,12 +72,12 @@ LISTDEF(JG_Type)
    SGE_ULONG(JG_tag_slave_job, CULL_DEFAULT | CULL_JGDI_HIDDEN) /* whether slave execds job has arrived in 
                                  * case of pe's with sge controlled slaves */
    SGE_ULONG(JG_task_id_range, CULL_DEFAULT | CULL_JGDI_HIDDEN) /* unused - please recycle */
-   SGE_DOUBLE(JG_ticket, CULL_DEFAULT | CULL_JGDI_HIDDEN)    /* SGEEE tickets assigned to slots              */
-   SGE_DOUBLE(JG_oticket, CULL_DEFAULT | CULL_JGDI_HIDDEN)   /* SGEEE override tickets assigned to slots     */
-   SGE_DOUBLE(JG_fticket, CULL_DEFAULT | CULL_JGDI_HIDDEN)   /* SGEEE functional tickets assigned to slots   */
-   SGE_DOUBLE(JG_sticket, CULL_DEFAULT | CULL_JGDI_HIDDEN)   /* SGEEE sharetree tickets assigned to slots    */
-   SGE_DOUBLE(JG_jcoticket, CULL_DEFAULT | CULL_JGDI_HIDDEN) /* SGEEE job class override tickets             */
-   SGE_DOUBLE(JG_jcfticket, CULL_DEFAULT | CULL_JGDI_HIDDEN) /* SGEEE job class functional tickets           */
+   SGE_DOUBLE(JG_ticket, CULL_DEFAULT | CULL_JGDI_HIDDEN)    /* tickets assigned to slots              */
+   SGE_DOUBLE(JG_oticket, CULL_DEFAULT | CULL_JGDI_HIDDEN)   /* override tickets assigned to slots     */
+   SGE_DOUBLE(JG_fticket, CULL_DEFAULT | CULL_JGDI_HIDDEN)   /* functional tickets assigned to slots   */
+   SGE_DOUBLE(JG_sticket, CULL_DEFAULT | CULL_JGDI_HIDDEN)   /* sharetree tickets assigned to slots    */
+   SGE_DOUBLE(JG_jcoticket, CULL_DEFAULT | CULL_JGDI_HIDDEN) /* job class override tickets             */
+   SGE_DOUBLE(JG_jcfticket, CULL_DEFAULT | CULL_JGDI_HIDDEN) /* job class functional tickets           */
    SGE_STRING(JG_processors, CULL_DEFAULT | CULL_JGDI_HIDDEN) /* processor sets */
 LISTEND
 

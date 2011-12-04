@@ -277,7 +277,7 @@ void var_list_set_sge_u32(lList **varl, const char *name, u_long32 value)
 *     (security, see var_get_sharedlib_path_name())
 *
 *  INPUTS
-*     lList **varl - list of nment variables
+*     lList **varl - list of environment variables
 *
 *  SEE ALSO
 *     sgeobj/var/var_get_sharedlib_path_name()
@@ -576,7 +576,7 @@ void var_list_copy_env_vars_and_value(lList **varl,
 *
 *  FUNCTION
 *     Remove all entries from "varl" where the name
-*     beginns with "prefix" 
+*     begins with "prefix"
 *
 *  INPUTS
 *     lList **varl       - VA_Type list 

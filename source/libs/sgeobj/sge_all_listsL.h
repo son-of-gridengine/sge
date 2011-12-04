@@ -232,9 +232,9 @@ extern "C" {
       {SPA_LOWERBOUND, SPAS, SPAN},     /* option parse struct */
       {REP_LOWERBOUND, REPS, REPN},     /* report list */
       {UA_LOWERBOUND, UAS, UAN},        /* usage list */
-      {PR_LOWERBOUND, PRS, PRN},        /* SGEEE - project */
-      {UU_LOWERBOUND, UUS, UUN},        /* SGEEE - user */
-      {STN_LOWERBOUND, STNS, STNN},     /* SGEEE - share tree node */
+      {PR_LOWERBOUND, PRS, PRN},        /* project */
+      {UU_LOWERBOUND, UUS, UUN},        /* user */
+      {STN_LOWERBOUND, STNS, STNN},     /* share tree node */
       {SC_LOWERBOUND, SCS, SCN},        /* scheduler config */
       {PET_LOWERBOUND, PETS, PETN},     /* PE Task object */
       {PETR_LOWERBOUND, PETRS, PETRN},  /* PE Task request object */
@@ -242,7 +242,7 @@ extern "C" {
       {JR_LOWERBOUND, JRS, JRN},        /* Job report */
       {LIC_LOWERBOUND, LICS, LICN},     /* structure of license report */
       {CK_LOWERBOUND, CKS, CKN},        /* checkpointing object */
-      {UPU_LOWERBOUND, UPUS, UPUN},     /* SGEEE - sublist of user/project for
+      {UPU_LOWERBOUND, UPUS, UPUN},     /* sublist of user/project for
                                          * storing jobs old usage */
       {KRB_LOWERBOUND, KRBS, KRBN},     /* Kerberos connection list */
       {PA_LOWERBOUND, PAS, PAN},        /* Path alias list */
@@ -259,7 +259,7 @@ extern "C" {
       {TM_LOWERBOUND, TMS, TMN},        /* cullified struct tm */
 
       {RT_LOWERBOUND, RTS, RTN},        /* remote task (qrexec) */
-      {UPP_LOWERBOUND, UPPS, UPPN},     /* SGEEE - sublist of user/project for
+      {UPP_LOWERBOUND, UPPS, UPPN},     /* sublist of user/project for
                                          * storing project usage */
       {KTGT_LOWERBOUND, KTGTS, KTGTN},  /* Kerberos TGT list */
       {SME_LOWERBOUND, SMES, SMEN},     /* scheduler message structure */

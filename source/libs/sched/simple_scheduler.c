@@ -577,8 +577,7 @@ static void register_scheduler(sge_evc_class_t *evc)
    sge_mirror_initialize(evc, EV_ID_SCHEDD, "simple_scheduler", true);
    sge_mirror_subscribe(evc, SGE_TYPE_ALL, NULL, NULL, NULL, NULL, NULL); 
 
-   /* in an sgeee system we have to explicitly remove finished jobs 
-    * from qmaster 
+   /* we have to explicitly remove finished jobs from qmaster
     */
    sge_mirror_subscribe(evc, SGE_TYPE_JOB, remove_finished_job, NULL, NULL, NULL, NULL);
 

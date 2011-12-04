@@ -310,7 +310,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
    DRETURN(pid);
 }
 
-/****** uti/stdio/sge_peopen() ************************************************
+/****** uti/stdio/sge_peopen_r() ************************************************
 *  NAME
 *     sge_peopen_r() -- Advanced popen()
 *
@@ -347,7 +347,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
 *     pid_t - process id
 *
 *  NOTES
-*     MT-NOTE: sge_peopen() is MT safe 
+*     MT-NOTE: sge_peopen_r() is MT safe
 *
 *     DO NOT ADD ASYNC SIGNAL UNSAFE FUNCTIONS BETWEEN FORK AND EXEC
 *     DUE TO THE FACT THAT THIS FUNCTION WILL BE USED IN QMASTER

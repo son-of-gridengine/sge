@@ -305,7 +305,7 @@ jsv_is_env()
 #     This function returns the value of a job environment variable
 #     ("variable_name"). 
 #
-#     This variable has to be passed with the commandline switch 
+#     This variable has to be passed with the command line switch
 #     -v or -V and it has to be enabled that environment variable data is 
 #     passed to JSV scripts. Environment variable data is passed when the 
 #     function jsv_send_env() is called in the callback function 
@@ -493,7 +493,7 @@ jsv_del_env()
 #     This function returns whether or not a specific job parameters is 
 #     available for the job which is currently being verified. Either the 
 #     string "true" or "false" will be returned. The availability/absence 
-#     of a job parameter does not mean that the corresponding commandline 
+#     of a job parameter does not mean that the corresponding command line
 #     switch was used/not used. 
 #
 #  INPUTS
@@ -845,10 +845,10 @@ jsv_sub_is_param() {
 #
 #     Assume the following commands in jsv_on_verify()
 #
-#        jsv_sub_del_parm("ac", "b");
-#        jsv_sub_del_parm("ac", "d");
-#        jsv_sub_del_parm("l_hard", "lic");
-#        jsv_sub_del_parm("M", "lic");
+#        jsv_sub_del_param("ac", "b");
+#        jsv_sub_del_param("ac", "d");
+#        jsv_sub_del_param("l_hard", "lic");
+#        jsv_sub_del_param("M", "lic");
 #        jsv_correct();
 #
 #     In that case the job will be modified as if the following qsub 
@@ -1052,11 +1052,11 @@ jsv_sub_get_param()
 #
 #     and the following commands in jsv_on_verify():
 #
-#        jsv_sub_add_parm("ac", "b", "");
-#        jsv_sub_add_parm("ac", "c", "5");
-#        jsv_sub_add_parm("ac", "d", "99");
-#        jsv_sub_add_parm("l_hard", "lic", "2");
-#        jsv_sub_add_parm("M", "user2@domain", "");
+#        jsv_sub_add_param("ac", "b", "");
+#        jsv_sub_add_param("ac", "c", "5");
+#        jsv_sub_add_param("ac", "d", "99");
+#        jsv_sub_add_param("l_hard", "lic", "2");
+#        jsv_sub_add_param("M", "user2@domain", "");
 #        jsv_correct();
 #
 #     In the above case, the job will be modified as if the following qsub 
@@ -1295,7 +1295,7 @@ jsv_correct()
 #
 #     The job that is currently being verified will be rejected. "message"
 #     will be passed to the client application that tried to submit
-#     the job. Commandline clients like qsub will print that message 
+#     the job. Command line clients like qsub will print that message
 #     to stdout to inform the user that the submission has failed.
 #
 #     jsv_reject_wait() should be called if the user may try to submit
@@ -1341,7 +1341,7 @@ jsv_reject()
 #
 #     The job which is currently verified will be rejected. "message"
 #     will be passed to the client application, that tries to submit
-#     the job. Commandline clients like qsub will print that message 
+#     the job. Command line clients like qsub will print that message
 #     to stdout to inform the user that the submission has failed.
 #
 #     This function should be called if the user who tries to submit the 
@@ -1385,7 +1385,7 @@ jsv_reject_wait()
 #     This function sends an info message to the client or
 #     master daemon instance that started the JSV script.
 #
-#     For client JSVs, this means that the commandline client will get
+#     For client JSVs, this means that the command line client will get
 #     the information and print it to the stdout stream. Server JSVs
 #     will print that message as an info message to the master daemon
 #     message file.
@@ -1416,7 +1416,7 @@ jsv_log_info()
 #     This function sends a warning message to the client or
 #     master daemon instance that started the JSV script.
 #
-#     For client JSVs, this means that the commandline client will get
+#     For client JSVs, this means that the command line client will get
 #     the information and print it to the stdout stream. Server JSVs
 #     will print that message as a warning message to the master daemon
 #     message file.
@@ -1447,7 +1447,7 @@ jsv_log_warning()
 #     This function sends an error message to the client or
 #     master daemon instance that started the JSV script.
 #
-#     For client JSVs, this means that the commandline client will get
+#     For client JSVs, this means that the command line client will get
 #     the error message and print it to the stdout stream. Server JSVs
 #     will print that message as an error message to the master daemon
 #     message file.

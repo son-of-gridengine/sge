@@ -96,8 +96,8 @@ struct confel {                       /* cluster configuration parameters */
     u_long32    load_report_time;     /* how often to send in load */
     u_long32    max_unheard;          /* how long before sge_execd considered dead */
     u_long32    loglevel;             /* qmaster event logging level */
-    char        *enforce_project;     /* SGEEE attribute: "true" or "false" */
-    char        *enforce_user;        /* SGEEE attribute: "true" or "false" */
+    char        *enforce_project;     /* attribute: "true" or "false" */
+    char        *enforce_user;        /* attribute: "true" or "false" */
     char        *administrator_mail;  /* list of mail addresses */
     lList       *user_lists;          /* allowed user lists */
     lList       *xuser_lists;         /* forbidden users lists */
@@ -127,10 +127,10 @@ struct confel {                       /* cluster configuration parameters */
     u_long32    max_jobs;             /* max. number of jobs in the system */
     u_long32    max_advance_reservations; /* max. number of advance reservations in the system */
     u_long32    reprioritize;         /* reprioritize jobs based on the tickets or not */
-    u_long32    auto_user_fshare;     /* SGEEE automatic user fshare */
-    u_long32    auto_user_oticket;    /* SGEEE automatic user oticket */
-    char        *auto_user_default_project; /* SGEEE automatic user default project */
-    u_long32    auto_user_delete_time; /* SGEEE automatic user delete time */
+    u_long32    auto_user_fshare;     /* automatic user fshare */
+    u_long32    auto_user_oticket;    /* automatic user oticket */
+    char        *auto_user_default_project; /* automatic user default project */
+    u_long32    auto_user_delete_time; /* automatic user delete time */
     char        *delegated_file_staging; /*drmaa attribute: "true" or "false" */
     char        *libjvm_path;         /* libjvm_path for jvm_thread */
     char        *additional_jvm_args; /* additional_jvm_args for jvm_thread */

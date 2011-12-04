@@ -529,7 +529,7 @@ bool parse_time_param(const char *input, const char *variable, u_long32 *value)
          /* search position of = */
          s = strchr(input, '=');
 
-         /* only boolean variable contained in input -> value = true */
+         /* no value contained in input -> value = 0 */
          if (s == NULL) {
             *value = 0;
          } else {

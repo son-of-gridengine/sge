@@ -1925,14 +1925,12 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
    /*---------------------------------------------------*/
    /* exec() failed - do what shepherd does if it fails */
 
-   /* Fixme:  This is created world-writable.  */
    fp = fopen("error", "w");
    if (fp) {
       fprintf(fp, "failed to exec shepherd for job" sge_u32"\n", job_id);
       FCLOSE(fp);
    }
 
-   /* Fixme:  This is created world-writable.  */
    fp = fopen("exit_status", "w");
    if (fp) {
       fprintf(fp, "1\n");

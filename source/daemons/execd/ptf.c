@@ -362,7 +362,7 @@ static lList *ptf_build_usage_list(char *name, lList *old_usage_list)
 *                                    char *pe_task_id_str, u_long32 priority) 
 *
 *  FUNCTION
-*     If execd switches from SGEEE to SGE mode this functions is used to
+*     If execd gets a new configuration this function is used to
 *     reinitialize static priorities of all jobs currently running.
 *
 *  INPUTS

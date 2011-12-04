@@ -166,7 +166,7 @@ u_long32 sge_map_signal(int sys_sig)
 
 /****** uti/signal/sge_str2signal() ********************************************
 *  NAME
-*     str2signal() -- Make a SGE/SGEEE signal out of a string 
+*     str2signal() -- Make an SGE signal out of a string 
 *
 *  SYNOPSIS
 *     u_long32 sge_str2signal(const char *str) 
@@ -216,13 +216,13 @@ u_long32 sge_str2signal(const char *str)
 
 /****** uti/signal/sge_sys_str2signal() ***************************************
 *  NAME
-*     sge_sys_str2signal() -- Make a SGE/SGEEE signal out of a string 
+*     sge_sys_str2signal() -- Make an SGE signal out of a string 
 *
 *  SYNOPSIS
 *     u_long32 sge_sys_str2signal(const char *str) 
 *
 *  FUNCTION
-*     Make a SGE/SGEEE signal out of a string 
+*     Make an SGE signal out of a string 
 *
 *  INPUTS
 *     const char *str - signal name 

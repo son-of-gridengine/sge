@@ -792,7 +792,7 @@ cqueue_set_template_attributes(lListElem *this_elem, lList **answer_list)
       }
 
       /*
-       * initialize APRJLIST_Type-list values (only sgeee mode)
+       * initialize APRJLIST_Type-list values
        */
       if (ret) {
          const int attr[] = {

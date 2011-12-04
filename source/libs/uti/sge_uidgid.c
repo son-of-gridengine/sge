@@ -1730,7 +1730,7 @@ static void uidgid_state_destroy(void* theState)
 *     static void - none
 *
 *  NOTES
-*     MT-NOTE: cull_state_init() in MT safe. 
+*     MT-NOTE: cull_state_init() is MT safe.
 *
 *******************************************************************************/
 static void uidgid_state_init(struct uidgid_state_t* theState)

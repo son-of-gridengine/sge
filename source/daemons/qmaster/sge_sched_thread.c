@@ -274,7 +274,7 @@ int scheduler_method(sge_evc_class_t *evc, lList **answer_list, scheduler_all_da
       lListElem *job;
 
       for (i = 0; i < max; i++) {
-         /* clear SGEEE fields for queued jobs */
+         /* clear fields for queued jobs */
          for_each(job, *(splitted_job_lists[clean_jobs[i]])) {
             orders.pendingOrderList = sge_create_orders(orders.pendingOrderList,
                                                         ORT_clear_pri_info,
@@ -572,8 +572,7 @@ static int dispatch_jobs(sge_evc_class_t *evc, scheduler_all_data_t *lists, orde
    DPRINTF(("STARTING PASS 2 WITH %d PENDING JOBS\n",nr_pending_jobs ));
 
    /*--------------------------------------------------------------------
-    * CALL SGEEE SCHEDULER TO
-    * CALCULATE TICKETS FOR EACH JOB  - IN SUPPORT OF SGEEE
+    * CALL SCHEDULER TO CALCULATE TICKETS FOR EACH JOB
     *------------------------------------------------------------------*/
 
    {
@@ -928,7 +927,7 @@ static int dispatch_jobs(sge_evc_class_t *evc, scheduler_all_data_t *lists, orde
          }
 
          /*------------------------------------------------------------------ 
-          * SGEEE mode - if we dispatch a job sub-task and the job has more
+          * If we dispatch a job sub-task and the job has more
           * sub-tasks, then the job is still first in the job list.
           * We need to remove and reinsert the job back into the sorted job
           * list in case another job is higher priority (i.e. has more tickets)

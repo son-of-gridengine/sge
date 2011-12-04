@@ -349,7 +349,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
       shepherd_error(1, "can't get password entry for user \"%s\"", target_user);
    }
 
-   umask(022);
+   umask(022);			/* fixme */
 
    if (!strcmp(childname, "job")) {
       char *write_osjob_id = get_conf_val("write_osjob_id");
@@ -463,7 +463,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
    } else { /* if (!is_qlogin_starter || g_new_interactive_job_support == true) */
       /*
        * In not-interactive jobs and in the new IJS we must set the 
-       * additional group id here, because there is no custum rshd that will
+       * additional group id here, because there is no custom rshd that will
        * do this for us.
        */
       ret = sge_set_uid_gid_addgrp(target_user, intermediate_user,
@@ -500,12 +500,12 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
       close_fds_from(0);
    }
 
-   /* We have different possiblities to start the job script:
+   /* We have different possibilities to start the job script:
     * - We can start it as login shell or not
     *   Login shell start means that argv[0] starts with a '-'
     * - We can try to be posix compliant and not to evaluate #!/bin/sh
-    *   as it is done by normal shellscript starts
-    * - We can feed the shellscript to stdin of a started shell
+    *   as it is done by normal shell script starts
+    * - We can feed the shell script to stdin of a started shell
     */
 
    tmpdir = get_conf_val("tmpdir");
@@ -968,7 +968,7 @@ int sge_set_environment()
 
       line++;
 
-      if (strlen(buf) <= 1)     /* empty line or lastline */
+      if (strlen(buf) <= 1)     /* empty line or last line */
          continue;
 
       name = strtok(buf, "=");
@@ -1272,7 +1272,7 @@ int is_qlogin,
 int is_rsh,
 int is_rlogin,
 char *str_title,
-int use_starter_method /* If this flag is set the shellpath contains the
+int use_starter_method /* If this flag is set the shell path contains the
                         * starter_method */
 ) {
    char **args;
@@ -1508,7 +1508,7 @@ int use_starter_method /* If this flag is set the shellpath contains the
       pc += strlen(pc);
       for (pstr = args; pstr && *pstr; pstr++) {
       
-         /* calculate rest length in string - 15 is just lazyness for blanks,
+         /* calculate rest length in string - 15 is just laziness for blanks,
           * "..." string, etc.
           */
          if (strlen(*pstr) < ((sizeof(err_str)  - (pc - err_str) - 15))) {
@@ -1655,7 +1655,7 @@ char *err_str
    struct saved_vars_s *context = NULL;
 
    /*
-    * The configured method can include some pameters, e.g.
+    * The configured method can include some parameters, e.g.
     * qlogin_daemon                /usr/sbin/in.telnetd -i
     * Only the command itself must be checked.
     */
@@ -1726,7 +1726,7 @@ int type
 
    /* Try to get information about 'base' */
    if( SGE_STAT(base, &statbuf)) {
-      /* An error occured */
+      /* An error occurred */
       if (errno != ENOENT) {
          char *t;
          sprintf(err_str, "can't stat() \"%s\" as %s: %s",
@@ -1778,7 +1778,7 @@ int type
 
 /****** Shepherd/inherit_env() *************************************************
 *  NAME
-*     inherit_env() -- Test whether the evironment should be inherited from the
+*     inherit_env() -- Test whether the environment should be inherited from the
 *                       parent process or not
 *
 *  SYNOPSIS
@@ -1818,7 +1818,7 @@ static bool inherit_env()
 #if 0 /* Not currently used, but looks kinda useful... */
 /****** Shepherd/set_inherit_env() *********************************************
 *  NAME
-*     set_inherit_env() -- Set whether the evironment should be inherited from
+*     set_inherit_env() -- Set whether the environment should be inherited from
 *                           the parent process or not
 *
 *  SYNOPSIS
@@ -1952,7 +1952,7 @@ static void start_qlogin_job(const char *shell_path)
 *  FUNCTION
 *     Prepares the argument list and starts the qrsh <command> job, i.e.
 *     usually starts the qrsh_starter binary. If this function succeeds, it
-*     doesn't return, because it execs the job. If it returns, an error occured.
+*     doesn't return, because it execs the job. If it returns, an error occurred.
 *
 *  INPUTS
 *     void - no input 

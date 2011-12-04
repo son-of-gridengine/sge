@@ -87,11 +87,11 @@ extern "C" {
 *     SGE_ULONG(JAT_pid) ---> move up
 *
 *     SGE_STRING(JAT_osjobid)
-*        SGEEE - Unique id which applies to all os processes started 
+*        Unique id which applies to all os processes started 
 *        on behalf of this task. Set during the startup phase of the
 *        jobscript. Meaning depends on the architecture of that 
 *        host were the task is started. 
-*           SOLARIS/LINUX/ALPHA  - supplemtary group id
+*           SOLARIS/LINUX/ALPHA  - supplementary group id
 *           CRAY/NEC             - jobid
 *           IRIX                 - array session id
 *
@@ -105,28 +105,28 @@ extern "C" {
 *        Not spooled.
 *
 *     SGE_ULONG(JAT_fshare)
-*        SGEEE - Functional shares associated with the job. Set and
-*        used bye SGEEE sge_schedd. Stored to qmaster for displaying.
+*        Functional shares associated with the job. Set and
+*        used by schedd. Stored to qmaster for displaying.
 *        Not spooled.
 *
 *     SGE_DOUBLE(JAT_tix)
-*        SGEEE - Total SGEEE tickets. Set by schedd, saved to qmaster.
+*        Total tickets. Set by schedd, saved to qmaster.
 *        Sent to PTF. Not Spooled
 *
 *     SGE_DOUBLE(JAT_oticket)
-*        SGEEE - Override tickets set by schedd. Saved to qmaster and
+*        Override tickets set by schedd. Saved to qmaster and
 *        sent to PTF. Not spooled.
 *
 *     SGE_DOUBLE(JAT_fticket)
-*        SGEEE - Functional tickets set bye schedd. Saved to qmaster and 
+*        Functional tickets set bye schedd. Saved to qmaster and 
 *        sent to PTF. Not spooled.
 *
 *     SGE_DOUBLE(JAT_sticket)
-*        SGEEE - Share-tree tickets set by schedd. Saved to qmaster.
+*        Share-tree tickets set by schedd. Saved to qmaster.
 *        Not spooled.
 *
 *     SGE_DOUBLE(JAT_share)
-*        SGEEE - Job targeted proportion set by schedd. Saved to qmaster.
+*        Job targeted proportion set by schedd. Saved to qmaster.
 *        Not spooled.
 *
 *     SGE_ULONG(JAT_suitable) ---> only for output.
@@ -154,12 +154,12 @@ extern "C" {
 *        or checkpoint creation) was triggered or re-triggered.
 *
 *     SGE_DOUBLE(JAT_prio )         
-*        SGEEE. The GEEE priority derived from weighted normalized tickets and 
-*        weighted normalized static urgency. Changes with task due to GEEE ticket 
+*        The GE priority derived from weighted normalized tickets and 
+*        weighted normalized static urgency. Changes with task due to GE ticket 
 *        dependency. Not spooled.
 *
 *     SGE_DOUBLE(JAT_ntix )         
-*        SGEEE. Relative importance due to JAT_tix amount in the range between
+*        Relative importance due to JAT_tix amount in the range between
 *        0.0 and 1.0.
 *        Not spooled.
 *
