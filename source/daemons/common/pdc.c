@@ -217,19 +217,9 @@ long pagesize;           /* size of a page of memory (probably 8k) */
 int physical_memory;     /* size of real mem in KB                 */
 char unixname[128];      /* the name of the booted kernel          */
 
-#if defined(LINUX)
-int sup_grp_in_proc;
-#endif
-
 #define INCPTR(type, ptr, nbyte) ptr = (type *)((char *)ptr + nbyte)
 #define INCJOBPTR(ptr, nbyte) INCPTR(struct psJob_s, ptr, nbyte)
 #define INCPROCPTR(ptr, nbyte) INCPTR(struct psProc_s, ptr, nbyte)
-
-#if defined(LINUX)
-   int sup_groups_in_proc (void) {
-      return(sup_grp_in_proc);
-   }
-#endif
 
 #if defined(LINUX) || defined(SOLARIS) || defined(ALPHA) || defined(FREEBSD) || defined(DARWIN)
 
@@ -869,7 +859,7 @@ static struct {
 #endif
 #endif
 
-void
+static void
 psSetCollectionIntervals(int jobi, int prci, int sysi)
 {
    if (jobi != -1)
@@ -2518,13 +2508,6 @@ int psStartCollector(void)
       return 0;
 
    initialized = 1;
-
-#if defined(LINUX)
-   /* 
-    * supplementary groups in proc filesystem? 
-    */
-   sup_grp_in_proc = groups_in_proc();
-#endif
 
    LNK_INIT(&job_list);
    start_time = get_gmt();

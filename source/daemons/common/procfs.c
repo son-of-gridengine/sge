@@ -112,31 +112,6 @@ int verydummyprocfs;
 static DIR *cwd;
 static struct dirent *dent;
 
-#if defined(LINUX)
-
-int groups_in_proc (void) 
-{
-   char buf[1024];
-   FILE* fd = (FILE*) NULL;
-   
-   if (!(fd = fopen(PROC_DIR "/self/status", "r"))) {
-      return 0;
-   }
-   while (fgets(buf, sizeof(buf), fd)) {
-      if (strcmp("Groups:", strtok(buf, "\t"))==0) {
-         FCLOSE(fd);
-         return 1;
-      }
-   }
-   FCLOSE(fd);
-   return 0;
-FCLOSE_ERROR:
-   return 0;
-}
-
-#endif
-
-
 /* search in job list for the pid
    return the proc element */
 static lnk_link_t *find_pid_in_jobs(pid_t pid, lnk_link_t *job_list)

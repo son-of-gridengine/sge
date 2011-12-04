@@ -44,9 +44,5 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig,
    tShepherd_trace shepherd_trace);
 #endif
 
-#if defined(LINUX)
-int groups_in_proc (void);
-#endif
-
 #endif
 #endif /* __PROCFS_H */
