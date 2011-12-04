@@ -29,7 +29,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QSTAT 1 "$Date: 2011-07-19 14:51:09 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QSTAT 1 "$Date: 2011-12-04 01:51:55 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qstat \- show the status of xxQS_NAMExx jobs and queues
 .\"
@@ -184,9 +184,9 @@ that were not bound to the displayed job. Bound cores will be shown
 lowercase (e.g. "SCCcCSCCcC" means that core 2 on the two available
 sockets was bound to this job).
 .sp
-Please refer to the file
-<xxqs_name_sxx_root>/doc/load_parameters.asc for detailed information on the
-standard set of load values.
+See
+.M load_parameters 5
+for detailed information on the standard set of load values.
 .\"
 .IP "\fB\-l resource\fP[\fB=value\fP],..."
 Defines the resources required by the jobs or granted by the 

@@ -30,7 +30,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QHOST 1 "$Date: 2011-05-20 22:12:32 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QHOST 1 "$Date: 2011-12-04 02:00:15 $" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qhost \- show the status of xxQS_NAMExx hosts, queues, jobs
 .\"
@@ -89,9 +89,10 @@ Defines the resources to be granted by the hosts which should be
 included in the host list output. Matching is performed on 
 hosts based on non-mutable resource availability information only. 
 That means load values are always ignored except the so-called static 
-load values (i.e. "arch", "num_proc", "mem_total", "swap_total" and 
-"virtual_total") ones. Also consumable utilization is ignored.
-If there are multiple -l resource requests they will be concatenated by
+load values listed in
+.M load_parameters 5 .
+Also consumable utilization is ignored.
+If there are multiple \-l resource requests they will be concatenated by
 a logical AND: a host needs to match all resources to be displayed.
 .\"
 .IP "\fB\-ncb\fP"
@@ -143,8 +144,8 @@ the Total Swapspace.
 .IP "\(bu" 3n
 the Used Swapspace.
 .PP
-More details can be found in the file
-.IR $SGE_ROOT/doc/load_parameters.asc .
+More details can be found in
+.M load_parameters 5 .
 .\"
 .PP
 If the \fB\-q\fP option is supplied, each host status line also contains
@@ -225,24 +226,24 @@ omitted) a single line is displayed with the following format:
 a one letter specifier indicating whether the current resource availability 
 value was dominated by either
 .br
-`\fBg\fP' - a cluster global,
+`\fBg\fP' \- a cluster global,
 .br
-`\fBh\fP' - a host total or
+`\fBh\fP' \- a host total or
 .IP "\(bu" 3n
 a second one letter specifier indicating the source for the current resource 
 availability value, being one of
 .br
-`\fBl\fP' - a load value reported for the
+`\fBl\fP' \- a load value reported for the
 resource,
 .br
-`\fBL\fP' - a load value for the resource after administrator
+`\fBL\fP' \- a load value for the resource after administrator
 defined load scaling has been applied,
 .br
-`\fBc\fP' - availability derived from
+`\fBc\fP' \- availability derived from
 the consumable resources facility (see
 .M complexes 5 ),
 .br
-`\fBf\fP' - a fixed 
+`\fBf\fP' \- a fixed
 availability definition derived from a non-consumable complex attribute or 
 a fixed resource limit.
 .IP "\(bu" 3n
@@ -278,7 +279,7 @@ r(unning), R(estarted), s(uspended), S(uspended) or T(hreshold) (see the
 \fBReduced Format\fP section for detailed information),
 .IP "\(bu" 3n
 the start date and time and the function of the job (MASTER
-or SLAVE - only meaningful in case of a parallel job) and
+or SLAVE \- only meaningful in case of a parallel job) and
 .IP "\(bu" 3n
 the priority of the jobs.
 .\"
@@ -334,6 +335,7 @@ service "sge_qmaster" instead to define that port.
 .M qmod 1 ,
 .M qstat 1 ,
 .M qsub 1 ,
+.M load_parameters 5 ,
 .M queue_conf 5 ,
 .M xxqs_name_sxx_execd 8 ,
 .M xxqs_name_sxx_qmaster 8 ,
