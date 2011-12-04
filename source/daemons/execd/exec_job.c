@@ -951,17 +951,6 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          gid_t temp_id;
          char str_id[256];
          char* gid_range = NULL;
-#     if defined(LINUX)
-
-         if (!sup_groups_in_proc()) {
-            lFreeList(&environmentList);
-            snprintf(err_str, err_length, SFNMAX, MSG_EXECD_NOSGID);
-            FCLOSE(fp);
-            DEXIT;
-            return(-2);
-         }
-
-#     endif
        
          /* parse range add create list */
          gid_range = mconf_get_gid_range();
