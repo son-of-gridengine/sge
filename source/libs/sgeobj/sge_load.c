@@ -57,7 +57,11 @@ sge_is_static_load_value(const char *name)
           strcmp(name, LOAD_ATTR_NUM_PROC) == 0 ||
           strcmp(name, LOAD_ATTR_MEM_TOTAL) == 0 ||
           strcmp(name, LOAD_ATTR_SWAP_TOTAL) == 0 ||
-          strcmp(name, LOAD_ATTR_VIRTUAL_TOTAL) == 0 ) {
+          strcmp(name, LOAD_ATTR_VIRTUAL_TOTAL) == 0 ||
+          strcmp(name, LOAD_ATTR_TOPOLOGY) == 0 ||
+          strcmp(name, LOAD_ATTR_SOCKETS) == 0 ||
+          strcmp(name, LOAD_ATTR_CORES) == 0 ||
+          strcmp(name, LOAD_ATTR_THREADS) == 0 ) {
         ret = true;
       }
    }
