@@ -119,6 +119,30 @@ extern int  shepherd_state;
 extern char shepherd_job_dir[];
 extern char **environ;
 
+static void close_fds_from(int first) {
+   int i;
+   int fdmax = sysconf(_SC_OPEN_MAX);
+
+   shepherd_trace("closing all filedescriptors");
+   shepherd_trace("further messages are in \"error\" and \"trace\"");
+   fflush(stdin);
+   fflush(stdout);
+   fflush(stderr);
+   /* Close all file descriptors except the ones used by tracing
+    * (for the files "trace", "error" and "exit_status") and,
+    * in interactive job case, the ones used to redirect stdin,
+    * stdout and stderr.
+    * These files will be closed automatically in the exec() call
+    * due to the FD_CLOEXEC flag.
+    */
+   for (i=first ; i < fdmax; i++) {
+      if (!is_shepherd_trace_fd(i)) {
+         SGE_CLOSE(i);
+      }
+   }
+   foreground = 0;
+}
+
 /* Copy from clients/qrsh/qrsh_starter.c 
  * Trying to include it caused dependency problems
  * TODO: Move it to a common file
@@ -149,14 +173,13 @@ static int count_command(char *command) {
 }
 
 /************************************************************************
- This is the shepherds buitin starter.
+ This is the shepherd's builtin starter.
 
  It is also used to start the external starter command .. 
  ************************************************************************/
 void son(const char *childname, char *script_file, int truncate_stderr_out)
 {
    int   in, out, err;          /* hold fds */
-   int   i;
    int   merge_stderr;
    int   fs_stdin, fs_stdout, fs_stderr;
    int   min_gid, min_uid;
@@ -200,7 +223,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
    char *buffer;
    int size;
    bool skip_silently = false;
-   int pty;
+   int pty = atoi(get_conf_val("pty"));
 
 #if defined(INTERIX)
 #  define TARGET_USER_BUFFER_SIZE 1024
@@ -316,7 +339,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
        *  job owner and then changing to the prolog user. 
        *
        *  Additionally it prevents that a root procedures write to
-       *  files which may not be accessable by the job owner 
+       *  files which may not be accessible by the job owner
        *  (e.g. /etc/passwd)
        *
        *  This workaround doesn't work for Interix - we have to find
@@ -368,13 +391,13 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
    shepherd_trace("setting environment");
    sge_set_environment();
 
-	/* Create the "error" and the "exit" status file here.
-	 * The "exit_status" file indicates that the son is started.
-	 *
-	 * We are here (normally) uid=root, euid=admin_user, but we give the
-	 * file ownership to the job owner immediately after opening the file, 
-	 * so the job owner can reopen the file if the exec() fails.
-	 */
+   /* Create the "error" and the "exit" status file here.
+    * The "exit_status" file indicates that the son is started.
+    *
+    * We are here (normally) uid=root, euid=admin_user, but we give the
+    * file ownership to the job owner immediately after opening the file,
+    * so the job owner can reopen the file if the exec() fails.
+    */
    shepherd_trace("Initializing error file");
    shepherd_error_init( );
 
@@ -495,41 +518,14 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
 
    shell_start_mode = get_conf_val("shell_start_mode");
 
-   shepherd_trace("closing all filedescriptors");
-   shepherd_trace("further messages are in \"error\" and \"trace\"");
-   fflush(stdin);
-   fflush(stdout);
-   fflush(stderr);
-
-   {
-		/* Close all file descriptors except the ones used by tracing
-		 * (for the files "trace", "error" and "exit_status") and,
-       * in interactive job case, the ones used to redirect stdin,
-       * stdout and stderr.
-		 * These files will be closed automatically in the exec() call
-		 * due to the FD_CLOEXEC flag.
-		 */
-      int fdmax = sysconf(_SC_OPEN_MAX);
-      pty = atoi(get_conf_val("pty"));
-
-      /* For batch jobs with not pty, also close stdin, stdout and stderr.
-       * For new interactive jobs or batch jobs with pty, keep stdin, 
-       * stdout and stderr open, they are already connected to the pty 
-       * and/or the pipes.
-       */
-      if ((g_new_interactive_job_support == true && is_qlogin_starter)
-            || (g_new_interactive_job_support == false && pty == 1)) {
-         i=3;
-      } else {
-         i=0;
-      }
-      for ( ; i < fdmax; i++) {
-         if (!is_shepherd_trace_fd(i)) {
-         	SGE_CLOSE(i);
-         }
-      }
+   /* For batch jobs with no pty, close stdin, stdout and stderr.
+    * Defer closing anything for new interactive jobs as we need to
+    * keep cached descriptors used by NSS modules open.
+    */
+   if (!((g_new_interactive_job_support == true && is_qlogin_starter)
+         || (g_new_interactive_job_support == false && pty == 1))) {
+      close_fds_from(0);
    }
-   foreground = 0;
 
    /* We have different possiblities to start the job script:
     * - We can start it as login shell or not
@@ -1971,6 +1967,11 @@ static void start_qlogin_job(const char *shell_path)
    my_env[i] = NULL;
 
    sge_free(&buffer);
+
+   /* Keep stdin, stdout and stderr open, they are already connected to
+    * the pty and/or the pipes.
+    */
+   close_fds_from(3);
   
    shepherd_trace("execle(%s, %s, NULL, env)", shell_path, minusname);
    execle(shell_path, minusname, NULL, my_env);
@@ -2041,6 +2042,11 @@ static void start_qrsh_job(void)
    for (i=0; args[i] != NULL; i++) {
       shepherd_trace("args[%d] = \"%s\"", i, args[i]);
    }
+
+   /* Keep stdin, stdout and stderr open, they are already connected to
+    * the pty and/or the pipes.
+    */
+   close_fds_from(3);
 
    shepherd_trace("execvp(%s, ...);", args[0]);
    execvp(args[0], args);
