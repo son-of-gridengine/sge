@@ -69,19 +69,9 @@ vdict_t GRM_GDI_VERSION_ARRAY[] =
       { 0, NULL}
 };
 
-#ifdef ADD_UNIVA_COPYRIGHT
-const char GE_LONGNAME[] = "Grid Engine";
-const char GE_SHORTNAME[] = "SGE";
-#else
 const char GE_LONGNAME[] = "Son of Grid Engine";
 const char GE_SHORTNAME[] = "SGE";
-#endif
 
-#ifdef ADD_COPYRIGHT
-#  include "copyright.h"
-#endif
-
-#if !(ADD_COPYRIGHT || ADD_UNIVA_COPYRIGHT)
 const char SFLN_ELN[] = "\n\
    Grid Engine is based on code donated by Sun Microsystems.\n\
    The copyright is owned by Sun Microsystems and other contributors.\n\
@@ -91,10 +81,6 @@ const char SFLN_ELN[] = "\n\
 const char DQS_ACK[] = "\n\
 We would like to acknowledge and thank the efforts of the\n\
 Florida State University in creating the DQS program.\n";
-
-#endif
-
-#ifndef ADD_UNIVA_COPYRIGHT
 
 const char SISSL[] = "\n\
 The Contents of this file are made available subject to the terms of\n\
@@ -122,5 +108,3 @@ The Initial Developer of the Original Code is: Sun Microsystems, Inc.\n\
 Copyright: 2001 by Sun Microsystems, Inc.\n\
 \n\
 All Rights Reserved.\n"; 
-
-#endif /* ADD_UNIVA_COPYRIGHT */
