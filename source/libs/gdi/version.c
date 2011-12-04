@@ -34,7 +34,7 @@
 
 #include "gdi/version.h"
 
-const char GDI_VERSION[] = "8.0.0d";
+const char GDI_VERSION[] = "8.0.0e";
 
 const gdi_ulong32 GRM_GDI_VERSION = 0x10003000;
 
