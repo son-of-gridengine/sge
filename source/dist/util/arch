@@ -37,7 +37,7 @@
 #  The original idea of "aimk" where this script is based on came from the
 #  PVM 3.x distribution, 22 Jul 1991 Robert Manchek manchek@CS.UTK.EDU.
 #
-#  call:   arch       (print SGEEE architecture string)
+#  call:   arch       (print SGE architecture string)
 #          arch -m    (print default MANPATH of system)
 #          arch -mt   (print either "man" or "catman")
 #          arch -lib  (print name of variable to extend shared library path)

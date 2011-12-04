@@ -50,7 +50,7 @@ extern "C" {
 enum {
    UPU_job_number = UPU_LOWERBOUND,  /* job number */
    UPU_old_usage_list        /* UA_Type still debited usage set and used
-                              * via orders by SGEEE ted_job_usageschedd by
+                              * via orders by ted_job_usageschedd by
                               * qmaster */
 };
 

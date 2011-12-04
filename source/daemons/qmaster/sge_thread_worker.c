@@ -344,7 +344,7 @@ sge_worker_main(void *arg)
                 * Following if-block will only be executed in testsuite if the qmaster
                 * parameter __TEST_SLEEP_AFTER_REQUEST is defined. This will block the
                 * worker thread if it handled a request. Only this makes sure that
-                * other worker threads can handle incloming requests. Otherwise
+                * other worker threads can handle incoming requests. Otherwise
                 * it might be possible that one worker threads handles all requests
                 * on fast qmaster hosts if testsuite is not fast enough to generate
                 * gdi requests.

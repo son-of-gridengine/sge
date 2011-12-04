@@ -38,7 +38,7 @@
 #include "basis_types.h"
 #include "msg_utilib.h"
 
-#define LOG_PROF       0      /* no action, but it has to be printed allways */
+#define LOG_PROF       0      /* no action, but it has to be printed always */
 
 void log_state_set_log_level(u_long32);
 void log_state_set_log_file(char *file);

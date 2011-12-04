@@ -76,7 +76,7 @@ const char *sge_get_arch(void)
 
 /****** uti/prog/sge_get_root_dir() *******************************************
 *  NAME
-*     sge_get_root_dir() -- SGE/SGEEE installation directory 
+*     sge_get_root_dir() -- SGE installation directory 
 *
 *  SYNOPSIS
 *     const char* sge_get_root_dir(int do_exit, 
@@ -85,7 +85,7 @@ const char *sge_get_arch(void)
 *                                  int do_error_log ) 
 *
 *  FUNCTION
-*     This function returns the installation directory of SGE/SGEEE.
+*     This function returns the installation directory of SGE.
 *     This directory is defined by the SGE_ROOT environment variable 
 *     of the calling process. 
 *     If the environment variable does not exist or is not set then
@@ -100,7 +100,7 @@ const char *sge_get_arch(void)
 *     int do_error_log - enable/disable error logging
 *
 *  RESULT
-*     const char* - Root directory of the SGE/SGEEE installation
+*     const char* - Root directory of the SGE installation
 *
 *  NOTES
 *     MT-NOTE: sge_get_arch() is MT safe
@@ -221,14 +221,14 @@ int sge_get_lib_dir(char *buffer, size_t size) {
 *     const char* sge_get_default_cell(void) 
 *
 *  FUNCTION
-*     This function returns the defined cell name of SGE/SGEEE.
+*     This function returns the defined cell name of SGE.
 *     This directory is defined by the SGE_CELL environment variable
 *     of the calling process.
 *     If the environment variable does not exist or is not set then
 *     this function will return the 'DEFAULT_CELL'.
 *
 *  RESULT
-*     const char* - Cell name of this SGE/SGEEE installation
+*     const char* - Cell name of this SGE installation
 *
 *  NOTES
 *     MT-NOTE: sge_get_default_cell() is MT safe

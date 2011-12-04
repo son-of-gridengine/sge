@@ -45,10 +45,10 @@ extern "C" {
 enum {
    US_name = US_LOWERBOUND,
    US_type,                  /* type of USERSET encoded as bitfield */
-   US_fshare,                /* 960703 svd - SGEEE functional share */
-   US_oticket,               /* SGEEE override tickets */
-   US_job_cnt,               /* SGEEE job count (internal to schedd) */
-   US_pending_job_cnt,       /* SGEEE job count (internal to schedd) */
+   US_fshare,                /* 960703 svd - functional share */
+   US_oticket,               /* override tickets */
+   US_job_cnt,               /* job count (internal to schedd) */
+   US_pending_job_cnt,       /* job count (internal to schedd) */
    US_entries,
    US_consider_with_categories /* true, if userset plays role with categories */
 };

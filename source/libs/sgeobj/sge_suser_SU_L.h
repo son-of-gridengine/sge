@@ -49,12 +49,12 @@ extern "C" {
 *     SU_Type
 *     +--- SU_name: username of a user submittet a job
 *     +--- SU_jobs: currently active jobs for this user
-*                   (Jobs in SGEEE system which are in the 'finished'
+*                   (Jobs in system which are in the 'finished'
 *                    state are also accounted here)
 *
 *  FUNCTION
 *     CULL element which holds information for a user which is able to
-*     submit jobs into a SGE or SGEEE system. 
+*     submit jobs into an SGE system. 
 *     The variable 'Master_SUser_List' is used to hold multiple
 *     'SU_Type' elements within the master deamon. Use the functions
 *     mentioned in the 'see also' section to access, modify, delete

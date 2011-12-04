@@ -117,7 +117,7 @@ extern "C" {
 *        When should the job start ("qsub/qalter -a date_time")
 *
 *     SGE_ULONG(JB_deadline)      
-*        SGEEE. Deadline initiation time. (qsub -dl date_time)
+*        Deadline initiation time. (qsub -dl date_time)
 *
 *     User related information
 *     ========================
@@ -306,8 +306,8 @@ extern "C" {
 *        Zombie task ids (RN_Type).
 *
 *     SGE_LIST(JB_ja_template)  
-*        Template for new tasks. In SGEEE systems the schedd will
-*        store initial tickets in this element. (JAT_Type)
+*        Template for new tasks.  The schedd thread
+*        stores initial tickets in this element. (JAT_Type)
 *
 *     SGE_LIST(JB_ja_tasks)     
 *        List of array tasks (in case of array jobs) or one task 
@@ -317,7 +317,7 @@ extern "C" {
 *     ===========================
 *
 *     SGE_HOST(JB_host)                    
-*        SGEEE - host job is executing on. Local to schedd. 
+*        host job is executing on. Local to schedd.
 *        Not spooled.
 *
 *     SGE_REF(JB_category)
@@ -344,44 +344,44 @@ extern "C" {
 *     SGE_XULONG(JB_hard_wallclock_gmt) ---> the same as complex h_rt?
 *
 *     SGE_DOUBLE(JB_urg )         
-*        SGEEE. Absolute static urgency importance. The admin can use arbitrary
+*        Absolute static urgency importance. The admin can use arbitrary
 *        weighting factors in the formula used to determine this number. So any
 *        value is possible. Needed only when scheduling code is run.
 *        Not spooled.
 *
 *     SGE_DOUBLE(JB_nurg )         
-*        SGEEE. Relative importance due to static urgency in the range between 0.0 
+*        Relative importance due to static urgency in the range between 0.0
 *        and 1.0. No need to make this a per task attribute as long as waiting time 
 *        and deadline remain job attributes.
 *        Not spooled.
 *
 *     SGE_DOUBLE(JB_nppri )         
-*        SGEEE. Relative importance due to Posix priority in the range between 0.0 
+*        Relative importance due to Posix priority in the range between 0.0
 *        and 1.0. No need to make this a per task attribute as long as the POSIX
 *        priority remains a job attribute.
 *        Not spooled.
 *
 *     SGE_DOUBLE(JB_rrcontr )         
-*        SGEEE. Combined contribution to static urgency from all resources. This can 
+*        Combined contribution to static urgency from all resources. This can
 *        be any value. Actually this is a property of job category. This field is 
 *        needed only to provide it for diagnosis purposes it as per job information 
 *        via GDI. 
 *        Not spooled.
 *
 *     SGE_DOUBLE(JB_dlcontr )         
-*        SGEEE. Contribution to static urgency from job deadline. This can be any
+*        Contribution to static urgency from job deadline. This can be any
 *        value. No need to make this a per task attribute as long a deadline is a 
 *        job attribute. Increases over time. 
 *        Not spooled.
 *
 *     SGE_DOUBLE(JB_wtcontr )         
-*        SGEEE. Contribution to static urgency from waiting time. This can be any
+*        Contribution to static urgency from waiting time. This can be any
 *        value. No need to make this a per task attribute as long as waiting time 
 *        is a job attribute. Increases over time.
 *        Not spooled.
 *
 *     SGE_ULONG(JB_override_tickets)       
-*        SGEEE - override tickets assigned by admin. 
+*        - override tickets assigned by admin.
 *        (qalter -ot tickets).
 *
 *     SGE_LIST(JB_qs_args) ---> qsi? 

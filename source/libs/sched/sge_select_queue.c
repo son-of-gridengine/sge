@@ -6232,7 +6232,7 @@ parallel_rc_slots_by_time(const sge_assignment_t *a, lList *requests,  int *slot
 
 /****** sge_select_queue/sge_create_load_list() ********************************
 *  NAME
-*     sge_create_load_list() -- create the controll structure for consumables as
+*     sge_create_load_list() -- create the control structure for consumables as
 *                               load thresholds
 *
 *  SYNOPSIS
@@ -6240,7 +6240,7 @@ parallel_rc_slots_by_time(const sge_assignment_t *a, lList *requests,  int *slot
 *     *host_list, const lList *centry_list, lList **load_list) 
 *
 *  FUNCTION
-*     scanes all queues for consumables as load thresholds. It builds a 
+*     scans all queues for consumables as load thresholds. It builds a
 *     consumable category for each queue which is using consumables as a load
 *     threshold. 
 *     If no consumables are used, the *load_list is set to NULL.

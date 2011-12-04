@@ -140,7 +140,7 @@ int sge_debit_job_from_pe(lListElem *pep, lListElem *jep, int slots)
 }
 
 
-/****** sge_pe_schedd/pe_restricted() ******************************************
+/****** sge_pe_schedd/pe_match_static() ******************************************
 *  NAME
 *     pe_match_static() -- Why not job to PE?
 *

@@ -923,7 +923,7 @@ void sge_zombie_job_cleanup_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent
 * 
 *     A SGE job can be removed immediately when it is finished 
 *     (mode==COMMIT_ST_FINISHED_FAILED). A SGEEE job may not be deleted 
-*     (mode==COMMIT_ST_FINISHED_FAILED_EE) before the SGEEE scheduler has debited 
+*     (mode==COMMIT_ST_FINISHED_FAILED_EE) before the scheduler has debited 
 *     the jobs resource consumption in the corresponding objects (project/user/..). 
 *     Only the job script may be deleted at this stage. When an order arrives at 
 *     qmaster telling that debitation was done (mode==COMMIT_ST_DEBITED_EE) the 

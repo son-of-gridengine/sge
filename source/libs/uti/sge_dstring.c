@@ -406,7 +406,7 @@ const char* sge_dstring_vsprintf(dstring *sb, const char *format, va_list ap)
 *
 *  FUNCTION
 *     See sprintf() 
-*     The string created by sprintf is appended already existing 
+*     The string created by sprintf is appended to the existing 
 *     contents of the dstring.
 *
 *  INPUTS

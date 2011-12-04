@@ -89,40 +89,40 @@ LISTDEF(PR_Type)
    /* configured project name spooled */
    SGE_STRING_D(PR_name, CULL_PRIMARY_KEY | CULL_HASH | CULL_UNIQUE | CULL_SPOOL | CULL_SUBLIST | CULL_JGDI_CONF, "template")
 
-   /* configured override tickets (set by Qmon, used by SGEEE schedd) spooled */
+   /* configured override tickets (set by Qmon, used by schedd) spooled */
    SGE_ULONG(PR_oticket, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF)
 
-   /* configured functional shares (set by Qmon, used by SGEEE schedd) spooled */
+   /* configured functional shares (set by Qmon, used by schedd) spooled */
    SGE_ULONG(PR_fshare, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF)
 
-   /* job count (set and used by SGEEE schedd, not spooled) schedd local, not stored to qmaster */
+   /* job count (set and used by schedd, not spooled) schedd local, not stored to qmaster */
    SGE_ULONG(PR_job_cnt, CULL_DEFAULT | CULL_JGDI_HIDDEN)
 
-   /* job count (set and used by SGEEE schedd, not spooled) schedd local, not stored to qmaster */
+   /* job count (set and used by schedd, not spooled) schedd local, not stored to qmaster */
    SGE_ULONG(PR_pending_job_cnt, CULL_DEFAULT | CULL_JGDI_HIDDEN)
 
-   /* UA_Type; decayed usage set and used by SGEEE schedd stored to qmaster; spooled */
+   /* UA_Type; decayed usage set and used by schedd stored to qmaster; spooled */
    SGE_MAP(PR_usage, UA_Type, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_HIDDEN)
 
-   /* time stamp of last decay set when * PR_usage changes; set and used by SGEEE schedd stored to qmaster; spooled */
+   /* time stamp of last decay set when * PR_usage changes; set and used by schedd stored to qmaster; spooled */
    SGE_ULONG(PR_usage_time_stamp, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_HIDDEN)
 
    /* usage sequence number set and used by SGE schedd, not stored to qmaster; not spooled */
    SGE_ULONG(PR_usage_seqno, CULL_DEFAULT | CULL_JGDI_HIDDEN)
 
-   /* UA_Type; long term accumulated non-decayed i usage; set by SGEEE schedd stored to qmaster; spooled */
+   /* UA_Type; long term accumulated non-decayed i usage; set by schedd stored to qmaster; spooled */
    SGE_MAP(PR_long_term_usage, UA_Type, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_HIDDEN)
 
-   /* UPP_Type; usage on a project basis set and used by SGEEE schedd stored to qmaster; spooled Only used by projects */
+   /* UPP_Type; usage on a project basis set and used by schedd stored to qmaster; spooled Only used by projects */
    SGE_LIST(PR_project, UPP_Type, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_HIDDEN)
 
-   /* US_Type but only names are filled configured excluded user access list used by SGEEE schedd; spooled */
+   /* US_Type but only names are filled configured excluded user access list used by schedd; spooled */
    SGE_LIST(PR_acl, US_Type, CULL_DEFAULT | CULL_SPOOL_PROJECT | CULL_JGDI_CONF)
 
-   /* US_Type but only names are filled configured excluded user access list used by SGEEE schedd; spooled */
+   /* US_Type but only names are filled configured excluded user access list used by schedd; spooled */
    SGE_LIST(PR_xacl, US_Type, CULL_DEFAULT | CULL_SPOOL_PROJECT | CULL_JGDI_CONF)
 
-   /* UPU_Type (see below) still debited usage per job (set and used by SGEEE schedd) */
+   /* UPU_Type (see below) still debited usage per job (set and used by schedd) */
    SGE_LIST(PR_debited_job_usage, UPU_Type, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_HIDDEN)
 
    /* user/project version, increments when usage is updated, stored to qmaster, not spooled */

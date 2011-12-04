@@ -547,7 +547,7 @@ sge_gdi_packet_create(sge_gdi_ctx_class_t * ctx, lList **answer_list)
 *     and the "answer_list" will be filled with a message.
 *     Causes for errors are:
 *        - malloc failure
-*        - verification failure (sgee sge_gdi_task_verify)
+*        - verification failure (sge_gdi_task_verify)
 *
 *  INPUTS
 *     sge_gdi_packet_class_t *packet - packet

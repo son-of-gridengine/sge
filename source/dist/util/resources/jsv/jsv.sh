@@ -67,10 +67,10 @@ PATH=/bin:/usr/bin
 #     job environment for a job. The data contained in this
 #     environment is not verified by Grid Engine and might 
 #     therefore contain data which could cause issues in JSV 
-#     scrips. Be carefull when you interprete or otherwise use 
+#     scripts. Be careful when you interpret or otherwise use
 #     that information.
 # 
-#     In general it is recommendet NOT to request the job
+#     In general it is recommended NOT to request the job
 #     environment in server JSVs due to performance reason. 
 #
 #  SEE ALSO
@@ -92,7 +92,7 @@ jsv_on_start()
 #
 #  FUNCTION
 #     Callback function which is triggered when a job should be verified.
-#     Job specifiaction and optionally job environment are available by
+#     Job specification and optionally job environment are available by
 #     calling special functions:
 #
 #        jsv_is_param
@@ -111,7 +111,7 @@ jsv_on_start()
 #        jsv_get_env
 #        jsv_mod_env
 #
-#     The evaluaton process has to be terminated by a call of one of these
+#     The evaluation process has to be terminated by a call of one of these
 #     functions which will then either accept, correct or reject a job:
 #
 #        jsv_correct <Message> 
@@ -228,6 +228,6 @@ jsv_on_verify()
 
 . ${SGE_ROOT}/util/resources/jsv/jsv_include.sh
 
-# main routine handling the protocoll between client/master and JSV script
+# main routine handling the protocol between client/master and JSV script
 jsv_main
 

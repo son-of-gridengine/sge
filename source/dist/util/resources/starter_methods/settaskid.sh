@@ -34,7 +34,7 @@
 
 #
 # Establishes a new task for the job and set users default project.
-#****** util/resources/ibm-loadsensor ***************************************
+#****** util/resources/starter_methods/settaskid.sh ************************
 #
 #  NAME
 #     settaskid.sh -- starter method doing settaskid(2) under Solaris

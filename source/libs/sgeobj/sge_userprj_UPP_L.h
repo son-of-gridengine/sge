@@ -63,11 +63,11 @@ LISTDEF(UPP_Type)
    JGDI_OBJ(ProjectUsage)
    SGE_STRING(UPP_name, CULL_PRIMARY_KEY | CULL_HASH | CULL_UNIQUE | CULL_SUBLIST)    /* project name */
    SGE_MAP(UPP_usage, UA_Type, CULL_DEFAULT | CULL_SUBLIST)     /* 
-                            * UA_Type; decayed usage set and used by SGEEE 
-                            * schedd stored to qmaster; spooled 
+                            * UA_Type; decayed usage set and used by
+                            * schedd stored to qmaster; spooled
                             */
    SGE_MAP(UPP_long_term_usage, UA_Type, CULL_DEFAULT | CULL_SUBLIST) /* UA_Type; long term accumulated 
-                                  * non-decayed usage; set by SGEEE 
+                                  * non-decayed usage; set by
                                   * schedd stored to qmaster; spooled */
 LISTEND 
 
