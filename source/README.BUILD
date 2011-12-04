@@ -61,6 +61,8 @@ Content
         GNU/Linux) pam.  For building the qmon GUI, you need
         development packages of lesstif or openmotif (non-free
         software), libXmu, and libXpm.
+      - On AIX, install perfstat (the bos.perf.libperfstat and
+        bos.perf.perfstat filesets)
       - To provide core-binding support, you need hwloc
         <http://www.open-mpi.org/projects/hwloc/>, preferably as your
         OS's packaged version (hwloc-devel from EPEL on Red Hat,
