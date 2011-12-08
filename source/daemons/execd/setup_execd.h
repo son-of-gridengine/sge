@@ -34,7 +34,7 @@
 
 #include "gdi/sge_gdi_ctx.h"
 
-void sge_setup_sge_execd(sge_gdi_ctx_class_t *ctx, const char* tmp_err_file_name);
+void sge_setup_sge_execd(sge_gdi_ctx_class_t *ctx);
 int daemonize_execd(void *context);
 int job_initialize_job(lListElem *job);
 
