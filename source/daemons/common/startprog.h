@@ -32,7 +32,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-int startprog(int out, int err, char *, char *, char *, ...);
+int startprog(char *, char *, char *, ...);
 
 #endif /* __STARTPROG_H */
 

@@ -156,14 +156,6 @@
 #define SGE_ATTRVAL_MAX                "max"
 #define SGE_ATTRVAL_AVG                "avg"
 
-/* tmp filenames */
-#define TMP_ERR_FILE_SNBU         "/tmp/sge_messages"
-#define TMP_ERR_FILE_EXECD        "/tmp/execd_messages"
-#define TMP_ERR_FILE_QMASTER      "/tmp/qmaster_messages"
-#define TMP_ERR_FILE_SCHEDD       "/tmp/schedd_messages"
-#define TMP_ERR_FILE_SHADOWD      "/tmp/shadowd_messages"
-#define TMP_ERR_FILE_QIDLD        "/tmp/qidl_messages"
-
 #define COMMON_DIR               "common"
 #define SPOOL_DIR                "spool"
 #define QMASTER_DIR              "qmaster"

@@ -181,7 +181,6 @@ char binpath[SGE_PATH_MAX];
 char oldqmaster[SGE_PATH_MAX];
 
 char shadow_err_file[SGE_PATH_MAX];
-char qmaster_out_file[SGE_PATH_MAX];
 
 #endif
 
@@ -221,8 +220,6 @@ char qmaster_out_file[SGE_PATH_MAX];
                          (textdomain_func_type)     textdomain);
    sge_init_language(NULL,NULL);   
 #endif /* __SGE_COMPILE_WITH_GETTEXT__  */
-
-   log_state_set_log_file(TMP_ERR_FILE_SHADOWD);
 
    if (sge_setup2(&ctx, SHADOWD, MAIN_THREAD, &alp, false) != AE_OK) {
       answer_list_output(&alp);
@@ -298,9 +295,6 @@ char qmaster_out_file[SGE_PATH_MAX];
    }
 
    sprintf(shadow_err_file, "messages_shadowd.%s", ctx->get_unqualified_hostname(ctx));
-   sprintf(qmaster_out_file, "messages_qmaster.%s", ctx->get_unqualified_hostname(ctx));
-   sge_copy_append(TMP_ERR_FILE_SHADOWD, shadow_err_file, SGE_MODE_APPEND);
-   unlink(TMP_ERR_FILE_SHADOWD);
    log_state_set_log_as_admin_user(1);
    log_state_set_log_file(shadow_err_file);
 
@@ -370,7 +364,6 @@ char qmaster_out_file[SGE_PATH_MAX];
                   if (qmaster_lock(QMASTER_LOCK_FILE)) {
                      ERROR((SGE_EVENT, SFNMAX, MSG_SHADOWD_FAILEDTOLOCKQMASTERSOMBODYWASFASTER));
                   } else {
-                     int out, err;
 
                      /* still the old qmaster name in act_qmaster file and still the old heartbeat */
                      latest_heartbeat = get_qmaster_heartbeat( QMASTER_HEARTBEAT_FILE, 30);
@@ -385,29 +378,12 @@ char qmaster_out_file[SGE_PATH_MAX];
                         strcat(qmaster_name, prognames[QMASTER]); 
                         DPRINTF(("qmaster_name: "SFN"\n", qmaster_name)); 
 
-                        /*
-                         * open logfile as admin user for initial qmaster/schedd 
-                         * startup messages
-                         */
-                        out = SGE_OPEN3(qmaster_out_file, O_CREAT|O_WRONLY|O_APPEND, 
-                                   0644);
-                        err = out;
-                        if (out == -1) {
-                           /*
-                            * First priority is the master restart
-                            * => ignore this error
-                            */
-                           out = 1;
-                           err = 2;
-                        } 
-
                         sge_switch2start_user();
-                        ret = startprog(out, err, NULL, binpath, qmaster_name, NULL);
+                        ret = startprog(NULL, binpath, qmaster_name, NULL);
                         sge_switch2admin_user();
                         if (ret) {
                            ERROR((SGE_EVENT, SFNMAX, MSG_SHADOWD_CANTSTARTQMASTER));
                         }
-                        close(out);
                      } else {
                         qmaster_unlock(QMASTER_LOCK_FILE);
                      }
