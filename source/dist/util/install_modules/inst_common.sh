@@ -2186,13 +2186,13 @@ GiveHints()
                    "   You can get the name of the log file by calling svcs -l <SERVICE_NAME> \n" \
                    "   E.g.: svcs -l svc:/application/sge/qmaster:%s\n\n" $SGE_CLUSTER_NAME
       else
-         $INFOTEXT "\nGrid Engine messages can be found at:\n\n" \
-                   "   /tmp/qmaster_messages.<N> (during qmaster startup)\n" \
-                   "   /tmp/execd_messages.<N>   (during execution daemon startup)\n\n"
+         $INFOTEXT "\nGrid Engine messages can be found in syslog during startyp:\n\n"
       fi
       $INFOTEXT "After startup the daemons log their messages in their spool directories.\n\n" \
                 "   Qmaster:     %s\n" \
-                "   Exec daemon: <execd_spool_dir>/<hostname>/messages\n" $master_spool/qmaster/messages
+                "   Exec daemon: <execd_spool_dir>/<hostname>/messages\n" \
+                " or in syslog, if configured\n" \
+                $master_spool/qmaster/messages
 
       $INFOTEXT -u "\nGrid Engine startup scripts"
       $INFOTEXT "\nGrid Engine startup scripts can be found at:\n\n" \

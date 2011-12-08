@@ -74,7 +74,7 @@ extern lList *jr_list;
 static char execd_messages_file[SGE_PATH_MAX];
 
 /*-------------------------------------------------------------------*/
-void sge_setup_sge_execd(sge_gdi_ctx_class_t *ctx, const char* tmp_err_file_name)
+void sge_setup_sge_execd(sge_gdi_ctx_class_t *ctx)
 {
    char err_str[MAX_STRING_SIZE];
    int allowed_get_conf_errors     = 5;
@@ -128,15 +128,7 @@ void sge_setup_sge_execd(sge_gdi_ctx_class_t *ctx, const char* tmp_err_file_name
    DPRINTF(("chdir(\"%s\",me.unqualified_hostname)--------------------------\n",
             unqualified_hostname));
    sge_chdir_exit(unqualified_hostname, 1); 
-   /* having passed the  previous statement we may 
-      log messages into the ERR_FILE  */
-   if ( tmp_err_file_name != NULL) {
-      sge_copy_append((char*)tmp_err_file_name, ERR_FILE, SGE_MODE_APPEND);
-   }
    sge_switch2start_user();
-   if ( tmp_err_file_name != NULL) {
-      unlink(tmp_err_file_name);
-   }
    sge_switch2admin_user();
    log_state_set_log_as_admin_user(1);
    snprintf(execd_messages_file, sizeof(execd_messages_file), "%s/%s/%s",

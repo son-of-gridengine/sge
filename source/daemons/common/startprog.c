@@ -70,8 +70,7 @@ static int do_wait(pid_t);
  *       >0 the exit status of the child 
  *       exit status 8 is reserved for unsuccesfull exec() 
  *-----------------------------------------------------------------------*/
-int startprog(int out, int err, 
-              char *argv0, char *path, char *name, ...) 
+int startprog(char *argv0, char *path, char *name, ...)
 {
  SGE_STRUCT_STAT sb;
  char prog_path[SGE_PATH_MAX];
@@ -153,25 +152,6 @@ int startprog(int out, int err,
    /* child */
    if (getenv("SGE_DEBUG_LEVEL")) {
       putenv("SGE_DEBUG_LEVEL=0 0 0 0 0 0 0 0");
-   }
-   if (out != 1) {
-      close(1);
-      if (dup(out) == -1) {
-         /* exit with special exit code 8 being treated as error */
-         DEXIT;
-         exit(8);
-      }
-   }
-   if (err != 2) {
-      close(2);
-      if (dup(err) == -1) {
-         /* exit with special exit code 8 being treated as error */
-         DEXIT;
-         exit(8);
-      }
-      fprintf(stderr, "######################\n");
-      fprintf(stderr, " %s\n", sge_ctime(0, &ds));
-      fprintf(stderr, "######################\n");
    }
    execvp(prog_path, argv);
    DEXIT;

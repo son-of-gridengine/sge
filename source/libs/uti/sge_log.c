@@ -73,7 +73,7 @@ typedef struct {
 } log_context_t;
 
 
-static log_state_t Log_State = {PTHREAD_MUTEX_INITIALIZER, TMP_ERR_FILE_SNBU, LOG_WARNING, 0, 1, 1};
+static log_state_t Log_State = {PTHREAD_MUTEX_INITIALIZER, "syslog.init", LOG_WARNING, 0, 1, 1};
 
 static pthread_once_t log_buffer_once = PTHREAD_ONCE_INIT;
 static pthread_key_t  log_buffer_key;
@@ -96,7 +96,8 @@ static void sge_do_log(u_long32 prog_number,
                        const char *progname,
                        const char *unqualified_hostname,
                        int aLevel, 
-                       const char* aMessage); 
+                       const char* aMessage,
+                       int log_level);
 
 static sge_gdi_ctx_class_t *log_get_log_context(void);
 static void log_set_log_context(sge_gdi_ctx_class_t *theCtx);
@@ -380,8 +381,11 @@ void log_state_set_log_level(u_long32 theLevel)
 void log_state_set_log_file(char *theFile)
 {
    sge_mutex_lock("Log_State_Lock", "log_state_set_log_file", __LINE__, &Log_State.mutex);
-   
-   Log_State.log_file = theFile;
+
+   /* Don't change it if it's been set to syslog in the execd or
+      qmaster params.  */
+   if (strcmp( Log_State.log_file, "syslog") != 0)
+      Log_State.log_file = theFile;
    
    sge_mutex_unlock("Log_State_Lock", "log_state_set_log_file", __LINE__, &Log_State.mutex);
 
@@ -610,6 +614,7 @@ int sge_log(int log_level, const char *mesg, const char *file__, const char *fun
       default:
          strcpy(levelstring, "");
          levelchar = 'L';
+         log_level = LOG_INFO;
          break;
    }
 
@@ -619,24 +624,28 @@ int sge_log(int log_level, const char *mesg, const char *file__, const char *fun
       fprintf(stderr, "%s%s\n", levelstring, mesg);
    }
 
-   sge_do_log(me, threadname, unqualified_hostname, levelchar, mesg);
+   sge_do_log(me, threadname, unqualified_hostname, levelchar, mesg, log_level);
 
    DRETURN_(0);
 } /* sge_log() */
 
 /****** uti/sge_log/sge_do_log() ***********************************************
 *  NAME
-*     sge_do_log() -- Write message to log file 
+*     sge_do_log() -- Write message to log file (or syslog)
 *
 *  SYNOPSIS
-*     static void sge_do_log(int aLevel, const char *aMessage, const char 
+*     static void sge_do_log(u_long32 me, const char* progname, const char* unqualified_hostname, int aLevel, const char *aMessage, int log_level)
 *
 *  FUNCTION
 *     ??? 
 *
 *  INPUTS
+*     u_long32 me          - process type (QMASTER etc.)
+*     const char* progname - program name
+*     const char* unqualified_hostname - name of host issuing message
 *     int aLevel           - log level
 *     const char *aMessage - log message
+*     int log_level        - numeric level from which aLevel is derived
 *
 *  RESULT
 *     void - none
@@ -646,17 +655,27 @@ int sge_log(int log_level, const char *mesg, const char *file__, const char *fun
 *
 *******************************************************************************/
 static void sge_do_log(u_long32 me, const char* progname, const char* unqualified_hostname,
-                       int aLevel, const char *aMessage)
+                       int aLevel, const char *aMessage, int log_level)
 {
    int fd;
 
    if (me == QMASTER || me == EXECD || me == SCHEDD || me == SHADOWD) {
-      if ((fd = SGE_OPEN3(log_state_get_log_file(), O_WRONLY | O_APPEND | O_CREAT, 0666)) >= 0) {
-         char msg2log[4*MAX_STRING_SIZE];
-         dstring msg;
-         int len;
+      const char *logfile = log_state_get_log_file();
+      char msg2log[4*MAX_STRING_SIZE];
+      dstring msg;
 
-         sge_dstring_init(&msg, msg2log, sizeof(msg2log));
+      sge_dstring_init(&msg, msg2log, sizeof(msg2log));
+
+      if (strncmp(logfile, "syslog", 6) == 0) {
+         if (LOG_PROF == log_level)
+            log_level = LOG_INFO;
+         sge_dstring_sprintf_append(&msg, "%6.6s|%s|%c|%s\n",
+                                    progname, unqualified_hostname,
+                                    aLevel, aMessage);
+         syslog(log_level | LOG_USER, "%s", msg2log);
+      } else if ((fd = SGE_OPEN3(logfile, O_WRONLY | O_APPEND | O_CREAT,
+                                 0666)) >= 0) {
+         int len;
 
          append_time((time_t)sge_get_gmt(), &msg, false);
 

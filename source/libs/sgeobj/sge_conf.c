@@ -691,6 +691,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       jsv_timeout= 10;
 
       for (s=sge_strtok_r(qmaster_params, ",; ", &conf_context); s; s=sge_strtok_r(NULL, ",; ", &conf_context)) {
+         bool use_syslog;
          if (parse_bool_param(s, "FORBID_RESCHEDULE", &forbid_reschedule)) {
             continue;
          }
@@ -812,6 +813,10 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
             }
             continue;
          }
+         if (parse_bool_param(s, "USE_SYSLOG", &use_syslog)) {
+            if (use_syslog) log_state_set_log_file("syslog");
+            continue;
+         }
       }
       SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_WRITE);
       sge_free_saved_vars(conf_context);
@@ -873,6 +878,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       strcpy(h_locks, "UNDEFINED");
 
       for (s=sge_strtok_r(execd_params, ",; ", &conf_context); s; s=sge_strtok_r(NULL, ",; ", &conf_context)) {
+         bool use_syslog;
          if (parse_bool_param(s, "USE_QIDLE", &use_qidle)) {
             continue;
          }
@@ -888,6 +894,10 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
                continue;
             }
             if (parse_bool_param(s, "DO_AUTHENTICATION", &do_authentication)) {
+               continue;
+            }
+            if (parse_bool_param(s, "USE_SYSLOG", &use_syslog)) {
+               if (use_syslog) log_state_set_log_file("syslog");
                continue;
             }
          }   

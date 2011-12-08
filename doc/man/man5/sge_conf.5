@@ -1483,6 +1483,10 @@ authentication GSSAPI security feature is enabled globally.
 .IP \fINO_SECURITY\fP
 Turn off storing and forwarding of credentials when the GSSAPI
 security feature is enabled globally.
+.IP \fIUSE_SYSLOG\fP
+Write messages to the system logger (see
+.M syslog 3 )
+rather than into the spool directory.
 .IP \fIUSE_QIDLE\fP
 Automatically start any executable named
 .I qidle
@@ -1598,6 +1602,10 @@ The default for \fBfinished_jobs\fP is 100.
 .PP
 This value is a global configuration parameter only. It cannot be
 overwritten by the execution host local configuration.
+.IP \fIUSE_SYSLOG\fP
+Write messages to the system logger (see
+.M syslog 3 )
+rather than into the spool directory.
 .\"
 .\"
 .SS "\fBqlogin_daemon\fP"

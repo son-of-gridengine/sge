@@ -155,11 +155,9 @@ unsigned long sge_execd_application_status(char** info_message)
 int main(int argc, char **argv)
 {
    int ret;
-   int my_pid;
    int ret_val;
    int printed_points = 0;
    int max_enroll_tries;
-   static char tmp_err_file_name[SGE_PATH_MAX];
    time_t next_prof_output = 0;
    int execd_exit_state = 0;
    lList **master_job_list = NULL;
@@ -191,11 +189,6 @@ int main(int argc, char **argv)
 
    /* This needs a better solution */
    umask(022);
-      
-   /* Initialize path for temporary logging until we chdir to spool */
-   my_pid = getpid();
-   sprintf(tmp_err_file_name,"%s."sge_U32CFormat"", TMP_ERR_FILE_EXECD, sge_u32c(my_pid));
-   log_state_set_log_file(tmp_err_file_name);
 
    /* exit func for SGE_EXIT() */
    sge_sig_handler_in_main_loop = 0;
@@ -291,7 +284,7 @@ int main(int argc, char **argv)
    }
 
    /* daemonizes if qmaster is unreachable */   
-   sge_setup_sge_execd(ctx, tmp_err_file_name);
+   sge_setup_sge_execd(ctx);
 
    /* are we using qidle or not */
    sge_ls_qidle(mconf_get_use_qidle());
