@@ -121,8 +121,8 @@ may be overwritten by the execution host local configuration.
 .SS "\fBmailer\fP"
 \fBmailer\fP is the absolute pathname to the electronic mail delivery
 agent on your system.  An optional prefix "user@" specifies the user
-under which this procedure is to be started.  It must accept the
-following syntax:
+under which this procedure is to be started; the default is root.
+The mailer must accept the following syntax:
 .PP
 .RS
 mailer -s <subject-of-mail-message> <recipient>
@@ -1140,7 +1140,7 @@ Enables profiling for the qmaster event deliver thread
 .IP "\fIPROF_TEVENT\fP"
 Enables the profiling for the qmaster timed event thread
 (e.g. PROF_TEVENT=true).
-.IP \fPROF_SCHEDULER\fP
+.IP \fIPROF_SCHEDULER\fP
 Enables profiling for the qmaster scheduler thread
 (e.g. PROF_SCHEDULER=true).
 .PP
@@ -1222,14 +1222,6 @@ gets rescheduled, all remaining pending tasks of that job will be put at the end
 the pending job list. To achieve the old scheduling behaviour set the parameter 
 \fIOLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB\fP. Please note that this 
 parameter is deprecated, so it might be removed with the next minor release.
-.PP
-Changing \fBqmaster_params\fP will take immediate effect, except that
-gdi_timeout, gdi_retries, and cl_ping
-will take effect only for new connections.
-The default for \fBqmaster_params\fP is none.
-.PP
-This value is a global configuration parameter only. It cannot be
-overwritten by the execution host local configuration.
 .IP \fISIMULATE_EXECDS\fP
 Bypass execd communication in qmaster for (throughput tests).
 .IP \fINO_AUTHENTICATION\fP
@@ -1241,7 +1233,7 @@ configuration.
 Don't store and forward credentials if GSSAPI security is enabled.
 .IP \fIENABLE_MTRACE\fP
 On GNU/Linux, enable the GNU malloc library facility for recording all
- memory allocation/deallocation.  Requires
+memory allocation/deallocation.  Requires
 .I MALLOC_TRACE
 to be set in the environment (see
 .M mtrace 3 ).
@@ -1249,6 +1241,14 @@ to be set in the environment (see
 Used by the test suite to block the worker thread for five seconds
 after handling a request to ensure another worker thread will handle a
 subsequent request.
+.PP
+Changing \fBqmaster_params\fP will take immediate effect, except that
+gdi_timeout, gdi_retries, and cl_ping
+will take effect only for new connections.
+The default for \fBqmaster_params\fP is none.
+.PP
+This value is a global configuration parameter only. It cannot be
+overwritten by the execution host local configuration.
 .\"
 .\"
 .SS "\fBexecd_params\fP"
@@ -1471,13 +1471,6 @@ at submission time of a job. This parameter is set by default if
 xxQS_NAMExx was compiled with support for core binding.
 Find more information for job to core binding in the section \fI\-binding\fP of
 .M qsub 1 .
-.PP
-Changing \fBexecd_params\fP will take effect after it is propagated to the
-execution daemons. The propagation is done in one load report interval.
-The default for \fBexecd_params\fP is none.
-.PP
-The global configuration entry for this value
-may be overwritten by the execution host local configuration.
 .IP \fISIMULATE_JOBS\fP
 Allow the simulation of jobs.  (Job spooling and execution on the
 execd side is disabled.)
@@ -1504,6 +1497,13 @@ or
 .I sources/experimental/qidle
 in the source repository, but it may be better to check the
 the screensaver state.
+.PP
+Changing \fBexecd_params\fP will take effect after it is propagated to the
+execution daemons. The propagation is done in one load report interval.
+The default for \fBexecd_params\fP is none.
+.PP
+The global configuration entry for this value
+may be overwritten by the execution host local configuration.
 .\"
 .\"
 .SS "\fBreporting_params\fP"

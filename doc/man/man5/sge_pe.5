@@ -244,10 +244,10 @@ The
 parameter can be set to TRUE or FALSE. A value of 
 TRUE indicates that the xxQS_NAMExx job script already contains one of 
 the tasks of the parallel application
-(the number of slots reserved for the job is the number of slots requested with the -pe switch).
+(the number of slots reserved for the job is the number of slots requested with the \-pe switch).
 FALSE indicates that the
 job script (and its child processes) is not part of the parallel program
-(the number of slots reserved for the job is the number of slots requested with the -pe switch + 1).
+(the number of slots reserved for the job is the number of slots requested with the \-pe switch + 1).
 .PP
 If wallclock accounting is used 
 (execd_params ACCT_RESERVED_USAGE and/or SHARETREE_RESERVED_USAGE set to TRUE)
@@ -257,7 +257,7 @@ is set to FALSE, the
 .B job_is_first_task
 parameter influences the accounting for the job:
 A value of TRUE means that accounting for CPU and requested memory
-gets multiplied by the number of slots requested with the -pe switch.
+gets multiplied by the number of slots requested with the \-pe switch.
 FALSE means the accounting information gets multiplied by number of slots + 1.
 .\"
 .\"
