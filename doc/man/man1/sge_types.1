@@ -201,7 +201,7 @@ A user set name is the name of a xxQS_NAMExx access list or department described
 .SS "\fBobject_name\fP"
 An object name is a sequence of up to 512 ASCII string characters except 
 "\\n", "\\t", "\\r", " ", "/", ":", "\'", "\\", "[", "]", "{", "}", 
-"|", "(", ")", "@", "%", "," or the " character itself.
+"|", "(", ")", "@", "%", "," or the " character itself.         \" "
 .fi
 .SH "MATCHING TYPES"
 These types are used for matching xxQS_NAMExx configuration:
@@ -234,7 +234,7 @@ where:
 .fi
 .PP
 .\"
-The expression itself should be put inside quotes ('"') to ensure that
+The expression itself should be put inside quotes ('"') to ensure that \" "
 clients receive the complete expression.
 .PP
 .\"
@@ -271,7 +271,7 @@ For more details please see
 
 .fi
 .PP
-The pattern itself should be put inside quotes ('"') to ensure that
+The pattern itself should be put inside quotes ('"') to ensure that \" "
 clients receive the complete pattern.
 .PP
 .SS "\fBrange\fP"
@@ -486,10 +486,10 @@ or a full pe name.
 wc_pe_name := pe_name | pattern
 .PP
 .SS "\fBparallel_env\fP \fBn\fP[\fB-\fP[\fBm\fP]]|[\fB-\fP]\fBm\fP,...\fP"
-Parallel programming environment (PE) to select for a job to run or an AR. The
-range descriptor behind the PE name specifies the number of
+Parallel programming environment (PE) to select for a submitted job or an AR. The
+range descriptor following the PE name specifies the number of
 parallel processes to be run. xxQS_NAMExx will allocate the
-appropriate resources as available. The
+appropriate resources, as available. The
 .M xxqs_name_sxx_pe 5
 manual page contains information about the definition of PEs
 and about how to obtain a list of currently valid PEs.

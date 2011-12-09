@@ -247,33 +247,22 @@ Please refer to the \fBOUTPUT FORMATS\fP
 sub-section \fBExpanded Format\fP below for detailed information.
 .\"
 .IP "\fB\-s {p|r|s|z|hu|ho|hs|hd|hj|ha|h|a}[+]\fP"
-
 Prints only jobs in the specified state, any combination of states is
-possible. \fB\-s prs\fP corresponds to the regular
+possible. \fB\-s prs\fP (pending, running, and stopped jobs)
+corresponds to the regular
 .I qstat
 output without \fB\-s\fP
 at all. To show recently finished jobs, use \fB\-s z\fP.
 To display jobs in user/operator/system/array-dependency hold,
-use the \fB\-s hu/ho/hs/hd\fP 
-option. The 
-\fB\-s ha\fP option shows jobs which where
-submitted with the 
-.I qsub 
-\fB\-a\fP command. 
-.I qstat 
-\fB\-s hj\fP 
+use
+.BR "\-s hu" / ho / hs / hd . 
+The \fB\-s ha\fP option shows jobs which were submitted with the 
+\fBqsub \-a\fP command.
+\Fbqstat \-s hj\fP
 displays all jobs which are not eligible for execution unless the job
 has entries in the job dependency list.
-.I qstat 
-\fB\-s h\fP
-is an abbreviation for
-.I qstat 
-\fB\-s huhohshdhjha\fP
-and 
-.I qstat 
-\fB\-s a\fP is an abbreviation for
-.I qstat 
-\fB\-s psr\fP
+\Fbqstat \-s h\fP is an abbreviation for \Fbqstat \-s huhohshdhjha\fP,
+and \fBqstat \-s a\fP is an abbreviation for \fBqstat\-s psr\fP
 (see \fB\-a\fP, \fB\-hold_jid\fP 
 and \fB\-hold_jid_ad\fP options to
 .M qsub 1 ).
