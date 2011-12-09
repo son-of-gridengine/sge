@@ -4,8 +4,6 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: queue_conf.5,v $     Last Update: $Date: 2011-06-23 17:10:45 $     Revision: $Revision: 1.38 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -211,6 +209,8 @@ intervals. \fBmin_cpu_interval\fP is of type "time" and the default is
 The syntax is that of a \fItime_specifier\fP in
 .M sge_types 5 .
 .SS "\fBprocessors\fP"
+This parameter is considered obsolete.
+.PP
 A set of processors in case of a multiprocessor execution host can be defined
 to which the jobs executing in this queue are bound. The value type of this
 parameter is a range description like that of the \fB\-pe\fP
