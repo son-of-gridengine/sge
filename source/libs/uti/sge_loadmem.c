@@ -44,7 +44,7 @@
 #include "uti/sge_log.h"
 #include "uti/msg_utilib.h"
 
-#if !defined(LINUX) && !defined(CRAY) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD)
+#if !defined(__linux__) && !defined(CRAY) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD)
 
 #include <unistd.h>
 
@@ -667,7 +667,7 @@ int sge_loadmem(sge_mem_info_t *mem_info)
 
 
 /*--------------------------------------------------------------------------*/
-#if defined(LINUX)
+#if __linux__
 #include <stdio.h>
 #include <string.h>
 
@@ -718,7 +718,7 @@ int sge_loadmem(sge_mem_info_t *mem_info)
 FCLOSE_ERROR:
    return 1;
 }
-#endif /* LINUX */
+#endif /* __linux__ */
 
 
 /*--------------------------------------------------------------------------*/

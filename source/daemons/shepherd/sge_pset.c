@@ -46,10 +46,6 @@
 #   include <sys/schedctl.h>
 #endif
 
-#if defined(LINUX)
-#   include <dlfcn.h>
-#endif
-
 #include "uti/sge_uidgid.h"
 #include "uti/sge_nprocs.h"
 #include "uti/config_file.h"

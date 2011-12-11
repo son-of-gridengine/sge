@@ -44,10 +44,8 @@
 #define SGE_USE_LOCK_FIFO
 #endif
 
-#if defined(LINUX)
 #undef LOCK_READ
 #undef LOCK_WRITE
-#endif
 
 typedef enum {
    LOCK_READ  = 1, /* shared  */

@@ -30,16 +30,8 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/                                   
 
-#ifdef LINUX
-#define __USE_GNU
-#endif
-
 #include <dlfcn.h>
 #include <string.h>
-
-#ifdef LINUX
-#undef __USE_GNU
-#endif
 
 #ifdef SOLARIS
 #include <link.h>
