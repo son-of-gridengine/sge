@@ -35,8 +35,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#ifdef LINUX
-#include <mcheck.h>
+#ifdef __GLIBC__
+#  ifndef HAVE_MTRACE             /* fixme if we get autoconf */
+#    define HAVE_MTRACE 1
+#  endif
+#  if HAVE_MTRACE
+#    include <mcheck.h>
+#  endif
 #endif
 
 #include "cull/cull.h"
@@ -164,7 +169,7 @@ static bool enable_reschedule_slave = false;
 static bool old_reschedule_behavior = false;
 static bool old_reschedule_behavior_array_job = false;
 
-#ifdef LINUX
+#ifdef HAVE_MTRACE
 static bool enable_mtrace = false;
 #endif
 
@@ -646,7 +651,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       char* execd_params = mconf_get_execd_params();
       char* reporting_params = mconf_get_reporting_params();
       u_long32 load_report_time = mconf_get_load_report_time();
-#ifdef LINUX
+#ifdef HAVE_MTRACE
       bool mtrace_before = enable_mtrace;
 #endif
 
@@ -729,7 +734,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
          if (parse_bool_param(s, "ENABLE_FORCED_QDEL_IF_UNKNOWN", &enable_forced_qdel_if_unknown)) {
             continue;
          } 
-#ifdef LINUX
+#ifdef HAVE_MTRACE
          if (parse_bool_param(s, "ENABLE_MTRACE", &enable_mtrace)) {
             continue;
          }
@@ -810,7 +815,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       sge_free_saved_vars(conf_context);
       conf_context = NULL;
 
-#ifdef LINUX			/* fixme -- should be glibc or similar */
+#ifdef HAVE_MTRACE
       /* enable/disable GNU malloc library facility for recording of all 
          memory allocation/deallocation 
          requires MALLOC_TRACE in environment (see mtrace(3) under Linux) */

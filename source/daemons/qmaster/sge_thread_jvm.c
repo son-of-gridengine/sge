@@ -286,20 +286,8 @@ sge_jvm_initialize(sge_gdi_ctx_class_t *ctx, lList **answer_list)
 
 #include <jni.h>
 
-#ifdef LINUX
-#ifndef __USE_GNU
-#define __USE_GNU
-#endif
-#endif
-
 #include <dlfcn.h>
 #include <string.h>
-
-#ifdef LINUX
-#ifdef __USE_GNU
-#undef __USE_GNU
-#endif
-#endif
 
 #ifdef SOLARIS
 #include <link.h>
