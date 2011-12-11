@@ -36,10 +36,6 @@
 #include <errno.h>
 #include <sys/time.h> 
 
-#if defined(LINUX)
-#  include <limits.h>
-#endif  
-
 #include "uti/sge_rmon.h"
 #include "uti/sge_unistd.h"
 #include "uti/sge_log.h"

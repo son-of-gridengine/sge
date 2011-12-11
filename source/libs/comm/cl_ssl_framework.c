@@ -50,19 +50,7 @@
 
 #ifdef LOAD_OPENSSL
 
-#ifdef LINUX
-#ifndef __USE_GNU
-#define __USE_GNU
-#endif /* __USE_GNU */
-#endif /* LINUX */
-
-
 #include <dlfcn.h>
-#ifdef LINUX
-#ifndef __USE_GNU
-#undef __USE_GNU
-#endif /* __USE_GNU */
-#endif /* LINUX */
 
 #ifdef SOLARIS
 #include <link.h>

@@ -78,10 +78,6 @@
 #  include "ptf.h"
 #endif
 
-#if defined(LINUX)
-#   include <dlfcn.h>
-#endif
-
 static void 
 get_reserved_usage(const char*qualified_hostname, lList **job_usage_list);
 static int 

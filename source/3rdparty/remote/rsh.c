@@ -169,7 +169,7 @@ main(int argc, char *argv[])
 #endif
 
 /* make linux getopt behave posix conformable */
-#ifdef LINUX
+#ifdef __GLIBC__
    putenv("POSIXLY_CORRECT=1");
 #endif
 

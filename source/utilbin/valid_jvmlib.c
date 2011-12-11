@@ -35,20 +35,8 @@
 
 #ifndef NO_JNI
 
-#ifdef LINUX
-#ifndef __USE_GNU
-#define __USE_GNU
-#endif
-#endif
-
 #include <dlfcn.h>
 #include <string.h>
-
-#ifdef LINUX
-#ifdef __USE_GNU
-#undef __USE_GNU
-#endif
-#endif
 
 #ifdef SOLARIS
 #include <link.h>

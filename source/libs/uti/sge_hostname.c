@@ -95,7 +95,7 @@ static struct servent *sge_getservbyname_r(struct servent *se_result, const char
  * safe.  This will require that you update aimk to include the correct defines
  * for each architecture.
  ******************************************************************************/
-#if defined(LINUX)
+#if __GLIBC__
       if (getservbyname_r(service, "tcp", se_result, buffer, size, &se) != 0)
          se = NULL;
 #elif defined(SOLARIS)

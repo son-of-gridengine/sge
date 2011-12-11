@@ -31,9 +31,6 @@
 /*___INFO__MARK_END__*/
 #include <stdio.h>
 #include <stdarg.h>
-#if defined(LINUX)
-#include <termios.h>
-#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -645,6 +642,7 @@ static int startJob(char *command, char *wrapper, int noshell)
       signal(SIGTERM, forward_signal);
 
       /* preserve pseudo terminal */
+      /* fixme:  why only Linux? */
 #if defined(LINUX)
       ttyfd = open("/dev/tty", O_RDWR);
       if (ttyfd != -1) {
