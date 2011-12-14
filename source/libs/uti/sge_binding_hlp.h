@@ -42,6 +42,7 @@
 
 #if defined(HAVE_HWLOC)
 #  include <hwloc.h>
+extern
 hwloc_topology_t sge_hwloc_topology;
 #  if HWLOC_API_VERSION < 0x00010100
 #     error "need hwloc version >= 1.1"
