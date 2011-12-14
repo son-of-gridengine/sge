@@ -51,6 +51,8 @@
 static int initialized = 0;
 #endif
 
+hwloc_topology_t sge_hwloc_topology = 0;
+
 /* Intended to be called at the start of the program, with topology
    shared between any threads.  */
 void
@@ -137,6 +139,7 @@ bool parse_binding_parameter_string(const char* parameter, binding_type_t* type,
    bool retval = true;
 
    if (parameter == NULL) {
+      /* fixme:  here and elsewhere below, use the message catalogue */
       sge_dstring_sprintf(error, "input parameter was NULL");
       return false;
    }
