@@ -42,8 +42,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-/* #define USE_FOPEN */
-
 #if defined(ALPHA)
    extern void flockfile(FILE *);
    extern void funlockfile(FILE *);
@@ -502,17 +500,6 @@ spool_flatfile_write_list_fields(lList **answer_list, const lList *list,
                                  dstring *buffer, 
                                  const spool_flatfile_instr *instr,
                                  const spooling_field *fields, bool recurse, const char *list_name);
-#ifdef USE_FOPEN
-static FILE *
-spool_flatfile_open_file(lList **answer_list,
-                         const spool_flatfile_destination destination,
-                         const char *filepath_in,
-                         const char **filepath_out);
-
-static bool
-spool_flatfile_close_file(lList **answer_list, FILE *fd, const char *filepath,
-                          const spool_flatfile_destination destination);
-#else
 int
 spool_flatfile_open_file(lList **answer_list,
                          const spool_flatfile_destination destination,
@@ -522,7 +509,6 @@ spool_flatfile_open_file(lList **answer_list,
 static bool
 spool_flatfile_close_file(lList **answer_list, int fd, const char *filepath,
                           const spool_flatfile_destination destination);
-#endif
 
 static const char *
 spool_flatfile_write_data(lList **answer_list, const void *data, int data_len, 
@@ -1024,21 +1010,13 @@ spool_flatfile_write_object(lList **answer_list, const lListElem *object,
 *  SEE ALSO
 *     spool/flatfile/spool_flatfile_close_file()
 *******************************************************************************/
-#ifdef USE_FOPEN
-static FILE * 
-#else
 int 
-#endif
 spool_flatfile_open_file(lList **answer_list,
                          const spool_flatfile_destination destination,
                          const char *filepath_in,
                          const char **filepath_out)
 {
-#ifdef USE_FOPEN
-   FILE *fd = NULL;
-#else
    int fd = -1;
-#endif
 
    DENTER(FLATFILE_LAYER, "spool_flatfile_open_file");
 
@@ -1055,13 +1033,8 @@ spool_flatfile_open_file(lList **answer_list,
          }
    
          /* open file */
-#ifdef USE_FOPEN
-         fd = fopen(filepath_in, "w");
-         if (fd == NULL) {
-#else
          fd = open(filepath_in, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
          if (fd == -1) {
-#endif
             answer_list_add_sprintf(answer_list, STATUS_EDISK,
                                     ANSWER_QUALITY_ERROR, 
                                     MSG_ERROROPENINGFILEFORWRITING_SS, 
@@ -1096,13 +1069,8 @@ spool_flatfile_open_file(lList **answer_list,
             sge_dstring_free(&tmp_name_error);
             
             /* open file */
-#ifdef USE_FOPEN
-            fd = fopen(filepath_in, "w");
-            if (fd == NULL) {
-#else
             fd = open(filepath_in, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
             if (fd == -1) {
-#endif
                answer_list_add_sprintf(answer_list, STATUS_EDISK, 
                                        ANSWER_QUALITY_ERROR, 
                                        MSG_ERROROPENINGFILEFORWRITING_SS, 
@@ -1113,9 +1081,7 @@ spool_flatfile_open_file(lList **answer_list,
          }   
          break;
       case SP_DEST_STDOUT:
-#ifndef USE_FOPEN
          fd = 1;
-#endif
 
 #if !defined(DARWIN6)
          flockfile(stdout);
@@ -1124,9 +1090,7 @@ spool_flatfile_open_file(lList **answer_list,
          *filepath_out = strdup("<stdout>");
          break;
       case SP_DEST_STDERR:
-#ifndef USE_FOPEN
          fd = 2;
-#endif
 
 #if !defined(DARWIN6)
          flockfile(stderr);
@@ -1165,22 +1129,13 @@ spool_flatfile_open_file(lList **answer_list,
 *  SEE ALSO
 *     spool/flatfile/spool_flatfile_open_file()
 *******************************************************************************/
-#ifdef USE_FOPEN
-static bool 
-spool_flatfile_close_file(lList **answer_list, FILE *fd, const char *filepath,
-                          const spool_flatfile_destination destination)
-#else
 static bool 
 spool_flatfile_close_file(lList **answer_list, int fd, const char *filepath,
                           const spool_flatfile_destination destination)
-#endif
 {
    switch (destination) {
       case SP_DEST_TMP:
       case SP_DEST_SPOOL:
-#ifdef USE_FOPEN
-         fclose(fd);
-#else
          if (close(fd) == -1) {
             fd = -1;
             answer_list_add_sprintf(answer_list, STATUS_EDISK,
@@ -1190,7 +1145,6 @@ spool_flatfile_close_file(lList **answer_list, int fd, const char *filepath,
                                     strerror(errno));
             return false;
          }
-#endif
          break;
       case SP_DEST_STDOUT:
          fflush(stdout);
@@ -1214,11 +1168,7 @@ spool_flatfile_write_data(lList **answer_list, const void *data, int data_len,
                           const spool_flatfile_destination destination, 
                           const char *filepath)
 {
-#ifdef USE_FOPEN
-   FILE *fd = NULL;
-#else
    int fd = -1;
-#endif
    const char *result = NULL;
 
    DENTER(FLATFILE_LAYER, "spool_flatfile_write_data");
@@ -1229,22 +1179,14 @@ spool_flatfile_write_data(lList **answer_list, const void *data, int data_len,
 
    /* open/get filehandle */
    fd = spool_flatfile_open_file(answer_list, destination, filepath, &result);
-#ifdef USE_FOPEN
-   if (fd == NULL) {
-#else
    if (fd == -1) {
-#endif
       /* message generated in spool_flatfile_open_file */
       PROF_STOP_MEASUREMENT(SGE_PROF_SPOOLINGIO);
       DRETURN(NULL);
    }
 
    /* write data */
-#ifdef USE_FOPEN
-   if (fwrite(data, sizeof(char), data_len, fd) != data_len)
-#else
    if (write(fd, (char *)data, strlen((char *)data)) != data_len)
-#endif
    {
       answer_list_add_sprintf(answer_list, STATUS_EDISK,
                               ANSWER_QUALITY_ERROR, MSG_ERRORWRITINGFILE_SS,
