@@ -112,6 +112,7 @@ const char *var_get_sharedlib_path_name(void)
 #elif defined(HP11)
    return "SHLIB_PATH";
 #elif defined(ALPHA) || defined(IRIX) || defined(LINUX) || defined(SOLARIS) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(INTERIX) || defined(HP1164)
+   /* Fixme:  LD_LIBRARY_PATH_64 etc.?  */
    return "LD_LIBRARY_PATH";
 #elif defined(DARWIN)
    return "DYLD_LIBRARY_PATH";

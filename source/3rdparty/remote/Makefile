@@ -26,7 +26,7 @@ RSHD_ADD_OBJS = \
             $(SGE_ARCH_DIR)/sge_parse_num_par.o
 
 
-RSHD_ADD_LIBS = -L$(SGE_ARCH_DIR) -luti $(WINGRIDLIB) -lcommlists 
+RSHD_ADD_LIBS = -L$(SGE_ARCH_DIR) -luti2 -lsgeobj -lsgeobjd $(KRBLIB) -lcull -lcommlists -luti $(WINGRIDLIB_STATIC)
 
 RSHD_LIB_DEPENDS = $(SGE_ARCH_DIR)/libuti$(LIBEXT) $(SGE_ARCH_DIR)/$(WINGRIDLIB_DEP)
 
