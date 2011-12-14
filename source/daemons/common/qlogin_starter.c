@@ -52,6 +52,7 @@
 #include "uti/sge_uidgid.h"
 #include "uti/sge_prog.h"
 #include "uti/config_file.h"
+#include "uti2/sge_execvlp.h"
 
 #include "err_trace.h"
 #include "qlogin_starter.h"
@@ -389,7 +390,7 @@ FCLOSE_ERROR:
 /****** shepherd/qrsh/qlogin_starter() ****************************************
 *
 *  NAME
-*     qlogin_starter -- short description
+*     qlogin_starter -- start protocol daemon like rshd
 *
 *  SYNOPSIS
 *     #include "qlogin_starter.h"
@@ -407,7 +408,7 @@ FCLOSE_ERROR:
 *        - the daemon process is started
 *     Additionally to the inetd mechanism, the port number and some 
 *     other information is sent to the qrsh process that initiated
-*     (over qmaster, schedd, execd, shepherd) the qlogin_starter call.
+*     (over qmaster, execd, shepherd) the qlogin_starter call.
 *
 *  INPUTS
 *     cwd    - the current working directory (the active_jobs directory)
@@ -605,7 +606,11 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    }
 #endif
 
-   /* that it. */
+   /* Sanitize the environment to remove user-set variables which can
+      affect what's executed via dynamic linking.  */
+   sanitize_environment(env);
+
+   /* that's it. */
    execve(args[0], args, env);
 
    /* oh oh, exec failed */
