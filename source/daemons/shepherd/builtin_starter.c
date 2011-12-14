@@ -48,6 +48,7 @@
 #include "uti/sge_arch.h"
 #include "uti/config_file.h"
 #include "uti/sge_uidgid.h"
+#include "uti2/sge_execvlp.h"
 
 #include "setosjobid.h"
 #include "sge_fileio.h"
@@ -1514,7 +1515,7 @@ int use_starter_method /* If this flag is set the shell path contains the
 
       /* build trace string */
       pc = err_str;
-      snprintf(pc, sizeof(err_str), "execvp(%s,", filename);
+      sprintf(pc, "execvp(%s,", filename);
       pc += strlen(pc);
       for (pstr = args; pstr && *pstr; pstr++) {
       
@@ -1623,19 +1624,14 @@ int use_starter_method /* If this flag is set the shell path contains the
 #if defined(INTERIX)
          shepherd_trace("not a GUI job, starting directly");
 #endif
+         /* Sanitize the environment in case we're executing prolog
+            etc. as as different user.  */
          if (!inherit_env()) {
-            /* The closest thing to execvp that takes an environment pointer is
-             * execve.  The problem is that execve does not resolve the path.
-             * As there is no reasonable way to resolve the path ourselves, we
-             * have to resort to this ugly hack.  Don't try this at home. */
-            char **tmp = environ;
-
-            environ = sge_get_environment();
-            execvp(filename, args);
-            environ = tmp;
+            sge_execvlp(filename, args,
+                        sge_copy_sanitize_env(sge_get_environment()));
          }
          else {
-            execvp(filename, args);
+            sge_execvlp(filename, args, sge_copy_sanitize_env(environ));
          }
 
          /* Aaaah - execvp() failed */

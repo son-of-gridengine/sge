@@ -195,7 +195,13 @@ xxQS_NAMExx
 jobs to be started afterwards (see
 .M qsub 1 ).
 An optional prefix "user@" specifies the user under which this procedure
-is to be started. The procedure's standard
+is to be started; in that case a somewhat system-dependent set of
+environment variables will be unset as a security measure as described
+in the
+.B SECURITY
+section of
+remote_startup 5 .
+The procedure's standard
 output and the error output stream are written to the same file as used for
 the standard output and error output of each job.
 .PP
@@ -322,7 +328,13 @@ with the addition of the variable named
 .B SGE_JOBEXIT_STAT
 which holds the exit status of the job.
 An optional prefix "user@" specifies the 
-user under which this procedure is to be started. The procedure's standard
+user under which this procedure is to be started; in that case a somewhat system-dependent set of
+environment variables will be unset as a security measure as described
+in the
+.B SECURITY
+section of
+remote_startup 5 .
+The procedure's standard
 output and the error output stream are written to the same file used also for
 the standard output and error output of each job.
 .PP

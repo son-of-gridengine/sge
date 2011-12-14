@@ -439,6 +439,48 @@ job prolog and epilog respectively.  See, for instance, a
 and other examples of similar prolog/epilog scripts provided with locking in
 the pam_authuser contribution in the Torque distribution.
 .\"
+.SH SECURITY
+See the notes above concerning security of the communication channel.
+.PP
+When not using the built-in methods (only), remote startup daemons are run as
+root, and in a user-supplied environment (possibly modified according
+to the
+.B INHERIT_ENV
+execd parameter setting).  This could provide a means for users to
+execute arbitrary code as root by setting parameters such as
+.B LD_LIBRARY_PATH
+and
+.B LD_PRELOAD
+to affect the running of the (typically) dynamically linked daemons.
+To combat this, known problematic variables are removed from the
+environment before starting the daemons, but this may not be
+foolproof.  The environment can be safely controlled by running the
+daemons under a statically-linked version of
+.M env 1 ,
+such as typically available using
+.M busybox 1 ,
+for example.  Use
+.B \-u
+arguments to unset sensitive variables.  The same applies to the
+starter, prolog, and epilog methods described in
+.M sge_conf 5
+if they are specified to be run as root.
+.PP
+Unfortunately it is not currently possible to specify the variables to
+unset as a host-dependent execd parameter, but certain
+system-dependent ones are selected according to the system on which
+the execd is running.  The current general list of sensitive variables
+(taken mostly from GNU libc) includes those with an "LD_" prefix and
+GCONV_PATH, GETCONF_DIR, HOSTALIASES, LOCALDOMAIN, LOCPATH,
+MALLOC_TRACE, NIS_PATH, NLSPATH, RESOLV_HOST_CONF, RES_OPTIONS,
+TMPDIR, TZDIR, and IFS.  The system-dependent ones are:  Tru64:
+_RLD_ROOT; Darwin:  DYLD_ prefix; AIX:  LIBPATH; HP-UX:  SHLIB_PATH.
+Variables set via
+.B \-v
+or
+.B \-V
+submission switches are still available in the remote session.
+.\"
 .SH EXAMPLES
 .\"
 Using SSH with the PAM module, forcing tty allocation, and preventing
