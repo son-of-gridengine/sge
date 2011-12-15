@@ -4,7 +4,7 @@
 # 
 name        qname
 shortcut    q
-type        RESTRING
+type        STRING
 relop       ==
 requestable YES
 consumable  NO

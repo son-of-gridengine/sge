@@ -4,7 +4,7 @@
 # 
 name        m_topology_inuse 
 shortcut    utopo 
-type        RESTRING
+type        STRING
 relop       ==
 requestable YES 
 consumable  NO
