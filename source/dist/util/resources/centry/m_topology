@@ -4,7 +4,7 @@
 # 
 name        m_topology
 shortcut    topo 
-type        RESTRING
+type        STRING
 relop       ==
 requestable YES 
 consumable  NO
