@@ -1003,7 +1003,9 @@ int nelem
    if (count <= 0) {
       return -1;
    }
+   setlocale (LC_NUMERIC, "C");
    count = sscanf(buffer, "%lf %lf %lf", &(loadv[0]), &loadv[1], &loadv[2]);
+   setlocale (LC_NUMERIC, "");
    if (count < 1) {
       return -1;
    }
