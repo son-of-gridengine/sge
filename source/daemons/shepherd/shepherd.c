@@ -188,7 +188,7 @@ static int signalled_ckpt_job = 0; /* marker if signalled a ckpt job */
 static int notify_tasker(u_long32 exit_status);
 static int start_child(const char *childname, char *script_file,
                        size_t lscript, pid_t *pidp,
-                       int timeout, int ckpt_type);
+                       int timeout, int ckpt_type, char *status_env);
 static int wait_my_builtin_ijs_child(int pid, const char *childname, int timeout,
    ckpt_info_t *p_ckpt_info, ijs_fds_t *p_ijs_fds, struct rusage *rusage,
    dstring *err_msg);
@@ -433,9 +433,8 @@ static int do_prolog(int timeout, int ckpt_type)
    if (strcasecmp("none", prolog)) {
       int i, n_exit_status = count_exit_status();
 
-      replace_params(prolog, command, sizeof(command), prolog_epilog_variables);
-      exit_status = start_child("prolog", command, sizeof(command),
-                                NULL, timeout, ckpt_type);
+      replace_params(prolog, command, sizeof(command)-1, prolog_epilog_variables);
+      exit_status = start_child("prolog", command, NULL, timeout, ckpt_type);
 
       if (n_exit_status<(i=count_exit_status())) {
          shepherd_trace("exit states increased from %d to %d", n_exit_status, i);
@@ -487,8 +486,7 @@ static int do_epilog(int timeout, int ckpt_type)
       /* start epilog */
       replace_params(epilog, command, sizeof(command),
                      prolog_epilog_variables);
-      exit_status = start_child("epilog", command, sizeof(command),
-                                NULL, timeout, ckpt_type);
+      exit_status = start_child("epilog", command, NULL, timeout, ckpt_type);
       if (n_exit_status<(i=count_exit_status())) {
          shepherd_trace("exit states increased from %d to %d", 
                                 n_exit_status, i);
@@ -543,8 +541,7 @@ static int do_pe_start(int timeout, int ckpt_type, pid_t *pe_pid)
          starters of parallel environments may not get killed 
          in case of success - so we save their pid for later use
       */
-      exit_status = start_child("pe_start", command, sizeof(command),
-                                pe_pid, timeout, ckpt_type);
+      exit_status = start_child("pe_start", command, pe_pid, timeout, ckpt_type);
       if (n_exit_status<(i=count_exit_status())) {
          shepherd_trace("exit states increased from %d to %d", n_exit_status, i);
          /*
@@ -599,8 +596,7 @@ static int do_pe_stop(int timeout, int ckpt_type, pid_t *pe_pid)
       shepherd_trace(pe_stop);
       replace_params(pe_stop, command, sizeof(command), pe_variables);
       shepherd_trace(command);
-      exit_status = start_child("pe_stop", command, sizeof(command),
-                                NULL, timeout, ckpt_type);
+      exit_status = start_child("pe_stop", command, NULL, timeout, ckpt_type);
 
       /* send a kill to pe_start process
        *
@@ -992,10 +988,7 @@ int main(int argc, char **argv)
                create_checkpointed_file(0);
                exit_status = 0; /* no error */
             } else {
-               char command[SGE_PATH_MAX];
-               sge_strlcpy(command, script_file, sizeof(command));
-               exit_status = start_child("job", command, sizeof(command), NULL,
-                                         0, ckpt_type);
+               exit_status = start_child("job", script_file, NULL, 0, ckpt_type);
 
                if (count_exit_status()>0) {
                   /*
@@ -1087,6 +1080,9 @@ int main(int argc, char **argv)
 
 PARAMETER
 
+   childname
+      "prolog", "job", or "epilog"
+
    pidp 
 
       If NULL the process gets killed after child exit
@@ -1096,14 +1092,10 @@ PARAMETER
       In case of no errors the pid is saved in *pidp 
       for later use.
 
-   timeout
-
-   ckpt_type
-
  *******************************************************************/
 static int start_child(
 const char *childname,        /* prolog, job, epilog */
-char *script_file, size_t lscript,
+char *script_file,
 pid_t *pidp,
 int timeout,
 int ckpt_type 
@@ -1484,6 +1476,14 @@ int ckpt_type
 
       /* this is SEMPA stuff */
       notify_tasker(exit_status);
+
+      /* exit status before conversion */
+      if (status_env) {
+         char buffer[16];
+
+         snprintf (buffer, sizeof (buffer), "%d", exit_status);
+         sge_set_env_value (status_env, buffer);
+      }
 
       exit_status_for_qrsh = exit_status;
 
