@@ -317,7 +317,10 @@ The executable path of a shell script that is started after execution
 of xxQS_NAMExx jobs with the same environment setting as that for the
 xxQS_NAMExx
 job that has just completed (see
-.M qsub 1 ).
+.M qsub 1 ),
+with the addition of the variable named
+.B SGE_JOBEXIT_STAT
+which holds the exit status of the job.
 An optional prefix "user@" specifies the 
 user under which this procedure is to be started. The procedure's standard
 output and the error output stream are written to the same file used also for
