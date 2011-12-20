@@ -49,9 +49,9 @@
 
 #ifdef HAVE_HWLOC
 static int initialized = 0;
-#endif
 
 hwloc_topology_t sge_hwloc_topology = 0;
+#endif
 
 /* Intended to be called at the start of the program, with topology
    shared between any threads.  */
