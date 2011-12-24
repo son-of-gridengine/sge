@@ -117,11 +117,6 @@ extern int ruserok(char *host, int root_user, char *remote_user, char *local_use
 #  define NCARGS ARG_MAX
 #endif
 
-#if defined SOLARIS && ! SOLARIS64
-extern int killpg(pid_t pgrp, int sig);
-extern int gethostname(char *name, int namelen);
-#endif
-
 #if defined NECSX5
 #  define killpg(pgrp, sig) kill((-1)*pgrp, sig)
 #endif
