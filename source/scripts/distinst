@@ -45,12 +45,13 @@ HASARCHDIR="bin lib examples/jobsbin utilbin"
 DEFAULTPROG="sge_qmaster sge_execd sge_shadowd \
              sge_shepherd sge_coshepherd qstat qsub qalter qconf qdel \
              qacct qmod qsh utilbin jobs qmon qhost qmake qtcsh qping \
-             qloadsensor.exe sgepasswd qquota qrsub qrstat qrdel qevent"
+             qloadsensor.exe sgepasswd qquota qrsub qrstat qrdel qevent \
+             sge_share_mon"
 
 UTILITYBINARIES="uidgid gethostname gethostbyname gethostbyaddr \
                  getservbyname filestat checkprog loadcheck now checkuser \
                  adminrun qrsh_starter testsuidroot authuser read_raw echo_raw \
-                 sge_share_mon infotext spooldefaults spooledit spoolinit \
+                 infotext spooldefaults spooledit spoolinit \
                  fstype SGE_Helper_Service.exe SGE_Starter.exe valid_jvmlib"
 
 BDBUTILITYBINARIES="db_deadlock db_dump db_load db_printlog db_recover db_stat db_upgrade db_verify"
