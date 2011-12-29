@@ -37,6 +37,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
