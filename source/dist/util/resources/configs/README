@@ -1,0 +1,3 @@
+Configuration files to help SGE fit into other infrastructure.
+
+logrotate.sge:  Rotate log files with logrotate(1)
