@@ -29,9 +29,9 @@
  * 
  ************************************************************************/
 /*___INFO__MARK_END__*/
-/* Error and trace handling for shepherd 
- * Error/Trace files will go to the actual directory at first time 
- * shepherd_error() and trace() are called 
+/* Error and trace handling for shepherd
+ * Error/Trace files will go to the actual directory at first time
+ * shepherd_error() and trace() are called
  */
 
 #include <stdio.h>
@@ -106,12 +106,12 @@ static void  shepherd_panic(const char *s);
 
 
 /******************************************************************************
-* "Public" functions 
+* "Public" functions
 *******************************************************************************/
 /****** shepherd_trace_init/shepherd_trace_exit *******************************
 *  NAME
 *     shepherd_trace_init() -- Begin shepherd's tracing.
-*     shepherd_trace_exit() -- End shepherd's tracing. 
+*     shepherd_trace_exit() -- End shepherd's tracing.
 *
 *  SYNOPSIS
 *    void shepherd_trace_init( void )
@@ -129,9 +129,9 @@ static void  shepherd_panic(const char *s);
 *******************************************************************************/
 void shepherd_trace_init(void)
 {
-	if (!shepherd_trace_fp) {
-		shepherd_trace_fp = shepherd_trace_init_intern(st_trace);
-	}
+   if (!shepherd_trace_fp) {
+      shepherd_trace_fp = shepherd_trace_init_intern(st_trace);
+   }
 }
 
 void shepherd_trace_exit(void)
@@ -140,7 +140,7 @@ void shepherd_trace_exit(void)
 
    /*
     * Work around for CR 6293411:
-    * Some NFS Server have a bug. They test permissions on 
+    * Some NFS Server have a bug. They test permissions on
     * a already open file pointer again when trying to write
     * to the file.
     * This bug affects us only in case that root has rw-permissions
@@ -154,20 +154,20 @@ void shepherd_trace_exit(void)
         seteuid(SGE_SUPERUSER_UID);
      }
 
-	if (shepherd_trace_fp) {
-		FCLOSE(shepherd_trace_fp);
+    if (shepherd_trace_fp) {
+       FCLOSE(shepherd_trace_fp);
 FCLOSE_ERROR:
       shepherd_trace_fp=NULL;
-	}
+    }
 
    /*
     * Switch back to admin user?
     */
     if (old_euid != SGE_SUPERUSER_UID) {
-	   seteuid(old_euid);
-	}
+       seteuid(old_euid);
+    }
 
-	shepherd_error_exit();
+    shepherd_error_exit();
 }
 
 /****** shepherd_trace_chown **************************************************
@@ -188,12 +188,12 @@ FCLOSE_ERROR:
 *******************************************************************************/
 void shepherd_trace_chown(const char* job_owner)
 {
-	shepherd_trace_chown_intern(job_owner, shepherd_trace_fp, st_trace);
+   shepherd_trace_chown_intern(job_owner, shepherd_trace_fp, st_trace);
 }
 
 /****** err_trace/shepherd_trace_exit() **************************************
 *  NAME
-*     shepherd_trace_exit() -- End shepherd's tracing. 
+*     shepherd_trace_exit() -- End shepherd's tracing.
 *
 *  SYNOPSIS
 *     static FILE* shepherd_trace_exit()
@@ -210,12 +210,12 @@ void shepherd_trace_chown(const char* job_owner)
 *******************************************************************************/
 void shepherd_error_init()
 {
-	if (shepherd_error_fp == NULL) {
-		shepherd_error_fp = shepherd_trace_init_intern(st_error);
-	}
-	if (shepherd_exit_status_fp == NULL) {
-		shepherd_exit_status_fp = shepherd_trace_init_intern(st_exit_status);
-	}
+   if (shepherd_error_fp == NULL) {
+      shepherd_error_fp = shepherd_trace_init_intern(st_error);
+   }
+   if (shepherd_exit_status_fp == NULL) {
+      shepherd_exit_status_fp = shepherd_trace_init_intern(st_exit_status);
+   }
 }
 
 void shepherd_error_exit()
@@ -234,14 +234,14 @@ void shepherd_error_exit()
    /*
     * Close file handles
     */
-	if (shepherd_error_fp) {
-		FCLOSE_IGNORE_ERROR(shepherd_error_fp);
+   if (shepherd_error_fp) {
+      FCLOSE_IGNORE_ERROR(shepherd_error_fp);
       shepherd_error_fp = NULL;
-	}
-	if (shepherd_exit_status_fp) {
-		FCLOSE_IGNORE_ERROR(shepherd_exit_status_fp);
+   }
+   if (shepherd_exit_status_fp) {
+      FCLOSE_IGNORE_ERROR(shepherd_exit_status_fp);
       shepherd_exit_status_fp = NULL;
-	}	
+   }
 
    /*
     * Switch back to admin user?
@@ -253,7 +253,7 @@ void shepherd_error_exit()
 
 /****** shepherd_error_chown **************************************************
 *  NAME
-*     shepherd_error_chown() -- Change owner of error and exit_status files. 
+*     shepherd_error_chown() -- Change owner of error and exit_status files.
 *
 *  SYNOPSIS
 *    void shepherd_error_chown(const char* job_owner)
@@ -269,8 +269,8 @@ void shepherd_error_exit()
 *******************************************************************************/
 void shepherd_error_chown(const char* job_owner)
 {
-	shepherd_trace_chown_intern(job_owner, shepherd_error_fp, st_error);
-	shepherd_trace_chown_intern(job_owner, shepherd_exit_status_fp, st_exit_status);
+   shepherd_trace_chown_intern(job_owner, shepherd_error_fp, st_error);
+   shepherd_trace_chown_intern(job_owner, shepherd_exit_status_fp, st_exit_status);
 }
 
 /****** shepherd_trace ********************************************************
@@ -278,7 +278,7 @@ void shepherd_error_chown(const char* job_owner)
 *     shepherd_trace() -- Write line to trace file.
 *
 *  SYNOPSIS
-*     int shepherd_trace(const char *format, ...) 
+*     int shepherd_trace(const char *format, ...)
 *
 *  FUNCTION
 *     Writes a line to the trace file, preceding it with a date, time, uid
@@ -291,7 +291,7 @@ void shepherd_error_chown(const char* job_owner)
 *  RESULT
 *     int - 0 if successful, 1 if an error occured.
 *******************************************************************************/
-int shepherd_trace(const char *format, ...) 
+int shepherd_trace(const char *format, ...)
 {
    dstring     ds;
    dstring     message = DSTRING_INIT;
@@ -306,8 +306,8 @@ int shepherd_trace(const char *format, ...)
    pthread_mutex_lock(&g_trace_mutex);
 
    /* File was closed (e.g. by an exec()) but fp was not set to NULL */
-   if (shepherd_trace_fp 
-       && fstat(fileno(shepherd_trace_fp), &statbuf) == -1	 
+   if (shepherd_trace_fp
+       && fstat(fileno(shepherd_trace_fp), &statbuf) == -1
        && errno == EBADF) {
       shepherd_trace_fp = NULL;
    }
@@ -320,7 +320,7 @@ int shepherd_trace(const char *format, ...)
       sge_dstring_init(&ds, buffer, sizeof(buffer));
 
       sprintf(header_str, "%s ["uid_t_fmt":"pid_t_fmt"]: ", sge_ctime(0, &ds), geteuid(), getpid());
-     
+
       if (format != NULL) {
          va_list     ap;
 
@@ -328,7 +328,7 @@ int shepherd_trace(const char *format, ...)
          sge_dstring_vsprintf(&message, format, ap);
          va_end(ap);
 
-   	 ret = sh_str2file(header_str, sge_dstring_get_string(&message), 
+         ret = sh_str2file(header_str, sge_dstring_get_string(&message),
                            shepherd_trace_fp);
 
          if (foreground) {
@@ -337,13 +337,13 @@ int shepherd_trace(const char *format, ...)
          }
          sge_dstring_free(&message);
       }
-      /* There are cases where we have to open and close the files 
+      /* There are cases where we have to open and close the files
        * for every write.
        */
       if (!g_keep_files_open) {
          shepherd_trace_exit();
       }
-      ret=0;	
+      ret=0;
    }
 
    pthread_mutex_unlock(&g_trace_mutex);
@@ -376,7 +376,7 @@ void shepherd_error(int do_exit, const char *format, ...)
    dstring     message = DSTRING_INIT;
    char        buffer[128];
    char        header_str[256];
-	struct stat statbuf;
+   struct stat statbuf;
 
    if (format != NULL) {
       va_list     ap;
@@ -388,16 +388,16 @@ void shepherd_error(int do_exit, const char *format, ...)
 
    shepherd_trace(sge_dstring_get_string(&message));
 
-	/* File was closed (e.g. by an exec()) but fp was not set to NULL */
-	if (shepherd_error_fp 
-	    && fstat(fileno(shepherd_error_fp), &statbuf) == -1
-		 && errno==EBADF) {
-		shepherd_error_fp = NULL;
-	}
-	if (shepherd_error_fp == NULL) {
-		shepherd_error_fp = shepherd_trace_init_intern(st_error);
-	}
-	if (shepherd_error_fp != NULL) {
+   /* File was closed (e.g. by an exec()) but fp was not set to NULL */
+   if (shepherd_error_fp
+       && fstat(fileno(shepherd_error_fp), &statbuf) == -1
+       && errno==EBADF) {
+      shepherd_error_fp = NULL;
+   }
+   if (shepherd_error_fp == NULL) {
+      shepherd_error_fp = shepherd_trace_init_intern(st_error);
+   }
+   if (shepherd_error_fp != NULL) {
       sge_dstring_init(&ds, buffer, sizeof(buffer));
       sprintf(header_str, "%s ["uid_t_fmt":"pid_t_fmt"]: ",
               sge_ctime(0, &ds), geteuid(), getpid());
@@ -409,40 +409,40 @@ void shepherd_error(int do_exit, const char *format, ...)
       fprintf(stderr, "%s%s\n", header_str, sge_dstring_get_string(&message));
    }
 
-	/* File was closed (e.g. by an exec()) but fp was not set to NULL */
-	if (shepherd_exit_status_fp 
-	    && fstat(fileno(shepherd_exit_status_fp), &statbuf) == -1
-	    && errno==EBADF ) {
-		shepherd_exit_status_fp = NULL;
-	}
-	if (shepherd_exit_status_fp == NULL) {
-		shepherd_exit_status_fp = shepherd_trace_init_intern(st_exit_status);
-	}
-	if (shepherd_exit_status_fp != NULL) {
+   /* File was closed (e.g. by an exec()) but fp was not set to NULL */
+   if (shepherd_exit_status_fp
+       && fstat(fileno(shepherd_exit_status_fp), &statbuf) == -1
+       && errno==EBADF ) {
+      shepherd_exit_status_fp = NULL;
+   }
+   if (shepherd_exit_status_fp == NULL) {
+      shepherd_exit_status_fp = shepherd_trace_init_intern(st_exit_status);
+   }
+   if (shepherd_exit_status_fp != NULL) {
       sprintf(header_str, "%d", shepherd_state);
       sh_str2file(header_str, NULL, shepherd_exit_status_fp);
-	}
-	
+   }
+
    if (coshepherd_pid > 0) {
       sge_switch2start_user();
       kill(coshepherd_pid, SIGTERM);
       sge_switch2admin_user();
-   }   
-     
-   if (g_new_interactive_job_support == false && 
+   }
+
+   if (g_new_interactive_job_support == false &&
       search_conf_val("qrsh_control_port") != NULL) {
       char buffer[1024];
       snprintf(buffer, 1024, "1:%s", sge_dstring_get_string(&message));
-      write_to_qrsh(buffer);  
+      write_to_qrsh(buffer);
    }
    sge_dstring_free(&message);
 
    if (do_exit) {
-		/* close all trace files before exit */
-	   shepherd_trace_exit();
-      exit(shepherd_state);
-	}
-   /* There are cases where we have to open and close the files 
+      /* close all trace files before exit */
+     shepherd_trace_exit();
+     exit(shepherd_state);
+   }
+   /* There are cases where we have to open and close the files
     * for every write.
     */
    if (!g_keep_files_open) {
@@ -452,7 +452,7 @@ void shepherd_error(int do_exit, const char *format, ...)
 
 void shepherd_error_ptr(const char *text)
 {
-   shepherd_error(1, text); 
+   shepherd_error(1, text);
 }
 
 /****** shepherd_write_exit_status ********************************************
@@ -473,48 +473,48 @@ void shepherd_error_ptr(const char *text)
 *******************************************************************************/
 void shepherd_write_exit_status(const char *exit_status)
 {
-	struct stat statbuf;
+   struct stat statbuf;
 #if 1
-	int old_euid = SGE_SUPERUSER_UID;
+   int old_euid = SGE_SUPERUSER_UID;
 #endif
 
-	if (exit_status != NULL) {
+   if (exit_status != NULL) {
 
 #if 1 /* on filesystems where root is mapped to nobody this will not work */
-		/* set euid=0. Local files: root can write to every file.
-		 * NFS files: everyone is allowed to write to exit_status file.
-		 */
+      /* set euid=0. Local files: root can write to every file.
+       * NFS files: everyone is allowed to write to exit_status file.
+       */
       if (getuid() == SGE_SUPERUSER_UID) {
          old_euid = geteuid();
          seteuid(SGE_SUPERUSER_UID);
       }
 #endif
-		/* File was closed (e.g. by an exec()) but fp was not set to NULL */
-		if (shepherd_exit_status_fp 
-	    	 && fstat(fileno(shepherd_exit_status_fp), &statbuf) == -1
-	    	 && errno == EBADF) {
-			shepherd_exit_status_fp = NULL;
-		}
-		if (!shepherd_exit_status_fp) {
-			shepherd_exit_status_fp = shepherd_trace_init_intern(st_exit_status);
-		}
-		if (shepherd_exit_status_fp) {
-   		sh_str2file(exit_status, NULL, shepherd_exit_status_fp);
-		} else {
+      /* File was closed (e.g. by an exec()) but fp was not set to NULL */
+      if (shepherd_exit_status_fp
+          && fstat(fileno(shepherd_exit_status_fp), &statbuf) == -1
+          && errno == EBADF) {
+         shepherd_exit_status_fp = NULL;
+      }
+      if (!shepherd_exit_status_fp) {
+         shepherd_exit_status_fp = shepherd_trace_init_intern(st_exit_status);
+      }
+      if (shepherd_exit_status_fp) {
+         sh_str2file(exit_status, NULL, shepherd_exit_status_fp);
+      } else {
          shepherd_trace("could not write exit_status file\n");
       }
 #if 1
-		if (old_euid != SGE_SUPERUSER_UID) {
-			seteuid(old_euid);
-		}
+      if (old_euid != SGE_SUPERUSER_UID) {
+         seteuid(old_euid);
+      }
 #endif
-      /* There are cases where we have to open and close the files 
+      /* There are cases where we have to open and close the files
        * for every write.
        */
       if (!g_keep_files_open) {
          shepherd_error_exit();
       }
-	}
+   }
 }
 
 /****** is_shepherd_trace_fd **************************************************
@@ -585,7 +585,7 @@ int count_exit_status(void)
             }
          }
          FCLOSE(fp);
-      } 
+      }
    }
 FCLOSE_ERROR:
    return n;
@@ -597,45 +597,45 @@ FCLOSE_ERROR:
 
 static void dup_fd(int *src_fd)
 {
-	int dup_fd[3];
+   int dup_fd[3];
 
-	dup_fd[0] = dup(*src_fd);
-	dup_fd[1] = dup(*src_fd);
-	dup_fd[2] = dup(*src_fd);
+   dup_fd[0] = dup(*src_fd);
+   dup_fd[1] = dup(*src_fd);
+   dup_fd[2] = dup(*src_fd);
 
-	close(*src_fd);
-	close(dup_fd[0]);
-	close(dup_fd[1]);
+   close(*src_fd);
+   close(dup_fd[0]);
+   close(dup_fd[1]);
 
-	*src_fd = dup_fd[2];
+   *src_fd = dup_fd[2];
 }
-	
+
 static int set_cloexec(int fd)
 {
-	int oldflags;
+   int oldflags;
 
-	oldflags = fcntl(fd, F_GETFD, 0);
-	if(oldflags < 0) {
-		return 0;
-	} 
+   oldflags = fcntl(fd, F_GETFD, 0);
+   if (oldflags < 0) {
+      return 0;
+   }
 
-	oldflags |= FD_CLOEXEC;
+   oldflags |= FD_CLOEXEC;
    fcntl(fd, F_SETFD, oldflags);
 
-	return 1;
+   return 1;
 }
 
 /*-----------------------------------------------------------------*/
-static int sh_str2file(const char *header_str, const char *str, FILE* fp) 
+static int sh_str2file(const char *header_str, const char *str, FILE* fp)
 {
-	int     ret = 1;
+   int     ret = 1;
    int     ret_fp = -1;
    int     ret_fl = EOF;
    dstring ds;
    char    buffer[128];
    uid_t   old_euid = SGE_SUPERUSER_UID;
 
-	if (fp) {
+   if (fp) {
       /*
        * Work around for CR 6293411:
        * See shepherd_trace_exit() for details.
@@ -645,21 +645,21 @@ static int sh_str2file(const char *header_str, const char *str, FILE* fp)
          seteuid(SGE_SUPERUSER_UID);
       }
 
-   	if (!str && !header_str) {
-      	ret_fp = fprintf(fp, "function sh_str2file() called with "
+      if (!str && !header_str) {
+         ret_fp = fprintf(fp, "function sh_str2file() called with "
                               "NULL arguments\n");
       } else if (!header_str && str) {
-      	ret_fp = fprintf(fp, "%s\n", str);
-   	} else if (header_str && !str) {
-      	ret_fp = fprintf(fp, "%s\n", header_str);
-   	} else {
-      	ret_fp = fprintf(fp, "%s%s\n", header_str, str);
+         ret_fp = fprintf(fp, "%s\n", str);
+      } else if (header_str && !str) {
+         ret_fp = fprintf(fp, "%s\n", header_str);
+      } else {
+         ret_fp = fprintf(fp, "%s%s\n", header_str, str);
       }
 
       if (ret_fp >= 0) {
-		   ret_fl = fflush(fp);
+         ret_fl = fflush(fp);
          if (ret_fl == 0) {
-		      ret = 0;
+            ret = 0;
          }
       }
       /*
@@ -675,28 +675,27 @@ static int sh_str2file(const char *header_str, const char *str, FILE* fp)
        */
       if (ret_fp < 0) {
          sge_dstring_init(&ds, buffer, sizeof(buffer));
-         sge_dstring_sprintf(&ds, "fprintf(%x,%s,%s) failed: %s", 
-                             fp, header_str?header_str:"<null>", 
+         sge_dstring_sprintf(&ds, "fprintf(%x,%s,%s) failed: %s",
+                             fp, header_str?header_str:"<null>",
                              str?str:"<null>", strerror(errno));
          shepherd_panic(buffer);
       }
       if(ret_fl != 0) {
          sge_dstring_init(&ds, buffer, sizeof(buffer));
-         sge_dstring_sprintf(&ds, "fflush(%x) failed: %s", 
+         sge_dstring_sprintf(&ds, "fflush(%x) failed: %s",
                              fp, strerror(errno));
          shepherd_panic(buffer);
       }
-	}
+   }
    return ret;
 }
 
 /****** err_trace/shepherd_trace_init_intern() *******************************
 *  NAME
-*     shepherd_trace_init_intern() -- Initialize shepherd's tracing. 
+*     shepherd_trace_init_intern() -- Initialize shepherd's tracing.
 *
 *  SYNOPSIS
-*     static FILE* shepherd_trace_init(char *trace_file_path,
-*													char *trace_file_name)
+*     static FILE* shepherd_trace_init(char *trace_file_path, char *trace_file_name)
 *
 *  FUNCTION
 *     Opens the shepherd's trace file and sets the FD_CLOEXEC-flag so it will
@@ -710,7 +709,7 @@ static int sh_str2file(const char *header_str, const char *str, FILE* fp)
 *                             opened trace file.
 *     char *trace_file_name - the name of the trace file itself. Ignored when
 *                             *trace_file_path is NULL.
-* 
+*
 *  RESULT
 *     FILE* - If successfully opened, the file pointer of shepherd's trace file.
 *           - Otherwise NULL.
@@ -727,26 +726,25 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
    FILE            *fp      = NULL;
    int             do_chown = 0;
 
-  	/* 
-  	 *  after changing into the jobs cwd we need an 
-  	 *  absolute path to the error/trace file 
-  	 */
-	if (called == false) {
+   /*
+    *  after changing into the jobs cwd we need an
+    *  absolute path to the error/trace file
+    */
+   if (called == false) {
       if (getcwd(path, sizeof(path)) == NULL) {
          sge_dstring_init(&ds, buffer, sizeof(buffer));
          sge_dstring_sprintf(&ds, "getcwd() failed: %s", strerror(errno));
          shepherd_panic(buffer);
-	   }
-		called=true;
-	}
+      }
+      called=true;
+   }
 
-  	snprintf(tmppath, SGE_PATH_MAX,"%s/%s",path, g_shepherd_file_name[shepherd_file]);
+   snprintf(tmppath, SGE_PATH_MAX,"%s/%s",path, g_shepherd_file_name[shepherd_file]);
    sge_strlcpy(g_shepherd_file_path[shepherd_file], tmppath, SGE_PATH_MAX);
 
-	/* If the file does not exist, create it. Otherwise just open it. */
-   /* Fixme:  It's open world-writable.  */
-	if (SGE_STAT(tmppath, &statbuf)) {
-	  fd = SGE_OPEN3(tmppath, O_RDWR | O_CREAT | O_APPEND, 0644);
+   /* If the file does not exist, create it. Otherwise just open it. */
+   if (SGE_STAT(tmppath, &statbuf)) {
+      fd = SGE_OPEN3(tmppath, O_RDWR | O_CREAT | O_APPEND, 0644);
       if (fd<0) {
          sge_dstring_init(&ds, buffer, sizeof(buffer));
          sge_dstring_sprintf(&ds, "creat(%s) failed: %s", tmppath, strerror(errno));
@@ -755,12 +753,12 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
 
       if (getuid() == SGE_SUPERUSER_UID) {
          /* We must give the file to the job owner later */
-			do_chown = 1;
-		} else {
+         do_chown = 1;
+      } else {
          /* We are not root, so we have to own all files anyway. */
          do_chown = 0;
-		}
-	} else {
+      }
+   } else {
       /* The file already exists. We get here when
        * a) a exec() failed or
        * b) after the execution of prolog/job, when the job/epilog
@@ -778,7 +776,7 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
        * the file here to the next user.
        * This must be done via shepherd_trace_chown() in the shepherd
        * before we switch to this user there.
-       * It can't be done here because we don't know if we are in 
+       * It can't be done here because we don't know if we are in
        * case a) (exec failed) or case b) (after execution of prolog/job).
        */
       int  old_euid = SGE_SUPERUSER_UID;
@@ -807,40 +805,40 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
       if (old_euid != SGE_SUPERUSER_UID) {
          seteuid(old_euid);
       }
-	}
+   }
 
-	/* Something went wrong. */
-	if (fd<0) {
-		return NULL;
-	}
+   /* Something went wrong. */
+   if (fd<0) {
+      return NULL;
+   }
 
-	/* To avoid to block stdin, stdout or stderr, dup the fd until it is >= 3 */
-	if (fd<3) {
-		dup_fd(&fd);
-	}
+   /* To avoid to block stdin, stdout or stderr, dup the fd until it is >= 3 */
+   if (fd<3) {
+      dup_fd(&fd);
+   }
 
-	/* Set FD_CLOEXEC flag to automatically close the file in an exec() */
-	if (!set_cloexec(fd)) {
+   /* Set FD_CLOEXEC flag to automatically close the file in an exec() */
+   if (!set_cloexec(fd)) {
       shepherd_panic("set_cloexec() failed");
-		return NULL;
-	}
+      return NULL;
+   }
 
    /*
-	 * Now open a FILE* from the file descriptor, so we can use fprintf().
+    * Now open a FILE* from the file descriptor, so we can use fprintf().
     */
-	fp = fdopen(fd, "a");
+   fp = fdopen(fd, "a");
    if (!fp) {
       sge_dstring_init(&ds, buffer, sizeof(buffer));
       sge_dstring_sprintf(&ds, "can't open %s file \"%s\": %s\n",
-				              g_shepherd_file_name[shepherd_file], tmppath, 
+                          g_shepherd_file_name[shepherd_file], tmppath,
                           strerror(errno));
       shepherd_panic(buffer);
       return NULL;
    }
-	if (do_chown && strlen(g_job_owner) > 0) {
-		shepherd_trace_chown_intern(g_job_owner, fp, shepherd_file);
-	}
-	return fp;
+   if (do_chown && strlen(g_job_owner) > 0) {
+      shepherd_trace_chown_intern(g_job_owner, fp, shepherd_file);
+   }
+   return fp;
 }
 
 static void shepherd_panic(const char *s)
@@ -867,38 +865,38 @@ FCLOSE_ERROR:
 static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
                                         st_shepherd_file_t shepherd_file)
 {
-	int   fd;
-	uid_t jobuser_id;
+   int   fd;
+   uid_t jobuser_id;
    gid_t jobuser_gid;
    char  buffer[1024];
-	int   old_euid = SGE_SUPERUSER_UID;
+   int   old_euid = SGE_SUPERUSER_UID;
 
-	if (fp && strlen(job_owner) > 0) {
-		fd = fileno(fp);
-      
+   if (fp && strlen(job_owner) > 0) {
+      fd = fileno(fp);
+
       /* If uid != 0, the system is installed as a test user system.
        * We don't have to change any file ownerships there. */
-		if(getuid() == SGE_SUPERUSER_UID) {
-			/* root */
-			strcpy(g_job_owner, job_owner);
-			if(sge_user2uid(job_owner, &jobuser_id, &jobuser_gid, 1) == 0) {
-				/* Now try to give the file to the job user. root (and later
+      if (getuid() == SGE_SUPERUSER_UID) {
+         /* root */
+         strcpy(g_job_owner, job_owner);
+         if (sge_user2uid(job_owner, &jobuser_id, &jobuser_gid, 1) == 0) {
+            /* Now try to give the file to the job user. root (and later
              * the admin user) will still be able to write to it through
              * the open file descriptor.
              * We must do this as root, because only root has the permissons
-             * to change the ownership of a file. 
- 	 	 	 	 */
-				old_euid = geteuid();
+             * to change the ownership of a file.
+             */
+            old_euid = geteuid();
             seteuid(SGE_SUPERUSER_UID);
 
             /* Have to use chown() here, because fchown() has some bugs
              * on True64 and Irix.
              */
-            if (chown(g_shepherd_file_path[shepherd_file], 
+            if (chown(g_shepherd_file_path[shepherd_file],
                       jobuser_id, jobuser_gid) != 0) {
                /* chown failed. This means that user root is a normal user
                 * for the file system (due to NFS rights). So we have no
-                * other chance than open the file for writing for everyone. 
+                * other chance than open the file for writing for everyone.
                 * We must do this as file owner = admin user.
                 */
                seteuid(old_euid);
@@ -921,7 +919,7 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
                   g_keep_files_open = false;
                }
             }
-				seteuid(old_euid);
+            seteuid(old_euid);
          } else {
             /* Can't get jobuser_id -> grant access for everyone */
             if (fchmod(fd, 0666)==-1) {
@@ -929,8 +927,8 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
                shepherd_panic(buffer);
             }
          }
-		}
-	} 
+      }
+   }
 }
 
 static bool nfs_mounted(const char *path)
@@ -943,11 +941,11 @@ static bool nfs_mounted(const char *path)
 #elif defined(INTERIX)
    struct statvfs buf;
    wl_statvfs(path, &buf);
-#else  
+#else
    struct statvfs buf;
    statvfs(path, &buf);
 #endif
-  
+
 #if defined (DARWIN) || defined(FREEBSD) || defined(NETBSD)
    ret = (strcmp("nfs", buf.f_fstypename) == 0) ? true : false;
 #elif defined(LINUX)
