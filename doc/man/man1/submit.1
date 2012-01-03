@@ -1231,7 +1231,7 @@ Currently no mail is sent when a job is suspended.
 .sp 1
 .I Qalter
 allows changing the b, e, and a option arguments even while the job
-executes. The modification of the b option argument will only be in
+executes. The modification of the option arguments will only be in
 effect after a restart or migration of the job, however.
 .sp 1
 If this option or a corresponding value in \fIqmon\fP is specified then
@@ -1248,7 +1248,8 @@ the job has to send mail, if the server sends mail about the job.
 Default is the job owner at the originating host.
 .sp 1
 .I Qalter
-allows changing this option even while the job executes.
+allows changing this option even while the job executes. The modification
+will only be in effect after a restart or migration of the job, however.
 .sp 1
 If this option or a corresponding value in \fIqmon\fP is specified then
 this value will be passed to defined JSV
@@ -1721,6 +1722,8 @@ for a given host is allowed. Shell paths with host
 assignments define the interpreting shell for the job if the host is the
 execution host. The shell path without host specification is used if the
 execution host matches none of the hosts in the list.
+.\" Fixme:  should it be in login_shells list?  Must support -c, -s,
+.\" per Bourne
 .sp 1
 Furthermore, the pathname can be constructed with pseudo environment
 variables as described for the \fB\-e\fP option above.
