@@ -5,8 +5,6 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: hostnameutils.1,v $     Last Update: $Date: 2009-03-12 16:06:25 $     Revision: $Revision: 1.4 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -36,16 +34,16 @@ gethostname, gethostbyname, gethostbyaddr, getservbyname \- get local host infor
 .\"
 .\"
 .SH SYNTAX
-.B gethostname [-help|-name|-aname|-all]
+.BR $SGE_ROOT/utilbin/$ARCH/gethostname\   [ \-help | \-name | \-aname | \-all ]
 .PP
-.B gethostbyname [-help|-name|-aname|-all]
-.B <name>
+.BR $SGE_ROOT/utilbin/$ARCH/gethostbyname\   [ \-help | \-name | \-aname | \-all ]
+.I name
 .PP
-.B gethostbyaddr [-help|-name|-aname|-all]
-.B <ip>
+.BR $SGE_ROOT/utilbin/$ARCH/gethostbyaddr\   [ \-help | \-name | \-aname | \-all ]
+.I ip
 .PP
-.B getservbyname [-help|-number]
-.B <service>
+.BR $SGE_ROOT/utilbin/$ARCH/getservbyname\  [ \-help | \-number ]
+.I service
 .\"
 .\"
 .PP
@@ -112,12 +110,14 @@ The following example shows how to get the port number of the FTP service:
 .PP
 .RS
 .nf
->getservbyname -number ftp
+>/opt/sge/default/lx-amd64/getservbyname \-number ftp
 21
 .fi
 .RE
 .PP
-The next example shows the output of gethostname -all when the host alias file
+The next example shows the output of 
+.B "gethostname \-all"
+when the host alias file
 contains this line:
 .PP
 gridmaster extern_name extern_name.mydomain
@@ -125,13 +125,14 @@ gridmaster extern_name extern_name.mydomain
 The local host resolving must also provide the alias name "gridmaster". Each xxQS_NAMExx
 host that wants to use the cluster must be able to resolve the host name "gridmaster". 
 .PP
+.\" fixme:  host_aliases?
 To setup an alias name, edit your /etc/hosts file or modify your NIS setup to provide the alias for the NIS clients.
 .PP
 The host alias file must be readable from each host (use e.g. NFS shared file location).
 .PP
 .RS
 .nf
->gethostname -all
+>/opt/sge/default/lx-amd64/gethostname \-all
 Hostname: extern_name.mydomain
 SGE name: gridmaster
 Aliases:  loghost gridmaster
@@ -140,7 +141,7 @@ Host Address(es): 192.168.143.99
 .RE
 .\"
 .\"
-.SH "ENVIRONMENTAL VARIABLES"
+.SH "ENVIRONMENT VARIABLES"
 .\" 
 .IP "\fBxxQS_NAME_Sxx_ROOT\fP" 1.5i
 Specifies the location of the xxQS_NAMExx standard configuration

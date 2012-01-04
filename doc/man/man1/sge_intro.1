@@ -5,8 +5,6 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: sge_intro.1,v $     Last Update: $Date: 2011-05-08 17:01:59 $     Revision: $Revision: 1.9 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -30,7 +28,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH xxQS_NAME_Sxx_INTRO 1 "$Date: 2011-05-08 17:02:00 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH xxQS_NAME_Sxx_INTRO 1 "2011-05-08" "xxRELxx" "xxQS_NAMExx User Commands"
 .\"
 .SH NAME
 sge_intro \- xxQS_NAMExx, a facility for executing jobs on remote machines
@@ -81,6 +79,11 @@ querying queues and the cluster configuration.
 provides the means for a user/operator/manager to cancel jobs.
 .\"
 .TP
+.M qevent 1
+.I qevent
+provides a means of watching xxQS_NAMExx events and acting on jobs finishing.
+.\"
+.TP
 .M qhold 1
 .I qhold
 holds back submitted jobs from execution.
@@ -118,6 +121,11 @@ provides a Motif command interface to all xxQS_NAMExx
 functions. The status of all, or a private selection of, the configured
 queues is displayed on-line by changing colors at corresponding queue
 icons.
+.\"
+.TP
+.M qping 1
+.I qping
+can be used to check the status of xxQS_NAMExx daemons.
 .\"
 .TP
 .M qquota 1

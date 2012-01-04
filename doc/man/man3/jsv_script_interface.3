@@ -4,7 +4,6 @@
 .\" Copyright: 2009 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: jsv_script_interface.3,v $     Last Update: $Date: 2009-05-28 16:56:19 $     Revision: $Revision: 1.4 $
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -28,7 +27,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH JSV_SCRIPT_INTERFACE 3 "$Date: 2009-05-28 16:56:19 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH JSV_SCRIPT_INTERFACE 3 2009-05-28 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 jsv_is_param, jsv_get_param, jsv_add_param, jsv_mod_param, jsv_del_param, jsv_sub_is_param, jsv_sub_get_param, jsv_sub_add_param, jsv_sub_del_param, jsv_is_env, jsv_get_env, jsv_add_env, jsv_mod_env, jsv_del_env, jsv_accept, jsv_correct, jsv_reject, jsv_reject_wait, jsv_show_params, jsv_show_envs, jsv_log_info, jsv_log_warning, jsv_log_error, jsv_main \- xxQS_NAMExx Job Submission Verifier Scripting Interface
@@ -236,11 +235,7 @@ the name
 .BR ac ,
 whose value is a comma-separated list of variable/value pairs;
 .TP
-.BR binding_strategy ", " binding_type ", " binding_amount
-.TP
-.BR binding_step ", " binding_socket ", " binding_core
-.TP
-.BR binding_exp_n ", " binding_exp_socket\fIid\fP ", " binding_exp_core\fIid\fP
+.BR binding_strategy ,\  binding_type ,\  binding_amount ,\  binding_step ,\  binding_socket ,\  binding_core ,\  binding_exp_n ,\  binding_exp_socket\fIid\fP ,\  binding_exp_core\fIid\fP
 The values passed to the
 .B \-binding
 parameter are passed as multiple parameters to JSV
