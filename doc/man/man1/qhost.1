@@ -30,7 +30,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QHOST 1 "$Date: 2011-12-04 02:00:15 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH QHOST 1 "2011-12-04" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qhost \- show the status of xxQS_NAMExx hosts, queues, jobs
 .\"
@@ -156,7 +156,9 @@ the queue name.
 the queue type \- one of B(atch), I(nteractive), or a combination thereof,
 .IP "\(bu" 3n
 the number of reserved (by advance reservation, not resource
-reservation), used and, available job slots,
+reservation), used and, available (according to the queue's
+.BR slots
+parameter) job slots,
 .IP "\(bu" 3n
 the state of the queue \- one of
 .\" Fixme:  `orphaned' occurs in sge_qinstance_state.c -- what does it mean?
@@ -284,7 +286,7 @@ or SLAVE \- only meaningful in case of a parallel job) and
 the priority of the jobs.
 .\"
 .\"
-.SH "ENVIRONMENTAL VARIABLES"
+.SH "ENVIRONMENT VARIABLES"
 .\" 
 .IP "\fBxxQS_NAME_Sxx_ROOT\fP" 1.5i
 Specifies the location of the xxQS_NAMExx standard configuration

@@ -4,15 +4,13 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: drmaa_attributes.3,v $     Last Update: $Date: 2008-08-07 13:06:27 $     Revision: $Revision: 1.20 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
 .de M    \" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH drmaa_attributes 3 "$Date: 2008-08-07 13:06:27 $" "xxRELxx" "xxQS_NAMExx DRMAA"
+.TH drmaa_attributes 3 "2008-08-07" "xxRELxx" "xxQS_NAMExx DRMAA"
 .\"
 .\"
 .\"
@@ -168,8 +166,8 @@ file(s), options set in the script file, options set by the drmaa_job_category
 attribute, options set by the drmaa_native_specification attribute, and options
 set through other DRMAA attributes.
 .PP
-By default DRMAA sets four options for all jobs.  These are "-p 0", "-b yes",
-"-shell no", and "-w e".  This means that by default, all jobs will have
+By default DRMAA sets four options for all jobs.  These are "\-p 0", "\-b yes",
+"\-shell no", and "\-w e".  This means that by default, all jobs will have
 priority 0, all jobs will be treated as binary, i.e. no scripts args will be
 parsed, all jobs will be executed without a wrapper shell, and jobs which are
 unschedulable will cause a submit error.
@@ -185,8 +183,8 @@ for more information.
 .PP
 If the
 .M sge_request 5
-file contains "-b no" or if the drmaa_native_specification attribute is set
-and contains "-b no", the script file will be parsed for in-line arguments.
+file contains "\-b no" or if the drmaa_native_specification attribute is set
+and contains "\-b no", the script file will be parsed for in-line arguments.
 Otherwise, no scripts args will be interpreted.  See
 .M qsub 1
 for more information.  
@@ -204,14 +202,14 @@ therein will be applied to the job template.  See the
 drmaa_native_specification below for more information.
 .PP
 Other DRMAA attributes will override any previous settings.  For example, if
-the sge_request file contains "-j y", but the drmaa_join_files attribute is
+the sge_request file contains "\-j y", but the drmaa_join_files attribute is
 set to "n", the ultimate result is that the input and output files will remain
 separate.
 .PP
 For various reasons, some options are silently ignored by DRMAA.  Setting any
-of these options will have no effect.  The ignored options are: -cwd, -help, -sync,
--t, -verify, -w w, and -w v.  The -cwd option can be re-enabled by setting the
-environment variable, SGE_DRMAA_ALLOW_CWD.  However, the -cwd option is not
+of these options will have no effect.  The ignored options are: \-cwd, \-help, \-sync,
+\-t, \-verify, \-w w, and \-w v.  The \-cwd option can be re-enabled by setting the
+environment variable, SGE_DRMAA_ALLOW_CWD.  However, the \-cwd option is not
 thread safe and should not be used in a multi-threaded context.
 .PP
 .\"
@@ -221,26 +219,28 @@ The following DRMAA attributes correspond to the following
 options:
 .PP
 .RS
-.nf
-DRMAA Attribute                  qsub Option
--------------------------------------------------------
-drmaa_remote_command             script file
-drmaa_v_argv                     script file args
-drmaa_js_state = "drmaa_hold"    -h
-drmaa_v_env                      -v
-drmaa_wd = $PWD                  -cwd
-drmaa_job_category               (qtsch qtask)*
-drmaa_native_specification       ALL*
-drmaa_v_email                    -M
-drmaa_block_email = "1"          -m n
-drmaa_start_time                 -a
-drmaa_job_name                   -N
-drmaa_input_path                 -i
-drmaa_output_path                -o
-drmaa_error_path                 -e
-drmaa_join_files                 -j
-drmaa_transfer_files             (prolog and epilog)*
-.fi
+.TS
+tab(@);
+l l.
+DRMAA Attribute                 @ qsub Option
+_
+drmaa_remote_command            @ script file
+drmaa_v_argv                    @ script file args
+drmaa_js_state = "drmaa_hold"   @ \-h
+drmaa_v_env                     @ \-v
+drmaa_wd = $PWD                 @ \-cwd
+drmaa_job_category              @ (qtsch qtask)*
+drmaa_native_specification      @ ALL*
+drmaa_v_email                   @ \-M
+drmaa_block_email = "1"         @ \-m n
+drmaa_start_time                @ \-a
+drmaa_job_name                  @ \-N
+drmaa_input_path                @ \-i
+drmaa_output_path               @ \-o
+drmaa_error_path                @ \-e
+drmaa_join_files                @ \-j
+drmaa_transfer_files            @ (prolog and epilog)*
+.TE
 .PP
 * See the individual attribute description below
 .RE
@@ -249,7 +249,7 @@ drmaa_transfer_files             (prolog and epilog)*
 .\"
 .\"
 .SH "DRMAA JOB TEMPLATE ATTRIBUTES"
-.SS "drmaa_remote_command - ""<remote_command>"""
+.SS "drmaa_remote_command \- ""<remote_command>"""
 Specifies the remote command to execute. The \fIremote_command\fP must be the path of an 
 executable that is available at the job's execution host.  If the path is relative,
 it is assumed to be relative to the working directory, usually set through the
@@ -262,7 +262,7 @@ in a #! line at the beginning of the script.  By default, the remote command
 will be executed directly, as by
 .M exec 2 .
 To have the remote command executed in a shell, such as to preserve environment
-settings, use the drmaa_native_specification attribute to include the "-shell yes"
+settings, use the drmaa_native_specification attribute to include the "\-shell yes"
 option.  Jobs which are executed by a wrapper shell fail differently from jobs
 which are executed directly.  When a job which contains a user error, such as an
 invalid path to the executable, is executed by a wrapper shell, the job will
@@ -272,18 +272,18 @@ state upon execution.
 .PP
 .\" 
 .\" 
-.SS "drmaa_js_state - ""{drmaa_hold|drmaa_active}"""
+.SS "drmaa_js_state \- ""{drmaa_hold|drmaa_active}"""
 Specifies the job state at submission. The string values 'drmaa_hold'
 and 'drmaa_active' are supported. When 'drmaa_active' is used the job is submitted
 in a runnable state.  When 'drmaa_hold' is used the job is submitted in user
 hold state (either DRMAA_PS_USER_ON_HOLD or DRMAA_PS_USER_SYSTEM_ON_HOLD). This
 attribute is largely equivalent to  the
 .M qsub 1
-submit option '-h'.
+submit option '\-h'.
 .PP
 .\" 
 .\" 
-.SS "drmaa_wd - ""<directory_name>"""
+.SS "drmaa_wd \- ""<directory_name>"""
 Specifies the directory name where the job will be executed. A '$drmaa_hd_ph$' placeholder 
 at the beginning of the
 \fIdirectory_name\fP 
@@ -306,12 +306,12 @@ must be the same on both the submission and execution hosts.
 .PP
 .\" 
 .\" 
-.SS "drmaa_job_name - ""<job_name>"""
+.SS "drmaa_job_name \- ""<job_name>"""
 Specifies the job's name. Setting the job name is equivalent to use of
 .M qsub 1
-submit option '-N' with \fIjob_name\fP as option argument. 
+submit option '\-N' with \fIjob_name\fP as option argument.
 .PP
-.SS "drmaa_input_path - ""[<hostname>]:<file_path>"""
+.SS "drmaa_input_path \- ""[<hostname>]:<file_path>"""
 Specifies the standard input of the job. Unless set elsewhere, if not explicitly set in 
 the job template, the job is started with an empty input stream. If the standard input is set it 
 specifies the network path of the job's input stream file. 
@@ -338,7 +338,7 @@ the job enters the state DRMAA_PS_FAILED.
 .PP
 .\" 
 .\" 
-.SS "drmaa_output_path - ""[<hostname>]:<file_path>"""
+.SS "drmaa_output_path \- ""[<hostname>]:<file_path>"""
 Specifies the standard output of the job. If not explicitly set in the job template, the whereabouts of 
 the job's output stream is not defined. If set, this attribute specifies the network path of the job's output stream file.
 .PP
@@ -364,7 +364,7 @@ state DRMAA_PS_FAILED.
 .PP
 .\" 
 .\" 
-.SS "drmaa_error_path - ""[<hostname>]:<file_path>"""
+.SS "drmaa_error_path \- ""[<hostname>]:<file_path>"""
 Specifies the standard error of the job. If not explicitly set in the job template, the whereabouts of the 
 job's error stream is not defined. If set, this attribute specifies the network path of the job's error stream file.
 .PP
@@ -393,7 +393,7 @@ DRMAA_PS_FAILED. The attribute name is drmaa_error_path.
 .PP
 .\" 
 .\" 
-.SS "drmaa_join_files - ""{y|n}"""
+.SS "drmaa_join_files \- ""{y|n}"""
 Specifies if the job's error stream should be intermixed with the output stream. 
 If not explicitly set in the job template the attribute defaults to 'n'. Either 'y'
 or 'n' can be specified. If 'y' is specified xxQS_NAMExx will ignore the value 
@@ -402,12 +402,12 @@ stream with the standard output stream as specified with 'drmaa_output_path'.
 .PP
 .\" 
 .\" 
-.SS "drmaa_v_argv - ""argv1 argv2 ..."""
+.SS "drmaa_v_argv \- ""argv1 argv2 ..."""
 Specifies the arguments to the job.
 .PP
 .\"
 .\"
-.SS "drmaa_job_category - ""<category>"""
+.SS "drmaa_job_category \- ""<category>"""
 Specifies the DRMAA job category. The \fIcategory\fP string is used 
 by xxQS_NAMExx as a reference into the 
 .M qtask 5
@@ -423,40 +423,40 @@ as well as by explicit DRMAA job template settings.
 In order to avoid collisions with command names in the qtask files, it is
 recommended that DRMAA job category names take the form: <category_name>.cat.
 .PP
-The options -help, -sync, -t, -verify, and -w w|v are ignored.  The -cwd option
+The options \-help, \-sync, \-t, \-verify, and \-w w|v are ignored.  The \-cwd option
 is ignored unless the $SGE_DRMAA_ALLOW_CWD environment variable is set.
 .PP
 .\" 
 .\" 
-.SS "drmaa_native_specification - ""<native_specification>"""
+.SS "drmaa_native_specification \- ""<native_specification>"""
 Specifies xxQS_NAMExx native
 .M qsub 1 
 options which will be interpreted as part of the DRMAA job template.  All
 options available to
 .M qsub 1 
-command may be used in the \fInative_specification\fP, except for -help, -sync,
--t, -verify, and -w w|v.  The -cwd option may only be used if the
+command may be used in the \fInative_specification\fP, except for \-help, \-sync,
+\-t, \-verify, and \-w w|v.  The \-cwd option may only be used if the
 SGE_DRMAA_ALLOW_CWD environment variable is set.  This is because the current
-parsing algorithm for -cwd is not thread-safe.  Options set in the \fInative
+parsing algorithm for \-cwd is not thread-safe.  Options set in the \fInative
 specification\fP will be overridden by the corresponding DRMAA attributes.  See
 .M qsub 1
 for more information on qsub options.
 .PP
 .\" 
 .\" 
-.SS "drmaa_v_env - ""<name1>=<value1> <name2>=<value2> ..."
+.SS "drmaa_v_env \- ""<name1>=<value1> <name2>=<value2> ..."
 Specifies the job environment. Each environment \fIvalue\fP defines the remote 
 environment. The \fIvalue\fP overrides the remote environment values if there 
 is a collision.
 .PP
 .\" 
 .\" 
-.SS "drmaa_v_email - ""<email1> <email2> ..."
+.SS "drmaa_v_email \- ""<email1> <email2> ..."
 Specifies e-mail addresses that are used to report the job completion and status. 
 .PP
 .\"
 .\"
-.SS "drmaa_block_email - ""{0|1}"""
+.SS "drmaa_block_email \- ""{0|1}"""
 Specifies whether e-mail sending shall blocked or not.  By default email is not
 sent.  If, however, a setting in a cluster or user settings file or the
 \&'drmaa_native_specification' or 'drmaa_job_category' attribute enables sending
@@ -465,12 +465,12 @@ override that setting, causing no email to be sent.
 .PP
 .\" 
 .\" 
-.SS "drmaa_start_time - ""[[[[CC]YY/]MM/]DD] hh:mm[:ss] [{-|+}UU:uu]"""
+.SS "drmaa_start_time \- ""[[[[CC]YY/]MM/]DD] hh:mm[:ss] [{\-|+}UU:uu]"""
 Specifies the earliest time when the job may be eligible to be run where
 .sp 1
 .nf
 .RS
-CC is the first two digits of the year (century-1) 
+CC is the first two digits of the year (century\-1)
 YY is the last two digits of the year 
 MM is the two digits of the month [01,12] 
 DD is the two digit day of the month [01,31] 
@@ -485,12 +485,12 @@ uu is the two digit minutes since (before) UTC
 If the optional UTC-offset is not specified, the offset associated with the local timezone will be 
 used. If the day (DD) is not specified, the current day will be used unless the 
 specified hour:mm:ss has already elapsed, in which case the next day will be used. 
-Similarly for month (MM), year (YY), and century-1 (CC). 
-Example: The time: Sep 3 4:47:27 PM PDT 2002, could be represented as: 2002/09/03 16:47:27 -07:00.
+Similarly for month (MM), year (YY), and century\-1 (CC).
+Example: The time: Sep 3 4:47:27 PM PDT 2002, could be represented as: 2002/09/03 16:47:27 \-07:00.
 .PP
 .\" 
 .\"
-.SS "drmaa_transfer_files - ""[i][o][e]"""
+.SS "drmaa_transfer_files \- ""[i][o][e]"""
 Specifies, which of the standard I/O files (stdin, stdout and stderr) are to be 
 transferred to/from the execution host. If not set, defaults to "". Any combination
 of 'e', 'i' and 'o' may be specified.
@@ -532,9 +532,9 @@ If it is not configured, "drmaa_transfer_files" is not enabled and can't be used
 .SH "ENVIRONMENTAL VARIABLES"
 .\"
 .IP "\fBSGE_DRMAA_ALLOW_CWD\fP" 1.5i
-Enables the parsing of the -cwd option from the sge_request file(s), job
+Enables the parsing of the \-cwd option from the sge_request file(s), job
 category, and/or the native specification attribute.  This option is disabled
-by default because the algorithm for parsing the -cwd option is not thread-safe.
+by default because the algorithm for parsing the \-cwd option is not thread-safe.
 .\"
 .IP "\fBxxQS_NAME_Sxx_ROOT\fP" 1.5i
 Specifies the location of the xxQS_NAMExx standard configuration files.
@@ -600,6 +600,7 @@ Failed because there is no active session.
 Failed allocating memory.
 .\" 
 .PP
+.\" Fixme: ??
 The drmaa_get_next_attr_name() will fail if:
 .SS "DRMAA_ERRNO_INVALID_ATTRIBUTE_VALUE"
 When there are no more entries in the vector.

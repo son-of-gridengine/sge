@@ -4,8 +4,6 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: sge_execd.8,v $     Last Update: $Date: 2011-12-04 01:50:33 $     Revision: $Revision: 1.10 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -29,9 +27,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH xxQS_NAME_Sxx_EXECD 8 "$Date: 2011-12-04 01:50:33 $" "xxRELxx" "xxQS_NAMExx Administrative Commands"
+.TH xxQS_NAME_Sxx_EXECD 8 "2011-12-29" "xxRELxx" "xxQS_NAMExx Administrative Commands"
 .SH NAME
-xxqs_name_sxx_execd \- xxQS_NAMExx job execution agent
+xxqs_name_sxx_execd, xxqs_name_sxx_loadsensor \- xxQS_NAMExx job execution agent and load sensor interface
 .\"
 .\"
 .SH SYNOPSIS
@@ -59,22 +57,29 @@ Prints a listing of all options.
 .\"
 .\"
 .SH "LOAD SENSORS"
-If a \fBload sensor\fP is configured for
+One of more \fBload sensor\fPs may be configured for
 .I xxqs_name_sxx_execd
-via either the global host configuration or the 
-execution-host-specific cluster configuration (see
-.M xxqs_name_sxx_conf 5 ),
-the executable path of the load sensor is invoked by
+via the possibilities listed in
+.M xxqs_name_sxx_conf 5 :
+the global host configuration, the
+execution-host-specific cluster configuration, the default
+.IR qloadsensor ,
+or
+.IR qidle
+(when
+.B USE_QIDLE
+is set).
+The executable path of the load sensor is invoked by
 .I xxqs_name_sxx_execd
 on a regular basis 
 and delivers one or multiple load figures for the execution host (e.g.
 users currently logged in) or the complete cluster (e.g. free
-disk space on a network wide scratch file system). The load
+disk space on a network wide scratch file system).  A load
 sensor may be a script or a binary executable. In either case
 its handling of the STDIN and STDOUT streams and its control
-flow must comply to the following rules:
+flow must comply with the following rules:
 .PP
-The load sensor must be written as an infinite loop waiting at
+The load sensor must be written as an infinite loop, waiting at
 a certain point for input from STDIN. If the string "quit"
 is read from STDIN, the load sensor should exit.  When an
 end-of-line is read from STDIN, a load data retrieval cycle should
@@ -106,7 +111,7 @@ The third part is the measured load value.
 .IP "\(bu" 3n
 A load value report ends with a line with only the word "end".
 .\" 
-.SH "ENVIRONMENTAL VARIABLES"
+.SH "ENVIRONMENT VARIABLES"
 .\" 
 .IP "\fBxxQS_NAME_Sxx_ROOT\fP" 1.5i
 Specifies the location of the xxQS_NAMExx standard configuration
@@ -174,6 +179,10 @@ that file manually.
 	Default execution host spool directory
 \fI<xxqs_name_sxx_root>/<cell>/common/act_qmaster\fP
 	xxQS_NAMExx master host file
+\fI<xxqs_name_sxx_root>/bin/<arch>/qloadsensor\fP
+	Default load sensor
+\fI<xxqs_name_sxx_root>/bin/<arch>/qidle\fP
+	Idle load sensor per USE_QIDLE in execd_params
 .fi
 .\"
 .\"

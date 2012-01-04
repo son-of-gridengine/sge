@@ -4,8 +4,6 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: sge_ca.8,v $     Last Update: $Date: 2011-05-19 00:07:14 $     Revision: $Revision: 1.3 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -29,7 +27,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH SGE_CA 8 "$Date: 2011-05-19 00:07:14 $" "xxRELxx" "xxQS_NAMExx Administrative Commands"
+.TH SGE_CA 8 "2011-05-19" "xxRELxx" "xxQS_NAMExx Administrative Commands"
 .SH NAME
 util/sgeCA/sge_ca \- xxQS_NAMExx CSP Support control command
 .\"
@@ -245,7 +243,7 @@ Create a keystore for all users of the simple CA. The keystore is stored under /
 Make the root certificate temporarily invalid.
 .IP "# sge_ca \-renew_ca \-days 365 \-cadir /tmp"
 Renew the CA certificate for 365 days
-.SH "ENVIRONMENTAL VARIABLES"
+.SH "ENVIRONMENT VARIABLES"
 .\" 
 .IP "\fBSGE_ROOT\fP" 1.5i
 Specifies the location of the xxQS_NAMExx standard configuration
