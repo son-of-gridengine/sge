@@ -198,7 +198,7 @@ case $version in
         running_in_column="all"
         ;;
 
-    6*) qstat_running='qstat -u "${myuser:-*}" -g t -s "$jobrange" -r'
+    6*|8*) qstat_running='qstat -u "${myuser:-*}" -g t -s "$jobrange" -r'
         qstat_waiting='qstat -u "${myuser:-*}" -g d -s p -r'
         if [ -n "$CMDOPT_M" ] ; then
             running_in_column="machine"
@@ -300,7 +300,11 @@ eval $qstat_running | $awk_command '
 
         BEGIN { firstrun=1
                 ignore=0
-                actual_time=systime()
+#                actual_time=systime()  # not portable
+                cmd="date +s"
+                cmd | getline
+                actual_time=$1
+                close(cmd)
               }
 
         function printy()
@@ -362,7 +366,7 @@ eval $qstat_running | $awk_command '
                                    running_seconds=actual_time - mktime(substr($6,7,4)" "substr($6,1,2)" "substr($6,4,2)" " \
                                                                         substr($7,1,2)" "substr($7,4,2)" "substr($7,7,2))
                                    starttime_days=int(running_seconds / 86400)
-                                   starttime_time=strftime("%T", running_seconds % 86400, 1)
+                                   starttime_time=strftime("%T", running_seconds % 86400)
                                    starttime=sprintf("-%dd %s", starttime_days, starttime_time)
                                }
 
@@ -501,7 +505,11 @@ eval $qstat_running | $awk_command '
 eval $qstat_waiting | $awk_command '
 
         BEGIN { firstrun=1
-                actual_time=systime()
+#                actual_time=systime()  # not portable
+                cmd="date +s"
+                cmd | getline
+                actual_time=$1
+                close(cmd)
               }
 
         function printy()
@@ -562,7 +570,7 @@ eval $qstat_waiting | $awk_command '
                                    waiting_seconds=actual_time - mktime(substr($6,7,4)" "substr($6,1,2)" "substr($6,4,2)" " \
                                                                         substr($7,1,2)" "substr($7,4,2)" "substr($7,7,2))
                                    submittime_days=int(waiting_seconds / 86400)
-                                   submittime_time=strftime("%T", waiting_seconds % 86400, 1)
+                                   submittime_time=strftime("%T", waiting_seconds % 86400)
                                    submittime=sprintf("-%dd %s", submittime_days, submittime_time)
                                }
 
