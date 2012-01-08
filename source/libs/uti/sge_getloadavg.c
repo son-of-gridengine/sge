@@ -59,13 +59,6 @@
 #elif defined(IRIX)
 #  include <sys/sysmp.h> 
 #  include <sys/sysinfo.h> 
-#elif defined(HP10) 
-#  include <nlist.h> 
-#  include <sys/time.h>
-#  include <sys/dk.h>
-#  include <sys/file.h>
-#  include <errno.h>
-#  include <unistd.h> 
 #elif defined(HP11) || defined(HP1164)
 #  include <sys/param.h>
 #  include <sys/pstat.h>
@@ -175,15 +168,6 @@
 #  define KERNEL_AVG_TYPE long
 #  define KERNEL_AVG_NAME "avenrun"
 #  define CPUSTATES 6
-#elif defined(HP10) 
-#  define KERNEL_NAME_FILE "/stand/vmunix"
-#  define KERNEL_AVG_NAME "avenrun"
-#  define MP_KERNADDR 8
-#  define MPKA_AVENRUN 19
-#  define SGE_FSCALE 1.0
-#  define KERNEL_AVG_TYPE double 
-#  define VMUNIX "/stand/vmunix"
-#  define X_CP_TIME 0 
 #elif defined(AIX51)
 #  define KERNEL_NAME_FILE "/unix"
 #  define KERNEL_AVG_NAME "avenrun"

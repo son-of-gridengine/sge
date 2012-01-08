@@ -210,7 +210,6 @@ ArchTable()
    echo "Arch Name             Platform"
    echo "-------------------------------------------"
    echo "aix51                 AIX 5.1"
-   echo "aix43                 AIX 4.3"
    echo "hp10                  HP-UX 10.x"
    echo "hp11                  HP-UX 11.x"
    echo "hp11-64               HP-UX 11.x 64bit"

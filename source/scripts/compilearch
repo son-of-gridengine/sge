@@ -152,10 +152,6 @@ case $buildarch in
    fbsd-sparc64)
       BUILDARCH=FREEBSD_SPARC64
       ;;
-   hp10)
-      BUILDARCH=HP10
-      TARGET_BITS=TARGET_32BIT
-      ;;
    hp11)
       BUILDARCH=HP11
       TARGET_BITS=TARGET_32BIT

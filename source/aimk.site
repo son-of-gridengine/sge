@@ -34,7 +34,6 @@
 # Set default aimk switches
 #
 switch($buildarch)
-   case "aix43":
    case "aix51":
    case "darwin":
    case "lx-alpha":
@@ -97,7 +96,6 @@ switch ($BUILDARCH)
    case "HP11":
       # for HP11.00 we don't have dynamic loading of shared libraries
       # build with berkeleydb
-   case "AIX43":
    case "AIX51":
    case "IRIX65":
       # for these platforms, reverse resolving of global symbols doesn't

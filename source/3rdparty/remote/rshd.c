@@ -109,10 +109,6 @@ typedef unsigned short in_port_t;
 #endif
 #endif
 
-#ifdef ALPHA4
-extern int ruserok(char *host, int root_user, char *remote_user, char *local_user);
-#endif 
-
 #if defined(IRIX) || defined(INTERIX)
 #  define NCARGS ARG_MAX
 #endif

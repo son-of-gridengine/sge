@@ -142,7 +142,6 @@ set DTOR = ""
 
 switch ($ARCH)
 
-case aix43:
 case aix51:
    set CFLAGS = "-DAIX -DUSE_STDARG $DEBUG_FLAG $CFLAGS"
    set LFLAGS = "$DEBUG_FLAG $LFLAGS"

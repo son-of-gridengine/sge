@@ -1060,10 +1060,6 @@ case AIX51:
       set SHAREDLD = "$SOURCE/scripts/ldAix"
    endif
 
-   if ($BUILDARCH == "AIX43") then
-     set AUTHLIBS = ""
-   endif
-
    set CFLAGS   = "$OFLAG -DAIX -D$BUILDARCH -D_LARGE_FILES -DUSE_STDARG -DUSE_SGE_UNSETENV -DGETHOSTBYADDR_R5 -DGETHOSTBYNAME_R3 $DEBUG_FLAG $CFLAGS -DHAS_AIX_PERFLIB"
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
    set XCFLAGS  = "$XCFLAGS -DNeedFunctionPrototypes -DNeedVarargsPrototypes $XMTDEF $XINCD"
@@ -2958,13 +2954,6 @@ if ( "$QTCSH" == 1) then
 
    if ( $SHAREDLIBS == 1 ) then
       set SHARED_PATH_NAME = `dist/util/arch -lib`
-
-      switch ( $COMPILE_ARCH )
-         case AIX43:
-            set SGE_LOPTS = "-brtl"
-            breaksw
-      endsw
-
       setenv $SHARED_PATH_NAME ${SOURCE}/${COMPILE_ARCH}
    endif
 
