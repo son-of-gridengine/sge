@@ -109,10 +109,6 @@ typedef unsigned short in_port_t;
 #  define NCARGS ARG_MAX
 #endif
 
-#if defined NECSX5
-#  define killpg(pgrp, sig) kill((-1)*pgrp, sig)
-#endif
-
 int	keepalive = 1;
 int	check_all;
 int   check_nologin = 1;

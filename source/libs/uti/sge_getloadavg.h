@@ -57,12 +57,6 @@ int sge_getcpuload(double *cpu_load);
 #endif
 
 int get_channel_fd(void);  
-
-#if defined(NECSX4) || defined(NECSX5)
-
-int getloadavg_necsx_rsg(int rsg_id, double loadv[]);
-
-#endif
  
 #endif /* __SGE_GETLOADAVG_H */
 

@@ -90,10 +90,6 @@ const sig_mapT sig_map[] =
    {SGE_SIGIO, SIGIO, "IO"},
    {SGE_SIGXCPU, SIGXCPU, "XCPU"},
    {SGE_SIGXFSZ, SIGXFSZ, "XFSZ"},
-#if !(defined(CRAY) || defined(NECSX4) || defined(NECSX5))
-   {SGE_SIGVTALRM, SIGVTALRM, "VTALRM"},
-   {SGE_SIGPROF, SIGPROF, "PROF"},
-#endif
    {SGE_SIGWINCH, SIGWINCH, "WINCH"},
    {SGE_SIGUSR1, SIGUSR1, "USR1"},
    {SGE_SIGUSR2, SIGUSR2, "USR2"},

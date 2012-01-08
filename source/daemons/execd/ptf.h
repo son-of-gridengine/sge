@@ -65,10 +65,6 @@
    typedef ash_t osjobid_t;
    typedef unsigned long long u_osjobid_t;
 #  define OSJOBID_FMT "%lld"
-#elif defined(NECSX4) || defined(NECSX5)
-   typedef id_t osjobid_t;
-   typedef uint32_t u_osjobid_t;
-#  define OSJOBID_FMT "%d"
 /*#elif defined(ALPHA5)
    typedef unsigned long osjobid_t;
    typedef unsigned long u_osjobid_t;
@@ -131,12 +127,6 @@ typedef gid_t addgrpid_t;
 #    define PTF_MAX_PRIORITY      0
 #    define PTF_OS_MIN_PRIORITY   20
 #    define PTF_OS_MAX_PRIORITY  -20
-#  elif defined(NECSX4) || defined(NECSX5)
-#    define ENFORCE_PRI_RANGE     0
-#    define PTF_MIN_PRIORITY      39
-#    define PTF_MAX_PRIORITY      1
-#    define PTF_OS_MIN_PRIORITY   0
-#    define PTF_OS_MAX_PRIORITY   0
 #  elif defined(DARWIN)
 #    define ENFORCE_PRI_RANGE     1
 #    define PTF_MIN_PRIORITY      20

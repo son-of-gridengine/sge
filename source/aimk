@@ -276,9 +276,7 @@ set QMAKE            = 1
 set QTCSH            = 1
 set MAKEMTMALLOCLIB  = 1
 set MAKEJEMALLOCLIB  = 0
-set MAKESTRPTIME     = 0
 set MAKESNPRINTF     = 0
-set MAKEFNMATCH      = 0
 set MAKEWINGRIDLIB   = 0
 set MAKEWINGRIDAPP   = 0
 set WINGRIDLIB_A     = ""
@@ -1601,8 +1599,6 @@ case WIN32_X86:
    set MAKEWINGRIDLIB   = 1
    set MAKEWINGRIDAPP   = 1
    set QMON             = 0
-   set MAKESTRPTIME     = 0
-   set MAKEFNMATCH      = 0
    set WITH_USERMAPPING = 0 # Compile without usermapping feature
    set COMPILE_DC       = 1
    set AUTHLIBS         = ""
@@ -1709,63 +1705,6 @@ case WIN32_X86:
    #set WINLFLAGS = "${WINLFLAGS} /LIBPATH:'${WIN32_VS_L3}'"
 
    set WINLIBS = "pdh.lib ws2_32.lib advapi32.lib user32.lib"
-   breaksw
-   
-case NECSX4:
-   set MAKEWINGRIDLIB   = 0
-   set MAKEWINGRIDAPP   = 0
-#
-# we need the '-hfloat0'-flag for CFLAGS and LFLAGS because the
-# XDR-Libraray does not work properly for other floating point models
-# float1 => (floating poit exceptions for value DBL_MAX during unpacking
-# double values)
-#
-   set INTERACTTARGETS = ""
-   set COMPILE_DC = 1
-   set MAKE = make
-   set CFLAGS = "-DNECSX4 -DGETHOSTBYNAME_M -DGETHOSTBYADDR_M -dir,novec,nopar,nopthr -hfloat0 $DEBUG_FLAG $CFLAGS"
-   set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
-   set LFLAGS   = "-hfloat0 $DEBUG_FLAG $LFLAGS"
-   set LIBS     = "$LIBS"
-   set XMTDEF   = ""
-   set XINCD    = ""
-   set XCFLAGS  = "$XMTDEF $XINCD"
-   set XLFLAGS  = ""
-   if ( $SHAREDLIBS == 1 ) then
-      echo creating shared libs not yet supported on $BUILDARCH
-      exit 1
-   endif
-   set JAVA_ARCH = ""
-   breaksw
-
-case NECSX5:
-   set MAKEWINGRIDLIB   = 0
-   set MAKEWINGRIDAPP   = 0
-   set INTERACTTARGETS = ""
-   set COMPILE_DC = 1
-   if ( $CORE == 1 ) then
-      set MAKESTRPTIME = 1
-      set MAKEFNMATCH = 1
-   endif
-   if ( $QTCSH == 1 ) then
-      set MAKEFNMATCH = 1
-   endif
-   set MAKE = make
-   set OFLAG = "-h1"
-   set CFLAGS_NOOPT = "-DNECSX5 -DGETHOSTBYNAME_M -DGETHOSTBYADDR_M -D_REENTRANT -dir,novec,nopar,nopthr -hfloat0 $DEBUG_FLAG $CFLAGS"
-   set CFLAGS = "$CFLAGS_NOOPT $OFLAG"
-   set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
-   set LFLAGS   = "$DEBUG_FLAG $LFLAGS"
-   set XMTDEF   = ""
-   set XINCD    = ""
-   set XCFLAGS  = "$XMTDEF $XINCD"
-   set XLFLAGS  = ""
-   if ( $SHAREDLIBS == 1 ) then
-      echo creating shared libs not yet supported on $BUILDARCH
-      exit 1
-   endif
-   set DLLIB = ""
-   set JAVA_ARCH = ""
    breaksw
 
 case SOLARIS:
@@ -2472,36 +2411,6 @@ if ( "$MAKEJEMALLOCLIB" == 1 ) then
    cd $SOURCE
    endif
 endif
-if ( "$MAKESTRPTIME" == 1 ) then
-   echo _________3_r_d_p_a_r_t_y__S_T_R_P_T_I_M_E_
-
-   # Set TPLIB, LIBS, and CFLAGS for all compiles
-
-   set TPLIB = "$TPLIB libstrptime.a"
-
-   set LIBS = "$LIBS -lstrptime"
-
-   set CFLAGS = "-I$SOURCE/3rdparty/strptime $CFLAGS"
-
-   cd $COMPILE_ARCH
-
-  $MAKE $MAKEOPT -f $SOURCE/3rdparty/strptime/Makefile "MAKE=$MAKE" "CC=$CC" \
-      "COMPILE_ARCH=$COMPILE_ARCH" \
-      "CFLAGS=$CFLAGS" "SOURCE=$SOURCE" \
-      "KRBLIBS=$KRBLIBS" \
-      "LFLAGS=$LFLAGS $KLFLAGS" "STRIP=$STRIP" "RANLIB=$RANLIB" \
-      "AR=$AR" "ARFLAGS=$ARFLAGS" \
-      "SHARED_CFLAGS=$SHARED_CFLAGS" "SHARED_LFLAGS=$SHARED_LFLAGS" \
-      "DEPEND_FLAGS=$DEPEND_FLAGS" \
-      "SHAREDLD=$SHAREDLD" "SHAREDEXT=$SHAREDEXT" "LIBEXT=$LIBEXT" $argv
-
-   if ( $status != 0 ) then
-      echo not done
-      exit 1
-   endif
-
-   cd $SOURCE
-endif
 
 if ( "$MAKESNPRINTF" == 1 && "$JAVA" != 2 ) then
    echo ______3_r_d_p_a_r_t_y__S_N_P_R_I_N_T_F___
@@ -2526,37 +2435,6 @@ if ( "$MAKESNPRINTF" == 1 && "$JAVA" != 2 ) then
    #   echo not done
    #   exit 1
    #endif
-
-   cd $SOURCE
-endif
-
-if ( "$MAKEFNMATCH" == 1 ) then
-   echo _________3_r_d_p_a_r_t_y__F_N_M_A_T_C_H___
-
-   # Set TPLIB, LIBS, and CFLAGS for all compiles
-
-   set TPLIB = "$TPLIB libfnmatch.a"
-
-   set LIBS = "$LIBS -lfnmatch"
-
-   set CFLAGS = "-I$SOURCE/3rdparty/fnmatch $CFLAGS"
-
-   cd $COMPILE_ARCH
-
-  $MAKE $MAKEOPT -f $SOURCE/3rdparty/fnmatch/Makefile "MAKE=$MAKE" "CC=$CC" \
-      "COMPILE_ARCH=$COMPILE_ARCH" \
-      "CFLAGS=$CFLAGS" "SOURCE=$SOURCE" \
-      "KRBLIBS=$KRBLIBS" \
-      "LFLAGS=$LFLAGS $KLFLAGS" "STRIP=$STRIP" "RANLIB=$RANLIB" \
-      "AR=$AR" "ARFLAGS=$ARFLAGS" \
-      "SHARED_CFLAGS=$SHARED_CFLAGS" "SHARED_LFLAGS=$SHARED_LFLAGS" \
-      "DEPEND_FLAGS=$DEPEND_FLAGS" \
-      "SHAREDLD=$SHAREDLD" "SHAREDEXT=$SHAREDEXT" "LIBEXT=$LIBEXT" $argv
-
-   if ( $status != 0 ) then
-      echo not done
-      exit 1
-   endif
 
    cd $SOURCE
 endif
@@ -2797,11 +2675,7 @@ if ( "$REMOTE" == 1) then
       mkdir $COMPILE_ARCH
    endif
 
-   if ( $COMPILE_ARCH == "NECSX5" ) then
-      set CFLAGS_REMOTE = "$CFLAGS_NOOPT"
-   else
-      set CFLAGS_REMOTE = "$CFLAGS $ERR_WARN_NONE -U_FORTIFY_SOURCE"
-   endif
+   set CFLAGS_REMOTE = "$CFLAGS $ERR_WARN_NONE -U_FORTIFY_SOURCE"
 
    set REMOTE_LFLAGS = "$LFLAGS -L$SOURCE/$COMPILE_ARCH"
 
@@ -2918,9 +2792,7 @@ if ( "$QTCSH" == 1) then
 
    set SGE_LIBS = "-lsge -lpthread"
 
-   if ( "$COMPILE_ARCH" == "NECSX5" ) then
-      set SGE_LIBS = "$SGE_LIBS -lfnmatch"
-   else if ( "$COMPILE_ARCH" == "WIN32_X86" ) then
+   if ( "$COMPILE_ARCH" == "WIN32_X86" ) then
       set SGE_LIBS = "$SGE_LIBS $WINGRIDLIB"
    endif
 

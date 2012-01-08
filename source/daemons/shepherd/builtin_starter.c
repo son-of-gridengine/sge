@@ -54,14 +54,6 @@
 
 #include "msg_common.h"
 
-#if defined(NECSX4) || defined(NECSX5)
-#  include <sys/types.h>
-#  include <sys/disp.h>
-#  include <sys/rsg.h> 
-
-#  define NEC_UNDEF_VALUE (-999)
-#endif 
-
 #if defined(INTERIX)
 #  include "wingrid.h"
 #  include "windows_gui.h"
@@ -274,9 +266,6 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
 
 #ifdef SOLARIS
    if(!is_qlogin_starter || is_rsh)
-#endif
-#ifdef NECSX5
-   if (!is_qlogin_starter)
 #endif
    /* 
     * g_newpgrp is != -1 if setsid() was already called in pty.c, fork_pty(),
@@ -956,8 +945,6 @@ int sge_set_environment()
    char help_str[100] = "";
 #if (IRIX)
    ash_t jobid;
-#elif defined(NECSX4) || defined(NECSX5)
-   id_t jobid;
 #endif
 #endif
    const char *new_value = NULL;
@@ -972,8 +959,6 @@ int sge_set_environment()
    if (shepherd_read_osjobid_file(&jobid, false)) {
 #  if defined(IRIX)
       snprintf(help_str, 100, "%lld", jobid);
-#  elif defined(NECSX4) || defined(NECSX5)
-      snprintf(help_str, 100, "%ld", jobid);
 #  endif
       sge_set_env_value("OSJOBID", help_str);
    }

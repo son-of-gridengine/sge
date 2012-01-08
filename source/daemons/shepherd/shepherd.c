@@ -57,10 +57,6 @@
 #  include <grp.h>
 #endif
 
-#if defined(NECSX4) || defined(NECSX5)
-#   include <sys/times.h>
-#endif
-
 #include "uti/config_file.h"
 #include "uti/sge_dstring.h"
 #include "uti/sge_stdlib.h"
@@ -1109,10 +1105,6 @@ static int start_child(const char *childname, /* prolog, job, epilog */
    ckpt_info_t ckpt_info = {0, 0, 0};
 #if defined(IRIX)
    ash_t ash = 0;
-#elif defined(NECSX4) || defined(NECSX5)
-   id_t jobid = 0;
-#elif defined(CRAY)
-   int jobid = 0;
 #endif
 
    ckpt_info.type = ckpt_type;
@@ -1158,9 +1150,6 @@ static int start_child(const char *childname, /* prolog, job, epilog */
 #if defined(IRIX)
       sscanf(get_conf_val("ckpt_osjobid"), "%lld", &ash);
       shepherd_trace("reusing old array session handle %lld", ash);
-#elif defined(NECSX4) || defined(NECSX5)
-      sscanf(get_conf_val("ckpt_osjobid"), "%ld", &jobid);
-      shepherd_trace("reusing old super-ux jobid %lld", jobid); 
 #endif
 #endif
 
@@ -2437,9 +2426,6 @@ int fd_std_err             /* fd of stderr. -1 if not set */
 #if defined(HPUX) || defined(INTERIX)
    struct rusage rusage_hp10;
 #endif
-#if defined(CRAY) || defined(NECSX4) || defined(NECSX5)
-   struct tms t1, t2;
-#endif
 
    /* handle qsub -pty */
    if (fd_pty_master != -1) {
@@ -2519,10 +2505,6 @@ int fd_std_err             /* fd of stderr. -1 if not set */
    } else {
       inArena = 0;
    }
-
-#if defined(CRAY) || defined(NECSX4) || defined(NECSX5)
-   times(&t1);
-#endif
    
    do {
       if (p_ckpt_info->interval != 0 && rest_ckpt_interval != 0) {
@@ -2741,22 +2723,6 @@ int fd_std_err             /* fd of stderr. -1 if not set */
       
    } while ((job_pid > 0) || (migr_cmd_pid > 0) || (ckpt_cmd_pid > 0) ||
             (ctrl_pid[0] > 0) || (ctrl_pid[1] > 0) || (ctrl_pid[2] > 0));
-
-#if defined(CRAY) || defined(NECSX4) || defined(NECSX5)
-   times(&t2);
-   {
-      /* compute utime and stime (seconds and micro seconds) */
-      clock_t u_ticks  = t2.tms_cutime - t1.tms_cutime; /* user time in clock ticks */
-      clock_t s_ticks  = t2.tms_cstime - t1.tms_cstime; /* system time in clock ticks */
-      clock_t clk_tck  = sysconf(_SC_CLK_TCK);          /* clock ticks per second */
-      clock_t tck_usec = 1000000 / clk_tck;             /* length of a clock tick in micro seconds */
-
-      rusage->ru_utime.tv_sec  = u_ticks / clk_tck;
-      rusage->ru_utime.tv_usec  = (u_ticks % clk_tck) * tck_usec;
-      rusage->ru_stime.tv_sec  = s_ticks / clk_tck;
-      rusage->ru_stime.tv_usec  = (s_ticks % clk_tck) * tck_usec;
-   }
-#endif  /* CRAY */
 
 #if defined(HPUX) || defined(INTERIX)
    rusage->ru_utime.tv_sec = rusage_hp10.ru_utime.tv_sec;
@@ -3023,61 +2989,11 @@ static void start_clean_command(char *cmd)
  ****************************************************************/
 void 
 shepherd_signal_job(pid_t pid, int sig) {
-#if defined(IRIX) || defined(CRAY) || defined(NECSX4) || defined(NECSX5)
+#if defined(IRIX)
    static int first = 1;
-#  if defined(IRIX)
    static ash_t osjobid = 0;
-#  elif defined(NECSX4) || defined(NECSX5)
-   char err_str[512];
-   static id_t osjobid = 0;
-#  endif
 # endif
 
-#if defined(CRAY) || defined(NECSX4) || defined(NECSX5)
-   /* 980708 SVD - I moved the normal kill code below the special job
-      killing code for the Cray and NEC because killing the process first
-      may cause the job to be removed which can cause the job kill code
-      to fail */
-
-   /* Only root can setup job */
-   if (getuid() == 0) {
-      if (first == 1) {
-         shepherd_read_osjobid_file(&osjobid, false)
-         first = 0;
-      }
-
-      if (osjobid == 0) {
-        shepherd_trace("value in \"osjobid\" file = 0, not using kill_ash/killm");
-      } else {
-        sge_switch2start_user();
-#     if defined(NECSX4) || defined(NECSX5)
-        if (sig == SIGSTOP) {
-            if (suspendj(osjobid) == -1) {
-                shepherd_trace("ERROR(%d): suspendj(%d): %s", errno,
-                               osjobid, strerror(errno));
-             } else {
-                shepherd_trace("suspendj(%d)", osjobid);
-             }
-         } else if (sig == SIGCONT) {
-             if (resumej(osjobid) == -1) {
-                shepherd_trace("ERROR(%d): resumej(%d): %s", errno,
-                               osjobid, strerror(errno));
-             } else {
-                shepherd_trace("resumej(%d)", osjobid);
-             }
-         } else {
-             if (killj(osjobid, sig) == -1) {
-                shepherd_trace("ERROR(%d): killj(%d, %d): %s", errno,
-                               osjobid, sig, strerror(errno));
-             } else {
-                shepherd_trace("killj(%d, %d)", osjobid, sig);
-             }
-         }                   
-#     endif
-         sge_switch2admin_user();
-      }
-    }
-# endif
 
    /* 
     * Normal signaling for OSes without reliable grouping mechanisms and if

@@ -31,17 +31,13 @@ xargs chmod +x <<EOF
 ./scripts/msgmerge.csh
 ./scripts/test_spooling_performance.sh
 ./dist/ckpt/migration_command
-./dist/ckpt/sx6_migration_command
 ./dist/ckpt/checkpoint_command
-./dist/ckpt/sx6_restart_command
 ./dist/ckpt/cpr_ckpt_command
 ./dist/ckpt/restart_command
 ./dist/ckpt/cpr_migration_command
 ./dist/ckpt/cpr_restart_command
 ./dist/ckpt/clean_command
-./dist/ckpt/sx6_clean_command
 ./dist/ckpt/cpr_clean_command
-./dist/ckpt/sx6_ckpt_command
 ./dist/pvm/src/aimk
 ./dist/pvm/src/install.sh
 ./dist/pvm/pvm_nogs.sh
@@ -73,7 +69,6 @@ xargs chmod +x <<EOF
 ./dist/util/arch
 ./dist/util/resources/starter_methods/settaskid.sh
 ./dist/util/resources/loadsensors/maui.sh
-./dist/util/resources/loadsensors/ibm-loadsensor
 ./dist/util/resources/loadsensors/load.sh
 ./dist/util/resources/loadsensors/sgi_tty_sensor.sh
 ./dist/util/resources/loadsensors/interix-loadsensor.sh

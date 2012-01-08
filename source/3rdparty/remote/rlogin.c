@@ -69,10 +69,6 @@
 #include <values.h>
 #endif
 
-#ifdef NECSX5
-#define SA_RESTART 0
-#endif
-
 #ifdef __STDC__
 #include <stdarg.h>
 #else
@@ -458,14 +454,12 @@ try_connect:
 	if (rem < 0)
 		exit(1);
 
-#ifndef NECSX5
 	if (dflag &&
 	    setsockopt(rem, SOL_SOCKET, SO_DEBUG, &one, sizeof(one)) < 0)
 		fprintf(stderr, "setsockopt DEBUG (ignored)");
 	one = IPTOS_LOWDELAY;
 	if (setsockopt(rem, IPPROTO_IP, IP_TOS, (char *)&one, sizeof(int)) < 0)
 		fprintf(stderr, "setsockopt TOS (ignored)");
-#endif
 
 	(void)setuid(uid);
 	doit(&smask);
@@ -903,9 +897,7 @@ reader(smask)
 	sa.sa_handler = oob;
 	(void)sigaction(SIGURG, &sa, (struct sigaction *) 0);
 	ppid = getppid();
-#ifndef NECSX5
 	(void)fcntl(rem, F_SETOWN, pid);
-#endif
 	(void)setjmp(rcvtop);
 	(void)sigprocmask(SIG_SETMASK, smask, (sigset_t *) 0);
 	bufp = rcvbuf;

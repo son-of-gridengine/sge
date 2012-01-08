@@ -47,8 +47,6 @@ Content
    irix65	IRIX65		SGI Irix 6.5,
    lx-amd64     LINUXAMD64_26   GNU/Linux AMD64, Linux 2.6
    lx-x86	LINUX86_26	GNU/Linux x86, Linux 2.6
-   necsx4	NECSX4		NEC SX4, SUPER-UX
-   necsx5	NECSX5		NEC SX5, SUPER-UX
    sol-sparc	SOLARIS		Sun, Sparc Solaris 7, 8, 9 32bit
    sol-sparc64	SOLARIS64       Sun, Sparc, Solaris 7, 8, 9 64bit
    sol-x86	SOLARIS86       Sun, x86, Solaris 8, 9, 10 32bit
