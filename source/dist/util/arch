@@ -335,19 +335,6 @@ SunOS)
       ;;
    esac
    ;;
-SUPER-UX)
-   case $osmachine in
-   SX-4*)
-      ARCH=UNSUPPORTED-necsx4
-      ;;
-   SX-[56]*)
-      ARCH=sx
-      ;;
-   *)
-      ARCH=UNSUPPORTED-SUPER-UX-$osmachine
-      ;;
-   esac
-   ;;
 Interix)
    ARCH=win32-x86
    ;;

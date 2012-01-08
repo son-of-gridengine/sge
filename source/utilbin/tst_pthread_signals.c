@@ -344,10 +344,6 @@ static void ignore_signals(void)
    sigaction(SIGTTOU, &act, NULL);
    sigaction(SIGURG, &act, NULL);
 
-#if !(defined(NECSX4) || defined(NECSX5))
-   sigaction(SIGVTALRM, &act, NULL);
-#endif
-
 #if !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD)
    sigaction(SIGPOLL, &act, NULL);
 #endif

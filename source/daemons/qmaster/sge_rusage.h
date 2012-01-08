@@ -43,39 +43,6 @@ struct all_drsuage {
 
 typedef struct all_drsuage sge_all_rusage_type;
 
-struct necsx_drusage {
-   char        *arch;
-   u_long32    base_prty;            /* base priority */
-   u_long32    time_slice;           /* timeslice value */
-   u_long32    num_procs;            /* number of processes */
-   u_long32    kcore_min;            /* amount of memory usage */
-   u_long32    mean_size;            /* mean memory size */
-   u_long32    maxmem_size;          /* maximum memory size */
-   u_long32    chars_trnsfd;         /* number of characters transfered */
-   u_long32    blocks_rw;            /* total blocks read and written */
-   u_long32    inst;                 /* number of instructions */
-   u_long32    vector_inst;          /* number of vector instructions */
-   u_long32    vector_elmt;          /* number of vector elements */
-   u_long32    vec_exe;              /* execution time of vector instr */
-   u_long32    flops;                /* FLOPS value */
-   u_long32    concurrent_flops;     /* concurrent FLOPS value */
-   u_long32    fpec;                 /* floating point data execution element
-                                       count */
-   u_long32    cmcc;                 /* cache miss time */
-   u_long32    bccc;                 /* bank conflict time */
-   u_long32    mt_open;              /* MT open counts */
-   u_long32    io_blocks; /* device  I/O blocks (DSK, ADK (array disk),  XMU,
-                           MASSDPS (mass data processing system disk),
-                           SCD (SCSI  disk), QT (1/4" CGMT), HCT (1/2" CGMT),
-                           DT (DAT), ET (8mm CGMT), MT (1/2" MT),
-                           SMT (SCSI tape), IMT (other MT device connected
-                           to IOX) and HMT (HIPPI MT). */
-   u_long32    multi_single;         /* multitask or single task */
-   u_long32    max_nproc;            /* maximum process counts */
-};
-
-typedef struct necsx_drusage sge_necsx_rusage_type;
-
 /****************************************************************
  Structure used for reporting about the end of a job.
  ****************************************************************/
@@ -133,9 +100,7 @@ struct drusage {
    u_long32 ar;
    sge_all_rusage_type *arch_dep_usage;/* pointer to a structure with
                                           architecture dependend usage
-                                          information
-                                           for NECSX4/5:
-                                            pointer to sge_necsx_rusage_type */
+                                          information */
                                               
 };
 

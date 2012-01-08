@@ -92,10 +92,8 @@ int me_who
    sigdelset(&default_mask, SIGFPE);
 /* Allow SIGTRAP for debuggin purpose */
    sigdelset(&default_mask, SIGTRAP); 
-#if !(defined(CRAY) || defined(NECSX4) || defined(NECSX5))
    sigdelset(&default_mask, SIGVTALRM);
    sigdelset(&default_mask, SIGPROF);
-#endif
 
    if ((me_who == QCONF) || 
        (me_who == EXECD) || 
@@ -129,11 +127,8 @@ int me_who
    sigdelset(&io_mask, SIGFPE);
 /* Allow SIGTRAP for debuggin purpose */
    sigdelset(&io_mask, SIGTRAP);
-#if !( defined(CRAY) || defined(NECSX4) || defined(NECSX5) )
    sigdelset(&io_mask, SIGVTALRM);
    sigdelset(&io_mask, SIGPROF);
-#endif
-
 
    /******* setup signal handler for SIGALRM *******/
    sigalrm_vec.sa_handler = sge_alarmclock;

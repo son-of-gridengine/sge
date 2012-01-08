@@ -41,9 +41,7 @@
 #include "cull_list.h"
 
 /* type wrapper */
-#if defined(NECSX4) || defined(NECSX5)
-   typedef long long sge_rlim_t;
-#elif IRIX
+#if IRIX
    typedef rlim64_t sge_rlim_t;
 #elif WIN32NATIVE
    typedef long sge_rlim_t;

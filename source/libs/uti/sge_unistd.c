@@ -472,11 +472,7 @@ int sge_rmdir(const char *cp, dstring *error)
          }
 #endif /* WIN32 */
  
-#if defined(NECSX4) || defined(NECSX5)
-    if (S_ISDIR(statbuf.st_mode)) 
-#else
     if (S_ISDIR(statbuf.st_mode) && !S_ISLNK(statbuf.st_mode)) 
-#endif
     {
     if (sge_rmdir(fname, error)) {
                sge_dstring_sprintf(error, MSG_FILE_RECURSIVERMDIRFAILED );

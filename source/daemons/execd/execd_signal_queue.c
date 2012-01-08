@@ -542,9 +542,6 @@ int sge_kill(int pid, u_long32 sge_signal, u_long32 job_id, u_long32 ja_task_id,
       DEXIT; 
       return -1;
    }
-#if defined(NECSX4) || defined(NECSX5)
-   sge_switch2admin_user();
-#endif 
    
    DEXIT;
    return 0;
