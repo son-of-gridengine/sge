@@ -81,11 +81,6 @@
 #define SA_RESTART 0
 #endif
 
-#ifdef ALPHA4
-/* ALPHA4 has no prototype for rcmd */
-int rcmd(char **, u_short, char *, char *, char *, int *);
-#endif
-
 #ifdef __STDC__
 #include <stdarg.h>
 #else
