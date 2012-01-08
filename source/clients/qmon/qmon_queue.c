@@ -1572,7 +1572,7 @@ char *arch
       index = 7;
    else if (!strncmp(arch, "rs6000", 6))
       index = 8;
-   else if (!strncmp(arch, "aix4", 4))
+   else if (!strncmp(arch, "aix5", 4))
       index = 8;
    else if (!strncmp(arch, "unicos", 6))
       index = 9;

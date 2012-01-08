@@ -985,7 +985,7 @@ UnInstWinHelperSvc()
 
 CopyIBMLoadSensor()
 {
-   if [ "$SGE_ARCH" != "aix43" -a "$SGE_ARCH" != "aix51" ]; then 
+   if [ "$$SGE_ARCH" != "aix51" ]; then 
       return 
    fi
 

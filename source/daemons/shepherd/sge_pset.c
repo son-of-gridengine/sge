@@ -76,11 +76,6 @@ typedef unsigned long long sbv_t;
 #endif
 
 #if defined(ALPHA)
-#  if defined(ALPHA4)
-int assign_pid_to_pset(pid_t *pid_list, long num_pids, 
-                       int pset_id, long flags);
-int assign_cpu_to_pset(long cpu, int pset_id, long option);
-#  endif
 int destroy_pset(int pset_id, int number);
 int create_pset(void);
 void print_pset_error(int ret);

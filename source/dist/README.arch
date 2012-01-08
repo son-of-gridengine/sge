@@ -38,7 +38,6 @@ Content
 
    arch		compile arch	description
    ----------------------------------------------------------------------
-   aix43	AIX43		IBM AIX 4.3.x, 32bit
    aix51        AIX51 	        IBM AIX 5.1.x, 64bit kernel
    cray		UNICOS		Cray Unicos 10.0.x XMP, YMP, J90, C90, SV1
    crayts	UNICOS_TS	Cray Unicos 10.0.x T90

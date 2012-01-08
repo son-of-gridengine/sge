@@ -53,7 +53,7 @@ darwin)
 irix65)
    Filter1
    ;;
-aix43)
+aix51)                          # fixme: was aix43 -- may need changing
    Filter4
    ;;
 tru64)

@@ -74,12 +74,6 @@ case $ossysname in
 AIX)
    osversion=`$UNAME -v`
    case $osversion in
-   3)
-      ARCH=UNSUPPORTED-rs6000
-      ;;
-   4)
-      ARCH=UNSUPPORTED-aix4
-      ;;
    5|6|7)
       ARCH=aix51
       ;;

@@ -165,11 +165,9 @@ void setrlimits(int trace_rlimit) {
    sge_rlim_t s_tmpf, h_tmpf, s_mtdev, h_mtdev, s_nofile, h_nofile,
       s_proc, h_proc, s_rlg0, h_rlg0, s_rlg1, h_rlg1, s_rlg2, h_rlg2,
       s_rlg3, h_rlg3, s_cpurestm, h_cpurestm;
-#endif  
-#ifndef SINIX
+#endif
    sge_rlim_t s_rss; 
    sge_rlim_t h_rss; 
-#endif
 
    int host_slots, priority;
    char *s, error_str[1024];

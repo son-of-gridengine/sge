@@ -177,9 +177,6 @@ shepherd_write_usage_file(u_long32 wait_status, int exit_status,
       FPRINTF((fp, "ru_stime=%f\n", (double)rusage->ru_stime.tv_sec + (double)rusage->ru_stime.tv_usec / 1000000.0));
       FPRINTF((fp, "ru_maxrss=%ld\n", rusage->ru_maxrss));
       FPRINTF((fp, "ru_ixrss=%ld\n", rusage->ru_ixrss));
-#if defined(ultrix)
-      FPRINTF((fp, "ru_ismrss=%ld\n", rusage->ru_ismrss));
-#endif
       FPRINTF((fp, "ru_idrss=%ld\n", rusage->ru_idrss));
       FPRINTF((fp, "ru_isrss=%ld\n", rusage->ru_isrss));
       FPRINTF((fp, "ru_minflt=%ld\n", rusage->ru_minflt));

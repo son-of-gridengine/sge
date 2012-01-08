@@ -76,11 +76,6 @@ static const char rcsid[] =
 #include <sys/filio.h>
 #endif
 
-#ifdef ALPHA4
-/* ALPHA4 has no prototype for rcmd */
-int rcmd(char **, u_short, char *, char *, char *, int *);
-#endif
-
 #if !defined(FREEBSD) && !defined(NETBSD) && !defined(DARWIN) && !defined(INTERIX)
 #include <values.h>
 #endif
