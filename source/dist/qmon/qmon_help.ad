@@ -992,7 +992,7 @@ checkpoint object or the checkpoint object to be modified.\n\
 The @fBName@fR input field either displays the name of the checkpoint object to be modified\n\
 or has to be entered as name for the new checkpoint object.\n\
 The @fBInterface@fR option menu allows the selection of a checkpointing interface.\n\
-Currently the types USERDEFINED, HIBERNATOR, TRANSPARENT, CPR, CRAY-CKPT, APPLICATION-LEVEL are valid.\n\
+Currently the types USERDEFINED, HIBERNATOR, TRANSPARENT, CPR, APPLICATION-LEVEL are valid.\n\
 The @fBCheckpoint Command@fR is a command-line type command string to be executed\n\
 by @fBGrid Engine@fR in order to initiate a checkpoint.\n\
 The @fBMigration Command@fR is a command-line type command string to be executed\n\

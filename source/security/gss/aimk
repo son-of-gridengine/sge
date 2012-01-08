@@ -126,12 +126,6 @@ case aix51:
    set LIBS = "$LIBS"
    breaksw
 
-case cray:
-   set CFLAGS   = "-DCRAY $DEBUG_FLAG $CFLAGS"
-   set LFLAGS   = "$DEBUG_FLAG $LFLAGS"
-   set LIBS = "$LIBS"
-   breaksw
-
 case irix5:
    if ( $CC == gcc ) then
       set CFLAGS = "-Wall -Wstrict-prototypes -DIRIX5 $DEBUG_FLAG $CFLAGS"

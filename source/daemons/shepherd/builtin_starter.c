@@ -54,22 +54,6 @@
 
 #include "msg_common.h"
 
-#if defined(CRAY)
-#   if !defined(SIGXCPU)
-#       define SIGXCPU SIGCPULIM
-#   endif
-    /* for killm category on Crays */
-#   include <sys/category.h>
-struct rusage {
-   struct timeval ru_stime;
-   struct timeval ru_utime;
-};
-    /* for job/session stuff */
-#   include <sys/session.h>
-    /* times() */
-#   include <sys/times.h>
-#endif
-
 #if defined(NECSX4) || defined(NECSX5)
 #  include <sys/types.h>
 #  include <sys/disp.h>
@@ -974,8 +958,6 @@ int sge_set_environment()
    ash_t jobid;
 #elif defined(NECSX4) || defined(NECSX5)
    id_t jobid;
-#elif defined(CRAY)
-   int jobid;
 #endif
 #endif
    const char *new_value = NULL;
@@ -990,8 +972,6 @@ int sge_set_environment()
    if (shepherd_read_osjobid_file(&jobid, false)) {
 #  if defined(IRIX)
       snprintf(help_str, 100, "%lld", jobid);
-#  elif defined(CRAY)
-      snprintf(help_str, 100, "%d", jobid);
 #  elif defined(NECSX4) || defined(NECSX5)
       snprintf(help_str, 100, "%ld", jobid);
 #  endif

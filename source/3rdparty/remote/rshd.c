@@ -45,10 +45,6 @@
 #define _XOPEN_SOURCE_EXTENDED
 #endif
 
-#ifdef CRAY
-#include <sys/types.h>
-#endif
-
 /*#if defined ALPHA5
 #define _POSIX_PII_SOCKET
 #endif

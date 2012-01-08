@@ -62,50 +62,6 @@
 #elif defined(HP11) || defined(HP1164)
 #  include <sys/param.h>
 #  include <sys/pstat.h>
-#elif defined(CRAY)
-#  include <nlist.h>
-#  include <sys/listio.h>
-#  include <sys/param.h>
-#  include <sys/sysmacros.h>
-#  include <sys/sysent.h>
-#  include <sys/var.h>
-#  include <sys/buf.h>
-#  include <sys/map.h>
-#  include <sys/iobuf.h>
-#  include <sys/stat.h>
-#  include <sys/jtab.h>
-#  include <sys/session.h>
-#  include <sys/dir.h>
-#  include <sys/ssd.h>
-#  include <sys/schedv.h>
-#  include <sys/signal.h>
-#  include <sys/aoutdata.h>
-
-#  define KERNEL
-#  include <sys/sysinfo.h>
-#  undef KERNEL
-
-#  include <sys/iosw.h>
-#  include <sys/mbuf.h>
-#  include <sys/cnt.h>
-#  include <sys/ddcntl.h>
-#  include <sys/hpm.h>
-#  include <sys/ios.h>
-#  include <sys/machcons.h>
-#  include <sys/pdd.h>
-#  include <sys/pws.h>
-#  include <sys/sema.h>
-#  include <sys/semmacros.h>
-#  include <sys/swap.h>
-#  include <sys/epack.h>
-#  include <sys/epackt.h>
-#  include <sys/er90_cmdpkt.h>
-
-#  include <sys/acct.h>
-#  include <acct/dacct.h>
-#  include <sys/cred.h>
-#  include <sys/proc.h>
-#  include <sys/user.h>         
 #elif defined(NECSX4) || defined(NECSX5)
 #  include <sys/rsg.h>
 #  include <sys/types.h>
@@ -355,23 +311,6 @@ long *freememp
    kstat_close(kc);
    return 0;
 }
-
-
-#elif defined(CRAY)
-
-struct nlist nmlist[] = {
-   { "cpuw" },
-   { "sysinfoa" },
-   { 0 }
-};
-static struct listreq iolist[1];
-static struct iosw iosw[1];
-struct listreq Krdlist[] = {
-   LO_READ, 0, LF_LSEEK, 0, 0, (char *)0, 0, &iosw[0], 0, 1, 0, 0
-};
-struct sysinfo_t *i_sysinfoa;
-int Ncpus;
-
 #endif 
 
 

@@ -49,9 +49,6 @@ static const char rcsid[] =
 
 #include <sys/param.h>
 #include <sys/signal.h>
-#if CRAY
-#include <sys/types.h>
-#endif
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <sys/file.h>

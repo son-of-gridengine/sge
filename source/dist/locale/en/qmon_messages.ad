@@ -230,7 +230,6 @@ _Messages_.en.*.Byte: Byte
 _Messages_.en.*.CPR: CPR
 _Messages_.en.*.CPU [%]: CPU [%]
 _Messages_.en.*.CPU: CPU
-_Messages_.en.*.CRAY-CKPT: CRAY-CKPT
 _Messages_.en.*.CSTRING: CSTRING
 _Messages_.en.*.CWD: CWD
 _Messages_.en.*.Can't resolve host '%s': Can't resolve host '%s'

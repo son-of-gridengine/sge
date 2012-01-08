@@ -72,8 +72,6 @@ shepherd_read_osjobid_file(
    ash_t *return_code,
 #elif defined(NECSX4) || defined(NECSX5)
    id_t *return_code,
-#elif defined(CRAY)
-   int *return_code,
 #endif
    bool is_error
 );

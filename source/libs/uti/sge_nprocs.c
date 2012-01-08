@@ -66,10 +66,6 @@
 #   include <unistd.h>
 #endif
 
-#if defined(CRAY)
-#   include <unistd.h>
-#endif
-
 #if defined(FREEBSD)
 #   include <sys/types.h>
 #   include <sys/sysctl.h>
@@ -253,10 +249,6 @@ int sge_nprocs()
           exit(1);
    }
    nprocs = dinfo.psd_proc_cnt;
-#endif
-
-#ifdef CRAY
-   nprocs = sysconf(_SC_CRAY_NCPU);
 #endif
 
 #if defined(FREEBSD)

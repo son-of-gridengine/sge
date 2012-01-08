@@ -40,9 +40,6 @@
  */
 #include <sys/param.h>
 #include <sys/ioctl.h>
-#if CRAY
-#include <sys/types.h>
-#endif
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -70,11 +67,6 @@
 
 #if !defined(FREEBSD) && !defined(NETBSD) && !defined(DARWIN) && !defined(INTERIX) 
 #include <values.h>
-#endif
-
-#ifdef CRAY
-/* SA_RESTART is not supported on the Cray */
-#define SA_RESTART 0
 #endif
 
 #ifdef NECSX5
@@ -352,12 +344,10 @@ main(argc, argv)
 	sa.sa_handler = writeroob;
 	(void)sigaction(SIGUSR1, &sa, (struct sigaction *) 0);
 	
-#ifndef CRAY
 	/* don't dump core */
 	rlim.rlim_cur = rlim.rlim_max = 0;
 	if (setrlimit(RLIMIT_CORE, &rlim) < 0)
 		fprintf(stderr, "setrlimit");
-#endif
 
 #ifdef KERBEROS
 try_connect:

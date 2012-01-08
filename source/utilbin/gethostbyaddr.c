@@ -91,12 +91,7 @@ int main(int argc, char *argv[])
   int sge_aliasing = 0;
   int all_option = 0;
   int system_error = 0;
-
-#if defined(CRAY)  
-  struct sockaddr_in  addr;
-#else
   struct in_addr addr;
-#endif
 
   if (argc < 2) {
     usage();
@@ -148,12 +143,7 @@ int main(int argc, char *argv[])
      exit(1);
   }
   
-
-#if defined(CRAY)
-  addr.sin_addr.s_addr = inet_addr(ip_string);
-#else
   addr.s_addr = inet_addr(ip_string);
-#endif
 
   retval = cl_com_cached_gethostbyaddr(&addr, &resolved_name, &he, &system_error);
   if (retval != CL_RETVAL_OK) {

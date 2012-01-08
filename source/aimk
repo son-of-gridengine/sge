@@ -1999,47 +1999,6 @@ case SOLARISAMD64:
 
    breaksw
 
-case UNICOS*:
-   set MAKEWINGRIDLIB   = 0
-   set MAKEWINGRIDAPP   = 0
-   set INTERACTTARGETS = ""
-   set MAKE = gmake
-   set ARFLAGS = rcv
-   switch ($BUILDARCH)
-      case UNICOS_TS:
-         set CFLAGS   = "-DCRAY -DCRAYTS -DGETHOSTBYNAME_M $DEBUG_FLAG $CFLAGS"
-         breaksw
-      case UNICOS_TS_IEEE:
-         set CFLAGS   = "-DCRAY -DCRAYTS -DCRAYTSIEEE -DGETHOSTBYNAME_M -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
-         breaksw
-      default:
-         set CFLAGS   = "-DCRAY -DGETHOSTBYNAME_M $DEBUG_FLAG $CFLAGS"
-   endsw
-   set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
-   set LFLAGS   = ""
-   set XMTDEF   = ""
-   switch (`/bin/uname -r`)
-      case "[0-8].*":
-      case "9.[01]*":
-         set XINCD    = "-I/usr/src/net/cvt/motif/lib $XMTINCD $XINCD"
-         set XLIBD    = "-L/usr/src/net/cvt/motif/lib/Xm"
-         set XLIBS    = "-lXm -lXt -lXext -lX11"
-         breaksw
-      default:
-         set XINCD    = "$XMTINCD $XINCD"
-         set XLIBD    = ""
-         set XLIBS    = "-lXm -lXt -lXext -lX11 -lSM -lICE"
-         breaksw
-   endsw
-   set XCFLAGS  = "$XMTDEF $XINCD"
-   set XLFLAGS  = "$XLIBD"
-   set COMPILE_DC = 1
-   if ( $SHAREDLIBS == 1 ) then
-      echo creating shared libs not yet supported on $BUILDARCH
-      exit 1
-   endif
-   set JAVA_ARCH = ""
-   breaksw
 default:
    set MAKEWINGRIDLIB   = 0
    set MAKEWINGRIDAPP   = 0

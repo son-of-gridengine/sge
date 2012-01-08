@@ -41,24 +41,6 @@
 #   include <proj.h>
 #endif
 
-#if defined(CRAY)
-#include <sys/time.h>
-#include <errno.h>
-#   if !defined(SIGXCPU)
-#       define SIGXCPU SIGCPULIM
-#   endif
-    /* for killm category on Crays */
-#   include <sys/category.h>
-struct rusage {
-   struct timeval ru_stime;
-   struct timeval ru_utime;
-};
-    /* for job/session stuff */
-#   include <sys/session.h>
-    /* times() */
-#   include <sys/times.h>
-#endif
-
 #if defined(NECSX4) || defined(NECSX5)
 #  include <string.h> 
 #  include <sys/stat.h>
@@ -183,37 +165,6 @@ void setosjobid(pid_t sid, gid_t *add_grp_id_ptr, struct passwd *pw)
             }
          } else {
             shepherd_trace("can't get configuration entry for projects");
-         }
-      }
-#     elif defined(CRAY)
-      {
-         char *cp;
-	      {
-	         int jobid;
-
-	         if ((jobid=setjob(pw->pw_uid, 0)) < 0) {
-	            shepherd_error(1, "error: can't set job ID; errno = %d", errno);
-	         }
-
-	         if (sesscntl(jobid, S_ADDFL, S_BATCH) == -1) {
-	            shepherd_error(1, "error: sesscntl(%d, S_ADDFL, S_BATCH) failed,"
-		                        " errno = %d", sid, errno);
-	         } 
-	         sprintf(osjobid, "%d", jobid);
-	      }
-
-	      if ((cp = search_conf_val("acct_project"))) {
-	         int proj; 
-	         if (strcasecmp(cp, "none") && ((proj = nam2acid(cp)) >= 0)) {
-	            shephed_trace("setting project \"%s\" to acid %d", cp, proj);
-	            if (acctid(0, proj) == -1) {
-		            shepherd_trace("failed setting project id (acctid)");
-               }
-	         } else {   
-	            shepherd_trace("can't get id for project \"%s\"", cp);
-	         }
-	      } else {
-	         shepherd_trace("can't get configuration entry for projects");
          }
       }
 #     elif defined(NECSX4) || defined(NECSX5)
