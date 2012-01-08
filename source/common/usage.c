@@ -965,6 +965,10 @@ void sge_usage(u_long32 prog_number, FILE *fp) {
       MARK(OA_SLOT_RANGE);
    }
 
+   if (VALID_OPT(pty_OPT, prog_number)) {
+      PRINTITD(MSG_GDI_USAGE_pty_OPT, MSG_GDI_UTEXT_pty_OPT );
+   }
+
    if (VALID_OPT(purge_OPT, prog_number)) {
       PRINTITD(MSG_GDI_USAGE_purge_OPT,
          MSG_GDI_UTEXT_purge_OPT);
@@ -1345,10 +1349,6 @@ void sge_usage(u_long32 prog_number, FILE *fp) {
 
    if (VALID_OPT(verbose_OPT, prog_number)) {
       PRINTITD(MSG_GDI_USAGE_verbose_OPT, MSG_GDI_UTEXT_verbose_OPT );
-   }
-
-   if (VALID_OPT(pty_OPT, prog_number)) {
-      PRINTITD(MSG_GDI_USAGE_pty_OPT, MSG_GDI_UTEXT_pty_OPT );
    }
 #if 0				/* unimplemented Univa extension */
    if (VALID_OPT(suspend_remote_OPT, prog_number)) {
