@@ -30,9 +30,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 #include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
-#include <sys/types.h>
 #include <sys/time.h>
 
 /*-------------------------------------------*/
@@ -40,17 +38,7 @@ int main(int argc, char *argv[])
 {
  struct timeval now;
 
-#ifdef SOLARIS
-   gettimeofday(&now, NULL);
-#else
-   struct timezone tzp;
-
-#ifdef SINIX
-   gettimeofday(&now);
-#else
-   gettimeofday(&now, &tzp);
-#endif
-#endif
+ gettimeofday(&now, NULL);
 
  printf("%d\n", (int) now.tv_sec);
 

@@ -833,12 +833,7 @@ get_gmt(void)
 {
    struct timeval now;
 
-#ifdef SOLARIS
    gettimeofday(&now, NULL);
-#else
-   struct timezone tzp;
-   gettimeofday(&now, &tzp);
-#endif
 
    return now.tv_sec;
 }

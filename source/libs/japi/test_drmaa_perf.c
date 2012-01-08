@@ -468,11 +468,6 @@ static drmaa_job_template_t *create_job_template(const char *job_path,
 
 static void get_gmt(struct timeval *now)
 {
-#  ifdef SOLARIS
    gettimeofday(now, NULL);
-#  else
-   struct timezone tzp;
-   gettimeofday(now, &tzp);
-#  endif
    return;
 }
