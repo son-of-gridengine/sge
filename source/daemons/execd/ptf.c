@@ -35,11 +35,6 @@
 #  include <sys/param.h>        /* for MAX() macro */
 #endif
 
-#if defined(NECSX4) || defined(NECSX5)
-#  include <sys/types.h>
-#  include <sys/disp.h>
-#endif
-
 #include <sys/types.h>
 
 #if defined(COMPILE_DC) || defined(MODULE_TEST)
@@ -204,10 +199,6 @@ static lListElem *ptf_get_job(u_long job_id);
 #if defined(__sgi)
 
 static void ptf_setpriority_ash(lListElem *job, lListElem *osjob, long pri);
-
-#elif defined(CRAY) || defined(NECSX4) || defined(NECSX5)
-
-static void ptf_setpriority_jobid(lListElem *job, lListElem *osjob, long pri);
 
 #elif defined(ALPHA) || defined(SOLARIS) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
 
@@ -470,8 +461,6 @@ static void ptf_set_native_job_priority(lListElem *job, lListElem *osjob,
 {
 #if defined(__sgi)
    ptf_setpriority_ash(job, osjob, pri);
-#elif defined(CRAY) || defined(NECSX4) || defined(NECSX5)
-   ptf_setpriority_jobid(job, osjob, pri);
 #elif defined(ALPHA) || defined(SOLARIS) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
    ptf_setpriority_addgrpid(job, osjob, pri);
 #endif
@@ -581,94 +570,6 @@ static void ptf_setpriority_ash(lListElem *job, lListElem *osjob, long pri)
       }
 #     endif
    }
-#  endif
-   DEXIT;
-}
-
-#elif defined(CRAY) || defined(NECSX4) || defined(NECSX5)
-
-/****** execd/ptf/ptf_setpriority_jobid() *************************************
-*  NAME
-*     ptf_setpriority_ash() -- Change priority of processes 
-*
-*  SYNOPSIS
-*     static void ptf_setpriority_jobid(lListElem *job, lListElem *osjob, 
-*                                       long *pri) 
-*
-*  FUNCTION
-*     This function is only available for the architecture CRAY and NECSX 4/5.
-*     All processes belonging to "job" and "osjob" will get a new priority.
-*
-*  INPUTS
-*     lListElem *job   - job  
-*     lListElem *osjob - one of the os jobs of "job" 
-*     long pri         - new priority 
-******************************************************************************/
-static void ptf_setpriority_jobid(lListElem *job, lListElem *osjob, long pri)
-{
-   int nice;
-   DENTER(TOP_LAYER, "ptf_setpriority_jobid");
-
-#  if defined(NECSX4) || defined(NECSX5)
-
-   {
-      int timesliced = 0;
-
-      /*
-       * If the timeslice value is set then set the timeslice
-       * scheduling parameter. This gives nice proportional
-       * scheduling for SX jobs. PTF_MIN_PRIORITY and
-       * PTF_MAX_PRIORITY define the time slice range to use.
-       * Values are in 1/HZ seconds, where HZ is 200.
-       *
-       *      1000 = 5 seconds
-       *	    200 = 1 seconds
-       */
-
-      if (lGetDouble(job, JL_timeslice) > 0 && lGetUlong(job, JL_interactive) == 0) {
-	 dispset2_t attr;
-	 int timeslice;
-	 osjobid_t jobid = ptf_get_osjobid(osjob);
-
-	 if (dispcntl(SG_JID, jobid, DCNTL_GET2, &attr) != -1) {
-	    attr.tmslice = (int) lGetDouble(job, JL_timeslice);
-	    if (dispcntl(SG_JID, jobid, DCNTL_SET2, &attr) == -1) {
-	       ERROR((SGE_EVENT, MSG_PRIO_JOBXNICEJFAILURE_S,
-		      sge_u32c(lGetUlong(job, JL_job_ID)), strerror(errno)));
-	    } else {
-               timesliced = 1;
-            }
-
-	 }
-      }
-
-      /*
-       * NEC nice values range from 0 to 39.
-       * According to the nicej(2) man page, nicej returns the new
-       * nice value minus 20, so -1 is a valid return code. Errno
-       * is not set upon a successful call, so we can't tell the
-       * difference between success and failure if we are setting
-       * the nice value to 19. We don't generate an error message
-       * if the nicej(2) call fails and we are trying to set the
-       * nice value to 19 (no big deal).
-       */ 
-
-      if (!timesliced) {
-	 nice = nicej(ptf_get_osjobid(osjob), 0);
-	 if (nice != -1 || pri == 19) {
-	    if (nicej(ptf_get_osjobid(osjob), pri - (nice+20)) == -1 && pri != 19) {
-	       if (errno != ESRCH) {
-		  ERROR((SGE_EVENT, MSG_PRIO_JOBXNICEJFAILURE_S,
-			 sge_u32c(lGetUlong(job, JL_job_ID)), strerror(errno)));
-	       }
-	    } else {
-	       DPRINTF(("NICEJ(" sge_u32 ", " sge_u32 ")\n",
-			(u_long32) ptf_get_osjobid(osjob), (u_long32) pri));
-	    }
-	 }
-      }
-   }
-
 #  endif
    DEXIT;
 }
@@ -1861,13 +1762,6 @@ int ptf_init(void)
          if (nicem(C_PGRP, 0, 0 - nice) < 0) {
             ERROR((SGE_EVENT, MSG_PRIO_NICEMFAILED_S, strerror(errno)));
          }
-      }
-   }
-#elif defined(NECSX5) || defined(NECSX6)
-
-   if (getuid() == 0) {
-      if (nicex(0, -10) == -1) {
-	 ERROR((SGE_EVENT, MSG_PRIO_NICEMFAILED_S, strerror(errno)));
       }
    }
 

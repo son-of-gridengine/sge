@@ -147,12 +147,7 @@ struct finished_job {
 ****************************************************************************
 */
 
-#ifdef NECSX5
-#  define LOCK_SLEEP_TIME 1
-#  define usleep sleep
-#else  
 #  define LOCK_SLEEP_TIME 500 /* [ms] */
-#endif
 
 #define WAIT_SLOT_TIME    5 /* [s]  */
 
