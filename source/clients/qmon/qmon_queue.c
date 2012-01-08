@@ -1536,8 +1536,7 @@ char *arch
       "xterm-sol", 
       "xterm-hp", 
       "xterm-linux", 
-      "xterm-ibm", 
-      "xterm-cray"
+      "xterm-ibm"
    };
    int index;
 
@@ -1574,10 +1573,6 @@ char *arch
       index = 8;
    else if (!strncmp(arch, "aix5", 4))
       index = 8;
-   else if (!strncmp(arch, "unicos", 6))
-      index = 9;
-   else if (!strncmp(arch, "cray", 4))
-      index = 9;
    else
       index = 0;
    

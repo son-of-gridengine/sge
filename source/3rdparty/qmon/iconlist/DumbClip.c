@@ -70,12 +70,7 @@ static XtGeometryResult queryGeometry();
 static void resize();
 #endif
 
-#if CRAYTS || CRAYTSIEEE
-#define XtOffset_cray(p_type, field) ((unsigned int)&(((p_type)NULL)->field))
-#define TheOffset(field) XtOffset_cray(XmDumbClipWidget, dumb_clip.field)
-#else
 #define TheOffset(field) XtOffset(XmDumbClipWidget, dumb_clip.field)
-#endif
 
 static XtResource resources[] =
 {

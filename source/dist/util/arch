@@ -82,11 +82,6 @@ AIX)
       ;;
    esac
    ;;
-CRSOS)
-   if [ $osmachine = smp ]; then
-      ARCH=craysmp
-   fi
-   ;;
 Darwin)
    case $osmachine in
       i386)
@@ -357,19 +352,7 @@ Interix)
    ARCH=win32-x86
    ;;
 *)
-   if [ -f /unicos ]; then
-      if [ "`$UNAME -m`" = "CRAY TS" ]; then
-         if [ `/bin/target|/bin/grep ieee` = noieee ]; then
-            ARCH=crayts
-         else
-            ARCH=craytsieee
-         fi
-      else
-         ARCH=cray
-      fi
-   else
-      ARCH=UNSUPPORTED-${ossysname}-${osmachine}-${osrelease}
-   fi
+   ARCH=UNSUPPORTED-${ossysname}-${osmachine}-${osrelease}
    ;;
 esac
 

@@ -234,8 +234,7 @@ int ckpt_validate(const lListElem *this_elem, lList **alpp)
       "HIBERNATOR",
       "TRANSPARENT",
       "APPLICATION-LEVEL",
-      "CPR",
-      "CRAY-CKPT"
+      "CPR"
    };
    static struct attr {
       int nm;

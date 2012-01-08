@@ -86,7 +86,6 @@ static String ckpt_interface_types[] = {
    "HIBERNATOR", 
    "TRANSPARENT", 
    "CPR", 
-   "CRAY-CKPT",
    "APPLICATION-LEVEL"
 };
 

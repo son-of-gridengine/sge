@@ -1794,9 +1794,7 @@ static Boolean long_get_value (
    size_t buflen,
    long *value )
 {
-#ifdef CRAY
-   errno = 0;
-#elif !defined(LINUX) && !defined(SOLARIS) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD) && \
+#if !defined(LINUX) && !defined(SOLARIS) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD) && \
    !defined(AIX51) && !defined(AIX43) && !defined(ALPHA) && !defined(HP1164) && !defined(HPUX) && !defined(IRIX) 
    int errno = 0; 
 #endif

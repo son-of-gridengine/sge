@@ -39,12 +39,6 @@
 #   include <sys/time.h>
 #endif
 
-#if defined(CRAY)
-#   include <sys/param.h>
-#   include <sys/unistd.h>
-#   include <sys/category.h>
-#endif
-
 #include <sys/resource.h>
 
 #if defined(IRIX)
@@ -74,11 +68,9 @@
 #include "sge_os.h"
 #include "sgeobj/sge_conf.h"
 
-#ifndef CRAY
 static void pushlimit(int, struct RLIMIT_STRUCT_TAG *, int trace_rlimit);
 
 static int get_resource_info(u_long32 resource, const char **name, int *resource_type);
-#endif
 
 static int rlimcmp(sge_rlim_t r1, sge_rlim_t r2);
 static int sge_parse_limit(sge_rlim_t *rlvalp, char *s, char *error_str,
@@ -172,11 +164,7 @@ void setrlimits(int trace_rlimit) {
    int host_slots, priority;
    char *s, error_str[1024];
 
-#ifdef CRAY
-   long clock_tick;
-#else
    struct RLIMIT_STRUCT_TAG rlp;
-#endif
 
 #define PARSE_IT(dstp, attr) \
    s = get_conf_val(attr); \
@@ -368,28 +356,6 @@ void setrlimits(int trace_rlimit) {
       h_locks = mul_infinity(h_locks, host_slots);
    }
 
-#if defined(CRAY)
-
-   /* Let's play a game: UNICOS doesn't support hard and soft limits */
-   /* but it has job and process limits. Let the soft limit setting  */
-   /* in the queue configuration represent the per-process limit     */
-   /* while the hard limit is the per-job limit. OK, so it's crude.  */
-
-   /* Per-process limits */
-   clock_tick = sysconf(_SC_CLK_TCK);
-   limit(C_PROC, 0, L_CPU, s_cpu * clock_tick);
-   limit(C_PROC, 0, L_CORE, s_core / NBPC);
-   limit(C_PROC, 0, L_MEM, s_data / NBPC);
-
-   /* Per-job limits */
-   limit(C_JOB, 0, L_CPU, h_cpu * clock_tick);
-   limit(C_JOB, 0, L_MEM, h_data / NBPC);
-   limit(C_JOB, 0, L_FSBLK, h_fsize / (NBPC * NCPD));
-
-   /* Too bad they didn't have a sysconf call to get bytes/click */
-   /* and clicks/disk block. */
-
-#else
    rlp.rlim_cur = s_cpu;
    rlp.rlim_max = h_cpu;
    pushlimit(RLIMIT_CPU, &rlp, trace_rlimit);
@@ -511,11 +477,8 @@ void setrlimits(int trace_rlimit) {
    rlp.rlim_max = h_cpurestm;
    pushlimit(RLIMIT_CPURESTM, &rlp, trace_rlimit);
 #endif 
-
-#endif
 }
 
-#ifndef CRAY
 /* *INDENT-OFF* */
 /* resource           resource_name              resource_type
                                                  NECSX 4/5
@@ -587,7 +550,6 @@ static int get_resource_info(u_long32 resource, const char **name,
    *name = unknown_string;
    return 1;       
 }
-#endif
 
 /* FORMAT_LIMIT (above, used below) has a grim kludge, printing a
  * backspace supposedly to replace a numerical value with a symbolic
@@ -620,8 +582,6 @@ strip_bs (char *str) {
  * For other systems pushlimit just calls setrlimit.
  */
 
-
-#if !defined(CRAY)
 static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp, 
                       int trace_rlimit) 
 {
@@ -741,4 +701,3 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
       }
    }
 }
-#endif 
