@@ -57,22 +57,6 @@
 #  include <grp.h>
 #endif
 
-#if defined(CRAY)
-#   if !defined(SIGXCPU)
-#       define SIGXCPU SIGCPULIM
-#   endif
-    /* for killm category on Crays */
-#   include <sys/category.h>
-struct rusage {
-   struct timeval ru_stime;
-   struct timeval ru_utime;
-};
-    /* for job/session stuff */
-#   include <sys/session.h>
-    /* times() */
-#   include <sys/times.h>
-#endif
-
 #if defined(NECSX4) || defined(NECSX5)
 #   include <sys/times.h>
 #endif
@@ -152,7 +136,9 @@ struct rusage {
 #define CKPT_TRANS       0x008     /* set for transparent ckpt jobs          */
 #define CKPT_HIBER       0x010     /* set for hibernator ckpt jobs           */
 #define CKPT_CPR         0x020     /* set for cpr ckpt jobs                  */
+#if 0                              /* obsolete */
 #define CKPT_CRAY        0x040     /* set for cray ckpt jobs                 */
+#endif
 #define CKPT_REST_KERNEL 0x080     /* set for all restarted kernel ckpt jobs */
 #define CKPT_REST        0x100     /* set for all restarted ckpt jobs        */
 #define CKPT_APPLICATION 0x200     /* application checkpointing              */
@@ -1174,9 +1160,6 @@ int ckpt_type
 #elif defined(NECSX4) || defined(NECSX5)
       sscanf(get_conf_val("ckpt_osjobid"), "%ld", &jobid);
       shepherd_trace("reusing old super-ux jobid %lld", jobid); 
-#elif defined(CRAY)
-      sscanf(get_conf_val("ckpt_osjobid"),  "%d", &jobid);
-      shepherd_trace("reusing old unicos jobid %d", jobid);
 #endif
 #endif
 
@@ -2178,7 +2161,6 @@ static int check_ckpttype(void)
       ckpt_type = -1;
    else if (!strcasecmp(ckpt_interface, "hibernator") ||
             !strcasecmp(ckpt_interface, "cpr") ||
-            !strcasecmp(ckpt_interface, "cray-ckpt") ||
             !strcasecmp(ckpt_interface, "application-level")) {
 
       ckpt_type = CKPT | CKPT_KERNEL;
@@ -2187,8 +2169,6 @@ static int check_ckpttype(void)
          ckpt_type |= CKPT_HIBER;
       else if (!strcasecmp(ckpt_interface, "cpr"))
          ckpt_type |= CKPT_CPR;
-      else if (!strcasecmp(ckpt_interface, "cray-ckpt"))
-         ckpt_type |= CKPT_CRAY;
       else if (!strcasecmp(ckpt_interface, "application-level"))
          ckpt_type |= CKPT_APPLICATION;   
 
@@ -3043,8 +3023,6 @@ shepherd_signal_job(pid_t pid, int sig) {
 #  elif defined(NECSX4) || defined(NECSX5)
    char err_str[512];
    static id_t osjobid = 0;
-#  elif defined(CRAY)
-   static int osjobid = 0;
 #  endif
 # endif
 
@@ -3065,9 +3043,7 @@ shepherd_signal_job(pid_t pid, int sig) {
         shepherd_trace("value in \"osjobid\" file = 0, not using kill_ash/killm");
       } else {
         sge_switch2start_user();
-#     if defined(CRAY)
-        killm(C_JOB, osjobid, sig);
-#     elif defined(NECSX4) || defined(NECSX5)
+#     if defined(NECSX4) || defined(NECSX5)
         if (sig == SIGSTOP) {
             if (suspendj(osjobid) == -1) {
                 shepherd_trace("ERROR(%d): suspendj(%d): %s", errno,

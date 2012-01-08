@@ -66,10 +66,6 @@
 #  include <sys/schedctl.h>
 #endif
 
-#ifdef CRAY
-#  include <sys/category.h>
-#endif
-
 #ifdef DARWIN6
 #include <sys/time.h>
 #endif
@@ -612,24 +608,6 @@ static void ptf_setpriority_jobid(lListElem *job, lListElem *osjob, long pri)
 {
    int nice;
    DENTER(TOP_LAYER, "ptf_setpriority_jobid");
-
-#  ifdef CRAY
-   nice = nicem(C_JOB, ptf_get_osjobid(osjob), 0);
-   if (nice >= 0) {
-      /* for interactive jobs, don't set "background" priority */
-      if (lGetUlong(job, JL_interactive) && pri == PTF_MIN_PRIORITY) {
-         pri--;
-      }
-      if (nicem(C_JOB, ptf_get_osjobid(osjob), pri - nice) < 0) {
-         ERROR((SGE_EVENT, MSG_PRIO_JOBXNICEMFAILURE_S,
-                sge_u32c(lGetUlong(job, JL_job_ID)), strerror(errno)));
-
-      }
-   } else {
-      ERROR((SGE_EVENT, MSG_PRIO_JOBXNICEMFAILURE_S,
-             sge_u32c(lGetUlong(job, JL_job_ID)), strerror(errno)));
-   }
-#  endif
 
 #  if defined(NECSX4) || defined(NECSX5)
 

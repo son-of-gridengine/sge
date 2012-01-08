@@ -218,7 +218,6 @@ _Messages_.de.Byte: Byte
 _Messages_.de.CPR: CPR
 _Messages_.de.CPU [%]: CPU [%]
 _Messages_.de.CPU: CPU
-_Messages_.de.CRAY-CKPT: CRAY-CKPT
 _Messages_.de.CSTRING: ZEICHENKETTE (ohne Gross/Kleinschreibung)
 _Messages_.de.CWD: Aktuelles Verzeichnis
 _Messages_.de.Calendar Configuration: Kalenderkonfiguration

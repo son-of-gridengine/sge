@@ -39,9 +39,6 @@ Content
    arch		compile arch	description
    ----------------------------------------------------------------------
    aix51        AIX51 	        IBM AIX 5.1.x, 64bit kernel
-   cray		UNICOS		Cray Unicos 10.0.x XMP, YMP, J90, C90, SV1
-   crayts	UNICOS_TS	Cray Unicos 10.0.x T90
-   craytsieee	UNICOS_TS_IEEE	Cray Unicos 10.0.x T90 with IEEE hardware
    darwin-ppc	DARWIN_PPC      Mac OS PPC
    darwin-x86	DARWIN_X86      Mac OS X, 32bit (Leopard)
    darwin-x64	DARWIN_X64      Mac OS X, 64bit (Snow Leopard and newer)

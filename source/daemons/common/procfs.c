@@ -87,9 +87,7 @@ int verydummyprocfs;
 #include "pdc.h"
 #include "msg_sge.h"
 
-#if !defined(CRAY)
 #include "procfs.h"
-#endif
 
 #if defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
 #   if defined(SVR3)

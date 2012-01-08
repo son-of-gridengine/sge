@@ -338,12 +338,7 @@ static XtActionsRec actions[] =
    {"IconListTraverseDown", (XtActionProc)down},
 };
 
-#if CRAYTS || CRAYTSIEEE
-#define XtOffset_cray(p_type, field) ((unsigned int)&(((p_type)NULL)->field))
-#define TheOffset(field) XtOffset_cray(XmIconListWidget, iconList.field)
-#else
 #define TheOffset(field) XtOffset(XmIconListWidget, iconList.field)
-#endif
 static XtResource resources[] =
 {
    {XmNuserData, XmCUserData, XtRPointer, sizeof(XtPointer),

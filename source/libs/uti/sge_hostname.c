@@ -817,12 +817,8 @@ struct hostent *sge_gethostbyaddr(const struct in_addr *addr, int* system_error_
    
    sge_mutex_lock("hostbyaddr", SGE_FUNC, __LINE__, &hostbyaddr_mutex);
 
-#if defined(CRAY)
-   he = gethostbyaddr((const char *)addr, sizeof(struct in_addr), AF_INET);
-#else
    /* JG: TODO: shouldn't it always be sizeof(struct in_addr)? */
    he = gethostbyaddr((const char *)addr, 4, AF_INET);
-#endif
 
    l_errno = h_errno;
    if (he != NULL) {

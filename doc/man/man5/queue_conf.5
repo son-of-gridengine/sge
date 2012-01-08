@@ -978,27 +978,6 @@ available on systems supporting RLIMIT_VMEM (see
 .M setrlimit 2
 on your operating system).
 .PP
-The UNICOS operating system supplied by SGI/Cray does not support the
-.M setrlimit 2
-system call, using their own resource limit-setting system call instead.
-For UNICOS systems only, the following meanings apply:
-.IP "s_cpu" 1i
-The per-process CPU time limit in seconds.
-.IP "s_core" 1i
-The per-process maximum core file size in bytes.
-.IP "s_data" 1i
-The per-process maximum memory limit in bytes.
-.IP "s_vmem" 1i
-The same as s_data (if both are set the minimum is used). 
-.IP "h_cpu" 1i
-The per-job CPU time limit in seconds.
-.IP "h_data" 1i
-The per-job maximum memory limit in bytes.
-.IP "h_vmem" 1i
-The same as h_data (if both are set the minimum is used). 
-.IP "h_fsize" 1i
-The total number of disk blocks that this job can create.
-.PP
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,

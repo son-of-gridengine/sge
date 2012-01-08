@@ -101,18 +101,6 @@ case $buildarch in
       BUILDARCH=AIX51
       TARGET_BITS=TARGET_32BIT
       ;;
-   cray)
-      BUILDARCH=UNICOS
-      TARGET_BITS=TARGET_64BIT
-      ;;
-   crayts)
-      BUILDARCH=UNICOS_TS
-      TARGET_BITS=TARGET_32BIT
-      ;;
-   craytsieee)
-      BUILDARCH=UNICOS_TS_IEEE
-      TARGET_BITS=TARGET_32BIT
-      ;;
    darwin)
       BUILDARCH=DARWIN
       TARGET_BITS=TARGET_32BIT

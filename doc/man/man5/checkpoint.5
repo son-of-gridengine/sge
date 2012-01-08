@@ -90,8 +90,6 @@ valid:
 The Hibernator kernel level checkpointing is interfaced.
 .IP "\fIcpr\fP"
 The SGI kernel level checkpointing is used.
-.IP "\fIcray-ckpt\fP"
-The Cray kernel level checkpointing is assumed.
 .IP "\fItransparent\fP"
 xxQS_NAMExx assumes that the jobs submitted with reference to this checkpointing
 interface use a checkpointing library such as provided by 
@@ -102,7 +100,7 @@ interface perform their private checkpointing method.
 .IP "\fIapplication-level\fP"
 Uses all of the interface commands configured in the checkpointing object
 like in the case of one of the kernel level checkpointing interfaces
-(\fIcpr\fP, \fIcray\-ckpt\fP, etc.) except for the
+(\fIcpr\fP, etc.) except for the
 .B restart_command
 (see below), which is not
 used (even if it is configured) but the job script is invoked in case of a
