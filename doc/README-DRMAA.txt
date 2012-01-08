@@ -4,8 +4,8 @@
 Content
 -------
 1. Introduction
-2. Getting Started
-3. Getting Support
+2. Getting Started with the C Binding
+2. Getting Started with the Java Binding
 4. Copyright
 
 1. Introduction
@@ -24,9 +24,10 @@ Content
       to today's DRM systems by application's builders, portal builders, and
       Independent Software Vendors (ISVs)."
 
-   Simply put, DRMAA is an API for submitting and controling jobs.  DRMAA
-   has been implemented in several lanuages and for several DRMs.  Grid
-   Engine since release 6.0 includes a C implementation, or C binding.
+   Simply put, DRMAA is an API for submitting and controlling jobs.  DRMAA
+   has been implemented in several languages and for several DRMs.  The Grid
+   Engine release includes a C implementation, or C binding, a
+   Java[TM] language binding, and a Ruby binding.
 
    For more information about DRMAA and the various bindings that are
    available, visit the DRMAA website at:
@@ -41,18 +42,21 @@ Content
 
       http://www.gridforum.org/
 
+   The Ruby DRMAA binding is found in util/resources/drmaa4ruby in the
+   SGE installation.
+
+   The Python binding is at https://code.google.com/p/drmaa-python/.
+
    The Perl language binding module for DRMAA can be found at:
 
       http://search.cpan.org/src/THARSCH/Schedule-DRMAAc-0.81/
 
-   For information on the C language binding included with the Condor 6.7
-   release, see:
+   but this is under the GNU GPL licence, which is incompatible with
+   the licence of libdrmaa, despite being produced explicitly for use
+   with it.
 
-      http://www.cs.wisc.edu/condor/manual/v6.7/4_4Application_Program.html#SECTION00542000000000000000
-
-
-2. Getting Started
--------------------
+2. Getting Started with the C Binding
+-------------------------------------
 
    To develop applications that utilize the C binding, you will need two files.
    The first is the DRMAA header file, drmaa.h.  You will find this file under
@@ -61,8 +65,8 @@ Content
    library.  You will also need the DRMAA shared library.  You will find
    this file under the $SGE_ROOT/lib/$ARCH directory in the distribution. 
    This file must be linked with your source files during compilation (make
-   ... -ldrmaa ...) and must be accessible from the LD_LIBRARY_PATH in order
-   for your application to link or run.
+   ... -ldrmaa ...) and must be accessible to the dynamic linker, e.g.
+   via LD_LIBRARY_PATH, for your application to run.
 
    The first thing to do is to look through the header file.  This file
    lists the functions available to you as a DRMAA developer.  For more
@@ -94,26 +98,48 @@ Content
    -I$SGE_ROOT/include to the compiler.
 
    When compiling your file, you will need to have $SGE_ROOT/lib/$ARCH
-   included in your LD_LIBRARY_PATH, and you will need to indicate to the
-   compiler/linker that you want to link in this library, e.g. by passing
-   the "-ldrmaa" option to the compiler/linker.
+   on the linker search path, and indicate to the linker that you want
+   to link in this library, e.g. by passing "-ldrmaa" to the
+   compiler/linker.
 
-3. Getting Support
-------------------
 
-   For commercial deployments Univa Grid Engine DRMAA is recommended.
+2. Getting Started with the Java Binding
+----------------------------------------
 
-   If you're having trouble with the DRMAA library delivered with Univa Grid
-   Engine, please visit:
+   To develop applications that utilize the Java language binding, you will
+   need two files.  The first is the jar file, drmaa.jar.  This is needed
+   for both compiling and running applications utilizing the Java language
+   binding.  The second file is the DRMAA shared library.  This file will
+   need to be accessible from the shared library path in order for your
+   application to link properly and run.  If you built the binaries yourself
+   (using "aimk -java" and "distinst -local") or installed the pre-built
+   binaries, you will find the shared library in $SGE_ROOT/lib/$ARCH and the
+   jar file in $SGE_ROOT/lib.  Note that the DRMAA shared library is the
+   same one used by DRMAA C language binding programs.
 
-      http://www.gridengine.org
-   or http://www.univa.com
+   The first step is to look at the example program found at:
 
-   to see if the problem your having is a know problem.  Alternately or for
-   additional help you can send email to the dev@gridengine.org
-   mailing list.  You can also browse archives of this mailing list at:
+      http://arc.liv.ac.uk/repos/darcs/sge/source/libs/jdrmaa/src/DrmaaExample.java
 
-      http://gridengine.org/pipermail/dev
+   The example program demonstrates a simple usage of the DRMAA library to
+   submit several bulk jobs and several single jobs, wait for the jobs to
+   finish, and then output the results.
+
+   In the:
+
+      http://arc.liv.ac.uk/repos/darcs/sge/source/libs/jdrmaa/src/com/sun/grid/drmaa/howto
+
+   directory you will find the example programs from the online tutorial at:
+
+      http://arc.liv.ac.uk/SGE/howto/drmaa_java.html
+
+   API documentation can be found at:
+
+      $SGE_ROOT/doc
+
+   Once you're familiar with DRMAA, you're ready to begin development of your
+   Java application.  When compiling your file, you will need to have
+   $SGE_ROOT/lib/drmaa.jar included in your CLASSPATH.
 
 
 4. Copyright
@@ -145,6 +171,4 @@ The Initial Developer of the Original Code is: Sun Microsystems, Inc.
 Copyright: 2001 by Sun Microsystems, Inc.
 
 All Rights Reserved.
-
-Portions of this text are Copyright 2011 Univa Corporation.
 ___INFO__MARK_END__
