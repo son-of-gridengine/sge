@@ -39,10 +39,6 @@
 #define QEVENT_SHOW_ALL
 #endif
 
-#if defined(FREEBSD) || defined(NETBSD) || defined(DARWIN)
-#include <sys/time.h>
-#endif
-
 #include <sys/resource.h>
 #include <sys/wait.h>
 
@@ -356,10 +352,12 @@ static void qevent_show_usage(void) {
    fprintf(stdout, "%s\n", feature_get_product_name(FS_SHORT_VERSION, &ds));
    fprintf(stdout, "%s\n", MSG_SRC_USAGE );
 
-   fprintf(stdout,"qevent [-h|-help] -ts|-testsuite\n");
-   fprintf(stdout,"qevent [-h|-help] -sm|-subscribe\n");
-   fprintf(stdout,"qevent [-h|-help] -trigger EVENT SCRIPT [ -trigger EVENT SCRIPT, ... ]\n\n");
-   
+   /* fixme:  localize  */
+   fprintf(stdout,"qevent [-h|-help]\n");
+   fprintf(stdout,"qevent -ts|-testsuite\n");
+   fprintf(stdout,"qevent -sm|-subscribe\n");
+   fprintf(stdout,"qevent -trigger EVENT SCRIPT [ -trigger EVENT SCRIPT, ... ]\n\n");
+
    fprintf(stdout,"   -h,  -help             show usage\n");
    fprintf(stdout,"   -ts, -testsuite        run in testsuite mode\n");
    fprintf(stdout,"   -sm, -subscribe        run in subscribe mode\n");
@@ -461,13 +459,11 @@ static void qevent_parse_command_line(int argc, char **argv, qevent_options *opt
       /* unkown option */
       if ( *argv[0] == '-' ) {  
          sge_dstring_append(option_struct->error_message,"unkown option: ");
-         sge_dstring_append(option_struct->error_message,*argv);
-         sge_dstring_append(option_struct->error_message,"\n");
       } else {
          sge_dstring_append(option_struct->error_message,"unkown argument: ");
-         sge_dstring_append(option_struct->error_message,*argv);
-         sge_dstring_append(option_struct->error_message,"\n");
       }
+      sge_dstring_append(option_struct->error_message,*argv);
+      sge_dstring_append(option_struct->error_message,"\n");
    } 
    DEXIT;
 }
@@ -487,6 +483,17 @@ int main(int argc, char *argv[])
 
    /* dump pid to file */
    qevent_dump_pid_file();
+
+   log_state_set_log_gui(1);
+   sge_setup_sig_handlers(QEVENT);
+
+   /* setup event client */
+   gdi_setup = sge_gdi2_setup(&ctx, QEVENT, MAIN_THREAD, &alp);
+   if (gdi_setup != AE_OK) {
+      answer_list_output(&alp);
+      sge_dstring_free(enabled_options.error_message);
+      SGE_EXIT((void**)&ctx, 1);
+   }
 
    /* parse command line */
    enabled_options.error_message = &errors;
@@ -510,17 +517,6 @@ int main(int argc, char *argv[])
       SGE_EXIT((void**)&ctx, 1);
    }
 
-
-   log_state_set_log_gui(1);
-   sge_setup_sig_handlers(QEVENT);
-
-   /* setup event client */
-   gdi_setup = sge_gdi2_setup(&ctx, QEVENT, MAIN_THREAD, &alp);
-   if (gdi_setup != AE_OK) {
-      answer_list_output(&alp);
-      sge_dstring_free(enabled_options.error_message);
-      SGE_EXIT((void**)&ctx, 1);
-   }
    /* TODO: how is the memory we allocate here released ???, SGE_EXIT doesn't */
    if (false == sge_gdi2_evc_setup(&evc, ctx, EV_ID_ANY, &alp, NULL)) {
       answer_list_output(&alp);
