@@ -2690,18 +2690,6 @@ is made available.
 
 
 %% The following software may be included in this product:
-%%    snprintf
-%% Use of any of this software is governed by the terms of the license below:
-
-   Mark Martinec <mark.martinec@ijs.si>, April 1999, June 2000
-   Copyright � 1999, Mark Martinec
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the Frontier Artistic License which comes with
-   this Kit. (http://www.ijs.si/software/snprintf/LICENSE.txt)
-
-
-%% The following software may be included in this product:
 %%    jemalloc
 %% Use of any of this software is governed by the terms of the licenses below:
 
