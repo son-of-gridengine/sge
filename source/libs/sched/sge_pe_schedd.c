@@ -92,7 +92,7 @@ int slots
       }
    
       /* can we divide */
-      if ( (slots % ret)!=0 ) {
+      else if ( (slots % ret)!=0 ) {
          DPRINTF(("pe >%s<: cant distribute %d slots "
          "using \"%s\" as alloc rule\n", 
          lGetString(pep, PE_name), slots, alloc_rule)); 
