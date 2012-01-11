@@ -506,7 +506,7 @@ path_verify(const char *path, lList **answer_list, const char *name, bool absolu
 
    /* check for absolute path */
    if (absolute) {
-      if (path[0] != '/') {
+      if (ret && path[0] != '/') {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
                                  MSG_CONF_THEPATHGIVENFORXMUSTSTARTWITHANY_S, name);
          ret = false;

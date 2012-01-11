@@ -183,9 +183,6 @@ init_packbuffer(sge_pack_buffer *pb, int initial_size, int just_count)
       pb->cur_ptr = pb->head_ptr;
       pb->mem_size = initial_size;
 
-      pb->cur_ptr = pb->head_ptr;
-      pb->mem_size = initial_size;
-
       pb->bytes_used = 0;
       pb->just_count = 0;
       pb->version = CULL_VERSION;
@@ -213,7 +210,7 @@ init_packbuffer_from_buffer(sge_pack_buffer *pb, char *buf, u_long32 buflen)
 {
    DENTER(PACK_LAYER, "init_packbuffer_from_buffer");
 
-   if (!pb && !buf) {
+   if (!pb || !buf) {
       DRETURN(PACK_FORMAT);
    }   
 
