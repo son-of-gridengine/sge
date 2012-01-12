@@ -88,7 +88,9 @@
 
 #if (OPENSSL_VERSION_NUMBER < 0x0090700fL) 
 #define OPENSSL_CONST
+#if (OPENSSL_VERSION_NUMBER < 0x0090700fL)
 #define NID_userId NID_uniqueIdentifier
+#endif
 #else
 #define OPENSSL_CONST const
 #endif
@@ -239,9 +241,9 @@ static void                 (*cl_com_ssl_func__EVP_PKEY_free)                   
 static void                 (*cl_com_ssl_func__X509_STORE_CTX_set_error)            (X509_STORE_CTX *ctx,int s);
 static void                 (*cl_com_ssl_func__X509_OBJECT_free_contents)           (X509_OBJECT *a);
 static ASN1_INTEGER*        (*cl_com_ssl_func__X509_get_serialNumber)               (X509 *x);
-static int                  (*cl_com_ssl_func__X509_cmp_current_time)               (ASN1_TIME *s);
-static int                  (*cl_com_ssl_func__ASN1_INTEGER_cmp)                    (ASN1_INTEGER *x, ASN1_INTEGER *y);
-static long                 (*cl_com_ssl_func__ASN1_INTEGER_get)                    (ASN1_INTEGER *a);
+static int                  (*cl_com_ssl_func__X509_cmp_current_time)               (OPENSSL_CONST ASN1_TIME *s);
+static int                  (*cl_com_ssl_func__ASN1_INTEGER_cmp)                    (OPENSSL_CONST ASN1_INTEGER *x, OPENSSL_CONST ASN1_INTEGER *y);
+static long                 (*cl_com_ssl_func__ASN1_INTEGER_get)                    (OPENSSL_CONST ASN1_INTEGER *a);
 static int                  (*cl_com_ssl_func__X509_CRL_verify)                     (X509_CRL *a, EVP_PKEY *r);
 static EVP_PKEY*            (*cl_com_ssl_func__X509_get_pubkey)                     (X509 *x);
 static int                  (*cl_com_ssl_func__X509_STORE_set_default_paths)        (X509_STORE *ctx);
@@ -1752,21 +1754,21 @@ static int cl_com_ssl_build_symbol_table(void) {
       }
 
       func_name = "X509_cmp_current_time";
-      cl_com_ssl_func__X509_cmp_current_time = (int (*)(ASN1_TIME *s))dlsym(cl_com_ssl_crypto_handle, func_name);
+      cl_com_ssl_func__X509_cmp_current_time = (int (*)(OPENSSL_CONST ASN1_TIME *s))dlsym(cl_com_ssl_crypto_handle, func_name);
       if (cl_com_ssl_func__X509_cmp_current_time == NULL) {
          CL_LOG_STR(CL_LOG_ERROR,"dlsym error: can't get function address:", func_name);
          had_errors++;
       }
 
       func_name = "ASN1_INTEGER_cmp";
-      cl_com_ssl_func__ASN1_INTEGER_cmp = (int (*)(ASN1_INTEGER *x, ASN1_INTEGER *y))dlsym(cl_com_ssl_crypto_handle, func_name);
+      cl_com_ssl_func__ASN1_INTEGER_cmp = (int (*)(OPENSSL_CONST ASN1_INTEGER *x, OPENSSL_CONST ASN1_INTEGER *y))dlsym(cl_com_ssl_crypto_handle, func_name);
       if (cl_com_ssl_func__ASN1_INTEGER_cmp == NULL) {
          CL_LOG_STR(CL_LOG_ERROR,"dlsym error: can't get function address:", func_name);
          had_errors++;
       }
 
       func_name = "ASN1_INTEGER_get";
-      cl_com_ssl_func__ASN1_INTEGER_get = (long (*)(ASN1_INTEGER *a))dlsym(cl_com_ssl_crypto_handle, func_name);
+      cl_com_ssl_func__ASN1_INTEGER_get = (long (*)(OPENSSL_CONST ASN1_INTEGER *a))dlsym(cl_com_ssl_crypto_handle, func_name);
       if (cl_com_ssl_func__ASN1_INTEGER_get == NULL) {
          CL_LOG_STR(CL_LOG_ERROR,"dlsym error: can't get function address:", func_name);
          had_errors++;
