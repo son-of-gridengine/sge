@@ -37,7 +37,7 @@
 
 umask 022
 
-TOPFILES="3rd_party bin catman ckpt doc examples include inst_sge \
+TOPFILES="bin catman ckpt doc examples include inst_sge \
           install_execd install_qmaster lib man mpi pvm hadoop qmon util utilbin"
 
 HASARCHDIR="bin lib examples/jobsbin utilbin"
@@ -123,7 +123,7 @@ SECFILES="security/gss/get_cred.c security/gss/put_cred.c \
 SECURITYBINARIES="get_cred put_cred delete_cred renew_cred \
                   starter_cred get_cred.sh put_cred.sh k5dcelogin"
 
-USERSCRIPTS="status sge-disable-submits sge-enable-submits dead-nodes \
+USERSCRIPTS="qstatus sge-disable-submits sge-enable-submits dead-nodes \
              busy-nodes idle-nodes nodes-in-job qselect-node-list \
 	     process-scheduler-log qsched jobstats"
 
@@ -434,7 +434,6 @@ instcommon=false
 instutilbin=false
 instsec=false
 instsecbin=false
-inst3rdparty=false
 instclassictargets=false
 instopenssl=true
 instbdb=true
@@ -723,7 +722,6 @@ for prog in $PROG; do
       common|distcommon)
          instdrmaa=true
          instcommon=true
-         inst3rdparty=true
          instckpt=true
          instdtrace=true
          instexamples=true
@@ -821,14 +819,6 @@ done
 #
 
 if [ $instcommon = true ]; then
-
-   if [ $inst3rdparty = true ]; then
-      echo Installing \"3rd_party/\" directory tree
-      Execute rm -rf $DEST_SGE_ROOT/3rd_party
-      MakeDir 3rd_party
-      Execute cp -r dist/3rd_party $DEST_SGE_ROOT
-      Cleanup 3rd_party
-   fi
 
    if [ $instiscript = true ]; then
       rm -f $DEST_SGE_ROOT/inst_sge $DEST_SGE_ROOT/install_qmaster $DEST_SGE_ROOT/install_execd
@@ -1184,6 +1174,7 @@ if [ $instcommon = true ]; then
       if [ "x$LICENSE_FILE" != "x" ]; then
          Execute cp $LICENSE_FILE $DEST_SGE_ROOT/doc
       fi
+      Execute cp -r ../LICENCES doc
       Execute cp ../NEWS $DEST_SGE_ROOT/doc
       Execute chmod 644 $DEST_SGE_ROOT/doc/*
       Cleanup doc      
