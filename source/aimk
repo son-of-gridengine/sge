@@ -2529,6 +2529,9 @@ if ( "$JAVA" > 0 ) then
    if ( $USE_INSURE == 1 ) then
       setenv ANT_AIMK_OPTS "$ANT_AMK_OPTS -insure"
    endif
+   if ( $NO_HWLOC == 1 ) then
+      setenv ANT_AIMK_OPTS "$ANT_AIMK_OPTS -no-hwloc"
+   endif
    if ( $DEBUGGED == 1 ) then
       setenv AIMK_DEBUG true
    else
