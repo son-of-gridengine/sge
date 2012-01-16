@@ -285,7 +285,7 @@
 /* 
  * libs/sched/sge_complex_schedd.c
  */
-#define MSG_GDI_NO_ATTRIBUTE_S                        _MESSAGE(47370, _("denied: attribute "SFQ" is no complex attribute"))
+#define MSG_GDI_NO_ATTRIBUTE_S                        _MESSAGE(47370, _("denied: attribute "SFQ" is not a complex attribute"))
 #define MSG_COMPLEX_MISSING                           _MESSAGE(47371, _("name filter in get_attribute_list is not big enough"))
 
 /*

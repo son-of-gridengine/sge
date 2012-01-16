@@ -182,9 +182,9 @@
 #define MSG_GDI_VALUETHATCANBESETTOINF                  _MESSAGE(49083, _("value that can be set to infinity"))
 #define MSG_GDI_UNRECOGNIZEDVALUETRAILER_SS             _MESSAGE(49084, _("Error! Unrecognized value-trailer '%20s' near '%20s'\nI expected multipliers k, K, m and M.\nThe value string is probably badly formed!" ))
 #define MSG_GDI_UNEXPECTEDENDOFNUMERICALVALUE_SC        _MESSAGE(49085, _("Error! Unexpected end of numerical value near "SFN".\nExpected one of ',', '/' or '\\0'. Got '%c'" ))
-#define MSG_GDI_NUMERICALVALUEFORHOUREXCEEDED_SS        _MESSAGE(49086, _("Error! numerical value near %20s for hour exceeded.\n'%20s' is no valid time specifier!"))
-#define MSG_GDI_NUMERICALVALUEINVALID_SS                _MESSAGE(49087, _("Error! numerical value near %20s invalid.\n'%20s' is no valid time specifier!" ))
-#define MSG_GDI_NUMERICALVALUEFORMINUTEEXCEEDED_SS      _MESSAGE(49088, _("Error! numerical value near %20s for minute exceeded.\n'%20s' is no valid time specifier!"))
+#define MSG_GDI_NUMERICALVALUEFORHOUREXCEEDED_SS        _MESSAGE(49086, _("Error! numerical value near %20s for hour exceeded.\n'%20s' is not a valid time specifier!"))
+#define MSG_GDI_NUMERICALVALUEINVALID_SS                _MESSAGE(49087, _("Error! numerical value near %20s invalid.\n'%20s' is not a valid time specifier!" ))
+#define MSG_GDI_NUMERICALVALUEFORMINUTEEXCEEDED_SS      _MESSAGE(49088, _("Error! numerical value near %20s for minute exceeded.\n'%20s' is not a valid time specifier!"))
 #define MSG_GDI_NUMERICALVALUEINVALIDNONUMBER_SS        _MESSAGE(49089, _("Error! numerical value near %20s invalid.\n>%20s< contains no valid decimal or fixed float number"))
 #define MSG_GDI_NUMERICALVALUEINVALIDNOHEXOCTNUMBER_SS  _MESSAGE(49090, _("Error! numerical value near "SFN" invalid.\n'"SFN"' contains no valid hex or octal number"))
 

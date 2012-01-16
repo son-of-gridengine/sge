@@ -77,7 +77,7 @@
 #define MSG_PARSE_INVALIDSECOND       _MESSAGE(64048, _("Invalid seconds specification."))
 #define MSG_PARSE_NODATEFROMINPUT     _MESSAGE(64049, _("Couldn't generate date from input. Perhaps a date before 1970 was specified."))
 #define MSG_PARSE_NODATE                                _MESSAGE(64050, _("no date specified"))
-#define MSG_PEREFINJOB_SU                               _MESSAGE(64059, _("Pe "SFQ" is still referenced in job "sge_U32CFormat"."))
+#define MSG_PEREFINJOB_SU                               _MESSAGE(64059, _("Parallel environment "SFQ" is still referenced in job "sge_U32CFormat"."))
 #define MSG_GDI_INITIALPORTIONSTRINGNODECIMAL_S          _MESSAGE(64060, _("Numerical value invalid!\nThe initial portion of string "SFQ" contains no decimal number"))
 #define MSG_GDI_RANGESPECIFIERWITHUNKNOWNTRAILER_SS      _MESSAGE(64061, _("Range specifier "SFQ" has unknown trailer "SFQ))
 #define MSG_GDI_UNEXPECTEDRANGEFOLLOWINGUNDEFINED        _MESSAGE(64062, _("unexpected range following \"UNDEFINED\""))
