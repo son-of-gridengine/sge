@@ -362,19 +362,20 @@ static void qmonUsage(Widget w)
 
    printf("%s %s\n", GE_SHORTNAME, GDI_VERSION);
 /*    printf("%s\n", feature_get_product_name(FS_SHORT_VERSION, &ds)); */
-   printf(XmtLocalize2(w, "usage: qmon\n", "qmon_usage", "usageTitle"));
+   printf("%s", XmtLocalize2(w, "usage: qmon\n", "qmon_usage", "usageTitle"));
    printf("	[-cmap]                           ");
-   printf(XmtLocalize2(w, "use own colormap\n", "qmon_usage", "cmapOption"));
+   printf("%s", XmtLocalize2(w, "use own colormap\n", "qmon_usage", "cmapOption"));
    printf("	[-help]                           ");
-   printf(XmtLocalize2(w, "show this information and exit\n", 
+   printf("%s", XmtLocalize2(w, "show this information and exit\n",
                            "qmon_usage", "helpOption"));
    printf("	[-fontFamily {big|medium|small}]  ");
-   printf(XmtLocalize2(w, "use small/medium/big fonts\n", 
+   printf("%s", XmtLocalize2(w, "use small/medium/big fonts\n",
                            "qmon_usage", "fontFamilyOption"));
    printf("	[-nologo]                         ");
-   printf(XmtLocalize2(w, "startup without logo\n",
+   printf("%s", XmtLocalize2(w, "startup without logo\n",
                            "qmon_usage", "nologoOption"));
-   printf(XmtLocalize2(w, "Additionally the default X commandline switches can be used.\nFor further information see the manual page X(1)\n", 
+   printf("%s", XmtLocalize2(w, "Additionally the default X commandline \
+switches can be used.\nFor further information see the manual page X(1)\n",
           "qmon_usage", "X11OptionInfo"));
 
    DEXIT;

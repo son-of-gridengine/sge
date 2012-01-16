@@ -416,7 +416,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       /***************** core binding part ************************************/
       if (mconf_get_enable_binding()) {
 
-#if defined(HAVE_HWLOC)
+        if (HAVE_HWLOC) {
          dstring pseudo_usage = DSTRING_INIT;
          lListElem* jr        = NULL;
          unsigned slots;
@@ -426,11 +426,11 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          if (gethostname(thishost, SGE_PATH_MAX) != 0)
             host_slots = BIND_INFINITY;
          else {
-            if (!sge_hostcmp(lGetHost(master_q, QU_qhostname), thishost)
-                != 0) {
-               /* This is the master node.  This duplicates work below,
-                  but we need the number now in case of linear:slots
-                  binding.  */
+            if (!sge_hostcmp(lGetHost(master_q, QU_qhostname), thishost)) {
+               /* This is the master node; count the slots contributed
+                  by each queue.  (This duplicates work below, but we
+                  need the number now in case of linear:slots
+                  binding.)  */
                for_each (gdil_ep, gdil) {
                   slots = (int)lGetUlong(gdil_ep, JG_slots);
                   if (!sge_hostcmp(lGetHost(master_q, QU_qhostname),
@@ -466,8 +466,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          }
 
          sge_dstring_free(&pseudo_usage);
-#endif
-   }
+        }
+      }
       if (rankfileinput != NULL) {
          INFO((SGE_EVENT, "appended socket,core list to hostfile %s", rankfileinput));
       }
@@ -2015,7 +2015,6 @@ lList *gdil_orig  /* JG_Type */
    DRETURN(nhosts);
 }
 
-#ifdef HAVE_HWLOC
 /* creates binding string for config file */
 /****** exec_job/create_binding_strategy_string() ************************
 *  NAME
@@ -2050,16 +2049,17 @@ static bool create_binding_strategy_string(dstring* result, lListElem *jep,
                                            char** rankfileinput,
                                            unsigned host_slots)
 {
+   bool retval = false;
    /* temporary result string with or without "env:" prefix (when environment 
       variable for binding should be set or not) */
    dstring tmp_result = DSTRING_INIT; 
-   bool retval;
    
    /* binding strategy */
    lListElem *binding_elem = NULL;
    lList *binding = lGetList(jep, JB_binding);
 
    DENTER(TOP_LAYER, "create_binding_strategy_string");
+   if (HAVE_HWLOC) {
 
    if (binding != NULL) {
       /* get sublist */
@@ -2134,10 +2134,10 @@ static bool create_binding_strategy_string(dstring* result, lListElem *jep,
    }
 
    sge_dstring_free(&tmp_result);
+   } /* HAVE_HWLOC */
 
    DRETURN(retval);
 }
-#endif
 
 /****** exec_job/linear() ************************************************
 *  NAME
@@ -2494,7 +2494,7 @@ static bool explicit(dstring* result, lListElem* binding_elem)
 static bool parse_job_accounting_and_create_logical_list(const char* binding_string,
                                                          char** rankfileinput)
 {
-#ifdef HAVE_HWLOC
+  if (HAVE_HWLOC) {
    bool retval;
    int* sockets = NULL;
    int* cores   = NULL;
@@ -2554,7 +2554,7 @@ static bool parse_job_accounting_and_create_logical_list(const char* binding_str
       retval = true;
    }
    DRETURN(retval);
-#else
-   return false;
-#endif
+  }
+  else
+    return false;
 }

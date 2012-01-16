@@ -30,6 +30,10 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+/* Fixme:  This doesn't work for a non-gcc compiler (e.g. clang) on a
+   glibc system as fabs doesn't get defined with any features as far
+   as I can tell.  */
+#define _XOPEN_SOURCE 600       /* for fabs */
 #include <math.h>
 #include <float.h>
 #include <time.h>

@@ -1869,13 +1869,13 @@ static void set_inherit_env (bool inherit)
 *******************************************************************************/
 static void start_qlogin_job(const char *shell_path)
 {
-   static char	shell[8+256]       = { "SHELL=" };
-   static char	home[8+MAXPATHLEN] = { "HOME=" };
-   static char	term[8+64]         = { "TERM=" };
-   static char	logname[8+30]      = { "LOGNAME=" };
-   static char	timez[8+100]       = { "TZ=" };
-   static char	hertz[8+10]        = { "HZ=" };
-   static char	path[8+MAXPATHLEN] = { "PATH=" };
+   static char shell[8+256]       = { "SHELL=" };
+   static char home[8+MAXPATHLEN] = { "HOME=" };
+   static char term[8+64]         = { "TERM=" };
+   static char logname[8+30]      = { "LOGNAME=" };
+   static char timez[8+100]       = { "TZ=" };
+   static char hertz[8+10]        = { "HZ=" };
+   static char path[8+MAXPATHLEN] = { "PATH=" };
    struct passwd *pw = NULL;
    struct passwd pw_struct;
    char minusname[50];
@@ -1992,7 +1992,7 @@ static void start_qrsh_job(void)
          shepherd_trace("reading environment SGE_ROOT and ARC failed");
          return;
       }
-      snprintf(buf, 2048, "%s/utilbin/%s/qrsh_starter", sge_root, arch);
+      snprintf(buf, SGE_PATH_MAX, "%s/utilbin/%s/qrsh_starter", sge_root, arch);
 
       args[0] = buf;
       args[1] = shepherd_job_dir;

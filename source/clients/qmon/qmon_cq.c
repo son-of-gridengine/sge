@@ -1671,7 +1671,7 @@ static void qmonCQModify(Widget w, XtPointer cld, XtPointer cad)
    char *str = NULL;
    lList *alp = NULL;
    Widget matrix = cluster_queue_settings;
-   int mode = (int) cld;
+   long mode = (long) cld;
    tQCAction qc_action = {QC_ADD, NULL};
    
    DENTER(GUI_LAYER, "qmonCQModify");

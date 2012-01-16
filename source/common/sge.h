@@ -167,7 +167,6 @@
 #define COMMON_DIR               "common"
 #define SPOOL_DIR                "spool"
 #define QMASTER_DIR              "qmaster"
-#define QSI_DIR                  "qsi"
 
 #define QMASTER_PID_FILE          "qmaster.pid"
 #define EXECD_PID_FILE            "execd.pid"
@@ -211,7 +210,6 @@
 #define EXEC_DIR                  "job_scripts"
 #define JOB_DIR                   "jobs"
 #define ERR_FILE                  "messages"
-#define LIC_INFO_FILE             "lic_information"
 #define USER_DIR                  "users"
 #define USERSET_DIR               "usersets"
 #define PROJECT_DIR               "projects"

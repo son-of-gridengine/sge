@@ -305,12 +305,12 @@ char *m
 *******************************************************************************/
 void check_core_binding()
 {
-#if !defined(HAVE_HWLOC)
-  printf("Your SGE has no core binding functionality (not built with hwloc).\n");
-#else
-  printf("Your SGE has core binding functionality (built with hwloc).\n");
-  test_binding();
-#endif
+  if (HAVE_HWLOC) {
+     printf("Your SGE has core binding functionality (built with hwloc).\n");
+     test_binding();
+  } else {
+     printf("Your SGE has no core binding functionality (not built with hwloc).\n");
+  }
 }
 
 void test_binding()

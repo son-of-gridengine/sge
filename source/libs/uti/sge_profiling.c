@@ -195,8 +195,8 @@ static pthread_once_t prof_once = PTHREAD_ONCE_INIT;
  * TODO: If application starts more than MAX_THREAD_NUM threads,
  *       this value must be increased:
  *
- */ 
-int MAX_THREAD_NUM = 64;
+ */
+static const int MAX_THREAD_NUM = 64;
 
 /****** uti/profiling/sge_prof_set_enabled() ***********************************
 *  NAME

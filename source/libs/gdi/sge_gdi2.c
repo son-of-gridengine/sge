@@ -1852,7 +1852,7 @@ const char* sge_dump_message_tag(unsigned long tag) {
 int gdi_log_flush_func(cl_raw_list_t* list_p) {
    int ret_val;
    cl_log_list_elem_t* elem = NULL;
-   DENTER(COMMD_LAYER, "gdi_log_flush_func");
+   DENTER(GDI_LAYER, "gdi_log_flush_func");
 
    if (list_p == NULL) {
       DRETURN(CL_RETVAL_LOG_NO_LOGLIST);

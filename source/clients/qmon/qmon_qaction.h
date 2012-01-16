@@ -43,7 +43,7 @@ enum {
 };
 
 typedef struct _tQCAction {
-   int action;
+   long action;
    const char *qname;
 } tQCAction;   
 

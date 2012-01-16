@@ -60,11 +60,6 @@
 #   include "sge_smf.h"
 #endif
 
-#if defined(SOLARIS) || defined(ALPHA)
-/* ALPHA only has wait3() prototype if _XOPEN_SOURCE_EXTENDED is defined */
-pid_t wait3(int *, int, struct rusage *);
-#endif
-
 static void sge_send_mail(u_long32 progid,
                           const char *mailer, int mailer_has_subj_line, 
                           const char *user, const char *host, const char *subj,

@@ -84,9 +84,7 @@
 #   include "sge_smf.h"
 #endif
 
-#if !defined(INTERIX)
 static void init_sig_action_and_mask(void);
-#endif
 static int set_file_descriptor_limit(void);
 
 /****** qmaster/sge_qmaster_main/sge_qmaster_application_status() ************
@@ -317,9 +315,7 @@ int main(int argc, char* argv[])
     */
    has_daemonized = sge_daemonize_qmaster();
    file_descriptor_settings_result = set_file_descriptor_limit();
-#if !defined(INTERIX)
    init_sig_action_and_mask();
-#endif
 
    /* init qmaster threads without becomming admin user */
    sge_qmaster_thread_init(&ctx, QMASTER, MAIN_THREAD, false);
@@ -453,7 +449,6 @@ int main(int argc, char* argv[])
    return 0;
 } /* main() */
 
-#if !defined(INTERIX)
 
 /****** qmaster/sge_qmaster_main/init_sig_action_and_mask() *******************
 *  NAME
@@ -478,6 +473,7 @@ int main(int argc, char* argv[])
 *******************************************************************************/
 static void init_sig_action_and_mask(void)
 {
+#if !defined(INTERIX)
    struct sigaction sa;
    sigset_t sig_set;
    
@@ -488,9 +484,8 @@ static void init_sig_action_and_mask(void)
    
    sigfillset(&sig_set);
    pthread_sigmask(SIG_SETMASK, &sig_set, NULL);
-   
-   return;
-}
 
 #endif
+   return;
+}
 

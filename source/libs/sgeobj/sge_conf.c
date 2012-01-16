@@ -42,6 +42,8 @@
 #  if HAVE_MTRACE
 #    include <mcheck.h>
 #  endif
+#else
+#    define HAVE_MTRACE 0
 #endif
 
 #include "cull/cull.h"
@@ -169,7 +171,7 @@ static bool enable_reschedule_slave = false;
 static bool old_reschedule_behavior = false;
 static bool old_reschedule_behavior_array_job = false;
 
-#ifdef HAVE_MTRACE
+#if HAVE_MTRACE
 static bool enable_mtrace = false;
 #endif
 
@@ -313,7 +315,7 @@ static int jsv_threshold = 5000;
 static tConfEntry conf_entries[] = {
  { "execd_spool_dir",   1, NULL,                1, NULL },
  { "mailer",            1, MAILER,              1, NULL },
- { "xterm",             1, "/usr/bin/X11/xterm",1, NULL },
+ { "xterm",             1, "/usr/bin/xterm",    1, NULL }, /* Most free systems */
  { "load_sensor",       1, "none",              1, NULL },
  { "prolog",            1, PROLOG,              1, NULL },
  { "epilog",            1, EPILOG,              1, NULL },
@@ -651,7 +653,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       char* execd_params = mconf_get_execd_params();
       char* reporting_params = mconf_get_reporting_params();
       u_long32 load_report_time = mconf_get_load_report_time();
-#ifdef HAVE_MTRACE
+#if HAVE_MTRACE
       bool mtrace_before = enable_mtrace;
 #endif
 
@@ -734,7 +736,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
          if (parse_bool_param(s, "ENABLE_FORCED_QDEL_IF_UNKNOWN", &enable_forced_qdel_if_unknown)) {
             continue;
          } 
-#ifdef HAVE_MTRACE
+#if HAVE_MTRACE
          if (parse_bool_param(s, "ENABLE_MTRACE", &enable_mtrace)) {
             continue;
          }
@@ -815,7 +817,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       sge_free_saved_vars(conf_context);
       conf_context = NULL;
 
-#ifdef HAVE_MTRACE
+#if HAVE_MTRACE
       /* enable/disable GNU malloc library facility for recording of all 
          memory allocation/deallocation 
          requires MALLOC_TRACE in environment (see mtrace(3) under Linux) */
@@ -847,9 +849,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       ptf_min_priority = -999;
       keep_active = false;
       enable_windomacc = false;
-#ifdef HAVE_HWLOC
-      enable_binding = true;
-#endif
+      enable_binding = HAVE_HWLOC ? true : false;
       enable_addgrp_kill = false;
       use_qsub_gid = false;
       prof_execd_thrd = false;

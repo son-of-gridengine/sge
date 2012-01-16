@@ -1837,7 +1837,7 @@ static int sge_gdi_ctx_log_flush_func(cl_raw_list_t* list_p)
    int ret_val;
    cl_log_list_elem_t* elem = NULL;
 
-   DENTER(COMMD_LAYER, "sge_gdi_ctx_log_flush_func");
+   DENTER(GDI_LAYER, "sge_gdi_ctx_log_flush_func");
 
    if (list_p == NULL) {
       DRETURN(CL_RETVAL_LOG_NO_LOGLIST);

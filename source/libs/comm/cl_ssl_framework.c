@@ -86,7 +86,7 @@
 #include "uti/sge_os.h"
 #include "uti/sge_string.h"
 
-#if (OPENSSL_VERSION_NUMBER < 0x0090700fL) 
+#if (OPENSSL_VERSION_NUMBER < 0x1000000fL)
 #define OPENSSL_CONST
 #if (OPENSSL_VERSION_NUMBER < 0x0090700fL)
 #define NID_userId NID_uniqueIdentifier

@@ -809,8 +809,6 @@ unsigned long flags
             cb = strlen(pdelis[2]);
             sprintf(buff, "%s", pdelis[2]);
          }
-         buff += cb;
-         cb_sum += cb;
       }
       DEXIT;
       return 0;
@@ -994,8 +992,6 @@ unsigned long flags
          DEXIT;
          return -4;
       }
-      buff += cb;
-      cb_sum += cb;
    }
 
    DEXIT;

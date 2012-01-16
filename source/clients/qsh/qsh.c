@@ -448,7 +448,7 @@ static char *read_from_qrsh_socket(int msgsock)
   
    DENTER(TOP_LAYER, "read_from_qrsh_socket");
 
-   memset(buffer, 0, 1024);
+   memset(buffer, 0, sizeof(buffer));
    do {
       *c = 0;
 

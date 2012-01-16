@@ -1946,12 +1946,14 @@ default:
 endsw
 
 if ( $HWLOC == 1 && $NO_HWLOC != 1 ) then
-   set CFLAGS = "$CFLAGS -DHAVE_HWLOC"
+   set CFLAGS = "$CFLAGS -DHAVE_HWLOC=1"
    if ( "$HWLOC_DIR" != "" ) then
       set CORE_INCLUDE = "$CORE_INCLUDE -I$HWLOC_DIR/include"
       set LIBS = "$LIBS -L$HWLOC_DIR/lib"
    endif
    set LIBS = "$LIBS -lhwloc"
+else
+   set CFLAGS = "$CFLAGS -DHAVE_HWLOC=0"
 endif
 
 set DEPEND_FLAGS = "`echo $DEPEND_FLAGS | sed -e 's/-[^DI][^ ]*//g'`"
@@ -2823,13 +2825,6 @@ if ( "$ADOC" == 1) then
    cd $SOURCE
 
    unset noglob
-
-   set DIR_LIBS = "{libs/*}"
-   set DIR_CORE = "{common,clients/*,daemons/*}"
-   set DIR_TESTSUITE = "{../testsuite,../testsuite/*,../testsuite/*/*,../testsuite/*/*/*,../testsuite/*/*/*/*}"
-   set SOURCE_LIBS = "$DIR_LIBS/*.c $DIR_LIBS/*.h"
-   set SOURCE_CORE = "$DIR_CORE/*.c $DIR_CORE/*.h"
-   set SOURCE_TESTSUITE = "$DIR_TESTSUITE/*.tcl $DIR_TESTSUITE/*.exp"
 
    set EDITION = "1.0"
    set REVISION = `grep GDI_VERSION libs/gdi/version.* | cut -f 2 -d '"'`

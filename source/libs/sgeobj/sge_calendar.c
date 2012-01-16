@@ -2113,12 +2113,12 @@ static void split_wday_range(lList *wdrl, lListElem *tmr) {
          lSwapList(tmr, TMR_end, tmr2, TMR_end);
          lAppendElem(wdrl, tmr2);
 
-         t1=lFirst(lGetList(tmr, TMR_begin));
-         t2=lFirst(lGetList(tmr, TMR_end));
 /*          t3=lFirst(lGetList(tmr2, TMR_begin)); */
 /*          t4=lFirst(lGetList(tmr2, TMR_end)); */
 
 #if 0
+         t1=lFirst(lGetList(tmr, TMR_begin));
+         t2=lFirst(lGetList(tmr, TMR_end));
       DPRINTF(("splitted wday %d-%d into %d-%d and %d-%d\n",
          lGetUlong(t1, TM_wday),
          lGetUlong(t4, TM_wday),
@@ -2269,7 +2269,7 @@ static int scan(const char *s, token_set_t token_set[]) {
       DRETURN(token);
    }
 
-   if (!*t) {
+   if (t && !*t) {
       token_is_valid = 1;
       token = NO_TOKEN;
       DRETURN(token);

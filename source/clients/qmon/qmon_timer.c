@@ -388,13 +388,15 @@ XtIntervalId *id
    lCondition *where = NULL;
    Boolean cont = False;
    char msg[256];
-   u_long32 job_number = (u_long32)td->timerdata;
+   unsigned long job_number = (unsigned long) td->timerdata;
    int contact_ok = 1;
 
    DENTER(GUI_LAYER, "qmonTimerCheckInteractiveJob");
 
    if (ctx->is_alive(ctx) != CL_RETVAL_OK) {
-      sprintf(msg, XmtLocalize(AppShell, "cannot reach qmaster", "cannot reach qmaster"));
+      snprintf(msg, sizeof(msg), "%s",
+               XmtLocalize(AppShell, "cannot reach qmaster",
+                           "cannot reach qmaster"));
       contact_ok = XmtDisplayErrorAndAsk(AppShell, "nocontact",
                                                 msg, "@{Retry}", "@{Abort}",
                                                 XmtYesButton, NULL);

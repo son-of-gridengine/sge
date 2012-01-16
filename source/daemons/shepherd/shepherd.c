@@ -121,11 +121,6 @@
 #include "execution_states.h"
 #include "msg_common.h"
 
-#if defined(SOLARIS) || defined(ALPHA)
-/* ALPHA4 only has wait3() prototype if _XOPEN_SOURCE_EXTENDED is defined */
-pid_t wait3(int *, int, struct rusage *);
-#endif
-
 #if defined(FREEBSD) || defined(DARWIN6)
 #   define sigignore(x) signal(x,SIG_IGN)
 #endif
@@ -151,13 +146,13 @@ pid_t wait3(int *, int, struct rusage *);
 bool g_new_interactive_job_support = false;
 int  g_noshell = 0;
 
-char shepherd_job_dir[2048];
+char shepherd_job_dir[SGE_PATH_MAX];
 int  received_signal=0;  /* set by signalhandler, when a signal arrives */
 
 
 /* module variables */
-static char ckpt_command[2048], migr_command[2048];
-static char rest_command[2048], clean_command[2048];
+static char ckpt_command[SGE_PATH_MAX], migr_command[SGE_PATH_MAX];
+static char rest_command[SGE_PATH_MAX], clean_command[SGE_PATH_MAX];
 
 static int notify;      /* 0 if no notify or # of seconds to delay signal */
 static int exit_status_for_qrsh = 0;
@@ -735,9 +730,9 @@ int main(int argc, char **argv)
                   getuid(), geteuid());
 
    shepherd_state = SSTATE_BEFORE_PROLOG;
-   if (getcwd(shepherd_job_dir, 2047) == NULL) {
+   if (getcwd(shepherd_job_dir, SGE_PATH_MAX-1) == NULL) {
       shepherd_error(1, "can't read cwd - getcwd failed: %s", strerror(errno));
-   }   
+   }
 
    if (argc >= 2 && !strcmp("-bg", argv[1])) {
       foreground = 0;   /* no output to stderr */
@@ -2902,7 +2897,7 @@ static int start_async_command(const char *descr, char *cmd)
       
       shepherd_trace("starting %s command: %s", descr, cmd);
       pid = getpid();
-      setpgid(pid, pid);  
+      setpgid(pid, pid);
       setrlimits(0);
       sge_set_environment();
       umask(022);

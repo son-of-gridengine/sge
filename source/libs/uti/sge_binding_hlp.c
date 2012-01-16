@@ -47,7 +47,7 @@
 #include "uti/sge_mtutil.h"
 #include "uti/sge_stdlib.h"
 
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
 static int initialized = 0;
 
 hwloc_topology_t sge_hwloc_topology = 0;
@@ -58,7 +58,7 @@ hwloc_topology_t sge_hwloc_topology = 0;
 void
 init_topology(void)
 {
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
   initialized = 1;
   if (hwloc_topology_init(&sge_hwloc_topology) != 0 ||
       hwloc_topology_load(sge_hwloc_topology) != 0)
@@ -67,7 +67,7 @@ init_topology(void)
   return;
 }
 
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
 static int get_total_number_of(hwloc_obj_type_t obj_type) {
   int number = 0;
 
@@ -293,7 +293,7 @@ bool parse_binding_parameter_string(const char* parameter, binding_type_t* type,
 *******************************************************************************/
 bool has_topology_information(void)
 {
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
    const struct hwloc_topology_support *support;
 
    if (!initialized) init_topology();
@@ -328,7 +328,7 @@ bool has_topology_information(void)
 *******************************************************************************/
 bool has_core_binding(void)
 {
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
    const struct hwloc_topology_support *support;
 
    if (!initialized) init_topology();
@@ -358,7 +358,7 @@ bool has_core_binding(void)
 *
 *******************************************************************************/
 int get_total_number_of_threads(void) {
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
    return get_total_number_of(HWLOC_OBJ_PU);
 #else
    return 0;
@@ -384,7 +384,7 @@ int get_total_number_of_threads(void) {
 *******************************************************************************/
 int get_total_number_of_cores(void)
 {
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
    return get_total_number_of(HWLOC_OBJ_CORE);
 #else
    return 0;
@@ -414,7 +414,7 @@ int get_total_number_of_cores(void)
 *******************************************************************************/
 int get_number_of_cores(int socket_number)
 {
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
   hwloc_obj_t socket = hwloc_get_obj_by_type(sge_hwloc_topology,
                                              HWLOC_OBJ_SOCKET, socket_number);
   if (socket)
@@ -446,7 +446,7 @@ int get_number_of_cores(int socket_number)
 *
 *******************************************************************************/
 int get_number_of_threads(int socket_number, int core_number) {
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
    hwloc_obj_t core =
      hwloc_get_obj_below_by_type(sge_hwloc_topology, HWLOC_OBJ_SOCKET,
                                  socket_number, HWLOC_OBJ_CORE, core_number);
@@ -477,7 +477,7 @@ int get_number_of_threads(int socket_number, int core_number) {
 *******************************************************************************/
 int get_number_of_sockets(void)
 {
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
    return get_total_number_of(HWLOC_OBJ_SOCKET);
 #else
    return 0;
@@ -513,7 +513,7 @@ int get_number_of_sockets(void)
 *******************************************************************************/
 bool get_processor_ids(int socket_number, int core_number, int** proc_ids, int* amount)
 {
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
    int i, count;
    hwloc_obj_t pu, parent;
    struct hwloc_obj **children;
@@ -566,7 +566,7 @@ bool get_topology(char** topology, int* length)
 {
    bool success = false;
 
-#ifdef HAVE_HWLOC
+   if (HAVE_HWLOC) {
    /* initialize length of topology string */
    (*length) = 0;
 
@@ -629,7 +629,7 @@ bool get_topology(char** topology, int* length)
       } 
 
    } 
-#endif
+   }
    return success;
 }
 
