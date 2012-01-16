@@ -241,7 +241,6 @@ static void qmonShareTreeFindNextNode(Widget w, XtPointer cld, XtPointer cad);
 static Widget qmonShareTreeCreate(Widget parent);
 
 static double node_share(XtPointer data);
-static double node_usage(XtPointer data);
 /* static String node_targetted_resource_share(XtPointer data); */
 /* static String node_actual_resource_share(XtPointer data); */
 /* static double calculate_usage(ListTreeItem *item); */
@@ -1801,23 +1800,6 @@ XtPointer data
 }
 
 
-
-/*-------------------------------------------------------------------------*/
-static double node_usage(
-XtPointer data 
-) {
-   tSTNUserData *ud = (tSTNUserData *)data;
-   double ret = 0.0;
-   
-   DENTER(GUI_LAYER, "node_usage");
-   
-   if (ud)
-      ret = ud->usage;
-
-   DEXIT;
-   return ret;
-}
-
 /*-------------------------------------------------------------------------*/
 static double calculate_share(
 ListTreeItem *item 
@@ -1906,6 +1888,22 @@ ListTreeItem *item
 }
 
 #if 0
+/*-------------------------------------------------------------------------*/
+static double node_usage(
+XtPointer data
+) {
+   tSTNUserData *ud = (tSTNUserData *)data;
+   double ret = 0.0;
+
+   DENTER(GUI_LAYER, "node_usage");
+
+   if (ud)
+      ret = ud->usage;
+
+   DEXIT;
+   return ret;
+}
+
 /*-------------------------------------------------------------------------*/
 static double calculate_usage(
 ListTreeItem *item 

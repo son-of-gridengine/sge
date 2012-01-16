@@ -471,7 +471,7 @@ static lListElem* read_object( const char *dirname, const char *filename, int sp
    if (!(ep = lCreateElem(args->objtype))) {
       FCLOSE(fp);
       sge_free(&buf);
-      ERROR((SGE_EVENT, MSG_SGETEXT_NOMEM));
+      ERROR((SGE_EVENT, SFNMAX, MSG_SGETEXT_NOMEM));
       DEXIT;
       return NULL;
    }
@@ -479,7 +479,7 @@ static lListElem* read_object( const char *dirname, const char *filename, int sp
    /* read in config file */
    if (read_config_list(fp, &clp, &alp, CF_Type, CF_name, CF_value,
                         CF_sublist, NULL, read_config_list_flag, buf, size)) {
-      ERROR((SGE_EVENT, lGetString(lFirst(alp), AN_text)));
+      ERROR((SGE_EVENT, SFNMAX, lGetString(lFirst(alp), AN_text)));
       lFreeList(&alp);
       FCLOSE(fp);
       sge_free(&buf);
@@ -494,7 +494,7 @@ static lListElem* read_object( const char *dirname, const char *filename, int sp
    ret = args->work_func(&alp, &clp, fields, ep, spool, flag, tag, 0);
    if (ret) {
       if (alp) 
-         ERROR((SGE_EVENT, lGetString(lFirst(alp), AN_text)));
+         ERROR((SGE_EVENT, SFNMAX, lGetString(lFirst(alp), AN_text)));
       lFreeList(&alp);
       lFreeList(&clp);
       lFreeElem(&ep);

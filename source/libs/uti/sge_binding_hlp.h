@@ -40,7 +40,7 @@
 #include "uti/sge_dstring.h"
 #include "uti/sge_binding_parse.h"
 
-#if defined(HAVE_HWLOC)
+#if HAVE_HWLOC
 #  include <hwloc.h>
 extern
 hwloc_topology_t sge_hwloc_topology;
@@ -70,8 +70,6 @@ bool binding_explicit_has_correct_syntax(const char* parameter, dstring* error);
 int get_explicit_number(const char* expl, const bool with_explicit_prefix);
 bool check_explicit_binding_string(const char* expl, const int amount, const bool with_explicit_prefix);
 
-#if defined(HAVE_HWLOC)
-
 bool has_topology_information(void);
 bool get_topology(char** topology, int* length);
 bool get_processor_ids(int socket_number, int core_number, int** proc_ids, int* amount);
@@ -82,8 +80,6 @@ int get_total_number_of_threads(void);
 int get_number_of_sockets(void);
 bool has_core_binding(void);
 void init_topology(void);
-
-#endif
 
 const char* binding_get_topology_for_job(const char *binding_result);
 

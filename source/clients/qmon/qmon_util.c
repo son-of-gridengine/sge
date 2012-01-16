@@ -958,9 +958,9 @@ void XmListAddItemUniqueSorted(Widget list, String item)
       */
       char buf[10000];
       if (item[0] == '@' && item[1] != '{')
-         sprintf(buf, "@%s", item);
+         snprintf(buf, sizeof(buf), "@%s", item);
       else
-         sprintf(buf, item);
+         snprintf(buf, sizeof(buf), "%s", item);
       xmitem = XmtCreateLocalizedXmString(list, buf);
       if (XmListItemExists(list, xmitem)) {
          XmStringFree(xmitem);

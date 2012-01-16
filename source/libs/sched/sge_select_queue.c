@@ -6723,12 +6723,12 @@ sge_dlib(const char *key, const char *lib_name, const char *fn_name,
    }
 
    /* search library for the function name */
+   error = dlerror();           /* clear status */
    new_fn_handle = dlsym(new_lib_handle, fn_name);
-   if (!new_fn_handle) {
-      if ((error = dlerror()) != NULL)
-         ERROR((SGE_EVENT,
-                "Unable to locate function %s in library %s for %s - %s\n",
-                fn_name, lib_name, key, error));
+   if ((error = dlerror()) != NULL) {
+      ERROR((SGE_EVENT,
+             "Unable to locate function %s in library %s for %s - %s\n",
+             fn_name, lib_name, key, error));
       DRETURN(NULL);
    }
 

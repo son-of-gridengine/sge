@@ -866,20 +866,23 @@ lList *lUndumpList(FILE *fp, const char *name, const lDescr *dp)
       for (i = 0; i < n; i++) {
          if (dp[i].nm == fdp[j].nm &&
              dp[i].mt == fdp[j].mt) {
-            if (found[i] != -1)
+            if (found[i] != -1) {
                DPRINTF(("lUndumpList: field %s found twice\n",
                         lNm2Str(dp[i].nm)));
+            }
             found[i] = j;
             break;
          }
       }
-      if (i == n)
+      if (i == n) {
          DPRINTF(("lUndumpList: field %s not needed\n", lNm2Str(fdp[j].nm)));
+      }
    }
 
    for (i = 0; i < n; i++)
-      if (found[i] == -1)
+      if (found[i] == -1) {
          DPRINTF(("lUndumpList: field %s not found\n", lNm2Str(dp[i].nm)));
+      }
 
    /* LOOP OVER THE LIST ELEMENTS */
    for (k = 0; k < nelem; k++) {

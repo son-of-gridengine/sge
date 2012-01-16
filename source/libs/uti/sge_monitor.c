@@ -377,8 +377,6 @@ sge_monitor_init(monitoring_t *monitor, const char *thread_name, extension_t ext
 u_long32 sge_monitor_status(char **info_message, u_long32 monitor_time)
 {
    u_long32 ret = 0;
-   char date[40];
-   dstring ddate;
    
    DENTER(GDI_LAYER, "sge_monitor_status");
 
@@ -386,8 +384,6 @@ u_long32 sge_monitor_status(char **info_message, u_long32 monitor_time)
       DEXIT;
       return 3;
    }
-
-   sge_dstring_init(&ddate, date, sizeof(date));
    
    sge_mutex_lock("sge_monitor_status", SGE_FUNC, __LINE__, &global_mutex);
 

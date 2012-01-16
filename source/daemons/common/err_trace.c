@@ -51,7 +51,6 @@
 #elif defined(LINUX)
 #  include <sys/vfs.h>
 #else
-#  include <sys/types.h>
 #  include <sys/statvfs.h>
 #endif
 

@@ -56,7 +56,7 @@ void rmon_set_print_callback(rmon_print_callback_func_t function_p);
 void rmon_mprintf_lock(const char* fmt, ...);
 void rmon_mprintf_info(const char* fmt, ...);
 void rmon_mprintf_timing(const char* fmt, ...);
-void rmon_mprintf_special(const char* fmt, ...);
+/* void rmon_mprintf_special(const char* fmt, ...); */
 
 typedef struct rmon_ctx_str rmon_ctx_t;
 
