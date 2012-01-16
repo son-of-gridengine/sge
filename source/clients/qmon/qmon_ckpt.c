@@ -719,7 +719,7 @@ lListElem *ckp
       if (state & (1<<i))
          strcat(ckpt_when, ckpt_when_strings[i]);
    }
-   if (!ckpt_when || ckpt_when[0] == '\0') {
+   if (ckpt_when[0] == '\0') {
       qmonMessageShow(ckpt_ask_layout, True, "Checkpoint when required !");
       DEXIT;
       return False;

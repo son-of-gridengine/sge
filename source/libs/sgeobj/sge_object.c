@@ -2421,7 +2421,10 @@ object_has_differences(const lListElem *this_elem, lList **answer_list,
                   } else if (new_str == old_str) {
                      equiv = true;
                   } else {
-                     equiv = (strcmp(new_str, old_str) == 0) ? true : false;
+                     equiv = (new_str /* maybe unnecessary, but avoids
+                                         possible dataflow warning */
+                              && strcmp(new_str, old_str) == 0) ?
+                       true : false;
                   }
                }
                break;

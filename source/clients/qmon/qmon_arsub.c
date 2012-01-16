@@ -809,7 +809,7 @@ static void qmonARSubARSub(Widget w, XtPointer cld, XtPointer cad)
          pe = strtok(theInput, " ");
          pe_range = strtok(NULL, "\n");
          if (!(pe_range && pe_range[0] != '\0')) {
-            sprintf(buf, 
+            snprintf(buf, sizeof(buf), "%s",
                XmtLocalize(w, 
                "Parallel Environment requires valid name and valid range !", 
                "Parallel Environment requires valid name and valid range !")
@@ -822,7 +822,7 @@ static void qmonARSubARSub(Widget w, XtPointer cld, XtPointer cad)
                                          1, 0, INF_ALLOWED);
             lFreeList(&range_list);
             if (alp) {
-               sprintf(buf, 
+               snprintf(buf, sizeof(buf), "%s",
                   XmtLocalize(w, 
                   "Parallel Environment requires valid name and valid range !", 
                   "Parallel Environment requires valid name and valid range !")
@@ -835,21 +835,19 @@ static void qmonARSubARSub(Widget w, XtPointer cld, XtPointer cad)
 
       if (!(lp = lCreateElemList("ARSubList", AR_Type, 1))) {
          DPRINTF(("lCreateElemList failure\n"));
-         sprintf(buf, 
-                 XmtLocalize(w, 
-                             "AR submission failed", 
-                             "AR submission failed")
-         );
+         snprintf(buf, sizeof(buf), "%s",
+                  XmtLocalize(w,
+                              "AR submission failed",
+                              "AR submission failed"));
          goto error;
       }
 
       if (!qmonARSMToCull(&ARSMData, lFirst(lp), 0)) {
          DPRINTF(("qmonARSMToCull failure\n"));
-         sprintf(buf, 
-                 XmtLocalize(w, 
-                             "AR submission failed", 
-                             "AR submission failed")
-         );
+         snprintf(buf, sizeof(buf), "%s",
+                  XmtLocalize(w,
+                              "AR submission failed",
+                              "AR submission failed"));
          goto error;
       }
 
@@ -885,7 +883,7 @@ static void qmonARSubARSub(Widget w, XtPointer cld, XtPointer cad)
                              XmtLocalize(w, "AR %d failed", "AR %d failed"),
                              ar_id); 
          } else {
-            XmtMsgLinePrintf(arsub_message, 
+            XmtMsgLinePrintf(arsub_message, "%s",
                              XmtLocalize(w, "AR Submission failed", 
                                           "AR Submission failed")); 
          }

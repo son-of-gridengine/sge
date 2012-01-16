@@ -39,13 +39,10 @@
 #include "uti/sge_rmon.h"
 #include "uti/sge_unistd.h"
 #include "uti/sge_log.h"
-#include "uti/sge_dstring.h"
 #include "uti/msg_utilib.h"
 #include "uti/sge_prog.h"
 
 #include "gdi/sge_gdi_ctx.h"
-
-#include "basis_types.h"
 
 typedef enum {
    FILE_TYPE_NOT_EXISTING,

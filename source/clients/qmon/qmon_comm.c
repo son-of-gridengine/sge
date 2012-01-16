@@ -224,7 +224,8 @@ lList **answerp
    }
 
    if (ctx->is_alive(ctx) != CL_RETVAL_OK) {
-      sprintf(msg, XmtLocalize(AppShell, "cannot reach qmaster", "cannot reach qmaster"));
+      snprintf(msg, sizeof(msg), "%s",
+               XmtLocalize(AppShell, "cannot reach qmaster", "cannot reach qmaster"));
       contact_ok = XmtDisplayErrorAndAsk(AppShell, "nocontact",
                                                 msg, "@{Retry}", "@{Abort}",
                                                 XmtYesButton, NULL);

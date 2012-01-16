@@ -1347,7 +1347,7 @@ static void qmonSubmitJobSubmit(Widget w, XtPointer cld, XtPointer cad)
    lEnumeration *what = NULL;
    char buf[BUFSIZ];
    Boolean status = False;
-   u_long32 job_number;
+   unsigned long job_number;
    int just_verify = 0;
    const char *username = ctx->get_username(ctx);
    const char *sge_root = ctx->get_sge_root(ctx);
@@ -1369,7 +1369,7 @@ static void qmonSubmitJobSubmit(Widget w, XtPointer cld, XtPointer cad)
       */
       if ((!SMData.job_script || SMData.job_script[0] == '\0') && 
           !ISSET(submit_mode_data.sub_mode, SUBMIT_QSH)) {
-         sprintf(buf, XmtLocalize(w, "Job Script required !", 
+         snprintf(buf, sizeof(buf), "%s", XmtLocalize(w, "Job Script required !",
                   "Job Script required !"));
          goto error;
       }
@@ -1384,7 +1384,7 @@ static void qmonSubmitJobSubmit(Widget w, XtPointer cld, XtPointer cad)
          pe = strtok(theInput, " ");
          pe_range = strtok(NULL, "\n");
          if (!(pe_range && pe_range[0] != '\0')) {
-            sprintf(buf, 
+            snprintf(buf, sizeof(buf), "%s",
                XmtLocalize(w, 
                "Parallel Environment requires valid name and valid range !", 
                "Parallel Environment requires valid name and valid range !")
@@ -1397,7 +1397,7 @@ static void qmonSubmitJobSubmit(Widget w, XtPointer cld, XtPointer cad)
                                          1, 0, INF_ALLOWED);
             lFreeList(&range_list);
             if (alp) {
-               sprintf(buf, 
+               snprintf(buf, sizeof(buf), "%s",
                   XmtLocalize(w, 
                   "Parallel Environment requires valid name and valid range !", 
                   "Parallel Environment requires valid name and valid range !")
@@ -1410,7 +1410,7 @@ static void qmonSubmitJobSubmit(Widget w, XtPointer cld, XtPointer cad)
 
       if (!(lp = lCreateElemList("JobSubmitList", JB_Type, 1))) {
          DPRINTF(("lCreateElemList failure\n"));
-         sprintf(buf, 
+         snprintf(buf, sizeof(buf), "%s",
                  XmtLocalize(w, 
                              "Job submission failed", 
                              "Job submission failed")
@@ -1420,7 +1420,7 @@ static void qmonSubmitJobSubmit(Widget w, XtPointer cld, XtPointer cad)
 
       if (!qmonSMToCull(&SMData, lFirst(lp), 0)) {
          DPRINTF(("qmonSMToCull failure\n"));
-         sprintf(buf, 
+         snprintf(buf, sizeof(buf), "%s",
                  XmtLocalize(w, 
                              "Job submission failed", 
                              "Job submission failed")
@@ -1434,8 +1434,7 @@ static void qmonSubmitJobSubmit(Widget w, XtPointer cld, XtPointer cad)
       if (set_sec_cred(sge_root, mastername, lFirst(lp), &alp) != 0) {
          qmonMessageBox(w, alp, true);
          lFreeList(&alp);
-         sprintf(buf, MSG_SEC_SETJOBCRED);
-         sprintf(buf, "\n");
+         snprintf(buf, sizeof(buf), "%s\n", MSG_SEC_SETJOBCRED);
          goto error;
       }   
 
@@ -1484,7 +1483,7 @@ static void qmonSubmitJobSubmit(Widget w, XtPointer cld, XtPointer cad)
                              XmtLocalize(w, "Job %d failed", "Job %d failed"),
                              jobid); 
          else
-            XmtMsgLinePrintf(submit_message, 
+            XmtMsgLinePrintf(submit_message, "%s",
                              XmtLocalize(w, "Job Submission failed", 
                                           "Job Submission failed")); 
          XmtMsgLineClear(submit_message, DISPLAY_MESSAGE_DURATION); 

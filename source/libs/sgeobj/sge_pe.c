@@ -819,6 +819,7 @@ int pe_validate_qsort_args(lList **alpp, const char *qsort_args, lListElem *pe,
    }
 
    /* lookup function address */
+   error = dlerror();           /* clear status */
    fn_handle = dlsym(lib_handle, fn_name);
    if ((error = dlerror()) != NULL) {
       if (alpp == NULL) {

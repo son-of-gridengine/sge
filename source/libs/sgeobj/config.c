@@ -843,7 +843,7 @@ bool set_conf_list(lList **alpp, lList **clpp, int fields[], const char *key,
             DPRINTF(("!!!!!!!!!set_conf_string: unexpected data type !!!!!!!!!!!!!!!!!\n"));
             break;
       }
-      if (strcasecmp("NONE", tmp_str)) {
+      if (tmp_str && strcasecmp("NONE", tmp_str)) {
          lSetList(ep, name_nm, tmplp);
          DEXIT;
          return true;

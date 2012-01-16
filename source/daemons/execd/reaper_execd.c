@@ -1455,8 +1455,7 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
             /* here we will call a ptf function to get */
             /* the first usage data after restart      */
 
-#if defined(HAVE_HWLOC)
-            {
+            if (HAVE_HWLOC) {
                /* do accounting of bound cores */ 
                dstring fconfig = DSTRING_INIT;
 
@@ -1472,7 +1471,6 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
                sge_dstring_free(&fconfig);
                   
             }            
-#endif
 
          } else {
             /* found job in active jobs directory 
@@ -1512,7 +1510,7 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
 
 static void update_used_cores(const char* path_to_config, lListElem** jr)
 {
-#ifdef HAVE_HWLOC
+  if (HAVE_HWLOC) {
    const char* binding_cfg;
    
    DENTER(TOP_LAYER, "update_used_cores");
@@ -1560,7 +1558,7 @@ static void update_used_cores(const char* path_to_config, lListElem** jr)
       DPRINTF(("couldnt read config in\n"));
    }
    DRETURN_VOID;
-#endif
+  }
 }
 
 /************************************************************/
@@ -2142,24 +2140,23 @@ static void clean_up_binding(char* binding)
    }
 
 
-#if defined(HAVE_HWLOC)
-   /* The topology used can be found just after the last ":" */
-   /* -> find the topology used and release it */
+   if (HAVE_HWLOC) {
+      /* The topology used can be found just after the last ":" */
+      /* -> find the topology used and release it */
    
-   if (strstr(binding, ":") != NULL) {
-      /* there was an order from execd to shepherd for binding */
-      /* seach the string after the last ":" -> this 
-         is the topology used by the job */
-      char* topo = NULL;   
-      topo = strrchr(binding, ':');
-      free_topology(++topo, -1);
-      INFO((SGE_EVENT, "topology used by job freed"));
-   } else {
-      /* couldn't find valid topology string in config file */
-      WARNING((SGE_EVENT, "No resource string found in config entry binding"));
+      if (strstr(binding, ":") != NULL) {
+         /* there was an order from execd to shepherd for binding */
+         /* seach the string after the last ":" -> this
+            is the topology used by the job */
+         char* topo = NULL;
+         topo = strrchr(binding, ':');
+         free_topology(++topo, -1);
+         INFO((SGE_EVENT, "topology used by job freed"));
+      } else {
+         /* couldn't find valid topology string in config file */
+         WARNING((SGE_EVENT, "No resource string found in config entry binding"));
+      }
    }
-
-#endif
 
    DRETURN_VOID;
 }

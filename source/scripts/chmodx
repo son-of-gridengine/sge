@@ -30,6 +30,7 @@ xargs chmod +x <<EOF
 ./scripts/nonreentrant.sh
 ./scripts/msgmerge.csh
 ./scripts/test_spooling_performance.sh
+./scripts/make-tags.sh
 ./dist/ckpt/migration_command
 ./dist/ckpt/checkpoint_command
 ./dist/ckpt/cpr_ckpt_command

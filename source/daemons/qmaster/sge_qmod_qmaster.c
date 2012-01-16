@@ -137,7 +137,7 @@ sge_gdi_qmod(sge_gdi_ctx_class_t *ctx, sge_gdi_packet_class_t *packet, sge_gdi_t
    lListElem *jatask = NULL, *rn, *job, *tmp_task;
    bool found;
    u_long32 jobid;
-   u_long32 start = 0, end = 0, step = 0;
+   u_long32 start = 0, end = 0, step = 1;
    int alltasks;
    lList *master_hgroup_list = *(object_type_get_master_list(SGE_TYPE_HGROUP));
    lList *cqueue_list = *(object_type_get_master_list(SGE_TYPE_CQUEUE));

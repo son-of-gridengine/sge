@@ -482,6 +482,7 @@ static struct {
 #endif
 #endif
 
+#ifdef PDC_STANDALONE
 static void
 psSetCollectionIntervals(int jobi, int prci, int sysi)
 {
@@ -495,8 +496,6 @@ psSetCollectionIntervals(int jobi, int prci, int sysi)
       ps_config.sys_collection_interval = sysi;
 }
 
-
-#ifdef PDC_STANDALONE
 int psRetrieveSystemData(void)
 {
 #if defined(IRIX)

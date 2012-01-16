@@ -46,7 +46,7 @@ static bool binding_set_linear(int first_socket, int first_core,
 static bool binding_set_striding(int first_socket, int first_core,
                int number_of_cores, int offset, int n, const binding_type_t type);
 
-#ifdef HAVE_HWLOC
+#if HAVE_HWLOC
 static bool bind_process_to_mask(const hwloc_cpuset_t cpuset);
 
 static bool create_binding_env(hwloc_const_cpuset_t set);
@@ -82,7 +82,7 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
 *******************************************************************************/
 bool do_core_binding(void)
 {
-#ifdef HAVE_HWLOC
+   if (HAVE_HWLOC) {
    /* Check if "binding" parameter in 'config' file 
     * is available and not set to "binding=no_job_binding".
     * If so, we do an early abortion. 
@@ -252,14 +252,12 @@ bool do_core_binding(void)
    }
    
    shepherd_trace("do_core_binding: finishing");
-#endif
+   }
    return true;
 }
 
 
 /* helper for core_binding */
-
-#if defined(HAVE_HWLOC)
 
 /****** shepherd_binding/binding_set_linear() ***************************************
 *  NAME
@@ -299,6 +297,7 @@ static bool binding_set_linear(int first_socket, int first_core,
                int number_of_cores, int offset, const binding_type_t type)
 {
 
+#if HAVE_HWLOC
    /* sets bitmask in a linear manner        */ 
    /* first core is on exclusive host 0      */ 
    /* first core could be set from scheduler */ 
@@ -413,7 +412,7 @@ static bool binding_set_linear(int first_socket, int first_core,
 
       sge_dstring_free(&error);
    }
-
+#endif  /* HAVE_HWLOC */
    return true;
 }
 
@@ -462,6 +461,7 @@ bool binding_set_striding(int first_socket, int first_core, int number_of_cores,
    /* n := take every n-th core */ 
    bool bound = false;
 
+#if HAVE_HWLOC
    dstring error = DSTRING_INIT;
 
    if (has_core_binding() == true) {
@@ -583,11 +583,12 @@ bool binding_set_striding(int first_socket, int first_core, int number_of_cores,
       return false;
    }
    
-   
+#endif  /* HAVE_HWLOC */
    return bound;
 }
 
 
+#if HAVE_HWLOC
 /****** shepherd_binding/bind_process_to_mask() *************************************
 *  NAME
 *     bind_process_to_mask() -- Binds current process to a given cpuset (mask).
@@ -619,6 +620,7 @@ static bool bind_process_to_mask(const hwloc_cpuset_t cpuset)
       return true;
    return false;
 }
+#endif  /* HAVE_HWLOC */
 
 /****** shepherd_binding/binding_explicit() *****************************************
 *  NAME
@@ -655,6 +657,7 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
    /* return value: successful bound or not */ 
    bool bound = false;
 
+#if HAVE_HWLOC
    /* check if we have exactly the same number of sockets as cores */
    if (camount != samount) {
       shepherd_trace("binding_explicit: bug: number of sockets != number of cores");
@@ -726,10 +729,11 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
       /* has no core binding ability */
       shepherd_trace("binding_explicit: host does not support core binding");
    }   
-
+#endif  /* HAVE_HWLOC */
    return bound;
 }
 
+#if HAVE_HWLOC
 /****** shepherd_binding/create_binding_env() ****************************
 *  NAME
 *     create_binding_env() -- Creates SGE_BINDING env variable.
@@ -778,5 +782,4 @@ bool create_binding_env(hwloc_const_cpuset_t set)
 
    return retval;
 }
-
-#endif
+#endif  /* HAVE_HWLOC */

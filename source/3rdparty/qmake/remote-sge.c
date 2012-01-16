@@ -325,7 +325,7 @@ static void remote_exit(int code, const char *message, const char *reason)
    }
 
    if(message) {
-      fprintf(stderr, message);
+      fprintf(stderr, "%s", message);
    }
 
    if(reason) {
