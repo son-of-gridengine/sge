@@ -158,7 +158,7 @@
 #define MSG_MAIL_TYPE_SUSP                      _MESSAGE(27066, _("job suspend"))
 #define MSG_MAIL_TYPE_CONT                      _MESSAGE(27067, _("job continue"))
 #define MSG_MAIL_UNKNOWN_REASON                 _MESSAGE(27068, _("<unknown reason>"))
-#define MSG_MAIL_TYPE_ADMIN                     _MESSAGE(27069, _("admin mail"))
+#define MSG_MAIL_TYPE_ADMIN                     _MESSAGE(27069, _("admin"))
 #define MSG_MAIL_TYPE_START                     _MESSAGE(27070, _("job start")) 
 #define MSG_MAIL_TYPE_ARSTART                   _MESSAGE(27071, _("advance_reservation start")) 
 #define MSG_MAIL_TYPE_AREND                     _MESSAGE(27072, _("advance_reservation finish")) 

@@ -74,7 +74,7 @@ GetCell()
     if [ -f "$SGE_ROOT/$SGE_CELL/common/bootstrap" -a "$QMASTER" = "install" ]; then
        $INFOTEXT -log "The cell name you have used and the bootstrap already exists!"
        $INFOTEXT -log "It seems that you already have an installed system."
-       $INFOTEXT -log "An installation may cause that data loss!"
+       $INFOTEXT -log "An installation may cause those data to be lost!"
        $INFOTEXT -log "Please check this directory and remove it, or use any other cell name"
        $INFOTEXT -log "Exiting installation now!"
        MoveLog
@@ -2219,7 +2219,7 @@ GetJMXPort() {
    $INFOTEXT -n "\nIn order to use the SGE Inspect or the Service Domain Manager (SDM)\n" \
                 "SGE adapter you need to configure a JMX server in qmaster. Qmaster \n" \
                 "will then load a Java Virtual Machine through a shared library.\n" \
-                "NOTE: Java 1.5 or later is required for the JMX MBean server.\n\n"
+                "NOTE: Java $MIN_JAVA_VERSION or later is required for the JMX MBean server.\n\n"
    #Shadowds keep qmaster setting, JMX for all or JMX for nobody
    if [ "$1" = "shadowd" ]; then
       default_value=`BootstrapGetValue "$SGE_ROOT/$SGE_CELL/common" "jvm_threads"`

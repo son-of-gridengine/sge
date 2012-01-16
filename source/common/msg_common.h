@@ -159,7 +159,7 @@
 #define MSG_PARSE_EDITFAILED                   _MESSAGE(23113, _("edit failed"))
 #define MSG_FILE_FILEUNCHANGED                 _MESSAGE(23114, _("file unchanged"))
 #define MSG_FILE_ERRORREADINGINFILE            _MESSAGE(23115, _("error reading in file"))
-#define MSG_EXEC_XISNOEXECHOST_S               _MESSAGE(23116, _(SFN" is no exec host"))
+#define MSG_EXEC_XISNOEXECHOST_S               _MESSAGE(23116, _(SFN" is not an exec host"))
 #define MSG_EXEC_ADDEDHOSTXTOEXECHOSTLIST_S    _MESSAGE(23117, _("added host "SFN" to exec host list"))
 #define MSG_ANSWER_INVALIDFORMAT               _MESSAGE(23118, _("invalid format"))
 #define MSG_PARSE_WRONGPATHJSV_S               _MESSAGE(23119, _("ERROR! Wrong path format "SFQ" specified to -jsv option"))
@@ -220,7 +220,7 @@
 #define MSG_ANSWER_CONFIGUNCHANGED                _MESSAGE(23204, _("configuration unchanged"))
 #define MSG_ANSWER_ERRORREADINGTEMPFILE           _MESSAGE(23205, _("error reading temp file"))
 #define MSG_ANSWER_ERRORREADINGCONFIGFROMFILEX_S  _MESSAGE(23206, _("error reading configuration from file "SFN))
-#define MSG_ANSWER_DENIEDHOSTXISNOADMINHOST_S     _MESSAGE(23207, _("denied: host "SFQ" is no admin host"))
+#define MSG_ANSWER_DENIEDHOSTXISNOADMINHOST_S     _MESSAGE(23207, _("denied: host "SFQ" is not an admin host"))
 
 
 /*
@@ -667,7 +667,7 @@
 #define MSG_GDI_USAGE_p_OPT_PRIORITY                     "[-p priority]"
 #define MSG_GDI_UTEXT_p_OPT_PRIORITY                     _MESSAGE(23399, _("define job's relative priority"))
 
-#define MSG_GDI_USAGE_pe_OPT_PE_NAME_SLOT_RANGE          "[-pe pe-name slot_range]"
+#define MSG_GDI_USAGE_pe_OPT_PE_NAME_SLOT_RANGE          "[-pe wc_pe_name slot_range]"
 #define MSG_GDI_UTEXT_pe_OPT_PE_NAME_SLOT_RANGE          _MESSAGE(23400, _("request slot range for parallel jobs"))
 
 #define MSG_GDI_USAGE_passwd_OPT                         "[-passwd]"

@@ -42,7 +42,7 @@
 /*-------------------------------------------*/
 void usage(void)
 {
-   fprintf(stderr, "%s checkuser [-check -name]|[-uid name]|[-gid name]\n" , MSG_UTILBIN_USAGE );
+   fprintf(stderr, "%s checkuser [-check name]|[-uid name]|[-gid name]\n" , MSG_UTILBIN_USAGE );
    exit(1);
 } 
  
