@@ -211,14 +211,20 @@ static const char *drmaa_supported_vector[] = {
 *
 *  SYNOPSIS
 *     #define ENABLE_CWD_ENV "SGE_DRMAA_ALLOW_CWD"
+*     #define ENABLE_ERROR_STATE "SGE_DRMAA_ALLOW_JOB_ERROR_STATE"
 *     
 *  FUNCTION
 *     ENABLE_CWD_ENV - enables the parsing of the -cwd switch in the sge_request,
 *                      job category, and/or native specification.  Unless this
 *                      env is set, -cwd will be ignored because it not multi-
 *                      thread safe.
+*     ENABLE_ERROR_STATE - in case of job errors, the job will enter the
+*                      error state.  Without this environment variable
+*                      DRMAA jobs are not allowed to enter the job error
+*                      state.
 *******************************************************************************/
 #define ENABLE_CWD_ENV "SGE_DRMAA_ALLOW_CWD"
+#define ENABLE_ERROR_STATE "SGE_DRMAA_ALLOW_JOB_ERROR_STATE"
 
 /****** DRMAA/drmaa_init() ****************************************************
 *  NAME
@@ -2600,7 +2606,8 @@ static int drmaa_job2sge_job(lListElem **jtp, const drmaa_job_template_t *drmaa_
     * doing drmaa_wait(). An SGE job template attribute
     * could be supported to enable SGE error state.
     */
-   JOB_TYPE_SET_NO_ERROR(jb_now);
+   if (sge_getenv(ENABLE_ERROR_STATE) == NULL)
+     JOB_TYPE_SET_NO_ERROR(jb_now);
 
    /* mark array job */
    if (is_bulk) {
