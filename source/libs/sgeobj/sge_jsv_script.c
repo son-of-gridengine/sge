@@ -804,6 +804,8 @@ jsv_handle_param_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answe
          if (ret && strcmp("binding_strategy", param) == 0) {
             if (value) {
                lSetString(binding_elem, BN_strategy, value);
+               if ((strcmp("explicit", value)) != 0)
+                  lSetString(binding_elem, BN_parameter_explicit, NULL);
             } else {
                lSetString(binding_elem, BN_strategy, "no_job_binding");
             }
