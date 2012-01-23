@@ -475,7 +475,7 @@ attribute \fBm_topology\fP.
 job to core binding. If the value for \fBbinding_instance\fP is
 not specified then \fBset\fP will be used.
 .sp
-\fBenv\fP means that the environment variable \fBxxQS_NAME_Sxx_BINDING\fP will be
+\fBenv\fP means that only the environment variable \fBxxQS_NAME_Sxx_BINDING\fP will be
 exported to the job environment of the job. This variable contains the
 selected operating system internal processor numbers.
 In presence of SMT or CMT it may contain more than the number of cores selected,
@@ -488,6 +488,7 @@ numbers are printed (they start at 0 and have no holes) in colon-separated
 pairs (e.g. "0,0:1,0", which means core 0 on socket 0 and core 0 on socket 1).
 For more information about the $pe_hostfile check
 .M xxqs_name_sxx_pe 5 .
+In addition, \fBxxQS_NAME_Sxx_BINDING\fP is set as for \fBenv\fP binding.
 .sp
 \fBset\fP (the default if nothing else is specified) means that the
 binding strategy is applied by xxQS_NAMExx.  Each shepherd (on the
@@ -498,6 +499,7 @@ cores, but it is up to the task to make any more specific bindings of
 its sub-tasks within the set of bound cores it inherits.  How
 xxQS_NAMExx does this depends on the underlying hardware architecture
 of the execution host where the submitted job will be started.
+In addition, \fBxxQS_NAME_Sxx_BINDING\fP is set as for \fBenv\fP binding.
 .sp
 Binding will be done to restrict the job to run exclusively on the
 selected cores, if possible on the platform; otherwise bound processes
