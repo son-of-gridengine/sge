@@ -616,8 +616,16 @@ static bool bind_process_to_mask(const hwloc_cpuset_t cpuset)
    /* Try strict binding first; fall back to non-strict if it isn't
       available.  */
    if (!hwloc_set_cpubind(sge_hwloc_topology, cpuset, HWLOC_CPUBIND_STRICT) ||
-       !hwloc_set_cpubind(sge_hwloc_topology, cpuset, 0))
+       !hwloc_set_cpubind(sge_hwloc_topology, cpuset, 0)) {
+      /* Set the environment variable as for th env type.  Done for
+         for conveniece, e.g. with runtimes like GCC's libgomp which
+         require an environment variable to be set for thread affinity
+         rather than using the core binding in effect.  */
+     /* This does not show up in "environment" file!  */
+      if (create_binding_env(cpuset) == true)
+         shepherd_trace("bind_process_to_mask: SGE_BINDING env var created");
       return true;
+      }
    return false;
 }
 #endif  /* HAVE_HWLOC */
