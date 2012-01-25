@@ -208,6 +208,7 @@ char qmaster_out_file[SGE_PATH_MAX];
           sscanf(s, "%d", &val) == 1)
          sge_test_heartbeat = val;
    }
+   sge_maybe_set_dumpable();
          
    /* This needs a better solution */
    umask(022);

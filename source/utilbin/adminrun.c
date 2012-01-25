@@ -81,8 +81,8 @@ int main(int argc, char **argv)
       return 1;
    }
    
-   setgid(pw->pw_gid);
-   setuid(pw->pw_uid);  
+   sge_setgid(pw->pw_gid);
+   sge_setuid(pw->pw_uid);
  
    argv += 2;
    execvp(argv[0], argv);

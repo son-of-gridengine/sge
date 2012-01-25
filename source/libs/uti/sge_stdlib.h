@@ -45,4 +45,10 @@ int sge_putenv(const char *var);
 int sge_setenv(const char *name, const char *value);
 void sge_unsetenv(const char* name);
 
+int sge_setuid(uid_t);
+int sge_seteuid(uid_t);
+int sge_setgid(gid_t);
+int sge_setegid(gid_t);
+void sge_maybe_set_dumpable(void);
+
 #endif /* __SGE_STDLIB_H */

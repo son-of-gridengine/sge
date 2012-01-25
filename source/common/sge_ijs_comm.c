@@ -534,7 +534,7 @@ int comm_open_connection(bool        b_server,
        */
       if (getuid() == SGE_SUPERUSER_UID) {
          old_euid = geteuid();
-         seteuid(SGE_SUPERUSER_UID);
+         sge_seteuid(SGE_SUPERUSER_UID);
       }
       ret = sge_ssl_setup_security_path(this_component, user_name);
       /*
@@ -542,7 +542,7 @@ int comm_open_connection(bool        b_server,
        * the SGE admin user.
        */
       if (old_euid != SGE_SUPERUSER_UID) {
-         seteuid(old_euid);
+         sge_seteuid(old_euid);
       }
 
       if (ret != 0) {
@@ -615,11 +615,11 @@ int comm_open_connection(bool        b_server,
    if (b_server == false) {
       if (getuid() == SGE_SUPERUSER_UID) {
          old_euid = geteuid();
-         seteuid(SGE_SUPERUSER_UID);
+         sge_seteuid(SGE_SUPERUSER_UID);
       }
       ret = cl_commlib_open_connection(*handle, remote_host, (char*)other_component, 1);
       if (old_euid != SGE_SUPERUSER_UID) {
-         seteuid(old_euid);
+         sge_seteuid(old_euid);
       }
       if (ret != CL_RETVAL_OK) {
          ret_val = COMM_CANT_OPEN_CONNECTION;

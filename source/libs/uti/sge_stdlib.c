@@ -35,12 +35,18 @@
 #include <string.h>
 #include <limits.h>
 #include <unistd.h>
+#if __linux__
+#include <errno.h>
+#include <sys/prctl.h>
+#endif
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_stdlib.h"
 #include "uti/sge_dstring.h"
 #include "uti/sge_log.h" 
 #include "uti/msg_utilib.h"
+
+bool sge_dumpable = false;
 
 /****** uti/stdlib/sge_malloc() ***********************************************
 *  NAME
@@ -336,5 +342,139 @@ void sge_unsetenv(const char* varName) {
 #endif
 }
 
+/* Enable daemon core dumps after setuid etc. calls in routines below,
+   which typically disable dumps.  Currently only done for Linux, but
+   may be usefully extended for other systems.  */
+static void
+make_dumpable(void)
+{
+#if __linux__
+   DENTER(TOP_LAYER, "make_dumpable");
+   if (true == sge_dumpable) {
+      errno = 0;
+      int ret = prctl(PR_SET_DUMPABLE, 1, 42, 42, 42);
+      if (-1 == ret) {
+         ERROR((SGE_EVENT, MSG_PRCTL_FAILED, strerror(errno)));
+      }
+   }
+   DRETURN_VOID;
+#endif
+}
 
+/****** uti/stdlib/sge_setuid() *************************************************
+*  NAME
+*     sge_setuid() -- set user id
+*
+*  SYNOPSIS
+*     int sge_setuid(uid_t uid)
+*
+*  FUNCTION
+*     Call setuid and maybe call prctl, or similar, afterwards.
+*     prctl is called under Linux to allow core dumps subsequently.
+*     That is only done if global sge_dumpable is non-zero.
+*
+*  INPUTS
+*     uid_t uid - uid to set
+*
+*  RESULT
+*     Per setuid
+*
+*  NOTES
+*     MT-NOTE: MT safe as long as sge_dumpable is only set before
+*     threads are started.
+*******************************************************************************/
+int sge_setuid(uid_t uid) {
+   int ret = setuid(uid);
+   make_dumpable();
+   return ret;
+}
 
+/****** uti/stdlib/sge_seteuid() *************************************************
+*  NAME
+*     sge_seteuid() -- set effective user id
+*
+*  SYNOPSIS
+*     int sge_seteuid(uid_t uid)
+*
+*  FUNCTION
+*     Call seteuid and maybe call prctl, or similar, afterwards.
+*     prctl is called under Linux to allow core dumps subsequently.
+*     That is only done if global sge_dumpable is non-zero.
+*
+*  INPUTS
+*     uid_t uid - uid to set
+*
+*  RESULT
+*     Per seteuid
+*
+*  NOTES
+*     MT-NOTE: MT safe as long as sge_dumpable is only set before
+*     threads are started.
+*******************************************************************************/
+int sge_seteuid(uid_t uid) {
+   int ret = seteuid(uid);
+   make_dumpable();
+   return ret;
+}
+
+/****** uti/stdlib/sge_setgid() *************************************************
+*  NAME
+*     sge_setgid() -- set group id
+*
+*  SYNOPSIS
+*     int sge_setgid(gid_t gid)
+*
+*  FUNCTION
+*     Call setgid and maybe call prctl, or similar, afterwards.
+*     prctl is called under Linux to allow core dumps subsequently.
+*     That is only done if global sge_dumpable is non-zero.
+*
+*  INPUTS
+*     gid_t gid - gid to set
+*
+*  RESULT
+*     Per setuid
+*
+*  NOTES
+*     MT-NOTE: MT safe as long as sge_dumpable is only set before
+*     threads are started.
+*******************************************************************************/
+int sge_setgid(gid_t gid) {
+   int ret = setgid(gid);
+   make_dumpable();
+   return ret;
+}
+
+/****** uti/stdlib/sge_setegid() *************************************************
+*  NAME
+*     sge_setegid() -- set effective group id
+*
+*  SYNOPSIS
+*     int sge_setegid(gid_t gid)
+*
+*  FUNCTION
+*     Call setegid and maybe call prctl, or similar, afterwards.
+*     prctl is called under Linux to allow core dumps subsequently.
+*     That is only done if global sge_dumpable is non-zero.
+*
+*  INPUTS
+*     gid_t gid - gid to set
+*
+*  RESULT
+*     Per setegid
+*
+*  NOTES
+*     MT-NOTE: MT safe as long as sge_dumpable is only set before
+*     threads are started.
+*******************************************************************************/
+int sge_setegid(gid_t gid) {
+   int ret = setegid(gid);
+   make_dumpable();
+   return ret;
+}
+
+void sge_maybe_set_dumpable(void) {
+  if (getenv("SGE_ENABLE_COREDUMP") != NULL)
+     sge_dumpable = true;
+  return;
+}

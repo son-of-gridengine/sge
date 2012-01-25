@@ -109,8 +109,8 @@ int sge_edit(const char *fname, uid_t myuid, gid_t mygid)
 
       sge_set_def_sig_mask(NULL, NULL);
       sge_unblock_all_signals();
-      setuid(getuid());
-      setgid(getgid());
+      sge_setuid(getuid());
+      sge_setgid(getgid());
 
       cp = sge_getenv("EDITOR");
       if (cp == NULL || strlen(cp) == 0) {

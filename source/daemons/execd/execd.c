@@ -172,6 +172,7 @@ int main(int argc, char **argv)
    gen_procList ();
 #endif
    init_topology();
+   sge_maybe_set_dumpable();
    prof_mt_init();
 
    set_thread_name(pthread_self(),"Execd Thread");
