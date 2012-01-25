@@ -31,6 +31,8 @@
 /*___INFO__MARK_END__*/
 #include "msg_utilib.h"
 
+#include <unistd.h>
+
 #if defined(DARWIN)
 #   include <mach/host_info.h>
 #   include <mach/mach_host.h>
@@ -48,15 +50,10 @@
 #   include <machine/hal_sysinfo.h>
 #endif
 
-#if defined(SOLARIS) || defined(AIX) || defined(LINUX)
-#   include <unistd.h>
-#endif
-
 #if defined(__hpux)
     /* needs to be copiled with std C compiler ==> no -Aa switch no gcc */
 #   include <stdlib.h>
 #   include <sys/pstat.h>
-#   include <unistd.h>
 #endif
 
 #if defined(FREEBSD)
@@ -71,7 +68,6 @@
 
 #ifdef NPROCS_TEST
 #   include <stdio.h>
-#   include <unistd.h>
 void main(int, char**);
 #endif
 
@@ -102,6 +98,11 @@ int sge_nprocs()
 {
    int nprocs=1; /* default */
 
+
+#if defined(_SC_NPROCESSORS_ONLN) /* Solaris, AIX, Linux */
+   nprocs = sysconf(_SC_NPROCESSORS_ONLN);
+#endif
+
 #if defined(DARWIN)
   struct host_basic_info cpu_load_data;
 
@@ -123,10 +124,6 @@ int sge_nprocs()
    int start=0;
 
    getsysinfo(GSI_CPUS_IN_BOX,(char*)&nprocs,sizeof(nprocs),&start);
-#endif
-
-#if defined(SOLARIS) || defined(AIX) || defined(LINUX)
-   nprocs = sysconf(_SC_NPROCESSORS_ONLN);
 #endif
 
 #if defined(__hpux)

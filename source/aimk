@@ -44,7 +44,7 @@
 # variables 
 #
 set noglob
-unsetenv buildarch BUILDARCH COMPILE_ARCH COMPILE_DIR LD_LIBRARY_PATH 
+unsetenv buildarch BUILDARCH COMPILE_ARCH COMPILE_DIR
 unsetenv ANT_AIMK_OPTS AIMK_TARGET_BITS aimk_buildarch
 
 # We may have a checkout without executable permissions on the scripts,
@@ -296,7 +296,7 @@ set COMPILE_DC       = 0
 set CC               = cc
 set CXX              = CC
 set CFLAGS           = "-D$TARGET_BITS $INP_CFLAGS -DSGE_PQS_API"
-set CORE_INCLUDE     = "-I../common -I../libs -I../libs/uti -I../libs/juti -I../libs/gdi -I../libs/japi -I../libs/sgeobj -I../libs/cull -I../libs/comm -I../libs/comm/lists -I../libs/sched -I../libs/evc -I../libs/evm -I../libs/mir -I../libs/lck -I../daemons/common -I../daemons/qmaster -I../daemons/execd -I../daemons/schedd -I../clients/common -I."
+set CORE_INCLUDE     = "-I../common -I../libs -I../libs/uti -I../libs/juti -I../libs/gdi -I../libs/japi -I../libs/sgeobj -I../libs/cull -I../libs/comm -I../libs/comm/lists -I../libs/sched -I../libs/evc -I../libs/evm -I../libs/mir -I../daemons/common -I../daemons/qmaster -I../daemons/execd -I../clients/common -I."
 set DEBUG_FLAG       = ""
 set HWLOC            = 0
 set NO_HWLOC         = 0
@@ -1152,14 +1152,10 @@ case DARWIN_PPC:
 
    set REL = `/usr/bin/uname -r`
    switch ($REL)
-   case "6.*":
-      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -DDARWIN6 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
-      breaksw
+   # These used to define DARWIN7 and DARWIN8, but they're unused.
    case "7.*":
-      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -DDARWIN7 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
-      breaksw
    case "8.*":
-      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -DDARWIN8 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
       breaksw
    case "9.*":
       set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -DDARWIN9 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
@@ -2066,19 +2062,6 @@ if ($JAVA_SHAREDEXT == "") then
 endif
 
 set MAKEOPT = "$MAKEOPT $PARALLEL"
-
-# set gcc version dependent defines, suppress gcc 3.3.x warnings
-#
-if ($CC == gcc) then
-   expr `gcc -dumpversion` : 3.3 > /dev/null
-   if ($status == 0) then
-      set CFLAGS = "$CFLAGS"
-   endif
-   expr `gcc -dumpversion` : 2.96 > /dev/null
-   if ($status == 0) then
-      set CFLAGS = "-DUSING_GCC_2_96 $CFLAGS"
-   endif
-endif
 
 # pass -DCOMPILE_DC define to compile where PTF and PDC are ported
 #

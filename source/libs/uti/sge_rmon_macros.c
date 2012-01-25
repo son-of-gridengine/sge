@@ -598,10 +598,6 @@ static void mwrite(char *message, const char *thread_name)
    unsigned long tmp_pid    = (unsigned long) getpid();
    unsigned long tmp_thread = (unsigned long) pthread_self();
 
-#if !defined(DARWIN6)
-   flockfile(rmon_fp);
-#endif
-
 #ifdef DEBUG_CLIENT_SUPPORT
    /* if there is a callback function, don't call standard function */
    RMON_CALLBACK_FUNC_LOCK();
@@ -620,9 +616,6 @@ static void mwrite(char *message, const char *thread_name)
    fflush(rmon_fp);
 
    traceid++;
-#if !defined(DARWIN6)
-   funlockfile(rmon_fp);
-#endif
 
    return;
 } /* mwrite() */

@@ -1671,11 +1671,9 @@ static int psRetrieveOSJobData(void) {
 
 #elif defined(ALPHA) || defined(FREEBSD) || defined(LINUX) || defined(SOLARIS) || defined(HP1164) || defined(DARWIN)
       {
-         int proccount;
          lnk_link_t *currp, *nextp;
 
          /* sum up usage of each processes for this job */
-         proccount = job->jd_proccount;
          job->jd_utime_a = job->jd_stime_a = 0;
          job->jd_vmem = 0;
          job->jd_rss = 0;

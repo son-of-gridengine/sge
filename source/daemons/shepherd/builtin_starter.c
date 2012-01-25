@@ -92,6 +92,7 @@ static void start_qrsh_job(void);
 #if 0 /* Not currently used, but looks kinda useful... */
 static void set_inherit_env (bool inherit);
 #endif
+static int check_configured_method(const char *method, const char *name, char *err_str);
 extern int  shepherd_state;
 extern char shepherd_job_dir[];
 extern char **environ;
@@ -1654,7 +1655,7 @@ int use_starter_method /* If this flag is set the shell path contains the
    }
 }
 
-int check_configured_method(
+static int check_configured_method(
 const char *method,
 const char *name,
 char *err_str
@@ -1882,13 +1883,13 @@ static void set_inherit_env (bool inherit)
 *******************************************************************************/
 static void start_qlogin_job(const char *shell_path)
 {
-   static char shell[8+256]       = { "SHELL=" };
-   static char home[8+MAXPATHLEN] = { "HOME=" };
-   static char term[8+64]         = { "TERM=" };
-   static char logname[8+30]      = { "LOGNAME=" };
-   static char timez[8+100]       = { "TZ=" };
-   static char hertz[8+10]        = { "HZ=" };
-   static char path[8+MAXPATHLEN] = { "PATH=" };
+   static char shell[8+256]       = "SHELL=";
+   static char home[8+MAXPATHLEN] = "HOME=";
+   static char term[8+64]         = "TERM=";
+   static char logname[8+30]      = "LOGNAME=";
+   static char timez[8+100]       = "TZ=";
+   static char hertz[8+10]        = "HZ=";
+   static char path[8+MAXPATHLEN] = "PATH=";
    struct passwd *pw = NULL;
    struct passwd pw_struct;
    char minusname[50];

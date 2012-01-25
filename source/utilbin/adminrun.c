@@ -82,8 +82,7 @@ int main(int argc, char **argv)
    }
    
    if (setgid(pw->pw_gid) || setuid(pw->pw_uid)) {
-      fprintf(stderr, MSG_SETUID_FAILED);
-      fprintf(stderr, "\n");
+      fprintf(stderr, "%s\n", MSG_SETUID_FAILED);
       return 1;
    }
  

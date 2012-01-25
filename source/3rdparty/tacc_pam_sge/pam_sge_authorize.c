@@ -47,67 +47,15 @@
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
 
-#include "basis_types.h"
-#include "uti/sge_rmon.h"
-#include "symbols.h"
-#include "sge.h"
-#include "gdi/sge_gdi.h"
-#include "uti/sge_time.h"
-#include "uti/sge_log.h"
-#include "uti/sge_stdlib.h"
 #include "sgeobj/sge_all_listsL.h"
-#include "commlib.h"
-#include "sgeobj/sge_host.h"
-#include "sig_handlers.h"
-#include "sge_sched.h"
-#include "cull_sort.h"
-#include "usage.h"
-#include "uti/sge_dstring.h"
-#include "sgeobj/sge_feature.h"
-#include "parse.h"
-#include "sge_prog.h"
-#include "sge_parse_num_par.h"
-#include "sge_string.h"
-#include "show_job.h"
-#include "qstat_printing.h"
-#include "sge_range.h"
-#include "sge_schedd_text.h"
-#include "qm_name.h"
-#include "load_correction.h"
-#include "msg_common.h"
-#include "msg_clients_common.h"
-/*#include "msg_qstat.h"*/
-#include "sge_conf.h" 
-#include "sgeee.h" 
-#include "sge_support.h"
-#include "uti/sge_unistd.h"
-#include "sge_answer.h"
-#include "sge_pe.h"
-#include "sge_str.h"
-#include "sge_ckpt.h"
-#include "sge_qinstance.h"
-#include "sge_qinstance_state.h"
-#include "sge_centry.h"
-#include "sge_schedd_conf.h"
-#include "sge_cqueue.h"
-#include "sge_cqueue_qstat.h"
-#include "sge_qref.h"
-
-#include "sge_mt_init.h"
-#include "read_defaults.h"
-#include "setup_path.h"
-#include "sgeobj/sge_ulong.h"
-/*#include "gdi/sge_gdi_ctx.h"
-#include "sge_qstat.h"
-*/
-/*#include "qstat_xml.h"*/
-/*#include "qstat_cmdline.h"*/
+#include "sge_bootstrap.h"
+#include "cull_multitype.h"
 #include "cull_file.h"
 #include "uti/sge_profiling.h"
-
 #include "uti/sge_spool.h"
-
 
 /* --- authentication management functions --- */
 

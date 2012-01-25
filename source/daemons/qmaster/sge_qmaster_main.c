@@ -33,9 +33,6 @@
 #include <signal.h>
 #include <fcntl.h>
 
-#ifdef DARWIN6
-#include <sys/time.h>
-#endif
 #include <sys/resource.h>
 
 #include "uti/sge_rmon.h"
@@ -275,7 +272,9 @@ int main(int argc, char* argv[])
 {
    int max_enroll_tries;
    int ret_val;
+#ifndef USE_POLL
    int file_descriptor_settings_result = 0;
+#endif
    bool has_daemonized = false;
    sge_gdi_ctx_class_t *ctx = NULL;
    u_long32 start_time = sge_get_gmt();
@@ -315,7 +314,9 @@ int main(int argc, char* argv[])
     * zombie jobs
     */
    has_daemonized = sge_daemonize_qmaster();
+#ifndef USE_POLL
    file_descriptor_settings_result = set_file_descriptor_limit();
+#endif
    init_sig_action_and_mask();
 
    /* init qmaster threads without becomming admin user */
