@@ -231,7 +231,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
             }
 #endif /* WIN32 */
  
-            if (setuid(pw->pw_uid)) {
+            if (sge_setuid(pw->pw_uid)) {
                sprintf(err_str, MSG_SYSTEM_SWITCHTOUSERFAILED_SS , user,
                      strerror(errno));
                sprintf(err_str, "\n");
@@ -554,7 +554,7 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
       }
 
       if (pw != NULL) {
-         int lret = setuid(tuid);
+         int lret = sge_setuid(tuid);
          if (lret) {
             SGE_EXIT(NULL, 1);
          }

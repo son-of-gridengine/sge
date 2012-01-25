@@ -296,7 +296,7 @@ pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg)
     */
    old_euid = geteuid();
    if (getuid() == SGE_SUPERUSER_UID) {
-      seteuid(SGE_SUPERUSER_UID);
+      sge_seteuid(SGE_SUPERUSER_UID);
    }
    if ((fdm = ptym_open(pts_name)) < 0) {
       sge_dstring_sprintf(err_msg, "can't open master pty \"%s\": %d, %s",
@@ -321,11 +321,11 @@ pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg)
 
       /* Open pty slave */
       if ((fds = ptys_open(fdm, pts_name)) < 0) {
-         seteuid(old_euid);
+         sge_seteuid(old_euid);
          sge_dstring_sprintf(err_msg, "can't open slave pty: %d", fds);
          return -1;
       }
-      seteuid(old_euid);
+      sge_seteuid(old_euid);
       close(fdm);  fdm = -1;   /* all done with master in child */
 
       /*
@@ -381,7 +381,7 @@ pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg)
    } else {          /* parent */
       *ptrfdm = fdm; /* return fd of master */
       close(fd_pipe_err[1]); fd_pipe_err[1] = -1;
-      seteuid(old_euid);
+      sge_seteuid(old_euid);
       return pid;    /* parent returns pid of child */
    }
 }

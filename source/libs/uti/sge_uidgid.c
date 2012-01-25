@@ -383,7 +383,7 @@ int sge_switch2admin_user(void)
       }
  
       if (geteuid() != uid) {
-         if (seteuid(uid) == -1) {
+         if (sge_seteuid(uid) == -1) {
             DTRACE;
             ret = -1;
             goto exit;
@@ -470,7 +470,7 @@ int sge_switch2start_user(void)
          } 
       }
       if (start_uid != geteuid()) {
-         if (seteuid(start_uid) == -1) {
+         if (sge_seteuid(start_uid) == -1) {
             DTRACE;
             ret = -1;
             goto exit;
@@ -519,7 +519,7 @@ int sge_run_as_user(void)
    DENTER(UIDGID_LAYER, "sge_run_as_user");
 
    if(geteuid() != getuid()) {
-      if (seteuid(getuid())) {
+      if (sge_seteuid(getuid())) {
          ret = -1;
       }
    }
@@ -1053,7 +1053,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
                  user, sge_u32c( pw->pw_gid), min_gid);
          return 1;
       }
-      if (setgid(pw->pw_gid)) {
+      if (sge_setgid(pw->pw_gid)) {
          sprintf(err_str,MSG_SYSTEM_SETGIDFAILED_U , sge_u32c(pw->pw_gid) );
          return 1;
       }
@@ -1150,25 +1150,25 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
 #endif
       {
          if (use_qsub_gid) {
-            if (setgid(pw->pw_gid)) {
+            if (sge_setgid(pw->pw_gid)) {
                sprintf(err_str, MSG_SYSTEM_SETGIDFAILED_U, sge_u32c(pw->pw_gid));
                return 1;
             }
          }
-         if (setuid(pw->pw_uid)) {
+         if (sge_setuid(pw->pw_uid)) {
             sprintf(err_str, MSG_SYSTEM_SETUIDFAILED_U , sge_u32c(pw->pw_uid));
             return 1;
          }
       }
    } else {
       if (use_qsub_gid) {
-         if (setgid(pw->pw_gid)) {
+         if (sge_setgid(pw->pw_gid)) {
             sprintf(err_str, MSG_SYSTEM_SETGIDFAILED_U , sge_u32c(pw->pw_gid));
             return 1;
          }
       }
  
-      if (seteuid(pw->pw_uid)) {
+      if (sge_seteuid(pw->pw_uid)) {
          sprintf(err_str, MSG_SYSTEM_SETEUIDFAILED_U , sge_u32c(pw->pw_uid));
          return 1;
       }
