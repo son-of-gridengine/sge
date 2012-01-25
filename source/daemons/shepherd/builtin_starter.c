@@ -395,9 +395,9 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
                int   res;
 
                uid = geteuid();
-               seteuid(SGE_SUPERUSER_UID);
+               sge_seteuid(SGE_SUPERUSER_UID);
                res = uidgid_read_passwd(target_user, &pass, err_str);
-               seteuid(uid);
+               sge_seteuid(uid);
 
                if(res == 0) {
                   strlcpy(user_passwd, pass, MAX_STRING_SIZE);

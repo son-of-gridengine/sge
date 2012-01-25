@@ -151,7 +151,7 @@ void shepherd_trace_exit(void)
     */
     if (getuid() == SGE_SUPERUSER_UID) {
         old_euid = geteuid();
-        seteuid(SGE_SUPERUSER_UID);
+        sge_seteuid(SGE_SUPERUSER_UID);
      }
 
     if (shepherd_trace_fp) {
@@ -164,7 +164,7 @@ FCLOSE_ERROR:
     * Switch back to admin user?
     */
     if (old_euid != SGE_SUPERUSER_UID) {
-       seteuid(old_euid);
+       sge_seteuid(old_euid);
     }
 
     shepherd_error_exit();
@@ -228,7 +228,7 @@ void shepherd_error_exit()
     */
    if (getuid() == SGE_SUPERUSER_UID) {
       old_euid = geteuid();
-      seteuid(SGE_SUPERUSER_UID);
+      sge_seteuid(SGE_SUPERUSER_UID);
    }
 
    /*
@@ -247,7 +247,7 @@ void shepherd_error_exit()
     * Switch back to admin user?
     */
    if (old_euid != SGE_SUPERUSER_UID) {
-      seteuid(old_euid);
+      sge_seteuid(old_euid);
    }
 }
 
@@ -486,7 +486,7 @@ void shepherd_write_exit_status(const char *exit_status)
        */
       if (getuid() == SGE_SUPERUSER_UID) {
          old_euid = geteuid();
-         seteuid(SGE_SUPERUSER_UID);
+         sge_seteuid(SGE_SUPERUSER_UID);
       }
 #endif
       /* File was closed (e.g. by an exec()) but fp was not set to NULL */
@@ -505,7 +505,7 @@ void shepherd_write_exit_status(const char *exit_status)
       }
 #if 1
       if (old_euid != SGE_SUPERUSER_UID) {
-         seteuid(old_euid);
+         sge_seteuid(old_euid);
       }
 #endif
       /* There are cases where we have to open and close the files
@@ -642,7 +642,7 @@ static int sh_str2file(const char *header_str, const char *str, FILE* fp)
        */
       if (getuid() == SGE_SUPERUSER_UID) {
          old_euid = geteuid();
-         seteuid(SGE_SUPERUSER_UID);
+         sge_seteuid(SGE_SUPERUSER_UID);
       }
 
       if (!str && !header_str) {
@@ -666,7 +666,7 @@ static int sh_str2file(const char *header_str, const char *str, FILE* fp)
        * Switch back to admin user?
        */
       if (old_euid != SGE_SUPERUSER_UID) {
-         seteuid(old_euid);
+         sge_seteuid(old_euid);
          old_euid = SGE_SUPERUSER_UID;
       }
 
@@ -787,7 +787,7 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
        */
       if (getuid() == SGE_SUPERUSER_UID) {
          old_euid = geteuid();
-         seteuid(SGE_SUPERUSER_UID);
+         sge_seteuid(SGE_SUPERUSER_UID);
       }
 
       fd = SGE_OPEN2(tmppath, O_RDWR | O_APPEND);
@@ -803,7 +803,7 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
        * Switch back to admin user?
        */
       if (old_euid != SGE_SUPERUSER_UID) {
-         seteuid(old_euid);
+         sge_seteuid(old_euid);
       }
    }
 
@@ -887,7 +887,7 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
              * to change the ownership of a file.
              */
             old_euid = geteuid();
-            seteuid(SGE_SUPERUSER_UID);
+            sge_seteuid(SGE_SUPERUSER_UID);
 
             /* Have to use chown() here, because fchown() has some bugs
              * on True64 and Irix.
@@ -899,7 +899,7 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
                 * other chance than open the file for writing for everyone.
                 * We must do this as file owner = admin user.
                 */
-               seteuid(old_euid);
+               sge_seteuid(old_euid);
                if (fchmod(fd, 0666) == -1) {
                   sprintf(buffer, "can't fchmod(fd, 0666): %s\n", strerror(errno));
                   shepherd_panic(buffer);
@@ -919,7 +919,7 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
                   g_keep_files_open = false;
                }
             }
-            seteuid(old_euid);
+            sge_seteuid(old_euid);
          } else {
             /* Can't get jobuser_id -> grant access for everyone */
             if (fchmod(fd, 0666)==-1) {

@@ -100,6 +100,18 @@ run, for test purposes.
 .\"
 .IP "\fBSGE_ND\fP" 1.5i
 If set, don't daemonize the program (for debugging).
+.IP "\fBSGE_ENABLE_COREDUMP\fP" 1.5i
+If set, enable core dumps on Linux when the admin_user is not root.
+Linux normally disables core dumps when the daemon has changed uid or
+gid.  Setting SGE_ENABLE_COREDUMP in xxqs_name_sxx_qmaster's
+environment defeats that to enable core dumps for debugging if they
+are otherwise allowed.  This is typically not a big hazard with
+xxQS_NAME_Sxx, since most information is exposed in the spool area
+anyhow.  Dumps will appear in the host spool directory.
+.br
+On Solaris,
+.M coreadm 1
+may be used to enable such dumps.
 .\"
 .\"
 .SH RESTRICTIONS

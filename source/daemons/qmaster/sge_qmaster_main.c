@@ -283,6 +283,7 @@ int main(int argc, char* argv[])
 
    DENTER_MAIN(TOP_LAYER, "qmaster");
 
+   sge_maybe_set_dumpable();
    sge_monitor_init(&monitor, "MAIN", NONE_EXT, MT_WARNING, MT_ERROR);
    prof_mt_init();
 

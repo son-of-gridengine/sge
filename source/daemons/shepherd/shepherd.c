@@ -262,7 +262,7 @@ static int handle_io_file(const char* file, const char* owner, bool rw) {
    /* set effective user-id to root, because only root is allowed to change
     * the euid to any other than current the user-id.
     */
-   if (seteuid(SGE_SUPERUSER_UID) != 0) {
+   if (sge_seteuid(SGE_SUPERUSER_UID) != 0) {
       shepherd_trace("Cannot become root due to %s", strerror(errno));
       return -1;
    }
@@ -270,13 +270,13 @@ static int handle_io_file(const char* file, const char* owner, bool rw) {
    /* store current effective group-id */
    old_egid = getegid();
    /* set effective group-id to the group-id of job-owner */
-   if (setegid(jobuser_gid) != 0) {
+   if (sge_setegid(jobuser_gid) != 0) {
       shepherd_trace("Cannot change egid due to %s", strerror(errno));
       return -1;
    }
 
    /* set effective user-id to the user-id of job-owner */
-   if (seteuid(jobuser_id) != 0) {
+   if (sge_seteuid(jobuser_id) != 0) {
       shepherd_trace("Cannot become %s due to %s", owner, strerror(errno));
       return -1;
    }
@@ -298,12 +298,12 @@ static int handle_io_file(const char* file, const char* owner, bool rw) {
    }
 
    /* reset egid and euid to the stored values */
-   if (seteuid(old_euid) != 0) {
+   if (sge_seteuid(old_euid) != 0) {
       shepherd_trace("Cannot reset euid due to %s", owner, strerror(errno));
       SGE_CLOSE(fd);
       return -1;
    }
-   if (setegid(old_egid) != 0) {
+   if (sge_setegid(old_egid) != 0) {
       shepherd_trace("Cannot reset egid due to %s", owner, strerror(errno));
       SGE_CLOSE(fd);
       return -1;

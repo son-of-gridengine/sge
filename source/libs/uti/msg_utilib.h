@@ -164,8 +164,9 @@
 /* 
 ** utilib/sge_stdlib.c
 */ 
-#define MSG_MEMORY_MALLOCFAILED                    _MESSAGE(49072, _("malloc() failure"))
-#define MSG_MEMORY_REALLOCFAILED                   _MESSAGE(49073, _("realloc() failure") ) 
+#define MSG_MEMORY_MALLOCFAILED                  _MESSAGE(49072, _("malloc() failure"))
+#define MSG_MEMORY_REALLOCFAILED                 _MESSAGE(49073, _("realloc() failure"))
+#define MSG_PRCTL_FAILED                         _MESSAGE(49073, _("can't make process dumpable: "SFN))
 
 /* 
 ** utilib/sge_unistd.c

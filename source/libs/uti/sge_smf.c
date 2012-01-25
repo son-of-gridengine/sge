@@ -979,11 +979,11 @@ void sge_smf_temporary_disable_instance(void)
        change_user = 0;
     } else {
        old_euid = geteuid();
-       seteuid(SGE_SUPERUSER_UID);
+       sge_seteuid(SGE_SUPERUSER_UID);
     }
     int ret = shared_scf_func__smf_disable_instance(FMRI, SMF_TEMPORARY);
     if (change_user == 1) {
-       seteuid(old_euid);
+       sge_seteuid(old_euid);
     }
     if (ret != 0 ) {
         ERROR((SGE_EVENT, MSG_SMF_DISABLE_FAILED_SSUU,

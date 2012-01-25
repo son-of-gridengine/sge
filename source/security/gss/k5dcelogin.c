@@ -193,7 +193,7 @@ main(int argc, char *argv[])
 	 */
 
 	if (uid == 0) {
-		seteuid(pw->pw_uid);
+		sge_seteuid(pw->pw_uid);
 	}	
 
     /* If there is no cache to be converted, i.e. no forwarded
@@ -442,7 +442,7 @@ main(int argc, char *argv[])
    	/* if we were root, get back to root */ 
 
 	if (uid == 0) {
-	  seteuid(0);
+	  sge_seteuid(0);
 	}	
 
 	/* argv[1] has the fully qualified name of the program to exec. 

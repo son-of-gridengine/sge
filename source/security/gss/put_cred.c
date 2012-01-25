@@ -240,13 +240,13 @@ main(int argc, char **argv)
 
       if (become_user) {
 
-	 if (setgid(pw->pw_gid)<0) {
+	 if (sge_setgid(pw->pw_gid)<0) {
 	    cc = 4;
 	    perror(MSG_GSS_PERROR_SETGID);
 	    goto error;
 	 }
 
-	 if (setuid(pw->pw_uid)<0) {
+	 if (sge_setuid(pw->pw_uid)<0) {
 	    cc = 4;
 	    perror(MSG_GSS_PERROR_SETUID );
 	    goto error;

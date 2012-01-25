@@ -1876,7 +1876,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
     * because there seems to be some bug with inheriting euid
     * over a fork.
     */
-   seteuid(SGE_SUPERUSER_UID);
+   sge_seteuid(SGE_SUPERUSER_UID);
 #endif
 
    DPRINTF(("**********************CHILD*********************\n"));

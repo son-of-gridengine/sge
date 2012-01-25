@@ -46,7 +46,6 @@ include $(SDIR)/libs/spool/Makefile
 include $(SDIR)/libs/japi/Makefile
 include $(SDIR)/libs/juti/Makefile
 include $(SDIR)/libs/jgdi/Makefile
-include $(SDIR)/libs/libcore/Makefile
 include $(SDIR)/libs/ijs/Makefile
 
 ###############################################################################
@@ -57,9 +56,9 @@ SGELIB      = libsge$(LIBEXT)
 ###############################################################################
 # global rules: all, clean, depend, messages
 ###############################################################################
-libs: sgeobjlib gdilib evclib evmlib mirlib spoollib_all culllib_all schedlib_all utilib drmaa_all comm_all ijslib $(JUTI_ALL) $(SGELIB) $(LIBCORE)
+libs: sgeobjlib gdilib evclib evmlib mirlib spoollib_all culllib_all schedlib_all utilib drmaa_all comm_all ijslib $(JUTI_ALL) $(SGELIB)
 
-libs_clean: gdilib_clean sgeobjlib_clean evclib_clean evmlib_clean mirlib_clean spoollib_clean commlib_clean commlistslib_clean culllib_clean schedlib_clean utilib_clean drmaa_clean ijslib_clean $(JUTI_CLEAN) $(SGELIB)_clean corelib_clean
+libs_clean: gdilib_clean sgeobjlib_clean evclib_clean evmlib_clean mirlib_clean spoollib_clean commlib_clean commlistslib_clean culllib_clean schedlib_clean utilib_clean drmaa_clean ijslib_clean $(JUTI_CLEAN) $(SGELIB)_clean
 
 $(SGELIB)_clean:
 	$(RM) libsge.a libsge$(SHAREDEXT)
