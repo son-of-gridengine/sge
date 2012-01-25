@@ -811,7 +811,7 @@ static int cl_com_ssl_verify_callback(int preverify_ok, X509_STORE_CTX *ctx) {
        */
       char buf[2048];
       errnum = cl_com_ssl_func__X509_STORE_CTX_get_error(ctx);
-      snprintf(buf, sizeof(buf)-1, "Certificate Verification: Error (%d): %s\n",
+      snprintf(buf, sizeof(buf), "Certificate Verification: Error (%d): %s\n",
                errnum, cl_com_ssl_func__X509_verify_cert_error_string(errnum));
       CL_LOG(CL_LOG_ERROR, buf);
 

@@ -61,10 +61,6 @@
 #  include <sys/schedctl.h>
 #endif
 
-#ifdef DARWIN6
-#include <sys/time.h>
-#endif
-
 #if defined(ALPHA) || defined(SOLARIS) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
 #  include <sys/resource.h>
 #endif

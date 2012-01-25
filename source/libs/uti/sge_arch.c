@@ -68,7 +68,7 @@
 const char *sge_get_arch(void)
 {
 #ifndef SGE_ARCH_STRING
-#   pragma "Define an architecture for SGE"
+#   error "Define an architecture for SGE"
 #endif
 
    return (SGE_ARCH_STRING);
