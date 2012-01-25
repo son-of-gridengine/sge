@@ -115,8 +115,8 @@ static void print_error(const char* format, ...);
 static int  mygetline(char s[], int lim);
 static auth_result_t do_system_authentication(const char *username, 
                                               const char *password, 
-                                              int *uid, 
-                                              int *gid,
+                                              uid_t *uid,
+                                              gid_t *gid,
                                               error_handler_t *error_handler);
 
 #ifdef WINDOWS
@@ -176,8 +176,8 @@ int main(int argc, char** argv) {
    int i = 0;
    int ret = 0;
    error_handler_t error_handler;
-   int uid = 0;
-   int gid = 0;
+   uid_t uid = 0;
+   gid_t gid = 0;
 #ifdef WINDOWS
    char **ppszUID = NULL;
    char **ppszGID = NULL;
@@ -323,7 +323,8 @@ static int mygetline(char s[], int lim) { /* get a line into s, return length */
 	set terminated when a line containing only a semi-colon is received.
 	 */
 
-	int c, i;
+	int i;
+        char c;
 
 	for (i = 0; i < lim-1 && ((c = getchar()) != EOF) && c != '\n'; i++) {
 	    s[i] = c;
@@ -339,8 +340,8 @@ static int mygetline(char s[], int lim) { /* get a line into s, return length */
 
 static auth_result_t do_system_authentication(const char *username, 
                                               const char *password, 
-                                              int *uid, 
-                                              int *gid,
+                                              uid_t *uid,
+                                              gid_t *gid,
                                               error_handler_t *error_handler) 
 {
    auth_result_t ret = JUTI_AUTH_SUCCESS;
@@ -600,7 +601,7 @@ static auth_result_t get_crypted_password(const char* username, char* buffer, si
                      
 #if defined(AIX43) || defined(AIX51)
 #define BUFSIZE 1024
-   char buf[BUFSIZE];
+   char buf[BUFSIZE] = "";
    struct userpw *pw = NULL;
 
    sge_strlcpy(buf, username, BUFSIZE);

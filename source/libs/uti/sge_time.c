@@ -122,12 +122,7 @@ u_long32 sge_get_gmt()
 
    struct timeval now;
 
-#  ifdef SOLARIS
    gettimeofday(&now, NULL);
-#  else
-   struct timezone tzp;
-   gettimeofday(&now, &tzp);
-#  endif
 
    return (u_long32)now.tv_sec;
 #else

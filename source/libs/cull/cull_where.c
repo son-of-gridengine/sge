@@ -747,7 +747,8 @@ static lCondition *read_val(lDescr *dp, cull_parse_state *state, va_list *app)
    case CHAR:
       if (mt_get_type(cp->operand.cmp.mt) != lCharT)
          incompatibleType(MSG_CULL_WHERE_SHOULDBECHART);
-#if USING_GCC_2_96 || __GNUC__ >= 3 || __INSIGHT__
+/* fixme: why is gcc special here? */
+#if (__GNUC__ == 2 && __GNUC_MINOR__ > 95) || __GNUC__ >= 3 || __INSIGHT__
       cp->operand.cmp.val.c = va_arg(*app, int);
 #else
       cp->operand.cmp.val.c = va_arg(*app, lChar);
@@ -757,7 +758,7 @@ static lCondition *read_val(lDescr *dp, cull_parse_state *state, va_list *app)
    case BOOL:
       if (mt_get_type(cp->operand.cmp.mt) != lBoolT)
          incompatibleType(MSG_CULL_WHERE_SHOULDBEBOOL);
-#if USING_GCC_2_96 || __GNUC__ >= 3 || __INSIGHT__
+#if (__GNUC__ == 2 && __GNUC_MINOR__ > 95) || __GNUC__ >= 3 || __INSIGHT__
       cp->operand.cmp.val.b = va_arg(*app, int);
 #else
       cp->operand.cmp.val.b = va_arg(*app, lBool);

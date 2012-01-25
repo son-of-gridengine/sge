@@ -48,3 +48,13 @@ $SGE_ROOT/$SGE_CELL/common/schedule {
 #    weekly
 #    rotate 12
 #}
+
+# This might build up with use of qconf -tsm
+$SGE_ROOT/$SGE_CELL/common/schedd_runlog {
+    compress
+    missingok
+    notifempty
+    maxage 2
+    daily
+    rotate 2
+}
