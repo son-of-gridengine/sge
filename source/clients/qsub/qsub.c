@@ -191,7 +191,7 @@ main(int argc, char **argv)
    }
 
    /*
-    * Merge all commandline options and interprete them
+    * Merge all commandline options and interpret them
     */
    opt_list_merge_command_lines(&opts_all, &opts_defaults, 
                                 &opts_scriptfile, &opts_cmdline);
@@ -199,7 +199,7 @@ main(int argc, char **argv)
    /*
     * Check if -terse is requested
     */
-   if (opt_list_has_X(opts_cmdline, "-terse")) {
+   if (opt_list_has_X(opts_all, "-terse")) {
       has_terse = true;
    }
 
