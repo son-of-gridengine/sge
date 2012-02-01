@@ -167,11 +167,11 @@ export SGE_INPUT_CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 %if %{without java}
 JAVA_BUILD_OPTIONS="-no-java -no-jni"
 %endif
-csh -f ./aimk -only-depend
+csh -f ./aimk -only-depend $JAVA_BUILD_OPTIONS
 scripts/zerodepend
-./aimk depend
+./aimk $JAVA_BUILD_OPTIONS depend
 ./aimk -DLIBSSL_VER='\"'$ssl_ver'\"' -no-gui-inst -system-libs -pam -no-herd $parallel_flags $JAVA_BUILD_OPTIONS
-./aimk -man
+./aimk -man $JAVA_BUILD_OPTIONS
 %if %{with java}
 # "-no-gui-inst -no-herd -javadoc" still produces all the javadocs
 ant drmaa.javadoc juti.javadoc jgdi.javadoc jjsv.javadoc
@@ -302,6 +302,9 @@ makewhatis %{sge_home}/man
 %{sge_home}/util/resources/drmaa4ruby
 
 %changelog
+* Wed Feb  1 2012 Dave Love <d.love@liverpool.ac.uk> - 8.0.0e
+- Fix --without java
+
 * Sat Oct  8 2011 Dave Love <d.love@liverpool.ac.uk> - 8.0.0pre_c-1
 - Depend on hwloc.
 
