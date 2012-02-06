@@ -215,7 +215,12 @@ rm -rf $RPM_BUILD_ROOT
    -g %username -M -r -c 'Grid Engine admin' %username 2>/dev/null || :
 
 %post
-makewhatis %{sge_home}/man
+if [ -f /usr/sbin/mandb ]; then
+  # Later Fedora
+  mandb %{sge_home}/man
+else
+  makewhatis %{sge_home}/man
+fi
 
 %files
 %defattr(-,root,root,-)
