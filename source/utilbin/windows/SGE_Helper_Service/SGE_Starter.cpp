@@ -45,6 +45,7 @@
 #include <Wtsapi32.h>
 #include <Sddl.h>
 #include <process.h>
+#include <Userenv.h>
 
 // Global Variables:
 static char  *g_pCmdLine       = NULL;
@@ -686,6 +687,50 @@ int StartJob(int argc, char *argv[])
       SecureZeroMemory(szPass, sizeof(szPass));
       ConvertStringToWideChar(szCmdLine, szwCmdLine, nLen);
       
+	  LPVOID pszEnv = NULL;
+
+      WriteToLogFile("Try to get user env...");
+	  
+	  HANDLE hToken;
+
+      WriteToLogFile("Calling LogonUserW...");
+	  bResult = LogonUserW(
+          szwUser,
+          szwDomain,
+          szwPass,
+          LOGON32_LOGON_INTERACTIVE,
+          LOGON32_PROVIDER_DEFAULT,
+		  &hToken); 
+      if (!bResult) {
+	      WriteToLogFile("LogonUserW failed for %s", szwUser);
+	  };
+	 
+	
+	// as SGE_Starter.cpp is started as SYSTEM user it gets
+	// "HOME=/" set. This can confuse e.g. the Python function 
+	// os.path.expanduser("~/...")
+	//
+	// I'm too lazy to figure out the correct value and removing
+	// it is better than to have a wrong value...
+	WriteToLogFile("Removing HOME environment variable");
+	SetEnvironmentVariable("HOME", NULL);
+	
+        // PATH is also weird and filled with stuff like:
+	// "C:\Windows\SUA\windows\system32" and "C"
+        // even worse the rather important "C:\Windows\System32" is missing..
+	// Let Windows just set the fresh default path
+	WriteToLogFile("Removing PATH environment variable");
+	SetEnvironmentVariable("PATH", NULL);
+	
+    WriteToLogFile("CreateEnvironmentBlock...");
+    // TRUE: inherit environment from this process
+    if (!CreateEnvironmentBlock(&pszEnv, hToken, TRUE)) {
+	    WriteToLogFile("CreateEnvironmentBlock failed for %s", szwUser);
+	    pszEnv = NULL;
+	} else {
+	  WriteToLogFile("Got user env!");
+	};
+	  
       WriteToLogFile("Creating Process with command line \"%s\"", szCmdLine);
       bResult = CreateProcessWithLogonW(
          szwUser,
@@ -694,11 +739,16 @@ int StartJob(int argc, char *argv[])
          LOGON_WITH_PROFILE,
          NULL,
          szwCmdLine,
-         NORMAL_PRIORITY_CLASS,
-         NULL,
+         NORMAL_PRIORITY_CLASS | CREATE_UNICODE_ENVIRONMENT,
+         pszEnv,
          NULL,
          (LPSTARTUPINFOW)&si,
          &pi);
+
+      CloseHandle(hToken);
+	  if (!DestroyEnvironmentBlock(pszEnv)) {
+	      WriteToLogFile("Could not destroy environment block!");
+	  };
 
       // Free all allocated memory immediately (esp. the password buffer), but
       // don't let the SecureZeroMemory() function overwrite our LastError.
