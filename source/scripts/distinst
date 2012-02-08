@@ -37,7 +37,8 @@
 
 umask 022
 
-TOPFILES="bin catman ckpt doc examples include inst_sge \
+#TOPFILES="bin catman ckpt doc examples include inst_sge \
+TOPFILES="bin ckpt doc examples include inst_sge \
           install_execd install_qmaster lib man mpi pvm hadoop qmon util utilbin"
 
 HASARCHDIR="bin lib examples/jobsbin utilbin"
@@ -1113,28 +1114,57 @@ if [ $instcommon = true ]; then
    fi
 
    if [ $instman = true ]; then
-      echo Installing \"man/\" and \"catman/\"
+#      echo Installing \"man/\" and \"catman/\"
+      echo Installing \"man/\"
       Execute rm -rf $DEST_SGE_ROOT/man $DEST_SGE_ROOT/catman
       Execute cp -r MANSBUILD_$MANSRCDIR/SEDMAN/man $DEST_SGE_ROOT
 
-      if [ -d MANSBUILD_$MANSRCDIR/ASCMAN/catman ]; then
-         Execute mkdir -p $DEST_SGE_ROOT/catman
-         Execute cp -r MANSBUILD_$MANSRCDIR/ASCMAN/catman/?_man $DEST_SGE_ROOT/catman
-      fi
+#       if [ -d MANSBUILD_$MANSRCDIR/ASCMAN/catman ]; then
+#          Execute mkdir -p $DEST_SGE_ROOT/catman
+#          Execute cp -r MANSBUILD_$MANSRCDIR/ASCMAN/catman/?_man $DEST_SGE_ROOT/catman
+#       fi
 
-      if [ -d MANSBUILD_$MANSRCDIR/ASCMAN/man ]; then
-         SOURCEDIR=MANSBUILD_$MANSRCDIR/ASCMAN/man
-         DESTDIR=$DEST_SGE_ROOT/catman/cat
-         for dir in `ls $SOURCEDIR`; do
-            dir_num=`basename $dir | cut -d"n" -f2`
-            for file in `ls $SOURCEDIR/$dir`; do
-               if [ ! -d "$DESTDIR/cat$dir_num" ]; then
-                  Execute mkdir -p $DESTDIR/cat$dir_num
-               fi
-               Execute cp $SOURCEDIR/$dir/$file $DESTDIR/cat$dir_num/$file.$dir_num
-            done
-         done
-      fi
+#       if [ -d MANSBUILD_$MANSRCDIR/ASCMAN/man ]; then
+#          SOURCEDIR=MANSBUILD_$MANSRCDIR/ASCMAN/man
+#          DESTDIR=$DEST_SGE_ROOT/catman/cat
+#          for dir in `ls $SOURCEDIR`; do
+#             dir_num=`basename $dir | cut -d"n" -f2`
+#             for file in `ls $SOURCEDIR/$dir`; do
+#                if [ ! -d "$DESTDIR/cat$dir_num" ]; then
+#                   Execute mkdir -p $DESTDIR/cat$dir_num
+#                fi
+#                Execute cp $SOURCEDIR/$dir/$file $DESTDIR/cat$dir_num/$file.$dir_num
+#             done
+#          done
+#       fi
+
+      ( cd $DEST_SGE_ROOT/man/man1
+          for m in gethostbyaddr gethostbyname gethostname getservbyname
+          do ln -sf hostnameutils.1 $m.1; done
+          for m in qalter qlogin qresub qrsh qsh qsub
+          do ln -sf submit.1 $m.1; done
+      )
+      ( cd $DEST_SGE_ROOT/man/man3
+          for m in allocate_job_template delete_job_template get_attribute \
+              get_next_attr_value get_num_attr_values get_vector_attribute \
+              release_attr_values set_attribute set_vector_attribute
+          do ln -sf drmaa_jobtemplate.3 drmaa_$m.3; done
+          for m in control job_ps; do ln -sf drmaa_jobcontrol.3 drmaa_$m.3; done
+          for m in exit init; do ln -sf drmaa_session.3 drmaa_$m.3; done
+          for m in get_DRMAA_implementation get_DRM_system get_contact \
+              strerror version
+          do ln -sf drmaa_misc.3 drmaa_$m.3; done
+          for m in get_next_job_id get_num_job_ids release_job_ids \
+              run_bulk_jobs run_job
+          do ln -sf drmaa_submit.3 drmaa_$m.3; done
+          for m in synchronize wcoredump wexitstatus wifaborted wifexited \
+              wifsignaled wtermsig
+          do ln -sf drmaa_wait.3 drmaa_$m.3; done
+          for m in get_attribute_names get_next_attr_name \
+              get_num_attr_names get_vector_attribute_names \
+              release_attr_names
+          do ln -sf drmaa_attributes.3 drmaa_$m.3; done
+      )
 
       for excluded_file in $EXCLUDE_MANPAGE; do
          dir_num=`echo $excluded_file | cut -d"." -f2`
