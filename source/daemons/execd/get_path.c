@@ -203,6 +203,12 @@ expand_path(const char *in_path, u_long32 job_id, u_long32 ja_task_id,
          size_t nmax;
          char *printpos;
 
+         nmax = sizeof exp_path;
+         printpos = exp_path + strlen(exp_path);
+         sge_strlcat(exp_path, s, sizeof exp_path);
+         printpos = printpos + (t - s);
+         *printpos = '\0';
+         nmax = sizeof exp_path - strlen(exp_path);
          s = t;
          if (!strncmp(t, "$HOME", sizeof("$HOME") - 1)) {
             if (!getHomeDir(exp_path, user)) {
@@ -238,6 +244,10 @@ expand_path(const char *in_path, u_long32 job_id, u_long32 ja_task_id,
          if (!strncmp(t, "$$", sizeof("$$") - 1)) {
             snprintf(printpos, nmax, "$");
             s = t + 2;
+         }
+         if (*s == '$' && s == t) {
+            snprintf(printpos, nmax, "$");
+            s = t + 1;
          }
          t = strchr(s, '$');
       }
