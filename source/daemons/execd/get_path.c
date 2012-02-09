@@ -159,18 +159,13 @@ bool sge_get_fs_path( lList* lp, char* fs_host, size_t fs_host_len,
    return bFileStaging;
 }
 
-const char* expand_path(
-const char *in_path,
-u_long32 job_id,
-u_long32 ja_task_id,
-const char *job_name,
-const char *user,
-const char *host 
-) {
+const char*
+expand_path(const char *in_path, u_long32 job_id, u_long32 ja_task_id,
+            const char *job_name, const char *user, const char *host)
+{
    char *t;
    const char *s;
-   static char exp_path[10000];
-   char tmp[255];
+   static char exp_path[SGE_PATH_MAX];
    
    DENTER(TOP_LAYER, "expand_path");
    exp_path[0] = '\0';
@@ -178,26 +173,35 @@ const char *host
    if (in_path) {
       s = in_path;
       /*
-      ** handle ~/ and ~username/
+      ** handle ~, ~/, ~username and ~username/
       */
       if (s[0] == '~') {
+         char *tmp = strdup(s+1);
          t = strchr(s, '/');
-         strncpy(tmp, s+1, t-s+1);
-         strcat(tmp, "");
-         if (!strcmp(tmp, "")) {
-            if (!getHomeDir(exp_path, user)) {
-               DEXIT;
-               return NULL;
-            }
-            s = s + 2;
+         if (t)
+            tmp[t-s-1] = '\0'; /* uname or null */
+         if (!getHomeDir(exp_path, strlen(tmp) ? tmp : user)) {
+            sge_free(&tmp);
+            DEXIT;
+            return NULL;
          }
-         else if (!getHomeDir(exp_path, tmp)) {
-               s = t;
+         sge_free(&tmp);
+         if (sge_strlcat(exp_path, "/", sizeof(exp_path))
+             >= sizeof(exp_path)) {
+            DEXIT;
+            return NULL;
          }
+         if (!t) {
+            DEXIT;
+            return exp_path;
+         }
+         s = t + 1;
       }
       t = strchr(s, '$');
       while (t) {
-         strncat(exp_path, s, t-s);
+         size_t nmax;
+         char *printpos;
+
          s = t;
          if (!strncmp(t, "$HOME", sizeof("$HOME") - 1)) {
             if (!getHomeDir(exp_path, user)) {
@@ -206,35 +210,40 @@ const char *host
             }
             s = t + sizeof("$HOME") - 1;
          }
+         nmax = sizeof(exp_path) - strlen(exp_path);
+         printpos = exp_path + strlen(exp_path);
          if (!strncmp(t, "$JOB_ID", sizeof("$JOB_ID") - 1)) {
-            sprintf(exp_path, "%s" sge_u32, exp_path, job_id);
+            snprintf(printpos, nmax, sge_u32, job_id);
             s = t + sizeof("$JOB_ID") - 1;
          }
          if (ja_task_id) {
             if (!strncmp(t, "$TASK_ID", sizeof("$TASK_ID") - 1)) {
-               sprintf(exp_path, "%s" sge_u32, exp_path, ja_task_id);
+               snprintf(printpos, nmax, sge_u32, ja_task_id);
                s = t + sizeof("$TASK_ID") - 1;
             }
          }
          if (!strncmp(t, "$JOB_NAME", sizeof("$JOB_NAME") - 1)) {
-            sprintf(exp_path, "%s%s", exp_path, job_name);
+            snprintf(printpos, nmax, "%s", job_name);
             s = t + sizeof("$JOB_NAME") - 1;
          }
          if (!strncmp(t, "$USER", sizeof("$USER") - 1)) {
-            sprintf(exp_path, "%s%s", exp_path, user);
+            snprintf(printpos, nmax, "%s", user);
             s = t + sizeof("$USER") - 1;
          }
          if (!strncmp(t, "$HOSTNAME", sizeof("$HOSTNAME") - 1)) {
-            sprintf(exp_path, "%s%s", exp_path, host);
+            snprintf(printpos, nmax, "%s", host);
             s = t + sizeof("$HOSTNAME") - 1;
          }
-         if (*s == '$')  {
-            strncat(exp_path, s, 1);
-            s++;
+         if (!strncmp(t, "$$", sizeof("$$") - 1)) {
+            snprintf(printpos, nmax, "$");
+            s = t + 2;
          }
          t = strchr(s, '$');
       }
-      strcat(exp_path, s);
+      if (strlcat(exp_path, s, sizeof(exp_path)) >= sizeof(exp_path)) {
+         DEXIT;
+         return NULL;
+      }
    }
 
    DEXIT;
