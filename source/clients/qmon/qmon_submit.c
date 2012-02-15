@@ -2565,6 +2565,7 @@ StringConst sge_o_home
          DPRINTF(("getcwd failed\n"));
          cwd_str[0] = '\0';
       }
+      /* fixme: check return */
       chdir(cwd_str);
       if (!strncmp(cwd_str2, cwd_str, strlen(cwd_str2))) {
          sprintf(cwd_str3, "%s%s", sge_o_home, 

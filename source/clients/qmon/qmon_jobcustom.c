@@ -462,9 +462,9 @@ int nm
    for_each(jep, job_args) {
       const char *arg = lGetString(jep, ST_name);
       if(arg != NULL) {
-         sprintf(buf, "%s %s", buf, arg);
+         snprintf(buf + strlen(buf), sizeof(buf), " %s", arg);
       } else {
-         sprintf(buf, "%s \"\"", buf);
+         sge_strlcat(buf, " \"\"", sizeof(buf));
       }
    }
    str = XtNewString(buf);
@@ -491,7 +491,8 @@ int nm
    
    strcpy(buf, "");
    for_each(jep, pred) {
-      sprintf(buf, "%s %s", buf, lGetString(jep, JRE_job_name));
+      snprintf(buf + strlen(buf), sizeof(buf), " %s",
+               lGetString(jep, JRE_job_name));
    }
    str = XtNewString(buf);
 
@@ -517,7 +518,8 @@ int nm
    
    strcpy(buf, "");
    for_each(jep, pred) {
-      sprintf(buf, "%s "sge_u32, buf, lGetUlong(jep, JRE_job_number));
+      snprintf(buf + strlen(buf), sizeof(buf), " "sge_u32,
+               lGetUlong(jep, JRE_job_number));
    }
    str = XtNewString(buf);
 
@@ -794,7 +796,7 @@ int nm
    if (ca) {
       for (i=0; i<4; i++) {
          if (ca & mail_at[i])
-            sprintf(buf, "%s%c", buf, mailsym[i]);
+            snprintf(buf + strlen(buf), sizeof(buf), "%c", mailsym[i]);
       }
    }
    else
@@ -1755,7 +1757,8 @@ XtPointer cld
             strcpy(buf, lGetString(ep, ST_name));
          }
          else
-            sprintf(buf, "%s,%s", buf, lGetString(ep, ST_name));
+            snprintf(buf + strlen(buf), sizeof(buf), ",%s",
+                     lGetString(ep, ST_name));
       }
       XmtInputFieldSetString(jobfilter_owner, buf);
 

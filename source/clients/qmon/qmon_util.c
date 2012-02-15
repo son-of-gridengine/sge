@@ -587,7 +587,8 @@ int qmonForkEditor(String file)
       sprintf(command, "xterm -e %s", editor);
 
    if (file)
-      sprintf(command, "%s %s &", command, file ? file : "");
+      snprintf(command + strlen(command), sizeof(command), " %s &",
+               file ? file : "");
    else
       strcat(command, "&");
 
