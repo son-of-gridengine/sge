@@ -37,7 +37,7 @@ RM    = rm -f
 DEPEND = ../3rdparty/sge_depend/$(COMPILE_ARCH)/sge_depend -l -S -Y $(DEPEND_FLAGS)
 
 qmon_all: qmon
-	
+
 ###############################################################################
 # Variable definitions for libraries to link
 ###############################################################################
@@ -122,7 +122,7 @@ QMON_ADD_SRC = parse_job_cull.c unparse_job_cull.c \
             sge_resource_quota_qconf.c
 
 QMON_OBJS = $(QMON_SRC:.c=.o) qmon_diares.o
-            
+
 QMON_ADD_OBJS = $(QMON_ADD_SRC:.c=.o) libspoolc.a
 
 QMON_ADD_LIBS = -L../3rdparty/qmon/$(COMPILE_ARCH) -lXbae -lXmt -lXspin -lXicon -lXltree -lXtab \
@@ -189,10 +189,10 @@ qmon_menus.o:     $(QMON_DIR)/qmon_menus.c
 
 qmon_init.o:   $(QMON_DIR)/qmon_init.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_init.c
-                  
+
 qmon_util.o:      $(QMON_DIR)/qmon_util.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_util.c
-   
+
 qmon_signal.o:    $(QMON_DIR)/qmon_signal.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_signal.c
 
@@ -210,28 +210,28 @@ qmon_comm.o:      $(QMON_DIR)/qmon_comm.c
 
 qmon_start.o:   $(QMON_DIR)/qmon_start.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_start.c
-   
+
 qmon_browser.o:     $(QMON_DIR)/qmon_browser.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_browser.c
 
 qmon_widgets.o:    $(QMON_DIR)/qmon_widgets.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_widgets.c
-                  
+
 qmon_quarks.o:    $(QMON_DIR)/qmon_quarks.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_quarks.c
-                  
+
 qmon_matrix.o:    $(QMON_DIR)/qmon_matrix.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_matrix.c
-                  
+
 qmon_appres.o:    $(QMON_DIR)/qmon_appres.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_appres.c
-                  
+
 qmon_qaction.o:   $(QMON_DIR)/qmon_qaction.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_qaction.c
-   
+
 qmon_request.o:   $(QMON_DIR)/qmon_request.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_request.c
-   
+
 qmon_host.o:   $(QMON_DIR)/qmon_host.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_host.c
 
@@ -243,13 +243,13 @@ qmon_about.o:   $(QMON_DIR)/qmon_about.c
 
 qmon_message.o:   $(QMON_DIR)/qmon_message.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_message.c
-   
+
 AskForTime.o:    $(QMON_DIR)/AskForTime.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/AskForTime.c
-   
+
 AskForItems.o:    $(QMON_DIR)/AskForItems.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/AskForItems.c
-   
+
 qmon_cluster.o:    $(QMON_DIR)/qmon_cluster.c
 	$(CC) $(CFLAGS) $(XCFLAGS) -c $(QMON_DIR)/qmon_cluster.c
 

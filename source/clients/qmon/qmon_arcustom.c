@@ -234,7 +234,7 @@ int nm
    if (ca) {
       for (i=0; i<4; i++) {
          if (ca & mail_at[i])
-            sprintf(buf, "%s%c", buf, mailsym[i]);
+            snprintf(buf + strlen(buf), sizeof(buf), "%c", mailsym[i]);
       }
    }
    else
