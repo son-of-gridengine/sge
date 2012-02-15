@@ -486,7 +486,7 @@ DTRACE;
    */
    XtSetMultiClickTime(XtDisplay(top), MULTI_CLICK_TIME);
 
-#ifdef LINUX
+#ifdef LINUX                    /* why? */
    XtSetLanguageProc(*app, NULL, NULL); 
 #endif   
 

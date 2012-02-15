@@ -1653,7 +1653,7 @@ lListElem *qep
 
    sprintf(info, WIDTH"%s\n", "\n","Cluster Queue:", lGetString(qep, CQ_name));
 
-   sprintf(info, "%s\n", info); 
+   sge_strlcat(info, "\n", sizeof(info)); 
 
    DPRINTF(("info is %d long\n", strlen(info)));
    
