@@ -983,33 +983,6 @@ UnInstWinHelperSvc()
    export PATH
 }
 
-CopyIBMLoadSensor()
-{
-   if [ "$$SGE_ARCH" != "aix51" ]; then 
-      return 
-   fi
-
-   # check if the loadsensor is already copied by another installation
-   if [ -f "$SGE_ROOT/bin/$SGE_ARCH/qloadsensor" ]; then
-      return 
-   fi 
-      
-   # check if it is possible to copy it into dir as current user 
-   if [ -w "$SGE_ROOT/bin/$SGE_ARCH/" ]; then 
-      # directory has write permissions but user could be mapped to nobody 
-      # or filesystem could be read-only 
-      touch "$SGE_ROOT/bin/$SGE_ARCH/qloadsensortest" > /dev/null 2>&1 
-      if [ "$?" -eq 0 ]; then 
-         rm "$SGE_ROOT/bin/$SGE_ARCH/qloadsensortest"
-         cp "$SGE_ROOT/util/resources/loadsensors/ibm-loadsensor" "$SGE_ROOT/bin/$SGE_ARCH/qloadsensor"
-         chmod 755 "$SGE_ROOT/bin/$SGE_ARCH/qloadsensor"
-         return
-      fi 
-   fi   
-   
-   PrintIBMLoadSensorCopyError
-}
-
 PrintIBMLoadSensorCopyError()
 {
    if [ $AUTO = true ]; then

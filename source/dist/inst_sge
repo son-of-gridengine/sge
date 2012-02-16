@@ -1083,7 +1083,6 @@ if [ "$EXECD" = "install" -a "$UPDATE" != "true" ]; then
       AddSubmitHostsExecd
       AddSGEStartUpScript $euid execd
       SetupWinSvc execinst     #service install during execd installation -> param: execinst
-      CopyIBMLoadSensor
       StartExecd
       AddQueue
       GiveHints
@@ -1119,7 +1118,6 @@ if [ "$EXECD" = "install" -a "$UPDATE" != "true" ]; then
       AddLocalConfiguration_With_Qconf
       AddSGEStartUpScript $euid execd
       SetupWinSvc execinst  #service install during execd installation -> param: execinst
-      CopyIBMLoadSensor
       StartExecd
       AddQueue
       GiveHints
