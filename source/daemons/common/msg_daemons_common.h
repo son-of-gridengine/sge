@@ -134,7 +134,7 @@
 */
 #define MSG_CONF_NOCONFVALUE_S        _MESSAGE(27059, _("can't get configuration value for "SFQ))
 #define MSG_CONF_ATLEASTONECHAR       _MESSAGE(27060, _("variables need at least one character"))
-#define MSG_CONF_REFVAR_S             _MESSAGE(27061, _("referenced variable %20.20s... expands max. length"))
+#define MSG_CONF_REFVAR_S             _MESSAGE(27061, _("referenced variable %20.20s... exceeds maximum length (%d)"))
 #define MSG_CONF_UNKNOWNVAR_S         _MESSAGE(27062, _("unknown variable "SFQ))
 
 /* 

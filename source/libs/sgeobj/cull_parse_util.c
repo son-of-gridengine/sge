@@ -776,7 +776,7 @@ unsigned long flags
       return -1;
    }
    if (buff && !max_len) {
-      DPRINTF(("uni_print_list: zero len output required\n"));
+      DPRINTF(("uni_print_list: zero length output required\n"));
       DEXIT;
       return -1;
    }

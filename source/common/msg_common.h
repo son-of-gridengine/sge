@@ -283,7 +283,7 @@
  */
 #define MSG_GDI_ARGUMENTSYNTAX_OA_ACCOUNT_STRING       "account_string          account_name"
 #define MSG_GDI_ARGUMENTSYNTAX_QA_BINDING_STRATEGY_EXP "exp                     explicit:<socket>,<core>[:...]"
-#define MSG_GDI_ARGUMENTSYNTAX_QA_BINDING_STRATEGY_LIN "lin                     linear:<amount>[:<socket>,<core>]"
+#define MSG_GDI_ARGUMENTSYNTAX_QA_BINDING_STRATEGY_LIN "lin                     linear[:<amount>[:<socket>,<core>]]"
 #define MSG_GDI_ARGUMENTSYNTAX_QA_BINDING_STRATEGY_STR "str                     striding:<amount>:<stepsize>[:<socket>,<core>]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_COMPLEX_LIST         "complex_list            complex[,complex,...]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_CONTEXT_LIST         "context_list            variable[=value][,variable[=value],...]"
