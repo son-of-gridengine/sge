@@ -141,7 +141,7 @@ while [ $ARGC != 0 ]; do
      FILE="$2"
      if [ ! -f "$2" ]; then
         AUTO="false"
-        $INFOTEXT "Error: File $FILE does not exist!" 
+        $INFOTEXT "Error: File %s does not exist!" "$FILE"
         ErrUsage        
      fi
      shift
@@ -396,13 +396,13 @@ if [ $AUTO = "true" -a  $AUTOGUI != "true" ]; then
    GetConfigFromFile
    #Now we check if we want to enable JMX or not based on SGE_JVM_LIB_PATH and/or SGE_JMX_PORT
    if [ "$SGE_JVM_LIB_PATH" = "undef" -o x"`echo $SGE_JVM_LIB_PATH | tr \"[A-Z]\" \"[a-z]\"`" = "xnone" ]; then
-      $INFOTEXT -log "Disabling JMX since \$SGE_JVM_LIB_PATH=none or is missing in $FILE file."
+      $INFOTEXT -log "Disabling JMX since \$SGE_JVM_LIB_PATH=none or is missing in %s file." "$FILE"
       SGE_ENABLE_JMX="false"
    fi
    #Since we no longer have JMX flag (SGE_ENABLE_JMX is always true) we set to to false if
    #SGE_JMX_PORT is missing or is empty in the autoinstall template
    if [ -z "$SGE_JMX_PORT" ]; then
-      $INFOTEXT -log "Disabling JMX since \$SGE_JMX_PORT=\"$SGE_JMX_PORT\" in $FILE file."
+      $INFOTEXT -log "Disabling JMX since \$SGE_JMX_PORT=\"%s\" in %s file." $SGE_JMX_PORT "$FILE"
       SGE_ENABLE_JMX="false"
    fi
    CheckConfigFile $FILE
@@ -425,7 +425,7 @@ fi
 
 if [ "$START_CLUSTER" = "true" ]; then
    if [ -z "$SGE_ROOT" -o -z "$SGE_CELL" ]; then
-      $INFOTEXT "\Can't start cluster: $SGE_ROOT and \$SGE_CELL must be set!"
+      $INFOTEXT "\Can't start cluster: SGE_ROOT and SGE_CELL must be set!"
       exit 2
    fi
    ALL_RC=true
@@ -454,7 +454,7 @@ if [ $ONLY_ENABLE_JMX = "true" ]; then
    CheckRunningDaemon sge_qmaster
    is_running=$?
    if [ $is_running - ne 0 ]; then
-      $INFOTEXT "Qmaster is not running! Cannot enable JMX." $qmaster_host
+      $INFOTEXT "Qmaster %s is not running! Cannot enable JMX." $qmaster_host
       exit 2
    fi
    
@@ -711,7 +711,7 @@ if [ "$UPDATE" = true ]; then
    CopyCA submit
    CheckRunningDaemon sge_qmaster
    $INFOTEXT -u "Last step - load configuration from the backup"
-   $INFOTEXT -n "\nload command: $SGE_ROOT/util/upgrade_modules/load_sge_config.sh $UPGRADE_BACKUP_DIR -mode \"$UPGRADE_MODE\" -log C -newijs \"$newIJS\" -gid_range \"${CFG_GID_RANGE}\" -admin_mail \"${CFG_MAIL_ADDR}\" -execd_spool_dir \"${CFG_EXE_SPOOL}\" \n"   
+   $INFOTEXT -n "\nload command: %s/util/upgrade_modules/load_sge_config.sh %s -mode \"%s\" -log C -newijs \"%s\" -gid_range \"%s\" -admin_mail \"%s\" -execd_spool_dir \"%s\" \n" "$SGE_ROOT" "$UPGRADE_BACKUP_DIR" "$UPGRADE_MODE" "$newIJS" "$CFG_GID_RANGE" "$CFG_MAIL_ADDR" "$CFG_EXE_SPOOL"
    $INFOTEXT -wait -auto $AUTO -n "\nHit <RETURN> to continue >> "
    #Load configuration, show only critical errors
    "$SGE_ROOT/util/upgrade_modules/load_sge_config.sh" "$UPGRADE_BACKUP_DIR" -log "C" -mode "$UPGRADE_MODE" \
@@ -1508,8 +1508,8 @@ if [ $SHADOW = "uninstall" ]; then
             # check to make sure the host we are removing is not needed
             if [ x`cat "$SGE_ROOT/$SGE_CELL/common/act_qmaster" | grep "^${s_host}$"` = x ]; then
                if [ x`"$SGE_ROOT/bin/$SGE_ARCH/qconf" -sel | grep "^${s_host}$"` = x ]; then
-                  $INFOTEXT "Removing local configuration for $s_host"
-                  "$SGE_ROOT/bin/$SGE_ARCH/qconf" -dconf $s_host
+                  $INFOTEXT "Removing local configuration for %s" $s_host
+                  "%s/bin/%s/qconf" "$SGE_ROOT" "$SGE_ARCH" -dconf $s_host
                fi
             fi
          fi
@@ -1538,8 +1538,7 @@ if [ $SHADOW = "uninstall" ]; then
             # check to make sure the host we are removing is not needed
             if [ x`cat "$SGE_ROOT/$SGE_CELL/common/act_qmaster" | grep "^${s_host}$"` = x ]; then
                if [ x`"$SGE_ROOT/bin/$SGE_ARCH/qconf" -sel | grep "^${s_host}$"` = x ]; then
-                  $INFOTEXT "Removing local configuration for $s_host"
-                  "$SGE_ROOT/bin/$SGE_ARCH/qconf" -dconf $s_host
+                  $INFOTEXT "Removing local configuration for %s %s/bin/%s/qconf -dconf %s" $s_host "$SGE_ROOT" "$SGE_ARCH" $s_host
                fi
             fi
          fi

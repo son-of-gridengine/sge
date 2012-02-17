@@ -680,7 +680,7 @@ void sge_usage(u_long32 prog_number, FILE *fp) {
    
    if (VALID_OPT(i_OPT, prog_number)) {
       PRINTITD(MSG_GDI_USAGE_i_OPT_PATH_LIST, MSG_GDI_UTEXT_i_OPT_PATH_LIST );
-      MARK(OA_FILE_LIST);
+      MARK(OA_PATH_LIST);
    }
 
    if (VALID_OPT(inherit_OPT, prog_number)) {

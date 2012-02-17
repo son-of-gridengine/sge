@@ -541,7 +541,7 @@ GetLocalExecdSpoolDir()
              "\nor you can define a different spool directory for this execution host." \
              "\n\nATTENTION: For most operating systems, the spool directory does not have to" \
              "\nbe located on a local disk. The spool directory can be located on a " \
-             "\nnetwork-accessible drive. However, using a local spool directory provides " \
+             "\nnetwork filesystem. However, using a local spool directory provides " \
              "\nbetter performance.\n\nFOR WINDOWS USERS: On Windows systems, the spool directory " \
              "MUST be located\non a local disk. If you install an execution daemon on a " \
              "Windows system\nwithout a local spool directory, the execution host is unusable." \
