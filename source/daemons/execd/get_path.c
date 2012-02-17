@@ -240,7 +240,7 @@ expand_path(const char *in_path, u_long32 job_id, u_long32 ja_task_id,
          }
          t = strchr(s, '$');
       }
-      if (strlcat(exp_path, s, sizeof(exp_path)) >= sizeof(exp_path)) {
+      if (sge_strlcat(exp_path, s, sizeof(exp_path)) >= sizeof(exp_path)) {
          DEXIT;
          return NULL;
       }
