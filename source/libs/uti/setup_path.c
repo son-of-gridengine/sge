@@ -427,8 +427,8 @@ bool sge_setup_paths(u_long32 progid, const char *sge_cell, dstring *error_dstri
 
    DPRINTF(("sge_root            >%s<\n", path_state_get_sge_root()));
    DPRINTF(("cell_root           >%s<\n", path_state_get_cell_root()));
-   DPRINTF(("conf_file           >%s<\n", path_state_get_bootstrap_file()));
-   DPRINTF(("bootstrap_file      >%s<\n", path_state_get_conf_file()));
+   DPRINTF(("conf_file           >%s<\n", path_state_get_conf_file()));
+   DPRINTF(("bootstrap_file      >%s<\n", path_state_get_bootstrap_file()));
    DPRINTF(("act_qmaster_file    >%s<\n", path_state_get_act_qmaster_file()));
    DPRINTF(("acct_file           >%s<\n", path_state_get_acct_file()));
    DPRINTF(("reporting_file      >%s<\n", path_state_get_reporting_file()));

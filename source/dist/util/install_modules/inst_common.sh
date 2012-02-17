@@ -745,7 +745,7 @@ LogResolvedHostLists()
       for resolve_text in $RESOLVED_CHANGED_HOSTNAMES; do
          unresolvedHostname=`echo $resolve_text | cut -d# -f1`
          resolvedHostname=`echo $resolve_text | cut -d# -f2`
-         $INFOTEXT -log "   Resolved host \"$unresolvedHostname\" to \"$resolvedHostname\""
+         $INFOTEXT -log "   Resolved host \"%s\" to \"%s\"" $unresolvedHostname $resolvedHostname
       done
    fi
 }
@@ -1044,8 +1044,8 @@ CheckConfigFile()
                is_valid="false"
             fi
             if [ "$second" = "" ]; then
-               $INFOTEXT -e "Your >SGE_JVM_LIB_PATH< is set to \"$SGE_JVM_LIB_PATH\" which is not a valid path!"
-               $INFOTEXT -log "Your >SGE_JVM_LIB_PATH< is set to \"$SGE_JVM_LIB_PATH\" which is not a valid path!"
+               $INFOTEXT -e "Your >SGE_JVM_LIB_PATH< is set to \"%s\" which is not a valid path!" "$SGE_JVM_LIB_PATH"
+               $INFOTEXT -log "Your >SGE_JVM_LIB_PATH< is set to \"%s\" which is not a valid path!" "$SGE_JVM_LIB_PATH"
                is_valid="false"
             fi
          fi
@@ -1768,8 +1768,8 @@ SetupRcScriptNames61()
       K03NAME=K02sgeexecd
       DAEMON_NAME="execd"
    else
-      $INFOTEXT "Unknown option $1 to SetupRcScriptNames61()."
-      $INFOTEXT -log "Unknown option $1 to SetupRcScriptNames61()."
+      $INFOTEXT "Unknown option %s to SetupRcScriptNames61()." "$1"
+      $INFOTEXT -log "Unknown option %s to SetupRcScriptNames61()." "$1"
       MoveLog
       exit 1
    fi
@@ -1826,8 +1826,8 @@ SetupRcScriptNames()
       K03NAME=K02sgeexecd.$SGE_CLUSTER_NAME
       DAEMON_NAME="execd"
    else
-      $INFOTEXT "Unknown option $1 to SetupRcScriptNames()."
-      $INFOTEXT -log "Unknown option $1 to SetupRcScriptNames()."
+      $INFOTEXT "Unknown option %s to SetupRcScriptNames()." "$1"
+      $INFOTEXT -log "Unknown option %s to SetupRcScriptNames()." "$1"
       MoveLog
       exit 1
    fi
@@ -1891,7 +1891,6 @@ CheckIfClusterNameAlreadyExists()
    if [ "$SGE_ENABLE_SMF" = true ]; then
       ServiceAlreadyExists $hosttype
       if [ $? -eq 1 ]; then
-         infotext_temp_msg="Detected SMF service svc:/application/sge/$hosttype:%s."
          if [ $AUTO = true ]; then
             $INFOTEXT  -log "$infotext_temp_msg" $SGE_CLUSTER_NAME
          else

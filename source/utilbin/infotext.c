@@ -1063,6 +1063,7 @@ int main( int argc, char* argv[] ) {
 #else
       /* JG: TODO: replace vsprintf by the corresponding dstring functions */
       char tbuf1[MAX_STRING_SIZE*4];
+      /* fixme:  3rd arg should be va_list */
       vsprintf(tbuf1, (char*) sge_dstring_get_string(&buffer2), &argv[first_arg] );
       sge_dstring_copy_string(&buffer,tbuf1);
 

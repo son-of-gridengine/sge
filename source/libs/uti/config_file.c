@@ -435,7 +435,7 @@ char **allowed
          }
 
          if (name_len>(sizeof(name)-1)) {
-            sprintf(err_str, MSG_CONF_REFVAR_S, sp);
+            snprintf(err_str, sizeof(err_str), MSG_CONF_REFVAR_S, sp, sizeof(name)-1);
             if (config_errfunc)
                config_errfunc(err_str);
             return 1;
