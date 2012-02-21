@@ -244,7 +244,7 @@ int sge_set_admin_username(const char *user, char *err_str)
    }
    if (!user || user[0] == '\0') {
       if (err_str) {
-         sprintf(err_str, SFNMAX, MSG_POINTER_SETADMINUSERNAMEFAILED);
+         snprintf(err_str, lstr, SFNMAX, MSG_POINTER_SETADMINUSERNAMEFAILED);
       }
       DEXIT;
       return -1;
@@ -263,7 +263,7 @@ int sge_set_admin_username(const char *user, char *err_str)
          set_admin_user(user, admin->pw_uid, admin->pw_gid);
       } else {
          if (err_str)
-            sprintf(err_str, MSG_SYSTEM_ADMINUSERNOTEXIST_S, user);
+            snprintf(err_str, lstr, MSG_SYSTEM_ADMINUSERNOTEXIST_S, user);
          ret = -1;
       }
       sge_free(&buffer);
@@ -1011,7 +1011,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
    sge_switch2start_user();
  
    if (!sge_is_start_user_superuser()) {
-      sprintf(err_str, SFNMAX, MSG_SYSTEM_CHANGEUIDORGIDFAILED );
+      snprintf(err_str, lstr, SFNMAX, MSG_SYSTEM_CHANGEUIDORGIDFAILED);
       return -1;
    }
  
@@ -1020,7 +1020,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
    }
 
    if (!(pw = sge_getpwnam_r(user, &pw_struct, buffer, size))) {
-      sprintf(err_str, MSG_SYSTEM_GETPWNAMFAILED_S , user);
+      snprintf(err_str, lstr, MSG_SYSTEM_GETPWNAMFAILED_S , user);
       return 1;
    }
 
@@ -1045,17 +1045,18 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
        *  as root
        */
       if (pw->pw_gid < min_gid) {
-         sprintf(err_str, MSG_SYSTEM_GIDLESSTHANMINIMUM_SUI ,
+        snprintf(err_str, lstr, MSG_SYSTEM_GIDLESSTHANMINIMUM_SUI ,
                  user, sge_u32c( pw->pw_gid), min_gid);
          return 1;
       }
       if (sge_setgid(pw->pw_gid)) {
-         sprintf(err_str,MSG_SYSTEM_SETGIDFAILED_U , sge_u32c(pw->pw_gid) );
+         snprintf(err_str, lstr, MSG_SYSTEM_SETGIDFAILED_U,
+                  sge_u32c(pw->pw_gid) );
          return 1;
       }
    } else {
       if (setegid(pw->pw_gid)) {
-         sprintf(err_str, MSG_SYSTEM_SETEGIDFAILED_U , sge_u32c(pw->pw_gid));
+         snprintf(err_str, lstr, MSG_SYSTEM_SETEGIDFAILED_U , sge_u32c(pw->pw_gid));
          return 1;
       }
    }
@@ -1082,12 +1083,12 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
 
 #if defined(SVR3) || defined(sun)
    if (status < 0) {
-      sprintf(err_str, MSG_SYSTEM_INITGROUPSFAILED_I , status);
+      snprintf(err_str, MSG_SYSTEM_INITGROUPSFAILED_I, status);
       return 1;
    }
 #else
    if (status) {
-      sprintf(err_str, MSG_SYSTEM_INITGROUPSFAILED_I , status);
+      snprintf(err_str, lstr, MSG_SYSTEM_INITGROUPSFAILED_I, status);
       return 1;
    }
 #endif
@@ -1104,7 +1105,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
  
    if (!intermediate_user) {
       if (pw->pw_uid < min_uid) {
-         sprintf(err_str, MSG_SYSTEM_UIDLESSTHANMINIMUM_SUI ,
+         snprintf(err_str, lstr, MSG_SYSTEM_UIDLESSTHANMINIMUM_SUI,
                  user, sge_u32c(pw->pw_uid), min_uid);
          return 1;
       }
@@ -1135,9 +1136,9 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
 
          if(wl_setuser(pw->pw_uid, pw->pw_gid, pass, err_str) != 0) {
             sge_free(&pass);
-            sprintf(buf, MSG_SYSTEM_SETUSERFAILED_UU, sge_u32c(pw->pw_uid),
-                    sge_u32c(pw->pw_gid));
-            strcat(err_str, buf);
+            snprintf(buf, sizoef(buf), MSG_SYSTEM_SETUSERFAILED_UU,
+                     sge_u32c(pw->pw_uid), sge_u32c(pw->pw_gid));
+            sge_strlcat(err_str, buf, sizeof(err_str));
             return 4;
          }
          sge_free(&pass);
@@ -1147,25 +1148,25 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
       {
          if (use_qsub_gid) {
             if (sge_setgid(pw->pw_gid)) {
-               sprintf(err_str, MSG_SYSTEM_SETGIDFAILED_U, sge_u32c(pw->pw_gid));
+               snprintf(err_str, lstr, MSG_SYSTEM_SETGIDFAILED_U, sge_u32c(pw->pw_gid));
                return 1;
             }
          }
          if (sge_setuid(pw->pw_uid)) {
-            sprintf(err_str, MSG_SYSTEM_SETUIDFAILED_U , sge_u32c(pw->pw_uid));
+            snprintf(err_str, lstr, MSG_SYSTEM_SETUIDFAILED_U , sge_u32c(pw->pw_uid));
             return 1;
          }
       }
    } else {
       if (use_qsub_gid) {
          if (sge_setgid(pw->pw_gid)) {
-            sprintf(err_str, MSG_SYSTEM_SETGIDFAILED_U , sge_u32c(pw->pw_gid));
+            snprintf(err_str, lstr, MSG_SYSTEM_SETGIDFAILED_U , sge_u32c(pw->pw_gid));
             return 1;
          }
       }
  
       if (sge_seteuid(pw->pw_uid)) {
-         sprintf(err_str, MSG_SYSTEM_SETEUIDFAILED_U , sge_u32c(pw->pw_uid));
+         snprintf(err_str, lstr, MSG_SYSTEM_SETEUIDFAILED_U , sge_u32c(pw->pw_uid));
          return 1;
       }
    }
@@ -1219,8 +1220,9 @@ int sge_add_group(gid_t add_grp_id, char *err_str, bool skip_silently)
    max_groups = sge_sysconf(SGE_SYSCONF_NGROUPS_MAX);
    if (max_groups <= 0) {
       if(err_str != NULL) {
-         sprintf(err_str, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS, sge_u32c(getuid()), 
-                 sge_u32c(geteuid()), MSG_SYSTEM_INVALID_NGROUPS_MAX);
+         snprintf(err_str, lstr, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS,
+                  sge_u32c(getuid()), sge_u32c(geteuid()),
+                  MSG_SYSTEM_INVALID_NGROUPS_MAX);
       }
       return -1;
    }
@@ -1237,8 +1239,8 @@ int sge_add_group(gid_t add_grp_id, char *err_str, bool skip_silently)
    if (list == NULL) {
       if(err_str != NULL) {
          int error = errno;
-         sprintf(err_str, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS, sge_u32c(getuid()), 
-                 sge_u32c(geteuid()), strerror(error));
+         snprintf(err_str, lstr, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS,
+                  sge_u32c(getuid()), sge_u32c(geteuid()), strerror(error));
       }
       return -1;
    }
@@ -1247,8 +1249,8 @@ int sge_add_group(gid_t add_grp_id, char *err_str, bool skip_silently)
    if (groups == -1) {
       if(err_str != NULL) {
          int error = errno;
-         sprintf(err_str, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS, sge_u32c(getuid()), 
-                 sge_u32c(geteuid()), strerror(error));
+         snprintf(err_str, lstr, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS,
+                  sge_u32c(getuid()), sge_u32c(geteuid()), strerror(error));
       }
       sge_free(&list);
       return -1;
@@ -1262,16 +1264,17 @@ int sge_add_group(gid_t add_grp_id, char *err_str, bool skip_silently)
       if (groups == -1) {
          if (err_str != NULL) {
             int error = errno;
-            sprintf(err_str, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS, sge_u32c(getuid()), 
-                    sge_u32c(geteuid()), strerror(error));
+            snprintf(err_str, lstr, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS,
+                     sge_u32c(getuid()), sge_u32c(geteuid()), strerror(error));
          }
          sge_free(&list);
          return -1;
       }
    } else if (skip_silently == false) {
       if (err_str != NULL) {
-         sprintf(err_str, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS, sge_u32c(getuid()), 
-                 sge_u32c(geteuid()), MSG_SYSTEM_USER_HAS_TOO_MANY_GIDS);
+         snprintf(err_str, lstr, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS,
+                  sge_u32c(getuid()), sge_u32c(geteuid()),
+                  MSG_SYSTEM_USER_HAS_TOO_MANY_GIDS);
       }
       sge_free(&list);
       return -1;
@@ -1428,7 +1431,7 @@ bool sge_is_user_superuser(const char *name)
    plus_sign = strstr(buffer, "+");
    if (plus_sign!=NULL) {
       plus_sign++;
-      strcpy(buffer, plus_sign);
+      sge_strlcpy(buffer, plus_sign, sizeof(buffer));
    }
    if ((strncmp(name, buffer, 1000) == 0) || (strcmp(name, "root") == 0)) {
       ret = true;
@@ -1749,7 +1752,7 @@ sge_get_file_passwd(void)
       const char *sge_root = sge_get_root_dir(0, NULL, 0, 1);
       const char *sge_cell = sge_get_default_cell();
 
-      sprintf(file, "%s/%s/common/sgepasswd", sge_root, sge_cell);
+      snprintf(file, sizeof(file), "%s/%s/common/sgepasswd", sge_root, sge_cell);
    }
    DEXIT;
    return file;
@@ -2021,8 +2024,8 @@ int uidgid_read_passwd(const char *user, char **pass, char *err_str)
    passwd_file = sge_get_file_passwd();
    ret = password_read_file(&users, &encrypted_pwd, passwd_file);
    if(ret != 0) {
-      sprintf(err_str, MSG_SYSTEM_READ_SGEPASSWD_SSI, passwd_file,
-              strerror(errno)?strerror(errno):"<NULL>", errno);
+      snprintf(err_str, lstr, MSG_SYSTEM_READ_SGEPASSWD_SSI,
+               passwd_file, strerror(errno)?strerror(errno):"<NULL>", errno);
       ret = 1;
    } else {
       /*
@@ -2030,7 +2033,7 @@ int uidgid_read_passwd(const char *user, char **pass, char *err_str)
        */
       i = password_find_entry(users, encrypted_pwd, user);
       if(i == -1) {
-         sprintf(err_str, MSG_SYSTEM_NO_PASSWD_ENTRY_SS, user, passwd_file);
+         snprintf(err_str, lstr, MSG_SYSTEM_NO_PASSWD_ENTRY_SS, user, passwd_file);
          ret = 2;
       } else {
 #if defined(SECURE)
@@ -2091,10 +2094,11 @@ copygrp(struct group *tgrp, struct group *grp, char *buffer, size_t bufsize)
    }
 
    grp->gr_mem[i] = buffer+tlen;
-   strcpy(grp->gr_name, tgrp->gr_name);
+   /* bufsize checked above */
+   strcpy(grp->gr_name, tgrp->gr_name); /* RATS: ignore */
    grp->gr_gid = tgrp->gr_gid;
    for (i = 0; tgrp->gr_mem[i] != NULL; i++) {
-      strcpy(grp->gr_mem[i], tgrp->gr_mem[i]);
+      strcpy(grp->gr_mem[i], tgrp->gr_mem[i]); /* RATS: ignore */
    }
    grp->gr_mem[i] = NULL;
 
@@ -2116,13 +2120,14 @@ copypwd(struct passwd *tpwd, struct passwd *pwd, char *buffer, size_t bufsize)
       return ERANGE;
    }
 
-   strcpy(pwd->pw_name, tpwd->pw_name);
-   strcpy(pwd->pw_passwd, tpwd->pw_passwd);
+   /* strcopys safe because of bufsize check */
+   strcpy(pwd->pw_name, tpwd->pw_name);     /* RATS: ignore */
+   strcpy(pwd->pw_passwd, tpwd->pw_passwd); /* RATS: ignore */
    pwd->pw_uid= tpwd->pw_uid;
    pwd->pw_gid = tpwd->pw_gid;
-   strcpy(pwd->pw_gecos, tpwd->pw_gecos);
-   strcpy(pwd->pw_dir, tpwd->pw_dir);
-   strcpy(pwd->pw_shell, tpwd->pw_shell);
+   strcpy(pwd->pw_gecos, tpwd->pw_gecos); /* RATS: ignore */
+   strcpy(pwd->pw_dir, tpwd->pw_dir); /* RATS: ignore */
+   strcpy(pwd->pw_shell, tpwd->pw_shell); /* RATS: ignore */
 
    return 0;
 }
