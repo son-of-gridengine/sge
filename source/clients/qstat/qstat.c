@@ -1980,7 +1980,7 @@ qstat_show_job(sge_gdi_ctx_class_t *ctx, lList *jid_list, u_long32 isXML, qstat_
       }
    }
    what = lWhat("%T(%I%I%I%I%I%I%I%I%I%I%I%I%I%I%I->%T%I%I%I%I%I%I->%T%I%I%I%I->%T(%I%I%I%I%I%I)"
-            "%I%I%I%I->%T(%I)%I->%T(%I)%I%I%I%I%I%I%I%I%I%I%I%I%I%I%I->%T%I%I%I%I%I%I%I%I%I%I)",
+            "%I%I%I%I%I%I%I->%T(%I)%I%I->%T(%I)%I%I%I%I%I%I%I%I%I%I%I%I%I%I%I->%T%I%I%I%I%I%I%I%I%I%I)",
             JB_Type, JB_job_number, JB_ar, JB_exec_file, JB_submission_time, 
             JB_owner, JB_uid, JB_group, JB_gid, JB_account, JB_merge_stderr, 
             JB_mail_list, JB_project, JB_notify, JB_job_name, 
@@ -1994,11 +1994,14 @@ qstat_show_job(sge_gdi_ctx_class_t *ctx, lList *jid_list, u_long32 isXML, qstat_
             JAT_Type, JAT_status, JAT_task_number, JAT_scaled_usage_list,
             JAT_task_list, JAT_message_list, JAT_start_time,
             /**/
-            JB_context, JB_cwd, JB_stderr_path_list, JB_jid_predecessor_list, 
+            JB_context, JB_cwd, JB_stderr_path_list, JB_jid_predecessor_list,
+            JB_ja_ad_predecessor_list, JB_jid_request_list,
+            JB_ja_ad_request_list,
             /**/
             JRE_Type, JRE_job_number, 
             /**/
             JB_jid_successor_list,
+            JB_ja_ad_successor_list,
             /**/
             JRE_Type, JRE_job_number, 
             /**/
