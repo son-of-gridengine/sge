@@ -1758,6 +1758,7 @@ void job_initialize_env(lListElem *job, lList **answer_list,
       }
    }
    {
+     /* fixme: shouldn't come from environment; LOGNAME also maybe shouldn't */
       const char* host = sge_getenv("HOST"); /* ??? */
 
       if (host == NULL) {
@@ -3218,8 +3219,11 @@ job_verify_submitted_job(const lListElem *job, lList **answer_list)
    }
 
    /* TODO: JB_jid_request_list */
-   /* TODO: JB_jid_predecessor_l */
-   /* TODO: JB_jid_sucessor_list */
+   /* TODO: JB_jid_predecessor_list */
+   /* TODO: JB_jid_sucessor_list
+      JB_ja_ad_request_list
+      JB_ja_ad_predecessor_list
+      JB_ja_ad_successor_list */
 
    /* JB_session must be a valid string */
    if (ret) {
@@ -3275,7 +3279,7 @@ job_verify_submitted_job(const lListElem *job, lList **answer_list)
       } 
    }
    
-   /* JB_script_ptr must be any string */
+   /* JB_script_ptr can be any string */
    if (ret) {
       const char *name = lGetString(job, JB_script_ptr);
       if (name == NULL) {
@@ -3388,13 +3392,13 @@ job_verify_submitted_job(const lListElem *job, lList **answer_list)
    /* TODO: JB_mail_options */
    /* JB_mail_list any ulong */
 
-   /* JB_pe must be a valid string */
+   /* JB_pe must be a valid wildcard string */
    if (ret) {
       const char *name = lGetString(job,JB_pe );
       if (name != NULL) {
-         if (verify_str_key(
-               answer_list, name, MAX_VERIFY_STRING,
-               lNm2Str(JB_pe), KEY_TABLE) != STATUS_OK) {
+         if (verify_str_key(answer_list, name, MAX_VERIFY_STRING,
+                            lNm2Str(JB_pe), WC_TABLE)
+             != STATUS_OK) {
             ret = false;
          }
       }

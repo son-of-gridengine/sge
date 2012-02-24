@@ -47,13 +47,15 @@ int main(int argc, char *argv[])
    int i=0, ret=0;
 
    static const char* denied[] = {
-      "forbiddencharacterwithing@thestring",
+      "forbiddencharacterwithin@thestring",
       ".forbiddencharacteratthebeginning",
       "TEMPLATE",
       "ALL",
       "NONE",
       "thisisawordwithmorethanfivehundredandtwelvecharactersitishardtowritesomethinglongbecauseidontknwowhatishouldwritesoidecidedtowritedownashortstoryaboutanythingwhichisnotrealonceuponatimetherewasalittlesoftwareprogrammerhewasinsanebecausehehastofindwordswhicharelongerthanfivehunderdandtwelvecharactersandhefoundithardtowritesuchlongwordsbuthediditandhedecidedtowritedownashortstoryaboutalittleprogrammerasoftwareprogrammerwhohastowritetestsfortestingfunctionwhichteststehlengthofstringsandaftmanymanymanycharactershesolvedtheproblem",
       "bla%sfoo",
+      "has space?",
+      "non-ascii \0377",
       NULL
    };
 
@@ -64,6 +66,10 @@ int main(int argc, char *argv[])
       "boutanythingwhichisnotrealonceuponatimetherewasalittlesoftwareprogrammerhewasinsanebecausehehastofindwordswhicharelongerthanfivehunderdandtwelvecharactersandhefoundithardtowritesuchlongwordsbuthediditandhedecidedtowritedownashortstoryaboutalittleprogrammerasoftwareprogrammerwhohastowritetestsfortestingfunctionwhichteststehlengthofstringsandaftmanymanymanycharactershesolvedtheproblem",
       NULL
    };
+
+   static const char* wcdenied[] = {".bogus", "{}", NULL};
+
+   static const char* wcallowed[] = {"wc_*[]?", NULL};
 
    for (i=0; denied[i] != NULL; i++) {
       if (verify_str_key(
@@ -77,6 +83,22 @@ int main(int argc, char *argv[])
       if (verify_str_key(
             &answer_list, allowed[i], MAX_VERIFY_STRING, "test", KEY_TABLE) != STATUS_OK) {
          printf("%s should be allowed\n",  allowed[i]);
+         ret++;
+      }
+   }
+
+   for (i=0; wcdenied[i] != NULL; i++) {
+      if (verify_str_key(
+            &answer_list, wcdenied[i], MAX_VERIFY_STRING, "test", WC_TABLE) == STATUS_OK) {
+         printf("%s should be forbidden\n",  wcdenied[i]);
+         ret++;
+      }
+   }
+
+   for (i=0; wcallowed[i] != NULL; i++) {
+      if (verify_str_key(
+            &answer_list, wcallowed[i], MAX_VERIFY_STRING, "test", WC_TABLE) != STATUS_OK) {
+         printf("%s should be allowed\n",  wcallowed[i]);
          ret++;
       }
    }
