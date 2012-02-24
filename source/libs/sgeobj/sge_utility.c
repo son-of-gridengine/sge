@@ -51,7 +51,8 @@
 #include "msg_common.h"
 #include "msg_qmaster.h"
 
-
+/* 7-bit character test, equivalent to isascii, if that was portable.  */
+#define	asciichar(c) (((c) & ~0x7f) == 0)
 
 /****** sge_utility/verify_str_key() *******************************************
 *  NAME
@@ -98,7 +99,7 @@
 *     const char *str   - string to be verified
 *     size_t str_length - length of the string to be verified
 *     const char *name  - verbal description of the object
-*     int table         - verification table to be used
+*     unsigned table    - verification table to be used
 *
 *  RESULT
 *     an_status_t - STATUS_OK upon success
@@ -110,18 +111,23 @@
 *     There is a module test (test_sge_utility) for verify_str_key().
 *******************************************************************************/
 an_status_t verify_str_key(
-   lList **alpp, const char *str, size_t str_length, const char *name, int table) 
+   lList **alpp, const char *str, size_t str_length, const char *name, unsigned table) 
 {
-   static const char *begin_strings[2][3];
-   static const char *mid_strings[2][20];
+   static const char *begin_strings[3][3];
+   static const char *mid_strings[3][20];
 
-   static char begin_chars[2][3] =
+   static char begin_chars[3][3] =
       { { '.', '#', 0 },
-        { 0, 0, 0 } };
+        { 0, 0, 0 },
+        { '.', '#', 0 } };
 
-   static const char mid_characters[2][20] =
-      { { '\n', '\t', '\r', ' ', '/', ':', '\'', '\"', '\\', '[', ']', '{', '}', '|', '(', ')', '@', '%', ',', 0},  /* KEY_TABLE  */
-        { '\n', '\t', '\r', '/', ':', '@', '\\', '*', '?', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} };                      /* QSUB_TABLE */
+   static const char mid_characters[3][20] =
+      { { '\n', '\t', '\r', ' ', '/', ':', '\'', '\"', '\\', '[', ']',
+          '{', '}', '|', '(', ')', '@', '%', ',', 0},  /* KEY_TABLE  */
+        { '\n', '\t', '\r', '/', ':', '@', '\\', '*', '?', 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0}, /* QSUB_TABLE */
+        { '\n', '\t', '\r', ' ', '/', ':', '\'', '\"', '\\', '{', '}',
+          '|', '(', ')', '@', '%', ',', 0, 0, 0}}; /* WC_TABLE */
    static const char* keyword[] = { "NONE", "ALL", "TEMPLATE", NULL };
    static const char* keyword_strings[4];
 
@@ -129,6 +135,9 @@ an_status_t verify_str_key(
    char forbidden_char;
    const char* forbidden_string;
    int i;
+
+   /* Presumably the programming error will be obvious.  */
+   if (table > WC_TABLE) return STATUS_EUNKNOWN;
 
    table = table -1;
    if (!initialized) {
@@ -138,7 +147,11 @@ an_status_t verify_str_key(
       begin_strings[1][0] = NULL;
       begin_strings[1][1] = NULL;
       begin_strings[1][2] = NULL;
+      begin_strings[2][0] = MSG_GDI_KEYSTR_DOT;
+      begin_strings[2][1] = MSG_GDI_KEYSTR_HASH;
+      begin_strings[2][2] = NULL;
 
+      /* The ones describing printing characters are never used.  */
       mid_strings[0][0] = MSG_GDI_KEYSTR_RETURN;
       mid_strings[0][1] = MSG_GDI_KEYSTR_TABULATOR;
       mid_strings[0][2] = MSG_GDI_KEYSTR_CARRIAGERET;
@@ -169,6 +182,26 @@ an_status_t verify_str_key(
       mid_strings[1][7] = MSG_GDI_KEYSTR_ASTERISK;
       mid_strings[1][8] = MSG_GDI_KEYSTR_QUESTIONMARK;
       mid_strings[1][9] = NULL;
+      mid_strings[2][0] = MSG_GDI_KEYSTR_RETURN;
+      mid_strings[2][1] = MSG_GDI_KEYSTR_TABULATOR;
+      mid_strings[2][2] = MSG_GDI_KEYSTR_CARRIAGERET;
+      mid_strings[2][3] = MSG_GDI_KEYSTR_SPACE;
+      mid_strings[2][4] = MSG_GDI_KEYSTR_SLASH;
+      mid_strings[2][5] = MSG_GDI_KEYSTR_COLON;
+      mid_strings[2][6] = MSG_GDI_KEYSTR_QUOTE;
+      mid_strings[2][7] = MSG_GDI_KEYSTR_DBLQUOTE;
+      mid_strings[2][8] = MSG_GDI_KEYSTR_BACKSLASH;
+      mid_strings[2][9] = MSG_GDI_KEYSTR_BRACKETS;
+      mid_strings[2][10] = MSG_GDI_KEYSTR_BRACKETS;
+      mid_strings[2][11] = MSG_GDI_KEYSTR_BRACES;
+      mid_strings[2][12] = MSG_GDI_KEYSTR_BRACES;
+      mid_strings[2][13] = MSG_GDI_KEYSTR_PIPE;
+      mid_strings[2][14] = MSG_GDI_KEYSTR_PARENTHESIS;
+      mid_strings[2][15] = MSG_GDI_KEYSTR_PARENTHESIS;
+      mid_strings[2][16] = MSG_GDI_KEYSTR_AT;
+      mid_strings[2][17] = MSG_GDI_KEYSTR_PERCENT;
+      mid_strings[2][18] = MSG_GDI_KEYSTR_COMMA;
+      mid_strings[2][19] = NULL;
 
       keyword_strings[0] = MSG_GDI_KEYSTR_KEYWORD;
       keyword_strings[1] = MSG_GDI_KEYSTR_KEYWORD;
@@ -219,6 +252,18 @@ an_status_t verify_str_key(
                            mid_strings[table][i]));
          }
          answer_list_add(alpp, SGE_EVENT, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR);
+         return STATUS_EUNKNOWN;
+      }
+   }
+
+   /* Check for non-ASCII/non-graphic after more specific tests above
+      for non-printing ones.  */
+   for (i=0; i<strlen(str); ++i) {
+      if (!(isgraph(str[i]) && asciichar(str[i]))) {
+         char mesg[128];
+         snprintf (mesg, sizeof(mesg), "Non-graphic character (hex %x)", str[i]);
+         SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_GDI_KEYSTR_MIDCHAR_S, 
+                                mid_strings[table][i]));
          return STATUS_EUNKNOWN;
       }
    }
