@@ -140,7 +140,7 @@
 #define MSG_GDI_KEYSTR_DOT             _MESSAGE(33087, _("Dot"))
 #define MSG_GDI_KEYSTR_HASH            _MESSAGE(33088, _("Hash"))
 #define MSG_GDI_KEYSTR_RETURN          _MESSAGE(33089, _("Return"))
-#define MSG_GDI_KEYSTR_TABULATOR       _MESSAGE(33090, _("Tabulator"))
+#define MSG_GDI_KEYSTR_TABULATOR       _MESSAGE(33090, _("Tab"))
 #define MSG_GDI_KEYSTR_CARRIAGERET     _MESSAGE(33091, _("Carriage return"))
 #define MSG_GDI_KEYSTR_SPACE           _MESSAGE(33092, _("Space"))
 #define MSG_GDI_KEYSTR_SLASH           _MESSAGE(33093, _("Slash"))

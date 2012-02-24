@@ -5,8 +5,6 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: sge_types.1,v $     Last Update: $Date: 2011-06-22 13:19:12 $     Revision: $Revision: 1.25 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -30,7 +28,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH xxQS_NAME_Sxx_TYPES 1 "$Date: 2011-06-22 13:19:12 $" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH xxQS_NAME_Sxx_TYPES 1 2011-06-22 "xxRELxx" "xxQS_NAMExx User Commands"
 .\"
 .SH NAME
 sge_types - xxQS_NAMExx type descriptions 
@@ -494,11 +492,11 @@ appropriate resources, as available. The
 manual page contains information about the definition of PEs
 and about how to obtain a list of currently valid PEs.
 .PP
-You can specify a PE name which uses the wildcard character, "*".  Thus
-the request "pvm*" will match any parallel environment with a name
-starting with the string "pvm". In the case of multiple parallel environments
-whose names match the name string, the parallel environment with the most
-available slots is chosen.
+You can specify a PE name which uses wildcards.  Thus the request
+"mpi*" will match any parallel environment with a name starting with
+the string "mpi". In the case of multiple parallel environments whose
+names match a name string, when it is required to select one the one
+with the most available slots is chosen.
 .PP
 The range specification is a list of range expressions of the
 form "n-m", where n and m are positive, non-zero integers.  The form "n" is
