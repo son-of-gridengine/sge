@@ -89,7 +89,7 @@ init_framework(sge_gdi_ctx_class_t *ctx, bdb_info *info)
    DENTER(TOP_LAYER, "init_framework");
 
 #ifdef HP1164   
-   sge_set_admin_username("none", NULL);
+   sge_set_admin_username("none", NULL, 0);
 #endif
 
    /* create spooling context */

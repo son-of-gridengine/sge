@@ -401,7 +401,8 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
 
                uid = geteuid();
                seteuid(SGE_SUPERUSER_UID);
-               res = uidgid_read_passwd(target_user, &pass, err_str);
+               res = uidgid_read_passwd(target_user, &pass, err_str,
+                                        sizeof(err_str));
                seteuid(uid);
 
                if(res == 0) {
@@ -464,7 +465,8 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
        * kill subprocesses.
        */
       ret = sge_set_uid_gid_addgrp(target_user, intermediate_user,
-               0, 0, 0, err_str, use_qsub_gid, gid, skip_silently);
+                                   0, 0, 0, err_str, sizeof(err_str),
+                                   use_qsub_gid, gid, skip_silently);
    } else { /* if (!is_qlogin_starter || g_new_interactive_job_support == true) */
       /*
        * In not-interactive jobs and in the new IJS we must set the 
@@ -472,7 +474,8 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
        * do this for us.
        */
       ret = sge_set_uid_gid_addgrp(target_user, intermediate_user,
-               min_gid, min_uid, add_grp_id, err_str, use_qsub_gid, gid, skip_silently);
+                                   min_gid, min_uid, add_grp_id, err_str,
+                                   sizeof(err_str), use_qsub_gid, gid, skip_silently);
    }
 
    if (ret < 0) {
@@ -884,10 +887,12 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
    if (intermediate_user) {
       if (is_qlogin_starter) {
          ret = sge_set_uid_gid_addgrp(target_user, NULL, 0, 0, 0, 
-                                      err_str, use_qsub_gid, gid, skip_silently);
+                                      err_str, sizeof(err_str),
+                                      use_qsub_gid, gid, skip_silently);
       } else {
          ret = sge_set_uid_gid_addgrp(target_user, NULL, min_gid, min_uid, 
-                                      add_grp_id, err_str, use_qsub_gid, gid, skip_silently);
+                                      add_grp_id, err_str, sizeof(err_str),
+                                      use_qsub_gid, gid, skip_silently);
       }
       if (ret < 0) {
          shepherd_trace(err_str);
