@@ -43,7 +43,7 @@ buffer_encrypt(const char *buffer_in, size_t buffer_in_length,
 int 
 buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
                char **buffer_out, size_t *buffer_out_size,
-               size_t *buffer_out_length, char *err_str);
+               size_t *buffer_out_length, char *err_str, size_t lstr);
 
 int
 password_find_entry(char *users[], char *encryped_pwds[], const char *user);

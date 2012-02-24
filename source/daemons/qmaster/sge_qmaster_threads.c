@@ -253,7 +253,7 @@ void sge_become_admin_user(const char *admin_user)
 
    DENTER(TOP_LAYER, "sge_become_admin_user");
 
-   if (sge_set_admin_username(admin_user, str) == -1) {
+   if (sge_set_admin_username(admin_user, str, sizeof(str)) == -1) {
       CRITICAL((SGE_EVENT, SFNMAX, str));
       SGE_EXIT(NULL, 1);
    }

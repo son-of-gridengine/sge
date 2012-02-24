@@ -89,7 +89,7 @@ void sge_setup_sge_execd(sge_gdi_ctx_class_t *ctx)
    /*
    ** switch to admin user
    */
-   if (sge_set_admin_username(admin_user, err_str)) {
+   if (sge_set_admin_username(admin_user, err_str, sizeof(err_str))) {
       CRITICAL((SGE_EVENT, SFNMAX, err_str));
       /* TODO: remove */
       SGE_EXIT(NULL, 1);

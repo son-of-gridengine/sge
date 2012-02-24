@@ -186,7 +186,7 @@ bool sge_is_start_user_superuser(void)
 *     sge_set_admin_username() -- Set SGE/EE admin user
 *
 *  SYNOPSIS
-*     int sge_set_admin_username(const char *user, char *err_str)
+*     int sge_set_admin_username(const char *user, char *err_str, size_t lstr)
 *
 *  FUNCTION
 *     Set SGE/EE admin user. If 'user' is "none" then use the current
@@ -195,6 +195,7 @@ bool sge_is_start_user_superuser(void)
 *  INPUTS
 *     const char *user - admin user name
 *     char *err_str    - error message
+*     size_t lstr      - size of err_str
 *
 *  RESULT
 *     int - error state
@@ -211,7 +212,7 @@ bool sge_is_start_user_superuser(void)
 *     uti/uidgid/sge_switch2start_user()
 *     uti/uidgid/sge_run_as_user()
 ******************************************************************************/
-int sge_set_admin_username(const char *user, char *err_str)
+int sge_set_admin_username(const char *user, char *err_str, size_t lstr)
 {
    struct passwd *admin;
    int ret;
@@ -973,12 +974,14 @@ int get_group_buffer_size(void)
 *         4 - switch to user failed, likely wrong password for this user
 ******************************************************************************/
 static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_user,
-                            int min_gid, int min_uid, int add_grp, char *err_str,
+                            int min_gid, int min_uid, int add_grp,
+                            char *err_str, size_t lstr,
                             int use_qsub_gid, gid_t qsub_gid,
                             char *buffer, int size, bool skip_silently);
 
 int sge_set_uid_gid_addgrp(const char *user, const char *intermediate_user,
-                           int min_gid, int min_uid, int add_grp, char *err_str,
+                           int min_gid, int min_uid, int add_grp,
+                           char *err_str, size_t lstr,
                            int use_qsub_gid, gid_t qsub_gid, bool skip_silently)
 {
    int ret;
@@ -989,7 +992,7 @@ int sge_set_uid_gid_addgrp(const char *user, const char *intermediate_user,
    buffer = sge_malloc(size);
 
    ret = _sge_set_uid_gid_addgrp(user, intermediate_user, min_gid, min_uid, add_grp, 
-                                 err_str, use_qsub_gid, qsub_gid,
+                                 err_str, lstr, use_qsub_gid, qsub_gid,
                                  buffer, size, skip_silently);
 
    sge_free(&buffer);
@@ -997,7 +1000,8 @@ int sge_set_uid_gid_addgrp(const char *user, const char *intermediate_user,
 }
 
 static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_user,
-                            int min_gid, int min_uid, int add_grp, char *err_str,
+                            int min_gid, int min_uid, int add_grp,
+                            char *err_str, size_t lstr,
                             int use_qsub_gid, gid_t qsub_gid,
                             char *buffer, int size, bool skip_silently)
 {
@@ -1097,7 +1101,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
 #if defined(SOLARIS) || defined(ALPHA) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
    /* add Additional group id to current list of groups */
    if (add_grp) {
-      if (sge_add_group(add_grp, err_str, skip_silently) == -1) {
+      if (sge_add_group(add_grp, err_str, lstr, skip_silently) == -1) {
          return 5;
       }
    }
@@ -1123,7 +1127,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
          int  res;
 
          err_str[0] = '\0';
-         res = uidgid_read_passwd(pw->pw_name, &pass, err_str);
+         res = uidgid_read_passwd(pw->pw_name, &pass, err_str, lstr);
 
          if(res != 0) {
             /* map uidgid_read_passwd() return value to
@@ -1192,6 +1196,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
 *     char *err_str      - if points to a valid string buffer
 *                          error descriptions 
 *                          will be written here
+*     size_t lstr        - size of err_str
 *     bool skip_silently - skip silently if setting the group is skipped
 *                          because this would exceed the NGROUPS_MAX limit.
 *
@@ -1203,7 +1208,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
 *         0 - Success
 *        -1 - Error
 ******************************************************************************/
-int sge_add_group(gid_t add_grp_id, char *err_str, bool skip_silently)
+int sge_add_group(gid_t add_grp_id, char *err_str, size_t lstr, bool skip_silently)
 {
    u_long32 max_groups;
    gid_t *list;
@@ -2004,7 +2009,7 @@ password_find_entry(char *users[], char *encryped_pwds[], const char *user)
 #if defined(INTERIX)
 /* Not MT-Safe */
 /* Read password for user from sgepasswd file, decrypt password */
-int uidgid_read_passwd(const char *user, char **pass, char *err_str)
+int uidgid_read_passwd(const char *user, char **pass, char *err_str, size_t lstr)
 {
    int  i;
    int  ret = 1;
@@ -2041,7 +2046,7 @@ int uidgid_read_passwd(const char *user, char **pass, char *err_str)
          buffer_decode_hex((unsigned char*)encrypted_pwd[i],
                             &buffer_deco_length, &buffer_deco);
          ret = buffer_decrypt((const char*)buffer_deco, buffer_deco_length,
-                   &buffer_decr, &buffer_decr_size, &buffer_decr_length, err_str);
+                              &buffer_decr, &buffer_decr_size, &buffer_decr_length, err_str, lstr);
 #else
          ret = 1;
 #endif

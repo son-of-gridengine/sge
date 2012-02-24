@@ -284,7 +284,7 @@ char shadow_err_file[SGE_PATH_MAX];
       SGE_EXIT((void**)&ctx, 1);
    }
 
-   if (sge_set_admin_username(ctx->get_admin_user(ctx), err_str)) {
+   if (sge_set_admin_username(ctx->get_admin_user(ctx), err_str, sizeof(err_str))) {
       CRITICAL((SGE_EVENT, SFNMAX, err_str));
       SGE_EXIT((void**)&ctx, 1);
    }

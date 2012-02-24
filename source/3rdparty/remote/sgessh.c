@@ -36,7 +36,7 @@ int sgessh_readconfig(void)
 
   read_config("config");
 
-  if (sge_set_admin_username(get_conf_val("admin_user"), err_str))
+  if (sge_set_admin_username(get_conf_val("admin_user"), err_str, sizeof(err_str)))
   {
     perror(err_str);
     exit(1);
@@ -92,7 +92,7 @@ int sgessh_do_setusercontext(struct passwd *pwd)
       if (tmp_str != NULL && strcmp(tmp_str, "yes") == 0) {
          skip_silently = true;
       }
-      if (sge_add_group(add_grp_id, err_str, skip_silently) == -1) {
+      if (sge_add_group(add_grp_id, err_str, sizeof(err_str), skip_silently) == -1) {
          perror(err_str);
       }
    }

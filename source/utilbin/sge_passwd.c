@@ -30,7 +30,6 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#include <unistd.h>
 #include <stdio.h>
 #include <pwd.h>
 
@@ -628,7 +627,7 @@ buffer_encrypt(const char *buffer_in, size_t buffer_in_length,
 int
 buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
                char **buffer_out, size_t *buffer_out_size,
-               size_t *buffer_out_length, char *err_str)
+               size_t *buffer_out_length, char *err_str, size_t lstr)
 
 {
    char buf[520];
@@ -1020,12 +1019,13 @@ sge_passwd_show(const char *username)
          size_t buffer_decr_size = 0;
          size_t buffer_decr_length = 0;
          int err64 = 0;
+         char err_str[1];
 
          buffer_deco_length = strlen(encryped_pwd[i]);
          buffer_decode_base64(encryped_pwd[i], &buffer_deco_length, 0, 
                               &err64, &buffer_deco);
-         if(buffer_decrypt(buffer_deco, buffer_deco_length, &buffer_decr, 
-                        &buffer_decr_size, &buffer_decr_length)!=0) {
+         if (buffer_decrypt(buffer_deco, buffer_deco_length, &buffer_decr,
+                            &buffer_decr_size, &buffer_decr_length, err_str, 1)) {
             exit(1);
          }
 
@@ -1111,9 +1111,9 @@ sge_passwd_add_change(const char *username, const char *domain, uid_t uid)
                            &buffer_deco_length, &buffer_deco);
 #endif
 
-         if(buffer_decrypt((const char*)buffer_deco, buffer_deco_length, 
-                        &buffer_decr, 
-                        &buffer_decr_size, &buffer_decr_length, err_str)!=0) {
+         if (buffer_decrypt((const char*)buffer_deco, buffer_deco_length,
+                            &buffer_decr, &buffer_decr_size,
+                            &buffer_decr_length, err_str, sizeof(err_str))!=0) {
             exit(1);
          }
          if (strncmp(buffer_decr, old_passwd, 128)) {
@@ -1209,7 +1209,7 @@ passwd_become_admin_user(const char *admin_user)
 
    DENTER(TOP_LAYER, "passwd_become_admin_user");
 
-   if (sge_set_admin_username(admin_user, str) == -1) {
+   if (sge_set_admin_username(admin_user, str, sizeof(str)) == -1) {
       fprintf(stderr, SFN": "SFN"\n", SGE_PASSWD_PROG_NAME, str);
       fprintf(stderr, "\n");
       exit(1);
