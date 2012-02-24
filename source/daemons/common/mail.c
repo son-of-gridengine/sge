@@ -219,7 +219,8 @@ const char *buf
         char *user = parse_script_params((char **)&mailer);
         if (user != NULL) {
            char err_str[256];
-           sge_set_uid_gid_addgrp(user, NULL, 0, 0, 0, err_str, 0, 0, false);
+           sge_set_uid_gid_addgrp(user, NULL, 0, 0, 0, err_str,
+                                  sizeof(err_str), 0, 0, false);
         }
       }
 
