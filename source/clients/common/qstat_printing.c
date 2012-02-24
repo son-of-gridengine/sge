@@ -186,6 +186,7 @@ int indent
 /*-------------------------------------------------------------------------*/
 /* print jobs per queue                                                    */
 /*-------------------------------------------------------------------------*/
+/* actually just called by qhost */
 int sge_print_jobs_queue(
 lListElem *qep,
 lList *job_list,
