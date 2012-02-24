@@ -65,7 +65,7 @@ bool sge_is_start_user_superuser(void);
 int password_read_file(char **users[], char **encryped_pwds[], const char *filename);
 const char* sge_get_file_passwd(void);
 
-int  sge_set_admin_username(const char *username, char *err_str);
+int  sge_set_admin_username(const char *username, char *err_str, size_t lstr);
 bool sge_is_admin_user(const char *username);
 const char *get_admin_user_name(void); 
 int sge_switch2admin_user(void);
@@ -77,10 +77,11 @@ int sge_group2gid(const char *gname, gid_t *gidp, int retries);
 int sge_uid2user(uid_t uid, char *dst, size_t sz, int retries); 
 int sge_gid2group(gid_t gid, char *dst, size_t sz, int retries);
 int _sge_gid2group(gid_t gid, gid_t *last_gid, char **grpnamep, int retries);
-int sge_add_group(gid_t newgid, char *err_str, bool skip_silently); 
+int sge_add_group(gid_t newgid, char *err_str, size_t lstr, bool skip_silently); 
 int sge_set_uid_gid_addgrp(const char *user, const char *intermediate_user,
                            int min_gid, int min_uid, int add_grp, 
-                           char *err_str, int use_qsub_gid, gid_t qsub_gid, bool skip_silently);
+                           char *err_str, size_t lstr, int use_qsub_gid,
+                           gid_t qsub_gid, bool skip_silently);
 
 struct passwd *sge_getpwnam_r(const char *name, struct passwd *pw, 
                               char *buffer, size_t bufsize);
@@ -93,9 +94,7 @@ bool sge_is_user_superuser(const char *name);
 int get_group_buffer_size(void);
 int get_pw_buffer_size(void);
 
-#if defined(INTERIX)
-int uidgid_read_passwd(const char *user, char **pass, char *err_str);
-#endif
+int uidgid_read_passwd(const char *user, char **pass, char *err_str, size_t lstr);
 
 #ifdef SGE_THREADSAFE_UTIL
 

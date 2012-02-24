@@ -252,7 +252,7 @@ sge_qmaster_thread_init(sge_gdi_ctx_class_t **ctx_ref, u_long32 prog_id,
   
    if (switch_to_admin_user == true) {
       char str[MAX_STRING_SIZE];
-      if (sge_set_admin_username(admin_user, str) == -1) {
+      if (sge_set_admin_username(admin_user, str, sizeof(str)) == -1) {
          CRITICAL((SGE_EVENT, SFNMAX, str));
          SGE_EXIT((void**)ctx_ref, 1);
       }

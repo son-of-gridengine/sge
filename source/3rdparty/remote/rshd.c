@@ -226,9 +226,9 @@ doit(fromp)
 	char cmdbuf[NCARGS+1], locuser[16], remuser[16];
 	char remotehost[2 * MAXHOSTNAMELEN + 1];
 	char hostnamebuf[2 * MAXHOSTNAMELEN + 1];
-   /* char active_jobs_dir[SGE_PATH_MAX]; */
-   char *s_qsub_gid = NULL;
-   char err_str[2048];
+        /* char active_jobs_dir[SGE_PATH_MAX]; */
+        char *s_qsub_gid = NULL;
+        char err_str[2048];
 
 
 	(void) signal(SIGINT, SIG_DFL);
@@ -394,7 +394,8 @@ doit(fromp)
    */
    {
       read_config("config");
-      if(sge_set_admin_username(get_conf_val("admin_user"), err_str)) {
+      if(sge_set_admin_username(get_conf_val("admin_user"), err_str,
+                                sizeof(err_str))) {
          errorstr = err_str;
          goto fail;
       }   
@@ -567,8 +568,9 @@ fail:
       if (tmp_str != NULL && strcmp(tmp_str, "yes") == 0) {
          skip_silently = true;
       }
-      if (sge_add_group(add_grp_id, err_str, skip_silently) == -1) {
-		   error(err_str);
+      if (sge_add_group(add_grp_id, err_str, sizeof(err_str),
+                        skip_silently) == -1) {
+         error(err_str);
       }
    }
 #endif

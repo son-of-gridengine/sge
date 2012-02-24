@@ -760,7 +760,7 @@ int main(int argc, char **argv)
           geteuid() != SGE_SUPERUSER_UID) { 
           char name[128];
           if (!sge_uid2user(geteuid(), name, sizeof(name), MAX_NIS_RETRIES)) {
-             sge_set_admin_username(name, NULL);
+             sge_set_admin_username(name, NULL, 0);
              sge_switch2admin_user();
           }
       }
@@ -821,7 +821,7 @@ int main(int argc, char **argv)
 
    /* init admin user stuff */
    admin_user = get_conf_val("admin_user");
-   if (sge_set_admin_username(admin_user, err_str)) {
+   if (sge_set_admin_username(admin_user, err_str, sizeof(err_str))) {
       shepherd_error(1, err_str);
    }
 
@@ -2922,7 +2922,8 @@ static int start_async_command(const char *descr, char *cmd)
          skip_silently = true;
       }
       if (sge_set_uid_gid_addgrp(get_conf_val("job_owner"), NULL, 0, 0, 0, 
-                                 err_str, use_qsub_gid, gid, skip_silently) > 0) {
+                                 err_str, sizeof(err_str), use_qsub_gid,
+                                 gid, skip_silently) > 0) {
          shepherd_trace(err_str);
          exit(1);
       }   
