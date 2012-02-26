@@ -48,14 +48,13 @@
 
 #define ENABLE_CRL
 
-#ifdef LOAD_OPENSSL
-
 #include <dlfcn.h>
 
 #ifdef SOLARIS
 #include <link.h>
 #endif /* SOLARIS */
-#else /* LOAD_OPENSSL */
+#ifndef LOAD_OPENSSL
+#define LOAD_OPENSSL 0
 /*
  * Disable the warning "The variable ... is set but never used."
  * We set a lot of function pointers we don't use currently, but we want
@@ -337,9 +336,7 @@ static cl_com_ssl_global_t* cl_com_ssl_global_config_object = NULL;
 
 /* here we load the SSL functions via dlopen */
 static pthread_mutex_t cl_com_ssl_crypto_handle_mutex = PTHREAD_MUTEX_INITIALIZER;
-#ifdef LOAD_OPENSSL
 static void* cl_com_ssl_crypto_handle = NULL;
-#endif
 
 
 /* static function declarations */
@@ -894,8 +891,7 @@ static unsigned long cl_com_ssl_get_thread_id(void) {
 #endif
 #define __CL_FUNCTION__ "cl_com_ssl_destroy_symbol_table()"
 static int cl_com_ssl_destroy_symbol_table(void) {
-#ifdef LOAD_OPENSSL
-   {
+   if (LOAD_OPENSSL) {
       CL_LOG(CL_LOG_INFO,"shutting down ssl library symbol table ...");
       pthread_mutex_lock(&cl_com_ssl_crypto_handle_mutex);
 
@@ -1020,12 +1016,9 @@ static int cl_com_ssl_destroy_symbol_table(void) {
 
       CL_LOG(CL_LOG_INFO,"shuting down ssl library symbol table done");
       return CL_RETVAL_OK;
-   }
-#else
-   {
+   } else {
       return CL_RETVAL_OK;
    }
-#endif
 }
 
 #ifdef __CL_FUNCTION__
@@ -1034,8 +1027,7 @@ static int cl_com_ssl_destroy_symbol_table(void) {
 #define __CL_FUNCTION__ "cl_com_ssl_build_symbol_table()"
 static int cl_com_ssl_build_symbol_table(void) {
    
-#ifdef LOAD_OPENSSL
-   {
+   if (LOAD_OPENSSL) {
       char* func_name = NULL;
       int had_errors = 0;
 #if defined(FREEBSD) || defined(DARWIN)
@@ -1825,9 +1817,7 @@ static int cl_com_ssl_build_symbol_table(void) {
       CL_LOG(CL_LOG_INFO,"loading ssl library functions with dlopen() done");
 
       return CL_RETVAL_OK;
-   }
-#else
-   {
+   } else {
       CL_LOG(CL_LOG_INFO,"setting up ssl library function pointers ...");
       pthread_mutex_lock(&cl_com_ssl_crypto_handle_mutex);
 
@@ -1943,7 +1933,6 @@ static int cl_com_ssl_build_symbol_table(void) {
 
       return CL_RETVAL_OK;
    }
-#endif
 }
 
 

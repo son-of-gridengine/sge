@@ -959,7 +959,11 @@ if ($KRB == 1) then
       set KLIBS = "-lcrypto"
       breaksw
    default:
-      set CFLAGS = "-DLOAD_OPENSSL $CFLAGS"
+      if ($SYSTEM_LIBS == 1) then
+         set SECLIB = "-lssl -lcrypto"
+      else
+         set CFLAGS = "-DLOAD_OPENSSL $CFLAGS"
+      endif
       set KLIBS = ""
    endsw
 endif
@@ -971,8 +975,12 @@ if ($SEC == 1) then
       set SECLIB = "-lssl -lcrypto"
       breaksw
    default:
-      set CFLAGS = "-DLOAD_OPENSSL $CFLAGS"
-      set SECLIB = ""
+      if ($SYSTEM_LIBS == 1) then
+         set SECLIB = "-lssl -lcrypto"
+      else
+         set CFLAGS = "-DLOAD_OPENSSL $CFLAGS"
+         set SECLIB = ""
+      endif
    endsw
 endif
 

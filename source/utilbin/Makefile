@@ -243,7 +243,7 @@ testsuidroot.o: $(UTILBIN_DIR)/testsuidroot.c
 
 #---------------------------------------------------------------------
 work:	work.o version.o $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(WINGRIDLIB_DEP) $(UTILIB)   
-	$(CC) -o $@ $(LFLAGS) work.o version.o $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(UTILIB) $(WINGRIDLIB) $(DLLIB) $(SLIBS) $(LIBS)
+	$(CC) -o $@ $(LFLAGS) work.o version.o $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(UTILIB) $(WINGRIDLIB) $(SECLIB) $(DLLIB) $(SLIBS) $(LIBS)
 
 work.o:	$(UTILBIN_DIR)/work.c
 	$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/work.c
