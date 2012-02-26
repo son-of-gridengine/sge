@@ -26,7 +26,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH SGE_PASSWD 1 "2008-12-18" "xxRELxx" "xxQS_NAMExx User Commands"
+.TH SGE_PASSWD 1 "2012-02-17" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 sgepasswd \- Modify the xxQS_NAMExx password file of xxQS_NAMExx
 .\"
@@ -90,6 +90,20 @@ file.
 .\"
 .IP "\fB\-help\fP"
 Prints a listing of all options.
+.SH NOTE
+Prevent relevant jobs running before a password is changed both with
+.I sgepasswd
+and in the Windows domain.  Otherwise, if multiple jobs try to run on
+a Windows host as the user concerned, and are unable to access the
+right password, Windows' intrusion detection system may disable the
+account.
+.I sgepasswd
+and in the Windows domain.
+.\"
+.SH SECURITY
+This is a non-trivial program which needs to be setuid root, operating
+with various user-supplied input.  It shouldn't be installed setuid if
+it is not needed to support Windows hosts.
 .\"
 .SH "ENVIRONMENT VARIABLES"
 .\"
@@ -100,7 +114,7 @@ will use $SGE_ROOT/$SGE_CELL/common/sgeCA/certs/cert.pem.
 .\"
 .IP "\fBSGE_KEYFILE\fP" 1.5i
 If set, specifies the location of the private key file.
-Default is /var/lib/sgeCA/port${SGE_QMASTER_PORT}/${SGE_CELL}/private/key.pem.
+Default is /var/lib/sgeCA/port$SGE_QMASTER_PORT/$SGE_CELL/private/key.pem.
 .\"
 .IP "\fBSGE_RANDFILE\fP" 1.5i
 If set, specifies the location of the seed used to create encrypted

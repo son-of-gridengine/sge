@@ -34,7 +34,7 @@
 .TH SUBMIT 1 "2011-11-27" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qsub, qsh, qlogin, qrsh, qalter, qresub \- submit jobs to xxQS_NAMExx
-.\"
+.PP
 .SH SYNTAX
 .B qsub
 .RI [ options ]
@@ -99,13 +99,13 @@ submits an interactive X-windows session to xxQS_NAMExx. An
 .M xterm 1
 is brought up from the executing machine with the display directed either to
 the X-server indicated by the DISPLAY environment variable or as specified
-with the \fI\-display qsh\fP option. Interactive jobs are not spooled if no
+with the \fB\-display\fP \fIqsh\fP option. Interactive jobs are not spooled if no
 resource is
 available to execute them. They are either dispatched to a suitable machine
 for execution immediately or the user submitting the job is notified by
 .I qsh
 that appropriate resources to execute the job are not available.
-\fBxterm_args\fP are passed to the
+\fIxterm_args\fP are passed to the
 .M xterm 1
 executable.  Note, however, that the \fI\-e\fP and \fI\-ls\fP xterm options
 do not work with
@@ -118,30 +118,10 @@ in that it submits an interactive job
 to the queuing system. It does not open an
 .M xterm 1
 window on the
-X display, but uses the current terminal for user I/O. Usually,
-.I qlogin
-establishes a
-.M telnet 1
-connection with the remote host, using
-standard client- and server-side commands. These commands can
-be configured with the \fBqlogin_daemon\fP (server-side,
-xxQS_NAMExx
-.I telnetd
-if not set, otherwise something
-like /usr/sbin/in.telnetd) and \fBqlogin_command\fP (client-side,
-xxQS_NAMExx
-.I telnet
-if not set, otherwise
-something like /usr/bin/telnet) parameters in the global and
-local configuration settings of
-.M xxqs_name_sxx_conf 5 .
-The client side command is automatically
-parameterized with the remote host name and port number to which to
-connect, resulting in an invocation like
-.IP
-/usr/bin/telnet my_exec_host 2442
-.PP
-for example.
+X display, but uses the current terminal for user I/O.  It establishes a
+.M telnet 1 -like
+connection with the remote host, using the configured mechanisms described in
+.M remote_startup 5 .
 .I Qlogin
 is invoked exactly like
 .I qsh
@@ -155,40 +135,13 @@ is running under the root account.
 is similar to 
 .I qlogin
 in that it submits an interactive job to the queuing system. 
-It uses the current terminal for user I/O. 
-Usually,
-.I qrsh 
-establishes a 
-.M rsh 1
+It uses the current terminal for user I/O.  With a command, it establishes a
+.M rsh 1 -like
 connection with the remote host. If no command is given to \fIqrsh\fP, an 
-.M rlogin 1
+.M rlogin 1 -like
 session is established.
-The server-side commands used can be configured 
-with the \fBrsh_daemon\fP and \fBrlogin_daemon\fP
-parameters in the global and local configuration settings of 
-.M xxqs_name_sxx_conf 5 .
-An xxQS_NAMExx
-.I rshd
-or
-.I rlogind
-is used if the parameters are not set. If the parameters are set, they should be
-set to something like /usr/sbin/in.rshd or /usr/sbin/in.rlogind.
-On the client-side, the \fBrsh_command\fP and \fBrlogin_command\fP parameters
-can be set in the global and local configuration settings of 
-.M xxqs_name_sxx_conf 5 . 
-If they are not set, special xxQS_NAMExx
-.M rsh 1
-and
-.M rlogin 1
-binaries delivered with xxQS_NAMExx are used.
-Use the cluster configuration parameters to integrate mechanisms like
-.I ssh
-or the
-.M rsh 1
-and
-.M rlogin 1
-facilities supplied with the operating system.
-.PP
+It uses the configured mechanisms described in
+.M remote_startup 5 .
 .I Qrsh
 jobs can only run in INTERACTIVE queues unless the option \fB\-now no\fP is
 used (see below).
@@ -234,7 +187,14 @@ or more value.
 .PP
 Some submit options, such as the job script, cannot
 be changed with
-.I qalter .
+.IR qalter .
+If parameters are set with
+.IR qalter,
+the output from
+.B qstat \-j
+acquires an additional field,
+.BR version ,
+which is incremented each time.
 .PP
 If a server JSV is defined, modifications are forbidden unless they
 are explicitly allowed by the
@@ -370,14 +330,15 @@ allows changing this option even while the job executes.
 Available for \fIqsub\fP, \fIqalter\fP, \fIqrsh\fP, \fIqsh\fP, or \fIqlogin\fP
 only.
 .sp 1
-Assigns the submitted job to be a part of an existing Advance Reservation. 
+Assigns the submitted job to be a part of an existing Advance
+Reservation with id ar_id.
 The complete list of existing Advance Reservations can be obtained using the
 .M qrstat 1
 command.
 .sp 1
 Note that the
 \fB\-ar\fP
-option adds implicitly the \fB\-w e\fP option if not otherwise requested.
+option implicitly adds the \fB\-w e\fP option if not otherwise requested.
 .sp 1
 .I Qalter
 allows changing this option even while the job executes. The modified
@@ -395,9 +356,9 @@ Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
 \fIqalter\fP only.
 .sp 1
 Identifies the account to which the resource consumption of the job
-should be charged. The \fBaccount_string\fP should conform to the \fBname\fP
-definition in
-M sge_types 1 .
+should be charged. The \fBaccount_string\fP should conform to the
+\fBaccount_name\fP definition in
+.M sge_types 1 .
 In the absence of this parameter xxQS_NAMExx 
 will place the default account string "xxqs_name_sxx" in the accounting record
 of the job.
@@ -568,8 +529,7 @@ socket/core pair is already in use by a different job, the whole binding request
 will be ignored.
 .sp
 .\" Discussion following http://markmail.org/message/lffc44tyo25wbhk2
-Note that a binding like
-.BR "pe linear" ...
+Note that a binding like "\fBpe linear:\fP\fInumber\fP..."
 is only useful if the job has exclusive access to its multiple compute
 nodes, they all have the same topology, and the PE has a fixed
 allocation rule
@@ -1003,20 +963,13 @@ instances as parameter with the name \fBhold_jid_ad\fP.
 (See \fB\-jsv\fP option below or find more information concerning JSV in
 .M jsv 1 .)
 .\"
-.IP "\fB\-i [[hostname]:]file,...\fP"
+.IP "\fB\-i [[hostname]:]path,...\fP"
 Available for \fIqsub\fP, and \fIqalter\fP only.
 .sp 1
-Defines or redefines the file used for the standard input stream of
-the job. If the \fIfile\fP constitutes an absolute filename, the input-path
-attribute of the job is set to \fBpath\fP, including
-the \fBhostname\fP. If the path name is relative, xxQS_NAMExx
-expands \fBpath\fP either with the current working directory
-path (if the \fB\-cwd\fP switch (see above) is also
-specified) or with the home directory path. If 
-\fBhostname\fP is present, the standard input stream will be
-placed in the corresponding location only if the job runs on
-the specified host. If the path contains a ":" without a
-\fBhostname\fP, a leading ":" has to be specified.
+Defines or redefines the path used for the standard input stream of
+the job.  The
+\fBpath\fP is handled as described in the \fB\-e\fP option for
+the standard error stream.
 .sp 1
 By default /dev/null is the input stream for the job.
 .sp 1
@@ -1295,21 +1248,22 @@ Available for \fIqsub\fP, \fIqrsh\fP (with command) and
 \fIqalter\fP only.
 .sp 1
 This flag,
-when set causes xxQS_NAMExx to send "warning" signals
+when set, causes xxQS_NAMExx to send "warning" signals
 to a running job prior to sending the signals themselves. If
 a SIGSTOP is pending, the job will receive a SIGUSR1 several
 seconds before the SIGSTOP. If a SIGKILL is pending, the job
 will receive a SIGUSR2 several seconds before the SIGKILL.
-This option provides the running job, before receiving the SIGSTOP 
-or SIGKILL, a configured time interval to do e.g. cleanup operations.  
+This option provides the running job a configured time interval to do
+cleanup operations before receiving the SIGSTOP or SIGKILL.
 The amount of time delay is controlled by the \fBnotify\fP
 parameter in each queue configuration (see
 .M queue_conf 5 ).
-.sp 1
-Note that the Linux operating system "misused" the user signals SIGUSR1
-and SIGUSR2 in some early Posix thread implementations. You might not want
-to use the \fB\-notify\fP option if you are running multi-threaded applications
-in your jobs under Linux, particularly on 2.0 or earlier kernels.
+.\" Shouldn't be relevant now
+\" .sp 1
+\" Note that the Linux operating system "misused" the user signals SIGUSR1
+\" and SIGUSR2 in some early Posix thread implementations. You might not want
+\" to use the \fB\-notify\fP option if you are running multi-threaded applications
+\" in your jobs under Linux, particularly on 2.0 or earlier kernels.
 .sp 1
 .I Qalter
 allows changing this option even while the job executes.
@@ -1346,7 +1300,7 @@ Invalid job names will be denied at submit time.
 If the \fB\-N\fP option is not present, xxQS_NAMExx assigns
 the name of the job script to the job after 
 any directory pathname has been removed from the
-script-name. If the script is read from standard
+script name. If the script is read from standard
 input, the job name defaults to STDIN.
 .sp 1
 In the case of
@@ -1367,14 +1321,14 @@ allows changing this option even while the job executes.
 .sp 1
 The value specified with this option or the corresponding value specified in
 \fIqmon\fP will be passed to defined JSV instances as parameter with the name
-\fIN\fP. 
+\fBN\fP.
 (See \fB\-jsv\fP option above or find more information concerning JSV in
 .M jsv 1 .)
 .\"
 .IP "\fB\-noshell\fP"
 Available only for \fIqrsh\fP with a command line.
 .sp 1
-Do not start the command line given to \fIqrsh\fP in a user's login shell, i.e.
+Do not start the command line given to \fIqrsh\fP in the user's login shell, i.e.
 execute it without the wrapping shell.
 .sp 1
 This option can be used to speed up execution as some overhead, like the  
@@ -1474,7 +1428,7 @@ Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
 \fIqalter\fP only.
 .sp 1
 Parallel programming environment (PE) to instantiate. For more detail about PEs,
-please see the
+please see
 .M sge_types 1 .
 .sp 1
 .I Qalter
@@ -1502,9 +1456,11 @@ By default,
 .I qrsh without a command
 and
 .I qlogin
-starts the job in a pty, and
-.I qrsh or qsub with a command
-starts the job without a pty.
+start the job in a pty, and
+.I qrsh
+or
+.I qsub
+with a command starts the job without a pty.
 .sp 1
 This parameter is not available in the JSV context.
 (See \fB\-jsv\fP option above or find more information concerning JSV in
@@ -1672,7 +1628,7 @@ Available for \fIqsub\fP.
 causes
 .I qsub
 to wait for the job to complete before exiting.  If the job completes successfully,
-.I qsub's
+.IR qsub 's
 exit code will be that of the completed job.  If the job fails to complete
 successfully,
 .I qsub
@@ -1961,7 +1917,7 @@ complex_values.
 .sp 1
 If this option, or a corresponding value in qmon is specified,
 then this value will be passed to defined JSV instances as
-a parameter with the name \fBtc\fP. (See the \fB\-jsv\fP option above or
+a parameter with the name \fBw\fP. (See the \fB\-jsv\fP option above or
 find more information concerning JSV in
 .M jsv 1 .)
 .\" 
@@ -2410,9 +2366,10 @@ If configured correspondingly,
 .I qrsh
 and
 .I qlogin
-contain portions of the
+contains portions of the
 \fIrsh\fP, \fIrshd\fP, \fItelnet\fP and \fItelnetd\fP
 code copyrighted by The Regents of the University of California.
+.\" Fixme:  drop?
 Therefore, the following note applies with respect to \fIqrsh\fP and
 \fIqlogin\fP: This
 product includes software developed by the University of California,
