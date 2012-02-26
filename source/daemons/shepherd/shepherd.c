@@ -1166,9 +1166,19 @@ static int start_child(const char *childname, /* prolog, job, epilog */
    }
    else { /* not job or job and not checkpointing */
       if (g_new_interactive_job_support == false || !is_interactive) {
-         if (use_pty == YES && strcasecmp(script_file, JOB_TYPE_STR_QSH) != 0) {
+-         if (use_pty == YES && strcasecmp(script_file, JOB_TYPE_STR_QSH) != 0) {
+            char* job_owner = get_conf_val("job_owner");
+            uid_t jobuser_id; gid_t jobuser_gid;
+            if (job_owner == NULL) {
+               shepherd_trace("Cannot determine the job-owner!");
+               return 1;
+            }
+            if (sge_user2uid(job_owner, &jobuser_id, &jobuser_gid, 1) != 0) {
+               shepherd_trace("Cannot get user-id of %s", job_owner);
+               return 1;
+            }
             shepherd_trace("calling fork_pty()");
-            pid = fork_pty(&fd_pty_master, fd_pipe_err, &err_msg);
+            pid = fork_pty(&fd_pty_master, fd_pipe_err, &err_msg, jobuser_id);
          } else {
             pid = fork();
          }
@@ -1192,8 +1202,18 @@ static int start_child(const char *childname, /* prolog, job, epilog */
           * of the child.
           */
          if (use_pty == YES) {
+            char* job_owner = get_conf_val("job_owner");
+            uid_t jobuser_id; gid_t jobuser_gid;
+            if (job_owner == NULL) {
+               shepherd_trace("Cannot determine the job-owner!");
+               return 1;
+            }
+            if (sge_user2uid(job_owner, &jobuser_id, &jobuser_gid, 1) != 0) {
+               shepherd_trace("Cannot get user-id of %s", job_owner);
+               return 1;
+            }
             shepherd_trace("calling fork_pty()");
-            pid = fork_pty(&fd_pty_master, fd_pipe_err, &err_msg);
+            pid = fork_pty(&fd_pty_master, fd_pipe_err, &err_msg, jobuser_id);
          } else {
             shepherd_trace("calling fork_no_pty()");
             pid = fork_no_pty(fd_pipe_in, fd_pipe_out, fd_pipe_err, &err_msg);
