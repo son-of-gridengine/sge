@@ -269,6 +269,7 @@ int ptys_open(int fdm, char *pts_name)
 *                        is normally disabled, compile with
 *                        -DUSE_PTY_AND_PIPE_ERR to enable this feature.
 *     dstring *err_msg - Receives an error string in case of error.
+*     uid_t uid        - uid for pty owner
 *
 *  RESULT
 *     pid_t - -1 in case of error,
@@ -281,7 +282,7 @@ int ptys_open(int fdm, char *pts_name)
 *  SEE ALSO
 *     pty/fork_no_pty
 *******************************************************************************/
-pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg)
+pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg, uid_t uid)
 {
    pid_t pid;
    int   fdm, fds;
@@ -300,6 +301,11 @@ pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg)
    }
    if ((fdm = ptym_open(pts_name)) < 0) {
       sge_dstring_sprintf(err_msg, "can't open master pty \"%s\": %d, %s",
+                          pts_name, errno, strerror(errno));
+      return -1;
+   }
+   if (chown(pts_name, uid, -1) != 0) {
+      sge_dstring_sprintf(err_msg, "can't chown slave pty \"%s\": %d, %s",
                           pts_name, errno, strerror(errno));
       return -1;
    }

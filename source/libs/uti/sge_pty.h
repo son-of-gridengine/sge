@@ -33,7 +33,7 @@
 int   ptym_open(char *pts_name);
 int   ptys_open(int fdm, char *pts_name);
 
-pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg);
+pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg, uid_t uid);
 pid_t fork_no_pty(int *fd_pipe_in, int *fd_pipe_out, int *fd_pipe_err,
                   dstring *err_msg);
 
