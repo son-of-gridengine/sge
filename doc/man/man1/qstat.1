@@ -159,7 +159,7 @@ is configured accordingly.
 For running jobs, the available information on resource utilization is
 shown for each task:
 consumed cpu time in seconds, integral memory usage in Gbytes
-seconds, amount of data transferred in io operations, current virtual 
+seconds, amount of data transferred in io operations in Gbytes, current virtual
 memory utilization in Mbytes, and maximum virtual memory utilization in 
 Mbytes. This information is not available if resource utilization 
 retrieval is not supported for the OS platform where the job is hosted.
@@ -187,14 +187,23 @@ sockets was bound to this job).
 See
 .M load_parameters 5
 for detailed information on the standard set of load values.
+.sp
+Note that a
+.B version
+.I n
+field in the output indicates
+.I n
+changes with
+.M qalter 1 .
 .\"
 .IP "\fB\-l resource\fP[\fB=value\fP],..."
 Defines the resources required by the jobs or granted by the 
 queues on which information is requested. Matching is performed 
 on queues based on non-mutable resource availability information 
 only. That means load values are always ignored except the 
-so-called static load values (i.e. "arch", "num_proc", "mem_total", "swap_total" and 
-"virtual_total"). Consumable utilization is also ignored.
+so-called static load values listed in
+.M load_parameters 5 .
+Consumable utilization is also ignored.
 The pending jobs are restricted to jobs that might run in 
 one of the above queues. In a similar fashion also the queue-job
 matching bases only on non-mutable resource availability 
@@ -874,6 +883,7 @@ not know the best display length, one can set SGE_LONG_QNAMES to
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
+.M load_parameters 5 ,
 .M qalter 1 ,
 .M qconf 1 ,
 .M qhold 1 ,

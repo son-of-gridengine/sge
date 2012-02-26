@@ -5,8 +5,6 @@
 .\" Copyright: 2011 by Dave Love <d.love@liv.ac.uk>
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: accounting.5,v $     Last Update: $Date: 2011-11-17 00:46:29 $     Revision: $Revision: 1.17 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -30,7 +28,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH ACCOUNTING 5 "$Date: 2011-11-17 00:46:29 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH ACCOUNTING 5 2011-11-17 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 accounting \- xxQS_NAMExx accounting file format
@@ -149,7 +147,7 @@ The integral memory usage in Gbytes seconds.  The value may be affected by the
 ACCT_RESERVED_USAGE execd parameter (see
 .M sge_conf 5 ).
 .SS "\fBio\fP"
-The amount of data transferred in input/output operations (if
+The amount of data transferred in input/output operations in GB (if
 available, otherwise 0).
 .SS "\fBcategory\fP"
 A string specifying the job category.
