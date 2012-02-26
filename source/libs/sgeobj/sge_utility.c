@@ -151,7 +151,6 @@ an_status_t verify_str_key(
       begin_strings[2][1] = MSG_GDI_KEYSTR_HASH;
       begin_strings[2][2] = NULL;
 
-      /* The ones describing printing characters are never used.  */
       mid_strings[0][0] = MSG_GDI_KEYSTR_RETURN;
       mid_strings[0][1] = MSG_GDI_KEYSTR_TABULATOR;
       mid_strings[0][2] = MSG_GDI_KEYSTR_CARRIAGERET;
@@ -261,9 +260,10 @@ an_status_t verify_str_key(
    for (i=0; i<strlen(str); ++i) {
       if (!(isgraph(str[i]) && asciichar(str[i]))) {
          char mesg[128];
-         snprintf (mesg, sizeof(mesg), "Non-graphic character (hex %x)", str[i]);
-         SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_GDI_KEYSTR_MIDCHAR_S, 
-                                mid_strings[table][i]));
+         snprintf (mesg, sizeof(mesg), "Non-graphic character (hex %x)",
+                   (unsigned char) str[i]);
+         SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_GDI_KEYSTR_MIDCHAR_S,
+                                mesg));
          return STATUS_EUNKNOWN;
       }
    }
