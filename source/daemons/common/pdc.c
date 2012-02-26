@@ -1261,9 +1261,9 @@ static int psRetrieveOSJobData(void) {
                         if (task_info(task, TASK_BASIC_INFO, (task_info_t)&t_info, &info_count) != KERN_SUCCESS) {
                            DPRINTF(("task_info() error"));
                         } else {
-                           proc_elem->vmem           = t_info.virtual_size/1024;
+                           proc_elem->vmem           = t_info.virtual_size;
                            DPRINTF(("vmem: %d\n", proc_elem->vmem));
-                           proc_elem->rss            = t_info.resident_size/1024;
+                           proc_elem->rss            = t_info.resident_size;
                            DPRINTF(("rss: %d\n", proc_elem->rss));
                         }
 
