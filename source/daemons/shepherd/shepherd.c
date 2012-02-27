@@ -909,7 +909,8 @@ int main(int argc, char **argv)
       }   
 
       if (sge_afs_extend_token(set_token_cmd, tokenbuf, job_owner,
-                           atoi(token_extend_time), err_str)) {
+                               atoi(token_extend_time), err_str,
+                               sizeof(err_str))) {
          shepherd_state = SSTATE_AFS_PROBLEM;                  
          shepherd_error(1, err_str);
       }

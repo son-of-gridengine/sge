@@ -1469,7 +1469,7 @@ static const char* get_master(sge_gdi_ctx_class_t *thiz, bool reread) {
          DPRINTF(("re-read actual qmaster file\n"));
          es->last_qmaster_file_read = now;
 
-         if (get_qm_name(master_name, path_state->get_act_qmaster_file(path_state), err_str) == -1) {         
+         if (get_qm_name(master_name, path_state->get_act_qmaster_file(path_state), err_str, sizeof(err_str)) == -1) {
             if (eh != NULL && !error_already_logged) {
                eh->error(eh, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR, MSG_GDI_READMASTERNAMEFAILED_S, err_str);
                error_already_logged = true;

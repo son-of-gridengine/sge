@@ -259,7 +259,7 @@ int sge_resolve_host(lListElem *ep, int nm)
    }
    /* Check to find hostname only if it was not contained in expression */
    if (hostname != NULL && !sge_is_expression(hostname)) {
-      ret = sge_resolve_hostname(hostname, unique, nm);
+      ret = sge_resolve_hostname(hostname, unique, nm, sizeof(unique));
 
       if (ret == CL_RETVAL_OK) {
          switch (dataType) {
@@ -277,7 +277,7 @@ int sge_resolve_host(lListElem *ep, int nm)
 }
 
 /* MT-NOTE: sge_resolve_hostname() is MT safe */
-int sge_resolve_hostname(const char *hostname, char *unique, int nm) 
+int sge_resolve_hostname(const char *hostname, char *unique, int nm, size_t lunique)
 {
    int ret = CL_RETVAL_OK;
 
@@ -296,7 +296,7 @@ int sge_resolve_hostname(const char *hostname, char *unique, int nm)
       if (strcmp(hostname, SGE_UNKNOWN_NAME) != 0) {
          ret = getuniquehostname(hostname, unique, 0);
       } else {
-         sge_strlcpy(unique, hostname, lunique);
+         strcpy(unique, hostname);
       }
 
       break;

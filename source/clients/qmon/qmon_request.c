@@ -617,7 +617,7 @@ int maxlen
          if (status && stringval[0] != '\0') {
             if (!sge_is_pattern(stringval)) {
                /* try to resolve hostname */
-               ret=sge_resolve_hostname(stringval, unique, EH_name);
+               ret=sge_resolve_hostname(stringval, unique, EH_name, sizeof(unique));
                switch ( ret ) {
                   case CL_RETVAL_GETHOSTNAME_ERROR:
                      qmonMessageShow(w, True, "Can't resolve host '%s'", stringval);

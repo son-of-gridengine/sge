@@ -2613,7 +2613,7 @@ static void qmonClusterHost(Widget w, XtPointer cld, XtPointer cad)
       DPRINTF(("cbs->input = %s\n", cbs->input));
 
       /* try to resolve hostname */
-      ret=sge_resolve_hostname((const char*)cbs->input, unique, EH_name);
+      ret=sge_resolve_hostname((const char*)cbs->input, unique, EH_name, sizeof(unique));
 
       switch ( ret ) {
          case CL_RETVAL_GETHOSTNAME_ERROR:

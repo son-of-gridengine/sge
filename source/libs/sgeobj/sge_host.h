@@ -87,7 +87,7 @@ const char *host_get_load_value(lListElem *host, const char *name);
 
 int sge_resolve_host(lListElem *ep, int nm);
 
-int sge_resolve_hostname(const char *hostname, char *unique, int nm);
+int sge_resolve_hostname(const char *hostname, char *unique, int nm, size_t lunique);
 
 bool
 host_is_centry_referenced(const lListElem *this_elem, const lListElem *centry);

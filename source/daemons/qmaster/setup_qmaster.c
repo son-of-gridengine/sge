@@ -175,7 +175,7 @@ static void   init_categories(void);
 *******************************************************************************/
 int sge_setup_qmaster(sge_gdi_ctx_class_t *ctx, char* anArgv[])
 {
-   char err_str[1024];
+   char err_str[MAX_STRING_SIZE];
    const char *qualified_hostname = ctx->get_qualified_hostname(ctx);
    const char *act_qmaster_file = ctx->get_act_qmaster_file(ctx);
 
@@ -189,7 +189,7 @@ int sge_setup_qmaster(sge_gdi_ctx_class_t *ctx, char* anArgv[])
 
    qmaster_unlock(QMASTER_LOCK_FILE);
 
-   if (write_qm_name(qualified_hostname, act_qmaster_file, err_str)) {
+   if (write_qm_name(qualified_hostname, act_qmaster_file, err_str, sizeof(err_str))) {
       ERROR((SGE_EVENT, "%s\n", err_str));
       SGE_EXIT(NULL, 1);
    }

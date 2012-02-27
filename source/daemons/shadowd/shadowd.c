@@ -178,7 +178,7 @@ static int delay_time = DELAY_TIME;
 static int sge_test_heartbeat = 0;
 
 char binpath[SGE_PATH_MAX];
-char oldqmaster[SGE_PATH_MAX];
+char oldqmaster[CL_MAXHOSTLEN];
 
 char shadow_err_file[SGE_PATH_MAX];
 
@@ -443,12 +443,12 @@ static int compare_qmaster_names(
 const char *act_qmaster_file,
 const char *oldqmaster 
 ) {
- char newqmaster[SGE_PATH_MAX];
+ char newqmaster[CL_MAXHOSTLEN];
  int ret;
  
  DENTER(TOP_LAYER, "compare_qmaster_names");
  
- if (get_qm_name(newqmaster, act_qmaster_file, NULL)) {
+ if (get_qm_name(newqmaster, act_qmaster_file, NULL, 0)) {
     WARNING((SGE_EVENT, MSG_SHADOWD_CANTREADACTQMASTERFILEX_S, act_qmaster_file)); 
     DRETURN(-1);
  }
@@ -483,7 +483,7 @@ static int check_if_valid_shadow(char *binpath,
    }   
 
    /* we can't read act_qmaster file */
-   if (get_qm_name(oldqmaster, act_qmaster_file, NULL)) {
+   if (get_qm_name(oldqmaster, act_qmaster_file, NULL, 0)) {
       WARNING((SGE_EVENT, MSG_SHADOWD_CANTREADACTQMASTERFILEX_S, act_qmaster_file));
       DRETURN(-1);
    }
