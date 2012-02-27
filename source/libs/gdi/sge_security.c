@@ -661,7 +661,7 @@ int set_sec_cred(const char *sge_root, const char *mastername, lListElem *job, l
    if (feature_is_enabled(FEATURE_AFS_SECURITY)) {
       snprintf(binary, sizeof(binary), "%s/util/get_token_cmd", sge_root);
 
-      if (sge_get_token_cmd(binary, NULL) != 0) {
+      if (sge_get_token_cmd(binary, NULL, 0) != 0) {
          answer_list_add(alpp, MSG_QSH_QSUBFAILED, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          DRETURN(-1);
       }   
@@ -694,7 +694,7 @@ int set_sec_cred(const char *sge_root, const char *mastername, lListElem *job, l
        feature_is_enabled(FEATURE_KERBEROS_SECURITY)) {
       snprintf(binary, sizeof(binary), "%s/utilbin/%s/get_cred", sge_root, sge_get_arch());
 
-      if (sge_get_token_cmd(binary, NULL) != 0) {
+      if (sge_get_token_cmd(binary, NULL, 0) != 0) {
          answer_list_add(alpp, MSG_QSH_QSUBFAILED, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          DRETURN(-1);
       }   
@@ -792,7 +792,7 @@ bool cache_sec_cred(const char* sge_root, lListElem *jep, const char *rhost)
       snprintf(binary, sizeof(binary), "%s/utilbin/%s/get_cred",
                sge_root, sge_get_arch());
 
-      if (sge_get_token_cmd(binary, NULL) == 0) {
+      if (sge_get_token_cmd(binary, NULL, 0) == 0) {
          char line[1024];
 
          snprintf(cmd, sizeof(cmd), "%s %s%s%s", binary, "sge", "@", rhost);
@@ -867,7 +867,7 @@ void delete_credentials(const char *sge_root, lListElem *jep)
       snprintf(binary, sizeof(binary), "%s/utilbin/%s/delete_cred",
                sge_root, sge_get_arch());
 
-      if (sge_get_token_cmd(binary, NULL) == 0) {
+      if (sge_get_token_cmd(binary, NULL, 0) == 0) {
          char line[1024];
 
          snprintf(cmd, sizeof(cmd), "%s -s %s", binary, "sge");
@@ -947,7 +947,7 @@ int store_sec_cred(const char* sge_root, sge_gdi_packet_class_t *packet, lListEl
 
       snprintf(binary, sizeof(binary), "%s/utilbin/%s/put_cred", sge_root, sge_get_arch());
 
-      if (sge_get_token_cmd(binary, NULL) == 0) {
+      if (sge_get_token_cmd(binary, NULL, 0) == 0) {
          snprintf(cmd, sizeof(cmd), "%s -s %s -u %s", binary, "sge",
                   lGetString(jep, JB_owner));
 
@@ -1070,7 +1070,7 @@ int store_sec_cred2(const char* sge_root, const char* unqualified_hostname, lLis
 
       snprintf(binary, sizeof(binary), "%s/utilbin/%s/put_cred", sge_root, sge_get_arch());
 
-      if (sge_get_token_cmd(binary, NULL) == 0) {
+      if (sge_get_token_cmd(binary, NULL, 0) == 0) {
          char line[1024];
 
          snprintf(cmd, sizeof(cmd), "%s -s %s -u %s -b %s", binary, "sge",

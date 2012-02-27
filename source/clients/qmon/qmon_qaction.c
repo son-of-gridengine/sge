@@ -1457,7 +1457,7 @@ static void qmonQCCheckHost(Widget w, XtPointer cld, XtPointer cad)
    name = XmtInputFieldGetString(cq_name);
 
    if (cbs->input && cbs->input[0]!='\0' && name && strcmp(name, "template")) {
-      ret = sge_resolve_hostname((char*)cbs->input, unique, EH_name);
+      ret = sge_resolve_hostname((char*)cbs->input, unique, EH_name, sizeof(unique));
 
       switch ( ret ) {
          case CL_RETVAL_GETHOSTNAME_ERROR:

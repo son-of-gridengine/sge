@@ -45,6 +45,7 @@
 #include "uti/sge_unistd.h"
 #include "uti/sge_stdio.h"
 #include "uti/msg_utilib.h"
+#include "uti/sge_string.h"
 
 /****** uti/afsutil/sge_read_token() ******************************************
 *  NAME
@@ -113,7 +114,7 @@ char *sge_read_token(const char *file)
 *  SYNOPSIS
 *     int sge_afs_extend_token(const char *command, char *tokenbuf, 
 *                              const char *user, int token_extend_time, 
-*                              char *err_str) 
+*                              char *err_str, size_t lstr)
 *
 *  FUNCTION
 *     Call 'command', pipe content of 'tokenbuf' to 'command', using
@@ -124,7 +125,8 @@ char *sge_read_token(const char *file)
 *     char *tokenbuf        - input for command 
 *     const char *user      - 1st argument for command 
 *     int token_extend_time - 2nd argument for command 
-*     char *err_str         - error message 
+*     char *err_str         - error message
+*     size_t lstr           - length of err_str
 *
 *  NOTES
 *     MT-NOTE: sge_afs_extend_token() is not MT safe because it uses MT unsafe 
@@ -136,7 +138,7 @@ char *sge_read_token(const char *file)
 *        -1 - Error 
 ******************************************************************************/
 int sge_afs_extend_token(const char *command, char *tokenbuf, const char *user,
-                     int token_extend_time, char *err_str) 
+                         int token_extend_time, char *err_str, size_t lstr) 
 {
    pid_t command_pid;
    FILE *fp_in, *fp_out, *fp_err;
@@ -145,23 +147,23 @@ int sge_afs_extend_token(const char *command, char *tokenbuf, const char *user,
 
    DENTER(TOP_LAYER, "sge_afs_extend_token");
 
-   sprintf(cmdbuf, "%s %s %d", command, user, token_extend_time);
+   snprintf(cmdbuf, sizeof(cmdbuf), "%s %s %d", command, user, token_extend_time);
    if (err_str) {
-      strcpy(err_str, cmdbuf);
+      sge_strlcpy(err_str, cmdbuf, lstr);
    }
 
    command_pid = sge_peopen("/bin/sh", 0, cmdbuf, NULL, NULL, 
                         &fp_in, &fp_out, &fp_err, false);
    if (command_pid == -1) {
       if (err_str) {
-         sprintf(err_str, MSG_TOKEN_NOSTART_S , cmdbuf);
+         snprintf(err_str, lstr, MSG_TOKEN_NOSTART_S , cmdbuf);
       }
       DEXIT;
       return -1;
    }
    if (sge_string2bin(fp_in, tokenbuf) == -1) {
       if (err_str) {
-         sprintf(err_str, MSG_TOKEN_NOWRITEAFS_S , cmdbuf);
+         snprintf(err_str, lstr, MSG_TOKEN_NOWRITEAFS_S , cmdbuf);
       }
       DEXIT;
       return -1;
@@ -169,7 +171,7 @@ int sge_afs_extend_token(const char *command, char *tokenbuf, const char *user,
 
    if ((ret = sge_peclose(command_pid, fp_in, fp_out, fp_err, NULL)) != 0) {
       if (err_str) {
-         sprintf(err_str, MSG_TOKEN_NOSETAFS_SI , cmdbuf, ret);
+         snprintf(err_str, lstr, MSG_TOKEN_NOSETAFS_SI , cmdbuf, ret);
       }
       DEXIT;
       return -1;
@@ -183,7 +185,7 @@ int sge_afs_extend_token(const char *command, char *tokenbuf, const char *user,
 *     sge_get_token_cmd() -- Check if 'tokencmdname' is executable 
 *
 *  SYNOPSIS
-*     int sge_get_token_cmd(const char *tokencmdname, char *buf) 
+*     int sge_get_token_cmd(const char *tokencmdname, char *buf, size_t lbuf)
 *
 *  FUNCTION
 *     Check if 'tokencmdname' exists and is executable. If an error
@@ -192,7 +194,8 @@ int sge_afs_extend_token(const char *command, char *tokenbuf, const char *user,
 *
 *  INPUTS
 *     const char *tokencmdname - command 
-*     char *buf                - NULL or buffer for error message 
+*     char *buf                - NULL or buffer for error message
+*     size_t lbuf              - size of buf
 *
 *  NOTES
 *     MT-NOTE: sge_get_token_cmd() is MT safe 
@@ -202,7 +205,7 @@ int sge_afs_extend_token(const char *command, char *tokenbuf, const char *user,
 *         0 - OK
 *         1 - Error
 ******************************************************************************/
-int sge_get_token_cmd(const char *tokencmdname, char *buf) 
+int sge_get_token_cmd(const char *tokencmdname, char *buf, size_t lbuf)
 {
     SGE_STRUCT_STAT sb;
 
@@ -210,7 +213,7 @@ int sge_get_token_cmd(const char *tokencmdname, char *buf)
        if (!buf) {
           fprintf(stderr, "%s\n", MSG_COMMAND_NOPATHFORTOKEN);
        } else {   
-          strcpy(buf, MSG_COMMAND_NOPATHFORTOKEN);
+          sge_strlcpy(buf, MSG_COMMAND_NOPATHFORTOKEN, lbuf);
        }
        return 1;
     }   
@@ -220,7 +223,7 @@ int sge_get_token_cmd(const char *tokencmdname, char *buf)
           fprintf(stderr, MSG_COMMAND_NOFILESTATUS_S , tokencmdname);
           fprintf(stderr, "\n");
        } else {
-          sprintf(buf, MSG_COMMAND_NOFILESTATUS_S , tokencmdname);
+          snprintf(buf, lbuf, MSG_COMMAND_NOFILESTATUS_S , tokencmdname);
        }
        return 1;
     }   
@@ -230,7 +233,7 @@ int sge_get_token_cmd(const char *tokencmdname, char *buf)
           fprintf(stderr, MSG_COMMAND_NOTEXECUTABLE_S , tokencmdname);
           fprintf(stderr, "\n");
        } else {
-          sprintf(buf, MSG_COMMAND_NOTEXECUTABLE_S , tokencmdname);
+          snprintf(buf, lbuf, MSG_COMMAND_NOTEXECUTABLE_S , tokencmdname);
        }
        return 1;
     }

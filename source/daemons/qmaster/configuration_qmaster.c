@@ -227,7 +227,7 @@ sge_del_configuration(sge_gdi_ctx_class_t *ctx,
     *       ignore this and use the hostname stored in the configuration obj
     *       or use the given name if no object can be found
     */
-   ret = sge_resolve_hostname(tmp_name, unique_name, EH_name);
+   ret = sge_resolve_hostname(tmp_name, unique_name, EH_name, sizeof(unique_name));
    if (ret != CL_RETVAL_OK) {
       lListElem *conf_obj = NULL;
  
@@ -321,7 +321,8 @@ int sge_mod_configuration(sge_gdi_ctx_class_t *ctx, lListElem *aConf, lList **an
       DRETURN(STATUS_EUNKNOWN);
    }
 
-   if ((ret = sge_resolve_hostname(tmp_name, unique_name, EH_name)) != CL_RETVAL_OK) {
+   if ((ret = sge_resolve_hostname(tmp_name, unique_name, EH_name, sizeof(unique_name)))
+       != CL_RETVAL_OK) {
       DPRINTF(("%s: error %s resolving host %s\n", SGE_FUNC, cl_get_error_text(ret), tmp_name));
       ERROR((SGE_EVENT, MSG_SGETEXT_CANTRESOLVEHOST_S, tmp_name));
       answer_list_add(anAnswer, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
@@ -750,7 +751,7 @@ static u_long32 sge_get_config_version_for_host(const char* aName)
        *    if it is not resolveable then
        *       ignore this and use the given hostname
        */
-      ret = sge_resolve_hostname(aName, unique_name, EH_name);
+      ret = sge_resolve_hostname(aName, unique_name, EH_name, sizeof(unique_name));
       if (CL_RETVAL_OK != ret) {
          DPRINTF(("%s: error %s resolving host %s\n", SGE_FUNC,
                  cl_get_error_text(ret), aName));
@@ -792,7 +793,7 @@ lListElem* sge_get_configuration_for_host(const char* aName)
     *    if it is not resolveable then
     *       ignore this and use the given hostname
     */
-   ret = sge_resolve_hostname(aName, unique_name, EH_name);
+   ret = sge_resolve_hostname(aName, unique_name, EH_name, sizeof(unique_name));
    if (CL_RETVAL_OK != ret) {
       DPRINTF(("%s: error %s resolving host %s\n", SGE_FUNC,
               cl_get_error_text(ret), aName));

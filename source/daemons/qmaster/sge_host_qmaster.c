@@ -311,7 +311,7 @@ int sge_del_host(sge_gdi_ctx_class_t *ctx, lListElem *hep, lList **alpp,
       return STATUS_EUNKNOWN;
    }
 
-   ret = sge_resolve_hostname(host, unique, EH_name);
+   ret = sge_resolve_hostname(host, unique, EH_name, sizeof(unique));
    if (ret  != CL_RETVAL_OK) {
       /* 
        * Due to CR 6319231, IZ 1760 this is allowed 

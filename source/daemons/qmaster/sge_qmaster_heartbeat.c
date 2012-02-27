@@ -147,7 +147,7 @@ increment_heartbeat(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, monitoring_t *
 
    if (check_act_qmaster_file == 1) {
       strcpy(err_str,"");
-      if (get_qm_name(act_qmaster_name, act_qmaster_file, err_str) == 0) {
+      if (get_qm_name(act_qmaster_name, act_qmaster_file, err_str, sizeof(err_str)) == 0) {
          /* got qmaster name */
          if ( getuniquehostname(act_qmaster_name, act_resolved_qmaster_name, 0) == CL_RETVAL_OK &&
               sge_hostcmp(act_resolved_qmaster_name, qualified_hostname) != 0      ) {
