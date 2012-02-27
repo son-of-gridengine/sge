@@ -2089,7 +2089,7 @@ static void qmonARAccessCheckName(Widget w, XtPointer cld, XtPointer cad)
       strcpy(unique, "");
 
       /* try to resolve hostname */
-      ret=sge_resolve_hostname((const char*)cbs->input, unique, EH_name);
+      ret=sge_resolve_hostname((const char*)cbs->input, unique, EH_name, sizeof(unique));
 
       switch ( ret ) {
          case CL_RETVAL_GETHOSTNAME_ERROR:

@@ -88,7 +88,7 @@ static lListElem* sge_get_configuration_for_host(const char* aName)
     *    if it is not resolveable then
     *       ignore this and use the given hostname
     */
-   ret = sge_resolve_hostname(aName, unique_name, EH_name);
+   ret = sge_resolve_hostname(aName, unique_name, EH_name, sizeof(unique_name));
    if (CL_RETVAL_OK != ret) {
       DPRINTF(("%s: error %s resolving host %s\n", SGE_FUNC,
               cl_get_error_text(ret), aName));
