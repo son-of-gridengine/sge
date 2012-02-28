@@ -38,9 +38,9 @@
 ** libs/wingrid/misc.c
 */
 #define MSG_WIN_CANT_GET_PASSWD_INFO         _MESSAGE(212002, _("Can't get account information from system for user id %d"))
-#define MSG_WIN_CHECK_SETUSER_FAILED         _MESSAGE(212003, _("setuser(%s, SU_CHECK) failed, reason: '%s' (errno %d)"))
-#define MSG_WIN_SETUSER_FAILED               _MESSAGE(212004, _("setuser(%s, SU_COMPLETE) failed, reason: '%s' (errno %d)"))
-#define MSG_WIN_CANT_SETGID_IN_SETUSER       _MESSAGE(212005, _("setgid(%d) failed in function wl_setuser(), reason: '%s' (errno %d)"))
-#define MSG_WIN_CANT_SETUID_IN_SETUSER       _MESSAGE(212006, _("setuid(%d) failed in function wl_setuser(), reason: '%s' (errno %d)"))
+#define MSG_WIN_CHECK_SETUSER_FAILED         _MESSAGE(212003, _("setuser("SFN", SU_CHECK) failed, reason: '"SFN"' (errno %d)"))
+#define MSG_WIN_SETUSER_FAILED               _MESSAGE(212004, _("setuser("SFN", SU_COMPLETE) failed, reason: '"SFN"' (errno %d)"))
+#define MSG_WIN_CANT_SETGID_IN_SETUSER       _MESSAGE(212005, _("setgid(%d) failed in function wl_setuser(), reason: '"SFN"' (errno %d)"))
+#define MSG_WIN_CANT_SETUID_IN_SETUSER       _MESSAGE(212006, _("setuid(%d) failed in function wl_setuser(), reason: '"SFN"' (errno %d)"))
 
 #endif
