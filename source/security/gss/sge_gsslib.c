@@ -562,8 +562,8 @@ gsslib_put_credentials(gss_cred_id_t server_creds,
 #endif
       if (!str_equal) {
          char buf[1024];
-         sprintf(buf, MSG_GSS_CLIENTNAMEXDOESNOTMATCHUNAMEY_SS,
-                 (int)client_name.length, (char *)client_name.value, username);
+         snprintf(buf, sizeof(buf), MSG_GSS_CLIENTNAMEXDOESNOTMATCHUNAMEY_SS,
+                  (int)client_name.length, (char *)client_name.value, username);
          gsslib_print_error(buf);
          cc = 5;
          goto error;

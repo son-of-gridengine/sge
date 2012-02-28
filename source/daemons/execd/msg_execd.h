@@ -76,7 +76,7 @@
 #define MSG_STATUS_ABNORMALTERMINATIONFOSHEPHERDFORJOBXYEXITSTATEFILEISEMPTY_S    _MESSAGE(29023, _("abnormal termination of shepherd for job "SFN": \"exit_status\" file is empty"))
 #define MSG_SHEPHERD_DIEDTHROUGHSIGNAL    _MESSAGE(29024, _("shepherd died through signal"))
 #define MSG_SHEPHERD_NOPIDFILE    _MESSAGE(29025, _("no \"pid\" file for shepherd"))
-#define MSG_SHEPHERD_EXITEDWISSTATUS_IS    _MESSAGE(29026, _("shepherd exited with exit status %d: %s"))
+#define MSG_SHEPHERD_EXITEDWISSTATUS_IS    _MESSAGE(29026, _("shepherd exited with exit status %d: "SFN))
 #define MSG_JOB_CANTREADERRORFILEFORJOBXY_S    _MESSAGE(29027, _("can't read error file for job "SFN))
 #define MSG_JOB_CANTREADUSAGEFILEFORJOBXY_S    _MESSAGE(29028, _("can't read usage file for job "SFN))
 #define MSG_JOB_WXDIEDTHROUGHSIGNALYZ_SSI    _MESSAGE(29029, _("job "SFN" died through signal "SFN" (%d)"))
@@ -260,7 +260,7 @@
 #define MSG_LS_RESTARTLS_S            _MESSAGE(29163, _("restarting load sensor "SFN))
 /* #define MSG_LS_NORESTARTLS            _message(29164, _("load sensor not restarted because load sensor file was not modified")) __TS Removed automatically from testsuite!! TS__*/
 #define MSG_LS_NOMODTIME_SS           _MESSAGE(29165, _("can't get mod_time from load sensor file "SFN": "SFN))
-#define MSG_LS_FORMAT_ERROR_SS        _MESSAGE(29166, _("Format error of loadsensor "SFQ". Received: \"%100s\""))
+#define MSG_LS_FORMAT_ERROR_SS        _MESSAGE(29166, _("Format error of loadsensor "SFQ". Received: "SFQ))
 #define MSG_LS_USE_EXTERNAL_LS_S      _MESSAGE(29167, _("execd cannot retrieve load values on platform "SFQ" - please configure an external load sensor"))
 
 

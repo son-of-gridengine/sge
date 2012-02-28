@@ -198,7 +198,8 @@
 #define MSG_QREF_QUNKNOWN_S            _MESSAGE(64263, _("Job was rejected because job requests unknown queue "SFQ))
 #define MSG_QREF_QNOTREQUESTABLE       _MESSAGE(64264, _("Job was rejected because job requests a queue while queues are not configured as requestable"))
 #define MSG_ATTRIB_PARSATTRFAILED_SS         _MESSAGE(64265, _("failed parsing attribute "SFQ": "SFN))
-#define MSG_OBJECT_NO_LIST_TO_MOD_TYPE_SI    _MESSAGE(64266, _("%s: has no master list to modify %d"))
+/* fixme: fix length of %d */
+#define MSG_OBJECT_NO_LIST_TO_MOD_TYPE_SI    _MESSAGE(64266, _(SFN": has no master list to modify %d"))
 #define MSG_INVALID_CENTRY_PARSE_URGENCY_SS  _MESSAGE(64267, _("The following error occurred for complex "SFQ", while parsing the urgency value: "SFQ))
 #define MSG_ULONG_INCORRECTSTRING      _MESSAGE(64268, _("error parsing unsigned long value from string "SFQ))
 #define MSG_INT_INCORRECTSTRING        _MESSAGE(64269, _("error parsing signed int value from string "SFQ))
@@ -207,7 +208,7 @@
 #define MSG_DOUBLE_INCORRECTSTRING     _MESSAGE(64272, _("error parsing double value from string "SFQ))
 #define MSG_FLOAT_INCORRECTSTRING      _MESSAGE(64273, _("error parsing float value from string "SFQ))
 #define MSG_QTYPE_INCORRECTSTRING      _MESSAGE(64274, _("error parsing queue type from string "SFQ))
-#define MSG_QSTATE_UNKNOWNCHAR_CS      _MESSAGE(64275, _("unknown queue state: %c found in string: %s"))
+#define MSG_QSTATE_UNKNOWNCHAR_CS      _MESSAGE(64275, _("unknown queue state: %c found in string: "SFN))
 #define MSG_QSTAT_WRONGGCHAR_C         _MESSAGE(64276, _("wrong character \'%c\' for -g option"))
 #define MSG_CQUEUE_UNKNOWNCENTRY_S     _MESSAGE(64277, _("Complex attribute "SFQ" does not exist"))
 #define MSG_CONF_USING_SS              _MESSAGE(64300, _("using "SFQ" for "SFN))
@@ -353,7 +354,7 @@
 #define MSG_JSV_SWITCH_S         _MESSAGE(64549, _("rejected due to jsv_allowed_mod configuration which does not allow: "SFN))
 #define MSG_JSV_ALLOWED          _MESSAGE(64550, _("No job modification allowed due to jsv_allowed_mod configuration"))
 #define MSG_JSV_JCOMMAND_S       _MESSAGE(64551, _("master got unknown command from JSV: "SFQ))
-#define MSG_JSV_LOGMSG_S         _MESSAGE(64552, _("JSV stderr: %s"))
+#define MSG_JSV_LOGMSG_S         _MESSAGE(64552, _("JSV stderr: "SFN2))
 #define MSG_JSV_STARTPERMISSION  _MESSAGE(64553, _("process has not the necessary permission to start JSV as different user"))
 #define MSG_JSV_MEMBINDING       _MESSAGE(64554, _("unable to allocate memory for binding during JSV execution"))
 
