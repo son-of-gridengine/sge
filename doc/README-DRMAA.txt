@@ -5,7 +5,7 @@ Content
 -------
 1. Introduction
 2. Getting Started with the C Binding
-2. Getting Started with the Java Binding
+3. Getting Started with the Java Binding
 4. Copyright
 
 1. Introduction
@@ -103,7 +103,7 @@ Content
    compiler/linker.
 
 
-2. Getting Started with the Java Binding
+3. Getting Started with the Java Binding
 ----------------------------------------
 
    To develop applications that utilize the Java language binding, you will
