@@ -2873,8 +2873,16 @@ if ( "$ADOC" == 1) then
    makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libjapi.html  $COMPILE_ARCH/libjapi.texi
 
    echo "Creating documentation for libs: libuti.texi, libuti.html"
-   3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine Utility Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/uti/*.h libs/uti/*.c -o $COMPILE_ARCH/libuti.texi
+   3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine Utility Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/uti/*.h libs/uti/*.c libs/uti2/*.[ch] -o $COMPILE_ARCH/libuti.texi
    makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libuti.html  $COMPILE_ARCH/libuti.texi
+
+   echo "Creating documentation for libs: libwingrid.texi, libwingrid.html"
+   3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine MS Windows Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/wingrid/*.h libs/wingrid/*.c -o $COMPILE_ARCH/libwingrid.texi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libwingrid.html  $COMPILE_ARCH/libwingrid.texi
+
+   echo "Creating documentation for libs: libspool.texi, libspool.html"
+   3rdparty/adoc/$COMPILE_ARCH/adoc --no-warnings -f -b -DPROJECT "Grid Engine Spooling Library" -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2 libs/spool/*.h libs/spool/*.c -o $COMPILE_ARCH/libspool.texi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libspool.html  $COMPILE_ARCH/libspool.texi
 endif
 echo done.
 

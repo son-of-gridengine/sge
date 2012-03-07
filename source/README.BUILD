@@ -89,6 +89,12 @@ Content
    The result is a tar file (or virtually any other OS specific distribution
    format) which can be used to install Grid Engine on a cluster of machines.
 
+   The MS Windows support needs the "interix" Unix-like environment,
+   which seems to go by different names according to the version of
+   Windows <http://www.suacommunity.com/SUA.aspx>.  It also needs the
+   MS Visual Studio compiler (possibly the gratis Visual Studio
+   Express) with the compiler executable cl.exe on the path.
+
    See the file 'dist/README.arch' in this directory for more information
    how the architecture is determined and how it is used in the process of
    compiling and installing Grid engine.

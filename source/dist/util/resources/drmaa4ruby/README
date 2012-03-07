@@ -9,9 +9,9 @@
 
 === Requirements
 
-   The binding requires Ruby/DL module as available in Ruby 1.8.4 
+   The binding requires Ruby/DL module, as available in Ruby 1.8.4,
    and a Distributed Resource Manager with shared DRMAA library
-   v0.95 or above. If both is give the binding should work if 
+   v0.95 or above. If both are available the binding should work if
      * DRMAA library is in LD_LIBRARY_PATH 
      * drmaa.rb found by ruby interpreter
 
@@ -29,6 +29,6 @@
    Conceptual feedback should be sent to DRMAA mailing list
 
 === Todo
-   * completize documentation in drmaa.rb
-   * completize DRMAA::JobTemplate setters/getters according
+   * complete documentation in drmaa.rb
+   * complete DRMAA::JobTemplate setters/getters according
      to DRMAA standard
