@@ -1860,6 +1860,11 @@ get_file_line_size(FILE *fp)
   fsetpos(fp, &pos);
   return i;
 }
+
+/* Fixme:  See issue 386 concerning the need to use a CULL list (and
+   to lock the file?).  This is mitigated by checking the number of
+   records in the loop below.  */
+
 /****** uti/uidgid/password_read_file()*****************************************
 *  NAME
 *     password_read_file() - read in sgepasswd file
@@ -1935,6 +1940,12 @@ password_read_file(char **users[], char**encryped_pwds[], const char *filename)
          uname = NULL;
          pwd = NULL;
          context = NULL;
+
+         /* Check records in case file changed since reading initially.  */
+         if (i >= size) {
+            ret = 2;
+            break;
+         }
 
          if (fscanf(fp, "%[^\n]\n", input) == 1) {
             uname = sge_strtok_r(input, " ", &context);

@@ -196,15 +196,17 @@
 #define MSG_PWD_DECR_SS             _MESSAGE(57321,         _(SFN": error decrypting password - keylength mismatch. SSL error: "SFN))
 #define MSG_PWD_MALLOC_SS           _MESSAGE(57322,         _(SFN": malloc failed. SSL error: "SFN))
 #define MSG_PWD_LOAD_PUB_SS         _MESSAGE(57323,         _(SFN": can't load public key "SFQ" to encrypt password"))
-#define MSG_PWD_OPEN_SGEPASSWD_SSI  _MESSAGE(57325,         _(SFN": can't open sgepasswd file: "SFN" (%d)"))
-#define MSG_PWD_WRITE_SGEPASSWD_SSI _MESSAGE(57326,         _(SFN": can't write to sgepasswd file: "SFN" (%d)"))
-#define MSG_PWD_CLOSE_SGEPASSWD_SSI _MESSAGE(57327,         _(SFN": error closing sgepasswd file: "SFN" (%d)"))
+#define MSG_PWD_OPEN_SGEPASSWD_SSI  _MESSAGE(57325,         _(SFN": can't open .sgepasswd file: "SFN" (%d)"))
+#define MSG_PWD_WRITE_SGEPASSWD_SSI _MESSAGE(57326,         _(SFN": can't write to .sgepasswd file: "SFN" (%d)"))
+#define MSG_PWD_CLOSE_SGEPASSWD_SSI _MESSAGE(57327,         _(SFN": error closing .sgepasswd file: "SFN" (%d)"))
 #define MSG_PWD_CANTLOADRANDFILE_SSS _MESSAGE(57328,         _(SFN": can't load rand file "SFN". SSL error: "SFN))
 #define MSG_PWD_FILE_CORRUPTED_S    _MESSAGE(57329,         _(SFN": sgepasswd file corrupted"))
 #define MSG_PWD_FILE_PATH_NULL_S    _MESSAGE(57330,         _(SFN": path to private key file is null"))
 #define MSG_PWD_SSL_ERR_MSG_SS      _MESSAGE(57331,         _(SFN": SSL error message: "SFN))
 #define MSG_PWD_NO_SSL_ERR          _MESSAGE(57332,         _("No SSL error."))
 #define MSG_PWD_CANTOPENSSL         _MESSAGE(57333,         _("Can't open the OpenSSL library."))
+#define MSG_ARG_TOO_LONG            _MESSAGE(57334,         _("Argument too long: "SFN))
+#define MSG_PWD_RENAME_SGEPASSWD_SSI _MESSAGE(57325,        _(SFN": error renaming .sgepasswd file: "SFN" (%d)"))
 
 
 /*
