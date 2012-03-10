@@ -795,7 +795,7 @@ sge_gdi_ctx_class_create_from_bootstrap(int prog_number, const char* component_n
       sge_free_saved_vars(url_ctx);
       DRETURN(NULL);
    }   
-   strcpy(sge_root, token);
+   sge_strlcpy(sge_root, token, BUFSIZ);
    
    /* search for sge_cell */
    token = sge_strtok_r(NULL, ":", &url_ctx);
@@ -805,7 +805,7 @@ sge_gdi_ctx_class_create_from_bootstrap(int prog_number, const char* component_n
       sge_free_saved_vars(url_ctx);
       DRETURN(NULL);
    }
-   strcpy(sge_cell, token);
+   sge_strlcpy(sge_cell, token, BUFSIZ);
    
    /* get the qmaster port */
    token = sge_strtok_r(NULL, NULL, &url_ctx);
@@ -815,7 +815,7 @@ sge_gdi_ctx_class_create_from_bootstrap(int prog_number, const char* component_n
       sge_free_saved_vars(url_ctx);
       DRETURN(NULL);
    }
-   strcpy(sge_qmaster_port, token);
+   sge_strlcpy(sge_qmaster_port, token, BUFSIZ);
    
    if (is_qmaster_internal_client) {
       sge_qmaster_p = sge_get_qmaster_port(&from_services);
@@ -1961,7 +1961,7 @@ sge_setup2(sge_gdi_ctx_class_t **context, u_long32 progid, u_long32 thread_id,
 
       /* Read the hostname into the group string and add "+None" */
       gethostname(group, sizeof(group)-strlen(group_none)-1);
-      strcat(group, group_none);
+      strcat(group, group_none); /* RATS: ignore */
    }
 #else
    if (sge_gid2group(getegid(), group, sizeof(group), MAX_NIS_RETRIES)) {

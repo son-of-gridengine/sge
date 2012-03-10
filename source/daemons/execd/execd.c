@@ -620,7 +620,7 @@ lList *alp = NULL;
          continue;
 
       /* oops */
-      sprintf(str, MSG_PARSE_INVALIDARG_S, *sp);
+      snprintf(str, sizeof(str), MSG_PARSE_INVALIDARG_S, *sp);
       sge_usage(EXECD, stderr);
       answer_list_add(&alp, str, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR);
       DEXIT;

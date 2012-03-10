@@ -211,7 +211,7 @@ lList *get_conf_sublist(lList **alpp, lList *lp, int name_nm, int value_nm,
    if (!(ep=lGetElemStr(lp, name_nm, key))) {
       if (alpp) {
          char error[1000];
-         sprintf(error, MSG_GDI_CONFIGMISSINGARGUMENT_S , key);
+         snprintf(error, sizeof(error), MSG_GDI_CONFIGMISSINGARGUMENT_S, key);
          answer_list_add(alpp, error, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR);
       }
       DEXIT;
@@ -250,7 +250,7 @@ char *get_conf_value(lList **alpp, lList *lp, int name_nm, int value_nm,
    if (!(ep=lGetElemStr(lp, name_nm, key))) {
       if (alpp) {
          char error[1000];
-         sprintf(error, MSG_GDI_CONFIGMISSINGARGUMENT_S , key);
+         snprintf(error, sizeof(error), MSG_GDI_CONFIGMISSINGARGUMENT_S, key);
          answer_list_add(alpp, error, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR);
       }
       DEXIT;

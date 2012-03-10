@@ -45,6 +45,7 @@
 #include "uti/sge_log.h"
 #include "uti/sge_time.h"
 #include "uti/sge_prog.h"
+#include "uti/sge_string.h"
 
 #include "basis_types.h"
 #include "startprog.h"
@@ -105,26 +106,26 @@ int startprog(int out, int err,
 
  /* Check with $SGE_ROOT/bin/arch if argv0 == NULL */
  if (argv0) {
-   strcpy(prog_path, argv0);
+   sge_strlcpy(prog_path, argv0, sizeof(prog_path));
    if ((ptr = strrchr(prog_path, '/'))) {
        ptr++;
        *ptr = '\0';
-       strcat(prog_path, name);
+       sge_strlcpy(prog_path, name, sizeof(prog_path));
        if (SGE_STAT(prog_path, &sb)) {
           ERROR((SGE_EVENT, MSG_FILE_STATFAILED_SS, 
                prog_path, strerror(errno)));
           DRETURN(-2);
        }
    } else {
-      strcpy(prog_path, name);
+      sge_strlcpy(prog_path, name, sizeof(prog_path));
    }
  } else {
     if (!path) {
        DRETURN(-2);
     }
-    sprintf(prog_path, "%s/%s/%s", path, sge_get_arch(), name);
+    snprintf(prog_path, sizeof(prog_path), "%s/%s/%s", path, sge_get_arch(), name);
     if (SGE_STAT(prog_path, &sb)) {
-       sprintf(prog_path, "%s/%s", path, name);
+       snprintf(prog_path, sizeof(prog_path), "%s/%s", path, name);
        if (SGE_STAT(prog_path, &sb)) {
           ERROR((SGE_EVENT, MSG_FILE_STATFAILED_SS, prog_path, strerror(errno)));
           DRETURN(-2);

@@ -37,6 +37,7 @@
 #include "uti/sge_rmon.h"
 #include "uti/sge_stdio.h"
 #include "uti/sge_prog.h"
+#include "uti/sge_string.h"
 
 #include "sgeobj/sge_feature.h"
 
@@ -243,7 +244,7 @@ void sge_usage(u_long32 prog_number, FILE *fp) {
    else if (!strcmp(prog_name, "qmaster"))
       strcpy(namebuf, "sge_qmaster");
    else
-      strcpy(namebuf, prog_name);
+      sge_strlcpy(namebuf, prog_name, sizeof(namebuf));
          
    if (VALID_OPT(JOB_ID_OPR, prog_number)) {
       fprintf(fp, "%s %s [options] %s\n", MSG_GDI_USAGE_USAGESTRING , namebuf, MSG_GDI_USAGE_JOB_ID_OPR);

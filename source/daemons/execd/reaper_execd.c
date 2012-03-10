@@ -504,7 +504,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
          failed = SSTATE_BEFORE_PROLOG;
       }
 
-      sprintf(error, MSG_STATUS_ABNORMALTERMINATIONOFSHEPHERDFORJOBXY_S,
+      snprintf(error, sizeof(error), MSG_STATUS_ABNORMALTERMINATIONOFSHEPHERDFORJOBXY_S,
               job_get_id_string(job_id, ja_task_id, pe_task_id, &id_dstring));
       ERROR((SGE_EVENT, SFNMAX, error));
  
@@ -518,7 +518,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
       fscanf_count = fscanf(fp, "%d", &shepherd_exit_status_file);
       FCLOSE_IGNORE_ERROR(fp);
       if (fscanf_count != 1) {
-         sprintf(error, MSG_STATUS_ABNORMALTERMINATIONFOSHEPHERDFORJOBXYEXITSTATEFILEISEMPTY_S,
+         snprintf(error, sizeof(error), MSG_STATUS_ABNORMALTERMINATIONFOSHEPHERDFORJOBXYEXITSTATEFILEISEMPTY_S,
                  job_get_id_string(job_id, ja_task_id, pe_task_id, &id_dstring));
          ERROR((SGE_EVENT, SFNMAX, error));
          /* 
@@ -596,7 +596,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    */
    if (read_dusage(jr, sge_dstring_get_string(&jobdir), job_id, ja_task_id, pe_task_id, failed)) {
       if (error[0] == '\0') {
-         sprintf(error, MSG_JOB_CANTREADUSAGEFILEFORJOBXY_S, 
+         snprintf(error, sizeof(error), MSG_JOB_CANTREADUSAGEFILEFORJOBXY_S,
             job_get_id_string(job_id, ja_task_id, pe_task_id, &id_dstring));
       }
       
@@ -620,7 +620,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
          u_long32 sge_signo;
 
          /* Job died through a signal */
-         sprintf(error, MSG_JOB_WXDIEDTHROUGHSIGNALYZ_SSI, 
+         snprintf(error, sizeof(error), MSG_JOB_WXDIEDTHROUGHSIGNALYZ_SSI,
                  job_get_id_string(job_id, ja_task_id, pe_task_id, &id_dstring), 
                  sge_sys_sig2str(signo), signo);
 
@@ -635,7 +635,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
          if (!failed) {
             failed = SSTATE_FAILURE_AFTER_JOB;
             if (!*error)
-               sprintf(error, SFNMAX, MSG_JOB_CANTREADUSEDRESOURCESFORJOB);
+               snprintf(error, sizeof(error), SFNMAX, MSG_JOB_CANTREADUSEDRESOURCESFORJOB);
          }
       }
    }
@@ -1026,7 +1026,7 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
                   sge_dstring_get_string(&jobdir), sge_u32c(job_id)));
          } else {
             /*** read config file written by exec_job ***/ 
-            sprintf(fname, "%s/config", sge_dstring_get_string(&jobdir));
+            snprintf(fname, sizeof(fname), "%s/config", sge_dstring_get_string(&jobdir));
             if (read_config(fname)) {
                /* This should happen very rarely. exec_job() should avoid this 
                   condition as far as possible. One possibility for this case is, 
@@ -1282,7 +1282,7 @@ int clean_up_old_jobs(sge_gdi_ctx_class_t *ctx, int startup)
       u_long32 tmp_id;
 
       jobdir = dent->d_name;    /* jobdir is the jobid.jataskid converted to string */
-      strcpy(string, jobdir);
+      sge_strlcpy(string, jobdir, sizeof(string));
 
       if (!strcmp(jobdir, ".") || !strcmp(jobdir, "..") )
          continue;
@@ -1317,17 +1317,18 @@ int clean_up_old_jobs(sge_gdi_ctx_class_t *ctx, int startup)
          DPRINTF(("+++++++++++++++++++ remove active jobs directory ++++++++++++++++++\n"));
          {
             char path[SGE_PATH_MAX];
-            sprintf(path, ACTIVE_DIR"/%s", jobdir);
+            snprintf(path, sizeof(path), ACTIVE_DIR"/%s", jobdir);
             sge_rmdir(path, NULL);
          }
          continue;
       }
       if (lGetUlong(jatep, JAT_status) != JSLAVE) {
-         sprintf(dir, "%s/%s", ACTIVE_DIR, jobdir);
+         snprintf(dir, sizeof(dir), "%s/%s", ACTIVE_DIR, jobdir);
          examine_job_task_from_file(ctx, startup, dir, jep, jatep, NULL, pids, npids);
       }
       for_each(petep, lGetList(jatep, JAT_task_list)) {
-         sprintf(dir, "%s/%s/%s", ACTIVE_DIR, jobdir, lGetString(petep, PET_id));
+         snprintf(dir, sizeof(dir), "%s/%s/%s", ACTIVE_DIR, jobdir,
+                  lGetString(petep, PET_id));
          examine_job_task_from_file(ctx, startup, dir, jep, jatep, petep, pids, npids);
       }
    }    /* while (dent=SGE_READDIR(cwd)) */
@@ -1384,7 +1385,7 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
    }   
    
    /* Look for pid of shepherd */
-   sprintf(fname, "%s/pid", dir);
+   snprintf(fname, sizeof(fname), "%s/pid", dir);
    if (!(fp = fopen(fname, "r"))) {
       /* Is it 
             1. a job started before startup of execd
@@ -1430,9 +1431,13 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
 
    /* report this information */
    if (shepherd_alive) {
-      sprintf(err_str, MSG_SHEPHERD_SHEPHERDFORJOBXHASPIDYANDISZALIVE_SU, dir, sge_u32c(pid));
+      snprintf(err_str, sizeof(err_str),
+               MSG_SHEPHERD_SHEPHERDFORJOBXHASPIDYANDISZALIVE_SU,
+               dir, sge_u32c(pid));
    } else {
-      sprintf(err_str, MSG_SHEPHERD_SHEPHERDFORJOBXHASPIDYANDISNOTALIVE_SU, dir, sge_u32c(pid));
+      snprintf(err_str, sizeof(err_str),
+               MSG_SHEPHERD_SHEPHERDFORJOBXHASPIDYANDISNOTALIVE_SU,
+               dir, sge_u32c(pid));
    }
    if (startup) {
       INFO((SGE_EVENT, SFNMAX, err_str));
@@ -1578,7 +1583,7 @@ read_dusage(lListElem *jr, const char *jobdir, u_long32 jobid, u_long32 jataskid
 
    pid = 0xffffffff;
 
-   sprintf(pid_file, "%s/pid", jobdir);
+   snprintf(pid_file, sizeof(pid_file), "%s/pid", jobdir);
 
    if (failed != ESSTATE_NO_PID) {
       fp = fopen(pid_file, "r");
@@ -1617,7 +1622,7 @@ read_dusage(lListElem *jr, const char *jobdir, u_long32 jobid, u_long32 jataskid
    */
    if (!failed || (failed > SSTATE_BEFORE_JOB)) {
       char usage_file[SGE_PATH_MAX];
-      sprintf(usage_file, "%s/usage", jobdir);
+      snprintf(usage_file, sizeof(usage_file), "%s/usage", jobdir);
       fp = fopen(usage_file, "r");
       if (fp) {
          char buf[10000];
@@ -1944,9 +1949,10 @@ lListElem *jr
       double_print_time_to_dstring(ru_stime, &stime_string);
       double_print_time_to_dstring(ru_wallclock, &wtime_string);
       if (job_is_array(jep)) {
-         sprintf(sge_mail_subj, MSG_MAIL_SUBJECT_JA_TASK_COMP_UUS, 
-                 sge_u32c(jobid), sge_u32c(taskid), lGetString(jep, JB_job_name));
-         sprintf(sge_mail_body,
+         snprintf(sge_mail_subj, sizeof(sge_mail_subj),
+                  MSG_MAIL_SUBJECT_JA_TASK_COMP_UUS, sge_u32c(jobid),
+                  sge_u32c(taskid), lGetString(jep, JB_job_name));
+         snprintf(sge_mail_body, sizeof(sge_mail_body),
                  MSG_MAIL_BODY_COMP_SSSSSSSSSSSI, 
                  sge_mail_subj,
                  u,
@@ -1961,9 +1967,9 @@ lListElem *jr
                  (ru_maxvmem == 0.0) ? "NA":sge_dstring_get_string(&maxvmem_string),
                  exit_status);
       } else {
-         sprintf(sge_mail_subj, MSG_MAIL_SUBJECT_JOB_COMP_US,
-                 sge_u32c(jobid), lGetString(jep, JB_job_name));
-         sprintf(sge_mail_body, 
+         snprintf(sge_mail_subj, sizeof(sge_mail_subj), MSG_MAIL_SUBJECT_JOB_COMP_US,
+                  sge_u32c(jobid), lGetString(jep, JB_job_name));
+         snprintf(sge_mail_body, sizeof(sge_mail_body),
                  MSG_MAIL_BODY_COMP_SSSSSSSSSSSI,
                  sge_mail_subj,
                  u,
@@ -2015,13 +2021,13 @@ lListElem *jr
       sprintf(exitstr, "%d", exit_status);
       if (pe_task_id_str == NULL) {
          if (job_is_array(jep)) {
-            sprintf(sge_mail_subj,
+            snprintf(sge_mail_subj, sizeof(sge_mail_subj),
                     MSG_MAIL_SUBJECT_JA_TASK_STATE_UUSS,
                     sge_u32c(jobid),
                     sge_u32c(taskid),
                     lGetString(jep, JB_job_name),
                     action);
-            sprintf(sge_mail_body,
+            snprintf(sge_mail_body, sizeof(sge_mail_body),
                     MSG_MAIL_BODY_STATE_SSSSSSSSSSSSS,
                     sge_mail_subj, 
                     exitstr, 
@@ -2033,12 +2039,12 @@ lListElem *jr
                     err_str, 
                     comment);
          } else {
-            sprintf(sge_mail_subj,
+            snprintf(sge_mail_subj, sizeof(sge_mail_subj),
                     MSG_MAIL_SUBJECT_JOB_STATE_USS,
                     sge_u32c(jobid),
                     lGetString(jep, JB_job_name),
                     action);
-            sprintf(sge_mail_body, 
+            snprintf(sge_mail_body, sizeof(sge_mail_body),
                     MSG_MAIL_BODY_STATE_SSSSSSSSSSSSS,
                     sge_mail_subj,
                     exitstr, 

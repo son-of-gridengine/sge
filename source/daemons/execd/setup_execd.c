@@ -139,11 +139,11 @@ void sge_setup_sge_execd(sge_gdi_ctx_class_t *ctx, const char* tmp_err_file_name
    }
    sge_switch2admin_user();
    log_state_set_log_as_admin_user(1);
-   sprintf(execd_messages_file, "%s/%s/%s", spool_dir, 
-           unqualified_hostname, ERR_FILE);
+   snprintf(execd_messages_file, sizeof(execd_messages_file), "%s/%s/%s",
+            spool_dir, unqualified_hostname, ERR_FILE);
    log_state_set_log_file(execd_messages_file);
 
-   sprintf(execd_spool_dir, "%s/%s", spool_dir, 
+   snprintf(execd_spool_dir, sizeof(execd_spool_dir), "%s/%s", spool_dir,
            unqualified_hostname);
    
    DPRINTF(("Making directories----------------------------\n"));

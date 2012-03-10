@@ -45,6 +45,7 @@
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
 #include "uti/sge_tq.h"
+#include "uti/sge_string.h"
 
 #include "gdi/sge_gdi2.h"
 #include "gdi/sge_gdi_packet_pb_cull.h"
@@ -564,8 +565,8 @@ sge_gdi_packet_execute_external(sge_gdi_ctx_class_t* ctx, lList **answer_list,
       int retries = 0;
       bool do_ping = false;
 
-      strcpy(rcv_host, host);
-      strcpy(rcv_commproc, commproc);
+      sge_strlcpy(rcv_host, host, CL_MAXHOSTLEN);
+      sge_strlcpy(rcv_commproc, commproc, CL_MAXHOSTLEN);
 
       /*running this loop as long as configured in gdi_retries, doing a break after getting a gdi_request*/
       do {

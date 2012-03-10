@@ -632,14 +632,14 @@ lList *cull_parse_job_parameter(u_long32 uid, const char *username, const char *
    }
    
    for_each(ep, cmdline) {
-      sprintf(error_string, MSG_ANSWER_UNKOWNOPTIONX_S,
-         lGetString(ep, SPA_switch));
+      snprintf(error_string, sizeof(error_string), MSG_ANSWER_UNKOWNOPTIONX_S,
+               lGetString(ep, SPA_switch));
       cp = lGetString(ep, SPA_switch_arg);
       if (cp) {
-         strcat(error_string, " ");
-         strcat(error_string, cp);
+         sge_strlcat(error_string, " ", sizeof(error_string));
+         sge_strlcat(error_string, cp, sizeof(error_string));
       }
-      strcat(error_string, "\n");
+      sge_strlcat(error_string, "\n", sizeof(error_string));
       answer_list_add(&answer, error_string,
                       STATUS_ENOIMP, ANSWER_QUALITY_ERROR);
    } 

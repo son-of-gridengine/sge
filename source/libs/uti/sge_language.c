@@ -181,6 +181,7 @@ int sge_init_languagefunc(char *package, char *localeDir)
      /* no package name given, using default one */
      if (packName == NULL) {
         packName = malloc(sizeof(char)*(strlen(SGE_DEFAULT_PACKAGE)+strlen(sge_get_arch()) + 2));
+        /* RATS: ignore */
         sprintf(packName, "%s/%s", sge_get_arch(), SGE_DEFAULT_PACKAGE);
      }
       
@@ -212,6 +213,7 @@ int sge_init_languagefunc(char *package, char *localeDir)
             locDir = strdup("/usr/lib/locale");
         } else {
             locDir = malloc(sizeof(char)*(strlen(root)+strlen(SGE_DEFAULT_LOCALEDIR) + 100));
+            /* RATS: ignore */
             sprintf(locDir, "%s/%s", root, SGE_DEFAULT_LOCALEDIR);
         }
         sge_free(&root);
@@ -261,6 +263,7 @@ int sge_init_languagefunc(char *package, char *localeDir)
      /* packName, locDir and language strings are now surely not NULL,
         so we can now try to setup the choosen language package (*.mo - file) */
      pathName = malloc(sizeof(char)*(strlen(locDir)+strlen(language)+strlen(packName)+100));
+     /* RATS: ignore */
      sprintf(pathName,"%s/%s/LC_MESSAGES/%s.mo",locDir,language,packName);
      DPRINTF_(("locale directory: >%s<\n",locDir));
      DPRINTF_(("package file:     >%s.mo<\n",packName));
@@ -666,24 +669,26 @@ const char *sge_gettext_(int msg_id, const char *msg_str)
          char* org_message = NULL;
          char* trans_message = NULL;
          const char* gettext_return_string = NULL;
-
+         size_t len;
          
          gettext_return_string = sge_gettext__((char*)msg_str);
 
          org_message   = malloc(strlen(msg_str)+1);
-         trans_message = malloc(strlen(gettext_return_string)+1+8); /* max "(99999) "*/
+         len = strlen(gettext_return_string)+1+8; /* max "(99999) "*/
+         trans_message = malloc(len);
          new_mp        = malloc(sizeof(sge_error_message_t));
          if (new_mp != NULL && org_message != NULL && trans_message != NULL) {
             DPRINTF_(("add new hash table entry for message id: %d\n",msg_id));
             new_mp->id = msg_id;
             new_mp->category = 0;
             new_mp->counter = 1;
-            strcpy(org_message, msg_str);
+            strcpy(org_message, msg_str); /* RATS: ignore */
             new_mp->message = org_message;
             if (msg_id <= 99999) {
-               sprintf( trans_message , "[%d] %s", msg_id, gettext_return_string);
+               /* RATS: ignore */
+               snprintf(trans_message, len, "[%d] %s", msg_id, gettext_return_string);
             } else {
-               sprintf( trans_message , "%s", gettext_return_string);
+               snprintf(trans_message, len, "%s", gettext_return_string);
             }
             new_mp->local_message = trans_message;
 

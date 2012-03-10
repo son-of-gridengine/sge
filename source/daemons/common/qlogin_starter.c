@@ -288,9 +288,9 @@ int get_exit_code_of_qrsh_starter(int* exit_code)
                      tmpdir ? tmpdir : "0", taskid ? taskid : "0");
       if (tmpdir != NULL) {
          if (taskid != NULL) {
-            sprintf(buffer, "%s/qrsh_exit_code.%s", tmpdir, taskid);
+            snprintf(buffer, sizeof(buffer), "%s/qrsh_exit_code.%s", tmpdir, taskid);
          } else {
-            sprintf(buffer, "%s/qrsh_exit_code", tmpdir);
+            snprintf(buffer, sizeof(buffer), "%s/qrsh_exit_code", tmpdir);
          }
 
          errorfile = fopen(buffer, "r");
@@ -359,9 +359,9 @@ const char *get_error_of_qrsh_starter(void)
                      tmpdir ? tmpdir : "0", taskid ? taskid : "0");
       if (tmpdir != NULL) {
          if (taskid != NULL) {
-            sprintf(buffer, "%s/qrsh_error.%s", tmpdir, taskid);
+            snprintf(buffer, sizeof(buffer), "%s/qrsh_error.%s", tmpdir, taskid);
          } else {
-            sprintf(buffer, "%s/qrsh_error", tmpdir);
+            snprintf(buffer, sizeof(buffer), "%s/qrsh_error", tmpdir);
          }
 
          errorfile = fopen(buffer, "r");

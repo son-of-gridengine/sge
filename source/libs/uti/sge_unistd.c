@@ -147,7 +147,7 @@ static int sge_domkdir(const char *path_, int fmode, bool exit_on_error, bool ma
 bool sge_unlink(const char *prefix, const char *suffix) 
 {
    int status;
-   stringT str;
+   char file[SGE_PATH_MAX];
  
    DENTER(TOP_LAYER, "sge_unlink");
  
@@ -158,16 +158,16 @@ bool sge_unlink(const char *prefix, const char *suffix)
    }
  
    if (prefix) {
-      sprintf(str, "%s/%s", prefix, suffix);
+      snprintf(file, sizeof(file), "%s/%s", prefix, suffix);
    } else {
-      sprintf(str, "%s", suffix);
+      snprintf(file, sizeof(file), "%s", suffix);
    }
  
-   DPRINTF(("file to unlink: \"%s\"\n", str));
-   status = unlink(str);
+   DPRINTF(("file to unlink: \"%s\"\n", file));
+   status = unlink(file);
  
    if (status) {
-      ERROR((SGE_EVENT, MSG_FILE_UNLINKFAILED_SS, str, strerror(errno)));
+      ERROR((SGE_EVENT, MSG_FILE_UNLINKFAILED_SS, file, strerror(errno)));
       DEXIT;
       return false;
    } else {
@@ -450,7 +450,7 @@ int sge_rmdir(const char *cp, dstring *error)
    while (SGE_READDIR_R(dir, (SGE_STRUCT_DIRENT *)dirent, &dent)==0 && dent!=NULL) {
       if (strcmp(dent->d_name, ".") && strcmp(dent->d_name, "..")) {
  
-         sprintf(fname, "%s/%s", cp, dent->d_name);
+         snprintf(fname, sizeof(fname), "%s/%s", cp, dent->d_name);
  
 #ifndef WIN32 /* lstat not called */
          if (SGE_LSTAT(fname, &statbuf)) {

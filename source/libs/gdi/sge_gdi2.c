@@ -63,6 +63,7 @@
 #include "uti/sge_env.h"
 #include "uti/sge_time.h"
 #include "uti/sge_bootstrap.h"
+#include "uti/sge_string.h"
 
 #include "sgeobj/sge_feature.h"
 #include "sgeobj/sge_multi_MA_L.h"
@@ -749,10 +750,12 @@ sge_gdi2_get_any_request(sge_gdi_ctx_class_t *ctx, char *rhost,
          DEBUG((SGE_EVENT,"received from: %s,"sge_U32CFormat"\n",sender->comp_host, 
                 sge_u32c(sender->comp_id) ));
          if (rhost[0] == '\0') {
-            strcpy(rhost, sender->comp_host); /* If we receive from anybody return the sender */
+            /* If we receive from anybody return the sender */
+            sge_strlcpy(rhost, sender->comp_host, CL_MAXHOSTLEN);
          }
          if (commproc[0] == '\0') {
-            strcpy(commproc , sender->comp_name); /* If we receive from anybody return the sender */
+            /* If we receive from anybody return the sender */
+            sge_strlcpy(commproc, sender->comp_name, CL_MAXHOSTLEN);
          }
       }
 

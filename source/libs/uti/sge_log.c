@@ -62,6 +62,8 @@ typedef struct {
    int              gui_log;
 } log_state_t;
 
+/* Fixme:  Any log message must fit into this.  What guarantee do we
+   have that it can't overflow?  */
 typedef struct {
    char  log_buffer[4 * MAX_STRING_SIZE]; /* a.k.a. SGE_EVENT */
 } log_buffer_t;
@@ -560,8 +562,8 @@ int sge_log(int log_level, const char *mesg, const char *file__, const char *fun
 
    /* Make sure to have at least a one byte logging string */
    if (!mesg || mesg[0] == '\0') {
-      sprintf(buf, MSG_LOG_CALLEDLOGGINGSTRING_S, 
-              mesg ? MSG_LOG_ZEROLENGTH : MSG_POINTER_NULL);
+      snprintf(buf, sizeof(buf), MSG_LOG_CALLEDLOGGINGSTRING_S,
+               mesg ? MSG_LOG_ZEROLENGTH : MSG_POINTER_NULL);
       mesg = buf;
    }
 
@@ -578,15 +580,15 @@ int sge_log(int log_level, const char *mesg, const char *file__, const char *fun
 
    switch(log_level) {
       case LOG_PROF:
-         strcpy(levelstring, MSG_LOG_PROFILING);
+         sge_strlcpy(levelstring, MSG_LOG_PROFILING, sizeof(levelstring));
          levelchar = 'P';
          break;
       case LOG_CRIT:
-         strcpy(levelstring, MSG_LOG_CRITICALERROR);
+         sge_strlcpy(levelstring, MSG_LOG_CRITICALERROR, sizeof(levelstring));
          levelchar = 'C';
          break;
       case LOG_ERR:
-         strcpy(levelstring, MSG_LOG_ERROR);
+         sge_strlcpy(levelstring, MSG_LOG_ERROR, sizeof(levelstring));
          levelchar = 'E';
          break;
       case LOG_WARNING:

@@ -278,7 +278,7 @@ const char *user
       return 0;
 
    }
-   strcat(exp_path, pwd->pw_dir);
+   sge_strlcat(exp_path, pwd->pw_dir, SGE_PATH_MAX);
 
    sge_free(&buffer);
    DEXIT;

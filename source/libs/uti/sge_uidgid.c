@@ -1742,15 +1742,15 @@ static void uidgid_state_init(struct uidgid_state_t* theState)
 const char*
 sge_get_file_passwd(void)
 {  
-   static char file[4096] = "";
+   static char file[SGE_PATH_MAX];
 
    DENTER(TOP_LAYER, "sge_get_file_passwd");
-   if (file[0] == '\0') {
+   {
       const char *sge_root = sge_get_root_dir(0, NULL, 0, 1);
       const char *sge_cell = sge_get_default_cell();
 
       sprintf(file, "%s/%s/common/sgepasswd", sge_root, sge_cell);
-   } 
+   }
    DEXIT;
    return file;
 }

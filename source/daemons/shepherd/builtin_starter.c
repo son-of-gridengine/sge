@@ -572,11 +572,12 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       if (stdin_path_for_fs && strlen(stdin_path_for_fs) > 0) {
          /* Generate fs_input_tmp_path (etc.) from tmpdir+stdin_path */
          fs_stdin_file = strrchr(stdin_path_for_fs, '/') + 1;
-         sprintf(fs_stdin_tmp_path, "%s/%s", tmpdir, fs_stdin_file);
+         snprintf(fs_stdin_tmp_path, sizeof(fs_stdin_tmp_path), "%s/%s",
+                  tmpdir, fs_stdin_file);
 
          /* Set fs_input_path to old stdin_path and then
             stdin_path to just generated fs_input_tmp_path */
-         strcpy(fs_stdin_path, stdin_path_for_fs);
+         sge_strlcpy(fs_stdin_path, stdin_path_for_fs, sizeof(fs_stdin_path));
       }
 
       /* Modify stdin_path, stdout_path and stderr_path only if
@@ -595,11 +596,12 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    if (fs_stdout) {
       if (stdout_path && strlen(stdout_path) > 0) {
          fs_stdout_file = strrchr(stdout_path, '/') + 1;
-         sprintf(fs_stdout_tmp_path, "%s/%s", tmpdir, fs_stdout_file);
+         snprintf(fs_stdout_tmp_path, sizeof(fs_stdout_tmp_path), "%s/%s",
+                  tmpdir, fs_stdout_file);
       }
 
       if (stdout_path && strlen(stdout_path) > 0) {
-         strcpy(fs_stdout_path, stdout_path);
+         sge_strlcpy(fs_stdout_path, stdout_path, sizeof(fs_stdout_path));
       }
 
       /* prolog, pe_start, job, epilog and pe_stop get the
@@ -611,11 +613,12 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    if (fs_stderr) {
       if (stderr_path && strlen(stderr_path) > 0) {
          fs_stderr_file = strrchr( stderr_path, '/') + 1;
-         sprintf(fs_stderr_tmp_path, "%s/%s", tmpdir, fs_stderr_file);
+         snprintf(fs_stderr_tmp_path, sizeof(fs_stderr_tmp_path),
+                  "%s/%s", tmpdir, fs_stderr_file);
       }
 
       if (stderr_path && strlen(stderr_path) > 0) {
-         strcpy(fs_stderr_path, stderr_path);
+         sge_strlcpy(fs_stderr_path, stderr_path, sizeof(fs_stderr_path));
       }
   
       if (!merge_stderr) {
@@ -818,9 +821,9 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    }
    if (use_login_shell) {
       strcpy(argv0, "-");
-      strcat(argv0, shell_basename);
+      sge_strlcat(argv0, shell_basename, sizeof(argv0));
    } else {
-      strcpy(argv0, shell_basename);
+      sge_strlcat(argv0, shell_basename, sizeof(argv0));
    }
 
    sge_set_def_sig_mask(NULL, NULL);
@@ -837,15 +840,15 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       queue = get_conf_val("queue");
       host = get_conf_val("host");
       job_id = get_conf_val("job_id");
-      sprintf(str_title,
-              "SGE Interactive Job %s on %s in Queue %s",
-              job_id, host, queue);
+      snprintf(str_title, sizeof(str_title),
+               "SGE Interactive Job %s on %s in Queue %s",
+               job_id, host, queue);
    }
 
 
 #if defined(INTERIX)
-   if(strcmp(childname, "job") == 0) {
-      strcpy(job_user, target_user);
+   if (strcmp(childname, "job") == 0) {
+      sge_strlcpy(job_user, target_user, sizeof(job_user));
    }
 #endif
 /* ---- switch to target user */
@@ -995,7 +998,8 @@ int sge_set_environment()
    FCLOSE(fp);
    return 0;
 FCLOSE_ERROR:
-   sprintf(err_str, MSG_FILE_ERRORCLOSEINGXY_SS, filename, strerror(errno));
+   snprintf(err_str, sizeof(err_str), MSG_FILE_ERRORCLOSEINGXY_SS,
+            filename, strerror(errno));
    return 1;
 }
 
@@ -1504,7 +1508,7 @@ int use_starter_method /* If this flag is set the shell path contains the
 
       /* build trace string */
       pc = err_str;
-      sprintf(pc, "execvp(%s,", filename);
+      snprintf(pc, sizeof(err_str), "execvp(%s,", filename);
       pc += strlen(pc);
       for (pstr = args; pstr && *pstr; pstr++) {
       
@@ -1631,7 +1635,8 @@ int use_starter_method /* If this flag is set the shell path contains the
          /* Aaaah - execvp() failed */
          {
             char failed_str[2048+128];
-            sprintf(failed_str, "%s failed: %s", err_str, strerror(errno));
+            snprintf(failed_str, sizeof(failed_str), "%s failed: %s",
+                     err_str, strerror(errno));
 
             /* most of the problems here are related to the shell
                i.e. -S /etc/passwd */
@@ -1663,11 +1668,12 @@ char *err_str
    command = sge_strtok_r(method, " ", &context);
 
    if (strncmp(command, "/", 1) != 0) {
-      sprintf(err_str, "%s \"%s\" is not an absolute path", name, command);
+      /* caller defines err_str[2048] */
+      snprintf(err_str, 2048, "%s \"%s\" is not an absolute path", name, command);
       ret = -1;
    } else {
       if (SGE_STAT(command, &statbuf) != 0) {
-         sprintf(err_str, "%s \"%s\" can't be read: %s (%d)",
+         snprintf(err_str, 2048, "%s \"%s\" can't be read: %s (%d)",
             name, command, strerror(errno), errno);
          ret = -1;
       } else {
@@ -1678,7 +1684,8 @@ char *err_str
             file_perm = file_perm | S_IXGRP;
          }
          if ((statbuf.st_mode & file_perm) == 0) {
-            sprintf(err_str, "%s \"%s\" is not executable", name, command);
+           /* err_str known to be 2048 long */
+            snprintf(err_str, 2048, "%s \"%s\" is not executable", name, command);
             ret = -1;
          }
       }
@@ -1729,8 +1736,8 @@ int type
       /* An error occurred */
       if (errno != ENOENT) {
          char *t;
-         sprintf(err_str, "can't stat() \"%s\" as %s: %s",
-            base, name, strerror(errno));
+         snprintf(err_str, sizeof(err_str), "can't stat() \"%s\" as %s: %s",
+                  base, name, strerror(errno));
          sprintf(err_str+strlen(err_str), " KRB5CCNAME=%s uid="uid_t_fmt" gid="uid_t_fmt" ",
                  (t=getenv("KRB5CCNAME"))?t:"none", getuid(), getgid());
          {
