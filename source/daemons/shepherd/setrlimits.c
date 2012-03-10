@@ -549,17 +549,31 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
 #  define limit_fmt "%d%s"
 #endif
 
-      sge_switch2start_user();
+      errno = 0;
+      if (sge_switch2start_user()) {
+         snprintf(trace_str, sizeof(trace_str),
+                  "failed to switch user for setrlimit: %s", strerror(errno));
+         shepherd_trace(trace_str);
+         return;
+      }
 #if defined(IRIX)
       ret = setrlimit64(resource, rlp);
 #else
       ret = setrlimit(resource,rlp);
 #endif
-      sge_switch2admin_user();  
+      errno = 0;
+      if (sge_switch2admin_user()) {
+         snprintf(trace_str, sizeof(trace_str),
+                  "failed to switch user for setrlimit: %s", strerror(errno));
+         shepherd_trace(trace_str);
+         return;
+      }
       if (ret) {
          /* exit or not exit ? */
-         sprintf(trace_str, "setrlimit(%s, {"limit_fmt", "limit_fmt"}) failed: %s",
-            limit_str, FORMAT_LIMIT(rlp->rlim_cur), FORMAT_LIMIT(rlp->rlim_max), strerror(errno));
+         snprintf(trace_str, sizeof(trace_str),
+                  "setrlimit(%s, {"limit_fmt", "limit_fmt"}) failed: %s",
+                  limit_str, FORMAT_LIMIT(rlp->rlim_cur),
+                  FORMAT_LIMIT(rlp->rlim_max), strerror(errno));
          strip_bs(trace_str);
          shepherd_trace(trace_str);
       } else {

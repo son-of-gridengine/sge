@@ -81,8 +81,11 @@ int main(int argc, char **argv)
       return 1;
    }
    
-   sge_setgid(pw->pw_gid);
-   sge_setuid(pw->pw_uid);
+   if (setgid(pw->pw_gid) || setuid(pw->pw_uid)) {
+      fprintf(stderr, MSG_SETUID_FAILED);
+      fprintf(stderr, "\n");
+      return 1;
+   }
  
    argv += 2;
    execvp(argv[0], argv);

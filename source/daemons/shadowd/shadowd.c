@@ -290,7 +290,7 @@ char shadow_err_file[SGE_PATH_MAX];
    }
 
    if (sge_switch2admin_user()) {
-      CRITICAL((SGE_EVENT, SFNMAX, MSG_SHADOWD_CANTSWITCHTOADMIN_USER));
+      CRITICAL((SGE_EVENT, SFNMAX, MSG_SHADOWD_CANTSWITCH_USER));
       SGE_EXIT((void**)&ctx, 1);
    }
 
@@ -378,7 +378,10 @@ char shadow_err_file[SGE_PATH_MAX];
                         strcat(qmaster_name, prognames[QMASTER]); 
                         DPRINTF(("qmaster_name: "SFN"\n", qmaster_name)); 
 
-                        sge_switch2start_user();
+                        if (sge_switch2start_user()) {
+                           ERROR((SGE_EVENT, SFNMAX, MSG_SHADOWD_CANTSWITCH_USER));
+                           SGE_EXIT((void**)&ctx, 1);
+                        }
                         ret = startprog(NULL, binpath, qmaster_name, NULL);
                         sge_switch2admin_user();
                         if (ret) {

@@ -1109,6 +1109,8 @@
 #define MSG_GDI_USAGE_d_OPT_TIME           "[-d time]"
 #define MSG_GDI_UTEXT_d_OPT_TIME           _MESSAGE(60632, _("duration of time window"))
 
+#define MSG_SWITCH_USER_S                  _MESSAGE(60633, _("can't switch _user/group: "SFN))
+
 /*
  * Objects and components
  */

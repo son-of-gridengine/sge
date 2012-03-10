@@ -80,6 +80,7 @@
 #include "get_path.h"
 #include "sig_handlers.h"
 #include "sge.h"
+#include "msg_common.h"
 
 #ifdef COMPILE_DC
 #  include "ptf.h"
@@ -407,9 +408,13 @@ int do_ck_to_do(sge_gdi_ctx_class_t *ctx, bool is_qmaster_down) {
 
       notify_ptf();
 
-      sge_switch2start_user();
-      ptf_update_job_usage();
-      sge_switch2admin_user();
+      errno = 0;
+      if (sge_switch2start_user()) { /* fixme: exit? */
+         CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
+      } else {
+         ptf_update_job_usage();
+         sge_switch2admin_user();
+      }
 
       /* check for job limits */
       if (check_for_queue_limits()) {

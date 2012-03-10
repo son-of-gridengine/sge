@@ -100,7 +100,13 @@ void sge_pset_create_processor_set(void)
    if (strcasecmp("UNDEFINED",get_conf_val("processors"))) {
       int ret;
 
-      sge_switch2start_user();
+      errno = 0;
+      if (sge_switch2start_user()) {
+         shepherd_trace("can't switch user in sge_pset_create_processor_set");
+         shepherd_state = SSTATE_PROCSET_NOTSET;
+         shepherd_error(1, strerror(errno));
+         return;
+      }
       if ((ret=set_processor_range(get_conf_val("processors"),
                  (int) strtol(get_conf_val("job_id"), NULL, 10),
                  err_str)) != PROC_SET_OK) {
@@ -128,7 +134,14 @@ void sge_pset_free_processor_set(void)
       char err_str[2*SGE_PATH_MAX+128];
       int ret;
 
-      sge_switch2start_user();
+      errno = 0;
+      if (sge_switch2start_user()) {
+         shepherd_trace("failed to switch user in free_processor_set: %s",
+                        strerror(errno));
+         shepherd_state = SSTATE_PROCSET_NOTFREED;
+         shepherd_error(1, strerror(errno));
+         return;
+      }
       if ((ret=free_processor_set(err_str)) != PROC_SET_OK) {
          sge_switch2admin_user();
          switch (ret) {

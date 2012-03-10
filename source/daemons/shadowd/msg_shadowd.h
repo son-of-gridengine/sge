@@ -41,7 +41,7 @@
 #define MSG_SHADOWD_CANTREADQMASTERSPOOLDIRFROMX_S       _MESSAGE(35000, _("can't read qmaster_spool_dir from "SFQ))
 #define MSG_SHADOWD_FOUNDRUNNINGSHADOWDWITHPIDXNOTSTARTING_I   _MESSAGE(35001, _("found running shadowd with pid %d - not starting"))
 #define MSG_SHADOWD_CANTCHANGETOQMASTERSPOOLDIRX_S       _MESSAGE(35002, _("can't change to qmaster spool directory: "SFN))
-#define MSG_SHADOWD_CANTSWITCHTOADMIN_USER       _MESSAGE(35003, _("can't switch to admin_user"))
+#define MSG_SHADOWD_CANTSWITCH_USER                      _MESSAGE(35003, _("can't switch user"))
 #define MSG_SHADOWD_FAILEDTOLOCKQMASTERSOMBODYWASFASTER       _MESSAGE(35004, _("failed to lock qmaster -- somebody else was faster"))
 #define MSG_SHADOWD_CANTSTARTQMASTER       _MESSAGE(35005, _("can't start qmaster"))
 #define MSG_SHADOWD_DELAYINGSHADOWFUNCFORXSECONDS_U   _MESSAGE(35006, _("delaying shadow function for "sge_U32CFormat" seconds"))        

@@ -527,18 +527,12 @@ int sge_kill(int pid, u_long32 sge_signal, u_long32 job_id, u_long32 ja_task_id,
       FCLOSE(fp);
    }
 
-   /*
-   ** NECSX4 && NECSX5 !!!
-   **
-   ** execd.uid==0 && execd.euid==admin_user
-   **    => kill does neither send SIGCONT-signals nor return an error
-   */
-#if defined(NECSX4) || defined(NECSX5) || defined(DARWIN)
-   sge_switch2start_user();
-#endif    
+#if defined(DARWIN)
+   sge_switch2start_user();  /* fixme: check return */
    if (kill(pid, direct_signal?sig:SIGTTIN)) {
-#if defined(NECSX4) || defined(NECSX5) || defined(DARWIN)
-      sge_switch2admin_user();
+      sge_switch2admin_user();  /* fixme: check return */
+#else
+   if (kill(pid, direct_signal?sig:SIGTTIN)) {
 #endif   
       if (errno == ESRCH)
          goto CheckShepherdStillRunning;
