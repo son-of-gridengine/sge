@@ -400,7 +400,7 @@ lList **found  /* tmp list that contains one entry for each found u/p */
             }
          }
 
-         /* make sure this user or project is in the non�project sub-tree 
+         /* make sure this user or project is in the non-project sub-tree
             portion of the share tree only once */
          if (lGetElemStr(*found, STN_name, name)) {
             ERROR((SGE_EVENT, MSG_STREE_USERPRJTWICE_SS, objname, name));

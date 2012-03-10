@@ -1480,6 +1480,10 @@ static bool sge_decrypt(char *intext, int inlen, char *outbuf, int* outsize)
 
 #else
 
+/* This is obviously junk with the hardwired key, but it could be
+   revamped to do more secure handling of ids with the SGE certicates,
+   but without CSP, a la sgepasswd.  It also looks like the place to
+   add MUNGE, for instance.  */
 /*
 ** MT-NOTE: EVP based sge_encrypt() is not MT safe
 */

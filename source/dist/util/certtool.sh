@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Set file permissions of Grid Engine distribution
+# Create set of Windows CSP certificates from SGE certificates installed in $SGE_ROOT
 #
 #___INFO__MARK_BEGIN__
 ##########################################################################
@@ -33,17 +33,6 @@
 #
 ##########################################################################
 #___INFO__MARK_END__
-#
-#
-# The $OPTFILES are not mandatory for a distribution and will be set only if
-# they exist
-#
-# This script must be called by user root on a machine where user root has
-# permissions to change the ownership of a file
-# 
-# It is not necessary to run this script if the distribtuon has been
-# installed with pkgadd, since pkgadd takes care about the correct
-# permissions.
 #
 
 PATH=/bin:/usr/bin:/usr/sbin

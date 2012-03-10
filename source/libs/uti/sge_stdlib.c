@@ -473,6 +473,20 @@ int sge_setegid(gid_t gid) {
    return ret;
 }
 
+/****** uti/stdlib/sge_maybe_set_dumpable() ************************************
+*  NAME
+*     sge_maybe_set_dumpable() -- maybe allow core dumps after sge_setuid & al
+*
+*  SYNOPSIS
+*     void sge_maybe_set_dumpable(void gid)
+*
+*  FUNCTION
+*     Conditionally allows dumping core after calls to sge_setuid & al.
+*     The condition is that SGE_ENABLE_COREDUMP is set in the environment.
+*
+*  NOTES
+*     MT-NOTE: sge_maybe_set_dumpable() is not MT safe
+*/
 void sge_maybe_set_dumpable(void) {
   if (getenv("SGE_ENABLE_COREDUMP") != NULL)
      sge_dumpable = true;

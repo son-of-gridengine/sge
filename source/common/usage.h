@@ -68,7 +68,7 @@ enum {
    OA_NODE_SHARES_LIST,
    OA_PATH,  
    OA_PATH_LIST,  
-   OA_FILE_LIST,
+   OA_FILE_LIST,      /* unused -- apparently the same as path_list */
    OA_PRIORITY,
    OA_RESOURCE_LIST,
    OA_SERVER,
