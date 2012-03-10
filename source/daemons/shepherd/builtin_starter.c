@@ -326,7 +326,10 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
 
 #if defined(ALPHA)
    /* setlogin() stuff */
-   sge_switch2start_user();
+   errno = 0;
+   if (sge_switch2start_user()) {
+      shepherd_error(1, "switch2start_user failed: %s", strerror(errno));
+   }
    if (!geteuid()) {
       if (setlogin(target_user)) {
          sge_switch2admin_user();

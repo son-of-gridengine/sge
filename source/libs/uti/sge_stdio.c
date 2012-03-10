@@ -375,7 +375,11 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
    DENTER(TOP_LAYER, "sge_peopen_r");
 
    if (sge_has_admin_user()) {
-      sge_switch2start_user();
+      errno = 0;
+      if (sge_switch2start_user()) {
+         ERROR((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
+         DRETURN(-1);
+      }
    }
    myuid = geteuid();
    tuid = myuid;

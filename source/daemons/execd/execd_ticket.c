@@ -30,6 +30,8 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+#include <errno.h>
+
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
 
@@ -41,6 +43,7 @@
 #include "dispatcher.h"
 #include "execd_ticket.h"
 #include "msg_execd.h"
+#include "msg_common.h"
 
 #ifdef COMPILE_DC
 #  include "ptf.h"
@@ -92,10 +95,14 @@ int do_ticket(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg)
             ptf_errstr(ptf_error)));
       }
 
-      sge_switch2start_user();
-      DPRINTF(("ADJUST PRIORITIES\n"));
-      ptf_adjust_job_priorities();
-      sge_switch2admin_user();
+      errno = 0;
+      if (sge_switch2start_user()) {
+         DPRINTF(("ADJUST PRIORITIES\n"));
+         ptf_adjust_job_priorities();
+         sge_switch2admin_user();
+      } else {
+         CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
+      }
    }
 #endif
 
