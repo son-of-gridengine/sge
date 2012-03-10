@@ -41,6 +41,7 @@
 #define MSG_COMMAND_RUNCOMMANDASUSERNAME_S     _MESSAGE(57001, _("run commandline under "SFN" of given user"))
 #define MSG_COMMAND_EXECUTEFAILED_S          _MESSAGE(57002, _("can't execute command "SFQ))
 #define MSG_SYSTEM_RESOLVEUSERFAILED_S       _MESSAGE(57003, _("can't resolve username "SFQ))
+#define MSG_SETUID_FAILED                    _MESSAGE(57004, _("can't set uid or gid"))
 
 /* 
 ** utilbin/gdi_request.c

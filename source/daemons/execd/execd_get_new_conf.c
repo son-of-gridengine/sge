@@ -31,6 +31,7 @@
 /*___INFO__MARK_END__*/
 
 #include <string.h>
+#include <errno.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_string.h"
@@ -90,7 +91,10 @@ int do_get_new_conf(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg)
          queue priority if this execd alternates to SGE-Mode */
       lListElem *job, *jatask, *petask;
 
-      sge_switch2start_user();
+      errno = 0;
+      if (sge_switch2start_user()) {
+         CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
+      }
 
       for_each(job, *(object_type_get_master_list(SGE_TYPE_JOB))) {
          lListElem *master_queue;
