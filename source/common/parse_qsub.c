@@ -696,7 +696,7 @@ u_long32 flags
 
 /*----------------------------------------------------------------------------*/
 
-      /* "-i path_name" */
+      /* "-i path_list" */
 
       if (!strcmp("-i", *sp)) {
          lList *path_list = NULL;
@@ -1184,7 +1184,7 @@ u_long32 flags
       }
             
 /*----------------------------------------------------------------------------*/
-      /* "-o path_name" */
+      /* "-o path_list" */
 
       if (!strcmp("-o", *sp)) {
          lList *stdout_path_list = NULL;

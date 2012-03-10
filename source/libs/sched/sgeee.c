@@ -3122,7 +3122,7 @@ sge_calc_tickets( scheduler_all_data_t *lists,
 
             /* Loop through all the jobs calculating the functional tickets and
                find the job with the most functional tickets.  Move it to the
-               top of the list� and start the process all over again with the
+               top of the list and start the process all over again with the
                remaining jobs. */
 
             for(i=0; i<max; i++) {
