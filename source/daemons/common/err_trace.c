@@ -319,7 +319,8 @@ int shepherd_trace(const char *format, ...)
    if (shepherd_trace_fp != NULL) {
       sge_dstring_init(&ds, buffer, sizeof(buffer));
 
-      sprintf(header_str, "%s ["uid_t_fmt":"pid_t_fmt"]: ", sge_ctime(0, &ds), geteuid(), getpid());
+      snprintf(header_str, sizeof(header_str), "%s ["uid_t_fmt":"pid_t_fmt"]: ",
+               sge_ctime(0, &ds), geteuid(), getpid());
 
       if (format != NULL) {
          va_list     ap;
@@ -399,8 +400,8 @@ void shepherd_error(int do_exit, const char *format, ...)
    }
    if (shepherd_error_fp != NULL) {
       sge_dstring_init(&ds, buffer, sizeof(buffer));
-      sprintf(header_str, "%s ["uid_t_fmt":"pid_t_fmt"]: ",
-              sge_ctime(0, &ds), geteuid(), getpid());
+      snprintf(header_str, sizeof(header_str), "%s ["uid_t_fmt":"pid_t_fmt"]: ",
+               sge_ctime(0, &ds), geteuid(), getpid());
 
       sh_str2file(header_str, sge_dstring_get_string(&message), shepherd_error_fp);
    }
@@ -901,7 +902,8 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
                 */
                sge_seteuid(old_euid);
                if (fchmod(fd, 0666) == -1) {
-                  sprintf(buffer, "can't fchmod(fd, 0666): %s\n", strerror(errno));
+                  snprintf(buffer, sizeof(buffer),
+                          "can't fchmod(fd, 0666): %s\n", strerror(errno));
                   shepherd_panic(buffer);
                   return;
                }
@@ -923,7 +925,8 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
          } else {
             /* Can't get jobuser_id -> grant access for everyone */
             if (fchmod(fd, 0666)==-1) {
-               sprintf(buffer, "could not fchmod(): %s", strerror(errno));
+               snprintf(buffer, sizeof(buffer),
+                        "could not fchmod(): %s", strerror(errno));
                shepherd_panic(buffer);
             }
          }

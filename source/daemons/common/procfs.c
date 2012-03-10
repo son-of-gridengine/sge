@@ -234,7 +234,7 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
          continue;
 
 #if defined(SOLARIS) || defined(ALPHA)
-      sprintf(procnam, "%s/%s", PROC_DIR, dent->d_name);
+      snprintf(procnam, sizeof(procnam), "%s/%s", PROC_DIR, dent->d_name);
       if ((fd = open(procnam, O_RDONLY, 0)) == -1) {
          DPRINTF(("open(%s) failed: %s\n", procnam, strerror(errno)));
          continue;
@@ -243,7 +243,7 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
       if (!strcmp(dent->d_name, "self"))
          continue;
 
-      sprintf(procnam, PROC_DIR "/%s/status", dent->d_name);
+      snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/status", dent->d_name);
       if (!(fp = fopen(procnam, "r")))
          continue;
 #endif
@@ -327,7 +327,8 @@ FCLOSE_ERROR:
                if (shepherd_trace) {
                   char err_str[256];
 
-                  sprintf(err_str, MSG_SGE_KILLINGPIDXY_UI , sge_u32c(pid), groups);
+                  snprintf(err_str, sizeof(err_str), MSG_SGE_KILLINGPIDXY_UI,
+                           sge_u32c(pid), groups);
                   shepherd_trace(err_str);
                }
 
@@ -337,8 +338,8 @@ FCLOSE_ERROR:
                if (shepherd_trace) {
                   char err_str[256];
 
-                  sprintf(err_str, MSG_SGE_DONOTKILLROOTPROCESSXY_UI ,
-                     sge_u32c(atol(dent->d_name)), groups);
+                  snprintf(err_str, sizeof(err_str), MSG_SGE_DONOTKILLROOTPROCESSXY_UI,
+                           sge_u32c(atol(dent->d_name)), groups);
                   shepherd_trace(err_str);
                }
             }
@@ -449,7 +450,7 @@ time_t last_time
             continue;
          }
       }
-      sprintf(procnam, PROC_DIR "/%s/stat", dent->d_name);
+      snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/stat", dent->d_name);
 
       if (SGE_STAT(procnam, &fst)) {
          if (errno != ENOENT) {
@@ -466,7 +467,7 @@ time_t last_time
       /*if (pr == NULL || fst.st_mtime > last_time) {*/
       {
 #else
-         sprintf(procnam, "%s/%s", PROC_DIR, dent->d_name);
+         snprintf(procnam, sizeof(procnam), "%s/%s", PROC_DIR, dent->d_name);
 #endif
          if ((fd = open(procnam, O_RDONLY, 0)) == -1) {
             if (errno != ENOENT) {
@@ -543,7 +544,7 @@ time_t last_time
          char procnam[256];
          lList *groupTable = lGetPosList(pr, pos_groups);
 
-         sprintf(procnam, PROC_DIR "/%s/status", dent->d_name);
+         snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/status", dent->d_name);
          if (SGE_STAT(procnam, &fst) != 0) {
             if (errno != ENOENT) {
 #ifdef MONITOR_PDC
@@ -754,7 +755,7 @@ time_t last_time
       char procnam[256];
       uint64 new_iochars = 0UL;
 
-      sprintf(procnam, PROC_DIR "/%s/io", dent->d_name);
+      snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/io", dent->d_name);
 
       /* This io processing needs to be enabled in the kernel */
       if (SGE_STAT(procnam, &fst) == 0) {

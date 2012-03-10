@@ -83,6 +83,7 @@
 #endif
 
 #include "uti/sge_stdlib.h"
+#include "uti/sge_string.h"
 
 #include "msg_utilbin.h"
 #include "juti/juti.h"
@@ -601,8 +602,8 @@ static auth_result_t get_crypted_password(const char* username, char* buffer, si
 #define BUFSIZE 1024
    char buf[BUFSIZE];
    struct userpw *pw = NULL;
-   
-   strncpy(buf, username, BUFSIZE);
+
+   sge_strlcpy(buf, username, BUFSIZE);
    pw = getuserpw(buf);
    if(pw == NULL) {
       error_handler->error(MSG_AUTHUSER_USER_UNKNOWN_S, username);
@@ -629,10 +630,10 @@ static auth_result_t get_crypted_password(const char* username, char* buffer, si
          error_handler->error(MSG_AUTHUSER_NO_SHADOW_ENTRY_S, username);
          return JUTI_AUTH_FAILED;
       }
-      strncpy(buffer, pres->sp_pwdp, size);
+      sge_strlcpy(buffer, pres->sp_pwdp, size);
 #endif
    } else {
-      strncpy(buffer, pw->pw_passwd, size);
+      sge_strlcpy(buffer, pw->pw_passwd, size);
    }
 #endif
    return JUTI_AUTH_SUCCESS;
@@ -789,6 +790,7 @@ static int GetSidStrings(HANDLE hToken,
             szDomainName, &dwMaxDomainName,
             &SidNameUse);
          (*pppszGroupNames)[i] = (char*)malloc(sizeof(char) * (strlen(szDomainName) + strlen(szGroupName) + 2));            
+         /* RATS: ignore */
          sprintf((*pppszGroupNames)[i], "%s\\%s", szDomainName, szGroupName);            
       }
    }

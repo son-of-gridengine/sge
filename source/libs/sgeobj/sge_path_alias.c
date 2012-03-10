@@ -144,10 +144,10 @@ static int path_alias_read_from_file(lList **path_alias_list, lList **alpp,
    FILE *fd;
    char buf[10000];
    char err[MAX_STRING_SIZE];
-   char origin[SGE_PATH_MAX];
-   char submit_host[SGE_PATH_MAX];
-   char exec_host[SGE_PATH_MAX];
-   char translation[SGE_PATH_MAX];
+   char origin[CL_MAXHOSTLEN];
+   char submit_host[CL_MAXHOSTLEN];
+   char exec_host[CL_MAXHOSTLEN];
+   char translation[CL_MAXHOSTLEN];
    lListElem *pal;
    SGE_STRUCT_STAT sb;
    int ret = 0;
@@ -193,14 +193,17 @@ static int path_alias_read_from_file(lList **path_alias_list, lList **alpp,
       exec_host[0]   = '\0';
       translation[0] = '\0';   
 
-      sscanf(buf, "%s %s %s %s", origin, submit_host, exec_host, translation);
+      /* See CL_MAXHOSTNAMELEN_LENGTH for width */
+      sscanf(buf, "%256s %256s %256s %256s",
+	     origin, submit_host, exec_host, translation);
 
       /*
        * check for correctness of path alias file
        */
       if (*origin == '\0' || *submit_host == '\0' || *exec_host == '\0' ||
             *translation == '\0') {
-         sprintf(err, MSG_ALIAS_INVALIDSYNTAXOFPATHALIASFILEX_S, file_name);
+         snprintf(err, sizeof(err),
+                  MSG_ALIAS_INVALIDSYNTAXOFPATHALIASFILEX_S, file_name);
          answer_list_add(alpp, err, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR);
          ret = -1;
          break;
@@ -306,19 +309,19 @@ int path_alias_list_initialize(lList **path_alias_list,
       pwd = sge_getpwnam_r(user, &pw_struct, buffer, size);
 
       if (!pwd) {
-         sprintf(err, MSG_USER_INVALIDNAMEX_S, user);
+         snprintf(err, sizeof(err), MSG_USER_INVALIDNAMEX_S, user);
          answer_list_add(alpp, err, STATUS_ENOSUCHUSER, ANSWER_QUALITY_ERROR);
          sge_free(&buffer);
          DRETURN(-1);
       }
       if (!pwd->pw_dir) {
-         sprintf(err, MSG_USER_NOHOMEDIRFORUSERX_S, user);
+         snprintf(err, sizeof(err), MSG_USER_NOHOMEDIRFORUSERX_S, user);
          answer_list_add(alpp, err, STATUS_EDISK, ANSWER_QUALITY_ERROR);
          sge_free(&buffer);
          DRETURN(-1);
       }
-      sprintf(filename[0], "%s/%s", cell_root, PATH_ALIAS_COMMON_FILE);
-      sprintf(filename[1], "%s/%s", pwd->pw_dir, PATH_ALIAS_HOME_FILE);
+      snprintf(filename[0], SGE_PATH_MAX, "%s/%s", cell_root, PATH_ALIAS_COMMON_FILE);
+      snprintf(filename[1], SGE_PATH_MAX, "%s/%s", pwd->pw_dir, PATH_ALIAS_HOME_FILE);
 
       sge_free(&buffer);
    }
@@ -332,7 +335,8 @@ int path_alias_list_initialize(lList **path_alias_list,
       for (i=0; i<2; i++) {
          if (path_alias_read_from_file(path_alias_list, 
                                        alpp, filename[i]) != 0) {
-            sprintf(err, MSG_ALIAS_CANTREAD_SS, filename[i], strerror(errno));
+            snprintf(err, sizeof(err), MSG_ALIAS_CANTREAD_SS,
+                     filename[i], strerror(errno));
             answer_list_add(alpp, err, STATUS_EDISK, ANSWER_QUALITY_ERROR);
             DEXIT;
             return -1;

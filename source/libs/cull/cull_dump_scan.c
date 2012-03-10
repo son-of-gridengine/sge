@@ -104,7 +104,7 @@ int lDumpDescr(FILE *fp, const lDescr *dp, int indent)
 
    space[0] = '\0';
    for (i = 0; i < indent; i++)
-      strcat(space, INDENT_STRING);
+      sge_strlcat(space, INDENT_STRING, sizeof(space));
 
    if (!fp) {
       LERROR(LEFILENULL);
@@ -286,7 +286,7 @@ int lDumpElemFp(FILE *fp, const lListElem *ep, int indent)
 
    space[0] = '\0';
    for (i = 0; i < indent; i++)
-      strcat(space, INDENT_STRING);
+      sge_strlcat(space, INDENT_STRING, sizeof(space));
 
    if (!fp) {
       LERROR(LEFILENULL);
@@ -422,7 +422,7 @@ int lDumpObject(FILE *fp, const lListElem *ep, int indent)
 
    space[0] = '\0';
    for (i = 0; i < indent; i++)
-      strcat(space, INDENT_STRING);
+      sge_strlcat(space, INDENT_STRING, sizeof(space));
 
    if (!fp) {
       LERROR(LEFILENULL);
@@ -481,7 +481,7 @@ int lDumpList(FILE *fp, const lList *lp, int indent)
 
    space[0] = '\0';
    for (i = 0; i < indent; i++)
-      strcat(space, INDENT_STRING);
+      sge_strlcat(space, INDENT_STRING, sizeof(space));
 
    if (!fp) {
       LERROR(LEFILENULL);

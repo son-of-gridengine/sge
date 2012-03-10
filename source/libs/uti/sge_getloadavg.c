@@ -507,8 +507,8 @@ static double get_cpu_load()
 {
    int fd = -1;
    int len, i;
-   char buffer[4096];
-   char filename[4096];
+   char buffer[SGE_PATH_MAX];
+   char filename[SGE_PATH_MAX];
    char *p;
    double cpu_load;
    static long cpu_new[CPUSTATES];
@@ -516,7 +516,7 @@ static double get_cpu_load()
    static long cpu_diff[CPUSTATES];
    static double cpu_states[CPUSTATES];
 
-   sprintf(filename, "%s/stat", PROCFS);
+   snprintf(filename, sizeof(filename), "%s/stat", PROCFS);
    fd = open(filename, O_RDONLY);
    if (fd == -1) {
       return -1;

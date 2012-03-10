@@ -807,7 +807,7 @@ unsigned long flags
             cb = fprintf(fp, "%s", pdelis[2]);
          } else {
             cb = strlen(pdelis[2]);
-            sprintf(buff, "%s", pdelis[2]);
+            snprintf(buff, max_len, "%s", pdelis[2]);
          }
       }
       DEXIT;
@@ -840,7 +840,7 @@ unsigned long flags
          }
          else {
             cb = strlen(pdelis[1]);
-            sprintf(buff, "%s", pdelis[1]);
+            snprintf(buff, max_len, "%s", pdelis[1]);
          }
          if (cb <= 0) {
             DPRINTF(("uni_print_list: error writing delimiter 1\n"));
@@ -870,7 +870,7 @@ unsigned long flags
             break;
        
          case lUlongT:
-            sprintf(str, sge_u32, lGetUlong(ep, *rule));
+            snprintf(str, sizeof(str), sge_u32, lGetUlong(ep, *rule));
             break;
 
          case lLongT:
@@ -937,7 +937,7 @@ unsigned long flags
             }
             else {
                cb = strlen(pdelis[0]);
-               sprintf(buff, "%s", pdelis[0]);
+               snprintf(buff, max_len, "%s", pdelis[0]);
             }
             if (cb <= 0) {
                DPRINTF(("uni_print_list: error writing delimiter\n"));
@@ -959,7 +959,7 @@ unsigned long flags
             }
             else {
                cb = strlen(cp);
-               sprintf(buff, "%s", cp);
+               snprintf(buff, max_len, "%s", cp);
             }
             if (cb <= 0) {
                DPRINTF(("uni_print_list: error writing to file\n"));
@@ -985,7 +985,7 @@ unsigned long flags
       }
       else {
          cb = strlen(pdelis[2]);
-         sprintf(buff, "%s", pdelis[2]);
+         snprintf(buff, max_len, "%s", pdelis[2]);
       }
       if (cb <= 0) {
          DPRINTF(("uni_print_list: error writing delimiter 1\n"));

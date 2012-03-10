@@ -228,17 +228,17 @@ void pdc_kill_addgrpid(gid_t add_grp_id, int sig,
    for (; nprocs >= 0; nprocs--, procs++) {
       for (i = 0; i < procs->ki_ngroups; i++) {
          if (procs->ki_groups[i] == add_grp_id) {
-	         char err_str[256];
+            char err_str[256];
 
-	         if (procs->ki_uid != 0 && procs->ki_ruid != 0 &&
+            if (procs->ki_uid != 0 && procs->ki_ruid != 0 &&
                 procs->ki_svuid != 0 &&
                 procs->ki_rgid != 0 && procs->ki_svgid != 0) {
-                kill(procs->ki_pid, sig);
-	             sprintf(err_str, MSG_SGE_KILLINGPIDXY_UI,
-		            sge_u32c(procs->ki_pid), add_grp_id);
+               kill(procs->ki_pid, sig);
+               snprintf(err_str, sizeof(err_str), MSG_SGE_KILLINGPIDXY_UI,
+                        sge_u32c(procs->ki_pid), add_grp_id);
 	    } else {
-	       sprintf(err_str, MSG_SGE_DONOTKILLROOTPROCESSXY_UI ,
-		       sge_u32c(procs->ki_pid), add_grp_id);
+               snprintf(err_str, sizeof(err_str), MSG_SGE_DONOTKILLROOTPROCESSXY_UI,
+                        sge_u32c(procs->ki_pid), add_grp_id);
 	    }
 	    if (shepherd_trace)
 	       shepherd_trace(err_str);
@@ -275,11 +275,11 @@ void pdc_kill_addgrpid(gid_t add_grp_id, int sig,
                 procs->kp_eproc.e_pcred.p_svuid != 0 &&
                 procs->kp_eproc.e_pcred.p_rgid != 0 && procs->kp_eproc.e_pcred.p_svgid != 0) {
                kill(procs->kp_proc.p_pid, sig);
-               sprintf(err_str, MSG_SGE_KILLINGPIDXY_UI ,
-                  sge_u32c(procs->kp_proc.p_pid), add_grp_id);
+               snprintf(err_str, sizeof(err_str), MSG_SGE_KILLINGPIDXY_UI,
+                        sge_u32c(procs->kp_proc.p_pid), add_grp_id);
             } else {
-               sprintf(err_str, MSG_SGE_DONOTKILLROOTPROCESSXY_UI ,
-                  sge_u32c(procs->kp_proc.p_pid), add_grp_id);
+              snprintf(err_str, sizeof(err_str), MSG_SGE_DONOTKILLROOTPROCESSXY_UI,
+                       sge_u32c(procs->kp_proc.p_pid), add_grp_id);
             }
             if (shepherd_trace)
                shepherd_trace(err_str);
@@ -1778,7 +1778,7 @@ int psStartCollector(void)
       unixname[0] = '/';
       if ((getsysinfo(GSI_BOOTEDFILE, &unixname[1],
          sizeof(unixname), NULL, NULL)) <= 0) {
-         strcpy(unixname, _PATH_UNIX);
+         sge_strlcpy(unixname, _PATH_UNIX, sizeof(unixname));
       }
 
       if (nlist(unixname, mem_nl) == -1) {
@@ -2312,9 +2312,9 @@ main(int argc, char **argv)
 
    for (arg=optind; arg<argc; arg++) {
       if (sscanf(argv[arg], OSJOBID_FMT, &osjobid) != 1) {
-	      fprintf(stderr, MSG_SGE_XISNOTAVALIDJOBID_S , argv[arg]);
+         fprintf(stderr, MSG_SGE_XISNOTAVALIDJOBID_S , argv[arg]);
          fprintf(stderr, "\n");
-	      exit(2);
+         exit(2);
       }
       psWatchJob(osjobid);
       numjobs++;

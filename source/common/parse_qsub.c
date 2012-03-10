@@ -2189,7 +2189,7 @@ char *reroot_path(lListElem* pjob, const char *path, lList **alpp) {
    DENTER (TOP_LAYER, "reroot_path");
 
    home = job_get_env_string(pjob, VAR_PREFIX "O_HOME");
-   strcpy(tmp_str, path);
+   sge_strlcpy(tmp_str, path, sizeof(tmp_str));
 
    if (chdir(home) == 0) {
       /* If chdir() succeeds... */
@@ -2205,7 +2205,8 @@ char *reroot_path(lListElem* pjob, const char *path, lList **alpp) {
             /* If they are equal, build a new CWD using the value of the HOME
              * as the root instead of whatever that directory is called by
              * the -(c)wd path. */
-            sprintf(tmp_str3, "%s%s", home, (char *) tmp_str + strlen(tmp_str2));
+            snprintf(tmp_str3, sizeof(tmp_str3), "%s%s", home,
+                     (char *) tmp_str + strlen(tmp_str2));
             strcpy(tmp_str, tmp_str3);
          }
       }

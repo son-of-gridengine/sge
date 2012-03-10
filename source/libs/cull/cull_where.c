@@ -189,7 +189,7 @@ static void lWriteWhereTo_(const lCondition *cp, int depth, FILE *fp)
 
    space[0] = '\0';
    for (i = 0; i < depth; i++)
-      strcat(space, "   ");
+      sge_strlcat(space, "   ", sizeof(space));
 
    switch (cp->op) {
 
@@ -205,43 +205,43 @@ static void lWriteWhereTo_(const lCondition *cp, int depth, FILE *fp)
    case HOSTNAMECMP:
    case SUBSCOPE:
 
-      sprintf(&out[strlen(out)], "%s %s(%d) ", space, 
+      snprintf(out, sizeof(out), "%s %s(%d) ", space,
                lNm2Str(cp->operand.cmp.nm), cp->operand.cmp.nm);
 
       switch (cp->op) {
       case EQUAL:
-         sprintf(&out[strlen(out)], "==");
+         snprintf(&out[strlen(out)], sizeof(out) - strlen(out), "==");
          break;
       case NOT_EQUAL:
-         sprintf(&out[strlen(out)], "!=");
+         snprintf(&out[strlen(out)], sizeof(out) - strlen(out), "!=");
          break;
       case LOWER_EQUAL:
-         sprintf(&out[strlen(out)], "<=");
+         snprintf(&out[strlen(out)], sizeof(out) - strlen(out), "<=");
          break;
       case LOWER:
-         sprintf(&out[strlen(out)], "<");
+         snprintf(&out[strlen(out)], sizeof(out) - strlen(out), "<");
          break;
       case GREATER_EQUAL:
-         sprintf(&out[strlen(out)], ">=");
+         snprintf(&out[strlen(out)], sizeof(out) - strlen(out), ">=");
          break;
       case GREATER:
-         sprintf(&out[strlen(out)], ">");
+         snprintf(&out[strlen(out)], sizeof(out) - strlen(out), ">");
          break;
 
       case BITMASK:
-         sprintf(&out[strlen(out)], "m=");
+         snprintf(&out[strlen(out)], sizeof(out) - strlen(out), "m=");
          break;
 
       case STRCASECMP:
-         sprintf(&out[strlen(out)], "c=");
+         snprintf(&out[strlen(out)], sizeof(out) - strlen(out), "c=");
          break;
 
       case PATTERNCMP:
-         sprintf(&out[strlen(out)], "p=");
+         snprintf(&out[strlen(out)], sizeof(out) - strlen(out), "p=");
          break;
 
       case HOSTNAMECMP:
-         sprintf(&out[strlen(out)], "h=");
+         snprintf(&out[strlen(out)], sizeof(out) - strlen(out), "h=");
          break;
 
       case SUBSCOPE:

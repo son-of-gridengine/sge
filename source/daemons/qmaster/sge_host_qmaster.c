@@ -1178,13 +1178,13 @@ notify(sge_gdi_ctx_class_t *ctx, lListElem *lel, sge_gdi_packet_class_t *packet,
                      jep_JB_job_number = lGetUlong(jep, JB_job_number);
                      jep_JB_job_name   = lGetString(jep, JB_job_name);
 
-                     sprintf(sge_mail_subj, MSG_MAIL_JOBKILLEDSUBJ_US, 
-                             sge_u32c(jep_JB_job_number), 
-                             jep_JB_job_name);
-                     sprintf(sge_mail_body, MSG_MAIL_JOBKILLEDBODY_USS, 
-                             sge_u32c(jep_JB_job_number), 
-                             jep_JB_job_name, 
-                             hostname);
+                     snprintf(sge_mail_subj, sizeof(sge_mail_subj),
+                              MSG_MAIL_JOBKILLEDSUBJ_US,
+                              sge_u32c(jep_JB_job_number), jep_JB_job_name);
+                     snprintf(sge_mail_body, sizeof(sge_mail_body),
+                              MSG_MAIL_JOBKILLEDBODY_USS,
+                              sge_u32c(jep_JB_job_number), jep_JB_job_name,
+                              hostname);
                      cull_mail(QMASTER, mail_users, sge_mail_subj, sge_mail_body, "job abortion");
                   }
     

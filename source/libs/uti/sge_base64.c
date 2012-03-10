@@ -51,6 +51,7 @@ buffer_encode_hex(unsigned char *input, size_t len, unsigned char **output)
       int byte = input[s];
 
       sprintf(buffer, "%02x", byte);
+      /* RATS: ignore */
       strcat((char*) *output, buffer);
    }
    return *output;

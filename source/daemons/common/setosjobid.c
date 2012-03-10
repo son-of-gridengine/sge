@@ -132,7 +132,7 @@ void setosjobid(pid_t sid, gid_t *add_grp_id_ptr, struct passwd *pw)
       }
 #     else
          /* write a default os-jobid to file */
-         sprintf(osjobid, pid_t_fmt, sid);
+         snprintf(osjobid, sizeof(osjobid), pid_t_fmt, sid);
 #     endif
          sge_switch2admin_user();
       } 
