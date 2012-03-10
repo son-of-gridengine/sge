@@ -236,7 +236,7 @@ static int sge_ls_start_ls(const char *qualified_hostname, lListElem *this_ls)
 
    DENTER(TOP_LAYER, "sge_ls_start_ls");
 
-   sprintf(buffer, "%s=%s", "HOST", qualified_hostname);
+   snprintf(buffer, sizeof(buffer), "%s=%s", "HOST", qualified_hostname);
    if (has_to_use_qidle
        && !strcmp(lGetString(this_ls, LS_name), IDLE_LOADSENSOR_NAME)) {
       envp = (char **) malloc(sizeof(char *) * 3);
@@ -674,7 +674,7 @@ static int sge_ls_start(const char *qualified_hostname, const char *binary_path,
           DRETURN(LS_NOT_STARTED);
        }
    
-      strcpy(scriptfiles_buffer, scriptfiles);
+      sge_strlcpy(scriptfiles_buffer, scriptfiles, sizeof(scriptfiles_buffer));
       /* add new load sensors if necessary 
        * and remove tags from the existing load sensors 
        * contained in 'scriptfiles' */

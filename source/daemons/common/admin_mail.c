@@ -274,8 +274,9 @@ void job_related_adminmail(u_long32 progid, lListElem *jr, int is_array, const c
       }
       for (i=0; i<num_files; i++) {
          /* JG: TODO (254): use function creating path */
-         sprintf(shepherd_files[i].filepath, "%s/" sge_u32"."sge_u32"/%s", ACTIVE_DIR, 
-                     jobid, jataskid, shepherd_filenames[i]);
+         snprintf(shepherd_files[i].filepath, SGE_PATH_MAX,
+                  "%s/" sge_u32"."sge_u32"/%s", ACTIVE_DIR, 
+                  jobid, jataskid, shepherd_filenames[i]);
          if (!SGE_STAT(shepherd_files[i].filepath, &shepherd_files[i].statbuf) 
              && (shepherd_files[i].statbuf.st_size > 0)) {
             sge_mail_body_total_size += shepherd_files[i].statbuf.st_size;
@@ -288,7 +289,7 @@ void job_related_adminmail(u_long32 progid, lListElem *jr, int is_array, const c
       sge_mail_body_total = (char*) malloc(sizeof(char) * 
                                            sge_mail_body_total_size); 
       
-      strcpy(sge_mail_body_total, sge_mail_body);
+      strcpy(sge_mail_body_total, sge_mail_body); /* RATS: ignore */
 
       start = strlen(sge_mail_body_total);
       for (i=0; i<num_files; i++) {

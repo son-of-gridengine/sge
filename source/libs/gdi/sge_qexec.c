@@ -127,24 +127,25 @@ sge_tid_t sge_qexecve(sge_gdi_ctx_class_t *ctx,
    DENTER(TOP_LAYER, "sge_qexecve");
 
    if (hostname == NULL) {
-      sprintf(lasterror, MSG_GDI_INVALIDPARAMETER_SS, "sge_qexecve", "hostname");
+      snprintf(lasterror, sizeof(lasterror), MSG_GDI_INVALIDPARAMETER_SS,
+               "sge_qexecve", "hostname");
       DRETURN(NULL);
    }
 
    /* resolve user */
    if (sge_uid2user((uid=getuid()), myname, sizeof(myname)-1, MAX_NIS_RETRIES)) {
-      sprintf(lasterror, MSG_GDI_RESOLVINGUIDTOUSERNAMEFAILED_IS , 
-              uid, strerror(errno));
+      snprintf(lasterror, sizeof(lasterror),
+               MSG_GDI_RESOLVINGUIDTOUSERNAMEFAILED_IS, uid, strerror(errno));
       DRETURN(NULL);
    }
    
    if ((s=getenv("JOB_ID")) == NULL) {
-      sprintf(lasterror, MSG_GDI_MISSINGINENVIRONMENT_S, "JOB_ID");
+      snprintf(lasterror, sizeof(lasterror), MSG_GDI_MISSINGINENVIRONMENT_S, "JOB_ID");
       DRETURN(NULL);
    }
 
    if (sscanf(s, sge_u32, &jobid) != 1) {
-      sprintf(lasterror, MSG_GDI_STRINGISINVALID_SS, s, "JOB_ID");
+      snprintf(lasterror, sizeof(lasterror), MSG_GDI_STRINGISINVALID_SS, s, "JOB_ID");
       DRETURN(NULL);
    }
 
@@ -153,12 +154,13 @@ sge_tid_t sge_qexecve(sge_gdi_ctx_class_t *ctx,
          jataskid = 1;
       } else {
          if (sscanf(s, sge_u32, &jataskid) != 1) {
-            sprintf(lasterror, MSG_GDI_STRINGISINVALID_SS, s, env_var_name);
+            snprintf(lasterror, sizeof(lasterror), MSG_GDI_STRINGISINVALID_SS,
+                     s, env_var_name);
             DRETURN(NULL);
          }
       }
    } else {
-      sprintf(lasterror, MSG_GDI_MISSINGINENVIRONMENT_S, env_var_name);
+      snprintf(lasterror, sizeof(lasterror), MSG_GDI_MISSINGINENVIRONMENT_S, env_var_name);
       DRETURN(NULL);
    }
 
@@ -189,7 +191,7 @@ sge_tid_t sge_qexecve(sge_gdi_ctx_class_t *ctx,
 
    if (init_packbuffer(&pb, 1024, 0) != PACK_SUCCESS) {
       lFreeElem(&petrep);
-      sprintf(lasterror, SFNMAX, MSG_GDI_OUTOFMEMORY);
+      snprintf(lasterror, sizeof(lasterror), "%s", MSG_GDI_OUTOFMEMORY);
       DRETURN(NULL);
    }
 
@@ -203,7 +205,8 @@ sge_tid_t sge_qexecve(sge_gdi_ctx_class_t *ctx,
    lFreeElem(&petrep);
 
    if (ret != CL_RETVAL_OK) {
-      sprintf(lasterror, MSG_GDI_SENDTASKTOEXECDFAILED_SS, hostname, cl_get_error_text(ret));
+      snprintf(lasterror, sizeof(lasterror), MSG_GDI_SENDTASKTOEXECDFAILED_SS,
+               hostname, cl_get_error_text(ret));
       DRETURN(NULL);
    }
   
@@ -218,7 +221,7 @@ sge_tid_t sge_qexecve(sge_gdi_ctx_class_t *ctx,
 
    if (strcmp(tid, "none") == 0) {
       tid = NULL;
-      sprintf(lasterror, MSG_GDI_EXECDONHOSTDIDNTACCEPTTASK_S, hostname);
+      snprintf(lasterror, sizeof (lasterror), MSG_GDI_EXECDONHOSTDIDNTACCEPTTASK_S, hostname);
    }
 
    /* now close message to execd */
@@ -244,7 +247,7 @@ int sge_qwaittid(sge_gdi_ctx_class_t *ctx, sge_tid_t tid, int *status, int optio
       rcv_opt |= OPT_SYNCHRON;
 
    if (tid != NULL && !(rt=LOCATE_RTASK(tid))) {
-      sprintf(lasterror, MSG_GDI_TASKNOTEXIST_S , tid);
+      snprintf(lasterror, sizeof(lasterror), MSG_GDI_TASKNOTEXIST_S, tid);
       DEXIT;
       return -1;
    }
@@ -302,7 +305,8 @@ static int rcv_from_execd(sge_gdi_ctx_class_t *ctx, int options, int tag)
                                  &msg, &msg_len, (options & OPT_SYNCHRON) ? 1:0);
       
       if (ret != CL_RETVAL_OK && ret != CL_RETVAL_SYNC_RECEIVE_TIMEOUT) {
-         sprintf(lasterror, MSG_GDI_MESSAGERECEIVEFAILED_SI , cl_get_error_text(ret), ret);
+         snprintf(lasterror, sizeof(lasterror), MSG_GDI_MESSAGERECEIVEFAILED_SI,
+                  cl_get_error_text(ret), ret);
          DEXIT;
          return -1;
       }
@@ -314,8 +318,9 @@ static int rcv_from_execd(sge_gdi_ctx_class_t *ctx, int options, int tag)
    }
 
    ret = init_packbuffer_from_buffer(&pb, msg, msg_len);     
-   if(ret != PACK_SUCCESS) {
-      sprintf(lasterror,  MSG_GDI_ERRORUNPACKINGGDIREQUEST_S, cull_pack_strerror(ret));
+   if (ret != PACK_SUCCESS) {
+      snprintf(lasterror, sizeof(lasterror), MSG_GDI_ERRORUNPACKINGGDIREQUEST_S,
+               cull_pack_strerror(ret));
       DEXIT;
       return -1;
    }
@@ -339,7 +344,7 @@ static int rcv_from_execd(sge_gdi_ctx_class_t *ctx, int options, int tag)
       /* change state in exited task */
       if (!(rt_rcv = lGetElemStr(remote_task_list, RT_tid, 
             tid))) {
-         sprintf(lasterror, MSG_GDI_TASKNOTFOUND_S, tid);
+         snprintf(lasterror, sizeof(lasterror), MSG_GDI_TASKNOTFOUND_S, tid);
          sge_free(&tid);
          DEXIT;
          return -1;
@@ -352,7 +357,7 @@ static int rcv_from_execd(sge_gdi_ctx_class_t *ctx, int options, int tag)
    case TAG_JOB_EXECUTION:
       /* search task without taskid */
       if (!(rt_rcv = lGetElemStr(remote_task_list, RT_tid, "none"))) {
-         sprintf(lasterror, MSG_GDI_TASKNOTFOUNDNOIDGIVEN_S , tid);
+         snprintf(lasterror, sizeof(lasterror), MSG_GDI_TASKNOTFOUNDNOIDGIVEN_S, tid);
          DEXIT;
          return -1;
       }

@@ -175,7 +175,7 @@ int mailrec_unparse(lList *head, char *mail_str, unsigned int mail_str_len)
    const char *u;
 
    if (!head) {
-      strcpy(mail_str, MSG_NONE);
+      sge_strlcpy(mail_str, MSG_NONE, mail_str_len);
       return 0;
    }
 
@@ -186,9 +186,9 @@ int mailrec_unparse(lList *head, char *mail_str, unsigned int mail_str_len)
          u = MSG_SMALLNULL;
 
       if (!(h = lGetHost(elem, MR_host)))
-         sprintf(tmpstr, "%s", u);
+         snprintf(tmpstr, sizeof(tmpstr), "%s", u);
       else
-         sprintf(tmpstr, "%s@%s", u, h);
+         snprintf(tmpstr, sizeof(tmpstr), "%s@%s", u, h);
 
       if (strlen(tmpstr)+len+1+comma_needed > mail_str_len)
          return 1;              /* forgot the rest */
@@ -198,7 +198,7 @@ int mailrec_unparse(lList *head, char *mail_str, unsigned int mail_str_len)
       else
          comma_needed = 1;      /* need comma after first mailaddress */
 
-      strcat(mail_str, tmpstr);
+      sge_strlcat(mail_str, tmpstr, mail_str_len);
    }
    return 0;
 }

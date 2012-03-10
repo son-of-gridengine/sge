@@ -1434,7 +1434,7 @@ int comm_recv_message(COMM_HANDLE *handle, bool b_synchron,
                /* control message */
                recv_mess->type = tmpbuf[0];
                /* scan subtype */
-               sscanf((char*)&(tmpbuf[1]), "%s", sub_type);
+               sscanf((char*)&(tmpbuf[1]), "%9s", sub_type);
                if (strcmp(sub_type, "WS") == 0) {
                   int row, col, xpixel, ypixel;
                   sscanf((char*)&(tmpbuf[4]),

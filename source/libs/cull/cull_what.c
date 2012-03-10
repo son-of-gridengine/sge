@@ -41,6 +41,7 @@
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
+#include "uti/sge_string.h"
 
 #include "cull/cull_listP.h"
 #include "cull/cull_list.h"
@@ -696,9 +697,9 @@ lEnumeration *lIntVector2What(const lDescr *dp, const int intv[])
     */
    strcpy(fmtstr, "%T(");
    for (i = 0; intv[i] != NoName; i++) {
-      strcat(fmtstr, "%I");
+      sge_strlcat(fmtstr, "%I", sizeof(fmtstr));
    }
-   strcat(fmtstr, ")");
+   sge_strlcat(fmtstr, ")", sizeof(fmtstr));
 
    DPRINTF(("fmtstr: %s\n", fmtstr));
 

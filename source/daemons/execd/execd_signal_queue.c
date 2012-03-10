@@ -41,6 +41,7 @@
 #include "uti/sge_signal.h"
 #include "uti/sge_unistd.h"
 #include "uti/sge_time.h"
+#include "uti/sge_string.h"
 #if defined(DARWIN)
 #  include "uti/sge_uidgid.h"
 #endif
@@ -129,7 +130,7 @@ int do_signal_queue(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg, sge_pack_buffe
                      char tmpstr[SGE_PATH_MAX];
 
                      /* job signaling triggerd by a queue signal */
-                     sprintf(tmpstr, "%s (%s)", sge_sig2str(signal), qnm);
+                     snprintf(tmpstr, sizeof(tmpstr), "%s (%s)", sge_sig2str(signal), qnm);
                      /* if the queue gets suspended and the job is already suspended
                         we do not deliver a signal */
                      if (signal == SGE_SIGSTOP) {
@@ -388,19 +389,21 @@ void sge_send_suspend_mail(u_long32 signal, lListElem *master_q, lListElem *jep,
 
 
        /* make human readable time format */
-       sprintf(job_sub_time_str ,"%s",sge_ctime((time_t)job_sub_time, &ds));
-       sprintf(job_exec_time_str,"%s",sge_ctime((time_t)job_exec_time, &ds));
+       snprintf(job_sub_time_str, sizeof(job_sub_time_str), "%s",
+                sge_ctime((time_t)job_sub_time, &ds));
+       snprintf(job_exec_time_str, sizeof(job_exec_time_str), "%s",
+                sge_ctime((time_t)job_exec_time, &ds));
 
        if (signal == SGE_SIGSTOP) {
           /* suspended */
           if (job_is_array(jep)) {
-              sprintf(mail_subject,
+             snprintf(mail_subject, sizeof(mail_subject),
                       MSG_MAIL_SUBJECT_JA_TASK_SUSP_UUS,
                       sge_u32c(jobid), 
                       sge_u32c(taskid), 
                       job_name);
           } else {
-              sprintf(mail_subject,
+             snprintf(mail_subject, sizeof(mail_subject),
                       MSG_MAIL_SUBJECT_JOB_SUSP_US,
                       sge_u32c(jobid), 
                       job_name);
@@ -409,13 +412,13 @@ void sge_send_suspend_mail(u_long32 signal, lListElem *master_q, lListElem *jep,
        } else if (signal == SGE_SIGCONT ) {
           /* continued */
           if (job_is_array(jep)) {
-              sprintf(mail_subject,
+             snprintf(mail_subject, sizeof(mail_subject),
                       MSG_MAIL_SUBJECT_JA_TASK_CONT_UUS,
                       sge_u32c(jobid), 
                       sge_u32c(taskid), 
                       job_name);
           } else {
-              sprintf(mail_subject,
+             snprintf(mail_subject, sizeof(mail_subject),
                       MSG_MAIL_SUBJECT_JOB_CONT_US,
                       sge_u32c(jobid), 
                       job_name);
@@ -428,14 +431,14 @@ void sge_send_suspend_mail(u_long32 signal, lListElem *master_q, lListElem *jep,
        }
 
        /* create mail body */
-       sprintf(mail_body,
+       snprintf(mail_body, sizeof(mail_body),
                MSG_MAIL_BODY_SSSSS,
                mail_subject,
                job_master_queue,
                job_owner,
                job_sub_time_str,
                job_exec_time_str);
-       sprintf(mail_body, "\n");
+       sge_strlcpy(mail_body, "\n", sizeof(mail_body));
  
        cull_mail(EXECD, mail_users, mail_subject, mail_body, mail_type );
    } 

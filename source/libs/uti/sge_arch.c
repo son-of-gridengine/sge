@@ -306,6 +306,6 @@ const char *sge_get_alias_path(void)
       SGE_EXIT(NULL, 1);
    }
 
-   sprintf(cp, "%s/%s/%s/%s", sge_root, sge_cell, COMMON_DIR, ALIAS_FILE);
+   snprintf(cp, len, "%s/%s/%s/%s", sge_root, sge_cell, COMMON_DIR, ALIAS_FILE);
    DRETURN_(cp);
 }

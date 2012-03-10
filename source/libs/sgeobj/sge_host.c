@@ -296,7 +296,7 @@ int sge_resolve_hostname(const char *hostname, char *unique, int nm)
       if (strcmp(hostname, SGE_UNKNOWN_NAME) != 0) {
          ret = getuniquehostname(hostname, unique, 0);
       } else {
-         strcpy(unique, hostname);
+         sge_strlcpy(unique, hostname, lunique);
       }
 
       break;

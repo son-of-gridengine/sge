@@ -1247,7 +1247,8 @@ static int disabled_year_list(lList **alpp, const char *s, lList **cal, const ch
 
    /* complain about still unused tokens */
    if (scan(NULL, NULL)!=NO_TOKEN) {
-      sprintf(parse_error, MSG_TOKEN_UNRECOGNIZEDSTRING_S , get_string());
+      snprintf(parse_error, sizeof(parse_error),
+               MSG_TOKEN_UNRECOGNIZEDSTRING_S, get_string());
       goto ERROR;
    }
 
@@ -1292,7 +1293,8 @@ static int disabled_year_entry(lListElem **cal) {
          DRETURN(-1);
       }
    } else {
-      sprintf(parse_error, SFNMAX, MSG_ANSWER_GOTEQUALWITHOUTDAYTIMERANGEORSTATE );
+      snprintf(parse_error, sizeof(parse_error), SFNMAX,
+               MSG_ANSWER_GOTEQUALWITHOUTDAYTIMERANGEORSTATE );
       goto ERROR;
    }
 
@@ -1401,7 +1403,8 @@ static int year_day_range(lListElem **tmr) {
          DRETURN(-1);
       }   
       if (tm_yday_cmp(t1, t2)>0) {
-         sprintf(parse_error, SFNMAX, MSG_ANSWER_FIRSTYESTERDAYINRANGEMUSTBEBEFORESECONDYESTERDAY);
+         snprintf(parse_error, sizeof(parse_error), SFNMAX,
+                  MSG_ANSWER_FIRSTYESTERDAYINRANGEMUSTBEBEFORESECONDYESTERDAY);
          lFreeElem(&t1);
          DRETURN(-1);   
       }
@@ -1440,8 +1443,9 @@ static int year_day(lListElem **tm) {
       DRETURN(-1);
    }
 
-   if (scan(NULL, NULL)!=DOT) {   
-      sprintf(parse_error, SFNMAX, MSG_PARSE_MISSINGPOINTAFTERDAY);
+   if (scan(NULL, NULL)!=DOT) {
+      snprintf(parse_error, sizeof(parse_error), SFNMAX,
+               MSG_PARSE_MISSINGPOINTAFTERDAY);
       DRETURN(-1);
    }
    eat_token();
@@ -1450,8 +1454,9 @@ static int year_day(lListElem **tm) {
       DRETURN(-1);
    }
 
-   if (scan(NULL, NULL)!=DOT) {   
-      sprintf(parse_error, SFNMAX, MSG_PARSE_MISSINGPOINTAFTERMONTH );
+   if (scan(NULL, NULL)!=DOT) {
+      snprintf(parse_error, sizeof(parse_error), SFNMAX,
+               MSG_PARSE_MISSINGPOINTAFTERMONTH );
       DRETURN(-1);
    }
    eat_token();
@@ -1479,9 +1484,10 @@ static int range_number(int min, int max, int *ip, const char *name) {
       eat_token();
 
       if (this_number > max || this_number < min) {
-         sprintf(parse_error, MSG_PARSE_WOUTSIDEOFRANGEXYZ_SIIS, 
-               get_string(),  min, max, name);
-         DRETURN(-1);   
+         snprintf(parse_error, sizeof(parse_error),
+                  MSG_PARSE_WOUTSIDEOFRANGEXYZ_SIIS, get_string(),
+                  min, max, name);
+         DRETURN(-1);
       } else {
          if (ip)
             *ip = this_number; 
@@ -1489,7 +1495,8 @@ static int range_number(int min, int max, int *ip, const char *name) {
       }
    }
 
-   sprintf(parse_error, MSG_PARSE_XISNOTAY_SS , get_string(), name);
+   snprintf(parse_error, sizeof(parse_error), MSG_PARSE_XISNOTAY_SS,
+            get_string(), name);
    DRETURN(-1);
 }
 
@@ -1633,7 +1640,8 @@ static int daytime_range(lListElem **tmr) {
       goto ERROR;
    }
    if (scan(NULL, NULL)!=MINUS) {
-      sprintf(parse_error, SFNMAX, MSG_PARSE_MISSINGDASHINDAYTIMERANGE);
+      snprintf(parse_error, sizeof(parse_error), SFNMAX,
+               MSG_PARSE_MISSINGDASHINDAYTIMERANGE);
       goto ERROR;
    }
    eat_token();
@@ -1641,7 +1649,8 @@ static int daytime_range(lListElem **tmr) {
       goto ERROR;
    }
    if (!tm_daytime_cmp(t1, t2)) {
-      sprintf(parse_error, SFNMAX, MSG_PARSE_RANGEBEGISEQUALTOEND);
+      snprintf(parse_error, sizeof(parse_error), SFNMAX,
+               MSG_PARSE_RANGEBEGISEQUALTOEND);
       goto ERROR;
    }
 
@@ -1702,7 +1711,8 @@ static int daytime(lListElem **tm) {
 SUCCESS:
    if (h==24) {
       if (m || s) {
-         sprintf(parse_error, SFNMAX, MSG_PARSE_DAYTIMESBEYOND24HNOTALLOWED);
+         snprintf(parse_error, sizeof(parse_error), SFNMAX,
+                  MSG_PARSE_DAYTIMESBEYOND24HNOTALLOWED);
          DRETURN(-1);
       }
    }
@@ -1735,13 +1745,15 @@ static int action(int *sp) {
    DENTER(TOP_LAYER, "action");
 
    if (scan(NULL, NULL)!=STRING) {
-      sprintf(parse_error, MSG_PARSE_XISNOTASTATESPECIFIER_S, get_string());
+      snprintf(parse_error, sizeof(parse_error),
+               MSG_PARSE_XISNOTASTATESPECIFIER_S, get_string());
       DRETURN(-1);
    } 
 
    s = get_string();
    if ((state = cheap_scan(s, statev, 3, "state specifier"))<0) {
-      sprintf(parse_error, MSG_PARSE_XISNOTASTATESPECIFIER_S, s);
+      snprintf(parse_error, sizeof(parse_error),
+               MSG_PARSE_XISNOTASTATESPECIFIER_S, s);
       DRETURN(-1);
    }
    eat_token();
@@ -1803,7 +1815,8 @@ static int disabled_week_list(lList **alpp, const char *s, lList **cal, const ch
 
    /* complain about still unused tokens */
    if (scan(NULL, NULL)!=NO_TOKEN) {
-      sprintf(parse_error, SFNMAX, MSG_PARSE_UNRECOGNIZEDTOKENATEND);
+      snprintf(parse_error, sizeof(parse_error), SFNMAX,
+               MSG_PARSE_UNRECOGNIZEDTOKENATEND);
       goto ERROR;
    }
 
@@ -1856,7 +1869,8 @@ static int disabled_week_entry(lListElem **cal) {
          goto ERROR;
       }   
    } else {
-      sprintf(parse_error, SFNMAX, MSG_ANSWER_GOTEQUALWITHOUTDAYTIMERANGEORSTATE);
+      snprintf(parse_error, sizeof(parse_error), SFNMAX,
+               MSG_ANSWER_GOTEQUALWITHOUTDAYTIMERANGEORSTATE);
       goto ERROR;
    }
 
@@ -2152,7 +2166,8 @@ static int week_day_range(lListElem **tmr) {
          goto ERROR;
 
       if (tm_wday_cmp(t1, t2)==0) {
-         sprintf(parse_error, SFNMAX, MSG_PARSE_FOUNDUSELESSWEEKDAYRANGE);
+         snprintf(parse_error, sizeof(parse_error), SFNMAX,
+                  MSG_PARSE_FOUNDUSELESSWEEKDAYRANGE);
          goto ERROR;
       }
    }
@@ -2203,12 +2218,14 @@ static int week_day(lListElem **tm) {
    DENTER(TOP_LAYER, "week_day");
 
    if (scan(NULL, NULL)!=STRING) {
-      sprintf(parse_error, SFNMAX, MSG_PARSE_EXPECTEDSTRINGFORWEEKDAY);
+      snprintf(parse_error, sizeof(parse_error), SFNMAX,
+               MSG_PARSE_EXPECTEDSTRINGFORWEEKDAY);
       DRETURN(-1);
    }
    s = get_string();
    if ((wday = cheap_scan(s, weekdayv, 3, "weekday"))<0) {
-      sprintf(parse_error, MSG_PARSE_XISNOTAWEEKDAY_S, s);
+      snprintf(parse_error, sizeof(parse_error),
+               MSG_PARSE_XISNOTAWEEKDAY_S, s);
       DRETURN(-1);
    }
    eat_token();
@@ -2229,7 +2246,7 @@ static int get_number() {
    return number;
 }
 static char *save_error() {
-   strcpy(old_error, parse_error);
+   sge_strlcpy(old_error, parse_error, sizeof(old_error));
    return old_error;
 }
 

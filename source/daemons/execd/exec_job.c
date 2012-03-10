@@ -261,7 +261,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
    dstring cwd_out;
      
    const lList *path_aliases = NULL;
-   char dce_wrapper_cmd[128];
+   char dce_wrapper_cmd[SGE_PATH_MAX];
 
 #if COMPILE_DC
 #if defined(SOLARIS) || defined(ALPHA) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
@@ -396,7 +396,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          }
 
          if (SGE_STAT(tmpdir, &statbuf)) {
-            sprintf(err_str, MSG_SYSTEM_CANTOPENTMPDIR_S, tmpdir);
+            snprintf(err_str, err_length, MSG_SYSTEM_CANTOPENTMPDIR_S, tmpdir);
             sge_free(&pw_buffer);
             DRETURN(-2);
          }
@@ -478,7 +478,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       if (petep == NULL) {
          lFreeList(&processor_set);
 
-         sprintf(hostfilename, "%s/%s/%s", execd_spool_dir, active_dir_buffer, PE_HOSTFILE);
+         snprintf(hostfilename, sizeof(hostfilename), "%s/%s/%s",
+                  execd_spool_dir, active_dir_buffer, PE_HOSTFILE);
          fp = fopen(hostfilename, "w");
          if (!fp) {
             snprintf(err_str, err_length, MSG_FILE_NOOPEN_SS,  hostfilename, strerror(errno));
@@ -546,7 +547,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       /*************************** finished writing sge hostfile  ********/
 
       /********************** setup environment file ***************************/
-      sprintf(fname, "%s/%s/environment", execd_spool_dir, active_dir_buffer);
+      snprintf(fname, sizeof(fname), "%s/%s/environment", execd_spool_dir,
+               active_dir_buffer);
       fp = fopen(fname, "w");
       if (!fp) {
          snprintf(err_str, err_length, MSG_FILE_NOOPEN_SS, fname, strerror(errno));
@@ -675,16 +677,11 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          } else {
             if (lGetString(jep, JB_script_file) != NULL) {
                /* JG: TODO: use some function to create path */
-               sprintf(script_file, "%s/%s/" sge_u32, execd_spool_dir, EXEC_DIR,
-                       job_id);
+               snprintf(script_file, sizeof(script_file), "%s/%s/" sge_u32,
+                        execd_spool_dir, EXEC_DIR, job_id);
             } else {
-               /* 
-                * This is an error that will be handled in shepherd.
-                * When we implement binary submission (Issue #25), this case
-                * might become valid and the binary to execute might be the
-                * first argument to execute.
-                */
-               sprintf(script_file, "none");
+               /* binary, handled in shepherd */
+               snprintf(script_file, sizeof(script_file), "none");
             }
          }
 
@@ -748,7 +745,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       }
 
       var_list_set_string(&environmentList, "JOB_SCRIPT", script_file);
-      sprintf(fname, "%s/%s", binary_path, arch);
+      snprintf(fname, sizeof(fname), "%s/%s", binary_path, arch);
       var_list_set_string(&environmentList, "SGE_BINARY_PATH", fname);
       
       /* JG: TODO (ENV): do we need REQNAME and REQUEST?
@@ -815,7 +812,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
                    SGE_SHELL, shell_path, SGE_PATH_MAX);
 
       if (shell_path[0] == 0) {
-         strcpy(shell_path, lGetString(master_q, QU_shell));
+         sge_strlcpy(shell_path, lGetString(master_q, QU_shell),
+                     sizeof(shell_path));
       }
       var_list_set_string(&environmentList, "SHELL", shell_path);
 
@@ -827,7 +825,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          var_list_set_string(&environmentList, "PE", lGetString(jatep, JAT_granted_pe));
          /* forward PE_HOSTFILE only to master task */
          if (petep == NULL) {
-            sprintf(buffer, "%s/%s/%s", execd_spool_dir, active_dir_buffer, PE_HOSTFILE);
+            snprintf(buffer, sizeof(buffer), "%s/%s/%s", execd_spool_dir,
+                     active_dir_buffer, PE_HOSTFILE);
             var_list_set_string(&environmentList, "PE_HOSTFILE", buffer);
          }
          /* for tightly integrated jobs, also set the rsh_command SGE_RSH_COMMAND */
@@ -874,7 +873,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       {
          char buffer[SGE_PATH_MAX]; 
 
-         sprintf(buffer, "%s/%s", execd_spool_dir, active_dir_buffer);  
+         snprintf(buffer, sizeof(buffer), "%s/%s", execd_spool_dir, active_dir_buffer);  
          var_list_set_string(&environmentList, VAR_PREFIX "JOB_SPOOL_DIR", buffer);
       }
 
@@ -932,7 +931,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
 
       /**************** write out config file ******************************/
       /* JG: TODO (254) use function sge_get_active_job.... */
-      sprintf(fname, "%s/config", active_dir_buffer);
+      snprintf(fname, sizeof(fname), "%s/config", active_dir_buffer);
       fp = fopen(fname, "w");
       if (!fp) {
          lFreeList(&environmentList);
@@ -1465,7 +1464,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       fprintf(fp, "use_afs=1\n");
       
       shepherd_name = SGE_COSHEPHERD;
-      sprintf(coshepherd_path, "%s/%s/%s", binary_path, sge_get_arch(), shepherd_name);
+      snprintf(coshepherd_path, sizeof(coshepherd_path), "%s/%s/%s",
+               binary_path, sge_get_arch(), shepherd_name);
       fprintf(fp, "coshepherd=%s\n", coshepherd_path);
       set_token_cmd = mconf_get_set_token_cmd();
       fprintf(fp, "set_token_cmd=%s\n", set_token_cmd ? set_token_cmd : "none");
@@ -1525,7 +1525,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
             fprintf(fp, "qrsh_control_port=%s\n", lGetString(elem, VA_value));
          }
         
-         sprintf(daemon, "%s/utilbin/%s/", sge_root, arch);
+         snprintf(daemon, sizeof(daemon), "%s/utilbin/%s/", sge_root, arch);
         
          if(JOB_TYPE_IS_QLOGIN(jb_now)) {
             char* qlogin_daemon = mconf_get_qlogin_daemon();
@@ -1534,9 +1534,9 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          } else {
             if(JOB_TYPE_IS_QRSH(jb_now)) {
                char* rsh_daemon = mconf_get_rsh_daemon();
-               strcat(daemon, "rshd");
+               sge_strlcat(daemon, "rshd", sizeof(daemon));
                if(strcasecmp(rsh_daemon, "none") == 0) {
-                  strcat(daemon, " -l");
+                  sge_strlcat(daemon, " -l", sizeof(rsh_daemon));
                   fprintf(fp, "rsh_daemon=%s\n", daemon);
                   write_osjob_id = 0; /* will be done by our rshd */
                } else {
@@ -1557,9 +1557,9 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
             } else {
                if(JOB_TYPE_IS_QRLOGIN(jb_now)) {
                   char* rlogin_daemon = mconf_get_rlogin_daemon();
-                  strcat(daemon, "rlogind");
+                  sge_strlcat(daemon, "rlogind", sizeof(daemon));
                   if(strcasecmp(rlogin_daemon, "none") == 0) {
-                     strcat(daemon, " -l");
+                     sge_strlcat(daemon, " -l", sizeof(daemon));
                      fprintf(fp, "rlogin_daemon=%s\n", daemon);
                      write_osjob_id = 0; /* will be done by our rlogind */
                   } else {   
@@ -1641,11 +1641,13 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
    }
 
    shepherd_name = SGE_SHEPHERD;
-   sprintf(shepherd_path, "%s/%s/%s", binary_path, arch, shepherd_name);
+   snprintf(shepherd_path, sizeof(shepherd_path), "%s/%s/%s", binary_path,
+            arch, shepherd_name);
 
    if (SGE_STAT(shepherd_path, &buf)) {
       /* second chance: without architecture */
-      sprintf(shepherd_path, "%s/%s", binary_path, shepherd_name);
+      snprintf(shepherd_path, sizeof(shepherd_path), "%s/%s", binary_path,
+               shepherd_name);
       if (SGE_STAT(shepherd_path, &buf)) {
          snprintf(err_str, err_length, MSG_EXECD_NOSHEPHERD_SSS, arch, shepherd_path, strerror(errno));
          DEXIT;
@@ -1666,7 +1668,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       }
    }
    else if (mconf_get_do_credentials() && feature_is_enabled(FEATURE_DCE_SECURITY)) {
-      sprintf(dce_wrapper_cmd, "/%s/utilbin/%s/starter_cred",
+      snprintf(dce_wrapper_cmd, sizeof(dce_wrapper_cmd), "/%s/utilbin/%s/starter_cred",
               sge_root, arch);
       if (SGE_STAT(dce_wrapper_cmd, &buf)) {
          snprintf(err_str, err_length, MSG_DCE_NOSHEPHERDWRAP_SS, dce_wrapper_cmd, strerror(errno));
@@ -1683,7 +1685,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
 
       if (SGE_STAT(coshepherd_path, &buf)) {
          shepherd_name = SGE_COSHEPHERD;
-         sprintf(coshepherd_path, "%s/%s", binary_path, shepherd_name);
+         snprintf(coshepherd_path, sizeof(coshepherd_path), "%s/%s",
+                  binary_path, shepherd_name);
          if (SGE_STAT(coshepherd_path, &buf)) {
             snprintf(err_str, err_length, MSG_EXECD_NOCOSHEPHERD_SSS, arch, coshepherd_path, strerror(errno));
             sge_free(&pag_cmd);
@@ -1704,7 +1707,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       sge_free(&set_token_cmd);
 
    /* JG: TODO (254) use function sge_get_active_job.... */
-      sprintf(fname, "%s/%s", active_dir_buffer, TOKEN_FILE);
+      snprintf(fname, sizeof(fname), "%s/%s", active_dir_buffer, TOKEN_FILE);
       if ((fd = SGE_OPEN3(fname, O_RDWR | O_CREAT | O_TRUNC, 0600)) == -1) {
          snprintf(err_str, err_length, MSG_EXECD_NOCREATETOKENFILE_S, strerror(errno));
          sge_free(&pag_cmd);
@@ -1865,8 +1868,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
        lGetString(jep, JB_cred)) {
 
       char ccname[1024];
-      sprintf(ccname, "KRB5CCNAME=FILE:/tmp/krb5cc_%s_" sge_u32, "sge",
-              job_id);
+      snprintf(ccname, sizeof(ccname),
+               "KRB5CCNAME=FILE:/tmp/krb5cc_%s_" sge_u32, "sge", job_id);
       putenv(ccname);
    }
 
@@ -1881,7 +1884,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
 
    DPRINTF(("**********************CHILD*********************\n"));
    shepherd_name = SGE_SHEPHERD;
-   sprintf(ps_name, "%s-"sge_u32, shepherd_name, job_id);
+   snprintf(ps_name, sizeof(ps_name), "%s-"sge_u32, shepherd_name, job_id);
 
    pag_cmd = mconf_get_pag_cmd();
    shepherd_cmd = mconf_get_shepherd_cmd();
@@ -1912,9 +1915,9 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       DPRINTF(("CHILD - About to exec PAG command job ->%s< under queue -<%s<\n",
               lGetString(jep, JB_job_name), lGetString(master_q, QU_full_name)));
       if (ISTRACE)
-         sprintf(commandline, "exec %s", shepherd_path);
+         snprintf(commandline, sizeof(commandline), "exec %s", shepherd_path);
       else
-        sprintf(commandline, "exec %s -bg", shepherd_path);
+         snprintf(commandline, sizeof(commandline), "exec %s -bg", shepherd_path);
 
       execlp(pag_cmd, pag_cmd, "-c", commandline, NULL);
    }

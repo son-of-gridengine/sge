@@ -107,7 +107,7 @@ lList **alpp,
 print_func_t ostream 
 ) {
    struct passwd *pwd;
-   char fname[SGE_PATH_MAX + 1];
+   char fname[SGE_PATH_MAX];
    char buffer[10000];
    FILE *fp;
    lList *clp_cluster = NULL, *clp_user = NULL;
@@ -120,7 +120,7 @@ print_func_t ostream
    const char* cell_root = ctx->get_cell_root(ctx);
 
    /* cell global settings */
-   sprintf(fname, "%s/common/qtask", cell_root);
+   snprintf(fname, sizeof(fname), "%s/common/qtask", cell_root);
 
    if (!(fp = fopen(fname, "r")) && errno != ENOENT) {
       SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_SGETEXT_CANT_OPEN_SS, fname, strerror(errno)));
@@ -164,7 +164,7 @@ print_func_t ostream
       (*ostream)("%s", SGE_EVENT);
       goto Error;
    }
-   sprintf(fname, "%s/.qtask", pwd->pw_dir);
+   snprintf(fname, sizeof(fname), "%s/.qtask", pwd->pw_dir);
    
    if (!(fp = fopen(fname, "r")) && errno != ENOENT) {
       SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_SGETEXT_CANT_OPEN_SS, fname, strerror(errno)));
@@ -209,7 +209,7 @@ print_func_t ostream
       /* build task name with leading '!' for search operation */
       ro_task_name = (char *)malloc(strlen(task_name) + 2);
       ro_task_name[0] = '!';
-      strcpy(&ro_task_name[1], task_name);
+      strcpy(&ro_task_name[1], task_name); /* RATS: ignore */
 
       if ((cep_dest=lGetElemStr(clp_cluster, CF_name, ro_task_name))) {
          /* do not override cluster global task entry */
@@ -240,7 +240,7 @@ print_func_t ostream
       task_name = lGetString(cep, CF_name);
       if (task_name[0] == '!') {
          char *t = (char *)malloc(strlen(task_name));
-         strcpy(t, &task_name[1]);
+         strcpy(t, &task_name[1]); /* RATS: ignore */
          lSetString(cep, CF_name, t);
          sge_free(&t);
       }
@@ -353,7 +353,8 @@ int close_stdin /* use of qrsh's -nostdin option */
 
    newargv[i] = NULL;
       
-   sprintf(qrsh_path, "%s/bin/%s/qrsh", sge_get_root_dir(1, NULL, 0, 1), sge_get_arch());
+   snprintf(qrsh_path, sizeof(qrsh_path), "%s/bin/%s/qrsh",
+            sge_get_root_dir(1, NULL, 0, 1), sge_get_arch());
 
    return execvp(qrsh_path, newargv);
 }

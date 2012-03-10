@@ -203,9 +203,9 @@ const char *buf
    }
    if (!pid) {
       if (host)
-         sprintf(user_str, "%s@%s", user, host);
+         snprintf(user_str, sizeof(user_str), "%s@%s", user, host);
       else
-         sprintf(user_str, "%s", user);
+         snprintf(user_str, sizeof(user_str), "%s", user);
 
       if (dup2(pipefds[0], 0) < 0) {
          CRITICAL((SGE_EVENT, MSG_MAIL_NODUP_S, strerror(errno)));
