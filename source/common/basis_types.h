@@ -218,9 +218,9 @@ typedef char stringT[MAX_STRING_SIZE];
 #define TYPE_LOG          11
 #define TYPE_LAST         TYPE_LOG
 
-/* save string format quoted */
+/* safe string format quoted */
 #define SFQ  "\"%-.100s\""
-/* save string format non-quoted */
+/* safe string format non-quoted */
 #define SFN  "%-.100s"
 #define SFN2 "%-.200s"
 #define SFNMAX "%-.2047s"  /* write to buffer of size MAX_STRING_SIZE */

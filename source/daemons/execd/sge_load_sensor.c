@@ -587,17 +587,17 @@ static int ls_send_command(lListElem *this_ls, const char *command)
 
 /****** execd/loadsensor/sge_ls_qidle() ***************************************
 *  NAME
-*     sge_ls_qidle -- enable/diable qidle loadsensor 
+*     sge_ls_qidle -- enable/disable qidle loadsensor
 *
 *  SYNOPSIS
 *     static void sge_ls_qidle(int qidle)
 *
 *  FUNCTION
-*     enable/diable qidle loadsensor
+*     enable/disable qidle loadsensor
 *
 *  INPUTS
 *     qidle: 1 - enable qidle
-*            0 - diable qidle 
+*            0 - disable qidle
 ******************************************************************************/
 
 void sge_ls_qidle(int qidle)
@@ -607,17 +607,17 @@ void sge_ls_qidle(int qidle)
 
 /****** execd/loadsensor/sge_ls_gnu_ls() **************************************
 *  NAME
-*     sge_ls_gnu_ls -- enable/diable qloadsensor
+*     sge_ls_gnu_ls -- enable/disable qloadsensor
 *
 *  SYNOPSIS
 *     static void sge_ls_gnu_ls(int gnu_ls)
 *
 *  FUNCTION
-*     enable/diable qidle loadsensor
+*     enable/disable qidle loadsensor
 *
 *  INPUTS
 *     qidle: 1 - enable qidle
-*            0 - diable qidle
+*            0 - disable qidle
 ******************************************************************************/
 void sge_ls_gnu_ls(int gnu_ls)
 {

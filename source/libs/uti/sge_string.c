@@ -320,7 +320,7 @@ char *sge_strtok(const char *str, const char *delimitor)
 *  INPUTS
 *     char *dst       - destination
 *     const char *src - source string (must be '\0' terminated)
-*     size_t dstsize  - size of source string
+*     size_t dstsize  - size of destination string
 *
 *  RESULT
 *     size_t - min{dstsize,strlen(dst)}+strlen(src)
@@ -379,7 +379,7 @@ size_t sge_strlcat(char *dst, const char *src, size_t dstsize) {
 *  INPUTS
 *     char *dst       - destination
 *     const char *src - source string (must be '\0' terminated)
-*     size_t dstsize  - size of source string 
+*     size_t dstsize  - size of destination string
 *
 *  RESULT
 *     size_t - strlen of src, not dst !!!

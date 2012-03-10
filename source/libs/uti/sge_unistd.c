@@ -316,7 +316,7 @@ void sge_exit(void **ref_ctx, int i)
 
 /****** uti/unistd/sge_mkdir() ************************************************
 *  NAME
-*     sge_mkdir() -- Create a directory (and subdirectorys)  
+*     sge_mkdir() -- Create a directory (and necessary parents)
 *
 *  SYNOPSIS
 *     int sge_mkdir(const char *path, int fmode, bool exit_on_error, bool may_not_exist) 

@@ -861,7 +861,7 @@ int _sge_gid2group(gid_t gid, gid_t *last_gid, char **groupnamep, int retries)
 *
 *  FUNCTION
 *     Returns the buffer size required for functions like getpwnam_r.
-*     It can either be retrieved via sysconf, or a bit (20k) buffer
+*     It can either be retrieved via sysconf, or a big (20k) buffer
 *     size is taken.
 *
 *  RESULT
@@ -1771,9 +1771,9 @@ sge_get_file_passwd(void)
 *     static int password_get_size(const char *filename)
 *
 *  FUNCTION
-*     This function counts the lines in sgepasswd file, it also checks if any
-*     line in file is not too long, if such situation occurs that line has
-*     more than MAX_LINE_LENGHT characters the funtion returns error state -1
+*     This function counts the lines in the sgepasswd file, it also checks
+*     that each line is not too long.  If any line has
+*     more than MAX_LINE_LENGTH characters the funtion returns error state -1
 *
 *  INPUTS
 *     const char *filename - name of the file on which the fuction is run
