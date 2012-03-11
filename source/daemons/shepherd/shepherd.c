@@ -163,8 +163,7 @@ static int signalled_ckpt_job = 0; /* marker if signalled a ckpt job */
 
 /* function forward declarations */
 static int notify_tasker(u_long32 exit_status);
-static int start_child(const char *childname, char *script_file,
-                       size_t lscript, pid_t *pidp,
+static int start_child(const char *childname, char *script_file, pid_t *pidp, 
                        int timeout, int ckpt_type, char *status_env);
 static int wait_my_builtin_ijs_child(int pid, const char *childname, int timeout,
    ckpt_info_t *p_ckpt_info, ijs_fds_t *p_ijs_fds, struct rusage *rusage,
@@ -1384,7 +1383,6 @@ int ckpt_type
       ** the status that waitpid and finally start_child returns is
       ** reserved for the exit status of the job
       */
-      notify_tasker(exit_status);
       return exit_status;
    }
 
@@ -1440,9 +1438,6 @@ int ckpt_type
       shepherd_write_usage_file(wait_status, exit_status,
                                 child_signal, start_time,
                                 end_time, &rusage);
-
-      /* this is SEMPA stuff */
-      notify_tasker(exit_status);
 
       /* exit status before conversion */
       if (status_env) {
@@ -3078,103 +3073,6 @@ shepherd_signal_job(pid_t pid, int sig) {
         first_kill_ts = sge_get_gmt();
       }
    }
-}
-
-static int notify_tasker(u_long32 exit_status) 
-{
-   const char *const filename = "environment";
-   FILE *fp;
-   char buf[10000], *name, *value;
-   int line=0;
-   pid_t tasker_pid;
-   char pvm_tasker_pid[1000], sig_info_file[1000], pvm_task_id[1000];
-
-   pvm_tasker_pid[0] = sig_info_file[0] = pvm_task_id[0] = '\0';
-
-   if (!(fp = fopen(filename, "r"))) {
-      shepherd_error(1, "can't open environment file: %s", strerror(errno));
-      return 1;
-   }
-
-   while (fgets(buf, sizeof(buf), fp)) {
-      line++;
-
-      if (strlen(buf) <= 1)     /* empty line or lastline */
-         continue;
-
-      name = strtok(buf, "=");
-      if (!name) {
-         shepherd_error(1, "error reading environment file: line=%d, "
-                        "contents:%s", line, buf);
-         FCLOSE(fp);
-         return 1;
-      }
-      value = strtok(NULL, "\n");
-      if (!value)
-         value = "";
-
-      if (!strcmp(name, "PVM_TASKER_PID"))
-         strcpy(pvm_tasker_pid, value);
-      if (!strcmp(name, "SIG_INFO_FILE"))
-         strcpy(sig_info_file, value);
-      if (!strcmp(name, "PVM_TASK_ID"))
-         strcpy(pvm_task_id, value);
-
-      sge_set_env_value(name, value);
-   }
-
-   FCLOSE(fp);
-
-   if (!pvm_tasker_pid[0] || !sig_info_file[0] || !pvm_task_id[0]) {
-      shepherd_trace("no tasker to notify");
-      return 0;
-   }
-
-   if (sscanf(pvm_tasker_pid, pid_t_fmt, &tasker_pid)!=1) {
-      shepherd_error(1, "unable to parse pvm tasker pid from \"%s\"",
-                     pvm_tasker_pid);
-      return 1;
-   }
-
-   if (shepherd_write_sig_info_file(sig_info_file, pvm_task_id, exit_status)) {
-      char *job_owner;
-      struct passwd *pw=NULL;
-      struct passwd pw_struct;
-      char *buffer;
-      int size;
-
-      /* sig_info_file has to be removed by tasker
-       * and tasker runs in user mode
-       */
-      job_owner = get_conf_val("job_owner");
-      size = get_pw_buffer_size();
-      buffer = sge_malloc(size);
-      pw = sge_getpwnam_r(job_owner, &pw_struct, buffer, size);
-      if (pw == NULL) {
-         shepherd_error(1, "can't get password entry for user \"%s\"", job_owner);
-      }
-      if (chown(sig_info_file, pw->pw_uid, -1) != 0) {
-         dstring ds = DSTRING_INIT;
-         shepherd_error(1, "can't chown sig_info_file %s to user %s: %s",
-                        sig_info_file, job_owner, sge_strerror(errno, &ds));
-         /* no sge_dstring_free needed - shepherd_error exited */
-      }
-      sge_free(&buffer);
-   }
-
-   shepherd_trace("signalling tasker with pid #"pid_t_fmt, tasker_pid);
-
-   sge_switch2start_user();
-   kill(tasker_pid, SIGCHLD);
-#ifdef SIGCLD
-   kill(tasker_pid, SIGCLD);
-#endif
-   sge_switch2admin_user(); 
-
-   return 0;
-FCLOSE_ERROR:
-   shepherd_error(1, MSG_FILE_ERRORCLOSEINGXY_SS, filename, strerror(errno));
-   return 1;
 }
 
 /*------------------------------------------------------------------*/
