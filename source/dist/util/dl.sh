@@ -34,17 +34,37 @@
 
 dl() {
    case $1 in
-      0) unset SGE_DEBUG_LEVEL; unset SGE_ND ;;
-      1) SGE_DEBUG_LEVEL="2 0 0 0 0 0 0 0"; export SGE_DEBUG_LEVEL; SGE_ND="true"; export SGE_ND ;;
-      2) SGE_DEBUG_LEVEL="3 0 0 0 0 0 0 0"; export SGE_DEBUG_LEVEL; SGE_ND="true"; export SGE_ND ;;
-      3) SGE_DEBUG_LEVEL="2 2 0 0 0 0 2 0"; export SGE_DEBUG_LEVEL; SGE_ND="true"; export SGE_ND ;;
-      4) SGE_DEBUG_LEVEL="3 3 0 0 0 0 3 0"; export SGE_DEBUG_LEVEL; SGE_ND="true"; export SGE_ND ;;
-      5) SGE_DEBUG_LEVEL="3 0 0 3 0 0 3 0"; export SGE_DEBUG_LEVEL; SGE_ND="true"; export SGE_ND ;;
-      6) SGE_DEBUG_LEVEL="32 32 32 0 0 32 32 0"; export SGE_DEBUG_LEVEL; SGE_ND="true"; export SGE_ND ;;
-      8|7) echo dl: $1 is a still unused debugging level ;;
-      9) SGE_DEBUG_LEVEL="2 2 2 0 0 0 0 0"; export SGE_DEBUG_LEVEL; SGE_ND="true"; export SGE_ND ;;
-      10) SGE_DEBUG_LEVEL="3 3 3 0 0 0 0 3"; export SGE_DEBUG_LEVEL; SGE_ND="true"; export SGE_ND ;;
-      *) echo "usage: dl <debugging_level>"
-         echo "       debugging_level 0 - 10"
+      0) unset SGE_DEBUG_LEVEL; unset SGE_ND; unset SGE_ENABLE_COREDUMP ;;
+#                         t c b g u h a p
+      1) SGE_DEBUG_LEVEL="2 0 0 0 0 0 0 0"; export SGE_DEBUG_LEVEL ;;
+      2) SGE_DEBUG_LEVEL="3 0 0 0 0 0 0 0"; export SGE_DEBUG_LEVEL ;;
+      3) SGE_DEBUG_LEVEL="2 2 0 0 0 0 2 0"; export SGE_DEBUG_LEVEL ;;
+      4) SGE_DEBUG_LEVEL="3 3 0 0 0 0 3 0"; export SGE_DEBUG_LEVEL ;;
+      5) SGE_DEBUG_LEVEL="3 0 0 3 0 0 3 0"; export SGE_DEBUG_LEVEL ;;
+      6) SGE_DEBUG_LEVEL="32 32 32 0 0 0 32 0"; export SGE_DEBUG_LEVEL ;;
+      7|8) echo "dl: $1 is an unused debugging level" 1>&2; exit 1 ;;
+      9) SGE_DEBUG_LEVEL="2 2 2 0 0 0 0 0"; export SGE_DEBUG_LEVEL ;;
+     10) SGE_DEBUG_LEVEL="3 3 3 0 0 0 0 3"; export SGE_DEBUG_LEVEL ;;
+      *) echo "\
+usage: dl <debugging_level>
+
+<debugging_level> layer(s), classe(s):
+0: turn off
+1: top layer, info
+2: top layer, trace+info
+3: top+CULL+GDI, info
+4: top+CULL+GDI, trace+info
+5: top+GUI+GDI, info
+6: top+CULL+basis+GDI, lock
+7: unused
+8: unused
+9: top+CULL+basis, info
+10: top+CULL+basis+pack, trace+info
+" 1>&2
+      return 1
    esac
+   if [ $1 -ne 0 ]; then
+       SGE_ND=true; export SGE_ND
+       SGE_ENABLE_COREDUMP=true; export SGE_ENABLE_COREDUMP
+   fi
 }

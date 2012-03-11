@@ -205,6 +205,7 @@ end
 
 setenv SGE_DEBUG_LEVEL "$VAR"
 setenv SGE_ND true
+setenv SGE_ENABLE_COREDUMP true
 
 unset VAR
 unset debug 

@@ -43,6 +43,7 @@ switch ($argv[1])
    case "0":
       unsetenv SGE_DEBUG_LEVEL
       unsetenv SGE_ND
+      unsetenv SGE_ENABLE_COREDUMP
       breaksw
    case "1":
       set argv = (-); source $SGE_ROOT/util/dl2.csh
@@ -92,10 +93,23 @@ endsw
 exit
 
 usage:
-echo "usage: dl <debugging_level>"
-echo "       debugging_level 0 - 10"
+cat <<EOF
+usage: dl <debugging_level>
+
+0: turn off
+1: top layer, info
+2: top layer, trace+info
+3: top+CULL+GDI, info
+4: top+CULL+GDI, trace+info
+5: top+GUI+GDI, info
+6: top+CULL+basis+GDI, lock
+7: unused
+8: unused
+9: top+CULL+basis, info
+10: top+CULL+basis+pack, trace+info
+EOF
 exit 1
 
 unused:
-echo "dl: $argv[1] is a still unused debugging level"
+echo "dl: $argv[1] is an unused debugging level"
 exit 1
