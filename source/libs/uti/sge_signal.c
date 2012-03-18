@@ -95,7 +95,7 @@ const sig_mapT sig_map[] =
    {SGE_SIGUSR2, SIGUSR2, "USR2"},
    {SGE_SIGBUS, SIGBUS, "BUS"},
    {SGE_MIGRATE, SIGTTOU, "MIGRATE"},
-   {0, 0}
+   {0, 0, ""}
 };
 
 /****** uti/signal/sge_unmap_signal() *****************************************

@@ -80,6 +80,7 @@ const spool_instr spool_config_subinstr = {
    CULL_SUBLIST,
    false,
    false,
+   NULL,
    NULL
 };
 
@@ -87,13 +88,15 @@ const spool_instr spool_config_instr = {
    CULL_SPOOL,
    true,
    true,
-   &spool_config_subinstr
+   &spool_config_subinstr,
+   NULL
 };
 
 const spool_instr spool_complex_subinstr = {
    CULL_SPOOL,
    false,
    false,
+   NULL,
    NULL
 };
 
@@ -101,21 +104,24 @@ const spool_instr spool_complex_instr = {
    CULL_SPOOL,
    false,
    false,
-   &spool_complex_subinstr
+   &spool_complex_subinstr,
+   NULL
 };
 
 const spool_instr spool_userprj_subinstr = {
    CULL_SUBLIST,
    false,
    false,
-   &spool_userprj_subinstr
+   &spool_userprj_subinstr,
+   NULL
 };
 
 const spool_instr spool_user_instr = {
    CULL_SPOOL | CULL_SPOOL_USER,
    true,
    true,
-   &spool_userprj_subinstr
+   &spool_userprj_subinstr,
+   NULL
 };
 
 static spooling_field *

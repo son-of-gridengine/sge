@@ -734,21 +734,21 @@ qinstance_change_state_on_command(sge_gdi_ctx_class_t *ctx,
    dstring buffer = DSTRING_INIT;
    const char *qinstance_name = qinstance_get_name(this_elem, &buffer);
    change_state_t transitions[] = {
-      { QI_DO_CLEARERROR,     ~QI_ERROR,     qinstance_state_is_error,            true,  sge_qmaster_qinstance_state_set_error,            false},
-      { QI_DO_ENABLE,         ~QI_DISABLED,  qinstance_state_is_manual_disabled,  true,  sge_qmaster_qinstance_state_set_manual_disabled,  false},
-      { QI_DO_DISABLE,        QI_DISABLED,   qinstance_state_is_manual_disabled,  false, sge_qmaster_qinstance_state_set_manual_disabled,  true },
-      { QI_DO_SUSPEND,        QI_SUSPENDED,  qinstance_state_is_manual_suspended, false, sge_qmaster_qinstance_state_set_manual_suspended, true },
-      { QI_DO_UNSUSPEND,      ~QI_SUSPENDED, qinstance_state_is_manual_suspended, true,  sge_qmaster_qinstance_state_set_manual_suspended, false},
+      { QI_DO_CLEARERROR,     ~QI_ERROR,     qinstance_state_is_error,            true,  sge_qmaster_qinstance_state_set_error,            false, NULL},
+      { QI_DO_ENABLE,         ~QI_DISABLED,  qinstance_state_is_manual_disabled,  true,  sge_qmaster_qinstance_state_set_manual_disabled,  false, NULL},
+      { QI_DO_DISABLE,        QI_DISABLED,   qinstance_state_is_manual_disabled,  false, sge_qmaster_qinstance_state_set_manual_disabled,  true, NULL},
+      { QI_DO_SUSPEND,        QI_SUSPENDED,  qinstance_state_is_manual_suspended, false, sge_qmaster_qinstance_state_set_manual_suspended, true, NULL},
+      { QI_DO_UNSUSPEND,      ~QI_SUSPENDED, qinstance_state_is_manual_suspended, true,  sge_qmaster_qinstance_state_set_manual_suspended, false, NULL},
 #ifdef __SGE_QINSTANCE_STATE_DEBUG__
-      { QI_DO_SETERROR,       QI_ERROR,      qinstance_state_is_error,            false, sge_qmaster_qinstance_state_set_error,            true},
-      { QI_DO_SETORPHANED,    QI_ORPHANED,   qinstance_state_is_orphaned,         false, sge_qmaster_qinstance_state_set_orphaned,         true},
-      { QI_DO_CLEARORPHANED,  ~QI_ORPHANED,  qinstance_state_is_orphaned,         true,  sge_qmaster_qinstance_state_set_orphaned,         false},
-      { QI_DO_SETUNKNOWN,     QI_UNKNOWN,    qinstance_state_is_unknown,          false, sge_qmaster_qinstance_state_set_unknown,          true},
-      { QI_DO_CLEARUNKNOWN,   ~QI_UNKNOWN,   qinstance_state_is_unknown,          true,  sge_qmaster_qinstance_state_set_unknown,          false},
-      { QI_DO_SETAMBIGUOUS,   QI_AMBIGUOUS,  qinstance_state_is_ambiguous,        false, sge_qmaster_qinstance_state_set_ambiguous,        true},
-      { QI_DO_CLEARAMBIGUOUS, ~QI_AMBIGUOUS, qinstance_state_is_ambiguous,        true,  sge_qmaster_qinstance_state_set_ambiguous,        false},
+      { QI_DO_SETERROR,       QI_ERROR,      qinstance_state_is_error,            false, sge_qmaster_qinstance_state_set_error,            true, NULL},
+      { QI_DO_SETORPHANED,    QI_ORPHANED,   qinstance_state_is_orphaned,         false, sge_qmaster_qinstance_state_set_orphaned,         true, NULL},
+      { QI_DO_CLEARORPHANED,  ~QI_ORPHANED,  qinstance_state_is_orphaned,         true,  sge_qmaster_qinstance_state_set_orphaned,         false, NULL},
+      { QI_DO_SETUNKNOWN,     QI_UNKNOWN,    qinstance_state_is_unknown,          false, sge_qmaster_qinstance_state_set_unknown,          true, NULL},
+      { QI_DO_CLEARUNKNOWN,   ~QI_UNKNOWN,   qinstance_state_is_unknown,          true,  sge_qmaster_qinstance_state_set_unknown,          false, NULL},
+      { QI_DO_SETAMBIGUOUS,   QI_AMBIGUOUS,  qinstance_state_is_ambiguous,        false, sge_qmaster_qinstance_state_set_ambiguous,        true, NULL},
+      { QI_DO_CLEARAMBIGUOUS, ~QI_AMBIGUOUS, qinstance_state_is_ambiguous,        true,  sge_qmaster_qinstance_state_set_ambiguous,        false, NULL},
 #endif
-      { QI_DO_NOTHING,        0,             NULL,                                true,  NULL,                                 true }
+      { QI_DO_NOTHING,        0,             NULL,                                true,  NULL,                                 true, NULL}
    };
 
    DENTER(TOP_LAYER, "qinstance_change_state_on_command");
