@@ -157,26 +157,26 @@ static int write_RQR_obj(const lListElem *ep, int nm, dstring *buffer,
 
 /* Field lists for context-independent spooling of sub-lists */
 static spooling_field AMEM_sub_fields[] = {
-   {  AMEM_href,           0, NULL,                NULL, NULL, NULL},
-   {  AMEM_value,          0, NULL,                NULL, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  AMEM_href,           0, NULL,                NULL, NULL, NULL, NULL},
+   {  AMEM_value,          0, NULL,                NULL, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field ATIME_sub_fields[] = {
-   {  ATIME_href,          0, NULL,                NULL, NULL, NULL},
-   {  ATIME_value,         0, NULL,                NULL, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  ATIME_href,          0, NULL,                NULL, NULL, NULL, NULL},
+   {  ATIME_value,         0, NULL,                NULL, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field PR_sub_fields[] = {
-   {  PR_name,             0, NULL,                NULL, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  PR_name,             0, NULL,                NULL, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field APRJLIST_sub_fields[] = {
-   {  APRJLIST_href,       0, NULL,                NULL, NULL, NULL},
-   {  APRJLIST_value,      0, NULL,                PR_sub_fields, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  APRJLIST_href,       0, NULL,                NULL, NULL, NULL, NULL},
+   {  APRJLIST_value,      0, NULL,                PR_sub_fields, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field SO_sub_fields[] = {
@@ -189,55 +189,55 @@ static spooling_field SO_sub_fields[] = {
 };
 
 static spooling_field ASOLIST_sub_fields[] = {
-   {  ASOLIST_href,        0, NULL,                NULL, NULL, NULL},
-   {  ASOLIST_value,       0, NULL,                SO_sub_fields, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  ASOLIST_href,        0, NULL,                NULL, NULL, NULL, NULL},
+   {  ASOLIST_value,       0, NULL,                SO_sub_fields, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field US_sub_fields[] = {
-   {  US_name,             0, NULL,                NULL, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  US_name,             0, NULL,                NULL, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field AUSRLIST_sub_fields[] = {
-   {  AUSRLIST_href,       0, NULL,                NULL, NULL, NULL},
-   {  AUSRLIST_value,      0, NULL,                US_sub_fields, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  AUSRLIST_href,       0, NULL,                NULL, NULL, NULL, NULL},
+   {  AUSRLIST_value,      0, NULL,                US_sub_fields, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field ABOOL_sub_fields[] = {
-   {  ABOOL_href,          0, NULL,                NULL, NULL, NULL},
-   {  ABOOL_value,         0, NULL,                NULL, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  ABOOL_href,          0, NULL,                NULL, NULL, NULL, NULL},
+   {  ABOOL_value,         0, NULL,                NULL, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field ST_sub_fields[] = {
-   {  ST_name,             0, NULL,                NULL, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  ST_name,             0, NULL,                NULL, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field ASTRLIST_sub_fields[] = {
-   {  ASTRLIST_href,       0, NULL,                NULL, NULL, NULL},
-   {  ASTRLIST_value,      0, NULL,                ST_sub_fields, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  ASTRLIST_href,       0, NULL,                NULL, NULL, NULL, NULL},
+   {  ASTRLIST_value,      0, NULL,                ST_sub_fields, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field AQTLIST_sub_fields[] = {
-   {  AQTLIST_href,        0, NULL,                NULL, NULL, NULL},
-   {  AQTLIST_value,       0, NULL,                NULL, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  AQTLIST_href,        0, NULL,                NULL, NULL, NULL, NULL},
+   {  AQTLIST_value,       0, NULL,                NULL, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field ASTR_sub_fields[] = {
-   {  ASTR_href,           0, NULL,                NULL, NULL, NULL},
-   {  ASTR_value,          0, NULL,                NULL, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  ASTR_href,           0, NULL,                NULL, NULL, NULL, NULL},
+   {  ASTR_value,          0, NULL,                NULL, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field AINTER_sub_fields[] = {
-   {  AINTER_href,         0, NULL,                NULL, NULL, NULL},
-   {  AINTER_value,        0, NULL,                NULL, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  AINTER_href,         0, NULL,                NULL, NULL, NULL, NULL},
+   {  AINTER_value,        0, NULL,                NULL, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 static spooling_field CE_sub_fields[] = {
@@ -366,22 +366,22 @@ spooling_field CAL_fields[] = {
 };
 
 spooling_field CK_fields[] = {
-   {  CK_name,            18, "ckpt_name",        NULL, NULL, NULL},
-   {  CK_interface,       18, "interface",        NULL, NULL, NULL},
-   {  CK_ckpt_command,    18, "ckpt_command",     NULL, NULL, NULL},
-   {  CK_migr_command,    18, "migr_command",     NULL, NULL, NULL},
-   {  CK_rest_command,    18, "restart_command",  NULL, NULL, NULL},
-   {  CK_clean_command,   18, "clean_command",    NULL, NULL, NULL},
-   {  CK_ckpt_dir,        18, "ckpt_dir",         NULL, NULL, NULL},
-   {  CK_signal,          18, "signal",           NULL, NULL, NULL},
-   {  CK_when,            18, "when",             NULL, NULL, NULL},
-   {  NoName,             18, NULL,               NULL, NULL, NULL}
+   {  CK_name,            18, "ckpt_name",        NULL, NULL, NULL, NULL},
+   {  CK_interface,       18, "interface",        NULL, NULL, NULL, NULL},
+   {  CK_ckpt_command,    18, "ckpt_command",     NULL, NULL, NULL, NULL},
+   {  CK_migr_command,    18, "migr_command",     NULL, NULL, NULL, NULL},
+   {  CK_rest_command,    18, "restart_command",  NULL, NULL, NULL, NULL},
+   {  CK_clean_command,   18, "clean_command",    NULL, NULL, NULL, NULL},
+   {  CK_ckpt_dir,        18, "ckpt_dir",         NULL, NULL, NULL, NULL},
+   {  CK_signal,          18, "signal",           NULL, NULL, NULL, NULL},
+   {  CK_when,            18, "when",             NULL, NULL, NULL, NULL},
+   {  NoName,             18, NULL,               NULL, NULL, NULL, NULL}
 };
 
 spooling_field HGRP_fields[] = {
-   {  HGRP_name,           0, "group_name",        NULL, NULL, NULL},
-   {  HGRP_host_list,      0, "hostlist",          HR_sub_fields, NULL, NULL},
-   {  NoName,              0, NULL,                NULL, NULL, NULL}
+   {  HGRP_name,           0, "group_name",        NULL, NULL, NULL, NULL},
+   {  HGRP_host_list,      0, "hostlist",          HR_sub_fields, NULL, NULL, NULL},
+   {  NoName,              0, NULL,                NULL, NULL, NULL, NULL}
 };
 
 spooling_field US_fields[] = {
@@ -487,14 +487,14 @@ spooling_field CQ_fields[] = {
 };
 
 spooling_field CU_fields[] = {
-   {  CU_name,           0, "cluster user",         NULL},
-   {  CU_ruser_list,     0, "remote user",          ASTR_sub_fields},
-   {  CU_ulong32,        0, "ulong32",              AULNG_sub_fields},
-   {  CU_bool,           0, "bool",                 ABOOL_sub_fields},
-   {  CU_time,           0, "time",                 ATIME_sub_fields},
-   {  CU_mem,            0, "mem",                  AMEM_sub_fields},
-   {  CU_inter,          0, "inter",                AINTER_sub_fields},
-   {  NoName,            0, NULL,                   NULL}
+   {  CU_name,           0, "cluster user",         NULL, NULL, NULL, NULL},
+   {  CU_ruser_list,     0, "remote user",          ASTR_sub_fields, NULL, NULL, NULL},
+   {  CU_ulong32,        0, "ulong32",              AULNG_sub_fields, NULL, NULL, NULL},
+   {  CU_bool,           0, "bool",                 ABOOL_sub_fields, NULL, NULL, NULL},
+   {  CU_time,           0, "time",                 ATIME_sub_fields, NULL, NULL, NULL},
+   {  CU_mem,            0, "mem",                  AMEM_sub_fields, NULL, NULL, NULL},
+   {  CU_inter,          0, "inter",                AINTER_sub_fields, NULL, NULL, NULL},
+   {  NoName,            0, NULL,                   NULL, NULL, NULL, NULL}
 };
 
 spooling_field SH_fields[] = {
@@ -538,58 +538,58 @@ static spooling_field ARA_sub_fields[] = {
 };
 
 spooling_field AR_fields[] = {
-   {  AR_id,              20,   "id",                NULL, NULL, NULL},
-   {  AR_name,            20,   "name",              NULL, NULL, NULL},
-   {  AR_account,         20,   "account",           NULL, NULL, NULL},
-   {  AR_owner,           20,   "owner",             NULL, NULL, NULL},
-   {  AR_group,           20,   "group",             NULL, NULL, NULL},
-   {  AR_submission_time, 20,   "submission_time",   NULL, NULL, NULL},
-   {  AR_start_time,      20,   "start_time",        NULL, NULL, NULL},
-   {  AR_end_time,        20,   "end_time",          NULL, NULL, NULL},
-   {  AR_duration,        20,   "duration",          NULL, NULL, NULL},
-   {  AR_verify,          20,   "verify",            NULL, NULL, NULL},
-   {  AR_error_handling,  20,   "error_handling",    NULL, NULL, NULL},
-   {  AR_state,           20,   "state",             NULL, NULL, NULL},
-   {  AR_checkpoint_name, 20,   "checkpoint_name",   NULL, NULL, NULL},
-   {  AR_resource_list,   20,   "resource_list",     CE_sub_fields, &qconf_sub_name_value_comma_sfi, NULL},
-   {  AR_queue_list,      20,   "queue_list",        QR_sub_fields, NULL, NULL},
-   {  AR_granted_slots,   20,   "granted_slots",     JG_sub_fields, &qconf_sub_name_value_comma_sfi, NULL},
-   {  AR_mail_options,    20,   "mail_options",      NULL, NULL, NULL},
-   {  AR_mail_list,       20,   "mail_list",         MR_sub_fields, &qconf_sub_name_value_comma_sfi, NULL},
-   {  AR_pe,              20,   "pe",                NULL, NULL, NULL},
+   {  AR_id,              20,   "id",                NULL, NULL, NULL, NULL},
+   {  AR_name,            20,   "name",              NULL, NULL, NULL, NULL},
+   {  AR_account,         20,   "account",           NULL, NULL, NULL, NULL},
+   {  AR_owner,           20,   "owner",             NULL, NULL, NULL, NULL},
+   {  AR_group,           20,   "group",             NULL, NULL, NULL, NULL},
+   {  AR_submission_time, 20,   "submission_time",   NULL, NULL, NULL, NULL},
+   {  AR_start_time,      20,   "start_time",        NULL, NULL, NULL, NULL},
+   {  AR_end_time,        20,   "end_time",          NULL, NULL, NULL, NULL},
+   {  AR_duration,        20,   "duration",          NULL, NULL, NULL, NULL},
+   {  AR_verify,          20,   "verify",            NULL, NULL, NULL, NULL},
+   {  AR_error_handling,  20,   "error_handling",    NULL, NULL, NULL, NULL},
+   {  AR_state,           20,   "state",             NULL, NULL, NULL, NULL},
+   {  AR_checkpoint_name, 20,   "checkpoint_name",   NULL, NULL, NULL, NULL},
+   {  AR_resource_list,   20,   "resource_list",     CE_sub_fields, &qconf_sub_name_value_comma_sfi, NULL, NULL},
+   {  AR_queue_list,      20,   "queue_list",        QR_sub_fields, NULL, NULL, NULL},
+   {  AR_granted_slots,   20,   "granted_slots",     JG_sub_fields, &qconf_sub_name_value_comma_sfi, NULL, NULL},
+   {  AR_mail_options,    20,   "mail_options",      NULL, NULL, NULL, NULL},
+   {  AR_mail_list,       20,   "mail_list",         MR_sub_fields, &qconf_sub_name_value_comma_sfi, NULL, NULL},
+   {  AR_pe,              20,   "pe",                NULL, NULL, NULL, NULL},
    {  AR_pe_range,        20,   "pe_range",          RN_sub_fields, &qconf_sub_name_value_comma_sfi, NULL, NULL},
-   {  AR_granted_pe,      20,   "granted_pe",        NULL, NULL, NULL},
-   {  AR_master_queue_list, 20, "master_queue_list", QR_sub_fields, NULL, NULL},
-   {  AR_acl_list,        20,   "acl_list",          ARA_sub_fields, &qconf_sub_name_value_comma_sfi, NULL},
-   {  AR_xacl_list,       20,   "xacl_list",         ARA_sub_fields, &qconf_sub_name_value_comma_sfi, NULL},
-   {  AR_type,            20,   "type",              NULL, NULL, NULL},
-   {  NoName,             20,   NULL,                NULL, NULL, NULL}
+   {  AR_granted_pe,      20,   "granted_pe",        NULL, NULL, NULL, NULL},
+   {  AR_master_queue_list, 20, "master_queue_list", QR_sub_fields, NULL, NULL, NULL},
+   {  AR_acl_list,        20,   "acl_list",          ARA_sub_fields, &qconf_sub_name_value_comma_sfi, NULL, NULL},
+   {  AR_xacl_list,       20,   "xacl_list",         ARA_sub_fields, &qconf_sub_name_value_comma_sfi, NULL, NULL},
+   {  AR_type,            20,   "type",              NULL, NULL, NULL, NULL},
+   {  NoName,             20,   NULL,                NULL, NULL, NULL, NULL}
 };
 
 spooling_field PE_fields[] = {
-   {  PE_name,            18,   "pe_name",           NULL, NULL, NULL},
-   {  PE_slots,           18,   "slots",             NULL, NULL, NULL},
-   {  PE_user_list,       18,   "user_lists",        US_sub_fields, NULL, NULL},
-   {  PE_xuser_list,      18,   "xuser_lists",       US_sub_fields, NULL, NULL},
-   {  PE_start_proc_args, 18,   "start_proc_args",   NULL, NULL, NULL},
-   {  PE_stop_proc_args,  18,   "stop_proc_args",    NULL, NULL, NULL},
-   {  PE_allocation_rule, 18,   "allocation_rule",   NULL, NULL, NULL},
-   {  PE_control_slaves,  18,   "control_slaves",    NULL, NULL, NULL},
-   {  PE_job_is_first_task, 18,   "job_is_first_task", NULL, NULL, NULL},
-   {  PE_urgency_slots,   18,   "urgency_slots",     NULL, NULL, NULL},
+   {  PE_name,            18,   "pe_name",           NULL, NULL, NULL, NULL},
+   {  PE_slots,           18,   "slots",             NULL, NULL, NULL, NULL},
+   {  PE_user_list,       18,   "user_lists",        US_sub_fields, NULL, NULL, NULL},
+   {  PE_xuser_list,      18,   "xuser_lists",       US_sub_fields, NULL, NULL, NULL},
+   {  PE_start_proc_args, 18,   "start_proc_args",   NULL, NULL, NULL, NULL},
+   {  PE_stop_proc_args,  18,   "stop_proc_args",    NULL, NULL, NULL, NULL},
+   {  PE_allocation_rule, 18,   "allocation_rule",   NULL, NULL, NULL, NULL},
+   {  PE_control_slaves,  18,   "control_slaves",    NULL, NULL, NULL, NULL},
+   {  PE_job_is_first_task, 18,   "job_is_first_task", NULL, NULL, NULL, NULL},
+   {  PE_urgency_slots,   18,   "urgency_slots",     NULL, NULL, NULL, NULL},
 #ifdef SGE_PQS_API
-   {  PE_qsort_args,      18,   "qsort_args",        NULL, NULL, NULL},
+   {  PE_qsort_args,      18,   "qsort_args",        NULL, NULL, NULL, NULL},
 #endif
-   {  PE_accounting_summary, 18,   "accounting_summary", NULL, NULL, NULL},
-   {  NoName,             18,   NULL,                NULL, NULL, NULL}
+   {  PE_accounting_summary, 18,   "accounting_summary", NULL, NULL, NULL, NULL},
+   {  NoName,             18,   NULL,                NULL, NULL, NULL, NULL}
 };
 
 spooling_field RQS_fields[] = {
-   {  RQS_name,           12,   "name",              NULL, NULL, NULL},
-   {  RQS_description,    12,   "description",       NULL, NULL, NULL},
-   {  RQS_enabled,        12,   "enabled",           NULL, NULL, NULL},
-   {  RQS_rule,           12,   "limit",             RQR_sub_fields, &qconf_sub_rqs_sfi, NULL},
-   {  NoName,             12,   NULL,                NULL, NULL, NULL}
+   {  RQS_name,           12,   "name",              NULL, NULL, NULL, NULL},
+   {  RQS_description,    12,   "description",       NULL, NULL, NULL, NULL},
+   {  RQS_enabled,        12,   "enabled",           NULL, NULL, NULL, NULL},
+   {  RQS_rule,           12,   "limit",             RQR_sub_fields, &qconf_sub_rqs_sfi, NULL, NULL},
+   {  NoName,             12,   NULL,                NULL, NULL, NULL, NULL}
 };
 
 static void create_spooling_field (
