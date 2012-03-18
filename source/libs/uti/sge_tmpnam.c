@@ -52,83 +52,72 @@
 static int elect_path(dstring *aBuffer);
 static int spawn_file(dstring *aBuffer, dstring *error_message);
 
-
-/****** uti/sge_tmpnam/sge_tmpnam() *******************************************
+/****** uti/sge_tmpnam/sge_mkstemp() *******************************************
 *  NAME
-*     sge_tmpnam() -- Secure replacement for tmpnam() 
+*     sge_mkstemp() -- SGE version of mkstemp()
 *
 *  SYNOPSIS
-*     char* sge_tmpnam(char *aBuffer) 
+*     int sge_mkstemp(char *aBuffer, size_t size, dstring *error_message)
 *
 *  FUNCTION
-*     Generate a string that is a unique valid filename within a given
-*     directory. The corresponding file is created as soon as the filename
-*     has been generated, thus avoiding any delay between filename generation
-*     and actual file usage. The file will have read and write access for the
-*     user only. 
+*     SGE-specific version of mkstemp(3) that tries TMPDIR as well as
+*     P_tmpdir before /tmp, returns an error message, and guarantees
+*     read and write access for the user only.
 *
-*     The 'aBuffer' argument points to an array of at least SGE_PATH_MAX length.
-*     'aBuffer' will contain the generated filename upon successful completion.
-*     In addition, 'aBuffer' will be returned. If the function fails, NULL will
-*     be returned and 'errno' set to indicate the error.
-*
-*     If the environment variable TMPDIR is defined, it's value will be used
-*     as the path prefix for the file. If TMPDIR is not set or it does not
-*     refer to a valid directory, the value of P_tmpdir will be used.
-*     P_tmpdir shall be defined in <stdio.h>. If P_tmpdir is not defined or
-*     it does not refer to a valid directory, /tmp will be used.
-*
-*     NOTE: Since the file already exists, the O_EXCL flag must not be used if
-*     the returned filename is opened for usage within an application. It is,
-*     however, the duty of the application calling this function to delete the
-*     file denoted by the generated filename after it is no longer needed.
+*     The 'aBuffer' argument points to an array of at least
+*     'size' in length.  'aBuffer' will contain the generated
+*     filename upon successful completion, and the file descriptor for
+*     the opened file is returned.  If the function fails, -1 will be
+*     returned, with an error message in error_message.
 *
 *  INPUTS
 *     char *aBuffer - Array to hold filename
+*     size_t size - size of aBuffer
+*     dstring error_message - Error message
 *
 *  RESULT
 *     char* - Points to 'aBuffer' if successful, NULL otherwise
 *
 *  NOTE
-*     MT-NOTE: sge_tmpnam() is MT safe.
+*     MT-NOTE: sge_mkstemp() is MT safe.
 ******************************************************************************/
-char *sge_tmpnam(char *aBuffer, dstring *error_message)
+int sge_mkstemp(char *aBuffer, size_t size, dstring *error_message)
 {
    dstring s = DSTRING_INIT;
+   int fd;
 
-   DENTER(TOP_LAYER, "sge_tmpnam");
+   DENTER(TOP_LAYER, "sge_mkstemp");
 
    if (aBuffer == NULL) {
       sge_dstring_sprintf(error_message, MSG_TMPNAM_GOT_NULL_PARAMETER);
       DEXIT;
-      return NULL;
+      return -1;
    }
 
    if (elect_path(&s) < 0) {
       sge_dstring_sprintf(error_message, MSG_TMPNAM_CANNOT_GET_TMP_PATH);
       sge_dstring_free(&s);
       DEXIT;
-      return NULL;
+      return -1;
    }
 
    if ((sge_dstring_get_string(&s))[sge_dstring_strlen(&s)-1] != '/') {
-      sge_dstring_append_char(&s, '/'); 
+      sge_dstring_append_char(&s, '/');
    }
 
-   if (spawn_file(&s, error_message) < 0) {
+   if ((fd = spawn_file(&s, error_message)) < 0) {
       sge_dstring_free(&s);
       DEXIT;
-      return NULL;
+      return -1;
    }
 
-   sge_strlcpy(aBuffer, sge_dstring_get_string(&s), SGE_PATH_MAX);
+   sge_strlcpy(aBuffer, sge_dstring_get_string(&s), size);
    sge_dstring_free(&s);
 
-   DPRINTF(("sge_tmpnam: returning %s\n", aBuffer));
+   DPRINTF(("sge_mkstemp: returning %s\n", aBuffer));
    DEXIT;
-   return aBuffer;
+   return fd;
 }
-
 
 static int elect_path(dstring *aBuffer)
 {
@@ -151,14 +140,14 @@ static int elect_path(dstring *aBuffer)
 
 static int spawn_file(dstring *aBuffer, dstring *error_message) {
    int my_errno;
-   char* mktemp_return = NULL;
+   int mkstemp_return;
    char tmp_file_string[256];
    char tmp_string[SGE_PATH_MAX];
 
    /*
-    * generate template filename for mktemp()
-    */   
-   snprintf(tmp_file_string, 256, "pid-%u-XXXXXX", (unsigned int)getpid()); 
+    * generate template filename for mkstemp()
+    */
+   snprintf(tmp_file_string, 256, "pid-%u-XXXXXX", (unsigned int)getpid());
 
    /*
     * check final length of path
@@ -171,19 +160,22 @@ static int spawn_file(dstring *aBuffer, dstring *error_message) {
    }
 
    /*
-    * now build full path string for mktemp()
+    * now build full path string for mkstemp()
     */
    snprintf(tmp_string, SGE_PATH_MAX, "%s%s", sge_dstring_get_string(aBuffer), tmp_file_string);
 
    /*
-    * generate temp file by call to mktemp()
+    * generate temp file by call to mkstemp()
     */
    errno = 0;
-   mktemp_return = mktemp(tmp_string);
+   mkstemp_return = mkstemp(tmp_string);
    my_errno = errno;
-   if (mktemp_return[0] == '\0') {
-      sge_dstring_sprintf(error_message, MSG_TMPNAM_GOT_SYSTEM_ERROR_SS, 
-                                strerror(my_errno), sge_dstring_get_string(aBuffer));
+   if (-1 == mkstemp_return
+       /* POSIX doesn't guarantee the mode.  */
+       || fchmod(mkstemp_return, 0600)) {
+      sge_dstring_sprintf(error_message, MSG_TMPNAM_GOT_SYSTEM_ERROR_SS,
+                          strerror(my_errno),
+                          sge_dstring_get_string(aBuffer));
       return -1;
    }
 
@@ -191,5 +183,5 @@ static int spawn_file(dstring *aBuffer, dstring *error_message) {
     * finally copy the resulting path to aBuffer
     */
    sge_dstring_sprintf(aBuffer, tmp_string);
-   return 0;
+   return mkstemp_return;
 }

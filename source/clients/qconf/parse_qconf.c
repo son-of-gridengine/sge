@@ -7248,26 +7248,23 @@ static const char *write_attr_tmp_file(const char *name, const char *value,
                                        const char *delimiter, dstring *error_message)
 {
    char *filename = (char *)malloc(sizeof(char) * SGE_PATH_MAX);
-   FILE *fp = NULL;
-   int my_errno;
+   FILE *fp;
+   int fd;
    DENTER(TOP_LAYER, "write_attr_tmp_file");
 
-   if (sge_tmpnam(filename, error_message) == NULL) {
-      DRETURN(NULL);
-   }
-
-   errno = 0;
-   fp = fopen(filename, "w");
-   my_errno = errno;
-
-   if (fp == NULL) {
-      sge_dstring_sprintf(error_message, MSG_ERROROPENINGFILEFORWRITING_SS, filename, strerror(my_errno));
+   if ((fd = sge_mkstemp(filename, sizeof(char) * SGE_PATH_MAX, error_message)) < 0) {
+      sge_dstring_sprintf(error_message, MSG_ERROROPENINGFILEFORWRITING_SS, filename, sge_dstring_get_string(error_message));
       DRETURN(NULL);
    }
    
-   fprintf(fp, "%s", name);
-   fprintf(fp, "%s", delimiter);
-   fprintf(fp, "%s\n", value);
+   if ((fp = fdopen (fd, "w"))) {
+      fprintf(fp, "%s", name);
+      fprintf(fp, "%s", delimiter);
+      fprintf(fp, "%s\n", value);
+   } else {
+      close(fd);
+      DRETURN(NULL);
+   }
    
    FCLOSE(fp);
    

@@ -35,6 +35,6 @@
 
 #include "sge_dstring.h"
 
-char *sge_tmpnam(char *aBuffer, dstring *error_message);
+int sge_mkstemp(char *aBuffer, size_t size, dstring *error_message);
 
 #endif /* __SGE_TMPNAM_H */
