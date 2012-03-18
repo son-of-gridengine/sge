@@ -198,10 +198,11 @@ static void qmonRQSGetText(Widget tw, lList *rqs_list, lList **alpp)
    bool ret = false;
    bool ignore_unchanged_message = false;
    dstring sge_tmpnam_error = DSTRING_INIT;
+   int fd, res;
 
    DENTER(GUI_LAYER, "qmonRQSGetText");
 
-   if (sge_tmpnam(filename, &sge_tmpnam_error) == NULL) {
+   if ((fd = sge_mkstemp(filename, sizeof(filename), &sge_tmpnam_error)) < 0) {
       if (sge_dstring_get_string(&sge_tmpnam_error) != NULL) {
          answer_list_add(alpp, sge_dstring_get_string(&sge_tmpnam_error), STATUS_ERROR1, ANSWER_QUALITY_ERROR);
       } else {
@@ -212,6 +213,7 @@ static void qmonRQSGetText(Widget tw, lList *rqs_list, lList **alpp)
       return;
    }
    sge_dstring_free(&sge_tmpnam_error);
+   res = close(fd);
 
    /*
    ** allocates a string
