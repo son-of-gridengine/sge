@@ -1043,7 +1043,7 @@ sge_passwd_add_change(const char *username, const char *domain, uid_t uid)
     * Check if there is an old entry in the password file and if user is
     * not root if it exists then check if the current users knows that pwd
     */
-   if (uid != 0) {
+   if (1/* uid != 0 */) {
       int i = password_find_entry(users, encryped_pwd, user);
 
       if (i != -1) {
@@ -1193,7 +1193,8 @@ static void
 sge_passwd_show_usage(void)
 {
    DENTER(TOP_LAYER, "sge_passwd_show_usage");
-   printf("usage: sgepasswd [[-D domain>] -d user] | [-D domain] [user]\n");
+   printf("usage: %s [[-D domain] -d user] | [-D domain] [user]\n",
+          SGE_PASSWD_PROG_NAME);
    printf(" [-help]         display this message\n");
    printf(" [-D domain ]    add the given domain name to the user name\n");
    printf(" [-d user ]      delete the password for the named account\n");
@@ -1272,7 +1273,7 @@ int main(int argc, char *argv[])
 
       exit(1);
    }
-   /* security: user gets to control admin user is they have their own
+   /* security: user gets to control admin user entry if they have their own
       cell directory */
    admin_user = bootstrap_get_admin_user();
 
@@ -1291,12 +1292,6 @@ int main(int argc, char *argv[])
          (long)getuid(), (long)getgid(), 
          (long)geteuid(), (long)getegid()));
    while (argc > 1) {
-      if (!strcmp(argv[1],"-help")) {
-         argc--; argv++;
-         sge_passwd_show_usage();
-         DEXIT;
-         exit(1);
-      } 
       if (!strcmp(argv[1],"-D")) {
          argc--; argv++;
          if (argc != 1 && arg_ok(argv[1], sizeof(domain))) {
@@ -1308,11 +1303,13 @@ int main(int argc, char *argv[])
             DEXIT;
             exit(1);
          }
-      }
-      if (!strcmp(argv[1],"-d")) {
-         uid_t uid = getuid();
-
-         if (uid != 0) {
+      } else if (!strcmp(argv[1],"-help")) {
+         argc--; argv++;
+         sge_passwd_show_usage();
+         DEXIT;
+         exit(1);
+      } else if (!strcmp(argv[1],"-d")) {
+         if (starter_uid != SGE_SUPERUSER_UID) {
             fprintf(stderr, MSG_PWD_ONLY_ROOT_S, SGE_PASSWD_PROG_NAME);
             fprintf(stderr, "\n");
             DEXIT;
@@ -1320,7 +1317,7 @@ int main(int argc, char *argv[])
          }
 
          argc--; argv++;
-         if (argc != 1 && arg_ok(argv[1], sizeof(domain))) {
+         if (argc == 2 && arg_ok(argv[1], sizeof(domain))) {
             sge_strlcpy(username, argv[1], sizeof(username));
             argc--; argv++;
             do_delete = true;
@@ -1330,8 +1327,9 @@ int main(int argc, char *argv[])
             DEXIT;
             exit(1);
          }
-      } 
-      if (argv[1][0] != '-' && arg_ok(argv[1], sizeof(domain))) {
+      } else if ((argv[1][0] != '-')
+                 && (argc == 2)
+                 && arg_ok(argv[1], sizeof(domain))) {
          sge_strlcpy(username, argv[1], sizeof(username));
          uid_t uid = getuid();
 
@@ -1342,7 +1340,12 @@ int main(int argc, char *argv[])
          }
          argc--; argv++;
          continue;
-      } 
+      } else {
+         sge_passwd_show_usage();
+         DEXIT;
+         exit(1);
+      }
+      argc--; argv++;
    }
 
    if (username == NULL || username[0] == '\0') {
@@ -1350,8 +1353,15 @@ int main(int argc, char *argv[])
          fprintf(stderr, MSG_PWD_NO_USERNAME_SU, SGE_PASSWD_PROG_NAME,
                  sge_u32c(starter_uid));
          fprintf(stderr, "\n");
+         DEXIT;
          exit(7);
       }
+   } else if (strchr(username, ' ')) {
+      /* Could screw passwd file.  */
+      fprintf(stderr, MSG_UNAME_INVALID_SS, SGE_PASSWD_PROG_NAME, username);
+      fprintf(stderr, "\n");
+      DEXIT;
+      exit(1);
    }
 
    if (do_delete) {
