@@ -207,6 +207,7 @@
 #define MSG_PWD_CANTOPENSSL         _MESSAGE(57333,         _("Can't open the OpenSSL library."))
 #define MSG_ARG_TOO_LONG            _MESSAGE(57334,         _("Argument too long: "SFN))
 #define MSG_PWD_RENAME_SGEPASSWD_SSI _MESSAGE(57325,        _(SFN": error renaming .sgepasswd file: "SFN" (%d)"))
+#define MSG_UNAME_INVALID_SS        _MESSAGE(57325,        _(SFN": Invalid user name: "SFN))
 
 
 /*
