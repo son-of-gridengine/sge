@@ -3046,7 +3046,7 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
 #ifndef __SGE_NO_USERMAPPING__
          {SGE_USER_MAPPING_LIST, SGE_OBJ_USER_MAPPING, CU_Type, NULL,            CU_name,   NULL,        &qconf_sfi,    cqueue_xattr_pre_gdi},
 #endif
-         {0,                   NULL,              0,         NULL,               0,         NULL,        NULL}
+         {0,                   NULL,              0,         NULL,               0,         NULL,        NULL, NULL}
       };
 
       int index = 0;
@@ -4253,7 +4253,7 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
       /* "-secl" */
       if (strcmp("-secl", *spp) == 0) {
          if (!show_eventclients(ctx))
-	    sge_parse_return = 1;
+            sge_parse_return = 1;
          spp++;
          continue;
       }
@@ -4271,7 +4271,7 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
       /* "-sep" */
       if (strcmp("-sep", *spp) == 0) {
          if (!show_processors(ctx, has_binding_param))
-	    sge_parse_return = 1;
+            sge_parse_return = 1;
          spp++;
          continue;
       }
@@ -4585,7 +4585,7 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
          compatibility.  */
 
       if (strcmp("-sst", *spp) == 0 ||
-	  strcmp("-bonsai", *spp) == 0) {
+          strcmp("-bonsai", *spp) == 0) {
          /* get the sharetree .. */
          what = lWhat("%T(ALL)", STN_Type);
          alp = ctx->gdi(ctx, SGE_STN_LIST, SGE_GDI_GET, &lp, NULL, what);
