@@ -585,8 +585,10 @@ while ($#argv >= 1 && $?found)
       set MAKEWINGRIDLIB = 0
       set GSSDEPEND = "gss_depend"
       set GSSCLEAN = "gss_clean"
-      set CFLAGS  = "-DKERBEROS -I../security/gss -I$KRB_HOME/include -I$KRB_HOME/include/gssapi $CFLAGS"
+      set CFLAGS  = "-DKRBGSS -I../security/gss -I$KRB_HOME/include -I$KRB_HOME/include/gssapi $CFLAGS"
       set GSSLIBS = "-lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err"
+# Heimdal
+      set GSSLIBS = "-lgssapi -lkrb5 -lcom_err"
       set SECTARGETS = gss_all
       set MAKEPAM = 0
       breaksw

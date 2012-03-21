@@ -43,7 +43,7 @@
 #include <sys/stat.h>
 #include <sys/param.h>
 #include <fcntl.h>
-#ifdef KERBEROS
+#ifdef KRBGSS
 #include <gssapi/gssapi_generic.h>
 #else
 #include <gssapi.h>
@@ -63,7 +63,7 @@ main(int argc, char **argv)
 
       if (strncasecmp(ccname, "file:", 5)==0) {
 
-#ifdef KERBEROS
+#ifdef KRBGSS
 
          if (unlink(&ccname[5])<0) {
             cc = 3;
@@ -101,13 +101,13 @@ main(int argc, char **argv)
                      cc = 3;
                   }
 
-                  sprintf(fname, "%s.data", rname);
+                  snprintf(fname, sizeof rname, "%s.data", rname);
                   unlink(fname);
 
-                  sprintf(fname, "%s.data.db", rname);
+                  snprintf(fname, sizeof rname, "%s.data.db", rname);
                   unlink(fname);
 
-                  sprintf(fname, "%s.nc", rname);
+                  snprintf(fname, sizeof rname, "%s.nc", rname);
                   unlink(fname);
 
 
@@ -123,16 +123,16 @@ main(int argc, char **argv)
                   cc = 3;
                }
 
-               sprintf(fname, "%s.data", &ccname[5]);
+               snprintf(fname, sizeof fname, "%s.data", &ccname[5]);
                unlink(fname);
 
-               sprintf(fname, "%s.data.db", &ccname[5]);
+               snprintf(fname, sizeof fname, "%s.data.db", &ccname[5]);
                unlink(fname);
 
-               sprintf(fname, "%s.nc", &ccname[5]);
+               snprintf(fname, sizeof fname, "%s.nc", &ccname[5]);
                unlink(fname);
 
-               sprintf(fname, "%s.tmp", &ccname[5]);
+               snprintf(fname, sizeof fname, "%s.tmp", &ccname[5]);
                unlink(fname);
 
             }

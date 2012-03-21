@@ -95,3 +95,8 @@ get_cred.sh:	$(GSS_SDIR)/get_cred.sh
 put_cred.sh:	$(GSS_SDIR)/put_cred.sh
 	cp $(GSS_SDIR)/put_cred.sh put_cred.sh
 
+acquire_cred:        acquire_cred.o sge_gsslib.o
+	$(CC) -o $@ $(LFLAGS) acquire_cred.o sge_gsslib.o -luti -lcommlists $(LIBS) $(SLIBS)
+
+acquire_cred.o:      $(GSS_SDIR)/acquire_cred.c
+	$(CC) $(CFLAGS) -c $(GSS_SDIR)/acquire_cred.c
