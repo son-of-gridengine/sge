@@ -69,7 +69,7 @@ sec_login_set_context_flags(sec_login_handle_t *login_context,
 #define SERVICE_NAME "sge"
 #endif
 
-#ifdef KERBEROS
+#ifdef KRBGSS
 #define GSSAPI_INT OM_uint32
 #else
 #define GSSAPI_INT int
