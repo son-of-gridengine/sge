@@ -339,7 +339,7 @@ void sge_exit(void **ref_ctx, int i)
 int sge_mkdir(const char *path, int fmode, bool exit_on_error, bool may_not_exist) 
 {
    int i = 0, res=0;
-   stringT path_;
+   char path_[SGE_PATH_MAX];
  
    DENTER(TOP_LAYER, "sge_mkdir");
    if (!path) {
