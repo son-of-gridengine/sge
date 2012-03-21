@@ -1418,7 +1418,7 @@ FCLOSE_ERROR:
 
 static bool read_manop(int target) {
    lList **lpp;
-   stringT filename;
+   char filename[SGE_PATH_MAX];
    char str[256];
    FILE *fp;
    SGE_STRUCT_STAT st;

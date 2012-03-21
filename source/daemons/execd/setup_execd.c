@@ -188,7 +188,7 @@ int job_initialize_job(lListElem *job)
       if (lGetUlong(ja_task, JAT_status) == JRUNNING ||
           lGetUlong(ja_task, JAT_status) == JWAITING4OSJID) {
          SGE_STRUCT_STAT stat_buffer;
-         stringT active_dir = "";
+         char active_dir[SGE_PATH_MAX] = "";
 
          sge_get_file_path(active_dir, JOB_ACTIVE_DIR, FORMAT_DEFAULT,
                            SPOOL_WITHIN_EXECD, job_id, ja_task_id, NULL);

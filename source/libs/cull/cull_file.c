@@ -83,7 +83,7 @@
 int lWriteElemToDisk(const lListElem *ep, const char *prefix, const char *name,
                      const char *obj_name) 
 {
-   stringT filename;
+   char filename[SGE_PATH_MAX];
    sge_pack_buffer pb;
    int ret, fd;
 
@@ -131,11 +131,11 @@ int lWriteElemToDisk(const lListElem *ep, const char *prefix, const char *name,
 
    /* create full file name */
    if (prefix && name) {
-      sprintf(filename, "%s/%s", prefix, name);
+      snprintf(filename, sizeof(filename), "%s/%s", prefix, name);
    } else if (prefix) {
-      sprintf(filename, "%s", prefix);
+      snprintf(filename, sizeof(filename), "%s", prefix);
    } else {
-      sprintf(filename, "%s", name);
+      snprintf(filename, sizeof(filename), "%s", name);
    }
 
    PROF_START_MEASUREMENT(SGE_PROF_SPOOLINGIO);
@@ -195,7 +195,7 @@ int lWriteElemToDisk(const lListElem *ep, const char *prefix, const char *name,
 lListElem *lReadElemFromDisk(const char *prefix, const char *name, 
                              const lDescr *type, const char *obj_name) 
 {
-   stringT filename;
+   char filename[SGE_PATH_MAX];
    sge_pack_buffer pb;
    SGE_STRUCT_STAT statbuf;
    lListElem *ep;
@@ -213,11 +213,11 @@ lListElem *lReadElemFromDisk(const char *prefix, const char *name,
 
    /* create full file name */
    if (prefix && name)
-      sprintf(filename, "%s/%s", prefix, name);
+      snprintf(filename, sizeof(filename), "%s/%s", prefix, name);
    else if (prefix)
-      sprintf(filename, "%s", prefix);
+      snprintf(filename, sizeof(filename), "%s", prefix);
    else
-      sprintf(filename, "%s", name);
+      snprintf(filename, sizeof(filename), "%s", name);
 
    /* get file size */
    if (SGE_STAT(filename, &statbuf) == -1) {
