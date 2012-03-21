@@ -44,7 +44,7 @@
 #include <sys/param.h>
 #include <fcntl.h>
 #include <pwd.h>
-#ifdef KERBEROS
+#ifdef KRBGSS
 #include <gssapi/gssapi_generic.h>
 #else
 #include <gssapi.h>
@@ -80,13 +80,13 @@ main(int argc, char **argv)
    char *become_user=NULL;
    char *change_owner=NULL;
    char *ccname = getenv("KRB5CCNAME");
-   char ccbuf[1024];
+   char *ccbuf;
    int i;
    char lenbuf[GSSLIB_INTSIZE];
 
 
    if (ccname) {
-      strcpy(ccbuf, ccname);
+      ccbuf = strdup(ccname);
       ccname = ccbuf;
    }
 
@@ -226,12 +226,25 @@ main(int argc, char **argv)
          {
             char src[MAXPATHLEN];
 
-	    sprintf(src, "%s.data", &new_ccname[5]);
-            chown(src, pw->pw_uid, pw->pw_gid);
-	    sprintf(src, "%s.data.db", &new_ccname[5]);
-            chown(src, pw->pw_uid, pw->pw_gid);
-	    sprintf(src, "%s.nc", &new_ccname[5]);
-            chown(src, pw->pw_uid, pw->pw_gid);
+            errno = 0;
+            sprintf(src, "%s.data", &new_ccname[5]);
+            if (chown(src, pw->pw_uid, pw->pw_gid) != 0) {
+               snprintf(msg, sizeof(msg), MSG_FILE_NOCHOWN_SS, src, "");
+               perror(msg);
+               goto error;
+            }
+            sprintf(src, "%s.data.db", &new_ccname[5]);
+            if (chown(src, pw->pw_uid, pw->pw_gid) != 0) {
+               snprintf(msg, sizeof(msg), MSG_FILE_NOCHOWN_SS, src, "");
+               perror(msg);
+               goto error;
+            }
+            sprintf(src, "%s.nc", &new_ccname[5]);
+            if (chown(src, pw->pw_uid, pw->pw_gid) != 0) {
+               snprintf(msg, sizeof(msg), MSG_FILE_NOCHOWN_SS, src, "");
+               perror(msg);
+               goto error;
+            }
          }
 
 #endif

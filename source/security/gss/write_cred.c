@@ -44,7 +44,7 @@
 #include <sys/param.h>
 #include <fcntl.h>
 #include <pwd.h>
-#ifdef KERBEROS
+#ifdef KRBGSS
 #include <gssapi/gssapi_generic.h>
 #else
 #include <gssapi.h>

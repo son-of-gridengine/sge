@@ -30,6 +30,53 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+/* This appears to be substantially derived from the example in the MIT
+   Kerberos distribution, which has this notice.
+
+ * Copyright 1994 by OpenVision Technologies, Inc.
+ *
+ * Permission to use, copy, modify, distribute, and sell this software
+ * and its documentation for any purpose is hereby granted without fee,
+ * provided that the above copyright notice appears in all copies and
+ * that both that copyright notice and this permission notice appear in
+ * supporting documentation, and that the name of OpenVision not be used
+ * in advertising or publicity pertaining to distribution of the software
+ * without specific, written prior permission. OpenVision makes no
+ * representations about the suitability of this software for any
+ * purpose.  It is provided "as is" without express or implied warranty.
+ *
+ * OPENVISION DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+ * INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
+ * EVENT SHALL OPENVISION BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+ * CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
+ * USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+ * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ * PERFORMANCE OF THIS SOFTWARE.
+ */
+/*
+ * Copyright (C) 2004,2005 by the Massachusetts Institute of Technology.
+ * All rights reserved.
+ *
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ *
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ */
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -43,13 +90,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <netinet/in.h>
-#ifdef KERBEROS
+#ifdef KRBGSS
 #include <krb5.h>
 #include <gssapi/gssapi_krb5.h>
-#ifdef KRB5_EXPORTVAR /* this is required for later Kerberos versions */
-static void put_creds_in_ccache(char *name, gss_cred_id_t creds);
-#endif
+#ifndef HEIM_ERR_NOHOST         /* fixme:  what's best to check?  */
 #include <gssapi/gssapi_generic.h>
+#endif
 #else
 #include <gssapi.h>
 #endif
@@ -65,6 +111,15 @@ static void put_creds_in_ccache(char *name, gss_cred_id_t creds);
 #include "sge_gsslib.h"
 #include "msg_gss.h"
 
+/* fixme:  It's not clear what KRB5_EXPORTVAR is about.  It only seems
+   to be defined in an MS Windows header in MIT Kerberos.  */
+#ifndef KRB5_EXPORTVAR
+#define KRB5_EXPORTVAR
+#endif
+#ifdef KRB5_EXPORTVAR /* this is required for later Kerberos versions */
+static void put_creds_in_ccache(char *name, gss_cred_id_t creds);
+#endif
+
 #define REQUIRE_FORWARDED_CREDENTIALS
 #define DELEGATION
 /* #define TURN_OFF_DELEGATION */
@@ -73,47 +128,6 @@ static void put_creds_in_ccache(char *name, gss_cred_id_t creds);
 static char msgbuf[2048];
 static char *msgptr = NULL;
 static int verbose = 0;
-
-#ifdef KERBEROS
-/* OM_uint32 kg_get_context(OM_uint32 *minor_status, krb5_context *context); */
-/* kg_get_context isn't in the current MIT library.  This is the  v 1.3 version.
-   Fixme:  Try to replace it with current external routine.  */
-krb5_error_code krb5_ser_context_init(krb5_context);
-krb5_error_code krb5_ser_auth_context_init(krb5_context);
-krb5_error_code krb5_ser_ccache_init(krb5_context);
-krb5_error_code krb5_ser_rcache_init(krb5_context);
-krb5_error_code krb5_ser_keytab_init(krb5_context);
-OM_uint32
-kg_get_context(OM_uint32 *minor_status, krb5_context *context)
-{
-  static krb5_context kg_context = NULL;
-  krb5_error_code code;
-
-  if (!kg_context) {
-    if ((code = krb5_init_context(&kg_context)))
-      goto fail;
-    if ((code = krb5_ser_context_init(kg_context)))
-      goto fail;
-    if ((code = krb5_ser_auth_context_init(kg_context)))
-      goto fail;
-    if ((code = krb5_ser_ccache_init(kg_context)))
-      goto fail;
-    if ((code = krb5_ser_rcache_init(kg_context)))
-      goto fail;
-    if ((code = krb5_ser_keytab_init(kg_context)))
-      goto fail;
-    if ((code = krb5_ser_auth_context_init(kg_context)))
-      goto fail;
-  }
-  *context = kg_context;
-  *minor_status = 0;
-  return GSS_S_COMPLETE;
-
- fail:
-  *minor_status = (OM_uint32) code;
-  return GSS_S_FAILURE;
-}
-#endif	/* KERBEROS */
 
 void gsslib_packint(u_long hostlong, char *buf)
 {
@@ -141,9 +155,10 @@ static void gsslib_display_status_1(const char *m, OM_uint32 code, int type)
       maj_stat = gss_display_status(&min_stat, code,
                                     type, GSS_C_NULL_OID,
                                     &msg_ctx, &msg);
-      sprintf(msgptr, MSG_GSS_APIERRORXY_SS , m?m:"<>", (char *)msg.value?(char *)msg.value:"<>");
+      snprintf(msgptr, sizeof msgbuf - strlen(msgptr), MSG_GSS_APIERRORXY_SS,
+               m?m:"<>", (char *)msg.value?(char *)msg.value:"<>");
       msgptr += strlen(msgptr);
-      sprintf(msgptr, "\n");
+      snprintf(msgptr, sizeof msgbuf - strlen(msgptr), "\n");
       (void) gss_release_buffer(&min_stat, &msg);
       msgptr += strlen(msgptr);
 
@@ -180,8 +195,7 @@ void gsslib_reset_error(void)
 
 char *gsslib_print_error(const char *msg)
 {
-   strcpy(msgptr, msg);
-   sprintf(msgptr, "\n");
+   snprintf(msgptr, sizeof msgbuf - strlen (msgptr), "%s\n", msg);
    msgptr += strlen(msg);
    return msgbuf;
 }
@@ -207,6 +221,8 @@ void gsslib_display_ctx_flags(OM_uint32 flags)
       gsslib_print_error(MSG_GSS_CONTEXTFLAG_GSS_C_CONF_FLAG);
    if (flags & GSS_C_INTEG_FLAG )
       gsslib_print_error(MSG_GSS_CONTEXTFLAG_GSS_C_INTEG_FLAG);
+   /* fixme:  not handled:  GSS_C_ANON_FLAG GSS_C_PROT_READY_FLAG
+      GSS_C_TRANS_FLAG GSS_C_DELEG_POLICY_FLAG */
 }
 
 
@@ -221,8 +237,8 @@ gsslib_get_credentials(char *service_name, gss_buffer_desc *cred,
    gss_name_t target_name;
    gss_ctx_id_t gss_context = GSS_C_NO_CONTEXT;
    int cc = 0;
-#ifdef KERBEROS
-   gss_OID name_oid = (gss_OID) gss_nt_service_name;
+#ifdef KRBGSS
+   gss_OID name_oid = GSS_C_NT_HOSTBASED_SERVICE;
 #else
    gss_OID name_oid = GSS_C_NULL_OID;
 #endif
@@ -345,11 +361,11 @@ gsslib_acquire_server_credentials(char *service_name,
                                   gss_cred_id_t *server_creds)
 {
    gss_buffer_desc name_buf;
-   gss_name_t server_name = NULL;
+   gss_name_t server_name;
    OM_uint32 maj_stat, min_stat;
    int cc=0;
-#ifdef KERBEROS
-   gss_OID oid = (gss_OID) gss_nt_service_name;
+#ifdef KRBGSS
+   gss_OID oid = GSS_C_NT_HOSTBASED_SERVICE;
 #else
    gss_OID oid = GSS_C_NULL_OID;
 #endif
@@ -480,7 +496,7 @@ gsslib_put_credentials(gss_cred_id_t server_creds,
       goto error;
    }
 
-#ifdef KERBEROS
+#ifdef KRBGSS
 #ifdef KRB5_EXPORTVAR /* this is required for later Kerberos versions */
 
    /* check for delegated credential */
@@ -531,16 +547,15 @@ gsslib_put_credentials(gss_cred_id_t server_creds,
          goto error;
       }
 
-#ifdef KERBEROS
+#ifdef KRBGSS
 
       if (!str_equal) {
          krb5_context context;
 
-         /* get krb5 context */
-         maj_stat = kg_get_context(&min_stat, &context);
+         maj_stat = krb5_init_context(&context);
          if (maj_stat != GSS_S_COMPLETE) {
             gsslib_display_status(MSG_GSS_DISPLAYSTATUS_GETTINGKRB5CONTEXT,
-                                  maj_stat, min_stat);
+                                  maj_stat, GSS_S_COMPLETE);
             cc = -1;
             goto error;
          }
@@ -610,7 +625,8 @@ gsslib_put_credentials(gss_cred_id_t server_creds,
          new_login_context = sec_login_disable_delegation(login_context, &st);
          if (st != error_status_ok) {
             dce_error_inq_text(st, err_string, &lst);
-            sprintf(errbuf, MSG_GSS_PRINTERROR_COULDNOTDISABLEDELEGATIONX_S, err_string);
+            snprintf(errbuf, sizeof errbuf,
+                     MSG_GSS_PRINTERROR_COULDNOTDISABLEDELEGATIONX_S, err_string);
             gsslib_print_error(errbuf);
          } else {
             login_context = *new_login_context;
@@ -626,7 +642,8 @@ gsslib_put_credentials(gss_cred_id_t server_creds,
 
       if (!sec_login_certify_identity(login_context, &st)) {
 	 dce_error_inq_text(st, err_string, &lst);
-	 sprintf(errbuf, MSG_GSS_PRINTERROR_COULDNOTCERTIFYIDENTITYX_S, err_string);
+	 snprintf(errbuf, sizeof errbuf,
+                  MSG_GSS_PRINTERROR_COULDNOTCERTIFYIDENTITYX_S, err_string);
          gsslib_print_error(errbuf);
 	 break;
       }
@@ -634,8 +651,8 @@ gsslib_put_credentials(gss_cred_id_t server_creds,
       sec_login_set_context(login_context, &st);
       if (st != error_status_ok) {
          dce_error_inq_text(st, err_string, &lst);
-	 sprintf(errbuf, MSG_GSS_PRINTERROR_COULDNOTSETUPLOGINCONTEXTX_S,
-                 err_string);
+	 snprintf(errbuf, sizeof errbuf,
+                  MSG_GSS_PRINTERROR_COULDNOTSETUPLOGINCONTEXTX_S, err_string);
          gsslib_print_error(errbuf);
 	 break;
       }
@@ -644,7 +661,7 @@ gsslib_put_credentials(gss_cred_id_t server_creds,
 	 char *cp;
 	 cp = getenv("KRB5CCNAME");
 	 if (cp) {
-	    sprintf(errbuf, MSG_GSS_PRINTERROR_NEWKRB5CCNAMEISX_S , cp);
+            snprintf(errbuf, sizeof errbuf, MSG_GSS_PRINTERROR_NEWKRB5CCNAMEISX_S , cp);
 	    gsslib_print_error(errbuf);
 	 } else {
 	    gsslib_print_error(MSG_GSS_PRINTERROR_KRB5CCNAMENOTFOUND );
@@ -780,7 +797,7 @@ sec_login_set_context_flags(sec_login_handle_t *login_context,
 
 #endif /* DCE */
 
-#ifdef KERBEROS
+#ifdef KRBGSS
 #ifdef KRB5_EXPORTVAR /* this is required for later Kerberos versions */
 
 static void
@@ -793,28 +810,29 @@ put_creds_in_ccache(char *name, gss_cred_id_t creds)
    krb5_error_code retval;
    char buf[1024];
 
-   maj_stat = kg_get_context(&min_stat, &context);
+   maj_stat = krb5_init_context(&context);
    if (maj_stat != GSS_S_COMPLETE) {
-      gsslib_display_status(MSG_GSS_PRINTERROR_GETTINGKRB5CONTEXT, maj_stat, min_stat);
+      gsslib_display_status(MSG_GSS_PRINTERROR_GETTINGKRB5CONTEXT, maj_stat,
+                            GSS_S_COMPLETE);
       return;
    }
 
    /* Set up ccache */
    if ((retval = krb5_parse_name(context, name, &me))) {
-      sprintf(buf, MSG_GSS_PRINTERROR_KRB5PARSENAMERETURNEDX_I, retval);
+      snprintf(buf, sizeof buf, MSG_GSS_PRINTERROR_KRB5PARSENAMERETURNEDX_I, retval);
       gsslib_print_error(buf);
       return;
    }
 
    /* Use default ccache */
    if ((retval = krb5_cc_default(context, &ccache))) {
-      sprintf(buf, MSG_GSS_PRINTERROR_KRB5CCDEFAULTRETURNEDX_I, retval);
+      snprintf(buf, sizeof buf, MSG_GSS_PRINTERROR_KRB5CCDEFAULTRETURNEDX_I, retval);
       gsslib_print_error(buf);
       return;
    }
 
    if ((retval = krb5_cc_initialize(context, ccache, me))) {
-      sprintf(buf, MSG_GSS_PRINTERROR_KRB5CCINITIALIZERETURNEDX_I, retval);
+      snprintf(buf, sizeof buf, MSG_GSS_PRINTERROR_KRB5CCINITIALIZERETURNEDX_I, retval);
       gsslib_print_error(buf);
       return;
    }
@@ -834,4 +852,3 @@ cleanup:
 }
 #endif
 #endif
-
