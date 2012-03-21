@@ -423,7 +423,7 @@ static lListElem* read_object( const char *dirname, const char *filename, int sp
                         int read_config_list_flag, struct read_object_args *args,
                         int *tag, int fields[]) {
    int ret;
-   stringT fullname;
+   char fullname[SGE_PATH_MAX];
    FILE *fp;
    lListElem *ep, *unused;
    lList *alp = NULL, *clp = NULL;
