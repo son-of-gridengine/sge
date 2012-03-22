@@ -1484,7 +1484,7 @@ lList **hgrp_l
    if (ppcentries) {
       what = lWhat("%T(ALL)", CE_Type);
       ce_id = ctx->gdi_multi(ctx, alpp, SGE_GDI_RECORD, SGE_CE_LIST, SGE_GDI_GET,
-                             NULL, NULL, what, &state, true);
+                             NULL, NULL, what, false, &state, true);
       lFreeWhat(&what);
 
       if (answer_list_has_error(alpp)) {
@@ -1498,7 +1498,7 @@ lList **hgrp_l
       where = lWhere("%T(%I!=%s)", EH_Type, EH_name, SGE_TEMPLATE_NAME);
       what = lWhat("%T(ALL)", EH_Type);
       eh_id = ctx->gdi_multi(ctx, alpp, SGE_GDI_RECORD, SGE_EH_LIST, SGE_GDI_GET,
-                              NULL, where, what, &state, true);
+                              NULL, where, what, false, &state, true);
       lFreeWhat(&what);
       lFreeWhere(&where);
 
@@ -1513,7 +1513,7 @@ lList **hgrp_l
    if (hgrp_l) {
       what = lWhat("%T(ALL)", HGRP_Type);
       hgrp_id = ctx->gdi_multi(ctx, alpp, SGE_GDI_RECORD, SGE_HGRP_LIST, SGE_GDI_GET, 
-                           NULL, NULL, what, &state, true);
+                           NULL, NULL, what, false, &state, true);
       lFreeWhat(&what);
 
       if (answer_list_has_error(alpp)) {
@@ -1525,7 +1525,7 @@ lList **hgrp_l
    */
    what = lWhat("%T(ALL)", QU_Type);
    q_id = ctx->gdi_multi(ctx, alpp, SGE_GDI_SEND, SGE_CQ_LIST, SGE_GDI_GET,
-                           NULL, NULL, what, &state, true);
+                           NULL, NULL, what, false, &state, true);
    ctx->gdi_wait(ctx, alpp, &mal, &state);
    lFreeWhat(&what);
 

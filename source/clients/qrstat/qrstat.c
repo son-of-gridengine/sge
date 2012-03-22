@@ -208,7 +208,7 @@ int main(int argc, char **argv) {
     */
    {
       answer_list = ctx->gdi(ctx, SGE_AR_LIST, SGE_GDI_GET, &qrstat_env.ar_list, 
-                     qrstat_env.where_AR_Type, qrstat_env.what_AR_Type);
+                     qrstat_env.where_AR_Type, qrstat_env.what_AR_Type, false);
 
       if (answer_list_has_error(&answer_list)) {
          answer_list_output(&answer_list);

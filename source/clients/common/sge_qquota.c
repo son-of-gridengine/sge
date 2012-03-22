@@ -411,7 +411,7 @@ get_all_lists(sge_gdi_ctx_class_t *ctx, lList **rqs_l, lList **centry_l, lList *
    what = lWhat("%T(ALL)", RQS_Type);
    rqs_id = ctx->gdi_multi(ctx, 
                           alpp, SGE_GDI_RECORD, SGE_RQS_LIST, SGE_GDI_GET, 
-                          NULL, NULL, what, &state, true);
+                          NULL, NULL, what, false, &state, true);
    lFreeWhat(&what);
 
    if (answer_list_has_error(alpp)) {
@@ -424,7 +424,7 @@ get_all_lists(sge_gdi_ctx_class_t *ctx, lList **rqs_l, lList **centry_l, lList *
    what = lWhat("%T(ALL)", CE_Type);
    ce_id = ctx->gdi_multi(ctx, 
                           alpp, SGE_GDI_RECORD, SGE_CE_LIST, SGE_GDI_GET, 
-                          NULL, NULL, what, &state, true);
+                          NULL, NULL, what, false, &state, true);
    lFreeWhat(&what);
 
    if (answer_list_has_error(alpp)) {
@@ -436,7 +436,7 @@ get_all_lists(sge_gdi_ctx_class_t *ctx, lList **rqs_l, lList **centry_l, lList *
    what = lWhat("%T(ALL)", US_Type);
    userset_id = ctx->gdi_multi(ctx, 
                           alpp, SGE_GDI_RECORD, SGE_US_LIST, SGE_GDI_GET, 
-                          NULL, NULL, what, &state, true);
+                          NULL, NULL, what, false, &state, true);
    lFreeWhat(&what);
 
    if (answer_list_has_error(alpp)) {
@@ -448,7 +448,7 @@ get_all_lists(sge_gdi_ctx_class_t *ctx, lList **rqs_l, lList **centry_l, lList *
    what = lWhat("%T(ALL)", HGRP_Type);
    hgroup_id = ctx->gdi_multi(ctx, 
                           alpp, SGE_GDI_RECORD, SGE_HGRP_LIST, SGE_GDI_GET, 
-                          NULL, NULL, what, &state, true);
+                          NULL, NULL, what, false, &state, true);
    lFreeWhat(&what);
    /*
    ** exec hosts
@@ -474,7 +474,7 @@ get_all_lists(sge_gdi_ctx_class_t *ctx, lList **rqs_l, lList **centry_l, lList *
 
    what = lWhat("%T(%I %I %I %I)", EH_Type, EH_name, EH_load_list, EH_consumable_config_list, EH_resource_utilization);
    eh_id = ctx->gdi_multi(ctx, alpp, SGE_GDI_SEND, SGE_EH_LIST, SGE_GDI_GET, 
-                          NULL, where, what, &state, true);
+                          NULL, where, what, false, &state, true);
    ctx->gdi_wait(ctx, alpp, &mal, &state);
    lFreeWhat(&what);
    lFreeWhere(&where);

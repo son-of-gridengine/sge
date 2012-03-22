@@ -46,7 +46,7 @@ sge_gdi_packet_class_t *
 sge_gdi_packet_create_base(lList **answer_list);
 
 sge_gdi_packet_class_t *
-sge_gdi_packet_create(sge_gdi_ctx_class_t *ctx, lList **answer_list);
+sge_gdi_packet_create(sge_gdi_ctx_class_t *ctx, lList **answer_list, bool use_euid_egid);
 
 bool
 sge_gdi_packet_free(sge_gdi_packet_class_t **packet_handle);

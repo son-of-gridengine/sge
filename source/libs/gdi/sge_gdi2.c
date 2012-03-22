@@ -288,7 +288,7 @@ sge_gdi_extract_answer(lList **alpp, u_long32 cmd, u_long32 target, int id,
 }
 
 lList* sge_gdi2(sge_gdi_ctx_class_t *ctx, u_long32 target, u_long32 cmd, 
-                lList **lpp, lCondition *cp, lEnumeration *enp) 
+                lList **lpp, lCondition *cp, lEnumeration *enp, bool use_euid_egid) 
 {
    lList *alp = NULL;
    lList *mal = NULL;
@@ -300,7 +300,7 @@ lList* sge_gdi2(sge_gdi_ctx_class_t *ctx, u_long32 target, u_long32 cmd,
 
    PROF_START_MEASUREMENT(SGE_PROF_GDI);
    id = sge_gdi2_multi(ctx, &alp, SGE_GDI_SEND, target, cmd, lpp, 
-                       cp, enp, &state, true);
+                       cp, enp, use_euid_egid, &state, true);
    if (id != -1) {
       local_ret = sge_gdi2_wait(ctx, &alp, &mal, &state);
       if (local_ret == true) {
@@ -314,7 +314,7 @@ lList* sge_gdi2(sge_gdi_ctx_class_t *ctx, u_long32 target, u_long32 cmd,
 
 int sge_gdi2_multi(sge_gdi_ctx_class_t* ctx, lList **alpp, 
                    int mode, u_long32 target, u_long32 cmd,
-                   lList **lp, lCondition *cp, lEnumeration *enp,  
+                   lList **lp, lCondition *cp, lEnumeration *enp, bool use_euid_egid,
                    state_gdi_multi *state, bool do_copy) 
 {
    bool local_ret;
@@ -329,7 +329,7 @@ int sge_gdi2_multi(sge_gdi_ctx_class_t* ctx, lList **alpp,
     */
    packet = state->packet;
    if (packet == NULL) {
-      packet = sge_gdi_packet_create(ctx, alpp);
+      packet = sge_gdi_packet_create(ctx, alpp, use_euid_egid);
       state->packet = packet;
    }
 
@@ -840,7 +840,7 @@ const char *cell
 
    DENTER(GDI_LAYER, "gdi2_tsm");
 
-   alp = thiz->gdi(thiz, SGE_SC_LIST, SGE_GDI_TRIGGER, NULL, NULL, NULL); 
+   alp = thiz->gdi(thiz, SGE_SC_LIST, SGE_GDI_TRIGGER, NULL, NULL, NULL, false); 
 
    DRETURN(alp);
 }
@@ -874,7 +874,7 @@ lList *gdi2_kill(sge_gdi_ctx_class_t *thiz, lList *id_list, const char *cell,
    alp = lCreateList("answer", AN_Type);
 
    if (action_flag & MASTER_KILL) {
-      tmpalp = thiz->gdi(thiz, SGE_MASTER_EVENT, SGE_GDI_TRIGGER, NULL, NULL, NULL);
+      tmpalp = thiz->gdi(thiz, SGE_MASTER_EVENT, SGE_GDI_TRIGGER, NULL, NULL, NULL, false);
       lAddList(alp, &tmpalp);
    }
 
@@ -885,12 +885,12 @@ lList *gdi2_kill(sge_gdi_ctx_class_t *thiz, lList *id_list, const char *cell,
       id_list = lCreateList("kill scheduler", ID_Type);
       id_list_created = true;
       lAddElemStr(&id_list, ID_str, buffer, ID_Type);
-      tmpalp = thiz->gdi(thiz, SGE_EV_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL);
+      tmpalp = thiz->gdi(thiz, SGE_EVENT_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL);
       lAddList(alp, &tmpalp);  
    }
 
    if (action_flag & THREAD_START) {
-      tmpalp = thiz->gdi(thiz, SGE_DUMMY_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL);
+      tmpalp = thiz->gdi(thiz, SGE_DUMMY_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL, false);
       lAddList(alp, &tmpalp);  
    }
 
@@ -902,7 +902,7 @@ lList *gdi2_kill(sge_gdi_ctx_class_t *thiz, lList *id_list, const char *cell,
          id_list_created = true;
          lAddElemStr(&id_list, ID_str, buffer, ID_Type);
       }
-      tmpalp = thiz->gdi(thiz, SGE_EV_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL);
+      tmpalp = thiz->gdi(thiz, SGE_EVENT_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL);
       lAddList(alp, &tmpalp);  
    }
 
@@ -925,7 +925,7 @@ lList *gdi2_kill(sge_gdi_ctx_class_t *thiz, lList *id_list, const char *cell,
          lSetUlong(hlep, ID_force, (action_flag & JOB_KILL)?1:0);
          lAppendElem(hlp, hlep);
       }
-      tmpalp = thiz->gdi(thiz, SGE_EH_LIST, SGE_GDI_TRIGGER, &hlp, NULL, NULL);
+      tmpalp = thiz->gdi(thiz, SGE_EXECHOST_LIST, SGE_GDI_TRIGGER, &hlp, NULL, NULL);
       lAddList(alp, &tmpalp);
       lFreeList(&hlp);
    }
@@ -982,7 +982,7 @@ bool sge_gdi2_get_mapping_name(sge_gdi_ctx_class_t *ctx, const char *requestedHo
    lAppendElem(permList,ep);
    lSetHost(ep, PERM_req_host, requestedHost); 
 
-   alp = ctx->gdi(ctx, SGE_DUMMY_LIST, SGE_GDI_PERMCHECK ,  &permList , NULL,NULL );
+   alp = ctx->gdi(ctx, SGE_DUMMY_LIST, SGE_GDI_PERMCHECK ,  &permList , NULL, NULL, false);
 
    
    if (permList != NULL) {
@@ -1049,7 +1049,7 @@ bool sge_gdi2_check_permission(sge_gdi_ctx_class_t *ctx, lList **alpp, int optio
   DENTER(GDI_LAYER, "sge_gdi2_check_permission");
 
   permList = NULL;
-  alp = ctx->gdi(ctx, SGE_DUMMY_LIST, SGE_GDI_PERMCHECK, &permList, NULL, NULL);
+  alp = ctx->gdi(ctx, SGE_DUMMY_LIST, SGE_GDI_PERMCHECK, &permList, NULL, NULL, false);
 
   if (permList == NULL) {
      DPRINTF(("Permlist is NULL\n"));
@@ -1467,7 +1467,7 @@ int gdi2_get_configuration(sge_gdi_ctx_class_t *ctx, const char *config_name,
       DPRINTF(("requesting global and %s\n", lGetHost(hep, EH_name)));
    }
    what = lWhat("%T(ALL)", CONF_Type);
-   alp = ctx->gdi(ctx, SGE_CONF_LIST, SGE_GDI_GET, &lp, where, what);
+   alp = ctx->gdi(ctx, SGE_CONFIG_LIST, SGE_GDI_GET, &lp, where, what);
 
    lFreeWhat(&what);
    lFreeWhere(&where);

@@ -87,7 +87,7 @@ void sge_security_event_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, mo
 
 bool
 sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
-                                    sge_gdi_packet_class_t *packet_handle);
+                                    sge_gdi_packet_class_t *packet_handle, bool use_euid_egid);
 
 bool  
 sge_gdi_packet_parse_auth_info(sge_gdi_packet_class_t *packet, lList **answer_list,

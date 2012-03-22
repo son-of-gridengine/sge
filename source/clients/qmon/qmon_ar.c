@@ -738,7 +738,7 @@ lList **local
    }
 
    if (ardl) {
-      alp = ctx->gdi(ctx, SGE_AR_LIST, SGE_GDI_DEL, &ardl, NULL, NULL);
+      alp = ctx->gdi(ctx, SGE_AR_LIST, SGE_GDI_DEL, &ardl, NULL, NULL, false);
       qmonMessageBox(w, alp, 0);
       lFreeList(&alp);
 

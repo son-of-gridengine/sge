@@ -176,7 +176,7 @@ sge_test_main(void *arg)
          lList *data_list = NULL;
 
          answer_list = ctx->gdi(ctx, SGE_CQ_LIST, SGE_GDI_GET, &data_list,
-                                where, what);
+                                where, what, false);
 
          if (answer_list_has_error(&answer_list)) {
             lWriteListTo(answer_list, stderr);
@@ -201,10 +201,10 @@ sge_test_main(void *arg)
 
          cqueue_request_id = ctx->gdi_multi(ctx, &local_answer_list, SGE_GDI_RECORD, 
                                            SGE_CQ_LIST, SGE_GDI_GET, NULL,
-                                           where_cqueue, what_cqueue, &state, true);
+                                           where_cqueue, what_cqueue, false, &state, true);
          job_request_id = ctx->gdi_multi(ctx, &local_answer_list, SGE_GDI_SEND, 
                                          SGE_JB_LIST, SGE_GDI_GET, NULL,
-                                         where_job, what_job, &state, true);
+                                         where_job, what_job, false, &state, true);
          if (cqueue_request_id != -1 && job_request_id != -1 && 
              answer_list_has_error(&local_answer_list) == false) {
             lList *multi_answer_list = NULL;

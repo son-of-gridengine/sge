@@ -304,7 +304,7 @@ static int japi_close_session(const char*username, const dstring *key, dstring *
 static void *japi_implementation_thread(void *);
 static int japi_parse_jobid(const char *jobid_str, u_long32 *jobid, u_long32 *taskid, 
    bool *is_array, dstring *diag);
-static int japi_send_job(lListElem **job, u_long32 *jobid, dstring *diag);
+static int japi_send_job(lListElem *job, u_long32 *jobid, dstring *diag);
 static int japi_add_job(u_long32 jobid, u_long32 start, u_long32 end, u_long32 incr, 
       bool is_array, dstring *diag);
 static int japi_synchronize_jobids_retry(const char *jobids[], bool dispose);
@@ -1234,7 +1234,7 @@ void japi_delete_string_vector(drmaa_attr_values_t* iter )
 *  NOTES
 *     MT-NOTE: japi_send_job() is MT safe
 *******************************************************************************/
-static int japi_send_job(lListElem **sge_job_template, u_long32 *jobid, dstring *diag)
+static int japi_send_job(lListElem *sge_job_template, u_long32 *jobid, dstring *diag)
 {
    lList *job_lp, *alp;
    lListElem *aep, *job;
@@ -1254,7 +1254,7 @@ static int japi_send_job(lListElem **sge_job_template, u_long32 *jobid, dstring 
                            ctx->get_username(ctx), ctx->get_groupname(ctx));
 
    /* use GDI to submit job for this session */
-   alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_ADD|SGE_GDI_RETURN_NEW_VERSION, &job_lp, NULL, NULL);
+   alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_ADD|SGE_GDI_RETURN_NEW_VERSION, &job_lp, NULL, NULL);
 
    /* reinitialize 'job' with pointer to new version from qmaster */
    lFreeElem(sge_job_template);
@@ -1390,7 +1390,7 @@ static int japi_add_job(u_long32 jobid, u_long32 start, u_long32 end, u_long32 i
 *      MT-NOTE: japi_run_job() is MT safe
 *      Would be better to return job_id as u_long32.
 *******************************************************************************/
-int japi_run_job(dstring *job_id, lListElem **sge_job_template, dstring *diag)
+int japi_run_job(dstring *job_id, lListElem *sge_job_template, dstring *diag)
 {
    u_long32 jobid = 0;
    int drmaa_errno;
@@ -1424,7 +1424,7 @@ int japi_run_job(dstring *job_id, lListElem **sge_job_template, dstring *diag)
    JAPI_LOCK_JOB_LIST();    
 
    /* send job to qmaster using GDI */
-   drmaa_errno = japi_send_job(sge_job_template, &jobid, diag);
+   drmaa_errno = japi_send_job(sge_job_template, use_euid_egid, &jobid, diag);
    if (drmaa_errno != DRMAA_ERRNO_SUCCESS) {
       JAPI_UNLOCK_JOB_LIST();    
       japi_dec_threads(SGE_FUNC);
@@ -1488,7 +1488,7 @@ int japi_run_job(dstring *job_id, lListElem **sge_job_template, dstring *diag)
 *      Would be better to return job_id instead of drmaa_attr_values_t.
 *******************************************************************************/
 int japi_run_bulk_jobs(drmaa_attr_values_t **jobidsp, lListElem **sge_job_template, 
-      int start, int end, int incr, dstring *diag)
+      int start, int end, int incr, bool use_euid_egid, dstring *diag)
 {
    drmaa_attr_values_t *jobids;
    u_long32 jobid = 0;
@@ -1529,7 +1529,7 @@ int japi_run_bulk_jobs(drmaa_attr_values_t **jobidsp, lListElem **sge_job_templa
    JAPI_LOCK_JOB_LIST();    
 
    /* send job to qmaster using GDI */
-   drmaa_errno = japi_send_job(sge_job_template, &jobid, diag);
+   drmaa_errno = japi_send_job(sge_job_template, use_euid_egid, &jobid, diag);
    if (drmaa_errno != DRMAA_ERRNO_SUCCESS) {
       JAPI_UNLOCK_JOB_LIST();    
       japi_dec_threads(SGE_FUNC);
@@ -1777,7 +1777,7 @@ int japi_control(const char *jobid_str, int drmaa_action, dstring *diag)
                                            QI_DO_UNSUSPEND, 0);
             }
             alp = ctx->gdi(ctx, SGE_CQ_LIST, SGE_GDI_TRIGGER, 
-                          &id_list, NULL, NULL);
+                          &id_list, NULL, NULL, false);
             lFreeList(&id_list);
             lFreeList(&ref_list);
 
@@ -1880,7 +1880,7 @@ int japi_control(const char *jobid_str, int drmaa_action, dstring *diag)
          }
 
          if (request_list) {
-            alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_MOD, &request_list, NULL, NULL);
+            alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_MOD, &request_list, NULL, NULL);
             lFreeList(&request_list);
 
             for_each (aep, alp) {
@@ -3266,7 +3266,7 @@ static int japi_get_job(u_long32 jobid, lList **retrieved_job_list, dstring *dia
    }
    
    jb_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_SEND, SGE_JB_LIST, SGE_GDI_GET, NULL, 
-                          job_selection, job_fields, &state, true);
+                          job_selection, job_fields, false, &state, true);
    ctx->gdi_wait(ctx, &alp, &mal, &state);
    lFreeWhere(&job_selection);
    lFreeWhat(&job_fields);
@@ -4906,7 +4906,7 @@ static int do_gdi_delete(lList **id_list, int action, bool delete_all,
 
    DENTER (TOP_LAYER, "do_gdi_delete");
 
-   alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_DEL, id_list, NULL, NULL);
+   alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_DEL, id_list, NULL, NULL);
    lFreeList(id_list);
 
    for_each (aep, alp) {

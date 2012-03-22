@@ -2902,7 +2902,7 @@ static int test(sge_gdi_ctx_class_t *ctx, int *argc, char **argv[], int parse_ar
             {
                lCondition* where = lWhere("%T(%I==%u)", JB_Type, JB_job_number, (u_long32)atol(jobid));
                lEnumeration *what = lWhat("%T (%I %I)", JB_Type, JB_job_number, JB_job_name);
-               alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &job_lp, where, what);
+               alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_GET, &job_lp, where, what);
                job_ep = lFirst(job_lp);
                lFreeWhere(&where);
                lFreeWhat(&what);
@@ -3384,7 +3384,7 @@ static int test(sge_gdi_ctx_class_t *ctx, int *argc, char **argv[], int parse_ar
             {
                lCondition *where = lWhere("%T(%I==%u)", JB_Type, JB_job_number, (u_long32)atol(jobid));
                lEnumeration *what = lWhat("%T (%I %I)", JB_Type, JB_job_number, JB_job_name);
-               alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &job_lp, where, what);
+               alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_GET, &job_lp, where, what);
                job_ep = lFirst(job_lp);
                lFreeWhere(&where);
                lFreeWhat(&what);
@@ -3489,7 +3489,7 @@ static int test(sge_gdi_ctx_class_t *ctx, int *argc, char **argv[], int parse_ar
             {
                lCondition *where = lWhere("%T(%I==%u)", JB_Type, JB_job_number, (u_long32)atol(jobid));
                lEnumeration *what = lWhat("%T (%I %I)", JB_Type, JB_job_number, JB_job_name);
-               alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &job_lp, where, what);
+               alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_GET, &job_lp, where, what);
                job_ep = lFirst(job_lp);
                lFreeWhere(&where);
                lFreeWhat(&what);
@@ -3610,7 +3610,7 @@ static int test(sge_gdi_ctx_class_t *ctx, int *argc, char **argv[], int parse_ar
             {
                lCondition* where = lWhere("%T(%I==%u)", JB_Type, JB_job_number, (u_long32)atol(jobid));
                lEnumeration *what = lWhat("%T (%I %I)", JB_Type, JB_job_number, JB_job_name);
-               alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &job_lp, where, what);
+               alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_GET, &job_lp, where, what);
                job_ep = lFirst(job_lp);
                lFreeWhere(&where);
                lFreeWhat(&what);
@@ -3715,7 +3715,7 @@ static int test(sge_gdi_ctx_class_t *ctx, int *argc, char **argv[], int parse_ar
             {
                lCondition *where = lWhere ("%T(%I==%u)", JB_Type, JB_job_number, (u_long32)atol(jobid));
                lEnumeration *what = lWhat("%T (%I %I)", JB_Type, JB_job_number, JB_job_name);
-               alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &job_lp, where, what);
+               alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_GET, &job_lp, where, what);
                job_ep = lFirst(job_lp);
                lFreeWhere(&where);
                lFreeWhat(&what);
