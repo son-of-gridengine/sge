@@ -226,6 +226,12 @@ int main(int argc, char *argv[])
    get_gmt(&start_s);
 
    if (!scenario) {
+      if (!getuid()) {
+         fprintf(stderr, "switching to ah114088:gridware\n");
+         setegid(339);
+         seteuid(115088);
+      }
+
       if (!(jt = create_job_template(job_path, NULL, 0))) {
          fprintf(stderr, "create_sleeper_job_template() failed\n");
          return 1;
@@ -251,6 +257,13 @@ int main(int argc, char *argv[])
       }
    
       drmaa_delete_job_template(jt, NULL, 0);
+
+      if (!getuid()) {
+         fprintf(stderr, "switching to root:root\n");
+         seteuid(0);
+         setegid(0);
+      }
+
    } else {
       if (submit_by_project("project1") || submit_by_project("project2") ||
           submit_by_project("project3") || submit_by_project("project4"))
@@ -459,6 +472,11 @@ static drmaa_job_template_t *create_job_template(const char *job_path,
 
    /* join output/error file */
    drmaa_set_attribute(jt, DRMAA_JOIN_FILES, "y", NULL, 0);
+
+   /* submit job using euid/egid */
+   if (!getuid()) {
+      drmaa_set_attribute(jt, DRMAA_SUBMIT_AS_EUID, "y", NULL, 0);
+   }
 
    /* path for output */
    drmaa_set_attribute(jt, DRMAA_OUTPUT_PATH, ":/dev/null", NULL, 0);

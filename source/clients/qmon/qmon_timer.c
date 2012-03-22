@@ -419,7 +419,7 @@ XtIntervalId *id
    */
    what = lWhat("%T(ALL)", JB_Type);
    where = lWhere("%T(%I == %u)", JB_Type, JB_job_number, job_number);
-   alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &lp, where, what);
+   alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_GET, &lp, where, what);
    aep = lFirst(alp);
    ep = lFirst(lp);
 

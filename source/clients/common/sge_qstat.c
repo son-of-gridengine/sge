@@ -1019,7 +1019,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
       
       q_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                        SGE_CQ_LIST, SGE_GDI_GET, NULL, NULL, 
-                                       q_all, &state, true);
+                                       q_all, false, &state, true);
       lFreeWhat(&q_all);
     
       if (answer_list_has_error(alpp)) {
@@ -1038,7 +1038,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
 
       j_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                        SGE_JB_LIST, SGE_GDI_GET, NULL, where, 
-                                       what, &state, true);
+                                       what, false, &state, true);
       lFreeWhere(&where);
 
       if (answer_list_has_error(alpp)) {
@@ -1060,7 +1060,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
 
       z_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                        SGE_ZOMBIE_LIST, SGE_GDI_GET, NULL, zw, 
-                                       qstat_get_JB_Type_filter(qstat_env),  
+                                       qstat_get_JB_Type_filter(qstat_env), false,  
                                        &state, true);
       lFreeWhere(&zw);
 
@@ -1075,7 +1075,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
    ce_all = lWhat("%T(ALL)", CE_Type);
    ce_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                      SGE_CE_LIST, SGE_GDI_GET, NULL, NULL, 
-                                     ce_all, &state, true); 
+                                     ce_all, false, &state, true); 
    lFreeWhat(&ce_all);
 
    if (answer_list_has_error(alpp)) {
@@ -1089,7 +1089,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
    eh_all = lWhat("%T(ALL)", EH_Type);
    eh_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                      SGE_EH_LIST, SGE_GDI_GET,
-                                     NULL, where, eh_all, &state, true);
+                                     NULL, where, eh_all, false, &state, true);
    lFreeWhat(&eh_all);
    lFreeWhere(&where);
 
@@ -1104,7 +1104,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
       pe_all = lWhat("%T(%I%I%I%I%I)", PE_Type, PE_name, PE_slots, PE_job_is_first_task, PE_control_slaves, PE_urgency_slots);
       pe_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                         SGE_PE_LIST, SGE_GDI_GET, NULL, NULL, pe_all, 
-                                        &state, true);
+                                        false, &state, true);
       lFreeWhat(&pe_all);
 
       if (answer_list_has_error(alpp)) {
@@ -1119,7 +1119,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
       ckpt_all = lWhat("%T(%I)", CK_Type, CK_name);
       ckpt_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                           SGE_CK_LIST, SGE_GDI_GET, NULL, NULL, 
-                                          ckpt_all, &state, true);
+                                          ckpt_all, false, &state, true);
       lFreeWhat(&ckpt_all);
 
       if (answer_list_has_error(alpp)) {
@@ -1134,7 +1134,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
       acl_all = lWhat("%T(ALL)", US_Type);
       acl_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                          SGE_US_LIST, SGE_GDI_GET, 
-                                         NULL, NULL, acl_all, &state, true);
+                                         NULL, NULL, acl_all, false, &state, true);
       lFreeWhat(&acl_all);
 
       if (answer_list_has_error(alpp)) {
@@ -1149,7 +1149,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
       up_all = lWhat("%T(ALL)", PR_Type);
       up_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                         SGE_PR_LIST, SGE_GDI_GET, 
-                                        NULL, NULL, up_all, &state, true);
+                                        NULL, NULL, up_all, false, &state, true);
       lFreeWhat(&up_all);
 
       if (answer_list_has_error(alpp)) {
@@ -1167,7 +1167,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
 
    sc_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                      SGE_SC_LIST, SGE_GDI_GET, NULL, NULL, 
-                                     sc_what, &state, true);
+                                     sc_what, false, &state, true);
    lFreeWhat(&sc_what);
 
    if (answer_list_has_error(alpp)) {
@@ -1180,7 +1180,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
    hgrp_what = lWhat("%T(ALL)", HGRP_Type);
    hgrp_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_RECORD, 
                                        SGE_HGRP_LIST, SGE_GDI_GET, NULL, NULL, 
-                                       hgrp_what, &state, true);
+                                       hgrp_what, false, &state, true);
    lFreeWhat(&hgrp_what);
 
    if (answer_list_has_error(alpp)) {
@@ -1194,7 +1194,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
    gc_what = lWhat("%T(ALL)", CONF_Type);
    gc_id = qstat_env->ctx->gdi_multi(qstat_env->ctx, alpp, SGE_GDI_SEND, 
                                      SGE_CONF_LIST, SGE_GDI_GET,
-                                     NULL, gc_where, gc_what, &state, true);
+                                     NULL, gc_where, gc_what, false, &state, true);
    qstat_env->ctx->gdi_wait(qstat_env->ctx, alpp, &mal, &state);
    lFreeWhat(&gc_what);
    lFreeWhere(&gc_where);

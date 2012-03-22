@@ -1282,7 +1282,7 @@ void tgtcclr(lListElem *jep, const char *rhost)
 *******************************************************************************/
 bool
 sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
-                                    sge_gdi_packet_class_t *packet_handle)
+                                    sge_gdi_packet_class_t *packet_handle, bool use_euid_egid)
 {
    bool ret = true;
    uid_t uid;
@@ -1299,10 +1299,21 @@ sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
    sge_mutex_lock(GDI_PACKET_MUTEX, SGE_FUNC, __LINE__, &(packet_handle->mutex));
 #endif
 
-   uid = ctx->get_uid(ctx);
-   gid = ctx->get_gid(ctx);
-   strncpy(username, ctx->get_username(ctx), sizeof(username));
-   strncpy(groupname, ctx->get_groupname(ctx), sizeof(groupname));
+   if (!use_euid_egid) {
+/*       fprintf(stderr, "use session user id\n"); */
+      uid = ctx->get_uid(ctx);
+      gid = ctx->get_gid(ctx);
+      strncpy(username, ctx->get_username(ctx), sizeof(username));
+      strncpy(groupname, ctx->get_groupname(ctx), sizeof(groupname));
+   } else {
+/*       fprintf(stderr, "use effective user id\n"); */
+      uid = geteuid();
+      gid = getegid();
+      if (sge_uid2user(uid, username, sizeof(username) - 1, 3) != 0 || 
+          sge_gid2group(gid, groupname, sizeof(groupname) - 1, 3) != 0) {
+         DRETURN(false);
+      }
+   }
 
 #if defined(INTERIX)
    /*

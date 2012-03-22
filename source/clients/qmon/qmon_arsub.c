@@ -975,7 +975,7 @@ static void qmonARSubARSub(Widget w, XtPointer cld, XtPointer cad)
          printf("________________________________________\n");
       }
 
-      alp = ctx->gdi(ctx, SGE_AR_LIST, SGE_GDI_MOD, &lp, NULL, NULL);
+      alp = ctx->gdi(ctx, SGE_AR_LIST, SGE_GDI_MOD, &lp, NULL, NULL, false);
       if (!qmonMessageBox(w, alp, 0)) {
          updateARListCB(w, NULL, NULL);
          XmtMsgLinePrintf(arsub_message, "AR %d altered", 

@@ -78,13 +78,13 @@ typedef struct {
 
 lList
 *sge_gdi2(sge_gdi_ctx_class_t *ctx, u_long32 target, u_long32 cmd, 
-          lList **lpp, lCondition *cp, lEnumeration *enp);
+          lList **lpp, lCondition *cp, lEnumeration *enp, bool use_euid_egid);
 
 int
 sge_gdi2_multi(sge_gdi_ctx_class_t *ctx, lList **alpp, int mode, 
                u_long32 target, u_long32 cmd, lList **lp, 
-               lCondition *cp, lEnumeration *enp, state_gdi_multi *state, bool do_copy);
-
+               lCondition *cp, lEnumeration *enp, bool use_euid_egid, state_gdi_multi *state, bool do_copy);
+ 
 bool
 sge_gdi2_is_done(sge_gdi_ctx_class_t* ctx, lList **alpp, state_gdi_multi *state);
 

@@ -85,7 +85,7 @@ setup_lists(sge_gdi_ctx_class_t *ctx, lList **sharetree, lList **users, lList **
    /* get share tree */
    what = lWhat("%T(ALL)", STN_Type);
    sharetree_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_RECORD, SGE_STN_LIST, 
-                                 SGE_GDI_GET, NULL, NULL, what, &state, true);
+                                 SGE_GDI_GET, NULL, NULL, what, false, &state, true);
    lFreeWhat(&what);
    error = answer_list_output(&alp);
 
@@ -93,7 +93,7 @@ setup_lists(sge_gdi_ctx_class_t *ctx, lList **sharetree, lList **users, lList **
    if (!error) {
       what = lWhat("%T(ALL)", SC_Type);
       sched_conf_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_RECORD, SGE_SC_LIST, SGE_GDI_GET, 
-                                    NULL, NULL, what, &state, true);
+                                    NULL, NULL, what, false, &state, true);
       lFreeWhat(&what);
       error = answer_list_output(&alp);
    }
@@ -102,7 +102,7 @@ setup_lists(sge_gdi_ctx_class_t *ctx, lList **sharetree, lList **users, lList **
    if (!error) {
       what = lWhat("%T(ALL)", UU_Type);
       user_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_RECORD, SGE_UU_LIST, SGE_GDI_GET, 
-                              NULL, NULL, what, &state, true);
+                              NULL, NULL, what, false, &state, true);
       lFreeWhat(&what);
       error = answer_list_output(&alp);
    }
@@ -111,7 +111,7 @@ setup_lists(sge_gdi_ctx_class_t *ctx, lList **sharetree, lList **users, lList **
    if (!error) {
       what = lWhat("%T(ALL)", PR_Type);
       project_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_RECORD, SGE_PR_LIST, 
-                                  SGE_GDI_GET, NULL, NULL, what, &state, true);
+                                  SGE_GDI_GET, NULL, NULL, what, false, &state, true);
       lFreeWhat(&what);
       error = answer_list_output(&alp);
    }
@@ -123,7 +123,7 @@ setup_lists(sge_gdi_ctx_class_t *ctx, lList **sharetree, lList **users, lList **
    if (!error) {
       what = lWhat("%T(ALL)", US_Type);
       userset_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_SEND, SGE_US_LIST, SGE_GDI_GET, 
-                                 NULL, NULL, what, &state, true);
+                                 NULL, NULL, what, false, &state, true);
       ctx->gdi_wait(ctx, &alp, &malp, &state);
       lFreeWhat(&what);
       error = answer_list_output(&alp);

@@ -252,7 +252,7 @@ lList **answerp
                                  NULL, 
                                  QmonMirrorList[index].where, 
                                  QmonMirrorList[index].what,
-                                 &state, true);
+                                 false, &state, true);
          if (mode == SGE_GDI_SEND) {
             ctx->gdi_wait(ctx, &alp, &mal, &state);
          }
@@ -334,7 +334,7 @@ lEnumeration *what
     */
    sge_stopwatch_start(0);
    
-   alp = ctx->gdi(ctx, type, SGE_GDI_DEL, lpp, where, what); 
+   alp = ctx->gdi(ctx, type, SGE_GDI_DEL, lpp, where, what, false); 
 
    if (type == SGE_JB_LIST) {
 #if 0
@@ -422,9 +422,9 @@ lEnumeration *what
    
    if (type == SGE_JB_LIST || type == SGE_AR_LIST) {
       alp = ctx->gdi(ctx, type, SGE_GDI_ADD | SGE_GDI_RETURN_NEW_VERSION, 
-                        lpp, where, what);
+                        lpp, where, what, false);
    } else {
-      alp = ctx->gdi(ctx, type, SGE_GDI_ADD, lpp, where, what); 
+      alp = ctx->gdi(ctx, type, SGE_GDI_ADD, lpp, where, what, false); 
    }
 
    for_each2(alep, alp, ep, *lpp) {
@@ -466,7 +466,7 @@ lEnumeration *enp
       lp = lSelect("", *lpp, NULL, enp);
    }   
 
-   ans = ctx->gdi(ctx, target, SGE_GDI_MOD, lp ? &lp : lpp, cp, enp);
+   ans = ctx->gdi(ctx, target, SGE_GDI_MOD, lp ? &lp : lpp, cp, enp, false);
 
    lFreeList(&lp);
 
@@ -505,7 +505,7 @@ lEnumeration *what
     */
    sge_stopwatch_start(0);
 
-   alp = ctx->gdi(ctx, type, SGE_GDI_MOD, lpp, where, what); 
+   alp = ctx->gdi(ctx, type, SGE_GDI_MOD, lpp, where, what, false); 
 
    if (!(type == SGE_SC_LIST || type == SGE_STN_LIST)) {
       /* right now we change the whole element */
@@ -578,7 +578,7 @@ int action
    sge_stopwatch_start(0);
   
    if (id_list_build_from_str_list(&id_list, &alp, lp, action, force)) {
-      alp = ctx->gdi(ctx, SGE_CQ_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL);
+      alp = ctx->gdi(ctx, SGE_CQUEUE_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL);
       lFreeList(&id_list);
    }
 

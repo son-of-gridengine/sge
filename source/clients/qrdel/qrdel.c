@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
       goto error_exit;
    }
 
-   alp = ctx->gdi(ctx, SGE_AR_LIST, SGE_GDI_DEL, &id_list, NULL, NULL);
+   alp = ctx->gdi(ctx, SGE_AR_LIST, SGE_GDI_DEL, &id_list, NULL, NULL, false);
    lFreeList(&id_list);
    if (answer_list_has_error(&alp)) {
       answer_list_on_error_print_or_exit(&alp, stdout);

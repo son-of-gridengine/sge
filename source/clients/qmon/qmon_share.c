@@ -1014,12 +1014,12 @@ static void qmonShareTreeClearUsage(Widget w, XtPointer cld, XtPointer cad)
 
    /* update user usage */
    if (ul) {
-      alp = ctx->gdi(ctx, SGE_UU_LIST, SGE_GDI_MOD, &ul, NULL, NULL);
+      alp = ctx->gdi(ctx, SGE_USER_LIST, SGE_GDI_MOD, &ul, NULL, NULL);
    }
 
    /* update project usage */
    if (pl) {
-      alp2 = ctx->gdi(ctx, SGE_PR_LIST, SGE_GDI_MOD, &pl, NULL, NULL);
+      alp2 = ctx->gdi(ctx, SGE_PROJECT_LIST, SGE_GDI_MOD, &pl, NULL, NULL);
    }
 
    if (alp || alp2) {

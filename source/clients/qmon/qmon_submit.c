@@ -1600,7 +1600,7 @@ static void qmonSubmitJobSubmit(Widget w, XtPointer cld, XtPointer cad)
          printf("________________________________________\n");
       }
 
-      alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_MOD, &lp, NULL, NULL);
+      alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_MOD, &lp, NULL, NULL);
       if (!qmonMessageBox(w, alp, 0)) {
          updateJobListCB(w, NULL, NULL);
          XmtMsgLinePrintf(submit_message, "Job %d altered", 
