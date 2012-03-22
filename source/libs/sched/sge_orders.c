@@ -347,9 +347,14 @@ sge_send_orders2master(sge_evc_class_t *evc, lList **orders)
 
    if (*orders != NULL) {
       DPRINTF(("SENDING %d ORDERS TO QMASTER\n", lGetNumberOfElem(*orders)));
-      order_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_SEND, SGE_ORDER_LIST, SGE_GDI_ADD,
-                               orders, NULL, NULL, &state, false);
-      ctx->gdi_wait(ctx, &alp, &malp, &state);
+      if(set_busy) {
+         order_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_RECORD, SGE_ORDER_LIST, SGE_GDI_ADD,
+                                  orders, NULL, NULL, &state, false);
+      } else {
+         order_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_SEND, SGE_ORDER_LIST, SGE_GDI_ADD,
+                                  orders, NULL, NULL, &state, false);
+         ctx->gdi_wait(ctx, &alp, &malp, &state);
+      }
 
       if (alp != NULL) {
          ret = answer_list_handle_request_answer_list(&alp, stderr);

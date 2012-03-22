@@ -111,7 +111,7 @@ sge_schedd_add_gdi_order_request(sge_gdi_ctx_class_t *ctx, order_t *orders, lLis
        * order_list will be NULL after the call of gdi_multi. This saves a copy operation.
        */
       order_id = ctx->gdi_multi(ctx, answer_list, SGE_GDI_SEND, SGE_ORDER_LIST, SGE_GDI_ADD,
-                                order_list, NULL, NULL, state, false);
+                                order_list, NULL, NULL, false, state, false);
 
       if (order_id != -1) {
          sge_sl_insert(Master_Request_Queue.request_list, state, SGE_SL_BACKWARD);

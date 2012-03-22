@@ -132,7 +132,7 @@ static int drmaa_is_attribute_supported(const char *name, bool vector, dstring *
 static drmaa_attr_names_t *drmaa_fill_string_vector(const char *name[]);
 
 static int drmaa_job2sge_job(lListElem **jtp, const drmaa_job_template_t *drmaa_jt, 
-                             int is_bulk, int start, int end, int step, dstring *diag);
+                             int is_bulk, int start, int end, int step, bool *use_euid_egid, dstring *diag);
 static int drmaa_path2path_opt(const lList *attrs, lList **args,
                                int is_bulk, const char *attribute_key,
                                const char *sw, int opt, dstring *diag,
@@ -194,6 +194,7 @@ static const char *drmaa_supported_nonvector[] = {
    DRMAA_DURATION_HLIMIT,       /* optional */
    DRMAA_DURATION_SLIMIT,       /* optional */
 #endif
+   DRMAA_SUBMIT_AS_EUID,        /* SGE only */
    NULL
 };
 
@@ -1114,6 +1115,7 @@ int drmaa_run_job(char *job_id, size_t job_id_len, const drmaa_job_template_t *j
    dstring jobid;
    int drmaa_errno = DRMAA_ERRNO_SUCCESS;
    lListElem *sge_job_template;
+   bool use_euid_egid;
 
    DENTER(TOP_LAYER, "drmaa_run_job");
 
@@ -1138,12 +1140,12 @@ int drmaa_run_job(char *job_id, size_t job_id_len, const drmaa_job_template_t *j
 
    /* convert DRMAA job template into Grid Engine job template */
    if ((drmaa_errno=drmaa_job2sge_job(&sge_job_template, jt, 
-            0, 1, 1, 1, diagp))!=DRMAA_ERRNO_SUCCESS) {
+            0, 1, 1, 1, &use_euid_egid, diagp))!=DRMAA_ERRNO_SUCCESS) {
       /* diag written by drmaa_job2sge_job() */
       DRETURN(drmaa_errno);
    }
 
-   drmaa_errno = japi_run_job(&jobid, &sge_job_template, diagp); 
+   drmaa_errno = japi_run_job(&jobid, sge_job_template, diagp); 
    lFreeElem(&sge_job_template);
 
    DRETURN(drmaa_errno);
@@ -1195,6 +1197,7 @@ int drmaa_run_bulk_jobs(drmaa_job_ids_t **jobids, const drmaa_job_template_t *jt
    dstring diag, *diagp = NULL;
    int drmaa_errno = DRMAA_ERRNO_SUCCESS;
    lListElem *sge_job_template = NULL;
+   bool use_euid_egid;
 
    DENTER(TOP_LAYER, "drmaa_run_bulk_jobs");
 
@@ -1218,14 +1221,14 @@ int drmaa_run_bulk_jobs(drmaa_job_ids_t **jobids, const drmaa_job_template_t *jt
 
    /* convert DRMAA job template into Grid Engine job template */
    drmaa_errno = drmaa_job2sge_job(&sge_job_template, jt, 1, start, end, incr,
-                                   diagp);
+		&use_euid_egid, diagp);
    if (drmaa_errno != DRMAA_ERRNO_SUCCESS) {
       /* diag written by drmaa_job2sge_job() */
       DRETURN(drmaa_errno);
    }
 
-   drmaa_errno = japi_run_bulk_jobs((drmaa_attr_values_t **)jobids, &sge_job_template, 
-                                    start, end, incr, diagp);
+   drmaa_errno = japi_run_bulk_jobs((drmaa_attr_values_t **)jobids, sge_job_template, 
+         start, end, incr, diagp);
    lFreeElem(&sge_job_template);
 
    DRETURN(drmaa_errno);
@@ -2558,7 +2561,7 @@ static int drmaa_path2sge_path(const lList *attrs, int is_bulk,
 *
 *******************************************************************************/
 static int drmaa_job2sge_job(lListElem **jtp, const drmaa_job_template_t *drmaa_jt, 
-                             int is_bulk, int start, int end, int step,
+                             int is_bulk, int start, int end, int step, bool *use_euid_egid,
                              dstring *diag)
 {
    lListElem *jt, *ep;
@@ -2575,9 +2578,9 @@ static int drmaa_job2sge_job(lListElem **jtp, const drmaa_job_template_t *drmaa_
    u_long32 jb_now = 0;
 
    u_long32 prog_number = ctx->get_who(ctx);
-   u_long32 myuid = ctx->get_uid(ctx);
+   uid_t myuid;
+   char username[128];
    const char *cell_root = ctx->get_cell_root(ctx);
-   const char *username = ctx->get_username(ctx);
    const char *unqualified_hostname = ctx->get_unqualified_hostname(ctx);
    const char *qualified_hostname = ctx->get_qualified_hostname(ctx);
 
@@ -2615,6 +2618,34 @@ static int drmaa_job2sge_job(lListElem **jtp, const drmaa_job_template_t *drmaa_
    }
 
    lSetUlong(jt, JB_type, jb_now);
+
+
+   /* Modify UID and username for a seteuid() application */
+   if ((ep = lGetElemStr(drmaa_jt->strings, VA_variable, DRMAA_SUBMIT_AS_EUID)) 
+         && !strncasecmp(lGetString(ep, VA_value), "y", 1)) {
+      myuid = geteuid();
+ 
+      if (sge_uid2user(myuid, username, sizeof(username) - 1, 3) != 0) {
+         sge_dstring_sprintf(diag, "Could not resolve EUID into username.");
+         lFreeElem(&jt);
+         DRETURN(DRMAA_ERRNO_DENIED_BY_DRM);
+      }
+      if (use_euid_egid)
+         *use_euid_egid = true;
+   } else {
+      const char *u = ctx->get_username(ctx);
+      myuid = ctx->get_uid(ctx);
+      
+      if (!u) {
+         sge_dstring_sprintf(diag, "Context username is NULL!");
+         lFreeElem(&jt);
+         DRETURN(DRMAA_ERRNO_DENIED_BY_DRM);
+      }
+      
+      strncpy(username, u, sizeof(username) - 1);
+      if (use_euid_egid)
+         *use_euid_egid = false;
+   }
    
    /*
     * read switches from the various defaults files

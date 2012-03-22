@@ -918,7 +918,7 @@ u_long32 show
    
    eh_id = ctx->gdi_multi(ctx,
                           answer_list, SGE_GDI_RECORD, SGE_EH_LIST, SGE_GDI_GET, 
-                          NULL, where, eh_all, &state, true);
+                          NULL, where, eh_all, false, &state, true);
    lFreeWhat(&eh_all);
    lFreeWhere(&where);
 
@@ -931,7 +931,7 @@ u_long32 show
       
       q_id = ctx->gdi_multi(ctx, 
                             answer_list, SGE_GDI_RECORD, SGE_CQ_LIST, SGE_GDI_GET, 
-                            NULL, NULL, q_all, &state, true);
+                            NULL, NULL, q_all, false, &state, true);
       lFreeWhat(&q_all);
 
       if (answer_list_has_error(answer_list)) {
@@ -1001,7 +1001,7 @@ u_long32 show
 
       j_id = ctx->gdi_multi(ctx, 
                          answer_list, SGE_GDI_RECORD, SGE_JB_LIST, SGE_GDI_GET, 
-                         NULL, jw, j_all, &state, true);
+                         NULL, jw, j_all, false, &state, true);
       lFreeWhat(&j_all);
       lFreeWhere(&jw);
 
@@ -1016,7 +1016,7 @@ u_long32 show
    ce_all = lWhat("%T(ALL)", CE_Type);
    ce_id = ctx->gdi_multi(ctx, 
                           answer_list, SGE_GDI_RECORD, SGE_CE_LIST, SGE_GDI_GET, 
-                          NULL, NULL, ce_all, &state, true);
+                          NULL, NULL, ce_all, false, &state, true);
    lFreeWhat(&ce_all);
 
    if (answer_list_has_error(answer_list)) {
@@ -1030,7 +1030,7 @@ u_long32 show
    
    pe_id = ctx->gdi_multi(ctx, 
                           answer_list, SGE_GDI_RECORD, SGE_PE_LIST, SGE_GDI_GET, 
-                          NULL, NULL, pe_all, &state, true);
+                          NULL, NULL, pe_all, false, &state, true);
    lFreeWhat(&pe_all);
 
    if (answer_list_has_error(answer_list)) {
@@ -1045,7 +1045,7 @@ u_long32 show
    
    gc_id = ctx->gdi_multi(ctx, 
                           answer_list, SGE_GDI_SEND, SGE_CONF_LIST, SGE_GDI_GET,
-                          NULL, gc_where, gc_what, &state, true);
+                          NULL, gc_where, gc_what, false, &state, true);
    ctx->gdi_wait(ctx, answer_list, &mal, &state);
    lFreeWhat(&gc_what);
    lFreeWhere(&gc_where);

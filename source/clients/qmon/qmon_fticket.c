@@ -306,11 +306,11 @@ static void qmonFTOkay(Widget w, XtPointer cld, XtPointer cad)
          ** 
          */                         
          alp = ctx->gdi(ctx, fticket_info.list_type, SGE_GDI_MOD,
-                       tlp ? &tlp : &lp, NULL, NULL);
+                       tlp ? &tlp : &lp, NULL, NULL, false);
          lFreeList(&tlp);
       } else {
          what = lWhat("%T(ALL)", fticket_info.dp);
-         alp = ctx->gdi(ctx, fticket_info.list_type, SGE_GDI_MOD, &lp, NULL, what);
+         alp = ctx->gdi(ctx, fticket_info.list_type, SGE_GDI_MOD, &lp, NULL, what, false);
       }
 
       qmonMessageBox(w, alp, 0);
@@ -914,11 +914,11 @@ static void qmonOTOkay(Widget w, XtPointer cld, XtPointer cad)
                             JB_override_tickets);
          tlp = lSelect("", lp, NULL, what);
          alp = ctx->gdi(ctx, oticket_info.list_type, SGE_GDI_MOD,
-                       tlp ? &tlp : &lp, NULL, NULL);
+                       tlp ? &tlp : &lp, NULL, NULL, false);
          lFreeList(&tlp);
       } else {
          what = lWhat("%T(ALL)", oticket_info.dp);
-         alp = ctx->gdi(ctx, oticket_info.list_type, SGE_GDI_MOD, &lp, NULL, what);
+         alp = ctx->gdi(ctx, oticket_info.list_type, SGE_GDI_MOD, &lp, NULL, what, false);
       }
 
       qmonMessageBox(w, alp, 0);
