@@ -277,7 +277,7 @@ main(int argc, char **argv)
    num_tasks = (end - start) / step + 1;
 
    if (num_tasks > 1) {
-      int error = japi_run_bulk_jobs(&jobids, job, start, end, step, &diag);
+      int error = japi_run_bulk_jobs(&jobids, &job, start, end, step, false, &diag);
       if (error != DRMAA_ERRNO_SUCCESS) {
          /* No active session here means that japi_enable_job_wait() was
           * interrupted by the signal handler, in which case we just break out
@@ -309,7 +309,7 @@ main(int argc, char **argv)
       jobid_string = get_bulk_jobid_string((long)jobids->it.ji.jobid, start, end, step);
    }
    else if (num_tasks == 1) {
-      int error = japi_run_job(&jobid, job, &diag);
+      int error = japi_run_job(&jobid, &job, false, &diag);
       
       if (error != DRMAA_ERRNO_SUCCESS) {
          if (error != DRMAA_ERRNO_NO_ACTIVE_SESSION) {

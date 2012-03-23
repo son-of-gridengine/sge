@@ -304,7 +304,7 @@ static int japi_close_session(const char*username, const dstring *key, dstring *
 static void *japi_implementation_thread(void *);
 static int japi_parse_jobid(const char *jobid_str, u_long32 *jobid, u_long32 *taskid, 
    bool *is_array, dstring *diag);
-static int japi_send_job(lListElem *job, u_long32 *jobid, dstring *diag);
+static int japi_send_job(lListElem **job, bool use_euid_egid, u_long32 *jobid, dstring *diag);
 static int japi_add_job(u_long32 jobid, u_long32 start, u_long32 end, u_long32 incr, 
       bool is_array, dstring *diag);
 static int japi_synchronize_jobids_retry(const char *jobids[], bool dispose);
@@ -1234,7 +1234,7 @@ void japi_delete_string_vector(drmaa_attr_values_t* iter )
 *  NOTES
 *     MT-NOTE: japi_send_job() is MT safe
 *******************************************************************************/
-static int japi_send_job(lListElem *sge_job_template, u_long32 *jobid, dstring *diag)
+static int japi_send_job(lListElem **sge_job_template, bool use_euid_egid, u_long32 *jobid, dstring *diag)
 {
    lList *job_lp, *alp;
    lListElem *aep, *job;
@@ -1254,7 +1254,7 @@ static int japi_send_job(lListElem *sge_job_template, u_long32 *jobid, dstring *
                            ctx->get_username(ctx), ctx->get_groupname(ctx));
 
    /* use GDI to submit job for this session */
-   alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_ADD|SGE_GDI_RETURN_NEW_VERSION, &job_lp, NULL, NULL);
+   alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_ADD|SGE_GDI_RETURN_NEW_VERSION, &job_lp, NULL, NULL, use_euid_egid);
 
    /* reinitialize 'job' with pointer to new version from qmaster */
    lFreeElem(sge_job_template);
@@ -1390,7 +1390,7 @@ static int japi_add_job(u_long32 jobid, u_long32 start, u_long32 end, u_long32 i
 *      MT-NOTE: japi_run_job() is MT safe
 *      Would be better to return job_id as u_long32.
 *******************************************************************************/
-int japi_run_job(dstring *job_id, lListElem *sge_job_template, dstring *diag)
+int japi_run_job(dstring *job_id, lListElem **sge_job_template, bool use_euid_egid, dstring *diag)
 {
    u_long32 jobid = 0;
    int drmaa_errno;
@@ -1880,7 +1880,7 @@ int japi_control(const char *jobid_str, int drmaa_action, dstring *diag)
          }
 
          if (request_list) {
-            alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_MOD, &request_list, NULL, NULL);
+            alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_MOD, &request_list, NULL, NULL, false);
             lFreeList(&request_list);
 
             for_each (aep, alp) {
@@ -4906,7 +4906,7 @@ static int do_gdi_delete(lList **id_list, int action, bool delete_all,
 
    DENTER (TOP_LAYER, "do_gdi_delete");
 
-   alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_DEL, id_list, NULL, NULL);
+   alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_DEL, id_list, NULL, NULL, false);
    lFreeList(id_list);
 
    for_each (aep, alp) {

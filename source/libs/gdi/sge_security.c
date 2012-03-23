@@ -1256,7 +1256,8 @@ void tgtcclr(lListElem *jep, const char *rhost)
 *  SYNOPSIS
 *     bool 
 *     sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx, 
-*                                         sge_gdi_packet_class_t *packet_handle) 
+*                                         sge_gdi_packet_class_t *packet_handle,
+*                                         bool use_euid_egid)
 *
 *  FUNCTION
 *     Initialize the "auth_info" substring part of the "packet_handle". 
@@ -1266,7 +1267,8 @@ void tgtcclr(lListElem *jep, const char *rhost)
 *
 *  INPUTS
 *     sge_gdi_ctx_class_t *ctx              - context 
-*     sge_gdi_packet_class_t *packet_handle - context 
+*     sge_gdi_packet_class_t *packet_handle - context
+*     use_euid_egid                         - use effective uid, gid
 *
 *  RESULT
 *     bool - error state

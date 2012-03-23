@@ -234,7 +234,7 @@ static int showq_show_job_tacc(sge_gdi_ctx_class_t * ctx, lList * user_list, int
 
    /* get job data */
    what = lWhat("%T(ALL)", JB_Type);
-   alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &jlp, where, what);
+   alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &jlp, where, what, false);
    if (alp != NULL) {
       answer_list_output(&alp);
    }

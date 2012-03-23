@@ -1312,7 +1312,8 @@ static void qmonJobPriority(Widget w, XtPointer cld, XtPointer cad)
 
       for_each(jep, jl) {
          lSetUlong(jep, JB_priority, BASE_PRIORITY + new_priority);
-      alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_MOD, &jl, NULL, NULL); 
+      }
+      alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_MOD, &jl, NULL, NULL, false); 
    
       qmonMessageBox(w, alp, 0);
 
@@ -1420,7 +1421,7 @@ static void qmonJobHold(Widget w, XtPointer cld, XtPointer cad)
          }
 
 /* lWriteListTo(jl, stdout); */
-         alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_MOD, &jl, NULL, NULL); 
+         alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_MOD, &jl, NULL, NULL, false); 
          qmonMessageBox(w, alp, 0);
 
          lFreeList(&jl);
@@ -1896,7 +1897,7 @@ dstring *sb
  
    /* get job scheduling information */
    what = lWhat("%T(ALL)", SME_Type);
-   alp = ctx->gdi(ctx, SGE_JOB_SCHEDD_INFO_LIST, SGE_GDI_GET, &ilp, NULL, what);
+   alp = ctx->gdi(ctx, SGE_SME_LIST, SGE_GDI_GET, &ilp, NULL, what, false);
    lFreeWhat(&what);
    for_each(aep, alp) {
       if (lGetUlong(aep, AN_status) != STATUS_OK) {
@@ -1924,7 +1925,7 @@ dstring *sb
    }                                          
    what = lWhat("%T(ALL)", JB_Type);
    /* get job list */
-   alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_GET, &jlp, where, what);
+   alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &jlp, where, what, false);
    lFreeWhere(&where);
    lFreeWhat(&what);
    for_each(aep, alp) {
@@ -2045,7 +2046,7 @@ dstring *sb
  
    /* get job scheduling information */
    what = lWhat("%T(ALL)", SME_Type);
-   alp = ctx->gdi(ctx, SGE_JOB_SCHEDD_INFO_LIST, SGE_GDI_GET, &ilp, NULL, what);
+   alp = ctx->gdi(ctx, SGE_SME_LIST, SGE_GDI_GET, &ilp, NULL, what, false);
    lFreeWhat(&what);
    for_each(aep, alp) {
       if (lGetUlong(aep, AN_status) != STATUS_OK) {

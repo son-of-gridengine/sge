@@ -1947,7 +1947,7 @@ qstat_show_job(sge_gdi_ctx_class_t *ctx, lList *jid_list, u_long32 isXML, qstat_
 
    /* get job scheduling information */
    what = lWhat("%T(ALL)", SME_Type);
-   alp = ctx->gdi(ctx, SGE_JOB_SCHEDD_INFO_LIST, SGE_GDI_GET, &ilp, NULL, what);
+   alp = ctx->gdi(ctx, SGE_SME_LIST, SGE_GDI_GET, &ilp, NULL, what, false);
    lFreeWhat(&what);
 
    if (!isXML){
@@ -2015,7 +2015,7 @@ qstat_show_job(sge_gdi_ctx_class_t *ctx, lList *jid_list, u_long32 isXML, qstat_
             JB_hard_wallclock_gmt, JB_override_tickets, JB_version,
             JB_ja_structure, JB_type, JB_binding); 
    /* get job list */
-   alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_GET, &jlp, where, what);
+   alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &jlp, where, what, false);
    lFreeWhere(&where);
    lFreeWhat(&what);
 
@@ -2174,7 +2174,7 @@ static int qstat_show_job_info(sge_gdi_ctx_class_t *ctx, u_long32 isXML, qstat_e
 
    /* get job scheduling information */
    what = lWhat("%T(ALL)", SME_Type);
-   alp = ctx->gdi(ctx, SGE_JOB_SCHEDD_INFO_LIST, SGE_GDI_GET, &ilp, NULL, what);
+   alp = ctx->gdi(ctx, SGE_SME_LIST, SGE_GDI_GET, &ilp, NULL, what, false);
    lFreeWhat(&what);
    if (isXML){
       xml_qstat_show_job_info(&ilp, &alp, qstat_env);

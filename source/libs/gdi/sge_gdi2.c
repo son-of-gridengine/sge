@@ -885,7 +885,7 @@ lList *gdi2_kill(sge_gdi_ctx_class_t *thiz, lList *id_list, const char *cell,
       id_list = lCreateList("kill scheduler", ID_Type);
       id_list_created = true;
       lAddElemStr(&id_list, ID_str, buffer, ID_Type);
-      tmpalp = thiz->gdi(thiz, SGE_EVENT_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL);
+      tmpalp = thiz->gdi(thiz, SGE_EV_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL, false);
       lAddList(alp, &tmpalp);  
    }
 
@@ -902,7 +902,7 @@ lList *gdi2_kill(sge_gdi_ctx_class_t *thiz, lList *id_list, const char *cell,
          id_list_created = true;
          lAddElemStr(&id_list, ID_str, buffer, ID_Type);
       }
-      tmpalp = thiz->gdi(thiz, SGE_EVENT_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL);
+      tmpalp = thiz->gdi(thiz, SGE_EV_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL, false);
       lAddList(alp, &tmpalp);  
    }
 
@@ -925,7 +925,7 @@ lList *gdi2_kill(sge_gdi_ctx_class_t *thiz, lList *id_list, const char *cell,
          lSetUlong(hlep, ID_force, (action_flag & JOB_KILL)?1:0);
          lAppendElem(hlp, hlep);
       }
-      tmpalp = thiz->gdi(thiz, SGE_EXECHOST_LIST, SGE_GDI_TRIGGER, &hlp, NULL, NULL);
+      tmpalp = thiz->gdi(thiz, SGE_EH_LIST, SGE_GDI_TRIGGER, &hlp, NULL, NULL, false);
       lAddList(alp, &tmpalp);
       lFreeList(&hlp);
    }
@@ -1467,7 +1467,7 @@ int gdi2_get_configuration(sge_gdi_ctx_class_t *ctx, const char *config_name,
       DPRINTF(("requesting global and %s\n", lGetHost(hep, EH_name)));
    }
    what = lWhat("%T(ALL)", CONF_Type);
-   alp = ctx->gdi(ctx, SGE_CONFIG_LIST, SGE_GDI_GET, &lp, where, what);
+   alp = ctx->gdi(ctx, SGE_CONF_LIST, SGE_GDI_GET, &lp, where, what, false);
 
    lFreeWhat(&what);
    lFreeWhere(&where);
