@@ -3775,7 +3775,7 @@ void jgdi_fill(JNIEnv *env, jobject jgdi, jobject list, jobject filter, const ch
    what = lWhat("%T(ALL)", descr);
    
    /* get list */
-   alp = ctx->gdi(ctx, target_list, SGE_GDI_GET, &lp, where, what);
+   alp = ctx->gdi(ctx, target_list, SGE_GDI_GET, &lp, where, what, false);
    if (answers != NULL) {
       generic_fill_list(env, answers, "com/sun/grid/jgdi/configuration/JGDIAnswer", alp, NULL);
    }
@@ -3866,7 +3866,7 @@ void jgdi_add(JNIEnv *env, jobject jgdi, jobject jobj, const char *classname, in
       
       /* add to list */
       if (target_list == SGE_JB_LIST || target_list == SGE_AR_LIST) {
-         alp = ctx->gdi(ctx, target_list, SGE_GDI_ADD | SGE_GDI_RETURN_NEW_VERSION, &lp, where, what);
+        alp = ctx->gdi(ctx, target_list, SGE_GDI_ADD | SGE_GDI_RETURN_NEW_VERSION, &lp, where, what, false);
          if (answer_list_has_error(&alp)) {
             ret = JGDI_ERROR;
             goto error;
@@ -3908,10 +3908,10 @@ void jgdi_add(JNIEnv *env, jobject jgdi, jobject jobj, const char *classname, in
          }   
          lFreeList(&lp);
       } else if (target_list == SGE_CONF_LIST) {
-         alp = ctx->gdi(ctx, target_list, SGE_GDI_MOD, &lp, where, what);
+        alp = ctx->gdi(ctx, target_list, SGE_GDI_MOD, &lp, where, what, false);
          lFreeList(&lp);
       } else {   
-         alp = ctx->gdi(ctx, target_list, SGE_GDI_ADD | SGE_GDI_SET_ALL, &lp, where, what);
+        alp = ctx->gdi(ctx, target_list, SGE_GDI_ADD | SGE_GDI_SET_ALL, &lp, where, what, false);
          lFreeList(&lp);
       }
 
@@ -4039,7 +4039,7 @@ void jgdi_delete_array(JNIEnv *env, jobject jgdi, jobjectArray obj_array, const 
 
       sge_gdi_set_thread_local_ctx(ctx);
 
-      alp = ctx->gdi(ctx, target_list, SGE_GDI_DEL, &ref_list, NULL, NULL);
+      alp = ctx->gdi(ctx, target_list, SGE_GDI_DEL, &ref_list, NULL, NULL, false);
       lFreeList(&ref_list);
       
       if (answers != NULL) {
@@ -4124,7 +4124,7 @@ void jgdi_delete(JNIEnv *env, jobject jgdi, jobject jobj, const char* classname,
    }   
 
    /* delete from target_list */
-   alp = ctx->gdi(ctx, target_list, SGE_GDI_DEL, &lp, where, what);
+   alp = ctx->gdi(ctx, target_list, SGE_GDI_DEL, &lp, where, what, false);
    lFreeList(&lp);
 
    if (answers != NULL) {
@@ -4200,7 +4200,7 @@ void jgdi_update(JNIEnv *env, jobject jgdi, jobject jobj, const char *classname,
    /* create what and where */
    what = lWhat("%T(ALL)", descr);
 
-   alp = ctx->gdi(ctx, target_list, SGE_GDI_MOD | SGE_GDI_SET_ALL, &lp, where, what);
+   alp = ctx->gdi(ctx, target_list, SGE_GDI_MOD | SGE_GDI_SET_ALL, &lp, where, what, false);
    
    lFreeList(&lp);
    lFreeWhat(&what);
@@ -4308,7 +4308,7 @@ static void jgdi_clearusage(JNIEnv *env, jobject jgdi, jobject answers)
 
    what = lWhat("%T(ALL)", STN_Type);
 
-   alp = ctx->gdi(ctx, SGE_UU_LIST, SGE_GDI_GET, &lp, NULL, what);
+   alp = ctx->gdi(ctx, SGE_UU_LIST, SGE_GDI_GET, &lp, NULL, what, false);
    
    /* if error throw exception */
    if (answer_list_has_error(&alp)) {
@@ -4317,7 +4317,7 @@ static void jgdi_clearusage(JNIEnv *env, jobject jgdi, jobject answers)
    }
    lFreeList(&alp);
 
-   alp = ctx->gdi(ctx, SGE_PR_LIST, SGE_GDI_GET, &lp2, NULL, what);
+   alp = ctx->gdi(ctx, SGE_PR_LIST, SGE_GDI_GET, &lp2, NULL, what, false);
 
    /* if error throw exception */
    if (answer_list_has_error(&alp)) {
@@ -4339,7 +4339,7 @@ static void jgdi_clearusage(JNIEnv *env, jobject jgdi, jobject answers)
    }
    /* update user usage */
    if (lp && lGetNumberOfElem(lp) > 0) {
-      alp = ctx->gdi(ctx, SGE_UU_LIST, SGE_GDI_MOD, &lp, NULL, NULL);
+     alp = ctx->gdi(ctx, SGE_UU_LIST, SGE_GDI_MOD, &lp, NULL, NULL, false);
    }
 
    /* if error throw exception */
@@ -4354,7 +4354,7 @@ static void jgdi_clearusage(JNIEnv *env, jobject jgdi, jobject answers)
    
    /* update project usage */
    if (lp2 && lGetNumberOfElem(lp2) > 0) {
-      alp = ctx->gdi(ctx, SGE_PR_LIST, SGE_GDI_MOD, &lp2, NULL, NULL);
+     alp = ctx->gdi(ctx, SGE_PR_LIST, SGE_GDI_MOD, &lp2, NULL, NULL, false);
    }
 
    if (answers != NULL) {
@@ -4524,7 +4524,7 @@ static void jgdi_qmod(JNIEnv *env, jobject jgdi, jobjectArray obj_array, jboolea
       }
       sge_gdi_set_thread_local_ctx(ctx);
 
-      alp = ctx->gdi(ctx, SGE_CQ_LIST, SGE_GDI_TRIGGER, &ref_list, NULL, NULL);
+      alp = ctx->gdi(ctx, SGE_CQ_LIST, SGE_GDI_TRIGGER, &ref_list, NULL, NULL, false);
       lFreeList(&ref_list);
       
       if (answers != NULL) {
@@ -4610,13 +4610,13 @@ static void jgdi_detached_settings(JNIEnv *env, jobject jgdi, jobjectArray obj_a
    /* HGRP */
    hgrp_what = lWhat("%T(ALL)", HGRP_Type);
    hgrp_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_RECORD, SGE_HGRP_LIST,
-                           SGE_GDI_GET, NULL, NULL, hgrp_what, &state, true);
+                           SGE_GDI_GET, NULL, NULL, hgrp_what, false, &state, true);
    lFreeWhat(&hgrp_what);
 
    /* CQ */
    cqueue_what = lWhat("%T(ALL)", CQ_Type);
    cq_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_SEND, SGE_CQ_LIST,
-                         SGE_GDI_GET, NULL, NULL, cqueue_what,
+                         SGE_GDI_GET, NULL, NULL, cqueue_what, false,
                          &state, true);
    ctx->gdi_wait(ctx, &alp, &multi_answer_list, &state);
    lFreeWhat(&cqueue_what);
@@ -5204,7 +5204,7 @@ JNIEXPORT jstring JNICALL Java_com_sun_grid_jgdi_jni_JGDIBaseImpl_nativeGetSched
    where = lWhere("%T(%I==%u))", EV_Type, EV_id, EV_ID_SCHEDD);
 
    /* get list */
-   alp = ctx->gdi(ctx, SGE_EV_LIST, SGE_GDI_GET, &lp, where, what);
+   alp = ctx->gdi(ctx, SGE_EV_LIST, SGE_GDI_GET, &lp, where, what, false);
    
    lFreeWhat(&what);
    lFreeWhere(&where);

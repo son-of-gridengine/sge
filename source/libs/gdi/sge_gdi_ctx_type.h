@@ -60,10 +60,10 @@ struct sge_gdi_ctx_class_str {
                                           state_gdi_multi *state);
    lList* (*gdi)                         (sge_gdi_ctx_class_t *thiz, u_long32 target, 
                                           u_long32 cmd, lList **lp, lCondition *where, 
-                                          lEnumeration *what);
+                                          lEnumeration *what, bool use_euid_egid);
    int (*gdi_multi)                      (sge_gdi_ctx_class_t* ctx, lList **alpp, int mode, 
                                           u_long32 target, u_long32 cmd, lList **lp, 
-                                          lCondition *cp, lEnumeration *enp, 
+                                          lCondition *cp, lEnumeration *enp, bool use_euid_egid, 
                                           state_gdi_multi *state, bool do_copy);
   
    sge_env_state_class_t* (*get_sge_env_state)(sge_gdi_ctx_class_t *thiz);

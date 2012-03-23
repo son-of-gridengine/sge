@@ -400,9 +400,18 @@ or 'n' can be specified. If 'y' is specified xxQS_NAMExx will ignore the value
 of the 'drmaa_error_path' job template attribute and intermix the standard error 
 stream with the standard output stream as specified with 'drmaa_output_path'.
 .PP
-.\" 
-.\" 
-.SS "drmaa_v_argv - ""argv1 argv2 ..."""
+.\"
+.\"
+.SS "drmaa_submit_as_euid \- ""{y|n}"""
+Specifies whether the jobs submitted using the job template will will run under the
+authority of the real or the effective user and group ID. If not explicitly set in
+the job template the attribute defaults to 'n'. Either 'y' or 'n' can be specified.
+If 'y' is specified xxQS_NAMExx will use the effective user and group ID, otherwise
+the real user and group ID is being used.
+.PP
+.\"
+.\"
+.SS "drmaa_v_argv \- ""argv1 argv2 ..."""
 Specifies the arguments to the job.
 .PP
 .\"
