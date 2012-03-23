@@ -136,7 +136,7 @@ char **argv
    }
 
    if (ref_list) {
-      alp = ctx->gdi(ctx, SGE_CQUEUE_LIST, SGE_GDI_TRIGGER, &ref_list, NULL, NULL);
+      alp = ctx->gdi(ctx, SGE_CQ_LIST, SGE_GDI_TRIGGER, &ref_list, NULL, NULL, false);
    }
 
    answ_list_has_err = answer_list_has_exit_code_error(&alp); 

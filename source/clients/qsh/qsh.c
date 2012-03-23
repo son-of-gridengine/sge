@@ -1969,8 +1969,8 @@ int main(int argc, char **argv)
       DPRINTF(("=====================================================\n"));
 
       /* submit the job to the QMaster */
-      alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_ADD + SGE_GDI_RETURN_NEW_VERSION, 
-         &lp_jobs, NULL, NULL);
+      alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_ADD | SGE_GDI_RETURN_NEW_VERSION, 
+                     &lp_jobs, NULL, NULL, false);
 
       /* reinitialize 'job' with pointer to new version from qmaster */
       job = lFirst(lp_jobs);
@@ -2195,7 +2195,7 @@ int main(int argc, char **argv)
          /* get job from qmaster: to handle qsh and to detect deleted qrsh job */
          what = lWhat("%T(%I)", JB_Type, JB_ja_tasks); 
          where = lWhere("%T(%I==%u)", JB_Type, JB_job_number, job_id); 
-         alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_GET, &lp_poll, where, what);
+         alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &lp_poll, where, what, false);
 
          do_exit = parse_result_list(alp, &alp_error);
    
@@ -2336,7 +2336,7 @@ static void delete_job(sge_gdi_ctx_class_t *ctx, u_long32 job_id, lList *jlp)
    sprintf(job_str, sge_u32, job_id);
    lAddElemStr(&idlp, ID_str, job_str, ID_Type);
 
-   alp = ctx->gdi(ctx, SGE_JOB_LIST, SGE_GDI_DEL, &idlp, NULL, NULL);
+   alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_DEL, &idlp, NULL, NULL, false);
 
    /* no error handling here, we try to delete the job if we can */
    lFreeList(&idlp);

@@ -578,7 +578,7 @@ int action
    sge_stopwatch_start(0);
   
    if (id_list_build_from_str_list(&id_list, &alp, lp, action, force)) {
-      alp = ctx->gdi(ctx, SGE_CQUEUE_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL);
+      alp = ctx->gdi(ctx, SGE_CQ_LIST, SGE_GDI_TRIGGER, &id_list, NULL, NULL, false);
       lFreeList(&id_list);
    }
 

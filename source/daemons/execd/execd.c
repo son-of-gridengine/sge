@@ -485,19 +485,24 @@ int sge_execd_register_at_qmaster(sge_gdi_ctx_class_t *ctx, bool is_restart) {
       lSetUlong(hep, EH_featureset_id, feature_get_active_featureset_id());
       lAppendElem(hlp, hep);
 
-   /* register at qmaster */
-   DPRINTF(("*****  Register at qmaster   *****\n"));
-   if (!is_restart) {
-      /*
-       * This is a regular startup.
-       */
-      alp = ctx->gdi(ctx, SGE_EXECHOST_LIST, SGE_GDI_ADD, &hlp, NULL, NULL);
+      /* register at qmaster */
+      DPRINTF(("*****  Register at qmaster   *****\n"));
+      if (!is_restart) {
+         /*
+          * This is a regular startup.
+          */
+         alp = ctx->gdi(ctx, SGE_EH_LIST, SGE_GDI_ADD, &hlp, NULL, NULL, false);
+      } else {
+         /*
+          * Indicate this is a restart to qmaster.
+          * This is used for the initial_state of queue_configuration implementation.
+          */
+         alp = ctx->gdi(ctx, SGE_EH_LIST, SGE_GDI_ADD | SGE_GDI_EXECD_RESTART,
+                        &hlp, NULL, NULL, false);
+      }
+      lFreeList(&hlp);
    } else {
-      /*
-       * Indicate this is a restart to qmaster.
-       */
-      alp = ctx->gdi(ctx, SGE_EXECHOST_LIST, SGE_GDI_ADD | SGE_GDI_EXECD_RESTART,
-		               &hlp, NULL, NULL);
+      DPRINTF(("*****  Register at qmaster - qmaster not alive!  *****\n"));
    }
 
    if (alp == NULL) {

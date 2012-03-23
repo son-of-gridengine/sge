@@ -436,7 +436,7 @@ bool hgroup_show_structure(sge_gdi_ctx_class_t *ctx, lList **answer_list, const 
       lListElem *alep = NULL;
 
       what = lWhat("%T(ALL)", HGRP_Type);
-      alp = ctx->gdi(ctx, SGE_HGROUP_LIST, SGE_GDI_GET, &hgroup_list, NULL, what);
+      alp = ctx->gdi(ctx, SGE_HGRP_LIST, SGE_GDI_GET, &hgroup_list, NULL, what, false);
       lFreeWhat(&what);
 
       alep = lFirst(alp);
