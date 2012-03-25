@@ -688,8 +688,12 @@ sge_gdi_ctx_setup(sge_gdi_ctx_class_t *thiz, int prog_number, const char* compon
 
       plus_sign = strstr(es->username, "+");
       if (plus_sign!=NULL) {
+         char *to = es->username;
          plus_sign++;
-         strcpy(es->username, plus_sign);
+         /* Can't use strcpy with overlapping strings.  */
+         while (*plus_sign)
+            *to++ = *plus_sign++;
+         *to = '\0';
       }
    }
 #endif
