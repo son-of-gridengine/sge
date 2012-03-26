@@ -128,6 +128,7 @@ spool_berkeleydb_create_context(lList **answer_list, const char *args)
       bdb_info info;
       char *server = NULL;
       char *path   = NULL;
+      char *options = NULL;
       
       /* create spooling context */
       context = spool_create_context(answer_list, "berkeleydb spooling");
@@ -152,6 +153,14 @@ spool_berkeleydb_create_context(lList **answer_list, const char *args)
       /* parse arguments */
       {
          char *dup = strdup(args);
+         options = strchr (dup, ';');
+         if (options != NULL) {
+            *options = '\0';
+            options = strdup(options + 1); /* options for bdb, currently
+                                              only "private" */
+            /* Allow comma-separated list and check values if there's
+               a call for more options.  */
+         }
          path = strchr(dup, ':');
          if (path != NULL) {
             *path = '\0';
@@ -179,7 +188,7 @@ spool_berkeleydb_create_context(lList **answer_list, const char *args)
                server == NULL ? "" : server,
                path));
 
-      info = bdb_create(server, path);
+      info = bdb_create(server, path, options);
       lSetRef(rule, SPR_clientdata, info);
       type = spool_context_create_type(answer_list, context, SGE_TYPE_ALL);
       spool_type_add_rule(answer_list, type, rule, true);

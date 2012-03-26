@@ -142,8 +142,7 @@ spool_berkeleydb_check_version(lList **answer_list)
 *     spool_berkeleydb_create_environment() -- ??? 
 *
 *  SYNOPSIS
-*     bool spool_berkeleydb_create_environment(lList **answer_list, struct 
-*     bdb_info info, const char *url) 
+*     bool spool_berkeleydb_create_environment(lList **answer_list, bdb_info info)
 *
 *  FUNCTION
 *     ??? 
@@ -151,7 +150,6 @@ spool_berkeleydb_check_version(lList **answer_list)
 *  INPUTS
 *     lList **answer_list   - ??? 
 *     bdb_info info - ??? 
-*     const char *url       - ??? 
 *
 *  RESULT
 *     bool - 
@@ -348,6 +346,10 @@ bool spool_berkeleydb_create_environment(lList **answer_list,
 
          if (server == NULL) {
             flags |= DB_THREAD;
+            /* Don't do this by default as it's not clear it works
+               with db_dump for instance.  */
+            if (bdb_get_private(info))
+               flags |= DB_PRIVATE;
          }
 
          if (bdb_get_recover(info)) {

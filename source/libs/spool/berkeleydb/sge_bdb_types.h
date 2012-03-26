@@ -71,7 +71,7 @@ typedef enum {
 typedef struct _bdb_info *bdb_info;
 
 bdb_info
-bdb_create(const char *server, const char *path);
+bdb_create(const char *server, const char *path, const char * options);
 
 const char *
 bdb_get_server(bdb_info info);
@@ -96,6 +96,9 @@ bdb_get_next_checkpoint(bdb_info info);
 
 bool 
 bdb_get_recover(bdb_info info);
+
+bool
+bdb_get_private(bdb_info info);
 
 void
 bdb_set_env(bdb_info info, DB_ENV *env);

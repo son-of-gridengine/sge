@@ -57,6 +57,7 @@ struct _bdb_info {
    time_t            next_clear;          /* time of next logfile clear */
    time_t            next_checkpoint;     /* time of next checkpoint */
    bool              recover;             /* shall we recover on open? */
+   bool              private;             /* open with DB_PRIVATE? */
 };
 
 typedef struct bdb_connection {
@@ -98,6 +99,8 @@ bdb_destroy_connection(void *connection);
 *  INPUTS
 *     const char *server - hostname of Berkeley DB rpc server, or NULL
 *     const char *path   - path to the database
+*     const char *options - options list for opening database; currently
+*                          may only be "private" to specify using DB_PRIVATE
 *
 *  RESULT
 *     bdb_info - pointer to a newly created and initialized structure
@@ -106,7 +109,7 @@ bdb_destroy_connection(void *connection);
 *     MT-NOTE: bdb_create() is MT safe 
 *******************************************************************************/
 bdb_info
-bdb_create(const char *server, const char *path) 
+bdb_create(const char *server, const char *path, const char *options)
 {
    int ret, i;
    bdb_info info = (bdb_info) malloc(sizeof(struct _bdb_info));
@@ -128,6 +131,11 @@ bdb_create(const char *server, const char *path)
    info->next_clear = 0;
    info->next_checkpoint = 0;
    info->recover = false;
+   if (options != NULL && strcmp(options, "private") == 0)
+      info->private = true;
+   else
+      /* fixme: check validity -- how to report eror here?  */
+      info->private = false;
 
    return info;
 }
@@ -371,6 +379,12 @@ bool
 bdb_get_recover(bdb_info info) 
 {
    return info->recover;
+}
+
+bool
+bdb_get_private(bdb_info info)
+{
+   return info->private;
 }
 
 /****** spool/berkeleydb/bdb_set_env() *****************************************
