@@ -48,6 +48,8 @@ use_kill=false
 echo $*
 me=`basename $0`
 
+PVM_VMID=$JOB_ID; export PVM_VMID
+
 if [ $use_kill = true ]; then
 
    pe_hostfile=$1
