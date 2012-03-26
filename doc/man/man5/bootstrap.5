@@ -2,6 +2,7 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
+.\" Copyright (C) 2012 Dave Love, University of Liverpool
 .\"
 .\"___INFO__MARK_END__
 .\" $RCSfile: bootstrap.5,v $     Last Update: $Date: 2011-05-14 14:50:22 $     Revision: $Revision: 1.10 $
@@ -29,7 +30,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH BOOTSTRAP 5 "$Date: 2011-05-14 14:50:22 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH BOOTSTRAP 5 2012-04-26 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 bootstrap \- xxQS_NAMExx bootstrap file
@@ -132,7 +133,25 @@ Defines parameters of the chosen spooling method that are needed to
 initialize the spooling framework, e.g. to open database files or to
 connect to a certain database server.
 .PP
-The spooling parameters value for spooling method \fIberkeleydb\fP is [rpc_server:]database directory, e.g. /sge_local/default/spool/qmaster/spooldb for spooling to a local filesystem, or myhost:sge for spooling over a Berkeley DB RPC server.
+The spooling parameters value for spooling method \fIberkeleydb\fP is
+.br
+  [\fIrpc_server\fP\fB:\fP]\fIdatabase directory\fP[\fB;\fP<options>]
+.br
+e.g. "/opt/sge/default/spool/qmaster/spooldb" for spooling to a local
+filesystem, or "myhost:sge" for spooling over a Berkeley DB RPC server.
+.PP
+\fIrpc_server\fP is semi-obsolete since recent BDB versions don't
+support RPC, \fIdatabase directory\fP is the directory containing the
+spool files, and \fIoptions\fP is a list of options for the database.
+Currently the only valid value for \fIoptions\fP is \fBprivate\fP,
+which means to open the database with the DB_PRIVATE flag to specify
+that it is only accessed by a single process.  This allows the
+\fIdatabase directory\fP to be on an NFSv3 filesystem (as opposed to
+an NFSv4 one, which is otherwise necessary), but it is unsafe to
+access it with any other program.  In particular, this means that the
+backup scripts (inst_sge \-bup and
+util/upgrade_modules/save_sge_config.sh should not be used while
+qmaster is running with berkeleydb spooling).
 .PP
 For spooling method \fIclassic\fP the spooling parameters take the form
 <common_dir>;<qmaster spool dir>, e.g.
