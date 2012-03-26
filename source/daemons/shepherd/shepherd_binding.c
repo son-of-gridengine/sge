@@ -47,9 +47,9 @@ static bool binding_set_striding(int first_socket, int first_core,
                int number_of_cores, int offset, int n, const binding_type_t type);
 
 #if HAVE_HWLOC
-static bool bind_process_to_mask(const hwloc_cpuset_t cpuset);
+static bool bind_process_to_mask(const hwloc_bitmap_t cpuset);
 
-static bool create_binding_env(hwloc_const_cpuset_t set);
+static bool create_binding_env(hwloc_const_bitmap_t set);
 #endif
 
 static bool binding_explicit(const int* list_of_sockets, const int samount, 
@@ -307,7 +307,7 @@ static bool binding_set_linear(int first_socket, int first_core,
 
    if (has_core_binding() == true) {
       /* bitmask for processors to turn on and off */
-      hwloc_cpuset_t cpuset = hwloc_bitmap_alloc();
+      hwloc_bitmap_t cpuset = hwloc_bitmap_alloc();
          
       if (has_topology_information()) {
          /* number of cores set in processor binding mask */
@@ -469,7 +469,7 @@ bool binding_set_striding(int first_socket, int first_core, int number_of_cores,
       sge_dstring_free(&error);
 
          /* bitmask for processors to turn on and off */
-         hwloc_cpuset_t cpuset = hwloc_bitmap_alloc();
+         hwloc_bitmap_t cpuset = hwloc_bitmap_alloc();
 
          /* when library offers architecture: 
             - get virtual processor ids in the following manner:
@@ -594,13 +594,13 @@ bool binding_set_striding(int first_socket, int first_core, int number_of_cores,
 *     bind_process_to_mask() -- Binds current process to a given cpuset (mask).
 *
 *  SYNOPSIS
-*     static bool bind_process_to_mask(const hwloc_cpuset_t cpuset)
+*     static bool bind_process_to_mask(const hwloc_bitmap_t cpuset)
 *
 *  FUNCTION
 *     Binds a process to a given cpuset. 
 *
 *  INPUTS
-*     const hwloc_cpuset_t cpuset - Processors to bind processes to
+*     const hwloc_bitmap_t cpuset - Processors to bind processes to
 *
 *  RESULT
 *     static bool - true if successful, false otherwise
@@ -609,7 +609,7 @@ bool binding_set_striding(int first_socket, int first_core, int number_of_cores,
 *     MT-NOTE: bind_process_to_mask() is not MT safe 
 *
 *******************************************************************************/
-static bool bind_process_to_mask(const hwloc_cpuset_t cpuset)
+static bool bind_process_to_mask(const hwloc_bitmap_t cpuset)
 {
    /* we only need core binding capabilites, no topology is required */
    if (!has_core_binding()) return false;
@@ -680,7 +680,7 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
       
       if (has_topology_information()) {
          /* bitmask for processors to turn on and off */
-         hwloc_cpuset_t cpuset = hwloc_bitmap_alloc();
+         hwloc_bitmap_t cpuset = hwloc_bitmap_alloc();
 
          /* processor id counter */
          int pr_id_ctr;
@@ -747,7 +747,7 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
 *     create_binding_env() -- Creates SGE_BINDING env variable.
 *
 *  SYNOPSIS
-*     bool create_binding_env(hwloc_const_cpuset_t set)
+*     bool create_binding_env(hwloc_const_bitmap_t set)
 *
 *  FUNCTION
 *     Creates the SGE_BINDING environment variable.
@@ -755,7 +755,7 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
 *     internal processor ids given as input parameter.
 *
 *  INPUTS
-*     hwloc_const_cpuset_t set - CPU set to use
+*     hwloc_const_bitmap_t set - CPU set to use
 *
 *  RESULT
 *     bool - true when SGE_BINDING env var could be generated false if not
@@ -764,7 +764,7 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
 *     MT-NOTE: create_binding_env() is MT safe
 *
 *******************************************************************************/
-bool create_binding_env(hwloc_const_cpuset_t set)
+bool create_binding_env(hwloc_const_bitmap_t set)
 {
    bool retval          = true;
    dstring sge_binding  = DSTRING_INIT;
