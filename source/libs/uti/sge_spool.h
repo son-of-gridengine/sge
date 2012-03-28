@@ -216,10 +216,6 @@ char *sge_get_file_path(char *buffer, sge_file_path_id_t,
                         u_long32 ulong_val1, u_long32 ulong_val2,
                         const char *string_val1);
 
-int sge_is_valid_filename2(const char *fname); 
-
-int sge_is_valid_filename(const char *fname);
-
 int sge_spoolmsg_write(FILE *file, const char comment_char,
                        const char *version);
 
