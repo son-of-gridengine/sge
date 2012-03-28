@@ -2392,7 +2392,7 @@ static void qmonCQUpdateQhostMatrix(void)
      lep=get_attribute_by_name(NULL, eh, NULL, LOAD_ATTR_ARCH, cl, DISPATCH_TIME_NOW, 0);
      if (lep) {
        sge_strlcpy(buffer, sge_get_dominant_stringval(lep, &dominant, &rs),
-		   sizeof(buffer));
+                   sizeof(buffer));
        sge_dstring_clear(&rs);
        lFreeElem(&lep);
      }

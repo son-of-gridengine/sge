@@ -1576,31 +1576,34 @@ lListElem *jep
 
 #ifdef FIXME
    if (lGetList(jep, JB_jid_predecessor_list) || lGetUlong(jep, JB_hold)) {
-      snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Status:", "Hold");
+      snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+               "Status:", "Hold");
    }
    else {
       status = lGetUlong(jep, JB_status);
       switch (status) {
          case JRUNNING:
-            snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Status:",
-                     "Running");
+            snprintf(info + strlen(info), sizeof(info) - strlen(info),
+                     WIDTH"%s\n", "Status:", "Running");
             break;
          case JIDLE:
-            snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Status:",
-                     "Idle");
+            snprintf(info + strlen(info), sizeof(info) - strlen(info),
+                     WIDTH"%s\n", "Status:", "Idle");
             break;
          case JTRANSFERING:
-            snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Status:",
-                     "Transiting");
+            snprintf(info + strlen(info), sizeof(info) - strlen(info),
+                     WIDTH"%s\n", "Status:", "Transiting");
             break;
       }
    }
 
 
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Submission Time:",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+            "Submission Time:",
             sge_ctime(lGetUlong(jep, JB_submission_time), &ds));
 
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Start Time:",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+            "Start Time:",
             lGetUlong(jep, JB_start_time) ?
             sge_ctime(lGetUlong(jep, JB_start_time), &ds) :
             "-none-");
@@ -1621,7 +1624,8 @@ lListElem *jep
       u_long32 pe_slots = 0;
       for_each (gdil_ep, lGetList(jep, JB_granted_destin_identifier_list))
          pe_slots += lGetUlong(gdil_ep, JG_slots);
-      snprintf(info + strlen(info), sizeof(info), WIDTH"%s "_u32 "\n", info,
+      snprintf(info + strlen(info), sizeof(info) - strlen(info),
+               WIDTH"%s "_u32 "\n", info,
                "Granted PE:", lGetString(jep, JB_pe), pe_slots);
    }
 #endif
@@ -1631,14 +1635,15 @@ lListElem *jep
 
    strcpy(buf, "");
    centry_list_parse_from_string(lGetList(jep, JB_hard_resource_list), buf, sizeof(buf));
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s", "Hard Resources:",
-            buf);
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s",
+            "Hard Resources:", buf);
    if (*buf=='\0')
       strcat(info, "\n");
                
    strcpy(buf, "");
    centry_list_parse_from_string(lGetList(jep, JB_soft_resource_list), buf, sizeof(buf));
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s", "Soft Resources:", buf);
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s",
+            "Soft Resources:", buf);
    if (*buf=='\0')
       strcat(info, "\n");
 
