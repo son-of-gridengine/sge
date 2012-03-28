@@ -66,8 +66,6 @@ char *sge_strtok_r(const char *str, const char *delimitor,
 
 void sge_free_saved_vars(struct saved_vars_s *last);
 
-int sge_is_valid_filename(const char *fname);
-
 int sge_strnullcasecmp(const char *a, const char *b);
 
 int sge_strnullcmp(const char *a, const char *b);
