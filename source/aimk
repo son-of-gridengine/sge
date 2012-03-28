@@ -1001,7 +1001,7 @@ endif
 if ( $JAVA > 0 || $BUILDJAVADOC == 1 || $JNI == 1 ) then
    # Make sure we can find JAVA_HOME
    if ( ${?JAVA_HOME} == 0 ) then
-      echo "Please set JAVA_HOME"
+      echo "Please set JAVA_HOME or use '-no-java -no-jni'"
       exit 1
    endif
    if ( ${JAVA_HOME} == "/usr" ) then
@@ -1455,12 +1455,13 @@ case LINUXARMEL:
 
    set COMPILE_DC = 1
 
-   # Optimization on LINUXIA64 is broken, qmon dumps
-   if ($OPTIMIZATION == 1 && $BUILDARCH != LINUXIA64) then
-      set OFLAG = "-O3"
-   else
-      set OFLAG = ""
-   endif
+# This was more likely invalid code in qmon
+#   # Optimization on LINUXIA64 is broken, qmon dumps
+#    if ($OPTIMIZATION == 1 && $BUILDARCH != LINUXIA64) then
+       set OFLAG = "-O3"
+#    else
+#      set OFLAG = ""
+#    endif
 
    set CC  = gcc
    set CXX = g++
@@ -2690,8 +2691,10 @@ if ( "$QMAKE" == 1) then
        SGE_ARCH=$buildarch LDFLAGS="$LFLAGS"
    endif
 
-   cd $SOURCE/3rdparty/qmake/$COMPILE_ARCH
-   $MAKE $MAKEOPT -f Makefile "MAKE=$MAKE" "CC=$CC" "COMPILE_ARCH=$COMPILE_ARCH" "DLLIB=$DLLIB" $argv
+   if ("$argv" != depend) then
+      cd $SOURCE/3rdparty/qmake/$COMPILE_ARCH
+      $MAKE $MAKEOPT -f Makefile "MAKE=$MAKE" "CC=$CC" "COMPILE_ARCH=$COMPILE_ARCH" "DLLIB=$DLLIB" $argv
+   endif
 
    if ( $status != 0 ) then
       echo not done
