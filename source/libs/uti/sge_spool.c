@@ -279,93 +279,6 @@ char *sge_get_file_path(char *buffer, sge_file_path_id_t id,
    return buffer;
 }
 
-/****** uti/spool/sge_is_valid_filename2() ************************************
-*  NAME
-*     sge_is_valid_filename2() -- Verify file name.  
-*
-*  SYNOPSIS
-*     int sge_is_valid_filename2(const char *fname) 
-*
-*  FUNCTION
-*     Verify the applicability of a file name. 
-*     We dont like:
-*        - names longer than 256 chars including '\0'
-*        - blanks or other ugly chars
-*     We like digits, chars and '_'.
-*
-*  INPUTS
-*     const char *fname - filename 
-*
-*  RESULT
-*     int - result
-*        0 - OK
-*        1 - Invalid filename  
-*
-*  NOTES
-*     MT-NOTE: sge_is_valid_filename2() is MT safe
-******************************************************************************/
-int sge_is_valid_filename2(const char *fname) 
-{
-   int i = 0;
- 
-   /* dont allow "." ".." and "../tralla" */
-   if (*fname == '.') {
-      fname++;
-      if (!*fname || (*fname == '.' && ((!*(fname+1)) || (!*fname+1 == '/')))) {
-         return 1;
-      }
-   }
-   while (*fname && i++<256) {
-      if (!isalnum((int) *fname) && !(*fname=='_') && !(*fname=='.')) {
-         return 1;
-      }
-      fname++;
-   }
-   if (i >= 256) {
-      return 1;
-   }
-   return 0;
-}              
-
-/****** uti/spool/sge_is_valid_filename() *************************************
-*  NAME
-*     sge_is_valid_filename() -- Check for a valid filename.
-*
-*  SYNOPSIS
-*     int sge_is_valid_filename(const char *fname)
-*
-*  FUNCTION
-*     Check for a valid filename. Filename can only
-*     contain: 0-9a-zA-Z._-
-*     '/' is not allowed.
-*
-*  INPUTS
-*     const char *fname - filename
-*
-*  RESULT
-*     int - result
-*         0 - valid filename
-*         1 - invalid filename
-*
-*  NOTES
-*     MT-NOTE: sge_is_valid_filename() is MT safe
-******************************************************************************/
-int sge_is_valid_filename(const char *fname)
-{
-   const char *cp = fname;
- 
-   if (!fname) {
-      return 1;
-   }
-   while (*cp) {
-      if (!isalnum((int) *cp) && !(strchr("._-", *cp))) {
-         return 1;
-      }
-      cp++;
-   }
-   return 0;
-}      
-
 /****** uti/spool/sge_spoolmsg_write() ****************************************
 *  NAME
 *     sge_spoolmsg_write() -- add a comment in a file
@@ -630,6 +543,7 @@ int sge_get_confval_array(const char *fname, int n, int nmissing, bootstrap_entr
       for (i=0; i<n; i++) {
          if ((strcasecmp(name[i].name, cp) == 0) &&
              ((cp = strtok_r(NULL, " \t\n", &pos)) != NULL)) {
+	   /* fixme value elements are 1025 long in caller */
              strncpy(value[i], cp, 512);
              cp = value[i];
              is_found[i] = true;
