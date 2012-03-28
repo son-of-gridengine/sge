@@ -781,7 +781,7 @@ Cardinal size
             first_time = 0;
          }
          else
-            snprintf(buf + strlen(buf), sizeof(buf), " %s",
+            snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " %s",
                      lGetString(ep, ST_name));
       }
       str = buf;
@@ -817,7 +817,7 @@ Cardinal size
             strcpy(buf, lGetString(ep, QR_name));
          }
          else
-            snprintf(buf + strlen(buf), sizeof(buf), ",%s",
+            snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), ",%s",
                      lGetString(ep, QR_name));
       }
       str = buf;
@@ -834,10 +834,10 @@ Cardinal size
                sprintf(buf, sge_u32, lGetUlong(ep, JRE_job_number));
          } else {
             if (lGetString(ep, JRE_job_name))
-               snprintf(buf + strlen(buf), sizeof(buf), " %s",
+               snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " %s",
                         lGetString(ep, JRE_job_name));
             else  
-               snprintf(buf + strlen(buf), sizeof(buf), " "sge_u32,
+               snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " "sge_u32,
                         lGetUlong(ep, JRE_job_number));
          }   
       }
@@ -852,7 +852,7 @@ Cardinal size
             sge_strlcpy(buf, lGetString(ep, ARA_name), sizeof(buf));
          }
          else {
-            snprintf(buf + strlen(buf), sizeof(buf), " %s",
+            snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), " %s",
                      lGetString(ep, ARA_name));
          }   
       }

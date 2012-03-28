@@ -921,100 +921,100 @@ lListElem *qep
       dstring type_buffer = DSTRING_INIT;
 
       qinstance_print_qtype_to_dstring(qep, &type_buffer, false);
-      snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Type:",
-              sge_dstring_get_string(&type_buffer));
+      snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+               "Type:", sge_dstring_get_string(&type_buffer));
       sge_dstring_free(&type_buffer);
    }
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%d\n", "Sequence Nr:",
-            (int)lGetUlong(qep, QU_seq_no));
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%d\n",
+            "Sequence Nr:", (int)lGetUlong(qep, QU_seq_no));
 
    str = lGetString(qep, QU_tmpdir);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "tmpdir:",
-            str ? str : "");
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+            "tmpdir:", str ? str : "");
    str = lGetString(qep, QU_shell);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Shell:",
-            str ? str : "");
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%d\n", "Job Slots:",
-            (int)lGetUlong(qep, QU_job_slots));
-   snprintf(info + strlen(info), sizoef(info), WIDTH"%d\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+            "Shell:", str ? str : "");
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%d\n",
+            "Job Slots:", (int)lGetUlong(qep, QU_job_slots));
+   snprintf(info + strlen(info), sizoef(info) - strlen(info), WIDTH"%d\n",
             "Job Slots Used:", qinstance_slots_used(qep));
    str = lGetString(qep, QU_priority);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Priority:",
-            str?str:"");
-   snprintf(info + strlen(info), sizeof(info), WIDTH"", "Load Thresholds:");
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+            "Priority:", str?str:"");
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"", "Load Thresholds:");
    for_each(ep, lGetList(qep, QU_load_thresholds)) {
       str = lGetString(ep, CE_name);
       str2 = lGetString(ep, CE_stringval);
-      snprintf(info + strlen(info), sizeof(info), "%s = %s ", str?str:"",
+      snprintf(info + strlen(info), sizeof(info) - strlen(info), "%s = %s ", str?str:"",
                str2?str2:"");
    }
    sge_strlcat(info, "\n", sizeof(info));
 
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Rerun Job:",
-            lGetBool(qep, QU_rerun) ? "True" : "False");
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+            "Rerun Job:", lGetBool(qep, QU_rerun) ? "True" : "False");
 
    str = lGetString(qep, QU_notify);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Notify Job Interval:",  str ? str : "");
 
    str = lGetString(qep, QU_processors);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Processors:",
-            str ? str : "");
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+            "Processors:", str ? str : "");
 
    str = lGetString(qep, QU_s_rt);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Soft Real Time:", str ? str : "");
    str = lGetString(qep, QU_h_rt);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Hard Real Time:", str ? str : "");
    str = lGetString(qep, QU_s_cpu);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Soft Cpu:",
-            str ? str : "");
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+            "Soft Cpu:", str ? str : "");
    str = lGetString(qep, QU_h_cpu);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n", "Hard Cpu:",
-            str ? str : "");
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
+            "Hard Cpu:", str ? str : "");
    str = lGetString(qep, QU_s_fsize);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Soft File Size:", str ? str : "");
    str = lGetString(qep, QU_h_fsize);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Hard File Size:", str ? str : "");
    str = lGetString(qep, QU_s_data);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Soft Data Size:", str ? str : "");
    str = lGetString(qep, QU_h_data);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Hard Data Size:", str ? str : "");
    str = lGetString(qep, QU_s_stack);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Soft Stack Size:", str ? str : "");
    str = lGetString(qep, QU_h_stack);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Hard Stack Size:", str ? str : "");
    str = lGetString(qep, QU_s_core);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Soft Core Size:", str ? str : "");
    str = lGetString(qep, QU_h_core);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Hard Core Size:", str ? str : "");
    str = lGetString(qep, QU_s_rss);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Soft Resident Set Size:", str ? str : "");
    str = lGetString(qep, QU_h_rss);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Hard Resident Set Size:", str ? str : "");
 
    str = lGetString(qep, QU_min_cpu_interval);
-   snprintf(info + strlen(info), sizeof(info), WIDTH"%s\n",
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"%s\n",
             "Min Cpu Interval:", str ? str : "");
 
-   snprintf(info + strlen(info), sizeof(info), WIDTH"", "Access List:");
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"", "Access List:");
    for_each(ep, lGetList(qep, QU_acl)) {
-      snprintf(info + strlen(info), sizeof(info), "%s ",
+      snprintf(info + strlen(info), sizeof(info) - strlen(info), "%s ",
                lGetString(ep, US_name));
    }
    sge_strlcat(info, "\n", sizeof(info));
-   snprintf(info + strlen(info), sizeof(info), WIDTH"", "No Access List:");
+   snprintf(info + strlen(info), sizeof(info) - strlen(info), WIDTH"", "No Access List:");
    for_each(ep, lGetList(qep, QU_xacl)) {
       sge_strlcat(info, lGetString(ep, US_name), sizeof(info));
    }
