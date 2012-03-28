@@ -906,29 +906,30 @@ int main(int argc, char **argv)
       if ((tokenbuf = sge_read_token(TOKEN_FILE)) == NULL) {
          shepherd_state = SSTATE_AFS_PROBLEM;
          shepherd_error(1, "can't read AFS token");
-      }   
+      }  else { 
 
-      if (sge_afs_extend_token(set_token_cmd, tokenbuf, job_owner,
-                               atoi(token_extend_time), err_str,
-                               sizeof(err_str))) {
-         shepherd_state = SSTATE_AFS_PROBLEM;                  
-         shepherd_error(1, err_str);
+         if (sge_afs_extend_token(set_token_cmd, tokenbuf, job_owner,
+                                  atoi(token_extend_time), err_str,
+                                  sizeof(err_str))) {
+            shepherd_state = SSTATE_AFS_PROBLEM;
+            shepherd_error(1, err_str);
+         }
+
+         shepherd_trace(err_str);
+         shepherd_trace("sucessfully set AFS token");
+
+         memset(tokenbuf, 0, strlen(tokenbuf));
+         sge_free(&tokenbuf);
+
+
+         if ((coshepherd_pid = start_token_cmd(0, coshepherd, set_token_cmd,
+                                               job_owner, token_extend_time)) < 0) {
+            shepherd_state = SSTATE_AFS_PROBLEM;
+            shepherd_error(1, "can't start coshepherd");
+         }
+
+         shepherd_trace("AFS setup done");
       }
-       
-      shepherd_trace(err_str);
-      shepherd_trace("sucessfully set AFS token");
-         
-      memset(tokenbuf, 0, strlen(tokenbuf));
-      sge_free(&tokenbuf);
-
-
-      if ((coshepherd_pid = start_token_cmd(0, coshepherd, set_token_cmd,
-                                            job_owner, token_extend_time)) < 0) {
-         shepherd_state = SSTATE_AFS_PROBLEM;                                    
-         shepherd_error(1, "can't start coshepherd");                               
-      }
-       
-      shepherd_trace("AFS setup done");
    }
 
    pe = get_conf_val("pe");
