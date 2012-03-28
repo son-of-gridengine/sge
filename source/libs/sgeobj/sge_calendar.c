@@ -1928,6 +1928,9 @@ static int week_day_range_list(lList **wdrl) {
       }
    }  
 
+   if (!wdrl) {
+      DRETURN(-1);
+   }
    /* prepare the structures for later use */
    join_wday_range(*wdrl); 
    extend_wday_range(*wdrl);

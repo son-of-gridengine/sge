@@ -567,7 +567,7 @@ static int sge_get_message_id_output_implementation(void)
 
    buf = (int*) pthread_getspecific(message_id_key);
 
-   if (buf != NULL) { 
+   if (buf == NULL) { 
       DRETURN_(0);
    } else {
       DRETURN_(*buf);
