@@ -175,7 +175,9 @@ print_field(dstring *out, const item_t *item, const format_t *format)
          }
          break;
       case DOUBLE_T:
+         setlocale (LC_NUMERIC, "C");
          sge_dstring_sprintf_append(out, "%f", *(double *)item->val);
+         setlocale (LC_NUMERIC, "");
          break;
       case STRING_T:
          sge_dstring_sprintf_append(out, format->str_format, 

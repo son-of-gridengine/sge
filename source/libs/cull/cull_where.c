@@ -304,14 +304,18 @@ static void lWriteWhereTo_(const lCondition *cp, int depth, FILE *fp)
          if (!fp) {
             DPRINTF(("%s %f\n", out, cp->operand.cmp.val.fl));
          } else {
+            setlocale (LC_NUMERIC, "C");
             fprintf(fp, "%s %f\n", out, cp->operand.cmp.val.fl);
+            setlocale (LC_NUMERIC, "");
          }
          break;
       case lDoubleT:
          if (!fp) {
             DPRINTF(("%s %f\n", out, cp->operand.cmp.val.db));
          } else {
+            setlocale (LC_NUMERIC, "C");
             fprintf(fp, "%s %f\n", out, cp->operand.cmp.val.db);
+            setlocale (LC_NUMERIC, "");
          }
          break;
       case lLongT:
