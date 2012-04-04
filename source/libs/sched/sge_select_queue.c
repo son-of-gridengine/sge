@@ -2379,7 +2379,7 @@ char *sge_load_alarm_reason(lListElem *qep, lList *threshold,
          if ( first == true ) {
             first = false;
          } else {
-            strncat(reason, "\n\t", reason_size);
+            sge_strlcat(reason, "\n\t", reason_size);
          }
 
          /* find actual complex attribute */
@@ -2390,7 +2390,7 @@ char *sge_load_alarm_reason(lListElem *qep, lList *threshold,
             } else {
                snprintf(buffer, MAX_STRING_SIZE, MSG_SCHEDD_NOCOMPLEXATTRIBUTEFORTHRESHOLD_S, name);
             }
-            strncat(reason, buffer, reason_size);
+            sge_strlcat(reason, buffer, reason_size);
             continue;
          }
 
@@ -2414,7 +2414,7 @@ char *sge_load_alarm_reason(lListElem *qep, lList *threshold,
                  limit_value
                 );
 
-         strncat(reason, buffer, reason_size);
+         sge_strlcat(reason, buffer, reason_size);
       }
 
       lFreeList(&rlp);

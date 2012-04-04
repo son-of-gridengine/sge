@@ -301,7 +301,7 @@ ulong_parse_date_time_from_string(u_long32 *this_ulong,
       return false;
    }
 
-   strcpy(inp_date_str, string);
+   strcpy(inp_date_str, string); /* RATS: ignore */
    non_seconds=sge_strtok_r(inp_date_str, ".", &context);
    seconds=sge_strtok_r(NULL, ".", &context);
 
