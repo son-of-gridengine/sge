@@ -1402,7 +1402,9 @@ sge_gdi_packet_parse_auth_info(sge_gdi_packet_class_t *packet, lList **answer_li
       char userbuf[2 * SGE_SEC_BUFSIZE];
       char groupbuf[2 * SGE_SEC_BUFSIZE];
 
-      if (sscanf(dbuffer, uid_t_fmt" "gid_t_fmt" %s %s", uid, gid, userbuf, groupbuf) == 4) {
+      if (sscanf(dbuffer, uid_t_fmt" "gid_t_fmt
+                 " %2048s %2048s", /* SGE_SEC_BUFSIZE == 2048 */
+                 uid, gid, userbuf, groupbuf) == 4) {
          if (strlen(userbuf) <= user_len && strlen(groupbuf) <= group_len) {
             sge_strlcpy(user, userbuf, user_len);
             sge_strlcpy(group, groupbuf, group_len);

@@ -129,7 +129,7 @@ int schedd_log_list(lList **monitor_alpp, bool monitor_next_run, const char *log
       if ((lGetNumberOfElem(lp_part) == NUM_ITEMS_ON_LINE) || !lNext(ep)) {
          char log_string[2048];
 
-         strcpy(log_string, logstr);
+         sge_strlcpy(log_string, logstr, sizeof(log_string));
 #ifndef WIN32NATIVE
          uni_print_list(NULL,
                         log_string + strlen(log_string),
@@ -156,7 +156,7 @@ u_long32 jobid
    static char descr[20];
 
    if (jobid) {
-      sprintf(descr, "Job "sge_u32, jobid);
+      snprintf(descr, sizeof(descr), "Job "sge_u32, jobid);
       return descr;
    } else
       return "Job";

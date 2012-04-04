@@ -2642,7 +2642,7 @@ static int drmaa_job2sge_job(lListElem **jtp, const drmaa_job_template_t *drmaa_
          DRETURN(DRMAA_ERRNO_DENIED_BY_DRM);
       }
       
-      strncpy(username, u, sizeof(username) - 1);
+      sge_strlcpy(username, u, sizeof(username));
       if (use_euid_egid)
          *use_euid_egid = false;
    }
@@ -3943,14 +3943,14 @@ static char *drmaa_expand_wd_path(const char*username, const char *path, lList *
       length = strlen(path) - 5 + strlen(homedir) + 1;
       
       file = (char *)malloc(sizeof(char) * length);
-      strcpy(file, homedir);
-      file = strcat(file, path + 5);
+      strcpy(file, homedir);         /* RATS: ignore */
+      file = strcat(file, path + 5); /* RATS: ignore */
       
       sge_free(&homedir);
    }
    else {
       file = (char *)malloc(sizeof(char) * (strlen(path) + 1));
-      file = strcpy(file, path);
+      file = strcpy(file, path); /* RATS: ignore */
    }
 
    DPRINTF(("Expanded to \"%s\"\n", file));

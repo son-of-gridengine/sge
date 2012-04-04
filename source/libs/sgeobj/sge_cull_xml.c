@@ -523,14 +523,15 @@ static void lWriteElemXML_(const lListElem *ep, int nesting_level, FILE *fp, int
 
 lListElem *xml_append_Attr_D(lList *attributeList, const char *name, double value) {
    char buffer[20];
-   sprintf(buffer,"%.5f",value); 
+   /* fixme: worry about locale */
+   snprintf(buffer, sizeof(buffer),"%.5f",value);
    return append_Attr_S(attributeList, name, buffer);
 }
 
 lListElem *xml_append_Attr_D8(lList *attributeList, const char *name, double value) {
    char buffer[20];
    if (value > 99999999)
-      sprintf(buffer,"%.3g", value);
+      snprintf(buffer, sizeof(buffer), "%.3g", value);
    else
       sprintf(buffer,"%.0f", value);
    return append_Attr_S(attributeList, name, buffer);

@@ -221,10 +221,10 @@ void var_list_delete_string(lList **varl, const char *name)
 ******************************************************************************/
 void var_list_set_int(lList **varl, const char *name, int value)
 {
-   char buffer[2048];
+   char buffer[30];
 
    DENTER(TOP_LAYER, "var_list_set_int");
-   sprintf(buffer, "%d", value);
+   snprintf(buffer, sizeof(buffer), "%d", value);
    var_list_set_string(varl, name, buffer);
    DEXIT;
 }
@@ -255,10 +255,10 @@ void var_list_set_int(lList **varl, const char *name, int value)
 ******************************************************************************/
 void var_list_set_sge_u32(lList **varl, const char *name, u_long32 value)
 {
-   char buffer[2048];
+   char buffer[30];
 
    DENTER(TOP_LAYER, "var_list_set_sge_u32");
-   sprintf(buffer, sge_u32, value);
+   snprintf(buffer, sizeof(buffer), sge_u32, value);
    var_list_set_string(varl, name, buffer);
    DEXIT;
 }
@@ -457,7 +457,7 @@ void var_list_copy_prefix_vars(lList **varl,
          const char *name_without_prefix = &prefix_name[prefix_len];
          const char *value = lGetString(var_elem, VA_value);
 
-         sprintf(name, "%s%s", new_prefix, name_without_prefix);
+         snprintf(name, sizeof(name), "%s%s", new_prefix, name_without_prefix);
          var_list_set_string(&var_list2, name, value);
       }
    }
@@ -516,7 +516,7 @@ void var_list_copy_prefix_vars_undef(lList **varl,
          const char *name_without_prefix = &prefix_name[prefix_len];
          lListElem *existing_variable;
 
-         sprintf(name, "%s%s", new_prefix, name_without_prefix);
+         snprintf(name, sizeof(name), "%s%s", new_prefix, name_without_prefix);
          existing_variable = lGetElemStr(*varl, VA_variable, name);
          if (existing_variable == NULL) {
             var_list_set_string(&var_list2, name, value);
