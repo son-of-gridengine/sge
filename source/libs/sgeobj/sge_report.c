@@ -72,6 +72,7 @@ void job_report_print_usage(const lListElem *job_report, FILE *fp)
       return;
    }
 
+   setlocale (LC_NUMERIC, "C");
    for_each(uep, lGetList(job_report, JR_usage)) {
       if (fp) {
          fprintf(fp, "   \"%s\" =   %.99g\n", lGetString(uep, UA_name),
@@ -81,6 +82,7 @@ void job_report_print_usage(const lListElem *job_report, FILE *fp)
                   lGetDouble(uep, UA_value)));
       }
    }
+   setlocale (LC_NUMERIC, "");
 
    DEXIT;
    return;

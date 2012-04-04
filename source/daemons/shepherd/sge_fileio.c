@@ -131,6 +131,7 @@ shepherd_write_usage_file(u_long32 wait_status, int exit_status,
 
    fp = fopen(filename, "w");
    if (fp != NULL) {
+      setlocale (LC_NUMERIC, "C");
       /*
        * the wait status is returned by japi_wait()
        * see sge_reportL.h for bitmask and makro definition
@@ -159,6 +160,7 @@ shepherd_write_usage_file(u_long32 wait_status, int exit_status,
       FPRINTF((fp, "ru_nsignals=%ld\n", rusage->ru_nsignals));
       FPRINTF((fp, "ru_nvcsw=%ld\n", rusage->ru_nvcsw));
       FPRINTF((fp, "ru_nivcsw=%ld\n", rusage->ru_nivcsw));
+      setlocale (LC_NUMERIC, "");
 
       FCLOSE(fp);
 
@@ -166,9 +168,11 @@ shepherd_write_usage_file(u_long32 wait_status, int exit_status,
       shepherd_error(1, MSG_FILE_NOOPEN_SS, filename, strerror(errno));
       ret = false;
    }
+   setlocale (LC_NUMERIC, "");
    return ret;
 FPRINTF_ERROR:
 FCLOSE_ERROR:
+   setlocale (LC_NUMERIC, "");
    shepherd_error(1, MSG_FILE_NOCLOSE_SS, filename, strerror(errno));
    return false;
 }

@@ -157,6 +157,7 @@ cull_parse_state *state
       return state->token;
    }
 
+   setlocale (LC_NUMERIC, "C");
    /* try every possible token */
    for (i = 0; i < n; i++) {
       found = 1;
@@ -170,11 +171,13 @@ cull_parse_state *state
          state->t += len;
          state->token_is_valid = 1;
          state->token = i + 1;
+         setlocale (LC_NUMERIC, "");
 
          DEXIT;
          return (state->token);
       }
    }
+   setlocale (LC_NUMERIC, "");
 
    state->token_is_valid = 1;
    state->token = NO_TOKEN;

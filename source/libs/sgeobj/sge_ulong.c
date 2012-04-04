@@ -141,11 +141,13 @@ bool double_print_memory_to_dstring(double value, dstring *string)
             value /= kilo_byte;
             unit = 'K';
          }
+         setlocale (LC_NUMERIC, "C");
          if (unit != '\0') {
             sge_dstring_sprintf_append(string, "%.3f%c", value, unit);
          } else {
             sge_dstring_sprintf_append(string, "%.3f", absolute_value);
          }
+         setlocale (LC_NUMERIC, "");
       } 
    }
    DEXIT;
@@ -226,9 +228,11 @@ bool double_print_to_dstring(double value, dstring *string)
 
    DENTER(ULONG_LAYER, "double_print_to_dstring");
    if (string != NULL) {
+     setlocale (LC_NUMERIC, "C");
       if (!double_print_infinity_to_dstring(value, string)) {
          sge_dstring_sprintf_append(string, "%f", value);
       } 
+      setlocale (LC_NUMERIC, "");
    }
    DEXIT;
    return ret;
