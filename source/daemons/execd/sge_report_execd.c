@@ -126,7 +126,9 @@ int sge_add_double2load_report(lList **lpp, char *name, double value,
  
    DENTER(BASIS_LAYER, "sge_add_double2load_report");
  
+   setlocale (LC_NUMERIC, "C");
    sprintf(load_string, "%f%s", value, units?units:"");
+   setlocale (LC_NUMERIC, "");
    sge_add_str2load_report(lpp, name, load_string, host);
 
    DRETURN(0); 

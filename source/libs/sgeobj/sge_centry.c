@@ -232,7 +232,9 @@ centry_fill_and_check(lListElem *this_elem, lList** answer_list, bool allow_empt
             char str_value[100];
             dstring ds;
             sge_dstring_init(&ds, str_value, sizeof(str_value));
+            setlocale (LC_NUMERIC, "C");
             sge_dstring_sprintf(&ds, "%.0f", dval );
+            setlocale (LC_NUMERIC, "");
             DPRINTF(("normalized time value from \"%s\" to \"%s\"\n",
                      lGetString(this_elem, CE_stringval), str_value));
             lSetString(this_elem, CE_stringval, str_value);

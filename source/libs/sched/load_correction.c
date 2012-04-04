@@ -208,7 +208,9 @@ correct_capacities(lList *host_list, lList *centry_list)
             char sval[20];
             sc_factor = lGetDouble(scaling, HS_value);
             dval *= sc_factor;
+            setlocale (LC_NUMERIC, "C");
             sprintf(sval, "%8.3f", dval);
+            setlocale (LC_NUMERIC, "");
             lSetString(ep, HL_value, sval);
          }
 

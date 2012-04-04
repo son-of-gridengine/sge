@@ -559,13 +559,16 @@ int operation_nm
       }
    }
 
+   setlocale (LC_NUMERIC, "C");
    if ( (sscanf(str, "%lf", &dval)!=1) || ( strncasecmp(str,"inf",3) == 0 ) ) {
       SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_GDI_CONFIGARGUMENTNOTDOUBLE_SS , 
                key, str));
       answer_list_add(alpp, SGE_EVENT, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR);
+      setlocale (LC_NUMERIC, "");
       DEXIT;
       return false;
    }
+   setlocale (LC_NUMERIC, "");
 
    lSetDouble(ep, name_nm, dval);
    lDelElemStr(clpp, CF_name, key);

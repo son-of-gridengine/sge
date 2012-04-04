@@ -799,10 +799,14 @@ object_append_raw_field_to_dstring(const lListElem *object, lList **answer_list,
       /* no special case: read and copy data from object */
       switch (type) {
          case lFloatT:
+            setlocale (LC_NUMERIC, "C");
             result = sge_dstring_sprintf_append(buffer, "%f", lGetPosFloat(object, pos));
+            setlocale (LC_NUMERIC, "");
             break;
          case lDoubleT:
+            setlocale (LC_NUMERIC, "C");
             result = sge_dstring_sprintf_append(buffer, "%lf", lGetPosDouble(object, pos));
+            setlocale (LC_NUMERIC, "");
             break;
          case lUlongT:
             result = sge_dstring_sprintf_append(buffer, sge_U32CFormat, lGetPosUlong(object, pos));
@@ -2162,6 +2166,7 @@ object_parse_double_from_string(lListElem *this_elem, lList **answer_list,
       int pos = lGetPosViaElem(this_elem, name, SGE_NO_ABORT);
       double value;
 
+      setlocale (LC_NUMERIC, "C");
       if (sscanf(string, "%lf", &value) == 1) {
          lSetPosDouble(this_elem, pos, value);
       } else {
@@ -2170,6 +2175,7 @@ object_parse_double_from_string(lListElem *this_elem, lList **answer_list,
                                  MSG_DOUBLE_INCORRECTSTRING, string);
          ret = false;
       }
+      setlocale (LC_NUMERIC, "");
    } else {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                               ANSWER_QUALITY_ERROR, 
@@ -2190,6 +2196,7 @@ object_parse_float_from_string(lListElem *this_elem, lList **answer_list,
       int pos = lGetPosViaElem(this_elem, name, SGE_NO_ABORT);
       float value;
 
+      setlocale (LC_NUMERIC, "C");
       if (sscanf(string, "%f", &value) == 1) {
          lSetPosFloat(this_elem, pos, value);
       } else {
@@ -2198,6 +2205,7 @@ object_parse_float_from_string(lListElem *this_elem, lList **answer_list,
                                  MSG_FLOAT_INCORRECTSTRING, string);
          ret = false;
       }
+      setlocale (LC_NUMERIC, "");
    } else {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                               ANSWER_QUALITY_ERROR, 

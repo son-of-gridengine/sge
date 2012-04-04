@@ -540,6 +540,7 @@ sge_write_rusage(dstring *buffer,
     * see man page getrusage(2), so nothing to be done for intermediate
     * records.
     */
+   setlocale (LC_NUMERIC, "C");
    ret = sge_dstring_sprintf(buffer, ACTFILE_FPRINTF_FORMAT, 
           qname, delimiter,
           hostname, delimiter,
@@ -592,6 +593,7 @@ sge_write_rusage(dstring *buffer,
           lGetUlong(job, JB_ar), delimiter,
           (ar != NULL) ? lGetUlong(ar, AR_submission_time): 0
              );
+   setlocale (LC_NUMERIC, "");
 
    sge_free(&qname);
    sge_free(&hostname);

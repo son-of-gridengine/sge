@@ -2641,9 +2641,10 @@ int japi_wait(const char *job_id, dstring *waited_job, int *stat,
                sep = lCreateElem (ST_Type);
                lAppendElem (slp, sep);
 
-               /* fixme: worry about locale */
+               setlocale (LC_NUMERIC, "C");
                snprintf (buffer, sizeof(buffer), "%s=%.4f",
                          lGetString (uep, UA_name), lGetDouble (uep, UA_value));
+               setlocale (LC_NUMERIC, "");
                lSetString (sep, ST_name, buffer);
             }
 

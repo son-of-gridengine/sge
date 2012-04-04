@@ -1471,7 +1471,9 @@ static int write_CE_stringval(const lListElem *ep, int nm, dstring *buffer,
    if ((s=lGetString(ep, CE_stringval)) != NULL) {
       sge_dstring_append(buffer, s);
    } else {
+      setlocale (LC_NUMERIC, "C");
       sge_dstring_sprintf_append(buffer, "%f", lGetDouble(ep, CE_doubleval));
+      setlocale (LC_NUMERIC, "");
    }
    
    return 1;

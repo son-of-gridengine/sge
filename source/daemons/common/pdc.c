@@ -2075,6 +2075,7 @@ usage(void)
 static void
 print_job_data(psJob_t *job)
 {
+   setlocale (LC_NUMERIC, "C");
    printf("%s\n", MSG_SGE_JOBDATA );
    printf("jd_jid="OSJOBID_FMT"\n", job->jd_jid);
    printf("jd_length=%d\n", job->jd_length);
@@ -2110,10 +2111,12 @@ print_job_data(psJob_t *job)
    printf("jd_vmem=%8.3fM\n", INTOMEGS(job->jd_vmem));
    printf("jd_rss=%8.3fM\n", INTOMEGS(job->jd_rss));
    printf("jd_himem=%8.3fM\n", INTOMEGS(job->jd_himem));
+   setlocale (LC_NUMERIC, "");
 }
 static void
 print_process_data(psProc_t *proc)
 {
+   setlocale (LC_NUMERIC, "C");
    printf("\t******* Process Data *******\n");
    printf("\tpd_pid="pid_t_fmt"\n", proc->pd_pid);
    printf("\tpd_length=%d\n", (int)proc->pd_length);
@@ -2129,6 +2132,7 @@ print_process_data(psProc_t *proc)
    printf("\tpd_pstart=%8.3f\n", proc->pd_pstart);
    printf("\tpd_utime=%8.3f\n", proc->pd_utime);
    printf("\tpd_stime=%8.3f\n", proc->pd_stime);
+   setlocale (LC_NUMERIC, "");
 }
 
 
@@ -2174,6 +2178,7 @@ print_system_data(psSys_t *sys)
 static void
 print_status(psStat_t *stat)
 {
+   setlocale (LC_NUMERIC, "C");
    printf("%s\n", MSG_SGE_STATUS );
    printf("stat_length=%d\n", (int)stat->stat_length);
    printf("stat_tstamp=%s\n", ctime(&stat->stat_tstamp));
@@ -2186,6 +2191,7 @@ print_status(psStat_t *stat)
    printf("stat_IFMutime=%8.3f\n", stat->stat_IFMutime);
    printf("stat_IFMstime=%8.3f\n", stat->stat_IFMstime);
    printf("stat_jobcount=%d\n", (int)stat->stat_jobcount);
+   setlocale (LC_NUMERIC, "");
 }
 
 
@@ -2457,6 +2463,7 @@ main(int argc, char **argv)
          }
 
          printf("=3 0 ");
+         setlocale (LC_NUMERIC, "C");
          for(i=0; i<jobcount; i++) {
             cpu_pct = 0;
             if (total_cpu > 0)
@@ -2466,6 +2473,7 @@ main(int argc, char **argv)
          }
          printf("%8.5f ", 1.0 - total_cpu_pct);
          printf("\n=15\n");
+         setlocale (LC_NUMERIC, "");
          fflush(stdout);
       }
 

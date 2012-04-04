@@ -1693,7 +1693,9 @@ void ar_initialize_reserved_queue_list(lListElem *ar)
                newval = lGetDouble(cr, CE_doubleval);
             }
 
+            setlocale (LC_NUMERIC, "C");
             sge_dstring_sprintf(&buffer, "%f", newval);
+            setlocale (LC_NUMERIC, "");
             new_cr = lCopyElem(cr);
             lSetString(new_cr, CE_stringval, sge_dstring_get_string(&buffer));
             lSetDouble(new_cr, CE_doubleval, newval);

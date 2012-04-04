@@ -147,6 +147,7 @@ lList **pplist
             {
                lFloat f;
 
+               setlocale (LC_NUMERIC, "C");
                if (sscanf(*pstrlist, "%f", &f) != 1) {
                   DPRINTF(("cull_parse_string_list: " \
                            "error interpreting float: %s\n", *pstrlist));
@@ -154,6 +155,7 @@ lList **pplist
                   DEXIT;
                   return -6;
                }
+               setlocale (LC_NUMERIC, "");
                lSetFloat(ep, *rule, f);
             }
             break;
@@ -162,13 +164,16 @@ lList **pplist
             {
                lDouble dd;
 
+               setlocale (LC_NUMERIC, "C");
                if (sscanf(*pstrlist, "%99lg", &dd) != 1) {
                   DPRINTF(("cull_parse_string_list: " \
                            "error interpreting double: %s\n", *pstrlist));
                   lFreeList(&list);
+                  setlocale (LC_NUMERIC, "");
                   DEXIT;
                   return -7;
                }
+               setlocale (LC_NUMERIC, "");
                lSetDouble(ep, *rule, dd);
             }
             break;
@@ -862,11 +867,15 @@ unsigned long flags
          switch (type) {
          case lFloatT:
 
+            setlocale (LC_NUMERIC, "C");
             sprintf(str, "%.10g", lGetFloat(ep, *rule));
+            setlocale (LC_NUMERIC, "");
             break;
 
          case lDoubleT:
+            setlocale (LC_NUMERIC, "C");
             sprintf(str, "%.10g", lGetDouble(ep, *rule));
+            setlocale (LC_NUMERIC, "");
             break;
        
          case lUlongT:
@@ -1184,7 +1193,9 @@ int nm_doubleval
          }
 
          if (nm_strval == -1 || !(s=lGetString(lep, nm_strval))) {
+            setlocale (LC_NUMERIC, "C");
             sprintf(buffer, "%f", lGetDouble(lep, nm_doubleval));
+            setlocale (LC_NUMERIC, "");
             s = buffer;
          }
 

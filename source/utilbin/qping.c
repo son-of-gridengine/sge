@@ -35,6 +35,7 @@
 #include <signal.h>
 #include <string.h>
 #include <ctype.h>
+#include <locale.h>
 
 #include "uti/sge_time.h"
 #include "uti/sge_arch.h"
@@ -1194,6 +1195,7 @@ int main(int argc, char *argv[]) {
       fprintf(stderr,"%s\n",cl_get_error_text(retval));
    }
 
+   setlocale (LC_NUMERIC, "C");
 
    /* set alias file */
    if ( !option_noalias ) {
