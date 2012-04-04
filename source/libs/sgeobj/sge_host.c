@@ -296,7 +296,7 @@ int sge_resolve_hostname(const char *hostname, char *unique, int nm, size_t luni
       if (strcmp(hostname, SGE_UNKNOWN_NAME) != 0) {
          ret = getuniquehostname(hostname, unique, 0);
       } else {
-         strcpy(unique, hostname);
+         sge_strlcpy(unique, hostname, lunique);
       }
 
       break;
@@ -306,7 +306,7 @@ int sge_resolve_hostname(const char *hostname, char *unique, int nm, size_t luni
           (strcmp(hostname, SGE_TEMPLATE_NAME)!=0)) {
          ret = getuniquehostname(hostname, unique, 0);
       } else {
-         strcpy(unique, hostname);
+         sge_strlcpy(unique, hostname, lunique);
       }
       break;
    default:
@@ -315,7 +315,7 @@ int sge_resolve_hostname(const char *hostname, char *unique, int nm, size_t luni
    }
 
    if (ret != CL_RETVAL_OK) {
-      strncpy(unique, hostname, CL_MAXHOSTLEN-1);
+      sge_strlcpy(unique, hostname, lunique);
    }
 
    DRETURN(ret);

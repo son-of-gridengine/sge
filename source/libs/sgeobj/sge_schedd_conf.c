@@ -2918,7 +2918,7 @@ bool sconf_validate_config_(lList **answer_list)
       }
       else {
          struct saved_vars_s *context = NULL;
-         strcpy(buf, schedd_info);
+         sge_strlcpy(buf, schedd_info, sizeof(buf));
          /* on/off or watch a set of jobs */
          key = sge_strtok_r(buf, " \t", &context);
          if (!strcmp("true", key)) 

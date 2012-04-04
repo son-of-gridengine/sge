@@ -2641,7 +2641,9 @@ int japi_wait(const char *job_id, dstring *waited_job, int *stat,
                sep = lCreateElem (ST_Type);
                lAppendElem (slp, sep);
 
-               sprintf (buffer, "%s=%.4f", lGetString (uep, UA_name), lGetDouble (uep, UA_value));
+               /* fixme: worry about locale */
+               snprintf (buffer, sizeof(buffer), "%s=%.4f",
+                         lGetString (uep, UA_name), lGetDouble (uep, UA_value));
                lSetString (sep, ST_name, buffer);
             }
 
@@ -4957,7 +4959,7 @@ static int japi_stop_event_client (const char *default_cell)
    DENTER(TOP_LAYER, "stop_event_client");
 
    DPRINTF (("Requesting that GDI kill our event client.\n"));
-   snprintf(id_string, sizeof(id_string)-1, sge_u32, japi_ec_id);
+   snprintf(id_string, sizeof(id_string), sge_u32, japi_ec_id);
    lAddElemStr(&id_list, ID_str, id_string, ID_Type);
    alp = ctx->kill(ctx, id_list, default_cell, 0, EVENTCLIENT_KILL);
    lFreeList(&id_list);
