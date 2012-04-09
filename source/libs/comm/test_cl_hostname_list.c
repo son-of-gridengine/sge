@@ -38,8 +38,8 @@
 #include <unistd.h>
 #include <signal.h>
 
-#include <arpa/inet.h>  /* for inet_makeaddr() */
 #include <netinet/in.h>
+#include <arpa/inet.h>  /* for inet_makeaddr() */
 
 #include "comm/cl_commlib.h"
 #include "comm/cl_host_list.h"

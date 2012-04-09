@@ -98,7 +98,9 @@ int uidgid_read_passwd(const char *user, char **pass, char *err_str, size_t lstr
 
 #ifdef SGE_THREADSAFE_UTIL
 
+#ifndef __OpenBSD__
 #include <grp.h>
+#endif
 
 int getpwnam_r(const char *, struct passwd *, char *, size_t, struct passwd **);
 int getgrnam_r(const char *, struct group *,  char *, size_t, struct group **);
