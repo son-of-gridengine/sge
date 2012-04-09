@@ -774,7 +774,11 @@ double get_cpu_load()
   size_t size;
 
   mib[0] = CTL_KERN;
+  #if defined(__OpenBSD__)
+  mib[1] = KERN_CPTIME;
+  #else
   mib[1] = KERN_CP_TIME;
+  #endif
 
   size = sizeof(cpu_time);
 

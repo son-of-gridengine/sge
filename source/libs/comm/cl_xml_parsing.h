@@ -33,6 +33,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+#include <netinet/in.h>         /* OpenBSD */
 #include <arpa/inet.h>
 
 #define CL_DEFINE_MAX_MESSAGE_LENGTH                 1024 * 1024 * 1024 /* 1GB max message length */

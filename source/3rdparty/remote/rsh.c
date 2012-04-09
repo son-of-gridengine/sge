@@ -101,6 +101,10 @@ extern char *krb_realmofhost();
 #define __P(a) a
 #endif
 
+#if defined(__OpenBSD__)
+#   define sigignore(x) signal(x,SIG_IGN)
+#endif
+
 /*
  * rsh - remote shell
  */

@@ -201,6 +201,22 @@ case $ARCH in
    ROOTGROUP=wheel
    LOADSENSOR_COMMAND=undef
    ;;
+obsd-*)
+  AWK=/usr/bin/awk
+  ECHO="/bin/echo"
+  RC_FILE=openbsd
+  RC_PREFIX=/etc/rc.d
+  RC_SUFFIX=.sh
+  XTERM=/usr/X11R6/bin/xterm
+  MAILER=/usr/bin/mail
+  QLOGIN_COMMAND=telnet
+  QLOGIN_DAEMON=/usr/libexec/telnetd
+  RLOGIN_DAEMON=/usr/libexec/rlogind
+  GETTEXT=/usr/bin/gettext
+  RSH_DAEMON=undef
+  ROOTGROUP=wheel
+  LOADSENSOR_COMMAND=undef
+  ;;
  darwin*)
    AWK=/usr/bin/awk
    ECHO=/bin/echo

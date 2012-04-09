@@ -282,6 +282,10 @@ case $buildarch in
       BUILDARCH=NETBSD_X86_64
       TARGET_BITS=TARGET_64BIT
       ;;
+   obsd-i386)
+      BUILDARCH=OPENBSD_I386
+      TARGET_BITS=TARGET_32BIT
+      ;;
    sol-sparc)
       BUILDARCH=SOLARIS
       TARGET_BITS=TARGET_32BIT
