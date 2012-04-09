@@ -121,7 +121,7 @@
 #include "execution_states.h"
 #include "msg_common.h"
 
-#if defined(FREEBSD) || defined(DARWIN6)
+#if defined(FREEBSD) || defined(DARWIN6) || defined(__OpenBSD__)
 #   define sigignore(x) signal(x,SIG_IGN)
 #endif
 

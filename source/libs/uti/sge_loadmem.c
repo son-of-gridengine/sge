@@ -626,10 +626,19 @@ int sge_loadmem(sge_mem_info_t *mem_info)
 {
   int mib[2];
   size_t size;
+
+  #if defined(__OpenBSD__)
+  struct uvmexp uvmexp;
+
+  mib[0] = CTL_VM;
+  mib[1] = VM_UVMEXP;
+  #else
   struct uvmexp_sysctl uvmexp;
 
   mib[0] = CTL_VM;
   mib[1] = VM_UVMEXP2;
+  #endif
+
   size   = sizeof(uvmexp);
 
   sysctl(mib, sizeof(mib)/sizeof(int), &uvmexp, &size, NULL, 0);

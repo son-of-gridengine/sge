@@ -35,6 +35,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <stdlib.h>
+#include <netinet/in.h>         /* OpenBSD */
 #include <arpa/inet.h>
 
 #include "comm/cl_connection_list.h"

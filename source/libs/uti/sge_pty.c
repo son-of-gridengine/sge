@@ -55,6 +55,7 @@
 #  include <stropts.h>
 #  include <termio.h>
 #elif defined(FREEBSD) || defined(NETBSD)
+#  include <sys/ioctl.h>
 #  include <termios.h>
 #else
 #  include <termio.h>
@@ -94,7 +95,7 @@ int                   g_newpgrp = -1;
 *  SEE ALSO
 *     pty/ptys_open()
 *******************************************************************************/
-#if defined(DARWIN)
+#if defined(DARWIN) || defined(__OpenBSD__)
 int ptym_open(char *pts_name)
 {
    char ptr1[] = "pqrstuvwxyzPQRST"; 

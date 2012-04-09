@@ -64,7 +64,7 @@
 
 
 
-#if defined(IRIX65) || defined(AIX43) || defined(HP1164) || defined(INTERIX) || defined(ALPHA5) || defined(WINDOWS)
+#if defined(IRIX65) || defined(AIX43) || defined(HP1164) || defined(INTERIX) || defined(ALPHA5) || defined(WINDOWS) || defined(__OpenBSD__)
 #define JUTI_NO_PAM
 #elif defined(DARWIN)
 #include <pam/pam_appl.h>

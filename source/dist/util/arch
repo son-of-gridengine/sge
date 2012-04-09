@@ -139,6 +139,10 @@ NetBSD)
     osprocessor="`$UNAME -p`"
     ARCH=nbsd-$osprocessor
     ;;
+OpenBSD)
+    osprocessor="`$UNAME -p`"
+    ARCH=obsd-$osprocessor
+    ;;
 IRIX*)
    case $osrelease in
    4*)
@@ -383,6 +387,11 @@ if [ "$1" = "-m" -o "$1" = "-mt" -o "$1" = "-lib" ]; then
    nbsd-*)
       PATH=$OLD_PATH
       DEFAULTMANPATH=/usr/pkg/man:/usr/local/man:/usr/X11R6/man:/usr/share/man
+      PATH=$SAFE_PATH
+      ;;
+   obsd-*)
+      PATH=$OLD_PATH
+      DEFAULTMANPATH=/usr/local/man:/usr/X11R6/man:/usr/share/man
       PATH=$SAFE_PATH
       ;;
    hp*)
