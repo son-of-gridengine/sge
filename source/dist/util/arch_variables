@@ -169,18 +169,6 @@ case $ARCH in
    RSH_DAEMON=undef
    LOADSENSOR_COMMAND=undef
    ;;
- nec*|sx*)
-   AWK=/usr/bin/nawk
-   ECHO=/usr/bin/echo
-   RC_FILE=
-   XTERM=/usr/bin/X11/xterm
-   MAILER=/usr/bin/mailx
-   QLOGIN_COMMAND=telnet
-   QLOGIN_DAEMON=/usr/sbin/in.telnetd
-   RLOGIN_DAEMON=/usr/sbin/in.rlogind
-   RSH_DAEMON=undef
-   LOADSENSOR_COMMAND=undef
-   ;;
  fbsd-*)
    AWK=/usr/bin/awk
    ECHO="/bin/echo"
