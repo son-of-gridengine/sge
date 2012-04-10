@@ -81,6 +81,8 @@ xargs chmod +x <<EOF
 ./dist/util/resources/jsv/jsv_include.sh
 ./dist/util/resources/jsv/jsv_include.tcl
 ./dist/util/resources/jsv/jsv.tcl
+./dist/util/resources/wrappers/qlogin_wrapper
+./dist/util/resources/wrappers/rshd-wrapper
 ./dist/util/setfileperm.sh
 ./dist/util/arch_variables
 ./dist/util/sgeCA/renew_all_certs.csh
