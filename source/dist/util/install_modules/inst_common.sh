@@ -523,7 +523,7 @@ ErrUsage()
              "   -rccreate  create startup scripts from templates\n" \
              "   -host      hostname for shadow master installation or uninstallation \n" \
              "              (eg. exec host)\n" \
-             "   -resport   the install script does not allow SGE_QMASTER_PORT numbers \n" \
+             "   -resport   prevent installaion using SGE_QMASTER_PORT numbers \n" \
              "              higher than 1024\n" \
              "   -rsh       use rsh instead of ssh (default is ssh)\n" \
              "   -auto      full automatic installation (qmaster and exec hosts)\n" \
@@ -1581,17 +1581,6 @@ CheckForLocalHostResolving()
       $INFOTEXT "\nThe current hostname is resolved as follows:\n\n"
       $SGE_UTILBIN/gethostname
       $INFOTEXT -wait -auto $AUTO -n \
-                "\nIt is not supported for a Grid Engine installation that the local hostname\n" \
-                "contains the hostname \"localhost\" and/or the IP address \"127.0.x.x\" of the\n" \
-                "loopback interface.\n" \
-                "The \"localhost\" hostname should be reserved for the loopback interface\n" \
-                "(\"127.0.0.1\") and the real hostname should be assigned to one of the\n" \
-                "physical or logical network interfaces of this machine.\n\n" \
-                "Installation failed.\n\n" \
-                "Press <RETURN> to exit the installation procedure >> "
-      $INFOTEXT -log "\nThe current hostname is resolved as follows:\n\n"
-      $SGE_UTILBIN/gethostname
-      $INFOTEXT -log -wait -auto $AUTO -n \
                 "\nIt is not supported for a Grid Engine installation that the local hostname\n" \
                 "contains the hostname \"localhost\" and/or the IP address \"127.0.x.x\" of the\n" \
                 "loopback interface.\n" \
