@@ -53,7 +53,7 @@ QRSTAT_OBJS = $(QRSTAT_SRC:.c=.o)
 
 QRSTAT_ADD_OBJS = $(QRSTAT_ADD_SRC:.c=.o)
 
-QRSTAT_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB)
+QRSTAT_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
 
 QRSTAT_LIB_DEPENDS = $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(KRBLIBS) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(WINGRIDLIB_DEP) $(UTILIB) $(TPLIB)
 

@@ -50,7 +50,7 @@ QRSUB_OBJS = $(QRSUB_SRC:.c=.o)
 
 QRSUB_ADD_OBJS = $(QRSUB_ADD_SRC:.c=.o)
 
-QRSUB_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB)
+QRSUB_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
 
 QRSUB_LIB_DEPENDS = $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(KRBLIBS) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(WINGRIDLIB_DEP) $(UTILIB) $(TPLIB)
 

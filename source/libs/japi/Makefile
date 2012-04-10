@@ -135,13 +135,13 @@ test_drmaa: test_drmaa.1.0
 	rm -f test_drmaa ; cp test_drmaa.1.0 test_drmaa
 
 test_drmaa.1.0: test_drmaa.o $(DRMAALIB) $(WINGRIDLIB_DEP)
-	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa.o $(LIBS) libdrmaa$(SHAREDEXT).1.0 $(WINGRIDLIB)
+	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa.o libdrmaa$(SHAREDEXT).1.0 $(WINGRIDLIB) $(LIBS)
 
 test_drmaa.o: $(JAPILIB_DIR)/test_drmaa.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/test_drmaa.c -o test_drmaa.o
 
 test_drmaa_sync: test_drmaa_sync.o $(DRMAALIB)
-	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_sync.o $(LIBS) -ldrmaa
+	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_sync.o -ldrmaa $(LIBS)
 
 test_drmaa_sync.o: $(JAPILIB_DIR)/test_drmaa_sync.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/test_drmaa_sync.c
@@ -153,43 +153,43 @@ test_drmaa_mcpu.o: $(JAPILIB_DIR)/test_drmaa_mcpu.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/test_drmaa_mcpu.c
 
 test_drmaa_perf: test_drmaa_perf.o $(DRMAALIB)
-	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_perf.o $(LIBS) -ldrmaa
+	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_perf.o -ldrmaa $(LIBS)
 
 test_drmaa_perf.o: $(JAPILIB_DIR)/test_drmaa_perf.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/test_drmaa_perf.c
 
 test_drmaa_no_bin: test_drmaa_no_bin.o $(DRMAALIB)
-	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_no_bin.o $(LIBS) -ldrmaa
+	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_no_bin.o -ldrmaa $(LIBS)
 
 test_drmaa_no_bin.o: $(JAPILIB_DIR)/test_drmaa_no_bin.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/test_drmaa_no_bin.c
 
 test_drmaa_issue1768: test_drmaa_issue1768.o $(DRMAALIB)
-	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_issue1768.o $(LIBS) -ldrmaa
+	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_issue1768.o -ldrmaa $(LIBS)
 
 test_drmaa_issue1768.o: $(JAPILIB_DIR)/test_drmaa_issue1768.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/test_drmaa_issue1768.c
 
 test_drmaa_issue1832: test_drmaa_issue1832.o $(DRMAALIB)
-	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_issue1832.o $(LIBS) -ldrmaa
+	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_issue1832.o -ldrmaa $(LIBS)
 
 test_drmaa_issue1832.o: $(JAPILIB_DIR)/test_drmaa_issue1832.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/test_drmaa_issue1832.c
 
 test_drmaa_issue1892: test_drmaa_issue1892.o $(DRMAALIB)
-	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_issue1892.o $(LIBS) -ldrmaa
+	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa_issue1892.o -ldrmaa $(LIBS)
 
 test_drmaa_issue1892.o: $(JAPILIB_DIR)/test_drmaa_issue1892.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/test_drmaa_issue1892.c
 
 example: example.o $(DRMAALIB)
-	$(LD_WRAPPER) $(CC) -o example $(LIBS) $(LFLAGS) example.o -ldrmaa
+	$(LD_WRAPPER) $(CC) -o example $(LFLAGS) example.o -ldrmaa $(LIBS)
 
 example.o: $(JAPILIB_DIR)/example.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/example.c
 
 compile: compile.o $(DRMAALIB)
-	$(LD_WRAPPER) $(CC) -o compile $(LIBS) $(LFLAGS) compile.o -ldrmaa
+	$(LD_WRAPPER) $(CC) -o compile $(LFLAGS) compile.o -ldrmaa $(LIBS)
 
 compile.o: $(JAPILIB_DIR)/compile.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/compile.c

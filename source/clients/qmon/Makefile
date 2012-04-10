@@ -126,8 +126,8 @@ QMON_OBJS = $(QMON_SRC:.c=.o) qmon_diares.o
 QMON_ADD_OBJS = $(QMON_ADD_SRC:.c=.o) libspoolc.a
 
 QMON_ADD_LIBS = -L../3rdparty/qmon/$(COMPILE_ARCH) -lXbae -lXmt -lXspin -lXicon -lXltree -lXtab \
-                -L. -lspool -lsched -levc -lgdi -lsgeobj -lsgeobjd $(SECLIB) $(KRBLIB) -lcull \
-                -lcomm -lcommlists -luti $(DLLIB)
+                -L. -lspool -lsched -levc -lgdi -lsgeobj -lsgeobjd -lcull \
+                -lcomm -lcommlists -luti $(SECLIB) $(KRBLIB) $(DLLIB)
 
 QMON_LIB_DEPENDS = $(XBAELIB) $(XMTLIB) $(XSPINLIB) $(XICONLIB) \
                    $(XLTREELIB) $(XTABLIB) $(SPOOLCLIB) $(SPOOLLIB) $(SPOOLFLIB) \
