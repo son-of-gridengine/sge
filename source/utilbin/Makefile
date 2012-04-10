@@ -103,7 +103,7 @@ gethostbyname.o:	$(UTILBIN_DIR)/gethostbyname.c
 
 #---------------------------------------------------------------------
 qping:	qping.o version.o $(WINGRIDLIB_DEP) $(UTILIB) $(GDILIB) $(COMMLIB) $(COMMLISTSLIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB)
-		$(CC) -o $@ $(LFLAGS) qping.o version.o -lgdi -lsgeobj -lsgeobjd $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB) $(SLIBS) $(LIBS)
+		$(CC) -o $@ $(LFLAGS) qping.o version.o -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB) $(SLIBS) $(LIBS)
 
 qping.o:	$(UTILBIN_DIR)/qping.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/qping.c
@@ -229,7 +229,7 @@ spooldefaults.o: $(UTILBIN_DIR)/spooldefaults.c
 
 #---------------------------------------------------------------------
 spoolinit:   spoolinit.o  version.o sge_mt_init.o $(SPOOLING_DEPS) $(SPOOLLIB) $(SCHEDLIB) $(EVCLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(WINGRIDLIB_DEP) $(UTILIB) 
-		$(CC) -o $@ $(LFLAGS) spoolinit.o version.o sge_mt_init.o $(SPOOLING_LIBS) -lsched -levc -lgdi $(SECLIB) $(KRBLIB) -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB) $(SLIBS) $(LIBS)
+		$(CC) -o $@ $(LFLAGS) spoolinit.o version.o sge_mt_init.o $(SPOOLING_LIBS) -lsched -levc -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB) $(SLIBS) $(LIBS)
 
 spoolinit.o: $(UTILBIN_DIR)/spoolinit.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/spoolinit.c
@@ -274,7 +274,7 @@ sge_passwd.o: $(UTILBIN_DIR)/sge_passwd.c
 
 #---------------------------------------------------------------------
 SMON_LIB_DEPENDS = $(SCHEDLIB) $(EVCLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(KRBLIBS) $(CULLLIB) $(WINGRIDLIB_DEP) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB)
-SMON_ADD_LIBS = -lsched -levc -lgdi -lsgeobjd -lsgeobj $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB)
+SMON_ADD_LIBS = -lsched -levc -lgdi -lsgeobjd -lsgeobj -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
 
 sge_share_mon: sge_share_mon.o sge_support.o $(SMON_LIB_DEPENDS)
 		$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) sge_share_mon.o sge_support.o $(SMON_ADD_LIBS) $(SLIBS) $(LIBS) 

@@ -110,7 +110,7 @@ QMASTER_OBJS  = $(QMASTER_SRC:.c=.o)
 
 QMASTER_ADD_OBJS = $(QMASTER_ADD_SRC:.c=.o)
 
-QMASTER_ADD_LIBS = $(SPOOLING_LIBS) -lsched $(EVMLIB) -levc $(MIRLIB) -lgdi -lsgeobj -lsgeobjd $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB)
+QMASTER_ADD_LIBS = $(SPOOLING_LIBS) -lsched $(EVMLIB) -levc $(MIRLIB) -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
 
 QMASTER_LIB_DEPENDS = $(SCHEDLIB) $(EVMLIB) $(EVCLIB) $(MIRLIB) \
                       $(GDILIB) $(SGEOBJLIB) $(SPOOLING_DEPS) $(SGEOBJDLIB) \
@@ -132,8 +132,11 @@ QMASTER_TEST_LIB_DEPENDS = $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB) $(COMMLIB) $(CO
 ###############################################################################
 # global rules: all, clean, depend, messages
 ###############################################################################
+.PHONY: qmaster
+
 qmaster: $(QMASTER_TARGETS) $(QMASTER_TEST_PROGS)
-	
+	@true
+
 qmaster_clean:
 	$(RM) $(QMASTER_TARGETS) sge_qmaster_main.o $(QMASTER_OBJS) $(QMASTER_TEST_OBJS) $(QMASTER_TEST_PROGS)
 

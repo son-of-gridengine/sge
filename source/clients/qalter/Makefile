@@ -44,8 +44,8 @@ QALTER_ADD_SRC = sig_handlers.c parse_qsub.c \
 QALTER_OBJS = $(QALTER_SRC:.c=.o) 
 
 QALTER_ADD_OBJS = $(QALTER_ADD_SRC:.c=.o)
-               
-QALTER_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB)
+
+QALTER_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
 
 QALTER_LIB_DEPENDS = $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(KRBLIBS) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(WINGRIDLIB_DEP) $(UTILIB) $(TPLIB)
 

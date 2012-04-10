@@ -52,7 +52,7 @@ QHOST_OBJS = $(QHOST_SRC:.c=.o)
 
 QHOST_ADD_OBJS = $(QHOST_ADD_SRC:.c=.o)
 
-QHOST_ADD_LIBS = sge_mt_init.o -lsched -lgdi -lsgeobjd -lsgeobj $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB)
+QHOST_ADD_LIBS = sge_mt_init.o -lsched -lgdi -lsgeobjd -lsgeobj -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
 
 QHOST_LIB_DEPENDS = sge_mt_init.o $(GDILIB) $(SCHEDLIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(KRBLIBS) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(WINGRIDLIB_DEP) $(UTILIB) $(TPLIB)
 

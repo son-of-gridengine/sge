@@ -46,7 +46,7 @@ QACCT_OBJS = $(QACCT_SRC:.c=.o)
 
 QACCT_ADD_OBJS = $(QACCT_ADD_SRC:.c=.o)
 
-QACCT_ADD_LIBS = -lsched -levc -lgdi -lsgeobj -lsgeobjd $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB)
+QACCT_ADD_LIBS = -lsched -levc -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(SECLIB) $(KRBLIB) $(WINGRIDLIB) $(DLLIB)
 
 QACCT_LIB_DEPENDS = $(EVCLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(KRBLIBS) $(SCHEDLIB) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(WINGRIDLIB_DEP) $(UTILIB) $(TPLIB)
 
