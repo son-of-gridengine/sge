@@ -1262,7 +1262,6 @@ case FREEBSD_*:
    set XLIBD    = "-L/usr/X11R6/lib"
    set XLFLAGS  = "$XLIBD"
    set XLIBS    = " -Xlinker -lXm -Xlinker -Bdynamic -lXpm -lXt -lXext -lX11 -lSM -lICE -lXp"
-   set RM	= "rm -f"
    set JAVA_ARCH = "linux"
    breaksw 
 
@@ -1293,7 +1292,6 @@ case NETBSD_*:
    set XLIBD    = "-L/usr/X11R6/lib -R/usr/X11R6/lib -L/usr/pkg/lib -R /usr/pkg/lib"
    set XLFLAGS  = "$XLIBD"
    set XLIBS    = " -lXm -lXpm -lXt -lXext -lX11 -lSM -lICE -lXp"
-   set RM       = "rm -f"
    set JAVA_ARCH = "netbsd"
    breaksw
 
@@ -1460,10 +1458,11 @@ case LINUXARMEL:
 # This was more likely invalid code in qmon
 #   # Optimization on LINUXIA64 is broken, qmon dumps
 #    if ($OPTIMIZATION == 1 && $BUILDARCH != LINUXIA64) then
-       set OFLAG = "-O3"
-#    else
-#      set OFLAG = ""
-#    endif
+   if ($OPTIMIZATION == 1) then
+      set OFLAG = "-O3"
+   else
+      set OFLAG = ""
+   endif
 
    set CC  = gcc
    set CXX = g++
@@ -1589,7 +1588,6 @@ case WIN32_X86:
    # setenv LD_LIBRARY_PATH /usr/lib/x86:/usr/local/lib
    set CC = gcc
    set WINCC = "env TMP=$WINTEMPDIR cl.exe"
-   set RM = "rm -f"
    set MAKE = gmake
    set HWLOC = 1
 
