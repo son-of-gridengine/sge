@@ -61,6 +61,7 @@
 #define MSG_BERKELEY_UNPACKERROR_SS _MESSAGE(70029, _("error unpacking object with key "SFQ": "SFN))
 #define MSG_BERKELEY_UNPACKINITERROR_SS _MESSAGE(70030, _("error initializing packing buffer while unpacking object with key "SFQ": "SFN))
 #define MSG_BERKELEY_SETOPTIONTO_SS _MESSAGE(70031, _("setting spooling option "SFQ" to "SFQ))
+#define MSG_BERKELEY_NORPC_S _MESSAGE(70032, _("BerkeleyDB RPC server not supported: "SFQ))
 
 /*
  * sge_bdb.c
