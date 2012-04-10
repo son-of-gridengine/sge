@@ -30,6 +30,8 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/ 
 
+/* Fixme: purge the RPC server stuff.  */
+
 #ifndef NO_SGE_COMPILE_DEBUG
 #define NO_SGE_COMPILE_DEBUG
 #endif
@@ -203,9 +205,11 @@ bool spool_berkeleydb_create_environment(lList **answer_list,
    if (ret && env == NULL) {
       int flags = 0;
 
+#ifdef DB_RPCCLIENT
       if (server != NULL) {
          flags |= DB_RPCCLIENT;
       }
+#endif
 
       PROF_START_MEASUREMENT(SGE_PROF_SPOOLINGIO);
       dbret = db_env_create(&env, flags);
@@ -267,6 +271,7 @@ bool spool_berkeleydb_create_environment(lList **answer_list,
          }
       }
 
+#ifdef DB_RPCCLIENT
       /* if we use a RPC server, set it in the DB_ENV */
       if (ret && server != NULL) {
          PROF_START_MEASUREMENT(SGE_PROF_SPOOLINGIO);
@@ -280,6 +285,7 @@ bool spool_berkeleydb_create_environment(lList **answer_list,
             ret = false;
          } 
       }
+#endif
 
       /* the lock parameters only can be set, if we have local spooling.
        * RPC server: use DB_CONFIG file.

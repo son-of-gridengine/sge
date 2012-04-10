@@ -209,7 +209,11 @@ bdb_destroy_connection(void *connection)
 const char *
 bdb_get_server(bdb_info info)
 {
+#ifdef DB_RPCCLIENT
    return info->server;
+#else
+   return NULL;
+#endif
 }
 
 /****** spool/berkeleydb/bdb_get_path() ****************************************

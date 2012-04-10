@@ -164,6 +164,16 @@ spool_berkeleydb_create_context(lList **answer_list, const char *args)
          sge_free(&dup);
       }
 
+#ifndef DB_RPCCLIENT            /* db5 */
+      if (server) {
+         answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
+                                 ANSWER_QUALITY_WARNING, 
+                                 MSG_BERKELEY_NORPC_S, server);
+         DEXIT;
+         return NULL;
+      }
+#endif
+
       DPRINTF(("using %sRPC server %s, database %s\n", 
                server == NULL ? "no " : "",
                server == NULL ? "" : server,
