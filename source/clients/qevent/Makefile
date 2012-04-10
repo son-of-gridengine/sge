@@ -45,7 +45,7 @@ QEVENT_OBJS = $(QEVENT_SRC:.c=.o)
 
 QEVENT_ADD_OBJS = $(QEVENT_ADD_SRC:.c=.o)
 
-QEVENT_ADD_LIBS = -lmir -levc -lgdi -lsgeobj -lsgeobjd $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB)
+QEVENT_ADD_LIBS = -lmir -levc -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
 
 QEVENT_LIB_DEPENDS = $(MIRLIB) $(EVCLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(KRBLIBS) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(WINGRIDLIB_DEP) $(UTILIB) $(TPLIB)
 

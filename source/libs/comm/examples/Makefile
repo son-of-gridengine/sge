@@ -42,8 +42,6 @@ COMM_EXAMPLES_SRC =       \
          client_demo.c    \
          external_fd_demo.c \
          external_fd_server_demo.c
-         
-         
 
 COMM_EXAMPLES_OBJS = $(COMM_EXAMPLES_SRC:.c=.o)
 
@@ -75,16 +73,16 @@ include $(COMM_EXAMPLES_DIR)/commexamples_dependencies
 # rules to build object codes
 ###############################################################################
 server_demo: server_demo.o $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB_DEP)  
-	$(CC) -o server_demo $(LFLAGS) server_demo.o $(SECLIB) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(DLLIB) $(LIBS)
+	$(CC) -o server_demo $(LFLAGS) server_demo.o $(COMMLIB) $(SECLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(DLLIB) $(LIBS)
 
 client_demo: client_demo.o $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB_DEP) 
-	$(CC) -o client_demo $(LFLAGS) client_demo.o $(SECLIB) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(DLLIB) $(LIBS)
+	$(CC) -o client_demo $(LFLAGS) client_demo.o $(COMMLIB) $(SECLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(DLLIB) $(LIBS)
 
 external_fd_server_demo: external_fd_server_demo.o $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB_DEP)
-	$(CC) -o external_fd_server_demo $(LFLAGS) external_fd_server_demo.o $(SECLIB) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(DLLIB) $(LIBS)
+	$(CC) -o external_fd_server_demo $(LFLAGS) external_fd_server_demo.o $(COMMLIB) $(SECLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(DLLIB) $(LIBS)
 
 external_fd_demo: external_fd_demo.o $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB_DEP) 
-	$(CC) -o external_fd_demo $(LFLAGS) external_fd_demo.o $(SECLIB) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(DLLIB) $(LIBS)
+	$(CC) -o external_fd_demo $(LFLAGS) external_fd_demo.o $(COMMLIB) $(SECLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(DLLIB) $(LIBS)
 
 server_demo.o: $(COMM_EXAMPLES_DIR)/server_demo.c
 	$(CC) $(CFLAGS) -c $(COMM_EXAMPLES_DIR)/server_demo.c
