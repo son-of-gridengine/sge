@@ -86,12 +86,18 @@
 #include "uti/sge_string.h"
 
 #if (OPENSSL_VERSION_NUMBER < 0x1000000fL)
-#define OPENSSL_CONST
-#if (OPENSSL_VERSION_NUMBER < 0x0090700fL)
-#define NID_userId NID_uniqueIdentifier
-#endif
+#  define OPENSSL_CONST
+#  define OPENSSL_CONST1 OPENSSL_CONST
+#  if (OPENSSL_VERSION_NUMBER < 0x0090700fL)
+#    define NID_userId NID_uniqueIdentifier
+#  endif
 #else
-#define OPENSSL_CONST const
+#  define OPENSSL_CONST const
+#  if (OPENSSL_VERSION_NUMBER > 0x1000000fL)
+#    define OPENSSL_CONST1
+#  else
+#    define OPENSSL_CONST1 OPENSSL_CONST
+#  endif
 #endif
 
 
@@ -150,7 +156,7 @@ static BIO*                 (*cl_com_ssl_func__BIO_new_mem_buf)                 
 static int                  (*cl_com_ssl_func__BIO_printf)                          (BIO *bio, const char *format, ...);
 static void                 (*cl_com_ssl_func__SSL_set_bio)                         (SSL *s, BIO *rbio,BIO *wbio);
 static int                  (*cl_com_ssl_func__SSL_accept)                          (SSL *ssl);
-static void                 (*cl_com_ssl_func__SSL_CTX_free)                        (OPENSSL_CONST SSL_CTX *);
+static void                 (*cl_com_ssl_func__SSL_CTX_free)                        (OPENSSL_CONST1 SSL_CTX *);
 static SSL_CTX*             (*cl_com_ssl_func__SSL_CTX_new)                         (OPENSSL_CONST SSL_METHOD *meth);
 static OPENSSL_CONST SSL_METHOD*    (*cl_com_ssl_func__SSLv23_method)                       (void);
 static int                  (*cl_com_ssl_func__SSL_CTX_use_certificate_chain_file)  (SSL_CTX *ctx, const char *file);
@@ -229,7 +235,7 @@ static int                  (*cl_com_ssl_func__SSL_CTX_set_ex_data)             
 /* ugly workaround for extremely ugly usage of OpenSSL API */
 #if OPENSSL_VERSION_NUMBER >= 0x10000000L
 #define STACK _STACK
-#define SKVAL_RTYPE char
+#define SKVAL_RTYPE void
 #else
 #define SKVAL_RTYPE char
 #endif
@@ -1193,7 +1199,7 @@ static int cl_com_ssl_build_symbol_table(void) {
       }
 
       func_name = "SSL_CTX_free";
-      cl_com_ssl_func__SSL_CTX_free = (void (*)(OPENSSL_CONST SSL_CTX *))dlsym(cl_com_ssl_crypto_handle, func_name);
+      cl_com_ssl_func__SSL_CTX_free = (void (*)(OPENSSL_CONST1 SSL_CTX *))dlsym(cl_com_ssl_crypto_handle, func_name);
       if (cl_com_ssl_func__SSL_CTX_free == NULL) {
          CL_LOG_STR(CL_LOG_ERROR,"dlsym error: can't get function address:", func_name);
          had_errors++;
