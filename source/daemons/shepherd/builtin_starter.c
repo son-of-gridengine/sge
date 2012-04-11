@@ -607,6 +607,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       /* prolog, pe_start, job, epilog and pe_stop get the
          file staged output (and error) file */
       stdout_path = sge_realloc(stdout_path, strlen(fs_stdout_tmp_path) + 1, 1);
+      /* fixme:  how do we know the length of stdout_path? */
       strcpy(stdout_path, fs_stdout_tmp_path);
    }
 
@@ -820,10 +821,10 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       }
    }
    if (use_login_shell) {
-      strcpy(argv0, "-");
+      sge_strlcpy(argv0, "-", sizeof(argv0));
       sge_strlcat(argv0, shell_basename, sizeof(argv0));
    } else {
-      sge_strlcat(argv0, shell_basename, sizeof(argv0));
+      sge_strlcpy(argv0, shell_basename, sizeof(argv0));
    }
 
    sge_set_def_sig_mask(NULL, NULL);
