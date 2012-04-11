@@ -153,7 +153,7 @@ static int count_command(char *command) {
 
  It is also used to start the external starter command .. 
  ************************************************************************/
-void son(const char *childname, char *script_file, int truncate_stderr_out)
+void son(const char *childname, char *script_file, int truncate_stderr_out, size_t lscript)
 {
    int   in, out, err;          /* hold fds */
    int   merge_stderr;
@@ -664,19 +664,19 @@ void son(const char *childname, char *script_file, int truncate_stderr_out)
     */
    if (!strcmp(childname, "prolog")) {
       replace_params( get_conf_val("prolog"),
-         script_file, sizeof(script_file)-1, prolog_epilog_variables );
+         script_file, lscript, prolog_epilog_variables );
       target_user = parse_script_params(&script_file);
    } else if (!strcmp(childname, "epilog")) {
       replace_params( get_conf_val("epilog"),
-         script_file, sizeof(script_file)-1, prolog_epilog_variables );
+         script_file, lscript, prolog_epilog_variables );
       target_user = parse_script_params(&script_file);
    } else if (!strcmp(childname, "pe_start")) {
       replace_params( get_conf_val("pe_start"),
-         script_file, sizeof(script_file)-1, pe_variables );
+         script_file, lscript, pe_variables );
       target_user = parse_script_params(&script_file);
    } else if (!strcmp(childname, "pe_stop")) {
       replace_params( get_conf_val("pe_stop"),
-         script_file, sizeof(script_file)-1, pe_variables );
+         script_file, lscript, pe_variables );
       target_user = parse_script_params(&script_file);
    }
 

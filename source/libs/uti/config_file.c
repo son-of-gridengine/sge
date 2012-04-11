@@ -397,7 +397,6 @@ char **allowed
    const char *sp;
    size_t dp_pos = 0;
 
-   /* fixme:  current callers all seem to subtract the 1 anyhow  */
    size_t max_dst_len = dst_len - 1;
    char **spp, *value = NULL;
    int just_check = 0;

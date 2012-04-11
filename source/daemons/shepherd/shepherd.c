@@ -163,7 +163,8 @@ static int signalled_ckpt_job = 0; /* marker if signalled a ckpt job */
 
 /* function forward declarations */
 static int notify_tasker(u_long32 exit_status);
-static int start_child(const char *childname, char *script_file, pid_t *pidp, 
+static int start_child(const char *childname, char *script_file,
+                       size_t lscript, pid_t *pidp,
                        int timeout, int ckpt_type, char *status_env);
 static int wait_my_builtin_ijs_child(int pid, const char *childname, int timeout,
    ckpt_info_t *p_ckpt_info, ijs_fds_t *p_ijs_fds, struct rusage *rusage,
@@ -410,7 +411,7 @@ static int do_prolog(int timeout, int ckpt_type)
       int i, n_exit_status = count_exit_status();
 
       replace_params(prolog, command, sizeof(command)-1, prolog_epilog_variables);
-      exit_status = start_child("prolog", command, NULL, timeout, ckpt_type, NULL);
+      exit_status = start_child("prolog", command, NULL, timeout, ckpt_type);
 
       if (n_exit_status<(i=count_exit_status())) {
          shepherd_trace("exit states increased from %d to %d", n_exit_status, i);
@@ -460,9 +461,9 @@ static int do_epilog(int timeout, int ckpt_type)
       int i, n_exit_status = count_exit_status();
 
       /* start epilog */
-      replace_params(epilog, command, sizeof(command)-1, 
+      replace_params(epilog, command, sizeof(command),
                      prolog_epilog_variables);
-      exit_status = start_child("epilog", command, NULL, timeout, ckpt_type, NULL);
+      exit_status = start_child("epilog", command, NULL, timeout, ckpt_type);
       if (n_exit_status<(i=count_exit_status())) {
          shepherd_trace("exit states increased from %d to %d", 
                                 n_exit_status, i);
@@ -510,15 +511,14 @@ static int do_pe_start(int timeout, int ckpt_type, pid_t *pe_pid)
       int i, n_exit_status = count_exit_status();
 
       shepherd_trace(pe_start);
-      replace_params(pe_start, command, sizeof(command)-1, 
-         pe_variables);
+      replace_params(pe_start, command, sizeof(command), pe_variables);
       shepherd_trace(command);
 
       /* 
          starters of parallel environments may not get killed 
          in case of success - so we save their pid for later use
       */
-      exit_status = start_child("pe_start", command, pe_pid, timeout, ckpt_type, NULL);
+      exit_status = start_child("pe_start", command, pe_pid, timeout, ckpt_type);
       if (n_exit_status<(i=count_exit_status())) {
          shepherd_trace("exit states increased from %d to %d", n_exit_status, i);
          /*
@@ -571,10 +571,9 @@ static int do_pe_stop(int timeout, int ckpt_type, pid_t *pe_pid)
       shepherd_state = SSTATE_BEFORE_PESTOP;
 
       shepherd_trace(pe_stop);
-      replace_params(pe_stop, command, sizeof(command)-1, 
-         pe_variables);
+      replace_params(pe_stop, command, sizeof(command), pe_variables);
       shepherd_trace(command);
-      exit_status = start_child("pe_stop", command, NULL, timeout, ckpt_type, NULL);
+      exit_status = start_child("pe_stop", command, NULL, timeout, ckpt_type);
 
       /* send a kill to pe_start process
        *
@@ -966,7 +965,7 @@ int main(int argc, char **argv)
                create_checkpointed_file(0);
                exit_status = 0; /* no error */
             } else {
-              exit_status = start_child("job", script_file, NULL, 0, ckpt_type, "SGE_JOBEXIT_STAT");
+               exit_status = start_child("job", script_file, NULL, 0, ckpt_type);
 
                if (count_exit_status()>0) {
                   /*
@@ -1070,17 +1069,14 @@ PARAMETER
       In case of no errors the pid is saved in *pidp 
       for later use.
 
-   timeout
-
-   ckpt_type
-
-   status_env
-      Name of an environment to store the job exit status
-
  *******************************************************************/
-static int start_child(const char *childname, /* prolog, job, epilog */
-                       char *script_file, pid_t *pidp, int timeout,
-                       int ckpt_type, char *status_env) {
+static int start_child(
+const char *childname,        /* prolog, job, epilog */
+char *script_file,
+pid_t *pidp,
+int timeout,
+int ckpt_type 
+) {
    SGE_STRUCT_STAT buf;
    struct rusage rusage;
    u_long32 start_time, end_time;
@@ -1194,8 +1190,9 @@ static int start_child(const char *childname, /* prolog, job, epilog */
                return ret;
             }
          }
-         shepherd_trace("child: starting son(%s, %s, 0);", childname, script_file);
-         son(childname, script_file, 0);
+         shepherd_trace("child: starting son(%s, %s, 0, %d);", childname,
+                        script_file, lscript);
+         son(childname, script_file, 0, lscript);
       }
    }
 
@@ -2022,7 +2019,7 @@ static void shepconf_deliver_signal_or_method(int sig, int pid, pid_t *ctrl_pid)
          char command[10000];
 
          replace_params(sge_dstring_get_string(&method), command,
-                        sizeof(command)-1, ctrl_method_variables);
+                        sizeof(command), ctrl_method_variables);
          *ctrl_pid = start_async_command(method_name, command);
       } else {
          shepherd_trace("Skipped start of suspend: previous command "
