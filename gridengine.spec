@@ -188,8 +188,7 @@ echo instguiinst=false >distinst.private
 gearch=`dist/util/arch`
 echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
 ( cd $RPM_BUILD_ROOT/%{sge_home}
-  mv 3rd_party/3rd_party_licscopyrights doc
-  rm -r hadoop catman 3rd_party dtrace
+  rm -rf hadoop catman 3rd_party dtrace
   rm -r examples/jobsbin
   rm man/man8/SGE_Helper_Service.exe.8
   rm -r util/sgeSMF
