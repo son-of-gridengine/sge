@@ -15,7 +15,8 @@
 # * Support shared installs "--with sharedinstall"
 # * Try to support herd (Hadoop) and the GUI installer -- either assume
 #   izpack/hadoop installed, or maybe download and build them.  Probably
-#   use --with guiinst, --with hadoop.
+#   use --with guiinst, --with hadoop.  (NB izpack download needs components
+#   removed to be redistributable.)
 # * Clarify the licence on this file to the extent it's derived from the
 #   Fedora one.
 # * Patch or hook for installation scripts to default appropriately for
@@ -44,7 +45,7 @@ Summary: Grid Engine - Distributed Resource Manager
 
 Group:   Applications/System
 # per 3rd_party_licscopyrights
-License: (BSD and LGPLv2+ and MIT and SISSL) and GPLv2+ and GFDLv3+ and BSD with advertising
+License: (BSD and LGPLv2+ and MIT and SISSL) and GPLv2+ and GFDLv3+ and others
 URL:     https://arc.liv.ac.uk/trac/SGE
 Source:  https://arc.liv.ac.uk/downloads/SGE/releases/%{version}/sge-%{version}.tar.gz
 Prefix: %{sge_home}
@@ -183,15 +184,15 @@ SGE_ROOT=$RPM_BUILD_ROOT%{sge_home}
 export SGE_ROOT
 mkdir -p $SGE_ROOT
 cd source
+echo instguiinst=false >distinst.private
 gearch=`dist/util/arch`
 echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
 ( cd $RPM_BUILD_ROOT/%{sge_home}
   mv 3rd_party/3rd_party_licscopyrights doc
-  rm -r hadoop 3rd_party dtrace
+  rm -r hadoop catman 3rd_party dtrace
   rm -r examples/jobsbin
   rm man/man8/SGE_Helper_Service.exe.8
-  rm -r util/gui-installer util/sgeSMF
-  rm start_gui_installer
+  rm -r util/sgeSMF
   rm util/resources/loadsensors/interix-loadsensor.sh # uses ksh
   for l in lib/*/libdrmaa.so.1.0; do
     ( cd $(dirname $l); ln -sf libdrmaa.so.1.0 libdrmaa.so )
@@ -256,6 +257,12 @@ fi
 %{sge_home}/pvm
 %{sge_home}/util
 %{sge_home}/utilbin
+# rlogin and rsh need to be suid to work, but there is no need for them
+# as we have ssh and PAM
+%attr{4755,root,root} %{sge_home}/utilbin/*/testsuidroot
+#%attr{4755,root,root} %{sge_home}/utilbin/*/authuser
+# Avoid this for safety, assuming no MS Windows hosts
+#%attr{4755,root,root} %{sge_home}/utilbin/*/sgepasswd
 %{sge_mandir}/man1/*.1.gz
 %{sge_mandir}/man5/*.5.gz
 %{sge_mandir}/man8/*.8.gz
@@ -307,6 +314,10 @@ fi
 %{sge_home}/util/resources/drmaa4ruby
 
 %changelog
+* Thu Apr 12 2012 Dave Love <d.love@liverpool.ac.uk> - 8.0.0e
+- Modify for changes in licence info and distinst.
+- Consider setuid binaries.
+
 * Wed Feb  1 2012 Dave Love <d.love@liverpool.ac.uk> - 8.0.0e
 - Fix --without java
 
