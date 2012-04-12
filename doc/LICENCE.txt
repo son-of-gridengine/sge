@@ -1,11 +1,8 @@
 The majority of the code in this distribution is distributed under the
 terms of the Sun Industry Standards Source License, reproduced below.
 Other licences apply to some whole programs, such as qmake, or code
-used by the SISSL programs.  See the file "3rd_party_licscopyrights"
-in the "doc" directory of the distribution for information on those.
-Many are not typically relevant, e.g. most of the Java code is only
-used by the ARCo "reporting" component, and OpenSSL and Berkeley DB
-will typically be used as dynamically linked system libraries.
+used by the SISSL programs.  See the collection in the LICENCES
+directory for information on those.
 
 
                     SUN INDUSTRY STANDARDS SOURCE LICENSE
