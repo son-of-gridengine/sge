@@ -3,16 +3,59 @@ Notable changes in Son of Grid Engine
 
 For earlier changes (comprising Sun Grid Engine), see Changelog in the
 source distribution, and the bug lists at
-http://arc.liv.ac.uk/SGE/howto/Installation,%20Upgrade,%20Patches for
-detailed change information see
-https://arc.liv.ac.uk/trac/SGE/log/sge/
+http://arc.liv.ac.uk/SGE/howto/Installation,%20Upgrade,%20Patches.
+For detailed recent change information, including credits for patches,
+see https://arc.liv.ac.uk/trac/SGE/log/sge/
 
 "[#<n>]" below refers to ticket <n> at
 https://arc.liv.ac.uk/trac/SGE/ticket/<n>.  (The issues fixed by Univa
-changes aren't publicly available, and many other changes have been
-made without raising Trac tickets.)  Changes due to Univa (or Sun) are
-tagged as "[U]", and items partially due to them or appearing first in
-this version are tagged as "[(U)]".
+changes aren't publicly available as such, and many other changes have been
+made without raising Trac tickets.)  Changes due to Univa (or Sun)
+from the Univa repo are tagged as "[U]", and items partially due to
+them or appearing first in this version are tagged as "[(U)]".
+
+
+Version 8.0.0e
+--------------
+
+Mostly build and security issues
+
+* Bug fixes
+
+  * Fix linker-dependent hwloc build failure.
+  * Fix Java build with -no-hwloc
+  * Fix spurious messages from deleting job spool directories.
+  * Fix build error on Solaris 11
+  * Fix spec file for systems that use mandb [#1407]
+  * Fix #777 (8.0.0d) properly
+  * Allow building against berkeleydb 5 and with GNU ld --as-needed
+    (e.g. Ubuntu 12.04)
+  * Rename status(1) to qstatus(1) to avoid name clash with upstart
+  * Update LICENCES with some missing items
+
+* Security fixes
+
+  The first fix is for a trivial remote root by a valid user.  The
+  others, including fixes for potential buffer overruns in daemon and
+  setuid programs, may or may not be exploitable.
+
+  * Sanitize the environment before executing remote startup programs etc.
+    Somewhat incompatible:  LD_LIBRARY_PATH etc. may need to be set
+    differently.  See the security notes in remote_startup(5) and
+    sge_conf(5).  (CVE-2012-0208, thanks to William Hay)
+  * Don't write initial log messages in /tmp [#508].  Somewhat
+    incompatible:  initial messages now in syslog.
+  * Avoid using mktemp.  (Probably not a significant problem.)
+  * Control core dumps under setuid etc. with SGE_ENABLE_COREDUMP.
+    (Not normally a security issue.)
+  * Bounds checking in replace_params [#215]
+  * Avoid execd crash and possible overruns [#1328]
+  * Fixes for buffer overrun and other improvements for (setuid
+    program) sgepasswd [including #386]
+
+* Enhancements
+
+  * Logging can be configured to use syslog [#808] from fixing #508.
 
 Version 8.0.0d
 --------------
@@ -24,6 +67,8 @@ Version 8.0.0d
   * Provide load average in qstat XML output [#446, #454]
   * Partially back out Univa change which broke classic spooling
   * Fix -terse in sge_request [#777]
+  * Replace 3rd_party_licscopyrights with updated LICENCES directory
+    to fix some missing items
 
 * Other changes (possibly-incompatible)
 
