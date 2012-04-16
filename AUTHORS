@@ -1,9 +1,12 @@
 Apart from the employees of Genias, Gridware, Sun, and Univa, the following
 community members are known to have contributed to the distribution in
 some way.  Thanks to them all, and please report any omissions.
-Thanks also to the authors of the "3rdparty" code used.
+Thanks also to the authors of the "3rdparty" code and external
+libraries used, particularly hwloc <http://www.open-mpi.org/projects/hwloc/>.
+See the revision control logs for details of contributions.
 
-  Alain Champenois (based on Tango project icons)
+  Alain Champenois (work based on Tango project icons
+                    <http://tango.freedesktop.org/>)
   Andreas Haupt
   Andrew Shewmaker
   Bill Barth
@@ -19,13 +22,16 @@ Thanks also to the authors of the "3rdparty" code used.
   Mark Dixon
   Mark Hymers (and probably reporters of bugs against the Debian version)
   Mark Olesen
+  Olaf Flebbe
   Orion Poplawski (and probably reporters of bugs against the Fedora version)
   Patrik Koch
   Paul Millar
   Rayson Ho
-  Reuti (Thomas Reuter) (conspicuous gallantry in the face of documentation and user questions)
+  Reuti (Thomas Reuter) (conspicuous gallantry in the face of
+                         documentation and user questions)
   Richard Maes
   Ron Chen
+  Shannon V. Davidson
   Stephen Dennis
   Tommy Karlsson
 
@@ -41,4 +47,6 @@ The following are only identified by email address or sunsource id.
   tholzer@wetafx.co.nz
   uddeborg@carmen.se
 
-Helpful bug reports from:  Adam DeConinck, Jesse Becker
+Notable bug reports from:  Adam DeConinck, Jesse Becker, William Hay
+(and thanks to other bug-reporters)
+
