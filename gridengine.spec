@@ -258,10 +258,10 @@ fi
 %{sge_home}/utilbin
 # rlogin and rsh need to be suid to work, but there is no need for them
 # as we have ssh and PAM
-%attr{4755,root,root} %{sge_home}/utilbin/*/testsuidroot
-#%attr{4755,root,root} %{sge_home}/utilbin/*/authuser
+%attr(4755,root,root) %{sge_home}/utilbin/*/testsuidroot
+#%attr(4755,root,root) %{sge_home}/utilbin/*/authuser
 # Avoid this for safety, assuming no MS Windows hosts
-#%attr{4755,root,root} %{sge_home}/utilbin/*/sgepasswd
+#%attr(4755,root,root) %{sge_home}/utilbin/*/sgepasswd
 %{sge_mandir}/man1/*.1.gz
 %{sge_mandir}/man5/*.5.gz
 %{sge_mandir}/man8/*.8.gz
