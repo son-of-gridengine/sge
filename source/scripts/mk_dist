@@ -251,7 +251,7 @@ done
 #--- END-OF-COMMANDLINE-PARSING------------------------------------------
 
 DOC_PACKAGE=""
-COMMON_DOCS="doc/*.txt doc/*.asc doc/javadocs"
+COMMON_DOCS="doc/*.txt doc/*.asc doc/javadocs doc/LICENCES doc/NEWS"
 # This used to include catman, but that's probably not very useful now,
 # as all the relevant systems should have a man formatter.
 COMMON_PACKAGE="ckpt dtrace examples/jobs \
