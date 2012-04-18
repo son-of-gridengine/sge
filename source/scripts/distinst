@@ -1204,9 +1204,10 @@ if [ $instcommon = true ]; then
       if [ "x$LICENSE_FILE" != "x" ]; then
          Execute cp $LICENSE_FILE $DEST_SGE_ROOT/doc
       fi
-      Execute cp -r ../LICENCES doc
+      Execute cp -r ../LICENCES $DEST_SGE_ROOT/doc
       Execute cp ../NEWS $DEST_SGE_ROOT/doc
-      Execute chmod 644 $DEST_SGE_ROOT/doc/*
+      Execute find $DEST_SGE_ROOT/doc -type d | xargs chmod 755
+      Execute find $DEST_SGE_ROOT/doc -type f | xargs chmod 644
       Cleanup doc      
    fi
 
