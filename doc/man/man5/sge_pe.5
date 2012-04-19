@@ -74,7 +74,7 @@ file is defined as follows:
 .\"
 .SS "\fBpe_name\fP"
 The name of the parallel environment in the format for \fIpe_name\fP in
-.M sge_types 1 . 
+.M xxqs_name_sxx_types 1 .
 To be used in the
 .M qsub 1
 \fB\-pe\fP switch.
@@ -114,7 +114,8 @@ The command line respectively of a startup or shutdown procedure (an
 executable command plus possible arguments) for the parallel environment, or
 "none" for no procedure (typically for tightly integrated PEs).
 An optional prefix "user@" specifies the username under which the
-procedure is to be started.
+procedure is to be started.  In that case see the SECURITY section below
+concerning security issues running as a privileged user.
 .PP
 The startup procedure is invoked by
 .M xxqs_name_sxx_shepherd 8
@@ -239,6 +240,7 @@ interfaces.
 .\"
 .\"
 .SS "\fBjob_is_first_task\fP"
+.\" fixme: https://arc.liv.ac.uk/trac/SGE/ticket/816
 The
 .B job_is_first_task
 parameter can be set to TRUE or FALSE. A value of 
@@ -270,7 +272,7 @@ get.
 The assumed slot allocation has a meaning when determining the 
 resource-request-based priority contribution for numeric resources
 as described in
-.M sge_priority 5
+.M xxqs_name_sxx_priority 5
 and is displayed when
 .M qstat 1
 is run without \fB\-g t\fP option.
@@ -352,6 +354,23 @@ properly, or if the parallel environment or the parallel
 application behave unexpectedly, xxQS_NAMExx has no means to detect
 this.
 .\"
+.SH SECURITY
+If
+.BR start_proc_args ,
+or
+.BR stop_proc_args
+is specified with a
+.IB user @
+prefix, the same security considerations apply as for remote startup
+daemons, as described in
+.M xxqs_name_sxx_conf 5 ,
+and the environment is cleaned in the same way.  Note that TMPDIR is
+one of the variables affected, and may need to be recreated as
+/tmp/$JOB_ID.$TASK_ID.$QUEUE
+.PP
+Methods written in shell script should be avoided if possible.  It may
+be preferable to use a setuid compiled program rather than specifying
+the privileged user in the configuration.
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
@@ -361,6 +380,7 @@ this.
 .M qmod 1 ,
 .M qsub 1 ,
 .M access_list 5 ,
+.M xxqs_name_sxx_conf 5 ,
 .M xxqs_name_sxx_qmaster 8 ,
 .M xxqs_name_sxx_shepherd 8 .
 .\"

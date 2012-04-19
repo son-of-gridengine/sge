@@ -195,12 +195,8 @@ xxQS_NAMExx
 jobs to be started afterwards (see
 .M qsub 1 ).
 An optional prefix "user@" specifies the user under which this procedure
-is to be started; in that case a somewhat system-dependent set of
-environment variables will be unset as a security measure as described
-in the
-.B SECURITY
-section of
-remote_startup 5 .
+is to be started.  In that case see the SECURITY section below
+concerning security issues running as a privileged user.
 The procedure's standard
 output and the error output stream are written to the same file as used for
 the standard output and error output of each job.
@@ -328,12 +324,9 @@ with the addition of the variable named
 .B SGE_JOBEXIT_STAT
 which holds the exit status of the job.
 An optional prefix "user@" specifies the 
-user under which this procedure is to be started; in that case a somewhat system-dependent set of
-environment variables will be unset as a security measure as described
-in the
-.B SECURITY
-section of
-remote_startup 5 .
+user under which this procedure is to be started.  In that case see
+the SECURITY section below concerning security issues running as a
+privileged user.
 The procedure's standard
 output and the error output stream are written to the same file used also for
 the standard output and error output of each job.
@@ -894,7 +887,7 @@ overwritten by the execution host local configuration.
 .SS "\fBset_token_cmd\fP"
 \fBSet_token_cmd\fP points to a command which sets and extends AFS
 tokens for xxQS_NAMExx jobs.  It is run by
-.M sge_coshepherd 8 .
+.M xxqs_name_sxx_coshepherd 8 .
 It expects two command line parameters:
 .PP
 .RS
@@ -1031,7 +1024,7 @@ After the restart of
 .M xxqs_name_sxx_qmaster 8
 the limit enforcement will be triggered after twice the
 biggest \fBload_report_interval\fP interval defined in 
-.M sge_conf 5
+.M xxqs_name_sxx_conf 5
 has elapsed. This will give the execution daemons enough time to 
 re-register with the master daemon. 
 .\"
@@ -1419,7 +1412,7 @@ virtual memory that may be locked into RAM.
 of a job may establish.
 .br
 All of these values can be specified using the multiplier letters k, K, m, M, g and G; see
-.M sge_types 1
+.M xxqs_name_sxx_types 1
 for details.
 .\"
 .\"
@@ -1463,7 +1456,7 @@ the resource limits s_cpu, h_cpu, s_vmem and h_vmem (see
 and job usage collection.
 The parameter can be set
 to a time_specifier (see
-.M sge_types 5 ),
+.M xxqs_name_sxx_types 5 ),
 to \fBPER_LOAD_REPORT\fP or to \fBNEVER\fP.
 .br
 If this parameter is set to \fBPER_LOAD_REPORT\fP the PDC is triggered in the
@@ -1687,7 +1680,7 @@ overridden by the execution host local configuration.
 .SS "\fBjsv_url\fP"
 This setting defines a server JSV instance which will be started and
 triggered by the
-.M sge_qmaster 8
+.M xxqs_name_sxx_qmaster 8
 process. This JSV instance will be used to verify job specifications of
 jobs before they are accepted and stored in the internal master database. 
 The global configuration entry for this value cannot be overwritten by 
@@ -1696,10 +1689,10 @@ execution host local configurations.
 Find more details concerning JSV in 
 .M jsv 1
 and 
-.M sge_request 1 .
+.M xxqs_name_sxx_request 1 .
 .sp 1
 The syntax of the \fBjsv_url\fP is specified in 
-.M sge_types 1 .
+.M xxqs_name_sxx_types 1 .
 .\"
 .\"
 .SS "\fBjsv_allowed_mod\fP"
@@ -1737,6 +1730,23 @@ Details about possible values \fBadditional_jvm_args\fP can be found in the help
 The global configuration entry for this value may be overwritten by the
 execution host local configuration.
 .\"
+.SH SECURITY
+If
+.BR prolog ,
+or
+.B epilog
+is specified with a
+.IB user @
+prefix, the same security considerations apply as for remote startup
+daemons, as described in
+.M xxqs_name_sxx_conf 5 ,
+and the environment is cleaned in the same way.  Note that TMPDIR is
+one of the variables affected, and may need to be recreated as
+.BR /tmp/$JOB_ID.$TASK_ID.$QUEUE .
+.PP
+Methods written in shell script should be avoided if possible.  It may
+be preferable to use a setuid compiled program rather than specifying
+the privileged user in the configuration.
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
@@ -1750,7 +1760,7 @@ execution host local configuration.
 .M drmaa_attributes 3 ,
 .M queue_conf 5 ,
 .M sched_conf 5 ,
-.M sge_types 1 ,
+.M xxqs_name_sxx_types 1 ,
 .M xxqs_name_sxx_execd 8 ,
 .M xxqs_name_sxx_qmaster 8 ,
 .M xxqs_name_sxx_shepherd 8 ,

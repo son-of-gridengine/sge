@@ -56,7 +56,7 @@ communication method for all startup methods.
 .PP
 Each method requires a separate instance of the communication daemon
 to be started by
-.M sge_shepherd 8
+.M xxqs_name_sxx_shepherd 8
 for each job, which thus must use a randomly-chosen port, to which the
 client will try to connect.  This is necessary to support tight
 integration, ensuring that everything for a given job stays in the
@@ -112,7 +112,7 @@ To achieve this:
 .RE
 .sp 1
 must be defined in
-.M sge_conf 5 .
+.M xxqs_name_sxx_conf 5 .
 The defined \fBqlogin_command\fR will then be called with two additional parameters: \[oq]HOST\[cq], and \[oq]PORT\[cq] in
 exactly that order, which refer to the machine the
 \fBqlogin_command\fR should address and the port to be used.
@@ -196,7 +196,7 @@ $SGE_ROOT/utilbin/\fI$ARC\fR/rlogin
 .RE
 .sp 1
 must be defined in
-.M sge_conf 5 .
+.M xxqs_name_sxx_conf 5 .
 The value of \fI$SGE_ROOT\fR must be replaced by the root of the
 installation, and
 \fI$ARC\fR must be replaced by the particular platform architecture, as use of environment variables is
@@ -205,9 +205,9 @@ not implemented for these entries. When the cluster is homogeneous, it can be se
 minority of machines will get local configurations.
 .sp 1
 The defined \fBrlogin_command\fR will then be called with three
-additional parameters: \[oq]\-p\[cq],\[oq]PORT\[cq], and \[oq]HOST\[cq]\[oq]PORT\[cq] in
+additional parameters: \[oq]\-p\[cq],\[oq]PORT\[cq], and \[oq]HOST\[cq] in
 exactly that order, which refer to the machine the
-\fBrlogin_command\fR should address and the port to be used.
+\fBrlogin_command\fR should address, and the port to be used.
 .sp 1
 This can also be used to set up a secure communication using \fBSSH\fR:
 .sp 1
@@ -273,7 +273,7 @@ $SGE_ROOT/utilbin/\fI$ARC\fR/rshd \-l
 .RE
 .sp 1
 must be defined in
-.M sge_conf 5 .
+.M xxqs_name_sxx_conf 5 .
 The value of \fI$SGE_ROOT\fR must be replaced by the root of the
 installation, and
 \fI$ARC\fR must be replaced by the particular platform architecture, as use of environment variables is
@@ -314,7 +314,7 @@ a machine B (where the \fBdaemon\fR is started) it must be guaranteed that the:
 setup communication method for the \fBcommand\fR on machine A
 .br
 (either global configuration from
-.M sge_conf 5
+.M xxqs_name_sxx_conf 5
 or local configuration \fBqconf -sconf \fR\fBA\fR of machine A)
 .RE
 .sp 1
@@ -324,7 +324,7 @@ matches
 setup communication method for the \fBdaemon\fR for machine B
 .br
 (either global configuration from
-.M sge_conf 5
+.M xxqs_name_sxx_conf 5
 or local configuration \fBqconf -sconf \fR\fBB\fR of machine B)
 .RE
 .sp 1
@@ -452,29 +452,56 @@ execute arbitrary code as root by setting parameters such as
 and
 .B LD_PRELOAD
 to affect the running of the (typically) dynamically linked daemons.
+.PP
 To combat this, known problematic variables are removed from the
 environment before starting the daemons, but this may not be
-foolproof.  The environment can be safely controlled by running the
+foolproof on arbitrary systems with obscure variables.  The
+environment can be safely controlled by running the
 daemons under a statically-linked version of
 .M env 1 ,
 such as typically available using
 .M busybox 1 ,
 for example.  Use
-.B \-u
-arguments to unset sensitive variables.  The same applies to the
-starter, prolog, and epilog methods described in
-.M sge_conf 5
-if they are specified to be run as root.
+.BR "/bin/busybox env \-u " ...
+to unset sensitive variables.  It may be possible to run daemons with
+.B "env \-i"
+to empty the environment completely and maybe add a few required variables
+(depending on the operating system).  On some systems, such as recent
+Solaris, it is more-or-less impossible to build static binaries.  In
+that case it is typically possible to use a setuid wrapper, relying on
+the dynamic linker to do the right thing.  An example is the
+.I safe_exec
+wrapper which is available from
+.URL http://arc.liv.ac.uk/downloads/SGE/support/
+at the time of writing.  When using a scripting language wrapper for
+the remote daemon, try to use options which avoid interpreter-specific
+environmental damage, such as Perl's
+.B \-T
+and Python's
+.BR \-E .
+Shell script wrappers should be avoided if possible, and should be
+written carefully if they are used, e.g. give full file names when
+running programs.
+.PP
+The same applies to start_proc_args, stop_proc_args, prolog, and epilog
+methods described in
+.M xxqs_name_sxx_pe 5
+and
+.M xxqs_name_sxx_conf 5
+if they are specified to be run as root or other privileged account.
 .PP
 Unfortunately it is not currently possible to specify the variables to
 unset as a host-dependent execd parameter, but certain
 system-dependent ones are selected according to the system on which
-the execd is running.  The current general list of sensitive variables
-(taken mostly from GNU libc) includes those with an "LD_" prefix and
-GCONV_PATH, GETCONF_DIR, HOSTALIASES, LOCALDOMAIN, LOCPATH,
-MALLOC_TRACE, NIS_PATH, NLSPATH, RESOLV_HOST_CONF, RES_OPTIONS,
-TMPDIR, TZDIR, and IFS.  The system-dependent ones are:  Tru64:
-_RLD_ROOT; Darwin:  DYLD_ prefix; AIX:  LIBPATH; HP-UX:  SHLIB_PATH.
+the execd is running.  The list of sensitive variables
+is taken mostly from GNU libc and
+.M sudo 1 .
+It includes known system-dependent dynamic linker ones, sensitive
+locale ones and others, like TMPDIR.  The locale specification is also
+sanitized.  See the source file
+.I source/libs/uti2/sge_execvlp.c
+for details.
+.PP
 Variables set via
 .B \-v
 or
@@ -520,7 +547,7 @@ rsh_daemon     /opt/sge/utilbin/lx24-x86/rshd -l
 .M qconf 1 ,
 .M qlogin 1 ,
 .M qrsh 1 ,
-.M sge_conf 5 ,
+.M xxqs_name_sxx_conf 5 ,
 .M pam_sge_authorize 8 ,
 .M pam_sge-qrsh-setup 8 ,
 .URL http://arc.liv.ac.uk/repos/darcs/sge/source/3rdparty/remote/remote.html "xxQS_NAMExx-specific remote programs".
@@ -531,5 +558,5 @@ additions by Dave Love.
 .\"
 .SH "COPYRIGHT"
 See
-.M sge_intro 1
+.M xxqs_name_sxx_intro 1
 for a full statement of rights and permissions.
