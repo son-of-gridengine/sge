@@ -151,10 +151,6 @@ ___INFO__MARK_END__-->
             <name>cfg.spooling.method</name>
             <value>${add.spooling.method.berkeleydb}</value>
         </condition>
-        <condition type="variable" id="cond.spooling.bdbserver">
-            <name>cfg.spooling.method</name>
-            <value>${add.spooling.method.berkeleydbserver}</value>
-        </condition>
         <condition type="java" id="cond.qmaster.on.localhost">
             <java>
                 <class>com.sun.grid.installer.gui.Host</class>
