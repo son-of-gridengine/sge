@@ -45,7 +45,8 @@
  * sched_conf(5) load_formula, queue_sort_method, and configurable
  * load sensors (see sge_execd(8) and sge_conf(5)). Also, if you need
  * to change the rank of tasks for an MPI job, you should consider doing
- * this in the PE start_proc_args and/or the queue_conf(5) starter_method.
+ * this in the PE start_proc_args and/or the queue_conf(5) starter_method,
+ * or a JSV.
  * The existing capabilities are quite flexible and should be able to
  * handle most of your needs. Also, don't count on this interface never
  * changing. This interface was introduced in Grid Engine 6.0 and is
