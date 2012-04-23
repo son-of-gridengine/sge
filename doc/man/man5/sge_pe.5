@@ -2,6 +2,7 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
+.\" Copyright (C) 2011, 2012  Dave Love, University of Liverpool
 .\"
 .\"___INFO__MARK_END__
 .\"
@@ -111,8 +112,9 @@ environment.
 .SS "\fBstart_proc_args\fP"
 .SS "\fBstop_proc_args\fP"
 The command line respectively of a startup or shutdown procedure (an
-executable command plus possible arguments) for the parallel environment, or
+executable command, plus possible arguments) for the parallel environment, or
 "none" for no procedure (typically for tightly integrated PEs).
+The command line is started directly, not in a shell.
 An optional prefix "user@" specifies the username under which the
 procedure is to be started.  In that case see the SECURITY section below
 concerning security issues running as a privileged user.
@@ -322,17 +324,18 @@ No per-parallel task usage records will be sent from execd to qmaster, which
 can significantly reduce load on the qmaster when running large,
 tightly integrated parallel jobs.
 .SS "\fBqsort_args \fIlibrary qsort-function \fR[\fParg1 \fR...]\fP"
-Only available if the system was compiled with the
-.B PE_qsort_args
-flag to enable customizing the queue sorting (which is the default).
+Specifies a method for specifying the queues/hosts and order that
+should be used to schedule a parallel job.  For details, and the API,
+consult the header file
+.IR $SGE_ROOT/include/sge_pqs_api.h .
 .I library
 is the path to the qsort dynamic library,
 .I qsort-function
 is the name of the qsort function implemented by the library, and the
 .IR arg s
 are arguments passed to
-.IR qsort ,
-and substitutions from the hard requested resource list for the job
+.IR qsort .
+Substitutions from the hard requested resource list for the job
 are made for any strings of the form
 .RI $ resource ,
 where
@@ -368,7 +371,9 @@ and the environment is cleaned in the same way.  Note that TMPDIR is
 one of the variables affected, and may need to be recreated as
 /tmp/$JOB_ID.$TASK_ID.$QUEUE
 .PP
-Methods written in shell script should be avoided if possible.  It may
+Methods written in shell script should be avoided if possible, but
+at least need to take particular care with the considerations above of
+variable expansion, paths etc.  It may
 be preferable to use a setuid compiled program rather than specifying
 the privileged user in the configuration.
 .\"
@@ -383,6 +388,9 @@ the privileged user in the configuration.
 .M xxqs_name_sxx_conf 5 ,
 .M xxqs_name_sxx_qmaster 8 ,
 .M xxqs_name_sxx_shepherd 8 .
+.\"
+.SH FILES
+.I $SGE_ROOT/include/sge_pqs_api.h
 .\"
 .SH "COPYRIGHT"
 See

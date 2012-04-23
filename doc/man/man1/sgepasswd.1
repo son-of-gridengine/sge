@@ -2,6 +2,7 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
+.\" Copyright (C) 2011, 2012 Dave Love, University of Liverpool
 .\"
 .\"___INFO__MARK_END__
 .\"
@@ -51,7 +52,7 @@ sgepasswd \- Modify the xxQS_NAMExx password file of xxQS_NAMExx
 modifies the xxQS_NAMExx password file
 .M sgepasswd 5 .
 .PP
-This file contains a list of usernames and their windows password in
+This file contains a list of usernames and their Microsoft Windows password in
 encrypted form.
 .M sge_execd 8
 and
@@ -61,7 +62,10 @@ information to start jobs for a certain user.
 .PP
 Each user can use the
 .I sgepasswd
-application to add a new entry for their own user account. It is also possible
+application to add a new entry for their own user account.
+(In fact, normal users can create an entry for any account, so the
+entry should be made initially, when the account is created.)
+It is also possible
 to change the stored password with
 .I sgepasswd
 if the user knows the old one.
@@ -102,8 +106,10 @@ and in the Windows domain.
 .\"
 .SH SECURITY
 This is a non-trivial program which needs to be setuid root, operating
-with various user-supplied input.  It shouldn't be installed setuid if
+with various user-supplied input.  It probably shouldn't be installed setuid if
 it is not needed to support Windows hosts.
+.PP
+See above concerning making initial entries.
 .\"
 .SH "ENVIRONMENT VARIABLES"
 .\"
