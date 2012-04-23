@@ -3,7 +3,7 @@
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\" Copyright 2010 Thomas Reuter
-.\" Copyright 2011 Dave Love
+.\" Copyright (C) 2011, 2012 Dave Love
 .\"
 .\"___INFO__MARK_END__
 .\"
@@ -463,13 +463,16 @@ such as typically available using
 .M busybox 1 ,
 for example.  Use
 .BR "/bin/busybox env \-u " ...
-to unset sensitive variables.  It may be possible to run daemons with
+to unset sensitive variables, or
+.BR "/bin/busybox env \-i name=value" ...
+To set only specific variables.  It is probablly possible to run
+daemons with
 .B "env \-i"
-to empty the environment completely and maybe add a few required variables
-(depending on the operating system).  On some systems, such as recent
-Solaris, it is more-or-less impossible to build static binaries.  In
-that case it is typically possible to use a setuid wrapper, relying on
-the dynamic linker to do the right thing.  An example is the
+to empty the environment completely (depending on the operating
+system).  On some systems, such as recent Solaris, it is essentially
+impossible to build static binaries.  In that case it is typically
+possible to use a setuid wrapper, relying on the dynamic linker to do
+the right thing.  An example is the
 .I safe_exec
 wrapper which is available from
 .URL http://arc.liv.ac.uk/downloads/SGE/support/
@@ -481,7 +484,11 @@ and Python's
 .BR \-E .
 Shell script wrappers should be avoided if possible, and should be
 written carefully if they are used, e.g. give full file names when
-running programs.
+running programs, but if
+.M bash 1
+is used, run it with the
+.B \-p
+option.
 .PP
 The same applies to start_proc_args, stop_proc_args, prolog, and epilog
 methods described in

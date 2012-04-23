@@ -2,7 +2,7 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
-.\" Copyright (C) 2011  Dave Love, University of Liverpool
+.\" Copyright (C) 2011, 2012  Dave Love, University of Liverpool
 .\"
 .\"___INFO__MARK_END__
 .\"
@@ -189,11 +189,12 @@ a default load sensor.
 .\"
 .\"
 .SS "\fBprolog\fP"
-The executable path of a shell script that is started before execution
+The path of an executable, with optional arguments, that is started before execution
 of xxQS_NAMExx jobs with the same environment setting as that for the
 xxQS_NAMExx
 jobs to be started afterwards (see
 .M qsub 1 ).
+The prolog command is started directly, not in a shell.
 An optional prefix "user@" specifies the user under which this procedure
 is to be started.  In that case see the SECURITY section below
 concerning security issues running as a privileged user.
@@ -209,7 +210,7 @@ For a parallel job, only a single instance of the prolog is run, on the
 master node.
 Each
 .M xxqs_name_sxx_execd 8
-may use a private prolog script. 
+may use a private prolog.
 Correspondingly, the execution host local 
 configurations can be overwritten by the queue configuration (see
 .M queue_conf 5 ).
@@ -217,7 +218,7 @@ Changing \fBprolog\fP will take
 immediate effect.
 .PP
 The default for \fBprolog\fP is the special value NONE, which prevents
-execution of a prolog script.
+execution of a prolog.
 .PP
 The following special
 variables, expanded at runtime, can be used (besides any other
@@ -277,13 +278,13 @@ When delegated file staging is requested for the stdout/stderr file, this is the
 pathname of the stdout/stderr file on the host $fs_stdout_host/$fs_stderr_host.
 .IP "\fI$fs_stdin_tmp_path\fP"
 When delegated file staging is requested for the stdin file, this is the destination
-pathname of the stdin file on the execution host. The prolog script must copy the
+pathname of the stdin file on the execution host. The prolog must copy the
 stdin file from $fs_stdin_host:$fs_stdin_path to localhost:$fs_stdin_tmp_path to
 establish delegated file staging of the stdin file.
 .IP "\fI$fs_stdout_tmp_path\fP"
 .IP "\fI$fs_stderr_tmp_path\fP"
 When delegated file staging is requested for the stdout/stderr file, this is the 
-source pathname of the stdout/stderr file on the execution host. The epilog script 
+source pathname of the stdout/stderr file on the execution host. The epilog 
 must copy the stdout file from localhost:$fs_stdout_tmp_path to 
 $fs_stdout_host:$fs_stdout_path (the stderr file from localhost:$fs_stderr_tmp_path 
 to $fs_stderr_host:$fs_stderr_path) to establish delegated file staging of the 
@@ -294,9 +295,14 @@ stdout/stderr file.
 When delegated file staging is requested for the stdin/stdout/stderr file, the flag
 is set to "1", otherwise it is set to "0" (see in \fBdelegated_file_staging\fP how 
 to enable delegated file staging).
- 
 These three flags correspond to the DRMAA job template attribute 'drmaa_transfer_files' (see 
 .M drmaa_attributes 3 ).
+.PP
+If the prolog is written in shell script, the usual care must be
+exercised, e.g. when expanding such values from the command line or
+the environment which are user-supplied.  In particular, note that the
+job name could be of the form "; evil doings;".  Also, use absolute
+path names for commands if inheriting the user's environment.
 .PP
 The global configuration entry for this value
 may be overwritten by the execution host local configuration.
@@ -315,7 +321,7 @@ Anything else: Put queue in error state
 .\"
 .\"
 .SS "\fBepilog\fP"
-The executable path of a shell script that is started after execution
+The path of an executable, with optional argument, that is started after execution
 of xxQS_NAMExx jobs with the same environment setting as that for the
 xxQS_NAMExx
 job that has just completed (see
@@ -323,6 +329,7 @@ job that has just completed (see
 with the addition of the variable named
 .B SGE_JOBEXIT_STAT
 which holds the exit status of the job.
+The epilog command is started directly, not in a shell.
 An optional prefix "user@" specifies the 
 user under which this procedure is to be started.  In that case see
 the SECURITY section below concerning security issues running as a
@@ -339,7 +346,7 @@ For a parallel job, only a single instance of the epilog is run on the
 master node.
 Each
 .M xxqs_name_sxx_execd 8
-may use a private epilog script. 
+may use a private epilog.
 Correspondingly, the execution host local 
 configurations is can be overwritten by the queue configuration (see
 .M queue_conf 5 ).
@@ -347,9 +354,12 @@ Changing \fBepilog\fP will take
 immediate effect.
 .PP
 The default for \fBepilog\fP is the special value NONE, which prevents
-from execution of a epilog script.
+execution of an epilog.
 The same special variables as for \fBprolog\fP can be
 used to constitute a command line.
+.PP
+The same considerations (above) apply as for a prolog when an epilog
+is written in shell script.
 .PP
 The global configuration entry for this value
 may be overwritten by the execution host local configuration.
@@ -1744,7 +1754,9 @@ and the environment is cleaned in the same way.  Note that TMPDIR is
 one of the variables affected, and may need to be recreated as
 .BR /tmp/$JOB_ID.$TASK_ID.$QUEUE .
 .PP
-Methods written in shell script should be avoided if possible.  It may
+Methods written in shell script should be avoided if possible, but
+at least need to take particular care with the considerations above of
+variable expansion, paths etc.  It may
 be preferable to use a setuid compiled program rather than specifying
 the privileged user in the configuration.
 .\"
