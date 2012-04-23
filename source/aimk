@@ -1943,11 +1943,11 @@ endsw
 
 if ( $HWLOC == 1 && $NO_HWLOC != 1 ) then
    set CFLAGS = "$CFLAGS -DHAVE_HWLOC=1"
+   set LIBS = "-lhwloc $LIBS"
    if ( "$HWLOC_DIR" != "" ) then
       set CORE_INCLUDE = "$CORE_INCLUDE -I$HWLOC_DIR/include"
-      set LIBS = "$LIBS -L$HWLOC_DIR/lib"
+      set LIBS = "-L$HWLOC_DIR/lib $LIBS"
    endif
-   set LIBS = "$LIBS -lhwloc"
 else
    set CFLAGS = "$CFLAGS -DHAVE_HWLOC=0"
 endif
