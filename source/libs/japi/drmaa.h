@@ -508,7 +508,7 @@ int drmaa_run_job(char *job_id, size_t job_id_len,
  *    DRMAA_ERRNO_AUTH_FAILURE.
  */
 int drmaa_run_bulk_jobs(drmaa_job_ids_t **jobids,
-                        const drmaa_job_template_t *jt, int start, int end,
+                        const drmaa_job_template_t *jt, unsigned start, unsigned end,
                         int incr, char *error_diagnosis, size_t error_diag_len);
 
 /* ------------------- job control routines ------------------- */

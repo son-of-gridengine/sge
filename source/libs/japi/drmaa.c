@@ -1192,7 +1192,7 @@ int drmaa_run_job(char *job_id, size_t job_id_len, const drmaa_job_template_t *j
 *      MT-NOTE: drmaa_run_bulk_jobs() is MT safe
 *******************************************************************************/
 int drmaa_run_bulk_jobs(drmaa_job_ids_t **jobids, const drmaa_job_template_t *jt, 
-      int start, int end, int incr, char *error_diagnosis, size_t error_diag_len)
+      unsigned start, unsigned end, int incr, char *error_diagnosis, size_t error_diag_len)
 {
    dstring diag, *diagp = NULL;
    int drmaa_errno = DRMAA_ERRNO_SUCCESS;
