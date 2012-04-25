@@ -22,6 +22,9 @@
 #                          Idea by Kristof Lebecki.
 #                          Machinename limited to short hostname.
 #
+# Version 1.6 - 2012-04-25 Rename to avoid clash with upstart and
+#                          fix for sge 8 and RedHat 5.
+#
 # Copyright (C) 2010 Reuti, email: reuti@staff.uni-marburg.de
 #
 # This program is free software; you can redistribute it and/or modify
@@ -39,7 +42,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-PGM_NAME="status"
+PGM_NAME="qstatus"
 PGM_VERSION="1.5"
 
 #
@@ -57,7 +60,7 @@ function printExit
 }
 
 #
-# System depended setups.
+# System dependent setups.
 #
 
 platform=`uname -s`
@@ -288,6 +291,10 @@ sort_command=`$awk_command -v sort_request="$sort_request" -v listuser="$listuse
 sort_command_running=${sort_command%|*}
 sort_command_waiting=${sort_command#*|}
 
+# Used with strftime to get UTC.  Is there a better semi-portable way?
+SGE_ARCH=`$SGE_ROOT/util/arch`
+utc_offset=`$SGE_ROOT/utilbin/$SGE_ARCH/now -utcoffset`
+
 #
 # Now do it.
 #
@@ -296,12 +303,12 @@ sort_command_waiting=${sort_command#*|}
 # First the already running jobs.
 #
 
-eval $qstat_running | $awk_command '
+eval $qstat_running | $awk_command -v utc_offset=$utc_offset '
 
         BEGIN { firstrun=1
                 ignore=0
 #                actual_time=systime()  # not portable
-                cmd="date +s"
+                cmd="perl -e \"print time();\""
                 cmd | getline
                 actual_time=$1
                 close(cmd)
@@ -366,7 +373,7 @@ eval $qstat_running | $awk_command '
                                    running_seconds=actual_time - mktime(substr($6,7,4)" "substr($6,1,2)" "substr($6,4,2)" " \
                                                                         substr($7,1,2)" "substr($7,4,2)" "substr($7,7,2))
                                    starttime_days=int(running_seconds / 86400)
-                                   starttime_time=strftime("%T", running_seconds % 86400)
+                                   starttime_time=strftime("%T", (running_seconds % 86400) - utc_offset)
                                    starttime=sprintf("-%dd %s", starttime_days, starttime_time)
                                }
 
@@ -502,11 +509,11 @@ eval $qstat_running | $awk_command '
 # Now the waiting jobs.
 #
 
-eval $qstat_waiting | $awk_command '
+eval $qstat_waiting | $awk_command -v utc_offset=$utc_offset '
 
         BEGIN { firstrun=1
 #                actual_time=systime()  # not portable
-                cmd="date +s"
+                cmd="perl -e \"print time();\""
                 cmd | getline
                 actual_time=$1
                 close(cmd)
@@ -570,7 +577,7 @@ eval $qstat_waiting | $awk_command '
                                    waiting_seconds=actual_time - mktime(substr($6,7,4)" "substr($6,1,2)" "substr($6,4,2)" " \
                                                                         substr($7,1,2)" "substr($7,4,2)" "substr($7,7,2))
                                    submittime_days=int(waiting_seconds / 86400)
-                                   submittime_time=strftime("%T", waiting_seconds % 86400)
+                                   submittime_time=strftime("%T", (waiting_seconds % 86400) - utc_offset)
                                    submittime=sprintf("-%dd %s", submittime_days, submittime_time)
                                }
 
