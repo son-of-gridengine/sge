@@ -32,16 +32,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <time.h>
 
 /*-------------------------------------------*/
 int main(int argc, char *argv[])
 {
  struct timeval now;
+ time_t t = 0;
+ struct tm *tmt = localtime(&t);
+ int offset;
 
- gettimeofday(&now, NULL);
+ if ((2 == argc) && (0 == strcmp(argv[1], "-utcoffset"))) {
+   /* tm_gmtoff is a GNU extnsion */
+   offset=tmt->tm_sec + tmt->tm_min*60 + tmt->tm_hour*3600;
+   printf("%d\n", offset);
+ } else {
+   gettimeofday(&now, NULL);
 
- printf("%d\n", (int) now.tv_sec);
-
+   printf("%d\n", (int) now.tv_sec);
+ }
  exit(0);
  return 0;   
 }
