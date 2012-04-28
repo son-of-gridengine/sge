@@ -551,7 +551,7 @@ int ar_del(sge_gdi_ctx_class_t *ctx, lListElem *ep, lList **alpp, lList **master
       char *dptr;
       lCondition *new_where = NULL;
 
-      u_long32 value = strtol(id_str, &dptr, 0);
+      u_long32 value = strtoul(id_str, &dptr, 0);
       if (dptr[0] == '\0') {
          /* is numeric value */
          new_where = lWhere("%T(%I==%u)", AR_Type, AR_id, value); 

@@ -5259,7 +5259,7 @@ JNIEXPORT jstring JNICALL Java_com_sun_grid_jgdi_JGDIFactory_nativeSetJGDIVersio
 JNIEXPORT jint JNICALL Java_com_sun_grid_jgdi_util_shell_editor_EditorUtil_nativeSgeEdit(JNIEnv *env, jclass clazz, jstring path) {
    jint ret = 0;
    uid_t uid = getuid();
-   uid_t gid = getgid();
+   gid_t gid = getgid();
    const char *strpath = NULL;
 
    DENTER(TOP_LAYER, "Java_com_sun_grid_jgdi_util_shell_editor_EditorUtil_nativeSgeEdit");

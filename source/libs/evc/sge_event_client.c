@@ -3117,8 +3117,8 @@ static bool get_event_list(sge_evc_class_t *thiz, int sync, lList **report_list,
    sge_pack_buffer pb;
    int help;
    sge_gdi_ctx_class_t * sge_gdi_ctx = thiz->get_gdi_ctx(thiz);
-   char rhost[CL_MAXHOSTLEN+1] = "";
-   char commproc[CL_MAXHOSTLEN+1] = "";
+   char rhost[CL_MAXHOSTLEN];
+   char commproc[CL_MAXHOSTLEN];
    u_short id = 0;
 
    DENTER(EVC_LAYER, "get_event_list");
