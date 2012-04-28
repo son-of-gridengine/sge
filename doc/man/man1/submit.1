@@ -299,7 +299,7 @@ Available for \fIqsub\fP and \fIqalter\fP only.
 Defines or redefines
 the time and date at which a job is eligible for execution. \fBDate_time\fP
 conforms to [[CC]]YY]MMDDhhmm[.SS], for the details, please see \fBDate_time\fP in:
-.M sge_types 1 .
+.M sge_types 5 .
 .sp 1
 If this option is used with \fIqsub\fP or if a corresponding value is 
 specified in \fIqmon\fP then a parameter named \fBa\fP and the value
@@ -358,7 +358,7 @@ Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
 Identifies the account to which the resource consumption of the job
 should be charged. The \fBaccount_string\fP should conform to the
 \fBaccount_name\fP definition in
-.M sge_types 1 .
+.M sge_types 5 .
 In the absence of this parameter xxQS_NAMExx 
 will place the default account string "xxqs_name_sxx" in the accounting record
 of the job.
@@ -896,7 +896,7 @@ Prints  a listing of all options.
 .\"
 .IP "\fB\-hold_jid wc_job_list\fP"
 Available for \fIqsub\fP, \fIqrsh\fP, and \fIqalter\fP only. See 
-.M sge_types 1 . 
+.M sge_types 5 .
 for \fBwc_job_list\fP definition.
 .sp 1
 Defines or redefines the job dependency list of the submitted job. A 
@@ -931,7 +931,7 @@ instances as parameter with the name \fBhold_jid\fP.
 .\"
 .IP "\fB\-hold_jid_ad wc_job_list\fP"
 Available for \fIqsub\fP, \fIqrsh\fP, and \fIqalter\fP only. See 
-.M sge_types 1 . 
+.M sge_types 5 .
 for \fBwc_job_list\fP definition.
 .sp 1
 Defines or redefines the job array dependency list of the submitted job. A 
@@ -1123,7 +1123,7 @@ and
 .M xxqs_name_sxx_request 5 .
 .sp 1
 The syntax of the \fBjsv_url\fP is specified in 
-.M sge_types 1 .
+.M sge_types 5 .
 .\"
 .IP "\fB\-l resource=expression\fP,..."
 Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
@@ -1138,7 +1138,7 @@ the previous definition is replaced by the specified one.
 describes how a list of available resources and their
 associated valid value specifiers can be obtained, and section
 "MATCHING TYPES" in
-.M sge_types 1
+.M sge_types 5
 describes the possible forms of the expression for the requested
 resources.
 .sp 1
@@ -1221,7 +1221,7 @@ instances which may be used to become the so called
 .I master queue
 of this parallel job. A more detailed description of \fIwc_queue_list\fP 
 can be found in
-.M sge_types 1 .
+.M sge_types 5 .
 The
 .I master queue
 is defined as
@@ -1294,7 +1294,7 @@ Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
 \fIqalter\fP only.
 .sp 1
 The name of the job. The name should follow the "\fBname\fP" definition in
-.M sge_types 1 .
+.M sge_types 5 .
 Invalid job names will be denied at submit time.
 .sp 1
 If the \fB\-N\fP option is not present, xxQS_NAMExx assigns
@@ -1429,7 +1429,7 @@ Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
 .sp 1
 Parallel programming environment (PE) to instantiate. For more detail about PEs,
 please see
-.M sge_types 1 .
+.M sge_types 5 .
 .sp 1
 .I Qalter
 allows changing this option even while the job executes. The modified
@@ -1472,7 +1472,7 @@ Available for \fIqsub\fP, \fIqrsh\fP, \fIqsh\fP, \fIqlogin\fP and \fIqalter\fP.
 Defines or redefines a list of cluster queues, queue domains or queue
 instances which may be used to execute this job. Please find a description
 of \fIwc_queue_list\fP in
-.M sge_types 1 .
+.M sge_types 5 .
 This parameter has all the properties of a resource request and
 will be merged with requirements derived from the \fB\-l\fP option
 described above.
