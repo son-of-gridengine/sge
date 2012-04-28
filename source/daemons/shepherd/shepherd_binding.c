@@ -455,7 +455,8 @@ static bool binding_set_linear(int first_socket, int first_core,
 *     MT-NOTE: binding_set_striding() is MT safe 
 *
 *******************************************************************************/
-bool binding_set_striding(int first_socket, int first_core, int number_of_cores,
+static bool
+binding_set_striding(int first_socket, int first_core, int number_of_cores,
                           int offset, int stepsize, const binding_type_t type)
 {
    /* n := take every n-th core */ 
@@ -764,7 +765,8 @@ static bool binding_explicit(const int* list_of_sockets, const int samount,
 *     MT-NOTE: create_binding_env() is MT safe
 *
 *******************************************************************************/
-bool create_binding_env(hwloc_const_bitmap_t set)
+static bool
+create_binding_env(hwloc_const_bitmap_t set)
 {
    bool retval          = true;
    dstring sge_binding  = DSTRING_INIT;

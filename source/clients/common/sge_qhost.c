@@ -295,7 +295,7 @@ sge_print_host(sge_gdi_ctx_class_t *gdi_ctx, lListElem *hep, lList *centry_list,
    qhost_report_handler_t *report_handler, lList **alpp, u_long32 show) 
 {
    lListElem *lep;
-   char *s, host_print[CL_MAXHOSTLEN+1] = "";
+   char *s, host_print[CL_MAXHOSTLEN] = "";
    const char *host;
    char load_avg[20], mem_total[20], mem_used[20], swap_total[20],
         swap_used[20], num_proc[20], socket[20], core[20], arch_string[80], thread[20];

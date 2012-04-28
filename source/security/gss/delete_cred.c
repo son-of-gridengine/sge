@@ -41,7 +41,7 @@
 #include <netdb.h>
 #include <errno.h>
 #include <sys/stat.h>
-#include <sys/param.h>
+#include <limits.h>
 #include <fcntl.h>
 #if defined KRBGSS && !defined HEIMDAL
 #include <gssapi/gssapi_generic.h>
@@ -82,7 +82,7 @@ main(int argc, char **argv)
 
          {
             struct stat st;
-            char rname[MAXPATHLEN], fname[MAXPATHLEN];
+            char rname[PATH_MAX], fname[PATH_MAX];
 
             if (lstat(&ccname[5], &st)<0) {
                cc = 3;

@@ -556,8 +556,8 @@ sge_gdi_packet_execute_external(sge_gdi_ctx_class_t* ctx, lList **answer_list,
    if (ret) {
       const char *commproc = prognames[QMASTER];
       const char *host = ctx->get_master(ctx, false);
-      char rcv_host[CL_MAXHOSTLEN+1];
-      char rcv_commproc[CL_MAXHOSTLEN+1];
+      char rcv_host[CL_MAXHOSTLEN];
+      char rcv_commproc[CL_MAXHOSTLEN];
       int tag = TAG_GDI_REQUEST;
       u_short id = 1;
       int gdi_error = CL_RETVAL_OK;

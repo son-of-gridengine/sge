@@ -363,7 +363,7 @@ void cull_hash_insert(const lListElem *ep, void *key, cull_htable ht, bool uniqu
 *******************************************************************************/
 void cull_hash_remove(const lListElem *ep, const int pos)
 {
-   char host_key[CL_MAXHOSTLEN+1];
+   char host_key[CL_MAXHOSTLEN];
    cull_htable ht;
    void *key;
 
