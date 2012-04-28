@@ -122,13 +122,13 @@ Defines the activation (start) date and time of an AR.
 The option is not mandatory. If omitted, the current date_time is
 assumed. Either a duration or end date_time must also be specified. For details
 about date_time please see
-.M sge_types 1 .
+.M sge_types 5 .
 .\"
 .IP "\fB\-A account_string\fP"
 Identifies the account to which the resource reservation of the AR should be
 charged. For "\fBaccount_string\fP" value
 details please see the "\fBname\fP" definition in 
-.M sge_types 1 .
+.M sge_types 5 .
 In the absence of this parameter xxQS_NAMExx 
 will place the default account string "xxqs_name_sxx" in the accounting record
 of the AR.
@@ -143,13 +143,13 @@ providing this checkpoint environment will be reserved.
 Defines the duration of the AR. The use of "\fB\-d time\fP" is optional if
 "\fB\-e date_time\fP" is requested.
 For details about  "\fBtime\fP" definition please see
-.M sge_types 1 .
+.M sge_types 5 .
 .\"
 .IP "\fB\-e date_time\fP"
 Defines the end date and time of an AR. The use of "\fB\-e date_time\fP" is optional if
 "\fB\-d time\fP" is requested.
 For details about "\fBdate_time\fP" definition please see
-.M sge_types 1 .
+.M sge_types 5 .
 .\"
 .IP "\fB\-he y[es]|n[o]\fP"
 Specifies the behavior when the AR goes into an error state. The AR goes into
@@ -202,7 +202,7 @@ This option is used to reserve the proper queues to match this request if it
 would be requested by a qsub.
 A more detailed description of \fIwc_queue_list\fP 
 can be found in
-.M sge_types 1 .
+.M sge_types 5 .
 .\"
 .IP "\fB\-now y[es]|n[o]\fP"                        
 This option affects the queue selection for reservation.
@@ -214,7 +214,7 @@ assigned will be considered for reservation.
 .IP "\fB\-N name\fP"
 The name of the AR. The name, if requested, must conform to "\fBname\fP" as
 defined in 
-.M sge_types 1 .
+.M sge_types 5 .
 Invalid names will be denied at submit time.
 .\"
 .IP "\fB\-w e|v\fP"
@@ -239,7 +239,7 @@ Please see the details of a PE in
 Defines or redefines a list of cluster queues, queue domains or queue
 instances that may be reserved by the AR. Please find a description
 of \fIwc_queue_list\fP in
-.M sge_types 1 .
+.M sge_types 5 .
 This parameter has all the properties of a resource request and
 will be merged with requirements derived from the \fB\-l\fP option
 described above.
@@ -303,7 +303,7 @@ service "sge_qmaster" instead of defining the port.
 .M qrdel 1 ,
 .M qrstat 1 ,
 .M qsub 1 ,
-.M sge_types 1 ,
+.M sge_types 5 ,
 .M checkpoint 5 ,
 .M complex 5 ,
 .M queue_conf 5 ,
