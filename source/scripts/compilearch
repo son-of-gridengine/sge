@@ -162,11 +162,6 @@ case $buildarch in
       COMPILE_ARCH=LINUXARM
       TARGET_BITS=TARGET_32BIT
       ;;
-   lx-armel)
-      BUILDARCH=LINUXARMEL
-      COMPILE_ARCH=LINUXARMEL
-      TARGET_BITS=TARGET_32BIT
-      ;;
    lx-amd64)
       BUILDARCH=LINUXAMD64
       COMPILE_ARCH=LINUXAMD64
@@ -182,7 +177,7 @@ case $buildarch in
       COMPILE_ARCH=LINUXMIPS
       TARGET_BITS=TARGET_32BIT
       ;;
-   lx-mips)
+   lx-mipsel)
       BUILDARCH=LINUXMIPSEL
       COMPILE_ARCH=LINUXMIPSEL
       TARGET_BITS=TARGET_32BIT
