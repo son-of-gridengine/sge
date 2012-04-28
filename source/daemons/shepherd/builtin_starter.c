@@ -39,6 +39,7 @@
 #include <pwd.h>
 #include <errno.h>
 #include <ctype.h>
+#include <limits.h>
 
 #include "uti/sge_string.h"
 #include "uti/sge_stdio.h"
@@ -955,11 +956,9 @@ int sge_set_environment()
    FILE *fp;
    char buf[10000], *name, *value, err_str[10000];
    int line=0;
-#if defined(IRIX) || defined(CRAY) || defined(NECSX4) || defined(NECSX5)
+#if defined(IRIX)
    char help_str[100] = "";
-#if (IRIX)
    ash_t jobid;
-#endif
 #endif
    const char *new_value = NULL;
 
@@ -969,11 +968,9 @@ int sge_set_environment()
       shepherd_error(1, "can't open environment file: %s", strerror(errno));
    }
 
-#if defined(IRIX) || defined(CRAY) || defined(NECSX4) || defined(NECSX5)
+#if defined(IRIX)
    if (shepherd_read_osjobid_file(&jobid, false)) {
-#  if defined(IRIX)
       snprintf(help_str, 100, "%lld", jobid);
-#  endif
       sge_set_env_value("OSJOBID", help_str);
    }
 #endif
@@ -1884,12 +1881,12 @@ static void set_inherit_env (bool inherit)
 static void start_qlogin_job(const char *shell_path)
 {
    static char shell[8+256]       = "SHELL=";
-   static char home[8+MAXPATHLEN] = "HOME=";
+   static char home[8+PATH_MAX] = "HOME=";
    static char term[8+64]         = "TERM=";
    static char logname[8+30]      = "LOGNAME=";
    static char timez[8+100]       = "TZ=";
    static char hertz[8+10]        = "HZ=";
-   static char path[8+MAXPATHLEN] = "PATH=";
+   static char path[8+PATH_MAX] = "PATH=";
    struct passwd *pw = NULL;
    struct passwd pw_struct;
    char minusname[50];
@@ -1916,7 +1913,7 @@ static void start_qlogin_job(const char *shell_path)
       my_env[i++] = strncat(shell, pw->pw_shell, 256);
    }
    if (pw->pw_dir != NULL) {
-      my_env[i++] = strncat(home, pw->pw_dir, MAXPATHLEN);
+      my_env[i++] = strncat(home, pw->pw_dir, PATH_MAX);
    }
    if (getenv("TERM") != NULL) {
       my_env[i++] = strncat(term, getenv("TERM"), 64);
@@ -1938,12 +1935,8 @@ static void start_qlogin_job(const char *shell_path)
    }
 
 
-#if defined(LINUX86) || defined(LINUXAMD64) || defined(LINUXIA64) || defined(LINUXPPC) || defined (LINUXSPARC) || defined(LINUXSPARC64) || defined(ALINUX) || defined(DARWIN_PPC) || defined(DARWIN_X86) || defined(DARWIN_X64) || defined(LINUXPARISC) || defined(LINUXS390) || defined(LINUXS390X) || defined(LINUXMPIS) || defined(LINUXMPISEL) || defined(LINUXMPIS64) || defined(LINUXARM) || defined(LINUXARMEL)
+#if defined(LINUX86) || defined(LINUXAMD64) || defined(LINUXIA64) || defined(LINUXPPC) || defined (LINUXSPARC) || defined(LINUXSPARC64) || defined(ALINUX) || defined(DARWIN_PPC) || defined(DARWIN_X86) || defined(DARWIN_X64) || defined(LINUXPARISC) || defined(LINUXS390) || defined(LINUXS390X)
    my_env[i++] = strcat(path, "/bin:/usr/bin");
-#else
-   my_env[i++] = strcat(path, "/usr/bin");
-#endif
-   my_env[i] = NULL;
 
    sge_free(&buffer);
 

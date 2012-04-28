@@ -420,10 +420,11 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          dstring pseudo_usage = DSTRING_INIT;
          lListElem* jr        = NULL;
          unsigned slots;
-         char thishost[SGE_PATH_MAX];
+         char thishost[CL_MAXHOSTLEN];
 
          host_slots = 0;
-         if (gethostname(thishost, SGE_PATH_MAX) != 0)
+         /* fixme: check ENAMETOOLONG */
+         if (gethostname(thishost, CL_MAXHOSTLEN) != 0)
             host_slots = BIND_INFINITY;
          else {
             if (!sge_hostcmp(lGetHost(master_q, QU_qhostname), thishost)) {

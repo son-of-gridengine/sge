@@ -41,7 +41,7 @@
 #include <netdb.h>
 #include <errno.h>
 #include <sys/stat.h>
-#include <sys/param.h>
+#include <limits.h>
 #include <fcntl.h>
 #include <pwd.h>
 #ifdef KRBGSS
@@ -224,7 +224,8 @@ main(int argc, char **argv)
           */
 
          {
-            char src[MAXPATHLEN];
+            char src[PATH_MAX];
+            stringT msg;
 
             errno = 0;
             sprintf(src, "%s.data", &new_ccname[5]);
@@ -276,7 +277,7 @@ main(int argc, char **argv)
 
    {
       char *dce_ccname = getenv("KRB5CCNAME");
-      char src[MAXPATHLEN], dst[MAXPATHLEN];
+      char src[PATH_MAX], dst[PATH_MAX];
 
       fprintf(stderr, "dce_ccname=%s\n", dce_ccname);
       fprintf(stderr, "ccname=%s\n", ccname);

@@ -116,17 +116,6 @@ spool_create_dynamic_context(lList **answer_list, const char *method,
       context = spool_classic_create_context(answer_list, args);
    }
 #endif
-#ifdef SPOOLING_flatfile
-   compiled_method = "flatfile";
-   if (strcmp(method, compiled_method) != 0) {
-      answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
-                              ANSWER_QUALITY_ERROR, 
-                              MSG_SPOOL_COMPILEDMETHODNECONFIGURED_SS,
-                              compiled_method, method);
-   } else {
-      context = spool_flatfile_create_context(answer_list, args);
-   }
-#endif
 #ifdef SPOOLING_postgres
    compiled_method = "postgres";
    if (strcmp(method, compiled_method) != 0) { 

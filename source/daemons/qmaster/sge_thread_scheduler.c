@@ -79,7 +79,7 @@
 #define SCHEDULER_TIMEOUT_S 10
 #define SCHEDULER_TIMEOUT_N 0
 
-static char schedule_log_path[SGE_PATH_MAX + 1] = "";
+static char schedule_log_path[SGE_PATH_MAX];
 static const char *schedule_log_file = "schedule";
 static int SGE_TEST_DELAY_SCHEDULING = 0;
 

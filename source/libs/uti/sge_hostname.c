@@ -1249,7 +1249,7 @@ void sge_hostcpy(char *dst, const char *raw)
 int sge_hostcmp(const char *h1, const char*h2)
 {
    int cmp = -1;
-   char h1_cpy[CL_MAXHOSTLEN+1], h2_cpy[CL_MAXHOSTLEN+1];
+   char h1_cpy[CL_MAXHOSTLEN], h2_cpy[CL_MAXHOSTLEN];
  
  
    DENTER(BASIS_LAYER, "sge_hostcmp");
@@ -1297,7 +1297,7 @@ int sge_hostcmp(const char *h1, const char*h2)
 int sge_hostmatch(const char *h1, const char*h2)
 {
    int cmp = -1;
-   char h1_cpy[CL_MAXHOSTLEN+1], h2_cpy[CL_MAXHOSTLEN+1];
+   char h1_cpy[CL_MAXHOSTLEN], h2_cpy[CL_MAXHOSTLEN];
  
  
    DENTER(BASIS_LAYER, "sge_hostmatch");
