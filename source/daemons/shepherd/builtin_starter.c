@@ -1934,8 +1934,8 @@ static void start_qlogin_job(const char *shell_path)
       my_env[i++] = strncat(hertz, getenv("HZ"), 10);
    }
 
-
-#if defined(LINUX86) || defined(LINUXAMD64) || defined(LINUXIA64) || defined(LINUXPPC) || defined (LINUXSPARC) || defined(LINUXSPARC64) || defined(ALINUX) || defined(DARWIN_PPC) || defined(DARWIN_X86) || defined(DARWIN_X64) || defined(LINUXPARISC) || defined(LINUXS390) || defined(LINUXS390X)
+   /* This used to be set explicitly for a long list of targets, and
+      default to /usr/bin, but there seems no reason to exclude /bin.  */
    my_env[i++] = strcat(path, "/bin:/usr/bin");
 
    sge_free(&buffer);

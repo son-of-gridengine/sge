@@ -70,6 +70,27 @@ ossysname="`$UNAME -s`" 2>/dev/null || ossysname=unknown
 osmachine="`$UNAME -m`" 2>/dev/null || osmachine=unknown
 osrelease="`$UNAME -r`" 2>/dev/null || osrelease=unknown
 
+maybe_el () {
+dummy=`mktemp`.c
+cat <<EOF >$dummy
+#undef MYARCH
+#undef ${lxmachine}
+#undef ${lxmachine}el
+#if defined(__MIPSEL__) || defined(__MIPSEL) || defined(_MIPSEL) || defined(MIPSEL)
+MYARCH=${lxmachine}el
+#else
+#if defined(__MIPSEB__) || defined(__MIPSEB) || defined(_MIPSEB) || defined(MIPSEB)
+MYARCH=${lxmachine}
+#else
+MYARCH=
+#endif
+#endif
+EOF
+eval `c89 -E $dummy 2>/dev/null | grep '^MYARCH'`
+[ -n "$MYARCH" ] && lxmachine=$MYARCH
+rm $dummy
+}
+
 case $ossysname in
 AIX)
    osversion=`$UNAME -v`
@@ -175,11 +196,8 @@ Linux)
    alpha)
       lxmachine=alpha
       ;;
-   arm)
+   arm*)
       lxmachine=arm
-      ;;
-   armel)
-      lxmachine=armel
       ;;
    sparc)
       lxmachine=sparc
@@ -204,6 +222,7 @@ Linux)
       ;;
    mips)
       lxmachine=mips
+      maybe_el
       ;;
    mips)
       lxmachine=mipsel
