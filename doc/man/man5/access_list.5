@@ -64,7 +64,7 @@ The following list of \fIaccess_list\fP parameters specifies the
 content:
 .SS "\fBname\fP"
 The name of the access list in the format for \fIuserset_name\fP in
-.M sge_types 1 .
+.M sge_types 5 .
 .SS "\fBtype\fP"
 The type of the access list, currently  one  of 
 .I ACL,
@@ -79,7 +79,7 @@ The current functional share of the department.
 .SS "\fBentries\fP"
 The entries parameter contains the comma separated list of 
 those UNIX users (see \fIuser_name\fP in
-.M sge_types 1 )
+.M sge_types 5 )
 or those primary UNIX groups that are assigned to the access list 
 or the department. Only a user's primary UNIX group is used; secondary groups
 are ignored. Only symbolic names are allowed.  A group
@@ -98,7 +98,7 @@ the users or groups listed under
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
-.M sge_types 1 ,
+.M sge_types 5 ,
 .M qconf 1 ,
 .M xxqs_name_sxx_pe 5 ,
 .M queue_conf 5 .
