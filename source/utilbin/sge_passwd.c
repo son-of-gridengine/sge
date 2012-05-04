@@ -1031,7 +1031,7 @@ sge_passwd_add_change(const char *username, const char *domain, uid_t uid)
    /*
     * Read password table
     */
-   if (password_read_file(&users, &encryped_pwd, sge_get_file_passwd()) == 2){
+   if (password_read_file(&users, &encryped_pwd, sge_get_file_passwd()) == 2) {
       fprintf(stderr, MSG_PWD_FILE_CORRUPTED_S, SGE_PASSWD_PROG_NAME);
       fprintf(stderr, "\n");
       exit(1); 
@@ -1043,7 +1043,7 @@ sge_passwd_add_change(const char *username, const char *domain, uid_t uid)
     * Check if there is an old entry in the password file and if user is
     * not root if it exists then check if the current users knows that pwd
     */
-   if (1/* uid != 0 */) {
+   if (uid != 0) {
       int i = password_find_entry(users, encryped_pwd, user);
 
       if (i != -1) {
