@@ -1,2 +1,2 @@
-gpu_sensor: gpu_sensor.c
-	$(CC) -o gpu_sensor gpu_sensor.c -lnvidia-ml
+gpu-loadsensor: gpu-loadsensor.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -DHAVE_NVML=1 -o gpu-loadsensor gpu-loadsensor.c $(LDFLAGS) -lnvidia-ml
