@@ -375,9 +375,9 @@ sched_configuration"
       fi
    else
       if [ "$backup_spooling_method" = "classic" ]; then
-          suggested_spooling_method=berkeley
-      else
           suggested_spooling_method=classic
+      else
+          suggested_spooling_method=berkeleydb
       fi
       #Selecting new spooling method
       suggested_spoooling_params=`BootstrapGetValue ${UPGRADE_BACKUP_DIR}/$SGE_CELL/common "spooling_params"`
