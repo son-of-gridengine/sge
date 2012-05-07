@@ -117,9 +117,10 @@ may be used to enable such dumps.
 .SH RESTRICTIONS
 .I xxqs_name_sxx_qmaster
 is usually started from root on the master or shadow master machines of the
-cluster (refer to the
-.I xxQS_NAMExx Installation and Administration Guide
-for more information about the configuration of shadow master hosts).
+cluster.
+\" cluster (refer to the
+\" .I xxQS_NAMExx Installation and Administration Guide
+\" for more information about the configuration of shadow master hosts).
 If started by a normal user, a master spool directory must be used to which
 the user has read/write access. In this case only jobs being submitted
 by that same user are handled correctly by the system.
@@ -143,8 +144,9 @@ by that same user are handled correctly by the system.
 .M xxqs_name_sxx_intro 1 ,
 .M xxqs_name_sxx_conf 5 ,
 .M xxqs_name_sxx_execd 8 ,
-.M xxqs_name_sxx_shadowd 8 ,
-.I xxQS_NAMExx Installation and Administration Guide
+.M xxqs_name_sxx_shadowd 8
+\" .M xxqs_name_sxx_shadowd 8 ,
+\" .I xxQS_NAMExx Installation and Administration Guide
 .\"
 .SH "COPYRIGHT"
 See
