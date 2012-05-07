@@ -29,7 +29,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH xxQS_NAME_Sxx_QSTAT 5 "$Date: 2007-03-23 09:41:42 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH xxQS_NAME_Sxx_QSTAT 5 "2007-03-23" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 sge_qstat \- xxQS_NAMExx default qstat file format
@@ -61,8 +61,10 @@ Blank lines and lines with a '#' sign in the first column are skipped.
 .\"
 Each line not to be skipped may contain any
 .M qstat 1
-option as described in
-the xxQS_NAMExx Reference Manual. More than one option per line is
+option.
+\" option as described in
+\" the xxQS_NAMExx Reference Manual.
+More than one option per line is
 allowed. 
 .\"
 .\"
@@ -107,8 +109,9 @@ qstat \-s rs \-u <current_user>
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
-.M qstat 1 ,
-.I xxQS_NAMExx Installation and Administration Guide
+.M qstat 1
+\" .M qstat 1 ,
+\" .I xxQS_NAMExx Installation and Administration Guide
 .\"
 .SH "COPYRIGHT"
 See
