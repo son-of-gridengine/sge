@@ -196,6 +196,7 @@ echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
   for l in lib/*/libdrmaa.so.1.0; do
     ( cd $(dirname $l); ln -sf libdrmaa.so.1.0 libdrmaa.so )
   done
+  find man -type l | xargs rm -f
   gzip man/man*/*
 )
 cat ../README - > $RPM_BUILD_ROOT/%{sge_home}/doc/README <<+
