@@ -30,5 +30,5 @@ Revisions of these scripts have been tested on various OS (Linux/Solaris)
 and Scali versions, the most recent being SLES10sp2 with Scali MPI Connect 
 5.6.6.
 
-Feedback (to users@gridengine.sunsource.net) and enhancements on this 
+Feedback (to sge-bugs@liv.ac.uk) and enhancements of this
 integration are highly welcome.

@@ -1,14 +1,17 @@
 Most of this distribution is licensed under the terms of the Sun
 Industry Standards Source License; see the file SISSL.  However, code
 under other licences is linked with it and some standalone programs
-have other licences.  If copyright notices are missing from files from
-the original Sun distribution, Fritz Ferstl said at
+have other licences.  Note that the licences overall require
+distributing source with any binary distribution.
+
+If copyright notices are missing from files from the original Sun
+distribution, Fritz Ferstl said at
 http://lists.alioth.debian.org/pipermail/pkg-gridengine-devel/2007-June/000021.html
 "Yes, you can assume that everything not explicitly licensed is
 copyrighted by Sun and is under the SISSL."  See also
 http://lists.alioth.debian.org/pipermail/pkg-gridengine-devel/2007-June/000023.html
 
-It is somewhat unclear what the effect is of its the `Standards'
+It is somewhat unclear what the effect is of the SISSL `Standards'
 language.  At the time of writing (January 2011) the reference to the
 "Reference Build binaries" from the relevant page on the
 gridengine.sunsource.net site (dumped as file "standards" in this
@@ -31,8 +34,7 @@ Distribution license (BSD), an adaptation of the FreeBSD licence
 components.  The different files apply to the components listed below.
 See the source files for detailed notices.
 
-Apache-1.1: jakarta-regexp (GUI installer binary)
-Apache-2: IzPack (GUI installer)
+Apache-2: IzPack (GUI installer), jakarta-regexp (GUI installer binary)
 BSD: rsh, rshd. rlogin, qtcsh
 GFDL-1.3: Some documentation
 GPL-3:  qmake, adoc [possibly using the "any later version" term]
