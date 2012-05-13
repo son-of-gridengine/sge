@@ -4,19 +4,14 @@
 # Sun distribution.  It doesn't deal with the configuration of the
 # installed binaries (use the vanilla instructions) or with init
 # scripts, because it's difficult with anything other than a
-# default cell.  Herd (Hadoop) and the GUI installer aren't currently
-# supported due to problems dealing wwith their dependencies.
+# default cell.
 
 # This was originally derived from the Fedora version, but probably
-# doesn't bear too much resemblance to it now.
+# doesn't bear much resemblance to it now.
 
 # Fixmes:
 # * Check on/port to SuSE and other relevant distributions.
 # * Support shared installs "--with sharedinstall"
-# * Try to support herd (Hadoop) and the GUI installer -- either assume
-#   izpack/hadoop installed, or maybe download and build them.  Probably
-#   use --with guiinst, --with hadoop.  (NB izpack download needs components
-#   removed to be redistributable.)
 # * Clarify the licence on this file to the extent it's derived from the
 #   Fedora one.
 # * Patch or hook for installation scripts to default appropriately for
@@ -24,6 +19,10 @@
 
 # Use "rpmbuild --without java" to omit all Java bits
 %bcond_without java
+# Use "rpmbuild --with-hadoop" to build Hadoop support (the herd library)
+# against Cloudera RPMs.
+# Perhaps this should be herd, not hadoop?
+%bcond_with hadoop
 
 %define sge_home /opt/sge
 %define sge_lib %{sge_home}/lib
@@ -45,9 +44,12 @@ Summary: Grid Engine - Distributed Resource Manager
 
 Group:   Applications/System
 # per 3rd_party_licscopyrights
-License: (BSD and LGPLv2+ and MIT and SISSL) and GPLv2+ and GFDLv3+ and others
+License: (BSD and LGPLv3+ and MIT and SISSL) and GPLv3+ and GFDLv3+ and others
 URL:     https://arc.liv.ac.uk/trac/SGE
 Source:  https://arc.liv.ac.uk/downloads/SGE/releases/%{version}/sge-%{version}.tar.gz
+Source1: IzPack-4.1.1-mod.tar.gz
+Source2: swing-layout-1.0.3.tar.gz
+
 Prefix: %{sge_home}
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -63,7 +65,9 @@ BuildRequires: openmotif-devel
 %endif
 %if %{with java}
 BuildRequires: java-devel >= 1.6.0, javacc, ant-junit, ant-nodeps
-#BuildRequires: hadoop-0.20
+%if %{with hadoop}
+BuildRequires: hadoop-0.20 >= 0.20.2+923.197
+%endif
 %endif
 BuildRequires: elfutils-libelf-devel, net-tools, man, gzip
 %if 0%{?fedora}
@@ -91,7 +95,7 @@ https://arc.liv.ac.uk/trac/SGE
 %package devel
 Summary: Gridengine development files
 Group: Development/Libraries
-License: BSD and LGPLv2+ and MIT and SISSL
+License: BSD and LGPLv3+ and MIT and SISSL
 Requires: %{name} = %{version}-%{release}
 
 %description devel
@@ -100,7 +104,7 @@ Grid Engine development headers and libraries.
 %package qmon
 Summary: Gridengine qmon monitor
 Group: Development/Libraries
-License: BSD and LGPLv2+ and MIT and SISSL
+License: BSD and LGPLv3+ and MIT and SISSL
 Requires: %{name} = %{version}-%{release}
 Requires: xorg-x11-fonts-ISO8859-1-100dpi xorg-x11-fonts-ISO8859-1-75dpi
 
@@ -110,7 +114,7 @@ The qmon graphical graphical interface to Grid Engine.
 %package execd
 Summary: Gridengine execd program
 Group: Development/Libraries
-License: BSD and LGPLv2+ and MIT and SISSL
+License: BSD and LGPLv3+ and MIT and SISSL
 Requires: %{name} = %{version}-%{release}
 Requires(postun): %{name} = %{version}-%{release}
 Requires(preun): %{name} = %{version}-%{release}
@@ -121,7 +125,7 @@ Programs needed to run a Grid Engine execution host.
 %package qmaster
 Summary: Gridengine qmaster programs
 Group: Development/Libraries
-License: BSD and LGPLv2+ and MIT and SISSL
+License: BSD and LGPLv3+ and MIT and SISSL
 Requires: %{name} = %{version}-%{release}
 Requires: db4-utils
 # Not automatically derived:
@@ -142,21 +146,42 @@ License: SISSL
 %description drmaa4ruby
 This binding is presuambly not Grid Engine-specific.
 
+%if %{with java}
+%if %{with hadoop}
+%package hadoop
+Summary: Grid Engine Hadoop integration
+Group: Development/Libraries
+License: SISSL
+
+%description hadoop
+Support for Grid Engine Hadoop integration.
+%endif
+%endif
+
 %prep
 
 %setup -q -n sge-%{version}
+tar zfx %SOURCE1
+tar zfx %SOURCE2
 
 %build
+%if %{with java}
+cd swing-layout-1.0.3
+ant
+cd ..
+%endif
 cd source
-# cat >> aimk.private <<EOF
-# EOF
+> aimk.private
 cat > build_private.properties <<\EOF
 javacc.home=%{_javadir}
 libs.junit_4.classpath=%{_javadir}/junit.jar
 hadoop.dir=/usr/lib/hadoop-0.20
-hadoop.version=0.20.2-cdh3u0
-file.reference.hadoop-0.20.1-core.jar=${hadoop.dir}/hadoop-core-${hadoop.version}.jar
-file.reference.hadoop-0.20.1-tools.jar=${hadoop.dir}/hadoop-tools-${hadoop.version}.jar
+hadoop.version=0.20.2-cdh3u3
+file.reference.hadoop-0.20.2-core.jar=${hadoop.dir}/hadoop-core.jar
+file.reference.hadoop-0.20.2-tools.jar=${hadoop.dir}/hadoop-tools.jar
+izpack.home=${sge.srcdir}/../IzPack-4.1.1
+libs.swing-layout.classpath=${sge.srcdir}/../swing-layout-1.0.3/dist/swing-layout.jar
+libs.ant.classpath=%{_javadir}/ant.jar
 EOF
 # Ensure dlopening the right libssl library version at runtime
 ssl_ver=$(objdump -p %{_libdir}/libssl.so | awk '/SONAME/ {print substr($2,10)}')
@@ -167,15 +192,23 @@ export SGE_INPUT_CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 [ -n "$RPM_BUILD_NCPUS" ] && parallel_flags="-parallel $RPM_BUILD_NCPUS"
 %if %{without java}
 JAVA_BUILD_OPTIONS="-no-java -no-jni"
+%else
+%if %{without hadoop}
+JAVA_BUILD_OPTIONS="-no-herd"
+%endif
 %endif
 csh -f ./aimk -only-depend $JAVA_BUILD_OPTIONS
 scripts/zerodepend
 ./aimk $JAVA_BUILD_OPTIONS depend
-./aimk -DLIBSSL_VER='\"'$ssl_ver'\"' -no-gui-inst -system-libs -pam -no-herd $parallel_flags $JAVA_BUILD_OPTIONS
+# -no-remote because we have ssh and PAM instead
+./aimk -DLIBSSL_VER='\"'$ssl_ver'\"' -system-libs -pam -no-remote $parallel_flags $JAVA_BUILD_OPTIONS
 ./aimk -man $JAVA_BUILD_OPTIONS
 %if %{with java}
 # "-no-gui-inst -no-herd -javadoc" still produces all the javadocs
-ant drmaa.javadoc juti.javadoc jgdi.javadoc jjsv.javadoc
+ant drmaa.javadoc juti.javadoc jgdi.javadoc jjsv.javadoc gui_inst.javadoc
+%if %{with hadoop}
+ant herd.javadoc
+%endif
 %endif
 
 %install 
@@ -184,11 +217,13 @@ SGE_ROOT=$RPM_BUILD_ROOT%{sge_home}
 export SGE_ROOT
 mkdir -p $SGE_ROOT
 cd source
-echo instguiinst=false >distinst.private
 gearch=`dist/util/arch`
 echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
 ( cd $RPM_BUILD_ROOT/%{sge_home}
-  rm -rf hadoop catman 3rd_party dtrace
+  rm -rf dtrace catman
+%if %{without hadoop}
+  rm -r hadoop
+%endif
   rm -r examples/jobsbin
   rm man/man8/SGE_Helper_Service.exe.8
   rm -r util/sgeSMF
@@ -240,8 +275,11 @@ fi
 %exclude %{sge_mandir}/man8/sge_shadowd.8.gz
 %exclude %{sge_mandir}/man8/pam*8.gz
 %exclude %{sge_mandir}/man3
-%exclude %{sge_home}/utilbin/*/rshd
 %exclude %{sge_lib}/*/pam*
+%if %{with hadoop}
+%exclude %{sge_home}/hadoop
+%exclude %{sge_lib}/herd.jar
+%endif
 %exclude %{sge_home}/pvm/src
 %exclude %{sge_bin}/process-scheduler-log
 %exclude %{sge_bin}/qsched
@@ -256,8 +294,6 @@ fi
 %{sge_home}/pvm
 %{sge_home}/util
 %{sge_home}/utilbin
-# rlogin and rsh need to be suid to work, but there is no need for them
-# as we have ssh and PAM
 %attr(4755,root,root) %{sge_home}/utilbin/*/testsuidroot
 #%attr(4755,root,root) %{sge_home}/utilbin/*/authuser
 # Avoid this for safety, assuming no MS Windows hosts
@@ -293,7 +329,6 @@ fi
 %{sge_mandir}/man8/sge_execd.8.gz
 %{sge_mandir}/man8/sge_*shepherd.8.gz
 %{sge_mandir}/man8/pam*8.gz
-%{sge_home}/utilbin/*/rshd
 %{sge_lib}/*/pam*
 
 %files qmaster
@@ -312,7 +347,20 @@ fi
 %defattr(-,root,root,-)
 %{sge_home}/util/resources/drmaa4ruby
 
+%if %{with hadoop}
+%files hadoop
+%defattr(-,root,root,-)
+%{sge_home}/hadoop
+%{sge_home}/lib/herd.jar
+%endif
+
 %changelog
+* Mon May 14 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.0
+- Add IzPack, swing-layout and build GUI installer.
+- Support optional Hadoop build.
+- Update License tags.
+- Use -no-remote, assuming ssh.
+
 * Thu Apr 12 2012 Dave Love <d.love@liverpool.ac.uk> - 8.0.0e
 - Modify for changes in licence info and distinst.
 - Consider setuid binaries.
