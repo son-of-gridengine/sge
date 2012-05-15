@@ -12,7 +12,18 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
-this program.  If not, see <http://www.gnu.org/licenses/>.  */
+this program.  If not, see <http://www.gnu.org/licenses/>.
+
+In addition, as a special exception, the copyright holder(s) give(s)
+permission to link this program with the NVIDIA Management Library
+and/or an OpenCL library necessary to interface to the relevant
+devices, and distribute the linked executables.  You must obey the GNU
+General Public License in all respects for all of the code used other
+than those libraries.  If you modify this file, you may extend this
+exception to your version of the file, but you are not obligated to do
+so.  If you do not wish to do so, delete this exception statement from
+your version.
+*/
 
 /* 
    SGE needs proper resource management for GPUs and other devices,
