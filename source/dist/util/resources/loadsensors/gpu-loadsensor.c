@@ -27,35 +27,44 @@ your version.
 
 /* 
    SGE needs proper resource management for GPUs and other devices,
-   but in the meantime, there's a load sensor like everyone has.
+   but in the meantime, there's a load sensor roughly like everyone
+   has.  It deals with CUDA and (to some extent) OpenCL devices.  See
+   "usage" below, e.g. via the --help flag of the built version.
 
-   This currently only does CUDA devices, using the nvidia-ml library
-   from the Tesla deployment kit.  (Originally written against the TDK
-   1.285 but with conditions from testing against a v1.0 library.)
-   The nvidia-ml library is in the driver distribution, for instance,
-   but the header only seems to be in the TDK.
+   It uses the nvidia-ml library from the Tesla deployment kit for
+   CUDA.  (Originally written against the TDK 1.285 but with
+   conditions from testing against a v1.0 library.)  The nvidia-ml
+   library is in the driver distribution, inter alia, but the header
+   only seems to be in the TDK.  The OpenCL code has only been tested
+   against v1.1.
 
    There are only a fairly small number of items dealt with that are
-   probably useful for scheduling in the absence of proper resource
-   management for the devices.  It would easy to deal with, say,
-   temperature and ECCs which could be used to put put queues into an
-   alaram state, but such monitoring is probably best done elsewhere,
-   and where do you stop?
+   likely to be useful for scheduling in the absence of proper
+   resource management for the devices.  Via NVML it would easy to
+   deal with, say, temperature and ECCs which could be used to put put
+   queues into an alarm state, but such monitoring is probably best
+   done elsewhere, and where do you stop?  The relevant information
+   available from ATI devices currently appears much more limited and
+   generally less useful, e.g. not reporting actual device usage.
+
+   In principle this can deal with, say, NVIDIA and ATI devices on the
+   same host, but in practice that's problematic from the point of
+   view of double counting and possibly from library conflicts.
 
    Fixme:
-   * ATI devices
-   * Maybe try dynamic dispatch to functions which are library
-     version-dependent
-   * Add a some more values, such as compute mode
-   * Figure out how to deal with devices that do CUDA and OpenCL, which
-     will get double counted
+   * Maybe add some more values, such as compute mode (need to check
+     version dependence of results), and anything else useful from OpenCL
+   * Use the AMD GPUPerfAPI to get activity via GPUBusy, at least,
+     similar to nvmlDeviceGetUtilizationRates
+   * Is there a better way to deal with CUDA plus OpenCL?
 */
 
 #ifndef _XOPEN_SOURCE
-  #define _XOPEN_SOURCE 500
+  #define _XOPEN_SOURCE 500     /* gethostname */
 #endif
-#ifndef HAVE_NVML
-  #define HAVE_NVML 1
+
+#if !HAVE_NVML && !HAVE_OPENCL
+  #error "Define HAVE_NVML and/or HAVE_OPENCL"
 #endif
 
 #include <stdio.h>
@@ -68,19 +77,21 @@ your version.
 #if HAVE_NVML
   #include <nvml.h>
 #endif
+
 #if HAVE_OPENCL
-  #include <CL/opencl.h>
-#endif
-#if !HAVE_NVML && !HAVE_OPENCL
-  #error "No CUDA or OpenCL support"
+#include <CL/cl.h>
+#define MAX_CL_DEV 10
+cl_device_id cl_devices[MAX_CL_DEV];
+cl_uint cl_ndevices = 0;
+cl_platform_id cl_platform;
 #endif
 
-/* It's convenient to share globals amongst CUAD and OpenCL in
+/* It's convenient to share globals amongst CUDA and OpenCL in
    particular.  */
 int debug = 0;                  /* Debugging mode */
 char host[HOST_NAME_MAX + 1];
 unsigned int n_cuda = 0, n_opencl = 0; /* device counts */
-char names[1024] = "";                 /* device model name list */
+char names[1024];                      /* device model name list */
 
 void
 usage (int ret, const char *prog)
@@ -94,7 +105,7 @@ usage (int ret, const char *prog)
     " and OpenCL"
   #endif
 #else
-  "CUDA"  
+  "OpenCL"
 #endif
   " GPUs\n\n", prog);
   fprintf (ret ? stderr : stdout,
@@ -108,27 +119,56 @@ usage (int ret, const char *prog)
        "  gpu.ndev            gpu.ndev            INT    <= YES YES 0 0\n"
        "  gpu.names           gpu.names           STRING == YES NO  0 0\n"
 #if HAVE_NVML
-       "  gpu.cuda.ncuda      gpu.cuda.ncuda      INT    <= YES YES 0 0\n"
-       "  gpu.cuda.0.mem_free gpu.cuda.0.mem_free MEMORY <= YES YES 0 0\n"
+       "  gpu.ncuda           gpu.ncuda           INT    <= YES YES 0 0\n"
+       "  gpu.cuda.0.mem_free gpu.cuda.0.mem_free MEMORY <= YES NO  0 0\n"
        "  gpu.cuda.0.clock    gpu.cuda.0.clock    INT    <= YES NO  0 0\n"
+       "  gpu.cuda.0.procs    gpu.cuda.0.procs    INT    <= NO  NO  0 0\n"
+       "  gpu.cuda.0.util     gpu.cuda.0.util     INT    <= NO  NO  0 0\n"
+#endif
+#if HAVE_OPENCL
+       "  gpu.nopencl         gpu.nopencl         INT    <= YES YES 0 0\n"
+       "  gpu.opencl.0.clock  gpu.opencl.0.clock  INT    <= YES NO  0 0\n"
+       "  gpu.opencl.0.mem    gpu.opencl.0.mem    MEMORY <= YES YES 0 0\n"
 #endif
        "    ...\n"
        "where:\n"
        "  gpu.ndev is the total number of GPUs on the host\n"
        "  gpu.names is a semi-colon-separated list of GPU model names\n"
 #if HAVE_NVML
-       "  gpu.cuda.ncuda is the number of CUDA GPUs on the host\n"
+       "  gpu.ncuda is the number of CUDA GPUs on the host\n"
        "  gpu.cuda.N.mem_free is the free memory on CUDA GPU N\n"
-       "  gpu.cuda.N.clock is the clock speed of CUDA GPU N (in MHz)\n\n"
-       "Example output:\n\n"
+       "  gpu.cuda.N.clock is the maximum clock speed of CUDA GPU N (in MHz)\n"
+       "  gpu.cuda.N.procs is the number of processes on CUDA GPU N\n"
+       "  gpu.cuda.N.util is the compute utilization of CUDA GPU N (in %%)\n"
+#endif
+#if HAVE_OPENCL
+       "  gpu.nopencl is the number of OpenCL GPUs on the host\n"
+       "  gpu.opencl.N.clock is the maximum clock speed of OpenCL GPU N (in MHz)\n"
+       "  gpu.opencl.N.mem is the global memory of OpenCL GPU N (in MHz)\n"
+#endif
+#if HAVE_NVML
+       "\nCUDA example output:\n"
        "  begin\n"
        "  comp035:gpu.ndev:2\n"
-       "  comp035:gpu.cuda.n_cuda.2\n"
+       "  comp035:gpu.ncuda:2\n"
        "  comp035:gpu.cuda.0.mem_free:4290838528\n"
-       "  comp035:gpu.cuda.0.clock:799\n"
+       "  comp035:gpu.cuda.0.procs:0\n"
+       "  comp035:gpu.cuda.0.util:0\n"
        "  comp035:gpu.cuda.1.mem_free:4290838528\n"
-       "  comp035:gpu.cuda.1.clock:799\n"
+       "  comp035:gpu.cuda.1.procs:0\n"
+       "  comp035:gpu.cuda.1.util:0\n"
        "  comp035:gpu.names:Tesla T10 Processor;Tesla T10 Processor;\n"
+       "  end\n"
+#endif
+#if HAVE_OPENCL
+       "\nOpenCL example output (for device which returns clock speed 0):\n"
+       "  begin\n"
+       "  comp040:gpu.nopencl:3\n"
+       "  comp040:gpu.ndev:3\n"
+       "  comp040:gpu.opencl.0.mem:1073741824\n"
+       "  comp040:gpu.opencl.1.mem:1073741824\n"
+       "  comp040:gpu.opencl.2.mem:1073741824\n"
+       "  comp040:gpu.names:ATI RV770;ATI RV770;ATI RV770;\n"
        "  end\n"
 #endif
        );
@@ -136,7 +176,7 @@ usage (int ret, const char *prog)
   exit (ret);
 }
 
-/* stash the hostname we need to print */
+/* stash the host name we need to print */
 void
 set_host ()
 {
@@ -152,10 +192,10 @@ set_host ()
 
 #if NVML_API_VERSION == 1
 /* Convert return code to string  */
-const char* nvmlErrorString(nvmlReturn_t result)
+const char*
+my_nvmlErrorString (nvmlReturn_t result)
 {
   switch (result) {
-
     /* I'm not sure all the enum symbols are defined in v1.  */
   case 0 /* NVML_SUCCESS */:
     return "The operation was successful";
@@ -185,56 +225,132 @@ const char* nvmlErrorString(nvmlReturn_t result)
     return "Unknown error code";
   }
 }
+
+#else  /* NVML_API_VERSION != 1 */
+
+/* nvmlSystemGetNVMLVersion, at least, has been seen to return a bogus
+   (huge) value, and nvmlErrorString returns null when fed it.  */
+const char*
+my_nvmlErrorString (nvmlReturn_t result)
+{
+  const char *res;
+
+  res = nvmlErrorString (result);
+  if (res)
+    return res;
+  else
+    return "Unknown error code";
+}
 #endif
 
 /* Quit if we got an error  */
 void
-nv_maybe_quit (const char * routine, const nvmlReturn_t ret)
+nv_maybe_quit (const char * routine, nvmlReturn_t ret)
 {
   if (NVML_SUCCESS == ret)
     return;
   if (debug)
-    fprintf (stderr, "nvml error in %s: %s\n", routine, nvmlErrorString(ret));
+    fprintf (stderr, "NVML error in %s: %s\n", routine, my_nvmlErrorString (ret));
   exit (EXIT_FAILURE);
 }
 
 /* Debug print if we got an error */
 int
-nv_maybe_debug (const char *routine, const nvmlReturn_t ret)
+nv_maybe_debug (const char *routine, nvmlReturn_t ret)
 {
   if (NVML_SUCCESS == ret)
     return 0;
   if (debug)
-    fprintf (stderr, "nvml error from %s: %s\n", routine,
-             nvmlErrorString(ret));
+    fprintf (stderr, "NVML error from %s: %s\n", routine,
+             my_nvmlErrorString (ret));
+  return 1;
+}
+#endif
+
+#if HAVE_OPENCL
+
+const char *
+cl_strerr (cl_int ret)
+{
+  /* These are documented for the routines we call.  */
+  switch (ret) {
+  case CL_SUCCESS:
+    return "success";
+  case CL_INVALID_VALUE:
+    return "invalid value";
+  case CL_OUT_OF_HOST_MEMORY:
+    return "can't allocate memory";
+  case CL_INVALID_PLATFORM:
+    return "invalid platform";
+  case CL_INVALID_DEVICE_TYPE:
+    return "invalid device type";
+  case CL_INVALID_DEVICE:
+    return "invalid device";
+  case CL_OUT_OF_RESOURCES:
+    return "can't allocate resources";
+  default:
+    return "unknown error";
+  }
+}
+
+/* Quit if we got an error  */
+void
+cl_maybe_quit (const char * routine, cl_int ret)
+{
+  if (CL_SUCCESS == ret)
+    return;
+  if (debug)
+    fprintf (stderr, "OpenCL error in %s: %s\n", routine, cl_strerr (ret));
+  exit (EXIT_FAILURE);
+}
+
+/* Debug print if we got an error */
+int
+cl_maybe_debug (const char *routine, cl_int ret)
+{
+  if (CL_SUCCESS == ret)
+    return 0;
+  if (debug)
+    fprintf (stderr, "OpenCL error from %s: %s\n", routine, cl_strerr (ret));
   return 1;
 }
 #endif
 
 /* Do any necessary library initialization */
 void
-init (void)
+gpu_init (void)
 {
 #if HAVE_NVML
   {
-    char version[80];
-
     nv_maybe_quit ("nvmlInit", nvmlInit());
     if (debug) {
+      char version[80];
+      nvmlReturn_t ret;
+
 #if NVML_API_VERSION >= 2
       if (nv_maybe_debug ("nvmlSystemGetNVMLVersion",
-                          nvmlSystemGetNVMLVersion (version, sizeof version)) == 0)
+                          nvmlSystemGetNVMLVersion (version, sizeof version))
+          == 0)
         fprintf (stderr, "NVML library version: %s\n", version);
 #endif
       if (nv_maybe_debug ("nvmlSystemGetDriverVersion",
-                          nvmlSystemGetDriverVersion (version, sizeof version)) == 0)
+                          nvmlSystemGetDriverVersion (version, sizeof version))
+          == 0)
         fprintf (stderr, "NVML driver version: %s\n", version);
     }
   }
 #endif
+#if HAVE_OPENCL
+  {
+    cl_uint nplatforms;
+
+    cl_maybe_debug ("clGetPlatformIDs",
+                    clGetPlatformIDs (1, &cl_platform, NULL));
+  }
+#endif
 }
 
-/* DO any necessary shutdown stuff */
+/* Do any necessary shutdown stuff */
 void
 shutdown (void)
 {
@@ -247,20 +363,41 @@ shutdown (void)
 void
 set_n_dev (void)
 {
-  nvmlReturn_t ret;
-
+  names[0] = '\0';
 #if HAVE_NVML
-  if ((ret = nvmlDeviceGetCount (&n_cuda)) == NVML_SUCCESS) {
-    printf ("%s:gpu.ncuda:%u\n", host, n_cuda);
-    } else {  
-    n_cuda = 0;
-    if (debug)
-      fprintf (stderr, "nvmlUnitGetCount: %s\n", nvmlErrorString(ret));
+  {
+    nvmlReturn_t ret = nvmlDeviceGetCount (&n_cuda);
+
+    if (ret == NVML_SUCCESS) {
+      printf ("%s:gpu.ncuda:%u\n", host, n_cuda);
+    } else {
+      n_cuda = 0;
+      if (debug)
+        fprintf (stderr, "nvmlUnitGetCount: %s\n", my_nvmlErrorString (ret));
+    }
   }
 #endif
+
 #if HAVE_OPENCL
+  {
+    cl_uint ret = clGetDeviceIDs (cl_platform,
+                                  CL_DEVICE_TYPE_GPU | CL_DEVICE_TYPE_ACCELERATOR,
+                                  MAX_CL_DEV, cl_devices, &cl_ndevices);
+    if (ret == CL_SUCCESS) {
+      n_opencl = cl_ndevices;
+      printf ("%s:gpu.nopencl:%u\n", host, n_opencl);
+    } else {
+      n_opencl = 0;
+      if (debug)
+        fprintf (stderr, "clGetDeviceIDs: %s\n", cl_strerr (ret));
+    }
+  }
 #endif
-  printf ("%s:gpu.ndev:%u\n", host, n_cuda + n_opencl);
+  /* Assume CUDA devices are also OpenCL and don't double count.  */
+  if (HAVE_OPENCL)
+    printf ("%s:gpu.ndev:%u\n", host, n_opencl);
+  else
+    printf ("%s:gpu.ndev:%u\n", host, n_cuda);
 }
 
 #if HAVE_NVML
@@ -270,14 +407,13 @@ print_nvml (void)
 {
   unsigned int i;
 
-  if (n_cuda > 0)
-    printf ("%s:gpu.cuda.n_cuda.%u\n", host, n_cuda);
   for (i = 0; i < n_cuda; i++) {
     nvmlDevice_t dev;
     char name[80];
     unsigned int uint;
     nvmlMemory_t mem;
     nvmlProcessInfo_t infos[128];
+    nvmlUtilization_t utilization;
 
     nv_maybe_quit ("nvmlDeviceGetHandleByIndex",
                    nvmlDeviceGetHandleByIndex (i, &dev));
@@ -296,12 +432,22 @@ print_nvml (void)
 #if NVML_API_VERSION >= 2
     if (nv_maybe_debug ("nvmlDeviceGetComputeRunningProcesses",
                         nvmlDeviceGetComputeRunningProcesses (dev, &uint,
-                                                              infos)))
+                                                              infos))
+        == 0)
       printf ("%s:gpu.cuda.%u.procs:%u\n", host, i, uint);
 #endif
-    if (nv_maybe_debug ("nvmlDeviceGetClockInfo",
-                        nvmlDeviceGetClockInfo (dev, NVML_CLOCK_SM, &uint)) == 0)
+#if NVML_API_VERSION >= 2
+    /* Otherwise, we only have the current clock speed, which isn't
+       useful for scheduling.  */
+    if (nv_maybe_debug ("nvmlDeviceGetMaxClockInfo",
+                        nvmlDeviceGetMaxClockInfo (dev, NVML_CLOCK_SM, &uint))
+        == 0)
       printf ("%s:gpu.cuda.%u.clock:%u\n", host, i, uint);
+#endif
+    if (nv_maybe_debug ("nvmlDeviceGetUtilizationRates",
+                        nvmlDeviceGetUtilizationRates (dev, &utilization))
+        == 0)
+      printf ("%s:gpu.cuda.%u.util:%u\n", host, i, utilization.gpu);
   }
 }
 #endif
@@ -311,7 +457,40 @@ print_nvml (void)
 void
 print_opencl (void)
 {
-  ;
+  unsigned int i;
+  char name[80];
+  union {
+    cl_uint uint;
+    char name[80];
+    cl_ulong ulong;
+  } info;
+  size_t info_size;
+  char tnam[80];
+
+  for (i = 0; i < n_opencl; i++) {
+    cl_device_id dev = cl_devices[i];
+
+    if (cl_maybe_debug ("clGetDeviceInfo",
+                        clGetDeviceInfo (dev, CL_DEVICE_NAME,
+                                         sizeof info, &info, &info_size))
+	== 0) {
+      snprintf (tnam, sizeof tnam, "%s;", info.name);
+      if (n_cuda == 0 || strcmp (tnam, names) > 0)
+	snprintf (names + strlen (names), sizeof names - strlen (names),
+		  "%s;", info.name);
+    }
+    if (cl_maybe_debug ("clGetDeviceInfo",
+                        clGetDeviceInfo (dev, CL_DEVICE_MAX_CLOCK_FREQUENCY,
+                                         sizeof info, &info, &info_size))
+	== 0)
+      if (info.uint != 0)       /* is 0 on RV770 test system */
+        printf ("%s:gpu.opencl.%u.clock:%u\n", host, i, info.uint);
+    if (cl_maybe_debug ("clGetDeviceInfo",
+                        clGetDeviceInfo (dev, CL_DEVICE_GLOBAL_MEM_SIZE,
+                                         sizeof info, &info, &info_size))
+	== 0)
+      printf ("%s:gpu.opencl.%u.mem:%lu\n", host, i, info.ulong);
+  }
 }
 #endif
 
@@ -341,7 +520,7 @@ main (int argc, char *argv[])
 
   parse_args (argc, argv);
   set_host ();
-  init ();
+  gpu_init ();
   while (fgets (line, sizeof (line), stdin)) {
     if ((strcmp (line, "quit\n") == 0) || (strcmp (line, "quit") == 0))
       break;
