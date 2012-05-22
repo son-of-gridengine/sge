@@ -112,11 +112,11 @@
 #define MSG_SCHEDD_INFO_PEALLOCRULE_S                 _MESSAGE(47083, _("pe "SFQ" dropped because allocation rule is not suitable"))
 #define MSG_SCHEDD_INFO_NOPEMATCH_                    _MESSAGE(47084, _("no matching pe found"))
 #define MSG_SCHEDD_INFO_CLEANUPNECESSARY_S            _MESSAGE(47085, _("cannot run on host "SFQ" until clean up of a previous run has finished"))
-#define MSG_SCHEDD_INFO_MAX_AJ_INSTANCES_             _MESSAGE(47086, _("not all array task may be started due to \'max_aj_instances\'"))
+#define MSG_SCHEDD_INFO_MAX_AJ_INSTANCES_             _MESSAGE(47086, _("not all array tasks may be started due to \'max_aj_instances\'"))
 
 
 #define MSG_SCHEDD_INFO_CANNOTRUNATHOST               _MESSAGE(47087, _("Jobs can not run because no host can satisfy the resource requirements"))
-#define MSG_SCHEDD_INFO_HASNOPERMISSION               _MESSAGE(47088, _("There could not be found a queue instance with suitable access permissions") )  
+#define MSG_SCHEDD_INFO_HASNOPERMISSION               _MESSAGE(47088, _("No queue instance with suitable access permissions could be found") )
 #define MSG_SCHEDD_INFO_HASINCORRECTPRJ               _MESSAGE(47089, _("Jobs can not run because queue do not provides the jobs assigned project"))
 #define MSG_SCHEDD_INFO_HASNOPRJ                      _MESSAGE(47090, _("Jobs are not assigned to a project to get a queue instance"))
 #define MSG_SCHEDD_INFO_EXCLPRJ                       _MESSAGE(47091, _("Jobs can not run because excluded project list of queue does not allow it"))

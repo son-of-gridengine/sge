@@ -110,8 +110,8 @@
 "   -u user     Authenticate user\n" \
 "   -v          Verbose output\n" \
 "   -s service  Get credentials for service\n" \
-"   -c cmd      Run command as user\n" \
-"   -e cmd      Execute command as user" )
+"   -c cmd      Run shell command as user\n" \
+"   -e cmd      Execute command as user (not in shell)" )
 
 #define MSG_GSS_PUTCRED_ARGUMENTS   _MESSAGE(51043, _("Arguments: "))
 #define MSG_GSS_FAILEDREADINGCREDENTIALLENGTHFROMSTDIN   _MESSAGE(51044, _("failed reading credential length from stdin"))
