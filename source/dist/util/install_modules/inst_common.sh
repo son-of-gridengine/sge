@@ -498,7 +498,7 @@ ErrUsage()
    $INFOTEXT -e \
              "Usage: %s -m|-um|-x|-ux [all]|-sm|-usm|-s|-udb|-bup|-rst| \n" \
              "       -copycerts <host|hostlist>|-v|-upd|-upd-execd|-upd-rc|-upd-win| \n" \
-             "       -post_upd|-start-all|-rccreate|[-host <hostname>] [-resport] [-rsh] \n" \
+             "       -post_upd|-start-all|-rccreate|[-host <hostname>] [-rsh] \n" \
              "       [-auto <filename>] [-nr] [-winupdate] [-winsvc] [-uwinsvc] [-csp] \n" \
              "       [-jmx] [-add-jmx] [-oldijs] [-afs] [-noremote] [-nosmf] [-nost]\n" \
              "   -m         install qmaster host\n" \
@@ -523,7 +523,6 @@ ErrUsage()
              "   -rccreate  create startup scripts from templates\n" \
              "   -host      hostname for shadow master installation or uninstallation \n" \
              "              (eg. exec host)\n" \
-             "   -resport   prevent installaion using SGE_QMASTER_PORT numbers \n" \
              "              higher than 1024\n" \
              "   -rsh       use rsh instead of ssh (default is ssh)\n" \
              "   -auto      full automatic installation (qmaster and exec hosts)\n" \
