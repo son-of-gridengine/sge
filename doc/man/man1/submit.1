@@ -2,7 +2,7 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
-.\" Copyright (C), 2011 Dave Love, University of Liverpool
+.\" Copyright (C), 2011, 2012 Dave Love, University of Liverpool
 .\"
 .\" Portions of this code are Copyright 2011 Univa Inc.
 .\"
@@ -1995,18 +1995,11 @@ Specifies the location of the xxQS_NAMExx standard configuration
 files.
 .\"
 .IP "\fBxxQS_NAME_Sxx_CELL\fP" 1.5i
-If set, specifies the default xxQS_NAMExx cell. To address a xxQS_NAMExx
-cell \fIqsub\fP, \fIqsh\fP, \fIqlogin\fP or \fIqalter\fP use (in the order of precedence):
-.sp 1
-.RS
-.RS
-The name of the cell specified in the environment 
-variable xxQS_NAME_Sxx_CELL, if it is set.
-.sp 1
-The name of the default cell, i.e. \fBdefault\fP.
-.sp 1
-.RE
-.RE
+If set, specifies the default xxQS_NAMExx cell. To address a
+xxQS_NAMExx cell \fIqsub\fP, \fIqsh\fP, \fIqlogin\fP or \fIqalter\fP
+use the name of the cell specified in the environment variable
+xxQS_NAME_Sxx_CELL if that is set, and otherwise the name of the
+default cell, i.e. \fBdefault\fP.
 .\"
 .IP "\fBxxQS_NAME_Sxx_DEBUG_LEVEL\fP" 1.5i
 If set, specifies that debug information
@@ -2026,39 +2019,44 @@ For
 jobs the DISPLAY has to be specified at job submission.
 If the DISPLAY is not set by using the \fB\-display\fP or the \fB\-v\fP
 switch, the contents of the DISPLAY environment variable are used as default.
+.IP \fBQRSH_WRAPPER\fP 1.5i
+Wrapper for
+.I qrsh
+commands (see above).
 .PP
 In addition to those environment variables specified to be
 exported to the job via the \fB\-v\fP or the \fB\-V\fP option
 (see above),
 \fIqsub\fP, \fIqsh\fP, and \fIqlogin\fP
-add the following variables with the indicated values to the variable
-list:
-.sp 1
-.IP "\fBxxQS_NAME_Sxx_O_HOME\fP" 1.5i
-the home directory of the submitting client.
-.IP "\fBxxQS_NAME_Sxx_O_HOST\fP" 1.5i
-the name of the host on which
-the submitting client
-is running.
+add several variables of the form
+.RI xxQS_NAME_Sxx_ O_NAME
+whose value is taken from
+.I NAME
+in the submission environment.  For each, a variable with the same
+value is added to the job context, but with a lower-case version of
+the name, i.e. xqs_name_sxx_o_home in the job context corresponds to
+xQS_NAME_Sxx_O_HOME in the job environment, and HOME in the submission
+environment as follows.  The context variables are displayed by
+.M qstat 1
+with the \-j option.
+.TP 1.5i
+.BR xxQS_NAME_Sxx_O_HOME ,\  xxQS_NAME_Sxx_O_HOST ,\  xxQS_NAME_Sxx_O_MAIL ,\  xxQS_NAME_Sxx_O_PATH ,\  xxQS_NAME_Sxx_O_TZ
+As in the description above, but the standard xxQS_NAME_Sxx clients
+use a library call to determine to determine the host name if HOST is
+not set.  Note that there is no guarantee that
+these are in any way "correct", e.g. you should not rely on
+xxQS_NAME_Sxx_O_HOST for any sort of access control or auditing;
 .IP "\fBxxQS_NAME_Sxx_O_LOGNAME\fP" 1.5i
-the LOGNAME of the submitting client.
-.IP "\fBxxQS_NAME_Sxx_O_MAIL\fP" 1.5i
-the MAIL of the submitting client. This is 
-the mail directory of the submitting client.
-.IP "\fBxxQS_NAME_Sxx_O_PATH\fP" 1.5i
-the executable search path of the submitting client.
-.IP "\fBxxQS_NAME_Sxx_O_SHELL\fP" 1.5i
-the SHELL of the submitting client.
-.IP "\fBxxQS_NAME_Sxx_O_TZ\fP" 1.5i
-the time zone of the submitting client.
+As above, but the corresponding context variable is
+xxqs_name_sxx_log_name.
 .IP "\fBxxQS_NAME_Sxx_O_WORKDIR\fP" 1.5i
-the absolute path of the current working directory of the
-submitting client.
+The absolute path of the current working directory of the submitting
+client, reflected in the context as xxqs_name_sxx_o_workdir and
+typically corresponding to the CWD environment variable.
 .PP
-Furthermore, xxQS_NAMExx sets additional variables into the
-job's environment, as listed below.
-.IP "\fBARC\fP"
-.IP "\fBxxQS_NAME_Sxx_ARCH\fP" 1.5i
+xxQS_NAMExx sets other variables in the job's environment, as follows.
+.TP 1.5i
+.BR \fBARC\fP ,\  \fBxxQS_NAME_Sxx_ARCH\fP
 The xxQS_NAMExx architecture name of the node on which the job is
 running. The name is compiled-in into the
 .M xxqs_name_sxx_execd 8
