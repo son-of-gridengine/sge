@@ -122,7 +122,7 @@ ShutdownMaster()
       $INFOTEXT "Skipping removal of berkeley spool directory"
       $INFOTEXT "Uninstall the berkeley db server before removing the spool directory"
    else
-      berkeley_spool=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep spooling_params | awk '{ print $2 }'`
+      berkeley_spool=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep spooling_params | awk -F '[ 	;]+' '{ print $2 }'`
 
       $INFOTEXT "Removing berkeley spool directory!"
       $INFOTEXT -log "Removing berkeley spool directory!"
