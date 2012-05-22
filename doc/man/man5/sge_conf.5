@@ -551,15 +551,17 @@ overwritten by the execution host local configuration.
 .SS "\fBprojects\fP"
 .PP
 The \fBprojects\fP list contains all projects which are granted access
-to xxQS_NAMExx. Users belonging to none of these projects cannot use xxQS_NAMExx. If
+to xxQS_NAMExx. Users not belonging to one of these projects cannot
+submit jobs. If
 users belong to projects in the \fBprojects\fP list and the
-\fBxprojects\fP list (see below), they also cannot use the system.
+\fBxprojects\fP list (see below), they also cannot submit jobs.
 .PP
 Changing \fBprojects\fP takes immediate effect.
 The default for \fBprojects\fP is none.
 .PP
-This value is a global configuration parameter only. It cannot be
-overwritten by the execution host local configuration.
+While globally-configured projects affect job submission, projects
+configured for queues or hosts affect job execution in the appropriate
+context.
 .\"
 .\"
 .SS "\fBxprojects\fP"
