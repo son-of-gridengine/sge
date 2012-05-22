@@ -129,18 +129,11 @@ GID_RANGE="${cfg.gid.range}";export GID_RANGE
 #(mandatory for qmaster installation)
 SPOOLING_METHOD="${cfg.spooling.method}";export SPOOLING_METHOD
 
-# Name of the Server, where the Spooling DB is running on
-# if spooling methode is berkeleydb, it must be "none", when
-# using no spooling server and it must contain the servername
-# if a server should be used. In case of "classic" spooling,
-# can be left out
-DB_SPOOLING_SERVER="${cfg.db.spooling.server}";export DB_SPOOLING_SERVER
-
 # The dir, where the DB spools
 # If berkeley db spooling is used, it must contain the path to
 # the spooling db. Please enter the full path. (eg. /tmp/data/spooldb)
-# Remember, this directory must be local on the qmaster host or on the
-# Berkeley DB Server host. No NFS mount, please
+# Remember, this directory must be local on the qmaster host.
+# No NFS mount, please, unless using NFS4 or the "private" option with NFS3
 DB_SPOOLING_DIR="${cfg.db.spooling.dir}";export DB_SPOOLING_DIR
 
 # This parameter set the number of parallel installation processes.

@@ -352,8 +352,6 @@ ___INFO__MARK_END__-->
         <str id="spooling.method.statictext" txt="Spooling method" />
         <str id="cfg.spooling.method.classic.label" txt="Classic" />
         <str id="cfg.spooling.method.bdb.label" txt="Berkeley DB" />
-        <str id="cfg.spooling.method.bdbserver.label" txt="Berkeley DB spooling server" />
-        <str id="cfg.db.spooling.server.label" txt="Berkeley DB host" />
         <str id="cfg.db.spooling.dir.label" txt="DB directory" />
         <!-- Tooltips -->
         <str id="cfg.qmaster.spool.dir.label.tooltip" txt="<html><b>Qmaster spool directory</b><br><br>
@@ -375,16 +373,6 @@ ___INFO__MARK_END__-->
         <str id="cfg.spooling.method.bdb.label.tooltip" txt="<html><b>Berkeley DB spooling</b><br><br>
         The Berkeley DB spools into a local directory on this host (qmaster host).<br>
         This setup is faster, but you can't setup a shadow master host.<br><br>
-        <b>Variable: </b><code>$SPOOLING_METHOD</code></html>" />
-        <str id="cfg.spooling.method.bdbserver.label.tooltip" txt="<html><b>Berkeley DB spooling server</b><br><br>
-        Spooling separatly on a Berkeley DB spooling server which has configured<br>
-        RPC service. The qmaster host connects via RPC to the Berkeley DB. <br>
-        This setup is more failsafe, but results in a clear potential security hole.<br>
-        RPC communication (as used by Berkeley DB) can be easily compromised.<br>
-        Please only use this alternative if your site is secure or if you are not<br>
-        concerned about security.<br>
-        Check the installation guide for further advice on how to achieve<br>
-        failsafety without compromising security.<br><br>
         <b>Variable: </b><code>$SPOOLING_METHOD</code></html>" />
         <str id="cfg.db.spooling.server.label.tooltip" txt="<html><b>Spooling server host</b><br><br>
         Host of the Berkeley DB spooling server.<br><br><b>

@@ -192,12 +192,6 @@ while [ $ARGC != 0 ]; do
      SHADOW="uninstall"
      #echo uninstall Shadowhost
      ;;
-   -db)
-     BERKELEY="install"
-     SPOOLING_SERVER=`hostname`
-     . ./util/install_modules/inst_qmaster.sh
-     . ./util/install_modules/inst_berkeley.sh
-     ;;
    -udb)
      BERKELEY="uninstall"
      SPOOLING_SERVER=`hostname`
@@ -429,7 +423,6 @@ if [ "$START_CLUSTER" = "true" ]; then
       exit 2
    fi
    ALL_RC=true
-   ManipulateOneDaemonType "" bdb ""
    ManipulateOneDaemonType "" qmaster ""
    ManipulateOneDaemonType "" execd ""
    exit
@@ -779,7 +772,6 @@ if [ "$POST_UPDATE" = true ]; then
    REMOVE_RC=false
    ADD_RC=true
    #Add new rc scripts for whole cluster
-   ManipulateOneDaemonType "" bdb ""
    ManipulateOneDaemonType "" qmaster ""
    ManipulateOneDaemonType "" execd ""
    #Update win hosts if appropriate
@@ -812,7 +804,6 @@ fi
 if [ "$UPDATE_RC" = true ]; then
    ManipulateOneDaemonType "" qmaster "61"
    ManipulateOneDaemonType "" execd "61"
-   ManipulateOneDaemonType "" bdb "61"
    if [ "$UPDATE_WIN" != true ]; then
       exit
    fi
@@ -838,38 +829,6 @@ if [ "$UPDATE_WIN" = true ]; then
    ManipulateOneDaemonType $list execd ""
    $INFOTEXT -log "After you verify that your Windows hosts work, delete \n%s file." "$SGE_ROOT/$SGE_CELL/win_hosts_to_update"
    exit
-fi
-
-if [ "$BERKELEY" = "install" ]; then
-
-   is_bdb="true"
-
-   if [ "$AUTO" = "true" ]; then
-      Stdout2Log
-      $INFOTEXT -log "Starting Berkeley DB installation!"
-   fi
-   
-   if [ "$DB_SPOOLING_SERVER" = "" -o "$HOST" = "$DB_SPOOLING_SERVER" -o "$NOREMOTE" = "true" ]; then
-      CheckWhoInstallsSGE
-      ProcessSGERoot
-      GetCell
-      COMMONDIR=$SGE_CELL/common
-      Makedir $SGE_CELL
-      Makedir $COMMONDIR
-      ProcessSGEClusterName "bdb"
-      SetSpoolingOptions
-      AddSGEStartUpScript $euid "bdb"
-      PrepareRPCServerStart
-      GiveBerkelyHints
-   else
-      $INFOTEXT -log "remote berkeley rpc server installation on host %s" $DB_SPOOLING_SERVER
-      echo "cd "$SGE_ROOT" && ./inst_sge -db -auto $FILE -noremote $SMF_FLAGS" | $SHELL_NAME $DB_SPOOLING_SERVER /bin/sh &
-      sleep 5
-   fi
-
-   MoveLog
-   BERKELEY="undef"
-   is_bdb=""
 fi
 
 if [ "$QMASTER" = "install" -a "$UPDATE" != "true" ]; then

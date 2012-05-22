@@ -340,12 +340,10 @@ SetSpoolingOptionsBerkeleyDB()
 {
    SPOOLING_METHOD=berkeleydb
    SPOOLING_LIB=libspoolb
-   SPOOLING_SERVER=none
    SPOOLING_DIR="spooldb"
    MKDIR="mkdir -p"
    params_ok=0
    if [ "$AUTO" = "true" ]; then
-      SPOOLING_SERVER=$DB_SPOOLING_SERVER
       SPOOLING_DIR="$DB_SPOOLING_DIR"
 
       if [ "$SPOOLING_DIR" = "" ]; then
@@ -354,13 +352,7 @@ SetSpoolingOptionsBerkeleyDB()
          exit 1
       fi
 
-      if [ "$SPOOLING_SERVER" = "" ]; then
-         $INFOTEXT -log "Please enter a Berkeley DB spooling server!"
-         MoveLog
-         exit 1
-      fi
-
-      if [ -d "$SPOOLING_DIR" -a \( "$SPOOLING_SERVER" = "none" -o "$SPOOLING_SERVER" = "" \) ]; then
+      if [ -d "$SPOOLING_DIR" ]; then
          $INFOTEXT -log "The spooling directory [%s] already exists! Exiting installation!" "$SPOOLING_DIR"
          MoveLog
          exit 1 
@@ -430,16 +422,9 @@ SetSpoolingOptionsBerkeleyDB()
          $INFOTEXT -u "Berkeley DB RPC Server installation"
          $INFOTEXT "\nWe found a running Berkeley db server on this host!"
          if [ "$AUTO" = "true" ]; then
-               if [ $SPOOLING_SERVER = "none" ]; then
-                  $ECHO
-                  Makedir $SPOOLING_DIR
-                  SPOOLING_ARGS="$SPOOLING_DIR"
-               else
-                  $INFOTEXT -log "We found a running Berkeley db server on this host!"
-                  $INFOTEXT -log "Please, check this first! Exiting Installation!"
-                  MoveLog
-                  exit 1
-               fi
+            $ECHO
+            Makedir $SPOOLING_DIR
+            SPOOLING_ARGS="$SPOOLING_DIR"
          else                 # $AUTO != true
             $INFOTEXT "The installation script does not support the configuration of more then one"
             $INFOTEXT "Berkeley DB on one Berkeley DB RPC host. This has to be done manually."
@@ -487,13 +472,9 @@ SetSpoolingOptionsBerkeleyDB()
       fi
    fi
 
-   if [ "$SPOOLING_SERVER" = "none" ]; then
-      $ECHO
-      Makedir $SPOOLING_DIR
-      SPOOLING_ARGS="$SPOOLING_DIR"
-   else
-      SPOOLING_ARGS="$SPOOLING_SERVER:`basename $SPOOLING_DIR`"
-   fi
+   $ECHO
+   Makedir $SPOOLING_DIR
+   SPOOLING_ARGS="$SPOOLING_DIR"
 }
 
 SetSpoolingOptionsClassic()
