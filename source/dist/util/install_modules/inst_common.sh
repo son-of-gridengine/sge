@@ -3145,29 +3145,12 @@ RestoreConfig()
    fi
 }
 
-CheckPrivate ()
-{
-   db_opt=`grep spooling_params "$SGE_ROOT"/$SGE_CELL/common/bootstrap | awk -F '[ 	;]+' '{ print $3 }'`
-   case $db_opt in
-       *private*)
-           $INFOTEXT -n \
-               "\nA BerkeleyDB spool configured for private access can't be backed up.\n" \
-               "See bootstrap(5).\n"
-           exit 1
-       ;;
-   esac
-}
 
-# Fixme:  Try to use system db utils (of the right version) instead of
-# insisting they're in utilbin
 
 SwitchArchBup()
 {
    DUMPIT="$SGE_UTILBIN/db_dump -f"
-   # Fixme: do this earlier in the procedure
-   CheckPrivate
    if [ -f "$SGE_UTILBIN/db_dump" ]; then
-       # fixme:  Copy jobs database too?  May be useful if done frequently
        ExecuteAsAdmin $DUMPIT $backup_dir/$DATE.dump -h $db_home sge
    else
        $INFOTEXT -n "\n$SGE_UTILBIN/db_dump is missing.\n" \
@@ -3413,8 +3396,7 @@ BackupCheckBootStrapFile()
 {
    if [ -f "$SGE_ROOT"/$SGE_CELL/common/bootstrap ]; then
       spooling_method=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_method" | awk '{ print $2 }'`
-      # NB tab in the -F arg
-      db_home=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_params" | awk -F '[ 	;]+' '{ print $2 }'`
+      db_home=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_params" | awk '{ print $2 }'`
       master_spool=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "qmaster_spool_dir" | awk '{ print $2 }'`
       GetAdminUser
 
@@ -3640,7 +3622,7 @@ RestoreCheckBootStrapFile()
 
    if [ -f $BACKUP_DIR/bootstrap ]; then
       spooling_method=`cat $BACKUP_DIR/bootstrap | grep "spooling_method" | awk '{ print $2 }'`
-      db_home=`cat $BACKUP_DIR/bootstrap | grep "spooling_params" | awk -F '[ 	;]+' '{ print $2 }'`
+      db_home=`cat $BACKUP_DIR/bootstrap | grep "spooling_params" | awk '{ print $2 }'`
       master_spool=`cat $BACKUP_DIR/bootstrap | grep "qmaster_spool_dir" | awk '{ print $2 }'`
       ADMINUSER=`cat $BACKUP_DIR/bootstrap | grep "admin_user" | awk '{ print $2 }'`
       if [ "$ADMINUSER" = "none" ]; then
@@ -4234,8 +4216,7 @@ ManipulateOneDaemonType()
          start_cmd="$SGE_ROOT/$SGE_CELL/common/sgeexecd"
          ;;
       bdb)
-         list=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_params" | awk -F '[ 	;]+' '{ print $2}' 2>/dev/null`
-         # fixme: treat options?
+         list=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_params" | awk '{ print $2}' 2>/dev/null`
          db_server_host=`echo "$SPOOLING_ARGS" | awk -F: '{print $1}'`
          db_server_spool_dir=`echo "$SPOOLING_ARGS" | awk -F: '{print $2}'`
          if [ -z "$db_server_spool_dir" ]; then #local bdb spooling
