@@ -540,11 +540,6 @@ If it is not configured, "drmaa_transfer_files" is not enabled and can't be used
 .\"
 .SH "ENVIRONMENTAL VARIABLES"
 .\"
-.IP "\fBSGE_DRMAA_ALLOW_CWD\fP" 1.5i
-Enables the parsing of the \-cwd option from the sge_request file(s), job
-category, and/or the native specification attribute.  This option is disabled
-by default because the algorithm for parsing the \-cwd option is not thread-safe.
-.\"
 .IP "\fBxxQS_NAME_Sxx_ROOT\fP" 1.5i
 Specifies the location of the xxQS_NAMExx standard configuration files.
 .\"
@@ -562,17 +557,22 @@ The name of the default cell, i.e. \fBdefault\fP.
 .RE
 .RE
 .\"
-.IP "\fBxxQS_NAME_Sxx_DEBUG_LEVEL\fP" 1.5i
-If set, specifies that debug information
-should be written to stderr. In addition the level of
-detail in which debug information is generated is defined.
-.\"
 .IP "\fBxxQS_NAME_Sxx_QMASTER_PORT\fP" 1.5i
 If set, specifies the tcp port on which
 .M xxqs_name_sxx_qmaster 8
 is expected to listen for communication requests.
 Most installations will use a services map entry instead
 to define that port.
+.\"
+.IP "\fBxxQS_NAME_Sxx_DEBUG_LEVEL\fP" 1.5i
+If set, specifies that debug information
+should be written to stderr. In addition the level of
+detail in which debug information is generated is defined.
+.\"
+.IP "\fBSGE_DRMAA_ALLOW_CWD\fP" 1.5i
+Enables the parsing of the \-cwd option from the sge_request file(s), job
+category, and/or the native specification attribute.  This option is disabled
+by default because the algorithm for parsing the \-cwd option is not thread-safe.
 .\"
 .\" 
 .\"
