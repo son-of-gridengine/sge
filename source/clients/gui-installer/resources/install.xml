@@ -229,7 +229,6 @@ ___INFO__MARK_END__-->
         <variable name="cfg.db.spooling.server" value="none"/>
         <variable name="cfg.db.spooling.dir" value=""/> <!-- init in HostPanel -->
         <variable name="add.db.spooling.dir.bdb" value="${cfg.sge.root}/${cfg.cell.name}/spool/spooldb"/>
-        <variable name="add.db.spooling.dir.bdbserver" value="/var/spool/bdb"/>
         <variable name="cfg.par.execd.inst.count" value="20"/> <!-- not used -->
         <variable name="cfg.admin.host.list" value=""/>
         <variable name="cfg.submit.host.list" value=""/>
