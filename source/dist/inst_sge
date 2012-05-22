@@ -1521,7 +1521,7 @@ if [ $SHADOW = "uninstall" ]; then
    else
       if [ "$is_local" = "true" ]; then
          if [ "$is_shadow" = "false" ]; then
-            $INFOTEXT "This host is no shadow host!"
+            $INFOTEXT "This host is not a shadow host!"
             exit 1
          fi
          $INFOTEXT "Stopping shadowd!" 

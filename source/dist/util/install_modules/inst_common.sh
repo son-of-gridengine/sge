@@ -1459,7 +1459,7 @@ CheckWhoInstallsSGE()
                 "If user >root< does not have write permissions in this directory on *all*\n" \
                 "of the machines where Grid Engine will be installed (NFS partitions not\n" \
                 "exported for user >root< with read/write permissions) it is recommended to\n" \
-                "install Grid Engine that all spool files will be created under the user id\n" \
+                "install Grid Engine so that all spool files will be created under the user id\n" \
                 "of user >%s<.\n\n" \
                 "IMPORTANT NOTE: The daemons still have to be started by user >root<.\n" \
                 `pwd` $this_dir_user $this_dir_user
@@ -1880,9 +1880,9 @@ CheckIfClusterNameAlreadyExists()
       ServiceAlreadyExists $hosttype
       if [ $? -eq 1 ]; then
          if [ $AUTO = true ]; then
-            $INFOTEXT  -log "$infotext_temp_msg" $SGE_CLUSTER_NAME
+            $INFOTEXT -log "Detected SMF service svc:/application/sge/%s:%s." $hosttype "$SGE_CLUSTER_NAME"
          else
-            $INFOTEXT  "$infotext_temp_msg" $SGE_CLUSTER_NAME
+            $INFOTEXT -log "Detected SMF service svc:/application/sge/%s:%s." $hosttype "$SGE_CLUSTER_NAME"
          fi
          ret=1
       fi
@@ -2185,7 +2185,7 @@ GiveHints()
                    "   You can get the name of the log file by calling svcs -l <SERVICE_NAME> \n" \
                    "   E.g.: svcs -l svc:/application/sge/qmaster:%s\n\n" $SGE_CLUSTER_NAME
       else
-         $INFOTEXT "\nGrid Engine messages can be found in syslog during startyp:\n\n"
+         $INFOTEXT "\nGrid Engine messages can be found in syslog during startup:\n\n"
       fi
       $INFOTEXT "After startup the daemons log their messages in their spool directories.\n\n" \
                 "   Qmaster:     %s\n" \
@@ -2896,7 +2896,7 @@ RestoreConfig()
    $INFOTEXT -n "\nThis feature restores the configuration from a backup you made\n" \
                 "previously.\n\n"
 
-   $INFOTEXT -wait -n "Hit, <ENTER> to continue!"
+   $INFOTEXT -wait -n "Hit <ENTER> to continue!"
    $CLEAR
                 SGE_ROOT=`pwd`
    $INFOTEXT -n "\nPlease enter your SGE_ROOT directory. \nDefault: [%s]" "$SGE_ROOT"
