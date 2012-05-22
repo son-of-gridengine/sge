@@ -773,7 +773,7 @@ AddChangedHost()
 CheckConfigFile()
 {
    CONFIG_FILE=$1
-   KNOWN_CONFIG_FILE_ENTRIES_INSTALL="SGE_ROOT SGE_QMASTER_PORT SGE_EXECD_PORT CELL_NAME ADMIN_USER QMASTER_SPOOL_DIR EXECD_SPOOL_DIR GID_RANGE SPOOLING_METHOD DB_SPOOLING_SERVER DB_SPOOLING_DIR PAR_EXECD_INST_COUNT ADMIN_HOST_LIST SUBMIT_HOST_LIST EXEC_HOST_LIST EXECD_SPOOL_DIR_LOCAL HOSTNAME_RESOLVING SHELL_NAME COPY_COMMAND DEFAULT_DOMAIN ADMIN_MAIL ADD_TO_RC SET_FILE_PERMS RESCHEDULE_JOBS SCHEDD_CONF SHADOW_HOST EXEC_HOST_LIST_RM REMOVE_RC WINDOWS_SUPPORT WIN_ADMIN_NAME WIN_DOMAIN_ACCESS CSP_RECREATE CSP_COPY_CERTS CSP_COUNTRY_CODE CSP_STATE CSP_LOCATION CSP_ORGA CSP_ORGA_UNIT CSP_MAIL_ADDRESS SGE_ENABLE_SMF SGE_CLUSTER_NAME SGE_ENABLE_JMX SGE_JMX_PORT SGE_JVM_LIB_PATH SGE_ADDITIONAL_JVM_ARGS SGE_JMX_SSL SGE_JMX_SSL_CLIENT SGE_JMX_SSL_KEYSTORE SGE_JMX_SSL_KEYSTORE_PW"
+   KNOWN_CONFIG_FILE_ENTRIES_INSTALL="SGE_ROOT SGE_QMASTER_PORT SGE_EXECD_PORT CELL_NAME ADMIN_USER QMASTER_SPOOL_DIR EXECD_SPOOL_DIR GID_RANGE SPOOLING_METHOD DB_SPOOLING_DIR PAR_EXECD_INST_COUNT ADMIN_HOST_LIST SUBMIT_HOST_LIST EXEC_HOST_LIST EXECD_SPOOL_DIR_LOCAL HOSTNAME_RESOLVING SHELL_NAME COPY_COMMAND DEFAULT_DOMAIN ADMIN_MAIL ADD_TO_RC SET_FILE_PERMS RESCHEDULE_JOBS SCHEDD_CONF SHADOW_HOST EXEC_HOST_LIST_RM REMOVE_RC WINDOWS_SUPPORT WIN_ADMIN_NAME WIN_DOMAIN_ACCESS CSP_RECREATE CSP_COPY_CERTS CSP_COUNTRY_CODE CSP_STATE CSP_LOCATION CSP_ORGA CSP_ORGA_UNIT CSP_MAIL_ADDRESS SGE_ENABLE_SMF SGE_CLUSTER_NAME SGE_ENABLE_JMX SGE_JMX_PORT SGE_JVM_LIB_PATH SGE_ADDITIONAL_JVM_ARGS SGE_JMX_SSL SGE_JMX_SSL_CLIENT SGE_JMX_SSL_KEYSTORE SGE_JMX_SSL_KEYSTORE_PW"
    KNOWN_CONFIG_FILE_ENTRIES_BACKUP="SGE_ROOT SGE_CELL BACKUP_DIR TAR BACKUP_FILE"
    MAX_GID=2147483647 #unsigned int = 32bit - 1
    MIN_GID=100        #from 0 - 100 may be reserved GIDs
@@ -851,10 +851,6 @@ CheckConfigFile()
 
    #do hostname resolving. fetching hostname from config file, try to resolve and
    #and recreate the hostname lists
-   if [ "$DB_SPOOLING_SERVER" != "none" ]; then
-      $INFOTEXT -log "Resolving DB_SPOOLING_SERVER"
-      DB_SPOOLING_SERVER=`ResolveHosts $DB_SPOOLING_SERVER`
-   fi
 
    $INFOTEXT -log "Resolving ADMIN_HOST_LIST"
    ADMIN_HOST_LIST=`ResolveHosts $ADMIN_HOST_LIST`
@@ -901,10 +897,10 @@ CheckConfigFile()
    if [ "$QMASTER" = "install" ]; then
       # if we have a bdb server, the cell directory already exists - this is OK.
       # if we have no bdb server, and the cell directory exists, stop the installation.
-      if [ -d "$SGE_ROOT/$SGE_CELL" -a \( -z "$DB_SPOOLING_SERVER" -o "$DB_SPOOLING_SERVER" = "none" \) ]; then
-         $INFOTEXT -e "Your >CELL_NAME< directory %s already exist!" "$SGE_ROOT"/$SGE_CELL
-         $INFOTEXT -e "The automatic installation stops, if the >SGE_CELL< directory already exists"
-         $INFOTEXT -e "to ensure, that existing installations are not overwritten!"
+      if [ -d "$SGE_ROOT/$SGE_CELL" ]; then
+         $INFOTEXT -e "Your >CELL_NAME< directory %s already exists!" "$SGE_ROOT"/$SGE_CELL
+         $INFOTEXT -e "The automatic installation stops if the >SGE_CELL< directory already exists"
+         $INFOTEXT -e "to ensure that existing installations are not overwritten!"
          $INFOTEXT -log "Your >CELL_NAME< directory %s already exist!" "$SGE_ROOT"/$SGE_CELL
          $INFOTEXT -log "The automatic installation stops, if the >SGE_CELL< directory already exists"
          $INFOTEXT -log "to ensure, that existing installations are not overwritten!"
@@ -915,16 +911,11 @@ CheckConfigFile()
          $INFOTEXT -log "Your >SPOOLING_METHOD< entry is wrong, only >berkeleydb< or >classic< is allowed!"
          is_valid="false"
       fi
-      if [ "$SPOOLING_METHOD" = "berkeleydb" -a -z "$DB_SPOOLING_SERVER" ]; then
-         $INFOTEXT -e "Your >DB_SPOOLING_SERVER< entry is wrong, it has to contain the server hostname\nor >none<."
-         $INFOTEXT -log "Your >DB_SPOOLING_SERVER< entry is wrong, it has to contain the server hostname\nor >none<."
-         is_valid="false"
-      fi
       if [ "$SPOOLING_METHOD" = "berkeleydb" -a -z "$DB_SPOOLING_DIR" ]; then
          $INFOTEXT -e "Your >DB_SPOOLING_DIR< is empty. You have to enter a directory!"
          $INFOTEXT -log "Your >DB_SPOOLING_DIR< is empty. You have to enter a directory!"
          is_valid="false"
-      elif [ "$SPOOLING_METHOD" = "berkeleydb" -a -d "$DB_SPOOLING_DIR" -a "$DB_SPOOLING_SERVER" = "none" ]; then
+      elif [ "$SPOOLING_METHOD" = "berkeleydb" -a -d "$DB_SPOOLING_DIR" ]; then
          $INFOTEXT -e "Your >DB_SPOOLING_DIR< already exists. Please check, if this directory is still"
          $INFOTEXT -e "in use. If you still need this directory, please choose any other!"
          $INFOTEXT -log "Your >DB_SPOOLING_DIR< already exists. Please check, if this directory is still"
@@ -1737,12 +1728,6 @@ SetupRcScriptNames61()
       S95NAME=S95sgemaster
       K03NAME=K03sgemaster
       DAEMON_NAME="qmaster"
-   elif [ $hosttype = "bdb" ]; then
-      TMP_SGE_STARTUP_FILE=/tmp/sgebdb.$$
-      STARTUP_FILE_NAME=sgebdb
-      S95NAME=S94sgebdb
-      K03NAME=K04sgebdb
-      DAEMON_NAME="berkeleydb"
    elif [ $hosttype = "dbwriter" ]; then
       TMP_SGE_STARTUP_FILE=/tmp/sgedbwriter.$$
       STARTUP_FILE_NAME=sgedbwriter
@@ -1792,13 +1777,6 @@ SetupRcScriptNames()
       S95NAME=S95sgemaster.$SGE_CLUSTER_NAME
       K03NAME=K03sgemaster.$SGE_CLUSTER_NAME
       DAEMON_NAME="qmaster"
-   elif [ $hosttype = "bdb" ]; then
-      script_name=sgebdb
-      TMP_SGE_STARTUP_FILE=/tmp/sgebdb.$$
-      STARTUP_FILE_NAME=sgebdb
-      S95NAME=S94sgebdb
-      K03NAME=K04sgebdb
-      DAEMON_NAME="berkeleydb"
    elif [ $hosttype = "dbwriter" ]; then
       script_name=sgedbwriter
       TMP_SGE_STARTUP_FILE=/tmp/sgedbwriter.$$
@@ -2559,8 +2537,6 @@ PLIST
 
      if [ $hosttype = "master" ]; then
         DARWIN_GEN_REPLACE="#GENMASTERRC"
-     elif [ $hosttype = "bdb" ]; then
-        DARWIN_GEN_REPLACE="#GENBDBRC"
      else
         DARWIN_GEN_REPLACE="#GENEXECDRC"
      fi
@@ -2918,11 +2894,9 @@ RestoreConfig()
       #CheckArchBins
 
       if [ "$spooling_method" = "berkeleydb" ]; then
-         if [ $is_rpc = 0 ]; then
-            $INFOTEXT -n "\nThe path to your spooling db is [%s]" $db_home
-            $INFOTEXT -n "\nIf this is correct hit <ENTER> to continue, else enter the path. >>"
-            db_home=`Enter $db_home`
-         fi
+         $INFOTEXT -n "\nThe path to your spooling db is [%s]" $db_home
+         $INFOTEXT -n "\nIf this is correct hit <ENTER> to continue, else enter the path. >>"
+         db_home=`Enter $db_home`
 
          #reinitializing berkeley db
          if [ -d $db_home ]; then
@@ -3057,11 +3031,9 @@ RestoreConfig()
       #CheckArchBins
 
       if [ "$spooling_method" = "berkeleydb" ]; then
-         if [ "$is_rpc" = 0 ]; then
-            $INFOTEXT -n "\nThe path to your spooling db is [%s]" $db_home
-            $INFOTEXT -n "\nIf this is correct hit <ENTER> to continue, else enter the path. >> "
-            db_home=`Enter $db_home`
-         fi
+         $INFOTEXT -n "\nThe path to your spooling db is [%s]" $db_home
+         $INFOTEXT -n "\nIf this is correct hit <ENTER> to continue, else enter the path. >> "
+         db_home=`Enter $db_home`
 
          #reinitializing berkeley db
          if [ -d $db_home ]; then
@@ -3177,19 +3149,17 @@ RestoreConfig()
 
 SwitchArchBup()
 {
-#      if [ "$is_rpc" = 1 -a "$SGE_ARCH" = "sol-sparc64" ]; then
-#         OLD_LD_PATH=$LD_LIBRARY_PATH
-#         LD_LIBRARY_PATH="$OLD_LD_PATH:./lib/sol-sparc"
-#         export LD_LIBRARY_PATH
-#         DUMPIT="$SGE_ROOT/utilbin/sol-sparc/db_dump -f"
-#         ExecuteAsAdmin $DUMPIT $backup_dir/$DATE.dump -h $db_home sge
-#         LD_LIBRARY_PATH="$OLD_LD_PATH:./lib/sol-sparc64"
-#         export LD_LIBRARY_PATH
-#      else
-         DUMPIT="$SGE_UTILBIN/db_dump -f"
-         ExecuteAsAdmin $DUMPIT $backup_dir/$DATE.dump -h $db_home sge
-#      fi
-
+   DUMPIT="$SGE_UTILBIN/db_dump -f"
+   if [ -f "$SGE_UTILBIN/db_dump" ]; then
+       ExecuteAsAdmin $DUMPIT $backup_dir/$DATE.dump -h $db_home sge
+   else
+       $INFOTEXT -n "\n$SGE_UTILBIN/db_dump is missing.\n" \
+           "Please ensure that it is installed on the system and link or copy\n" \
+           "the installed version to there before retrying.\n" \
+           "Note that the system version may be called something like dbNN_dump,\n" \
+           "where NN is some number.\n"
+       exit 1
+   fi
 }
 
 
@@ -3198,53 +3168,24 @@ SwitchArchRst()
 {
    dump_dir=$1
 
-#         if [ "$is_rpc" = 1 -a "$SGE_ARCH" = "sol-sparc64" ]; then
-#            OLD_LD_PATH=$LD_LIBRARY_PATH
-#            LD_LIBRARY_PATH="$OLD_LD_PATH:./lib/sol-sparc"
-#            export LD_LIBRARY_PATH
-#            DB_LOAD="$SGE_ROOT/utilbin/sol-sparc/db_load -f"
-#            ExecuteAsAdmin $DB_LOAD $dump_dir/*.dump -h $db_home sge
-#            LD_LIBRARY_PATH="$OLD_LD_PATH:./lib/sol-sparc64"
-#            export LD_LIBRARY_PATH
-#         else
-            DB_LOAD="$SGE_UTILBIN/db_load -f"
-            ExecuteAsAdmin $DB_LOAD $dump_dir/*.dump -h $db_home sge
-#         fi
+   DB_LOAD="$SGE_UTILBIN/db_load -f"
+   if [ -f "$SGE_UTILBIN/db_load" ]; then
+       ExecuteAsAdmin $DB_LOAD $load_dir/*.dump -h $db_home sge
+   else
+       $INFOTEXT -n "\n$SGE_UTILBIN/db_load is missing.\n" \
+           "Please ensure that it is installed on the system and link or copy\n" \
+           "the installed version to there before retrying.\n" \
+           "Note that the system version may be called something like dbNN_load,\n" \
+           "where NN is some number.\n"
+       exit 1
+   fi
 }
 
 
 
 CheckArchBins()
 {
-   if [ "$is_rpc" = 1 -a "$SGE_ARCH" = "sol-sparc64" ]; then
-      DB_BIN="$SGE_ROOT/utilbin/sol-sparc/db_load $SGE_ROOT/utilbin/sol-sparc/db_dump"
-      DB_LIB="$SGE_ROOT/lib/sol-sparc/libdb-4.2.so"
-      for db in $DB_BIN; do
-         if [ -f $db ]; then
-            :
-         else
-            $INFOTEXT "32 bit version of db_load or db_dump not found. These binaries needs \n" \
-                      "to be installed to perform a backup/restore of your BDB RPC Server. \n" \
-                      "Exiting backup/restore now"
-            $INFOTEXT -log "32 bit version of db_load or db_dump not found. These binaries needs \n" \
-                           "to be installed to perform a backup/restore of your BDB RPC Server. \n" \
-                           "Exiting backup/restore now"
-
-            exit 1
-         fi
-      done
-      if [ -f $DB_LIB ]; then
-         :
-      else
-            $INFOTEXT "32 bit version of lib_db not found. These library needs \n" \
-                      "to be installed to perform a backup/restore of your BDB RPC Server. \n" \
-                      "Exiting backup/restore now"
-            $INFOTEXT -log "32 bit version of lib_db not found. These library needs \n" \
-                           "to be installed to perform a backup/restore of your BDB RPC Server. \n" \
-                           "Exiting backup/restore now"
-            exit 1
-      fi
-   fi
+   :
 }
 
 
@@ -3459,42 +3400,7 @@ BackupCheckBootStrapFile()
       master_spool=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "qmaster_spool_dir" | awk '{ print $2 }'`
       GetAdminUser
 
-      if [ `echo $db_home | cut -d":" -f2` = "$db_home" ]; then
-         $INFOTEXT -n "\nSpooling Method: %s detected!\n" $spooling_method
-         is_rpc=0
-      else
-         is_rpc=1
-         BDB_SERVER=`echo $db_home | cut -d":" -f1`
-         BDB_SERVER=`$SGE_UTILBIN/gethostbyname -aname $BDB_SERVER`
-         BDB_BASEDIR=`echo $db_home | cut -d":" -f2`
-
-         if [ -f "$SGE_ROOT"/$SGE_CELL/common/sgebdb ]; then
-            BDB_HOME=`cat "$SGE_ROOT"/$SGE_CELL/common/sgebdb | grep $BDB_BASEDIR | grep BDBHOMES | cut -d" " -f2 | sed -e s/\"//`
-         else
-            $INFOTEXT -n "Your Berkeley DB home directory could not be detected!\n"
-            $INFOTEXT -n "Please enter your Berkeley DB home directory >>" BDB_HOME=`Enter `
-         fi
-
-         $INFOTEXT -n "\nThe following settings could be detected.\n"
-         $INFOTEXT -n "Spooling Method: Berkeley DB RPC Server spooling.\n"
-         $INFOTEXT -n "Berkeley DB Server host: %s\n" $BDB_SERVER
-         $INFOTEXT -n "Berkeley DB home directory: %s\n\n" $BDB_HOME
-
-         $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n "Are all settings right? (y/n) [y] >>"
-         if [ $? = 1 ]; then
-            $INFOTEXT -n "Please enter your Berkeley DB Server host. >>"
-            BDB_SERVER=`Enter`
-            $INFOTEXT -n "Please enter your Berkeley DB home directory. >>"
-            BDB_HOME=`Enter`
-         fi
-
-         if [ `$SGE_UTILBIN/gethostname -aname` != "$BDB_SERVER" ]; then
-            $INFOTEXT -n "You're not on the BDB Server host.\nPlease start the backup on the Server host again!\n"
-            $INFOTEXT -n "Exiting backup!\n"
-            exit 1
-         fi
-      db_home=$BDB_HOME
-      fi
+      $INFOTEXT -n "\nSpooling Method: %s detected!\n" $spooling_method
    else
       $INFOTEXT -n "bootstrap file could not be found in:\n %s !\n" "$SGE_ROOT"/$SGE_CELL/common
       $INFOTEXT -n "please check your installation! Exiting backup!\n"
@@ -3740,49 +3646,7 @@ RestoreCheckBootStrapFile()
          ret=$?
       done
 
-      if [ `echo $db_home | cut -d":" -f2` = "$db_home" ]; then
-         $INFOTEXT -n "\nSpooling Method: %s detected!\n" $spooling_method
-         is_rpc=0
-      else
-         is_rpc=1
-         BDB_SERVER=`echo $db_home | cut -d":" -f1`
-         BDB_SERVER=`$SGE_UTILBIN/gethostbyname -aname $BDB_SERVER`
-         BDB_BASEDIR=`echo $db_home | cut -d":" -f2`
-
-         if [ -f $BACKUP_DIR/sgebdb ]; then
-            BDB_HOME=`cat $BACKUP_DIR/sgebdb | grep $BDB_BASEDIR | grep BDBHOMES | cut -d" " -f2 | sed -e s/\"//`
-         else
-            $INFOTEXT -n "Your Berkeley DB home directory could not be detected!\n"
-            $INFOTEXT -n "Please enter your Berkeley DB home directory >>"
-            BDB_HOME=`Enter `
-         fi
-
-         $INFOTEXT -n "\nThe following settings could be detected.\n"
-         $INFOTEXT -n "Spooling Method: Berkeley DB RPC Server spooling.\n"
-         $INFOTEXT -n "Berkeley DB Server host: %s\n" $BDB_SERVER
-         $INFOTEXT -n "Berkeley DB home directory: %s\n\n" $BDB_HOME
-
-         $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n "Are all settings right? (y/n) [y] >>"
-         if [ $? = 1 ]; then
-            $INFOTEXT -n "Please enter your Berkeley DB Server host. >>"
-            BDB_SERVER=`Enter`
-            $INFOTEXT -n "Please enter your Berkeley DB home directory. >>"
-            BDB_HOME=`Enter`
-         fi
-
-         if [ `$SGE_UTILBIN/gethostname -aname` != "$BDB_SERVER" ]; then
-            $INFOTEXT -n "You're not on the BDB Server host.\nPlease start the backup on the Server host again!\n"
-            $INFOTEXT -n "Exiting backup!\n"
-            exit 1
-         fi
-         db_home=$BDB_HOME
-         if [ `ps -efa | grep berkeley | grep -v "grep" | wc -l` = 1 ]; then
-            $INFOTEXT -n "The restore procedure detected a running Berkeley DB\n" \
-                         "service on this machine! Please stop this service first and\n" \
-                         "and continue with restore or do a restart of the Berkeley DB after restore!\n"
-            $INFOTEXT -wait -auto $AUTO "Hit, <ENTER> to continue!"
-         fi
-      fi
+      $INFOTEXT -n "\nSpooling Method: %s detected!\n" $spooling_method
    else
       $INFOTEXT -n "bootstrap file could not be found in:\n %s !\n" $BACKUP_DIR
       $INFOTEXT -n "please check your installation! Exiting backup!\n"
