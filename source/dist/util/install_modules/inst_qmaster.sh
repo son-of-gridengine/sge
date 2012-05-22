@@ -314,12 +314,6 @@ SetPermissions()
 
    if [ $ret = 0 ]; then
 
-      if [ $RESPORT = true ]; then
-         resportarg="-resport"
-      else
-         resportarg="-noresport"
-      fi
-
       if [ $ADMINUSER = default ]; then
          fileowner=root
       else
@@ -1575,11 +1569,7 @@ PrintHostGroup()
 GetQmasterPort()
 {
 
-   if [ $RESPORT = true ]; then
-      comm_port_max=1023
-   else
-      comm_port_max=65500
-   fi
+   comm_port_max=65500
     PortCollision $SGE_QMASTER_SRV
     PortSourceSelect $SGE_QMASTER_SRV
 
@@ -2390,6 +2380,7 @@ GetJMXPort() {
                   if [ $euid = 0 ]; then
                      CALOCALTOP=/var/lib/sgeCA/$ca_port/$SGE_CELL
                   else
+                      # fixme: /tmp usage
                      CALOCALTOP=/tmp/sgeCA/$ca_port/$SGE_CELL
                   fi
                   if [ "$sge_jmx_ssl_keystore" = "" ]; then 
@@ -2456,12 +2447,7 @@ GetJMXPort() {
 GetExecdPort()
 {
 
-    if [ $RESPORT = true ]; then
-       comm_port_max=1023
-    else
-       comm_port_max=65500
-    fi
-
+    comm_port_max=65500
     PortCollision $SGE_EXECD_SRV
     PortSourceSelect $SGE_EXECD_SRV
     if [ "$SGE_EXECD_PORT" != "" -a "$port_source" != "db" ]; then
