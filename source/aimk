@@ -1939,14 +1939,12 @@ default:
 endsw
 
 if ( $HWLOC == 1 && $NO_HWLOC != 1 ) then
-   set CFLAGS = "$CFLAGS -DHAVE_HWLOC=1"
+   set CFLAGS = "$CFLAGS -DHAVE_HWLOC"
    set LIBS = "-lhwloc $LIBS"
    if ( "$HWLOC_DIR" != "" ) then
       set CORE_INCLUDE = "$CORE_INCLUDE -I$HWLOC_DIR/include"
       set LIBS = "-L$HWLOC_DIR/lib $LIBS"
    endif
-else
-   set CFLAGS = "$CFLAGS -DHAVE_HWLOC=0"
 endif
 
 set DEPEND_FLAGS = "`echo $DEPEND_FLAGS | sed -e 's/-[^DI][^ ]*//g'`"
