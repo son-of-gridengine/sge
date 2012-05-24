@@ -4,16 +4,43 @@ Notable changes in Son of Grid Engine
 For earlier changes (comprising Sun Grid Engine), see Changelog in the
 source distribution, and the bug lists at
 http://arc.liv.ac.uk/SGE/howto/Installation,%20Upgrade,%20Patches.
-For detailed recent change information, including credits for patches,
-see https://arc.liv.ac.uk/trac/SGE/log/sge/
+For detailed recent change information, including credits for changes
+not listed here, see https://arc.liv.ac.uk/trac/SGE/log/sge/
 
 "[#<n>]" below refers to ticket <n> at
-https://arc.liv.ac.uk/trac/SGE/ticket/<n>.  (The issues fixed by Univa
-changes aren't publicly available as such, and many other changes have been
-made without raising Trac tickets.)  Changes due to Univa (or Sun)
-from the Univa repo are tagged as "[U]", and items partially due to
-them or appearing first in this version are tagged as "[(U)]".
+https://arc.liv.ac.uk/trac/SGE/ticket/<n>.  For historical reasons,
+changes due to Univa/Sun are tagged as "[U]", or "[(U)]" if partially
+due to them or appearing first in this version.
 
+
+Version 8.1.0
+-------------
+
+* Security fix
+
+  * Prevent users other than root deleting entries with sgepasswd
+
+* Version numbering
+
+  * Switch to a more logical numbering scheme now that the Univa
+    baseline is irrelevant
+
+* Bug fixes
+
+  * Correct patch for [#1328]
+  * Build libdrmaa against libhwloc when appropriate
+  * Install AUTHORS and sge_pqs_api.h
+  * Actually use AIX perflib (and drop ibm-loadsensor)
+  * Man fixes
+
+* Other changes
+
+  * Update RPM spec file to include gui-installer and herd in RPM
+  * Link duplicated man pages rather than copying them [#1408]
+  * Update copyright licences
+  * Hadoop support now for a more recent Hadoop distribution (see
+    README.BUILD)
+  * Drop support for AIX 4.3 and earlier and HPUX 10 (from patch dependency)
 
 Version 8.0.0e
 --------------
