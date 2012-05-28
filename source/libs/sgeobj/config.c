@@ -35,6 +35,7 @@
 #include <strings.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_parse_num_par.h"

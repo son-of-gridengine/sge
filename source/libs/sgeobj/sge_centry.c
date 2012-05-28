@@ -34,6 +34,7 @@
 
 #include <string.h>
 #include <float.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_string.h"

@@ -42,6 +42,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <locale.h>
 
 #ifdef USE_POLL
  #include <sys/poll.h>

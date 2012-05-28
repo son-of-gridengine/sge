@@ -35,6 +35,7 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <locale.h>
 
 #include "comm/cl_commlib.h"
 

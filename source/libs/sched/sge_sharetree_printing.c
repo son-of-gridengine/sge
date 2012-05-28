@@ -32,6 +32,7 @@
 
 #include <string.h>
 #include <pthread.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"

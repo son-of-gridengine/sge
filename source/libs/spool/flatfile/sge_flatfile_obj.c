@@ -33,6 +33,7 @@
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"

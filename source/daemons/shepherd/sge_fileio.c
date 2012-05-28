@@ -38,6 +38,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <locale.h>
 
 #include "uti/config_file.h"
 #include "uti/sge_stdio.h"
