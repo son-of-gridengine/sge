@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fnmatch.h>
+#include <locale.h>
 
 #ifdef WIN32NATIVE
    #include "win32nativetypes.h"

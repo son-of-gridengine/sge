@@ -72,6 +72,7 @@ int main(int argc,char *argv[])
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <locale.h>
 
 #if defined(IRIX)
 #include <sys/sysmp.h>

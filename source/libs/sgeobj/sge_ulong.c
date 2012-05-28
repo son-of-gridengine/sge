@@ -39,6 +39,7 @@
 #include <time.h>
 #include <string.h>
 #include <limits.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"

@@ -34,6 +34,7 @@
 #include <string.h>
 #include <strings.h>
 #include <stdlib.h>
+#include <locale.h>
 
 #include "cull/cull.h"
 #include "cull/cull_list.h"

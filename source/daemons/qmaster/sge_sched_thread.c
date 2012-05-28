@@ -31,6 +31,7 @@
 /*___INFO__MARK_END__*/
 #include <string.h>
 #include <pthread.h>
+#include <locale.h>
 
 #ifdef SOLARISAMD64
 #  include <sys/stream.h>

@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_time.h"

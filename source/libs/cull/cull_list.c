@@ -37,6 +37,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <stdarg.h>
+#include <locale.h>
 
 /* do not compile in monitoring code */
 #ifndef NO_SGE_COMPILE_DEBUG

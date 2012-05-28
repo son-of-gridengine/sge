@@ -86,6 +86,7 @@
 #include <locale.h>
 #include <pwd.h>
 #include <string.h>
+#include <locale.h>
 
 #include <errno.h>
 #include "k5dce.h"
