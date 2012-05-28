@@ -40,6 +40,7 @@
 #include <limits.h>
 #include <ctype.h>
 #include <fnmatch.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"

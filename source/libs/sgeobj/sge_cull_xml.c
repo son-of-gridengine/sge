@@ -38,6 +38,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <stdarg.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_dstring.h"

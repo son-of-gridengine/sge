@@ -39,6 +39,7 @@
 #include <signal.h>
 #include <pthread.h>
 #include <pwd.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_profiling.h"

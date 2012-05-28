@@ -36,6 +36,7 @@
 #include <string.h>
 #include <errno.h>
 #include <pwd.h>
+#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_stdlib.h"

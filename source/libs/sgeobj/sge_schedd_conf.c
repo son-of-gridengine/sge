@@ -32,6 +32,7 @@
 
 #include <string.h>
 #include <pthread.h>
+#include <locale.h>
 
 #include "cull/cull.h"
 
