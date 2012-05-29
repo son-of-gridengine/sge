@@ -96,7 +96,7 @@ PVMSOURCES="start_pvm.c stop_pvm.c slave.c master.c spmd.c Makefile"
 PVMSRCSCRIPTS="install.sh aimk"
 PVMSCRIPTS="startpvm.sh stoppvm.sh pvm.sh pvm_nogs.sh README pvm.template"
 
-MPI_FILES="README README.atm mpi.template mpich.template"
+MPI_FILES="README mpi.template mpich.template"
 MPI_SCRIPTS="hostname  mpi.sh mpi_cpi.sh rsh startmpi.sh stopmpi.sh"
 
 HADOOP_FILES="logging.properties"
