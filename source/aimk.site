@@ -111,7 +111,7 @@ if ( ! $?JAVA_HOME ) then
 
    # Resolve any symbolic links to find true absolute path to the executable,
    # assuming we have readlink(1).
-   if ( { test -L "$JAVAC_BIN" } ) then
+   if ( $status == 0 && { test -L "$JAVAC_BIN" } ) then
        if ( -f /usr/bin/readlink || -f /bin/readlink ) then
 	   set JAVAC_BIN = `readlink -f "$JAVAC_BIN"`
        endif
@@ -161,3 +161,8 @@ endsw
 
 # Location of hwloc include and lib directories (if not on system path)
 set HWLOC_DIR = ""
+
+# This is appropriate for a Debian distribution (horrible csh quoting).
+# Well, it would be if I knew how to get the quoting right for different
+# csh implementations, sigh.
+# test -f /etc/debian_version && set argv = ( -DDEFAULT_EDITOR="'"'"sensible-editor"'"'" $argv )
