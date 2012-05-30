@@ -70,13 +70,23 @@ Content
         should probably use the most recent version.  Otherwise build
         with aimk -no-hwloc.
       - To make the basic Java targets, as well as a Java 1.6 JDK
-        (e.g. openjdk) you will need ant, ant-nodeps (Red Hat)/ant-optional
+        (e.g. openjdk) you will need: ant, ant-nodeps (Red Hat)/ant-optional
         (Debian), javacc and junit packages.  The GUI installer requires
         IzPack (http://izpack.org) and swing-layout
-        (http://swing-layout.dev.java.net).  The herd library requires a
-        Hadoop distribution (e.g. http://archive.cloudera.com/cdh/2/).
-        Properties for ant are set in the top-level build.properties, and
-        may be overridden in build_private.properties.  Other properties you
+        (http://swing-layout.dev.java.net), also available.  Izpack
+        4.1.1 is known to work, later versions may not, and  swing-layout
+        1.0.3 is known to work.  Copies available from
+        <http://arc.liv.ac.uk/downloads/SGE/support/>.  The herd
+        library requires a basic Hadoop distribution (the hadoop-0.20
+        GNU/Linux packages) of a suitable version
+        (e.g. http://archive.cloudera.com/cdh/3/).  The cdh3u3
+        (0.20.2+923.197) and cdh3u4 (0.20.2+923.256) versions are
+        known to work and cdh3u0 is known not to with this version of
+        SGE.  (There was an incompatible change in the Hadoop
+        distribution, and support for earlier versions can be found in
+        the repository for sge-8.0.0e and earlier.)  Properties for
+        ant are set in the top-level build.properties, and may be
+        overridden in build_private.properties.  Other properties you
         might need to set are typically found in
         nbproject/project.properties in each Java component directory.
       - create dependency tool and dependencies with 'aimk'
@@ -84,6 +94,10 @@ Content
       - create a distribution repository with 'distinst'
       - create a distribution from distribution repository with 'mk_dist'
       - unpack and install distribution
+
+   If in doubt for other systems, consult and adapt the Red Hat recipe
+   given by the %build section of gridengine.spec at the top level of
+   the source directory.
 
    This document describes the process up to the creation of a distribution. 
    The result is a tar file (or virtually any other OS specific distribution
