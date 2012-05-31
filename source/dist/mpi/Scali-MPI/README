@@ -1,6 +1,12 @@
          Scali MPI integration with Grid Engine
          ======================================
 
+[This refers to what became HP MPI and then Platform MPI.  It may or
+may not still be relevant -- feedback welcome.  HP MPI can be tightly
+integrated via MPI_REMSH in the environment.  See the notes at
+<http://wiki.gridengine.info/wiki/index.php/Tight-HP-MPI-Integration-Notes>,
+though they make rather a meal of it.]
+
 For Scali MPI based parallel jobs the scripts Scali_Suspend.sh 
 and Scali_Resume.sh can be used as suspend_method/resume_method
 as explained in Grid Engine man page queue_conf(5).

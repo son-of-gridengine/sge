@@ -111,18 +111,11 @@ the k5dcelogin program for each execution host architecture.
 <br>Before using the security modules, you must create and install the
 binaries for each qmaster or execution host architecture upon which you
 will be using DCE/Kerberos security.
-<br>To create and install the security binaries, follow these instructions:
-<ol>
-<li>
-Compile the binaries</li>
-
-<br>$ cd $SGE_ROOT/security
-<br>$ aimk -gss
-<li>
-Install the binaries</li>
-
-<br># cd $SGE_ROOT/security
-<br># aimk install</ol>
+<br>To create and install the Kerberos security binaries, run <tt>aimk</tt>
+with the <tt>-gss</tt> option before running the <tt>distinst</tt>
+script as usual.  You will need Kerberos/GSSAPI development libraries.
+Either the Heimdal or MIT distribution will work, but you may need to
+adjust the GSSLIBS variable in <tt>aimk.site</tt>.
 
 <h2>
 <font color="#660000">DCE / Kerberos Configuration</font></h2>
@@ -136,7 +129,7 @@ Kerberos Instructions</h4>
 <li>
 Create a "sge" principal for each qmaster and execution host. In the example
 below sdremote.hpc-mo.com is the qmaster host and o2.hpc-mo.com is an execution
-host.</li>
+host, and an MIT Kerberos installation is used.</li>
 
 <br># ./kadmin
 <br>Enter password: xxxxxxx
@@ -246,12 +239,13 @@ user is named joe.
 
 <h2>
 <font color="#660000">Grid Engine Configuration</font></h2>
-To use the security sub-programs with Grid Engine, you must switch on Kerberos
-or DCE in $SGE_ROOT/{$SGE_CELL|default}/product_mode.
-<br>The string that must be in the product_mode file is either sge-dce
-or sgeee-dce for a DCE environment or sge-kerberos or sgeee-kerberos for
-a Kerberos environment. If one of these entries is present, the Kerberos/DCE
-security modules are active.
+<p>
+To use the security sub-programs with Grid Engine, you must switch on
+Kerberos or DCE with the "security_mode" parameter in the bootstrap(5)
+file; the installation script currently doesn't support setting this.
+Kerberos and DCE are equivalent, although the modules for each are
+built differently.
+
 <h2>
 <font color="#660000">Instructions for Grid Engine spool directories in
 DFS</font></h2>
