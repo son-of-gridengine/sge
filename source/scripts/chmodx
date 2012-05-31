@@ -4,6 +4,7 @@
 # preserve/set the file modes.  These probably aren't all necessary.
 
 xargs chmod +x <<EOF
+./scripts/bootstrap.sh
 ./scripts/intl_test.csh
 ./scripts/msgmbe.csh
 ./scripts/infotext_check_script_syntax.tcl
@@ -31,6 +32,7 @@ xargs chmod +x <<EOF
 ./scripts/msgmerge.csh
 ./scripts/test_spooling_performance.sh
 ./scripts/make-tags.sh
+./scripts/update-version-no
 ./dist/ckpt/migration_command
 ./dist/ckpt/checkpoint_command
 ./dist/ckpt/cpr_ckpt_command

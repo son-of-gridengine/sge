@@ -119,10 +119,11 @@ Content
 
       sge/source
 
-   A checkout from the source repository may not have made necessary
-   scripts, such as "aimk" executable.  To fix that before continuing, run
+   [The next two steps may be replaced by
 
-     % sh scripts/chmodx
+      % sh scripts/bootstrap.sh
+   ]
+
 
 3) Building the dependency tool 'sge_depend'
 --------------------------------------------
@@ -138,7 +139,7 @@ Content
 
    To build 'sge_depend' enter:
 
-      % ./aimk -only-depend
+      % csh -f ./aimk -only-depend
 
    The result is the binary
 
@@ -231,6 +232,8 @@ Content
    after creating the nroff man pages enter
 
       % ./aimk -catman
+
+   -catman is not normally necessary.
 
 7) Staging for Installation
 ---------------------------
