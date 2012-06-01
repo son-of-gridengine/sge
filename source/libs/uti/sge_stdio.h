@@ -48,6 +48,33 @@
       goto FOPEN_ERROR; \
    }
 
+/****** uti/stdio/FSCANF() ***************************************************
+ * *  NAME
+ * *     FSCANF() -- fscanf() macro 
+ * *
+ * *  SYNOPSIS
+ * *     #define FSCANF(arguments)
+ * *     void fscanf(FILE *stream, const char *format, ...)
+ * *
+ * *  FUNCTION
+ * *     This FSCANF macro has to be used similar to the fscanf 
+ * *     function. It is not necessary to check the return value. 
+ * *     In case of an error the macro will jump to a defined label.
+ * *     The label name is 'FSCANF_ERROR'.
+ * *
+ * *  INPUTS
+ * *     FILE *stream       - output stream
+ * *     const char *format - format string
+ * *     ...
+ * *
+ * *  NOTES
+ * *     Don't forget to define the 'FSCANF_ERROR'-label
+ * ******************************************************************************/
+#define FSCANF(x) \
+   if (fscanf x < 0) { \
+      goto FSCANF_ERROR; \
+   }
+
 /****** uti/stdio/FPRINTF() ***************************************************
 *  NAME
 *     FPRINTF() -- fprintf() macro 
