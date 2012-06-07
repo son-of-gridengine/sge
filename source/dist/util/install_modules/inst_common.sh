@@ -41,6 +41,9 @@
 #-------------------------------------------------------------------------
 #Setting up common variables and paths (eg. SGE_ARCH, utilbin, util)
 #
+
+# fixme: offer to move /var/sgeCA to /var/lib/sgeCA
+
 BasicSettings()
 {
   unset SGE_ND
@@ -440,12 +443,12 @@ CheckBinaries()
          "qconf           qmod            qsh             sge_execd\n" \
          "qdel            qmon            qstat           qhold\n" \
          "qresub          qsub            qhost           qrls\n" \
-         "qtcsh           qping           qquotai         sgepasswd\n" \
+         "qtcsh           qping           qquota          sgepasswd\n" \
          "qloadsensor.exe\n\n" \
          "and the binaries in >%s< should be:\n\n" \
          "adminrun        gethostbyaddr  loadcheck.exe  rlogin         uidgid\n" \
          "authuser.exe    checkprog      gethostbyname  now            rsh\n" \
-         "infotext        checkuser      gethostname    openssl        rshd\n" \
+         "infotext        checkuser      gethostname    rshd\n" \
          "filestat        getservbyname  qrsh_starter   testsuidroot   SGE_Helper_Service.exe\n" \
          "SGE_Starter.exe\n\n" \
          "Installation failed. Exit.\n" $SGE_BIN $SGE_UTILBIN
@@ -462,7 +465,7 @@ CheckBinaries()
          "and the binaries in >%s< should be:\n\n" \
          "adminrun       gethostbyaddr  loadcheck      rlogin         uidgid\n" \
          "authuser       checkprog      gethostbyname  now            rsh\n" \
-         "infotext       checkuser      gethostname    openssl        rshd\n" \
+         "infotext       checkuser      gethostname    rshd\n" \
          "filestat       getservbyname  qrsh_starter   testsuidroot\n\n" \
          "Installation failed. Exit.\n" $SGE_BIN $SGE_UTILBIN
       fi
@@ -479,7 +482,7 @@ CheckBinaries()
       "and the binaries in >%s< should be:\n\n" \
       "adminrun       gethostbyaddr  loadcheck      rlogin         uidgid\n" \
       "authuser       checkprog      gethostbyname  now            rsh\n" \
-      "infotext       checkuser      gethostname    openssl        rshd\n" \
+      "infotext       checkuser      gethostname    rshd\n" \
       "filestat       getservbyname  qrsh_starter   testsuidroot\n\n" \
       "Installation failed. Exit.\n" $SGE_BIN $SGE_UTILBIN
 
@@ -3148,13 +3151,21 @@ RestoreConfig()
 CheckPrivate ()
 {
    db_opt=`grep spooling_params "$SGE_ROOT"/$SGE_CELL/common/bootstrap | awk -F '[ 	;]+' '{ print $3 }'`
+   QMASTER=`cat "$SGE_ROOT/$SGE_CELL/common/act_qmaster"`
+   if [ -z "$SGE_QMASTER_PORT" ]; then
+      ping_port=`$SGE_UTILBIN/getservbyname -number sge_qmaster`
+   else
+      ping_port=$SGE_QMASTER_PORT
+   fi
    case $db_opt in
        *private*)
-           $INFOTEXT -n \
-               "\nA BerkeleyDB spool configured for private access can't be backed up.\n" \
-               "See bootstrap(5).\n"
-           exit 1
-       ;;
+           if $SGE_ROOT/bin/$SGE_ARCH/qping -info $QMASTER $ping_port qmaster 1 > /dev/null 2>&1; then
+               $INFOTEXT -n \
+                   "\nA BerkeleyDB spool configured for private access can't be backed up\n" \
+                   "with qmaster running.\nSee bootstrap(5).\n"
+               exit 1
+           fi
+           ;;
    esac
 }
 
@@ -3187,7 +3198,7 @@ SwitchArchRst()
 
    DB_LOAD="$SGE_UTILBIN/db_load -f"
    if [ -f "$SGE_UTILBIN/db_load" ]; then
-       ExecuteAsAdmin $DB_LOAD $load_dir/*.dump -h $db_home sge
+       ExecuteAsAdmin $DB_LOAD "$dump_dir"/*.dump -h $db_home sge
    else
        $INFOTEXT -n "\n$SGE_UTILBIN/db_load is missing.\n" \
            "Please ensure that it is installed on the system and link or copy\n" \
@@ -3283,7 +3294,6 @@ RemoveRcScript()
       # scripts. So we need to check if the links were deleted.
       # See RedHat: https://bugzilla.redhat.com/bugzilla/long_list.cgi?buglist=106193
       if [ -f "/etc/redhat-release" -o -f "/etc/fedora-release" ]; then
-         # fixme: use chkconfig
          RCD_PREFIX="/etc/rc.d"
          # Are all startup links correctly removed?
          for runlevel in 3 5; do
@@ -3656,7 +3666,7 @@ RestoreCheckBootStrapFile()
 
       while [ $ret = 0 ]; do
          $INFOTEXT -n "\nFound a running qmaster on your masterhost: %s\nPlease, check this and " \
-                      "make sure, that the daemon is down during the restore!\n\n" $ACT_QMASTER
+                      "make sure that the daemon is down during the restore!\n\n" $ACT_QMASTER
          $INFOTEXT -n -wait "Shutdown qmaster and hit, <ENTER> to continue, or <CTRL-C> to stop\n" \
                             "the restore procedure!\n"
          $CLEAR

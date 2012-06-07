@@ -396,7 +396,7 @@ if [ $AUTO = "true" -a  $AUTOGUI != "true" ]; then
    #Since we no longer have JMX flag (SGE_ENABLE_JMX is always true) we set to to false if
    #SGE_JMX_PORT is missing or is empty in the autoinstall template
    if [ -z "$SGE_JMX_PORT" ]; then
-      $INFOTEXT -log "Disabling JMX since \$SGE_JMX_PORT=\"%s\" in %s file." $SGE_JMX_PORT "$FILE"
+      $INFOTEXT -log "Disabling JMX since \$SGE_JMX_PORT=\"%s\" in %s file." "$SGE_JMX_PORT" "$FILE"
       SGE_ENABLE_JMX="false"
    fi
    CheckConfigFile $FILE
@@ -1333,9 +1333,9 @@ if [ $SHADOW = "install" ]; then
       temp=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep spooling_params | awk '{ print $2 }' | grep "/"`
       if [ $? = 0 ]; then
          db_home=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" 2>/dev/null | grep "spooling_params" | awk '{ print $2 }' | cut -d";" -f1`
-         fstype=`$SGE_UTILBIN/fstype $db_home`
+         fstype=`$SGE_UTILBIN/fstype "$db_home"`
          if [ $? != 0 ]; then
-            $INFOTEXT "\n Shadow master can not access spool directory at %s! \n" $db_home 
+            $INFOTEXT "\n Shadow master can not access the spool directory at %s! \n" "$db_home"
             $INFOTEXT "Check if the spool directory is mounted and has read/write permissions.\n"
             MoveLog
             exit 1
@@ -1343,16 +1343,18 @@ if [ $SHADOW = "install" ]; then
             if [ "$spooling_method" = "berkeleydb" ]; then
                if [ `echo $fstype | grep "nfs" | wc -l` -gt 0 ]; then
                   if [ "$fstype" != "nfs4" ]; then
+                     # Fixme:  Offer a choice of private spooling in this case
+                     # (with warning).
                      $INFOTEXT "Spooling directory exported as %s is not supported!\n" $fstype
                      $INFOTEXT -log "Spooling directory exported as %s is not supported!\n" $fstype
-                     $INFOTEXT "\nPlease install the database directory on a NFSv4 fileserver or use the RPC Client/Server mechanism"
-                     $INFOTEXT -log "\nPlease install the database directory on a NFSv4 fileserver or use the RPC Client/Server mechanism"
+                     $INFOTEXT "\nPlease install the database directory on a NFSv4 fileserver or local filesystem"
+                     $INFOTEXT -log "\nPlease install the database directory on a NFSv4 fileserver or local filesystem"
                      MoveLog
                      exit 1;
                   else
-                     $INFOTEXT "We detected local Berkeley DB Spooling without a RPC Server. Local spooling\n is not working under " \
+                     $INFOTEXT "We detected local Berkeley DB Spooling. Local spooling\n is not working under " \
                                "mixed architectures.\n\n "
-                     $INFOTEXT -log "We detected local Berkeley DB Spooling without a RPC Server. Local spooling\n is not working under " \
+                     $INFOTEXT -log "We detected local Berkeley DB Spooling. Local spooling\n is not working under " \
                                "mixed architectures.\n\n "
                      $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n "Do you want to continue (y/n) ('n' will abort) [y] >> "
                      if [ $? != 0 ]; then
