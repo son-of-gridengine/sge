@@ -288,7 +288,7 @@ SetPermissions()
                   "on this file system.\n\n" \
                   "Probably this file system is an NFS mount where user root is\n" \
                   "mapped to user >nobody<.\n\n" \
-                  "Please login now at your file server and set the file permissions and\n" \
+                  "Please login now to your file server and set the file permissions and\n" \
                   "ownership of the entire distribution with the command:\n\n" \
                   "   # \$SGE_ROOT/util/setfileperm.sh \$SGE_ROOT\n\n" 
 
@@ -335,7 +335,7 @@ SetPermissions()
 
 
 #SetSpoolingOptionsBerkeleyDB()
-# $1 - new default spool_dir or BDB server
+# $1 - new default spool_dir
 SetSpoolingOptionsBerkeleyDB()
 {
    SPOOLING_METHOD=berkeleydb
@@ -2604,14 +2604,7 @@ SetScheddConfig()
 
 GiveBerkelyHints()
 {
-  $INFOTEXT "If you are using a Berkeley DB Server, please add the bdb_checkpoint.sh\n" \
-            "script to your crontab. This script is used for transaction\n" \
-            "checkpointing and cleanup in SGE installations with a\n" \
-            "Berkeley DB RPC Server. You will find this script in:\n" \
-            "$SGE_ROOT/util/\n\n" \
-            "It must be added to the crontab of the user (%s), who runs the\n" \
-            "berkeley_db_svc on the server host. \n\n" \
-            "e.g. * * * * * <full path to scripts> <sge-root dir> <sge-cell> <bdb-dir>\n" $ADMINUSER
+    :
 }
 
 
