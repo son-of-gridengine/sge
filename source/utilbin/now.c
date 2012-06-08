@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <time.h>
+#include <string.h>
 
 /*-------------------------------------------*/
 int main(int argc, char *argv[])
