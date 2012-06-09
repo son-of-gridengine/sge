@@ -81,6 +81,10 @@
 #define SGE_BIN "bin"
 #define STREESPOOLTIMEDEF 240
 
+#ifndef HAVE_HWLOC
+  #define HAVE_HWLOC 0
+#endif
+
 /* This list is *ONLY* used by the execd and should be moved eventually */
 lList *Execd_Config_List = NULL; 
 
