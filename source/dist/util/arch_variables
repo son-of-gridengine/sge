@@ -252,6 +252,22 @@ obsd-*)
    ROOTGROUP=wheel
    LOADSENSOR_COMMAND="/util/resources/loadsensors/interix-loadsensor.sh"
    ;;
+ cygwin-x86)
+   AWK=/usr/bin/awk
+   ECHO="/bin/echo -e"
+   RC_FILE=sysv_rc
+   RC_DIR=rc3.d
+   RC_PREFIX=/etc
+   XTERM=/usr/bin/xterm
+   MAILER=/bin/mail
+   QLOGIN_COMMAND=telnet
+   QLOGIN_DAEMON=/usr/sbin/in.telnetd
+   RLOGIN_DAEMON=/usr/sbin/in.rlogind
+   GETTEXT=/usr/bin/gettext
+   RSH_DAEMON=undef
+   LOADSENSOR_COMMAND=undef
+   ROOTGROUP=wheel
+   ;;
  *)
    echo "Architecture $ARCH not supported by this procedure!"
    exit 1

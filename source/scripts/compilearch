@@ -329,7 +329,15 @@ case $buildarch in
    win32-x86)
       BUILDARCH=WIN32_X86
       TARGET_BITS=TARGET_32BIT
-      ;;   
+      ;;
+   cygwin-x86)
+      BUILDARCH=CYGWIN_X86
+      TARGET_BITS=TARGET_32BIT
+      ;;
+   cygwin-x86_64)               # maybe
+      BUILDARCH=CYGWIN_X86_64
+      TARGET_BITS=TARGET_64BIT
+      ;;
    *)
       echo cannot compile - no mapping for architecture \"$buildarch\" defined yet
       exit 1

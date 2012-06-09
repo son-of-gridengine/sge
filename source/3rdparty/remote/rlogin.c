@@ -65,7 +65,7 @@
 #  include <arpa/inet.h>
 #endif
 
-#if !defined(FREEBSD) && !defined(NETBSD) && !defined(DARWIN) && !defined(INTERIX) 
+#if !defined(FREEBSD) && !defined(NETBSD) && !defined(DARWIN) && !defined(INTERIX) && !defined(__CYGWIN__)
 #include <values.h>
 #endif
 

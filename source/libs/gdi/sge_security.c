@@ -1330,7 +1330,7 @@ sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
    DPRINTF(("sge_set_auth_info: username(uid) = %s(%d), groupname = %s(%d)\n",
             username, uid, groupname, gid));
 
-   snprintf(buffer, sizeof(buffer), pid_t_fmt" "pid_t_fmt" %s %s", uid, gid, username, groupname);
+   snprintf(buffer, sizeof(buffer), uid_t_fmt" "gid_t_fmt" %s %s", uid, gid, username, groupname);
    if (sge_encrypt(buffer, sizeof(buffer), obuffer, sizeof(obuffer))) {
       packet_handle->auth_info = sge_strdup(NULL, obuffer);
    } else {
