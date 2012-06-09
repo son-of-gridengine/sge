@@ -253,8 +253,10 @@ main(int argc, char **argv)
    bool group_nodes=true;
    bool decay_usage=false;
    int c;
+#ifndef __CYGWIN__
    extern char *optarg;
    extern int optind;
+#endif
    FILE *outfile = NULL;
    char *output_mode = "a";
 

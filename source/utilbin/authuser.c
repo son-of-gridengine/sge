@@ -64,7 +64,7 @@
 
 
 
-#if defined(IRIX65) || defined(AIX43) || defined(HP1164) || defined(INTERIX) || defined(ALPHA5) || defined(WINDOWS) || defined(__OpenBSD__)
+#if defined(IRIX65) || defined(AIX43) || defined(HP1164) || defined(INTERIX) || defined(ALPHA5) || defined(WINDOWS) || defined(__OpenBSD__) || defined(__CYGWIN__)
 #define JUTI_NO_PAM
 #elif defined(DARWIN)
 #include <pam/pam_appl.h>
@@ -72,7 +72,7 @@
 #include <security/pam_appl.h>
 #endif
 
-#if defined(DARWIN) || defined(AIX51) || defined(AIX43) || defined(INTERIX) || defined(FREEBSD) || defined(ALPHA5) || defined(WINDOWS) || defined(NETBSD)
+#if defined(DARWIN) || defined(AIX51) || defined(AIX43) || defined(INTERIX) || defined(FREEBSD) || defined(ALPHA5) || defined(WINDOWS) || defined(NETBSD) || defined(__CYGWIN__)
 #define JUTI_NO_SHADOW
 #else
 #include <shadow.h>
@@ -277,7 +277,7 @@ int main(int argc, char** argv) {
       gid_t *groups = NULL;
       char  **group_names = NULL;
 #ifndef WINDOWS      
-      fprintf(stdout, "uid %d\n", uid);
+      fprintf(stdout, "uid "uid_t_fmt"\n", uid);
       fprintf(stdout, "gid ");
 
       if(juti_getgrouplist(username, gid, &groups, &group_names, &group_count) == 0) {            

@@ -923,7 +923,7 @@ lListElem *pe_task
       char addgrpid_str[64];
       lListElem *jr;
 
-      sprintf(addgrpid_str, pid_t_fmt, addgrpid);
+      sprintf(addgrpid_str, gid_t_fmt, addgrpid);
       if ((jr=get_job_report(job_id, ja_task_id, pe_task_id)))
          lSetString(jr, JR_osjobid, addgrpid_str); 
       DPRINTF(("job %s: addgrpid = %s\n", 

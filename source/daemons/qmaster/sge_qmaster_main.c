@@ -475,7 +475,7 @@ int main(int argc, char* argv[])
 *******************************************************************************/
 static void init_sig_action_and_mask(void)
 {
-#if !defined(INTERIX)
+#if !defined(INTERIX) && !defined(__CYGWIN__)
    struct sigaction sa;
    sigset_t sig_set;
    

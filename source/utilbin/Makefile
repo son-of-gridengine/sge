@@ -222,7 +222,7 @@ fstype.o: $(UTILBIN_DIR)/fstype.c
 		$(CC) $(CFLAGS) $(MEMCFLAG) $(GCC_NODUPLWARN) -c $(UTILBIN_DIR)/fstype.c
 #---------------------------------------------------------------------
 spooldefaults:   spooldefaults.o  version.o sge_mt_init.o $(SPOOLING_DEPS) $(SPOOLCLIB) $(SPOOLLIB) $(SCHEDLIB) $(EVCLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(WINGRIDLIB_DEP) $(UTILIB) 
-		$(CC) -o $@ $(LFLAGS) spooldefaults.o version.o sge_mt_init.o -lspoolc $(SPOOLING_LIBS) -lsched -levc -lgdi -lsgeobj -lsgeobjd $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(DLLIB) $(SLIBS) $(LIBS)
+		$(CC) -o $@ $(LFLAGS) spooldefaults.o version.o sge_mt_init.o -lspoolc $(SPOOLING_LIBS) -lsched -levc -lgdi -lsgeobj -lsgeobjd $(KRBLIB) -lcull -lcomm -lcommlists -luti $(SECLIB) $(WINGRIDLIB) $(DLLIB) $(SLIBS) $(LIBS)
 
 spooldefaults.o: $(UTILBIN_DIR)/spooldefaults.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/spooldefaults.c
@@ -257,7 +257,7 @@ tst_pthread_signals.o: $(UTILBIN_DIR)/tst_pthread_signals.c
 
 #---------------------------------------------------------------------
 spooledit: spooledit.o sge_mt_init.o $(SPOOLING_DEPS) $(SPOOLLIB) $(SCHEDLIB) $(EVCLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(WINGRIDLIB_DEP) $(UTILIB)  
-		$(CC) -o $@ $(LFLAGS) spooledit.o version.o sge_mt_init.o -lspoolb $(SPOOLING_LIBS) -lsched -levc -lgdi -lsgeobj -lsgeobjd $(SECLIB) $(KRBLIB) -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) -ldb$(BDB_LIB_SUFFIX) $(DLLIB) $(SLIBS) $(LIBS)
+		$(CC) -o $@ $(LFLAGS) spooledit.o version.o sge_mt_init.o -lspoolb $(SPOOLING_LIBS) -lsched -levc -lgdi -lsgeobj -lsgeobjd $(KRBLIB) -lcull -lcomm -lcommlists -luti $(SECLIB) $(WINGRIDLIB) -ldb$(BDB_LIB_SUFFIX) $(DLLIB) $(SLIBS) $(LIBS)
 
 spooledit.o: $(UTILBIN_DIR)/spooledit.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/spooledit.c
@@ -274,7 +274,7 @@ sge_passwd.o: $(UTILBIN_DIR)/sge_passwd.c
 
 #---------------------------------------------------------------------
 SMON_LIB_DEPENDS = $(SCHEDLIB) $(EVCLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(KRBLIBS) $(CULLLIB) $(WINGRIDLIB_DEP) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB)
-SMON_ADD_LIBS = -lsched -levc -lgdi -lsgeobjd -lsgeobj -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
+SMON_ADD_LIBS = $(SCHEDLIB) $(EVCLIB) $(GDILIB) $(SGEOBJDLIB) $(SGEOBJLIB) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
 
 sge_share_mon: sge_share_mon.o sge_support.o $(SMON_LIB_DEPENDS)
 		$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) sge_share_mon.o sge_support.o $(SMON_ADD_LIBS) $(SLIBS) $(LIBS) 
@@ -290,7 +290,7 @@ valid_jvmlib.o:		$(UTILBIN_DIR)/valid_jvmlib.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/valid_jvmlib.c
 
 #---------------------------------------------------------------------
-AUTHUSER_ADD_LIBS = -luti $(COMMLISTSLIB) $(DLLIB)
+AUTHUSER_ADD_LIBS = $(UTILIB) $(COMMLISTSLIB) $(DLLIB)
 
 authuser: authuser.o juti.o $(UTILIB) $(COMMLISTSLIB)
 	$(CC) -o authuser $(LFLAGS) authuser.o juti.o $(AUTHLIBS) $(AUTHUSER_ADD_LIBS) $(LIBS)
@@ -308,4 +308,3 @@ authuser.obj: $(UTILBIN_DIR)/authuser.c
 
 juti.obj: $(SDIR)/libs/juti/juti.c
 	$(WINCC) $(WINCFLAGS) /c $(SDIR)/libs/juti/juti.c
-
