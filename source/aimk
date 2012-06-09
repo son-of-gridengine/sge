@@ -1707,6 +1707,48 @@ case WIN32_X86:
    set WINLIBS = "pdh.lib ws2_32.lib advapi32.lib user32.lib"
    breaksw
 
+case CYGWIN_X86:
+   # fixme:  can any of this work?
+   set MAKEWINGRIDLIB   = 0
+   set MAKEWINGRIDAPP   = 0
+   set AUTHLIBS = "-lcrypt"
+   set CFLAGS = "$CFLAGS"
+   if ($OPTIMIZATION == 1) then
+      set OFLAG = "-O3"
+   else
+      set OFLAG = ""
+   endif
+   set COMPILE_DC = 1
+   set CC  = gcc
+   set CXX = g++
+   if ($DEBUGGED == 1) then
+      set DEBUG_FLAG = "-g $INSURE_FLAG -DSGE_LOCK_DEBUG"
+   endif
+   if ($GPROFFED == 1) then
+      set DEBUG_FLAG = "$DEBUG_FLAG -pg"
+   endif
+   # For now, kludge by treating Cygwin as "LINUX" and special-casing
+   # where necessary
+   set CFLAGS = "$OFLAG -Wall -Wstrict-prototypes -DUSE_POLL -DLINUX -D_GNU_SOURCE -DGETHOSTBYNAME -DGETHOSTBYADDR -DHAVE_XDR_H=1 $DEBUG_FLAG $CFLAGS"
+   set LFLAGS   = "$DEBUG_FLAG $LFLAGS"
+   set SHAREDLD = $CC
+   set SONAME_LFLAG_DRMAA10 = "-Wl,-soname,libdrmaa.so.1.0"
+   set NOERR_CFLAG = "-Wno-error"
+   set NOERR_PROTO = "-Wno-strict-prototypes"
+   set XMTDEF   = ""
+   set XLIBD = ""
+   set XLFLAGS  = "$XLIBD"
+   set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
+   set XINCD    = "$XMTINCD $XINCD -I/usr/X11R6/include"
+   set XCFLAGS  = "-Wno-strict-prototypes -Wno-error $XMTDEF $XINCD"
+   set XLIBS    = "-lXm -lXpm -lXt -lXext -lXmu -lX11 -lSM -lICE"
+   set RUNPATH       = -Wl,-rpath,'\$$ORIGIN'/../../lib/$buildarch
+   set LFLAGS        = "$LFLAGS $RUNPATH"
+   set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared $RUNPATH"
+   set CFLAGS = "$CFLAGS -D_FILE_OFFSET_BITS=64"
+   set SHAREDEXT = .dll
+   breaksw
+
 case SOLARIS:
 case SOLARIS64:
 case SOLARIS86:

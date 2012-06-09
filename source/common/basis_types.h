@@ -155,6 +155,8 @@ extern "C" {
 */
 #if defined(FREEBSD)
 #  define uid_t_fmt "%u"
+#elif defined __CYGWIN__
+#  define uid_t_fmt "%lu"
 #else
 #  define uid_t_fmt pid_t_fmt
 #endif
@@ -169,6 +171,8 @@ extern "C" {
 #  define gid_t_fmt    "%ld"
 #elif defined(LINUX86) || defined(FREEBSD)
 #  define gid_t_fmt    "%u"
+#elif defined __CYGWIN__
+#  define gid_t_fmt    "%lu"
 #else
 #  define gid_t_fmt    "%d"
 #endif

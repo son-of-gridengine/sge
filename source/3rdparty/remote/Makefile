@@ -28,7 +28,9 @@ RSHD_ADD_OBJS = \
 
 RSHD_ADD_LIBS = -L$(SGE_ARCH_DIR) -luti2 -lsgeobj -lsgeobjd $(KRBLIB) -lcull -lcommlists -luti $(WINGRIDLIB_STATIC)
 
-RSHD_LIB_DEPENDS = $(SGE_ARCH_DIR)/libuti$(LIBEXT) $(SGE_ARCH_DIR)/$(WINGRIDLIB_DEP)
+# The last dependency usually reduces to a directory, and Cygwin's make
+# doesn't like it.  Assume wingrid is built already.
+RSHD_LIB_DEPENDS = $(SGE_ARCH_DIR)/libuti$(LIBEXT) # $(SGE_ARCH_DIR)/$(WINGRIDLIB_DEP)
 
 RLOGIN_OBJS = rlogin.o
 

@@ -460,7 +460,7 @@ int sge_loadmem(sge_mem_info_t *mem_info)
 
 
 /*--------------------------------------------------------------------------*/
-#if __linux__
+#if __linux__ || __CYGWIN__
 #include <stdio.h>
 #include <string.h>
 

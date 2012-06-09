@@ -2998,7 +2998,10 @@ int cl_com_cached_gethostbyaddr(struct in_addr *addr, char **unique_hostname, st
              return CL_RETVAL_GETHOSTADDR_ERROR;
          }
          resolve_name_ok = 1;
-         ret_val = cl_host_alias_list_get_alias_name(ldata->host_alias_list,hostent->he->h_name , &alias_name);
+         ret_val = cl_host_alias_list_get_alias_name(ldata->host_alias_list,
+                                                     /* cast avoids warning on cygwin */
+                                                     (char *) hostent->he->h_name,
+                                                     &alias_name);
          if (ret_val == CL_RETVAL_OK) {
             CL_LOG_STR(CL_LOG_INFO,"resolved addr name aliased to", alias_name);
             if (cl_com_compare_hosts(hostname, alias_name) != CL_RETVAL_OK) {

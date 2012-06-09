@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-#include <rpc/rpc.h>
+#include <rpc/xdr.h>
 #include <rpc/types.h>
 
 #if defined(INTERIX)

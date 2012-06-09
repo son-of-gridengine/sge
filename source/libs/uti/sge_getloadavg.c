@@ -51,7 +51,7 @@
 #  include <sys/cpuvar.h>
 #  include <kstat.h> 
 #  include <sys/loadavg.h> 
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__CYGWIN__)
 #  include <ctype.h>
 #elif defined(ALPHA4) || defined(ALPHA5)
 #  include <nlist.h>
@@ -103,7 +103,7 @@
 #     define KERNEL_AVG_TYPE long
 #     define KERNEL_AVG_NAME "avenrun"
 #  endif
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__CYGWIN__)
 #  define LINUX_LOAD_SOURCE "/proc/loadavg"
 #  define CPUSTATES 4
 #  define PROCFS "/proc" 
@@ -138,7 +138,7 @@ typedef int kernel_fd_type;
 static long percentages(int cnt, double *out, long *new, long *old, long *diffs);
 #endif
 
-#if defined(ALPHA4) || defined(ALPHA5) || defined(HPUX) || defined(IRIX) || defined(__linux__) || defined(DARWIN) || defined(HAS_AIX5_PERFLIB)
+#if defined(ALPHA4) || defined(ALPHA5) || defined(HPUX) || defined(IRIX) || defined(__linux__) || defined(DARWIN) || defined(HAS_AIX5_PERFLIB) || defined(__CYGWIN__)
 
 #ifndef DARWIN
 static int get_load_avg(double loadv[], int nelem);    
@@ -148,7 +148,7 @@ static double get_cpu_load(void);
 
 #endif
 
-#if __linux__
+#if __linux__ || __CYGWIN__
 static char* skip_token(char *p); 
 #endif
 
@@ -162,7 +162,7 @@ static int getkval(unsigned long offset, int *ptr, int size, char *refstr);
 
 #endif 
 
-#if !defined(__linux__) && !defined(SOLARIS)
+#if !defined(__linux__) && !defined(SOLARIS) && !defined(__CYGWIN__)
 static kernel_fd_type kernel_fd;
 #endif
 
@@ -491,7 +491,7 @@ double get_cpu_load(void) {
    DEXIT;
    return cpu_load;
 }
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__CYGWIN__)
 
 static char* skip_token(char *p) {
    while (isspace(*p)) {
@@ -908,7 +908,7 @@ static int get_load_avg(double loadv[], int nelem)
    return 0;
 }
 
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__CYGWIN__)
 
 static int get_load_avg(
 double loadv[],
@@ -1054,7 +1054,7 @@ int nelem
 int get_channel_fd()
 {
    if (kernel_initialized) {
-#if defined(SOLARIS) || defined(__linux__) || defined(HP11) || defined(HP1164) || defined(FREEBSD)
+#if defined(SOLARIS) || defined(__linux__) || defined(HP11) || defined(HP1164) || defined(FREEBSD) || defined(__CYGWIN__)
       return -1;
 #else
       return kernel_fd;
@@ -1070,7 +1070,7 @@ int sge_getloadavg(double loadavg[], int nelem)
 
 #if defined(SOLARIS) || defined(FREEBSD) || defined(NETBSD) || defined(DARWIN)
    elem = getloadavg(loadavg, nelem); /* <== library function */
-#elif defined(ALPHA4) || defined(ALPHA5) || defined(IRIX) || defined(HPUX) || defined(CRAY) || defined(NECSX4) || defined(NECSX5) || defined(__linux__) || defined(HAS_AIX5_PERFLIB)
+#elif defined(ALPHA4) || defined(ALPHA5) || defined(IRIX) || defined(HPUX) || defined(CRAY) || defined(NECSX4) || defined(NECSX5) || defined(__linux__) || defined(HAS_AIX5_PERFLIB) || defined(__CYGWIN__)
    elem = get_load_avg(loadavg, nelem); 
 #else
    elem = -2;

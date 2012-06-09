@@ -95,6 +95,10 @@
 #define _PATH_DEFPATH "/usr/bin:/bin"
 #endif
 
+#if defined __CYGWIN__
+#define _PATH_NOLOGIN "/etc/nologin"
+#endif
+
 #if defined ALPHA4 || HP10 || IRIX || (SOLARIS && !HAS_SOCKLEN_T) || NECSX5 || CRAY || DARWIN6
 typedef int socklen_t;
 #endif
@@ -105,7 +109,7 @@ typedef unsigned short in_port_t;
 #endif
 #endif
 
-#if defined(IRIX) || defined(INTERIX)
+#if defined(IRIX) || defined(INTERIX) || defined(__CYGWIN__)
 #  define NCARGS ARG_MAX
 #endif
 
@@ -343,8 +347,8 @@ doit(fromp)
 		 * in a remote net; look up the name and check that this
 		 * address corresponds to the name.
 		 */
-		hostname = hp->h_name;
-		if (check_all || local_domain(hp->h_name)) {
+		hostname = (char *) hp->h_name; /* cast for Cygwin's const name */
+		if (check_all || local_domain((char *) hp->h_name)) {
 			strncpy(remotehost, hp->h_name, sizeof(remotehost) - 1);
 			remotehost[sizeof(remotehost) - 1] = 0;
 			errorhost = remotehost;
