@@ -149,9 +149,9 @@ that it is only accessed by a single process.  This allows the
 \fIdatabase directory\fP to be on an NFSv3 filesystem (as opposed to
 an NFSv4 one, which is otherwise necessary), but it is unsafe to
 access it with any other program.  In particular, this means that the
-backup scripts (inst_sge \-bup and
-util/upgrade_modules/save_sge_config.sh should not be used while
-qmaster is running with berkeleydb spooling).
+backup script (inst_sge \-bup), and similar scripts using the DB
+utilities, should not be used while qmaster is running with berkeleydb
+spooling.
 .PP
 For spooling method \fIclassic\fP the spooling parameters take the form
 <common_dir>;<qmaster spool dir>, e.g.
@@ -198,8 +198,16 @@ master spool directory is <xxqs_name_sxx_root>/<cell>/spool/qmaster.
 .SS "\fBsecurity_mode\fP"
 The security mode defines the set of security features the installed cluster is using.
 .PP
-Possible security mode settings are none, afs, dce, kerberos, csp
-(no additional security, AFS, DCE, KERBEROS, CSP security model).
+Possible security mode settings are "none", "afs", "dce", "kerberos",
+"csp" (no additional security, AFS, DCE/GSSAPI, Kerberos/GSSAPI, and
+X.509 certificate-based security).  The "dce" and "kerberos" methods
+are equivalent, calling the GSSAPI security modules in the same way,
+whether they were built for Kerberos/GSSAPI or DCE/GSSAPI.  Only the
+CSP method is currently properly functional and safe.
+.br
+\fBNB.  Do not use AFS security unless you have taken steps to modify
+the programs used so as to encrypt the credentials in the spool area,
+which is normally world-readable.\fP
 .\"
 .\"
 .SS "\fBlistener_threads\fP"
@@ -210,14 +218,14 @@ demanding cases.
 .\"
 .\"
 .SS "\fBworker_threads\fP"
-The number of worker threads (defaults set by installation).
+The number of qmaster worker threads (defaults set by installation).
 .\"
 .\"
 .SS "\fBscheduler_threads\fP"
-The number of scheduler threads (allowed: 0\-1, default set by installation: 1, off: 0).
-(see 
+The number of qmaster scheduler threads (allowed: 0\-1, default set by
+installation: 1, off: 0; see
 .M qconf 1
-\-kt/\-at option)
+\-kt/\-at option).
 .\"
 .\"
 .SS "\fBjvm_threads\fP"
