@@ -897,6 +897,10 @@ overwritten by the execution host local configuration.
 .\"
 .\"
 .SS "\fBset_token_cmd\fP"
+\fBNB.  Do not use AFS security unless you have taken steps to encrypt
+the credentials in the spool area, which is normally
+world-readable.\fP
+.br
 \fBSet_token_cmd\fP points to a command which sets and extends AFS
 tokens for xxQS_NAMExx jobs.  It is run by
 .M xxqs_name_sxx_coshepherd 8 .
@@ -1459,6 +1463,7 @@ If this parameter is set then xxQS_NAMExx uses the supplementary group ids
 when a job is deleted, or when
 .M xxqs_name_sxx_shepherd 8
 cleans up after job termination.
+This currently only works under GNU/Linux, Solaris, and Tru64.
 .PP
 .IP "\fIPDC_INTERVAL\fP"
 This parameter defines the interval between runs of the PDC (Portable
