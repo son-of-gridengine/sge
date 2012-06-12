@@ -622,7 +622,7 @@ void cull_show_job(lListElem *job, int flags, bool show_binding)
             double_print_time_to_dstring(cpu, &cpu_string);
             double_print_memory_to_dstring(vmem, &vmem_string);
             double_print_memory_to_dstring(maxvmem, &maxvmem_string);
-            printf("cpu=%s, mem=%-5.5f GBs, io=%-5.5f GB, vmem=%s, maxvmem=%s\n",
+            printf("cpu=%s, mem=%-5.5f GB s, io=%-5.5f GB, vmem=%s, maxvmem=%s\n",
                    sge_dstring_get_string(&cpu_string),
                    mem, io,
                    (vmem == 0.0) ? "N/A": sge_dstring_get_string(&vmem_string),

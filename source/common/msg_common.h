@@ -560,7 +560,7 @@
 #define MSG_GDI_UTEXT_ke_OPT_HOSTS                       _MESSAGE(23363, _("shutdown execution daemon(s)"))
 
 #define MSG_GDI_USAGE_k_OPT_MASTERORSCHEDULINGDAEMON     "[-k{m|s}]"
-#define MSG_GDI_UTEXT_k_OPT_MASTERORSCHEDULINGDAEMON     _MESSAGE(23364, _("shutdown master|scheduling daemon"))
+#define MSG_GDI_UTEXT_k_OPT_MASTERORSCHEDULINGDAEMON     _MESSAGE(23364, _("shutdown master|scheduling thread"))
 
 #define MSG_GDI_USAGE_kqs_OPT                            "[-kqs]"
                          

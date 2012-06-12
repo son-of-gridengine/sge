@@ -453,7 +453,7 @@ int path_alias_list_get_path(const lList *path_aliases, lList **alpp,
          sge_dstring_copy_dstring(&the_path, outpath);
       }
    } else {
-      DPRINTF(("\"path_aliases\" containes no elements\n"));
+      DPRINTF(("\"path_aliases\" contains no elements\n"));
    }
 
    sge_dstring_free(&the_path);

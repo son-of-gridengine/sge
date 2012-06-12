@@ -1886,10 +1886,10 @@ CheckIfClusterNameAlreadyExists()
    #Prepare correct return value and message
    if [ $rc_res -eq 1 ]; then
       if [ $ret -eq 1 ]; then
-         infotext_temp_msg="Detected a presence of old SGE RC scripts for cluster >\$SGE_CLUSTER_NAME=%s< as well!\n%s\n"
+         infotext_temp_msg="Detected old SGE RC scripts for cluster >\$SGE_CLUSTER_NAME=%s< as well!\n%s\n"
          ret=3
       else
-         infotext_temp_msg="Specified cluster name >\$SGE_CLUSTER_NAME=%s< resulted in the following conflict!\nDetected a presence of old RC scripts.\n%s\n"
+         infotext_temp_msg="Specified cluster name >\$SGE_CLUSTER_NAME=%s< resulted in the following conflict!\nDetected old RC scripts.\n%s\n"
          ret=2
       fi
       if [ "$AUTO" = "true" ]; then
