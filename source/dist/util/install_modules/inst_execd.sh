@@ -1010,10 +1010,10 @@ SetupWinSvc()
    fi
 
    if [ "$SGE_ROOT" = "" -o "$SGE_CELL" = "" ]; then
-      $INFOTEXT "Please, source <sge-root>/<sge-cell>/common/settings.[c]sh"
+      $INFOTEXT "Please source <sge-root>/<sge-cell>/common/settings.[c]sh"
       $INFOTEXT "file to setup a proper environment."
       $INFOTEXT "... exiting now!"
-      $INFOTEXT -log "Please, source <sge-root>/<sge-cell>/common/settings.[c]sh"
+      $INFOTEXT -log "Please source <sge-root>/<sge-cell>/common/settings.[c]sh"
       $INFOTEXT -log "file to setup a proper environment."
       $INFOTEXT -log "... exiting now!"
 

@@ -491,7 +491,7 @@ u_long32 range_list_get_first_id(const lList *range_list, lList **answer_list)
 
       range_get_all_ids(range, &start, &end, &step);
    } else {
-      answer_list_add(answer_list, "range_list containes no elements",
+      answer_list_add(answer_list, "range_list contains no elements",
                       STATUS_ERROR1, ANSWER_QUALITY_ERROR);
    }
    DRETURN(start);
@@ -533,7 +533,7 @@ u_long32 range_list_get_last_id(const lList *range_list, lList **answer_list)
       u_long32 start, step;
       range_get_all_ids(range, &start, &end, &step);
    } else {
-      answer_list_add(answer_list, "range_list containes no elements",
+      answer_list_add(answer_list, "range_list contains no elements",
                       STATUS_ERROR1, ANSWER_QUALITY_ERROR);
    }
    DRETURN(end);
