@@ -148,6 +148,20 @@ switch($buildarch)
       breaksw
 endsw
 
+# use MIT Kerberos
+set GSSHEIMDAL = 0
+# These are appropriate for Debian with the krb5-multidev package
+# set SGE_INPUT_CFLAGS = -I/usr/include/mit-krb5
+# set GSSLIBS = -L/usr/lib/mit-krb5
+# or -L/usr/lib/x86_64-linux-gnu/mit-krb5 on multiarch versions
+
+# use Heimdal Kerberos
+# set GSSHEIMDAL = 1
+
+if ( ! $?GSSLIBS ) then
+   set GSSLIBS = ""
+endif
+
 switch($buildarch)
    case "darwin-x64":
       set MOTIFHOME = "/opt/local/"
