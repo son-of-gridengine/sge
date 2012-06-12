@@ -93,7 +93,7 @@
 #ifdef KRBGSS
 #include <krb5.h>
 #include <gssapi/gssapi_krb5.h>
-#ifndef HEIM_ERR_NOHOST         /* fixme:  what's best to check?  */
+#ifndef HEIMDAL
 #include <gssapi/gssapi_generic.h>
 #endif
 #else

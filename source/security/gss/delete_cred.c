@@ -43,7 +43,7 @@
 #include <sys/stat.h>
 #include <limits.h>
 #include <fcntl.h>
-#ifdef KRBGSS
+#if defined KRBGSS && !defined HEIMDAL
 #include <gssapi/gssapi_generic.h>
 #else
 #include <gssapi.h>

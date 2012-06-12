@@ -390,7 +390,6 @@ set WINGRIDLIB_DEP    = ""
 # GSS
 set GSSDEPEND         = ""
 set GSSCLEAN          = ""
-set GSSLIBS           = ""
 
 # KERBEROS
 set KRB	              = 0
@@ -585,10 +584,15 @@ while ($#argv >= 1 && $?found)
       set MAKEWINGRIDLIB = 0
       set GSSDEPEND = "gss_depend"
       set GSSCLEAN = "gss_clean"
-      set CFLAGS  = "-DKRBGSS -I../security/gss -I$KRB_HOME/include -I$KRB_HOME/include/gssapi $CFLAGS"
-      set GSSLIBS = "-lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err"
-# Heimdal
-      set GSSLIBS = "-lgssapi -lkrb5 -lcom_err"
+      set CFLAGS  = "-DKRBGSS -I../security/gss -I$KRB_HOME/include $CFLAGS"
+      if ( $GSSHEIMDAL == 1 ) then
+        # Heimdal Kerberos
+        set GSSLIBS = "$GSSLIBS -lgssapi -lkrb5 -lcom_err"
+        set CFLAGS = "-DHEIMDAL $CFLAGS"
+      else
+        # MIT Kerberos
+        set GSSLIBS = "$GSSLIBS -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err"
+      endif
       set SECTARGETS = gss_all
       set MAKEPAM = 0
       breaksw
