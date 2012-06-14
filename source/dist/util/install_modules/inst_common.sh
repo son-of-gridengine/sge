@@ -387,8 +387,10 @@ CheckBinaries()
                 qmake qmod qresub qrls qrsh qselect qsh \
                 qstat qsub qtcsh qping qquota qloadsensor.exe"
 
+   # This used to insist on rsh et al, but we're likely to build without,
+   # as they involve suid and we normally have SSH and PAM.
    UTILFILES="adminrun checkprog checkuser filestat gethostbyaddr gethostbyname \
-              gethostname getservbyname loadcheck now qrsh_starter rlogin rsh rshd \
+              gethostname getservbyname loadcheck now qrsh_starter \
               testsuidroot authuser uidgid infotext"
 
    WINUTILFILES="SGE_Helper_Service.exe adminrun checkprog checkuser filestat \
