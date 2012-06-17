@@ -1541,12 +1541,7 @@ case LINUXARM:
 
    set XMTDEF   = ""
 
-   if ($TARGET_BITS == TARGET_32BIT || $BUILDARCH == ALINUX || $BUILDARCH == LINUXIA64) then
-      set XLIBD    = "-L/usr/X11R6/lib"
-   else
-      set XLIBD    = "-L/usr/X11R6/lib64"
-   endif
-
+   set XLIBD = ""
    set XLFLAGS  = "$XLIBD"
 
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
@@ -1554,7 +1549,7 @@ case LINUXARM:
    if ($BUILDARCH != ALINUX) then
       set XINCD    = "$XMTINCD $XINCD -I/usr/X11R6/include"
       set XCFLAGS  = "-Wno-strict-prototypes -Wno-error $XMTDEF $XINCD"
-      set XLIBS    = "-lXm -lXpm -lXt -lXext -lXmu -lX11 -lSM -lICE -lXp"
+      set XLIBS    = "-lXm -lXpm -lXt -lXext -lXmu -lX11 -lSM -lICE"
    else
       set XINCD    = "$XMTINCD $XINCD"
       set XCFLAGS  = "-DNeedFunctionPrototypes -Wno-error $XMTDEF $XINCD"

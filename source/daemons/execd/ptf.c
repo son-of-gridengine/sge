@@ -192,6 +192,8 @@ static lList *ptf_build_usage_list(char *name, lList *old_usage_list);
 
 static lListElem *ptf_get_job(u_long job_id);
 
+static void ptf_unregister_registered_jobs(void);
+
 #if defined(__sgi)
 
 static void ptf_setpriority_ash(lListElem *job, lListElem *osjob, long pri);
@@ -1874,7 +1876,7 @@ void ptf_unregister_registered_job(u_long32 job_id, u_long32 ja_task_id ) {
    DEXIT;
 }
 
-void ptf_unregister_registered_jobs(void)
+static void ptf_unregister_registered_jobs(void)
 {
    lListElem *job;
 

@@ -780,13 +780,13 @@ sge_gdi_ctx_class_create_from_bootstrap(int prog_number, const char* component_n
    }
    
    /* parse the url */
-   DPRINTF(("url = %s\n", url));
+   DPRINTF(("url = "SFN"\n", url));
    if (is_qmaster_internal_client) {
-      sscanf(url, "internal://%s", sge_url);
+      sscanf(url, "internal://%512s", sge_url);
    } else {
-      sscanf(url, "bootstrap://%s", sge_url);
+      sscanf(url, "bootstrap://%512s", sge_url);
    }
-   DPRINTF(("sge_url = %s\n", sge_url));
+   DPRINTF(("sge_url = "SFN"\n", sge_url));
    
    /* search for sge_root */
    token = sge_strtok_r(sge_url, "@", &url_ctx);   
