@@ -318,11 +318,12 @@ FCLOSE_ERROR:
              *  don't kill the process!!! - it could be the rpc.nfs-deamon
              */
             if (!(uids[0] == 0 && gids[0] == 0 &&
-                  uids[1] == 0 && gids[1] == 0)) {
+                  uids[1] == 0 && gids[1] == 0))
 #elif defined(SOLARIS) || defined(ALPHA)
             if (!(proc_cred.pr_ruid == 0 && proc_cred.pr_rgid == 0 &&
-                  proc_cred.pr_euid == 0 && proc_cred.pr_egid == 0)) {
+                  proc_cred.pr_euid == 0 && proc_cred.pr_egid == 0))
 #endif
+              {
 
                if (shepherd_trace) {
                   char err_str[256];

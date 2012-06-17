@@ -209,9 +209,6 @@ Linux)
    mips)
       lxmachine=mips
       ;;
-   mips)
-      lxmachine=mipsel
-      ;;
    mips64)
       lxmachine=mips64
       ;;
