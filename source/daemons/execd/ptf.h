@@ -207,7 +207,6 @@ void ptf_stop(void);
 
 int ptf_is_running(void); 
 
-void ptf_unregister_registered_jobs(void);
 void ptf_unregister_registered_job(u_long32 job_id, u_long32 ja_task_id );
 
 void ptf_reinit_queue_priority(u_long32 job_id, u_long32 ja_task_idr, 

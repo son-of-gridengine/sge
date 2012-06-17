@@ -487,7 +487,8 @@ int sge_string2bin(FILE *fp, const char *buf)
       
       if (write(fd, outbuf, outp - outbuf) != outp - outbuf)
          return -1;
-   }      
+   }
+   fflush(fp);
    return 0;
 }
 

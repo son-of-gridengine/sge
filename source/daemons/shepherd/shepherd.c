@@ -2785,9 +2785,9 @@ static void set_ckpt_params(int ckpt_type, char *ckpt_command, int ckpt_len,
 {
    char *cmd;
    
-   strcpy(ckpt_command, "none");
-   strcpy(migr_command, "none");
-   strcpy(clean_command,"none");
+   strncpy(ckpt_command, "none", ckpt_len);
+   strncpy(migr_command, "none", migr_len);
+   strncpy(clean_command,"none", clean_len);
 
    if (ckpt_type & CKPT_KERNEL) {
       cmd = get_conf_val("ckpt_command");

@@ -1152,7 +1152,7 @@ static ListTreeItem* cq_add_asolist(Widget tree, ListTreeItem *parent,
       u_long32 u = lGetUlong(ep, AQTLIST_value);
       sublist = ListTreeAddBranch(tree, item, hostref);
       for_each(ep2, value) { 
-         char *name = lGetString(ep2, PR_name);
+         char *name = lGetString(ep2, SO_name);
          ListTreeAddLeaf(tree, sublist, name ? name : "-NA-");
       }   
    }   

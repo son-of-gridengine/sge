@@ -81,7 +81,4 @@ shepherd_read_qrsh_file(const char *filename, pid_t *qrsh_pid);
 bool
 shepherd_write_processor_set_number_file(int proc_set);
 
-bool
-shepherd_read_processor_set_number_file(int *proc_set);
-
 #endif /* __SGE_FILEIO_H */

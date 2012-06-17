@@ -348,39 +348,10 @@ FCLOSE_ERROR:
    return false;
 }
 
-bool 
-shepherd_read_processor_set_number_file(int *proc_set)
-{
-   bool ret = true;
-   FILE *fp = NULL;
-   const char *const filename = "processor_set_number";
-
-   fp = fopen(filename, "r");
-   if (fp != NULL) {
-      int arguments = fscanf(fp, "%d", proc_set);
-
-      if (arguments != 1) {
-         shepherd_trace("could not read processor_set_number file");
-         *proc_set = 0;
-         ret = false;
-      } 
-   } else {
-      shepherd_error(1, MSG_FILE_NOOPEN_SS, filename, strerror(errno));
-      ret = false;
-   }
-   FCLOSE(fp);
-   return ret;
-FCLOSE_ERROR:
-   shepherd_error(1, MSG_FILE_NOCLOSE_SS, filename, strerror(errno));
-   return false;
-}
-
-#if defined(IRIX) || defined(CRAY) || defined(NECSX4) || defined(NECSX5)
+#if defined(IRIX)
 bool 
 shepherd_read_osjobid_file(
-#if (IRIX)
    ash_t *return_code,
-#endif
    bool is_error
 )
 {
@@ -392,11 +363,7 @@ shepherd_read_osjobid_file(
    if (fp != NULL) {
       int arguments = 0;
 
-#if defined(IRIX)
       arguments = fscanf(fp, "%lld\n", return_code);
-#else
-      arguments = fscanf(fp, "%d\n", return_code);
-#endif
 
       if (arguments != 1) {
          shepherd_trace("could not read osjobid file");
