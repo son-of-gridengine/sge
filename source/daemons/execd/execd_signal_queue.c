@@ -271,19 +271,23 @@ int sge_execd_deliver_signal(u_long32 sig, lListElem *jep, lListElem *jatep)
 
 /*
    DPRINTF(("(sig==SGE_MIGRATE) = %d (ckpt on suspend) = %d %d\n", 
-      (sig == SGE_MIGRATE), lGetUlong(jep, JB_checkpoint_attr)|CHECKPOINT_SUSPEND, 
+      (sig == SGE_MIGRATE), lGetUlong(jep, JB_checkpoint_attr)&CHECKPOINT_SUSPEND,
          lGetUlong(jep, JB_checkpoint_attr)));
 */
    /* Simply apply signal to all subtasks of the job 
       except in case of SGE_MIGRATE when there is a 
       ckpt env with "migrate on suspend" configured */
-   queue_already_suspended = (lGetUlong(jatep, JAT_state)&JSUSPENDED);
-   if (!(sig == SGE_MIGRATE 
-         && (lGetUlong(jep, JB_checkpoint_attr)|CHECKPOINT_SUSPEND)) 
+   /* See do_signal_queue concerning "queue" here.  */
+   queue_already_suspended = (lGetUlong(jatep, JAT_state) & JSUSPENDED);
+   DPRINTF(("queue_already_suspended = %d\n", queue_already_suspended));
+   if (!(sig == SGE_MIGRATE
+         && (lGetUlong(jep, JB_checkpoint_attr) & CHECKPOINT_SUSPEND))
          && !queue_already_suspended) {
       lListElem *petep;
+      DPRINTF(("signaling each pe task with signal %d\n", sig));
       /* signal each pe task */
       for_each (petep, lGetList(jatep, JAT_task_list)) {
+         DPRINTF(("signaling pe task pid=%d\n", lGetUlong(petep, PET_pid)));
          if (sge_kill((int)lGetUlong(petep, PET_pid), sig, 
                       lGetUlong(jep, JB_job_number), lGetUlong(jatep, JAT_task_number), 
                       lGetString(petep, PET_id)) == -2) {
@@ -291,6 +295,9 @@ int sge_execd_deliver_signal(u_long32 sig, lListElem *jep, lListElem *jatep)
          }
       }
    }
+
+   DPRINTF(("lGetUlong(jatep, JAT_status) = %d, JSLAVE = %d\n",
+            lGetUlong(jatep, JAT_status), JSLAVE));
 
    if (lGetUlong(jatep, JAT_status) != JSLAVE) {
       if (sge_kill((int)lGetUlong(jatep, JAT_pid), sig, lGetUlong(jep, JB_job_number), 
