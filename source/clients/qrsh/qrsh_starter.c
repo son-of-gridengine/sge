@@ -237,7 +237,16 @@ static char *setEnvironment(const char *jobdir, char **wrapper)
             FCLOSE(envFile);
             return NULL;
          }
-         strcpy(command, line + 13);
+         {
+            const char *new_line = sge_replace_substring(line, "\\n", "\n");
+
+            if (new_line != NULL) {
+               strcpy(command, new_line + 13);
+               sge_free(&new_line);
+            }
+            else
+               strcpy(command, line + 13);
+         }
       } else if (strncmp(line, "QRSH_WRAPPER=", 13) == 0) {
          if (*(line + 13) == 0) {
             fprintf(stderr, "%s\n", MSG_QRSH_STARTER_EMPTY_WRAPPER);
