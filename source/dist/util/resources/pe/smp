@@ -13,3 +13,4 @@ control_slaves     TRUE
 job_is_first_task  FALSE
 urgency_slots      min
 accounting_summary TRUE
+qsort_args         NONE
