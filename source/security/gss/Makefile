@@ -83,8 +83,8 @@ k5dcelogin:	k5dcelogin.o
 put_cred:        put_cred.o sge_gsslib.o
 	$(CC) -o $@ $(LFLAGS) put_cred.o sge_gsslib.o -luti -lcommlists $(LIBS) $(SLIBS)
 
-starter_cred:	$(GSS_SDIR)/starter_cred.ksh
-	cp $(GSS_SDIR)/starter_cred.ksh starter_cred
+starter_cred:	$(GSS_SDIR)/starter_cred.sh
+	cp $(GSS_SDIR)/starter_cred.sh starter_cred
 
 renew_cred:	$(GSS_SDIR)/renew_cred.sh
 	cp $(GSS_SDIR)/renew_cred.sh renew_cred
