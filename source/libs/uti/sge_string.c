@@ -26,6 +26,8 @@
  *   Copyright: 2001 by Sun Microsystems, Inc.
  * 
  *   All Rights Reserved.
+ *
+ *   Copyright (C) 2012 Dave Love, University of Liverpool
  * 
  ************************************************************************/
 /*___INFO__MARK_END__*/
@@ -1742,4 +1744,53 @@ const char *sge_replace_substring(const char *input, const char *old, const char
       }
    }
    return return_string;
+}
+
+/****** sge_var/unescape_env_value() *******************************
+*  NAME
+*     unescape_env_value() -- 
+*
+*  SYNOPSIS
+*     char * unescape_env_value(char *value)
+*
+*  FUNCTION
+*     Undo any backslash escapes (\\ or \n) in value string, returning
+*     a new string.
+*
+*  INPUTS
+*     char *value                 - environment variable value
+*
+*  RESULT
+*     new string
+*
+*  NOTES
+*     MT-NOTE: unescape_env_value() is MT safe
+*******************************************************************************/
+
+const char *unescape_env_value(const char *value)
+{
+   char *new_value = strdup(value);
+   int i, j, nchars = strlen(value);
+
+   for (i = 0, j = 0; i <= nchars; j++) {
+      if ('\\' == value[i])
+         switch (value[i+1]) {
+         case 'n':
+            new_value[j] = '\n';
+            i += 2;
+            break;
+         case '\\':
+            new_value[j] = '\\';
+            i += 2;
+            break;
+         default:
+            new_value[j] = value[i];
+            i++;
+         }
+      else {                    /* shouldn't happen */
+         new_value[j] = value[i];
+         i++;
+      }
+   }
+   return new_value;
 }

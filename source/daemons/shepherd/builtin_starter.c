@@ -994,13 +994,9 @@ int sge_set_environment()
          value = "";
       }
 
-      new_value = sge_replace_substring(value, "\\n", "\n");
-      if (new_value == NULL) {
-         sge_set_env_value(name, value);
-      } else {
-         sge_set_env_value(name, new_value);
-         sge_free(&new_value);
-      }
+      new_value = unescape_env_value(value);
+      sge_set_env_value(name, new_value);
+      sge_free(&new_value);
    }
 
    FCLOSE(fp);

@@ -238,14 +238,9 @@ static char *setEnvironment(const char *jobdir, char **wrapper)
             return NULL;
          }
          {
-            const char *new_line = sge_replace_substring(line, "\\n", "\n");
-
-            if (new_line != NULL) {
-               strcpy(command, new_line + 13);
-               sge_free(&new_line);
-            }
-            else
-               strcpy(command, line + 13);
+            const char *new_line = unescape_env_value(line);
+            strcpy(command, new_line + 13);
+            sge_free(&new_line);
          }
       } else if (strncmp(line, "QRSH_WRAPPER=", 13) == 0) {
          if (*(line + 13) == 0) {
@@ -260,15 +255,11 @@ static char *setEnvironment(const char *jobdir, char **wrapper)
             strcpy(*wrapper, line + 13);
          }
       } else {
-         const char *new_line = sge_replace_substring(line, "\\n", "\n");
+         const char *new_line = unescape_env_value(line);
          int put_ret;
          /* set variable */
-         if (new_line != NULL) {
-            put_ret = sge_putenv(new_line);
-            sge_free(&new_line);
-         } else {
-            put_ret = sge_putenv(line);
-         }
+         put_ret = sge_putenv(new_line);
+         sge_free(&new_line);
          if (put_ret == 0) {
             sge_free(&line);
             FCLOSE(envFile); 
