@@ -166,7 +166,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    int   use_qsub_gid;
    int   ret;
    int   is_interactive  = 0;
-   int   is_qlogin  = 0;
+   bool  is_qlogin  = false;
    int   is_rsh = 0;
    int   is_rlogin = 0;
    int   is_qlogin_starter = 0;   /* Caution! There is a function qlogin_starter(), too! */
@@ -238,7 +238,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
     || !strcasecmp(script_file, "QRLOGIN")) {
       shepherd_trace("processing qlogin job");
       is_qlogin_starter = 1;
-      is_qlogin = 1;
+      is_qlogin = true;
 
       if(!strcasecmp(script_file, "QRSH")) {
          is_rsh = 1;
@@ -368,7 +368,8 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    setrlimits(!strcmp(childname, "job"));
 
    shepherd_trace("setting environment");
-   sge_set_environment();
+   /* The new IJS needs the environment.  */
+   sge_set_environment(!is_qlogin || g_new_interactive_job_support);
 
    /* Create the "error" and the "exit" status file here.
     * The "exit_status" file indicates that the son is started.
@@ -470,10 +471,11 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
                                    use_qsub_gid, gid, skip_silently);
    } else { /* if (!is_qlogin_starter || g_new_interactive_job_support == true) */
       /*
-       * In not-interactive jobs and in the new IJS we must set the 
+       * In non-interactive jobs and in the new IJS we must set the
        * additional group id here, because there is no custom rshd that will
        * do this for us.
        */
+      shepherd_trace("setting additional gid=%d", add_grp_id);
       ret = sge_set_uid_gid_addgrp(target_user, intermediate_user,
                                    min_gid, min_uid, add_grp_id, err_str,
                                    sizeof(err_str), use_qsub_gid, gid, skip_silently);
@@ -937,12 +939,15 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
 *     and store it in the appropriate environment, inherited or internal.
 *
 *  SYNOPSIS
-*      int sge_set_environment(void)
+*      int sge_set_environment(bool user_env)
 *
 *  FUNCTION
-*     This function reads the "environment" file written out by the execd and
-*     stores each environment variable entry in the appropriate environment,
-*     either internal or inherited.
+*     This function sets the internal environment (if INHERIT_ENV is set
+*     in execd_params).  Optionally it reads the "environment" file
+*     written out by the execd and stores each entry in the environment.
+*
+*  INPUTS
+*     bool user_env - True means set variables from the user's environment
 *
 *  RESULTS
 *     int - error code: 0: good, 1: bad
@@ -950,7 +955,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
 *  NOTES
 *      MT-NOTE: sge_set_environment() is not MT safe
 *******************************************************************************/
-int sge_set_environment()
+int sge_set_environment(bool user_env)
 {
    const char *const filename = "environment";
    FILE *fp;
@@ -963,10 +968,6 @@ int sge_set_environment()
    const char *new_value = NULL;
 
    setup_environment();
-   
-   if (!(fp = fopen(filename, "r"))) {
-      shepherd_error(1, "can't open environment file: %s", strerror(errno));
-   }
 
 #if defined(IRIX)
    if (shepherd_read_osjobid_file(&jobid, false)) {
@@ -974,6 +975,12 @@ int sge_set_environment()
       sge_set_env_value("OSJOBID", help_str);
    }
 #endif
+
+   if (!user_env) return 0;
+
+   if (!(fp = fopen(filename, "r"))) {
+      shepherd_error(1, "can't open environment file: %s", strerror(errno));
+   }
 
    while (fgets(buf, sizeof(buf), fp)) {
 
@@ -1990,11 +1997,11 @@ static void start_qrsh_job(void)
       buf = (char*)malloc(strlen(command)+2049);
 
       sge_root = sge_get_root_dir(0, NULL, 0, 1);
-      arch = sge_get_arch();
-      if (sge_root == NULL || arch == NULL) {
-         shepherd_trace("reading environment SGE_ROOT and ARC failed");
+      if (sge_root == NULL) {
+         shepherd_trace("reading environment SGE_ROOT failed");
          return;
       }
+      arch = sge_get_arch();
       snprintf(buf, SGE_PATH_MAX, "%s/utilbin/%s/qrsh_starter", sge_root, arch);
 
       args[0] = buf;

@@ -363,21 +363,12 @@ this.
 If
 .BR start_proc_args ,
 or
-.BR stop_proc_args
+.B stop_proc_args
 is specified with a
 .IB user @
-prefix, the same security considerations apply as for remote startup
-daemons, as described in
-.M xxqs_name_sxx_conf 5 ,
-and the environment is cleaned in the same way.  Note that TMPDIR is
-one of the variables affected, and may need to be recreated as
-/tmp/$JOB_ID.$TASK_ID.$QUEUE
-.PP
-Methods written in shell script should be avoided if possible, but
-at least need to take particular care with the considerations above of
-variable expansion, paths etc.  It may
-be preferable to use a setuid compiled program rather than specifying
-the privileged user in the configuration.
+prefix, the same considerations apply as for the prolog and epilog, as
+described in the SECURITY section of
+.M xxqs_name_sxx_conf 5 .
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
