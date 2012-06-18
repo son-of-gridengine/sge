@@ -606,10 +606,6 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    }
 #endif
 
-   /* Sanitize the environment to remove user-set variables which can
-      affect what's executed via dynamic linking.  */
-   sanitize_environment(env);
-
    /* that's it. */
    execve(args[0], args, env);
 

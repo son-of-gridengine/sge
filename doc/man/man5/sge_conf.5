@@ -1751,23 +1751,75 @@ execution host local configuration.
 .\"
 .SH SECURITY
 If
-.BR prolog ,
+.B prolog
 or
 .B epilog
 is specified with a
 .IB user @
-prefix, the same security considerations apply as for remote startup
-daemons, as described in
-.M xxqs_name_sxx_conf 5 ,
-and the environment is cleaned in the same way.  Note that TMPDIR is
-one of the variables affected, and may need to be recreated as
-.BR /tmp/$JOB_ID.$TASK_ID.$QUEUE .
+prefix, security considerations apply.  The methods are run in a
+user-supplied environment (via
+.B \-V
+or
+.BR \-v )
+which provides a mechanism to run arbitrary code as
+.I user
+(which might well be root) by setting variables such as
+.B LD_LIBRARY_PATH
+and
+.B LD_PRELOAD
+to affect the running of the dynamically linked programs, such as
+shells, which are used to implement the methods.
 .PP
-Methods written in shell script should be avoided if possible, but
-at least need to take particular care with the considerations above of
-variable expansion, paths etc.  It may
-be preferable to use a setuid compiled program rather than specifying
-the privileged user in the configuration.
+To combat this, known problematic variables are removed from the
+environment before starting the methods other than as the job owner,
+but this may not be foolproof on arbitrary systems with obscure
+variables.  The environment can be safely controlled by running the
+methods under a statically-linked version of
+.M env 1 ,
+such as typically available using
+.M busybox 1 ,
+for example.  Use
+.IP
+.BR "/bin/busybox env \-u " ...
+.PP
+to unset sensitive variables, or
+.IP
+.BR "/bin/busybox env \-i name=value" ...
+.PP
+to set only specific variables.  On some systems, such as recent
+Solaris, it is essentially impossible to build static binaries.  In
+that case it is typically possible to use a setuid wrapper, relying on
+the dynamic linker to do the right thing.  An example is the
+.I safe_exec
+wrapper which is available from
+.URL http://arc.liv.ac.uk/downloads/SGE/support/
+at the time of writing.  When using a non-shell scripting language
+wrapper for the method daemon, try to use options which avoid
+interpreter-specific environmental damage, such as Perl's
+.B \-T
+and Python's
+.BR \-E .
+Privileged shell script wrappers should be avoided if possible, and
+should be written carefully if they are used \- e.g. invoke programs
+with full file names \- but if
+.M bash 1
+is used, it should be run with the
+.B \-p
+option.
+.PP
+It is not currently possible to specify the variables unset, e.g. as a
+host-dependent execd parameter, but certain system-dependent ones are
+selected.  The list of sensitive variables is taken mostly from GNU
+libc and
+.M sudo 1 .
+It includes known system-dependent dynamic linker ones, sensitive
+locale ones and others, like TMPDIR, but does not attempt to deal
+interpreter-specific variables such as PYTHONPATH.  The locale
+specification is also sanitized.  See the source file
+.I source/libs/uti2/sge_execvlp.c
+for details.  Note that TMPDIR is one of the variables affected, and
+may need to be recreated (as
+.BR /tmp/$JOB_ID.$TASK_ID.$QUEUE ).
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,

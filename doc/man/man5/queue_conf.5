@@ -408,7 +408,9 @@ The executable path of a shell script that is started before execution
 of xxQS_NAMExx jobs with the same environment setting as that for the
 xxQS_NAMExx
 jobs to be started afterwards. An optional prefix "user@" specifies the 
-user under which this procedure is to be started. The procedure's standard
+user under which this procedure is to be started.  In that case see
+the SECURITY section below concerning security issues running as a
+privileged user.  The procedure's standard
 output and error output stream are written to the same file used for
 the standard output and error output of the job.
 .PP
@@ -455,7 +457,9 @@ of xxQS_NAMExx jobs with the same environment setting as that for the
 xxQS_NAMExx
 job that has just completed. 
 An optional prefix "user@" specifies the user under which this procedure
-is to be started. The procedure's standard output and the error output 
+is to be started.  In that case see
+the SECURITY section below concerning security issues running as a
+privileged user.  The procedure's standard output and the error output
 stream are written to the same file used for the standard output 
 and error output of the job.
 .PP
@@ -979,7 +983,17 @@ manual page). The value type for the CPU-time limits \fBs_cpu\fP and
 available on systems supporting RLIMIT_VMEM (see
 .M setrlimit 2
 on your operating system).
-.PP
+.\"
+.SH SECURITY
+See
+.M sge_conf 1
+for security considerations when specifying
+.B prolog
+and
+.B epilog
+with a
+.IB user @
+prefix.
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
