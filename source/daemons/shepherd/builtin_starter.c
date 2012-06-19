@@ -27,6 +27,8 @@
  *
  *  All Rights Reserved.
  *
+ *  Copyright (C) 2012 Dave Love, University or Liverpool
+ *
  ************************************************************************/
 /*___INFO__MARK_END__*/
 

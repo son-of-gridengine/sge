@@ -33,6 +33,8 @@
 #
 #  All Rights Reserved.
 #
+#  Copyright (C) David Love 2011, 2012, University of Liverpool
+#
 ##########################################################################
 #___INFO__MARK_END__
 

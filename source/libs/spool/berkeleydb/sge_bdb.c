@@ -346,8 +346,9 @@ bool spool_berkeleydb_create_environment(lList **answer_list,
 
          if (server == NULL) {
             flags |= DB_THREAD;
-            /* Don't do this by default as it's not clear it works
-               with db_dump for instance.  */
+            /* Don't do this by default as it's dnagerous with db_dump
+               for instance.  See
+               <http://docs.oracle.com/cd/E17276_01/html/api_reference/C/envopen.html#open_DB_PRIVATE>  */
             if (bdb_get_private(info))
                flags |= DB_PRIVATE;
          }

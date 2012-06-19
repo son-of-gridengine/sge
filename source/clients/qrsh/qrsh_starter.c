@@ -239,7 +239,7 @@ static char *setEnvironment(const char *jobdir, char **wrapper)
          }
          {
             const char *new_line = unescape_env_value(line);
-            strcpy(command, new_line + 13);
+            strcpy(command, new_line + 13); /* RATS: ignore */
             sge_free(&new_line);
          }
       } else if (strncmp(line, "QRSH_WRAPPER=", 13) == 0) {
@@ -252,7 +252,7 @@ static char *setEnvironment(const char *jobdir, char **wrapper)
                FCLOSE(envFile); 
                return NULL;
             }
-            strcpy(*wrapper, line + 13);
+            strcpy(*wrapper, line + 13); /* RATS: ignore */
          }
       } else {
          const char *new_line = unescape_env_value(line);
@@ -566,10 +566,9 @@ static char *join_command(int argc, char **argv) {
       return 0;
    }
 
-   strcpy(buffer, argv[0]);
+   strcpy(buffer, argv[0]);     /* RATS: ignore */
    for(i = 1; i < argc; i++) {
-      strcat(buffer, " ");
-      strcat(buffer, argv[i]);
+      strcat(buffer, " "); strcat(buffer, argv[i]);  /* RATS: ignore */
    }
 
    return buffer;

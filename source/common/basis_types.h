@@ -178,6 +178,9 @@ extern "C" {
 #endif
 
 /* _POSIX_PATH_MAX is only 255 and this is less than in most real systmes */
+/* NB although this fixed value is necessary for static string
+   declarations, the value is potentially at least filesystem-dependent,
+   and should be got dynamically with (f)pathconf.  */
 #ifdef PATH_MAX                 /* true if POSIX */
 #  define SGE_PATH_MAX PATH_MAX
 #else

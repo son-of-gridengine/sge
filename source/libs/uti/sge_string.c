@@ -1604,13 +1604,14 @@ sge_strerror(int errnum, dstring *buffer)
 
 /****** uti/string/sge_str_is_number() *****************************************
 *  NAME
-*     sge_str_is_number() -- represents the given string a number
+*     sge_str_is_number() -- check if a string represents a number
 *
 *  SYNOPSIS
 *     bool sge_str_is_number(const char *string)
 *
 *  FUNCTION
-*     This function returns true if the given string represents a number.
+*     This function returns true if the given string represents a
+*     floating point number.
 *
 *  INPUTS
 *     const char *string - string to parse

@@ -63,7 +63,8 @@ struct feature_state_t {
 static const featureset_names_t featureset_list[] = {
    {FEATURE_NO_SECURITY,            "none"},
    {FEATURE_AFS_SECURITY,           "afs"},
-   /* fixme allow gss instead of dce */
+   /* The next two are both GSSAPI, and don't distinguish between
+      modules built for one or the other.  */
    {FEATURE_DCE_SECURITY,           "dce"},
    {FEATURE_KERBEROS_SECURITY,      "kerberos"},
    {FEATURE_CSP_SECURITY,           "csp"},

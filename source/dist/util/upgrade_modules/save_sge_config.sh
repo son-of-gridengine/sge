@@ -373,7 +373,8 @@ DumpOptionToFile "-sconf global" "$DEST_DIR/configurations/global"
 list=`$QCONF -spl 2>/dev/null`
 #     -sp pe_name                   <show PE configuration>
 DumpListToLocation "$list" $DEST_DIR/pe "-sp"
-
+# qsort_args could be added here, but that isn't actually necessary
+'
 #     -sul                          <show user ACL lists>
 list=`$QCONF -sul 2>/dev/null`
 #     -su acl_name                  <show user ACL>

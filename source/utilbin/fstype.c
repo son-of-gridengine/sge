@@ -60,6 +60,9 @@
 
 #define BUF_SIZE 8 * 1024
 
+/* fixme:  what about others?  Lustre, Ceph, GFS, GPFS & Gluster are
+   supposed to be POSIX-compliant, so presumably are OK.  */
+
 int main(int argc, char *argv[]) {
 
    int ret=1;

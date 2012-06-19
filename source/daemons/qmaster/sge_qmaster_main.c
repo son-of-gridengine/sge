@@ -126,7 +126,7 @@ unsigned long sge_qmaster_application_status(char** info_message)
    return sge_monitor_status(info_message, mconf_get_monitor_time());
 }
 
-
+/* used if not USE_POLL */
 /****** qmaster/sge_qmaster_main/set_file_descriptor_limit() ********************
 *  NAME
 *     set_file_descriptor_limit() -- check and set file descriptor limit
