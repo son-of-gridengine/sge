@@ -50,7 +50,7 @@ typedef enum {
    FEATURE_UNINITIALIZED = 0, 
    FEATURE_NO_SECURITY,             /* No security mode active */
    FEATURE_AFS_SECURITY,            /* AFS security */
-   FEATURE_DCE_SECURITY,            /* DCE security */
+   FEATURE_DCE_SECURITY,            /* GSSAPI security */
    FEATURE_KERBEROS_SECURITY,       /* KERBEROS security */
    FEATURE_CSP_SECURITY,            /* CSP security */
  

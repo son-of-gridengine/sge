@@ -24,10 +24,10 @@
  *   The Initial Developer of the Original Code is: Sun Microsystems, Inc.
  * 
  *   Copyright: 2001 by Sun Microsystems, Inc.
- *   Copyright (C) 2012 Dave Love, University of Liverpool
  * 
  *   All Rights Reserved.
- * 
+ *
+ *   Copyright (C) 2012 Dave Love, University of Liverpool
  ************************************************************************/
 /*___INFO__MARK_END__*/
 

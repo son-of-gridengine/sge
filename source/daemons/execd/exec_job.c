@@ -199,7 +199,7 @@ static long get_next_addgrpid(lList *rlp, long last_addgrpid)
          take_next = 1;
    }
    
-   /* not successfull until now => take first number */
+   /* not successful until now => take first number */
    rep = lFirst(rlp);
    if (rep)
       return (lGetUlong(rep, RN_min));
@@ -444,7 +444,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          }
 
          /* check, depending on the used topology, which cores are can be used 
-            in order to fulfill the selected strategy. if strategy is not 
+            in order to fulfil the selected strategy. if strategy is not
             applicable or in case of errors "NULL" is written to this 
             line in the "config" file */
          create_binding_strategy_string(&core_binding_strategy_string, jep,
@@ -494,7 +494,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
 
             The granted_destination_identifier_list holds
             on entry for each queue, not host. But each
-            entry also contais the hosts name where the
+            entry also contains the hosts name where the
             queue resides on.
 
             We need to combine the processor sets of all queues on this host. 
@@ -1595,7 +1595,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
    fprintf(fp, "csp=%d\n", (int)csp_mode);
 
 #ifdef INTERIX
-   /* should the job display it's gui to the visible desktop? */
+   /* should the job display its gui to the visible desktop? */
    {
       const char *s;
       ulong      ultemp = 0;
@@ -1626,7 +1626,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
 
    /* test whether we can access scriptfile */
    /*
-   ** tightly integrated (qrsh) and interactive jobs dont need to access script file
+   ** tightly integrated (qrsh) and interactive jobs don't need to access script file
    */
    if(petep == NULL) {
       u_long32 jb_now = lGetUlong(jep, JB_type);
@@ -1830,7 +1830,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       } 
 
       if (chdir(execd_spool_dir))       /* go back */
-         /* if this happens (dont know how) we have a real problem */
+         /* if this happens (don't know how) we have a real problem */
          ERROR((SGE_EVENT, MSG_FILE_CHDIR_SS, execd_spool_dir, strerror(errno))); 
       if (i == -1) {
          if (getenv("SGE_FAILURE_BEFORE_FORK")) {
@@ -2104,7 +2104,7 @@ static bool create_binding_strategy_string(dstring* result, lListElem *jep,
 
          } else {
             
-            /* BN_strategy does not contain anything usefull */
+            /* BN_strategy does not contain anything useful */
             retval = false;
          }
                   

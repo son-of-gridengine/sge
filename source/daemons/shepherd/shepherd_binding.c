@@ -24,11 +24,11 @@
  *  The Initial Developer of the Original Code is: Sun Microsystems, Inc.
  *
  *  Copyright: 2001 by Sun Microsystems, Inc.
- *   Copyright (C) 2011 Dave Love, University of Liverpool
  *
  *  All Rights Reserved.
  *
  *  Portions of this code are Copyright 2011 Univa Inc.
+ *  Copyright (C) 2011 Dave Love, University of Liverpool
  * 
  ************************************************************************/
 /*___INFO__MARK_END__*/
@@ -598,7 +598,7 @@ binding_set_striding(int first_socket, int first_core, int number_of_cores,
 *     static bool bind_process_to_mask(const hwloc_bitmap_t cpuset)
 *
 *  FUNCTION
-*     Binds a process to a given cpuset. 
+*     Binds current process to a given cpuset. 
 *
 *  INPUTS
 *     const hwloc_bitmap_t cpuset - Processors to bind processes to
@@ -618,7 +618,7 @@ static bool bind_process_to_mask(const hwloc_bitmap_t cpuset)
       available.  */
    if (!hwloc_set_cpubind(sge_hwloc_topology, cpuset, HWLOC_CPUBIND_STRICT) ||
        !hwloc_set_cpubind(sge_hwloc_topology, cpuset, 0)) {
-      /* Set the environment variable as for th env type.  Done for
+      /* Set the environment variable as for the env type.  Done for
          for conveniece, e.g. with runtimes like GCC's libgomp which
          require an environment variable to be set for thread affinity
          rather than using the core binding in effect.  */

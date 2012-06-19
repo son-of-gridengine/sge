@@ -627,7 +627,7 @@ void opt_list_merge_command_lines(lList **opts_all,
       *opts_cmdline = NULL;
    }
 
-   /* If -ar was requested add -w if it was not explicit set */
+   /* If -ar was requested add -w if it was not explicitly set */
    if (lGetElemStr(*opts_all, SPA_switch, "-ar") != NULL) {
       if (lGetElemStr(*opts_all, SPA_switch, "-w") == NULL) {
          lListElem *ep_opt = sge_add_arg(opts_all, r_OPT, lIntT, "-w", "e");
@@ -638,7 +638,7 @@ void opt_list_merge_command_lines(lList **opts_all,
 
 /****** sge/opt/opt_list_has_X() **********************************************
 *  NAME
-*     opt_list_has_X() -- is a certail option contained in list 
+*     opt_list_has_X() -- is a certain option contained in list?
 *
 *  SYNOPSIS
 *     bool opt_list_has_X(lList *opts, const char *option) 

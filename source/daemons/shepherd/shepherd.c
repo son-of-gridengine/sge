@@ -27,10 +27,10 @@
  *
  *  All Rights Reserved.
  *
- * Portions of this software are Copyright (c) 2011 Univa Corporation
+ *  Portions of this software are Copyright (c) 2011 Univa Corporation
+ *  Copyright (C) 2011, 2012 Dave Love, University or Liverpool
  *
  ************************************************************************/
-/* Portions of this software are Copyright (c) 2011 Univa Corporation. */
 /*___INFO__MARK_END__*/
 #include <stdio.h>
 #include <stdlib.h>
@@ -2933,7 +2933,7 @@ static int start_async_command(const char *descr, char *cmd)
       setpgid(pid, pid);
       setrlimits(0);
       sge_set_environment(true);
-      umask(022);		/* fixme */
+      umask(022);
       tmp_str = search_conf_val("qsub_gid");
       if (tmp_str && strcmp(tmp_str, "no")) {
          use_qsub_gid = 1;

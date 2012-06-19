@@ -620,14 +620,14 @@ void sge_security_exit(int i)
 
 /****** gdi/security/set_sec_cred() *******************************************
 *  NAME
-*     set_sec_cred -- get credit for security system
+*     set_sec_cred -- get credential for security system
 *
 *  SYNOPSIS
 *     int set_sec_cred(lListElem *job);
 *
 *  FUNCTION
-*     Tries to get credit for a security system (DCE or KERBEROS),
-*     sets the accordant information in the job structure
+*     Tries to get credential for a security system (DCE or KERBEROS) and
+*     sets the resulting information in the job structure.
 *     If an error occurs the return value is unequal 0
 *
 *  INPUTS
@@ -681,13 +681,9 @@ int set_sec_cred(const char *sge_root, const char *mastername, lListElem *job, l
       lSetString(job, JB_tgt, str);
       sge_free(&str);
    }
-      
+
    /*
     * DCE / KERBEROS security stuff
-    *
-    *  This same basic code is in qsh.c and qmon_submit.c
-    *  It should really be moved to a common place. It would
-    *  be nice if there was a generic job submittal function.
     */
 
    if (feature_is_enabled(FEATURE_DCE_SECURITY) ||

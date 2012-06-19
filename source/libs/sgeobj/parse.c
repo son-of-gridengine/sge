@@ -348,9 +348,9 @@ char* actual_opt;
  **** otherwise false.
  **** Arguments after the option switch are parsed
  **** into the ppdestlist-list (given field and type).
- **** There can be multiple occurences of this switch.
+ **** There can be multiple occurrences of this switch.
  **** The arguments are collected. 
- **** The arguments can be eiter comma-separated. 
+ **** The arguments can be either space- or comma-separated.
  ****/ 
 bool parse_multi_stringlist(
 lList **ppcmdline,
