@@ -1577,7 +1577,7 @@ DTRACE;
       if (!strcmp("-t", *sp)) {
          lList *task_id_range_list = NULL;
 
-         /* next field is path_name */
+         /* next field is range */
          sp++;
          if (!*sp) {
              answer_list_add(&answer, MSG_PARSE_TOPTIONMUSTHAVEALISTOFTASKIDRANGES, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR);

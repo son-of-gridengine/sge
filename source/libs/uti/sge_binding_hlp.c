@@ -25,11 +25,11 @@
  *   The Initial Developer of the Original Code is: Sun Microsystems, Inc.
  * 
  *   Copyright: 2001 by Sun Microsystems, Inc.
- *   Copyright (C) 2011 Dave Love, University of Liverpool
  * 
  *   All Rights Reserved.
  * 
  *   Portions of this code are Copyright 2011 Univa Inc.
+ *   Copyright (C) 2011 Dave Love, University of Liverpool
  *
  ************************************************************************/
 

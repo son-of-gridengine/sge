@@ -84,7 +84,7 @@ extern "C" {
 *        Project name (qsub -P project_name)
 *
 *     SGE_STRING(JB_department)
-*        Department name. Set by schedd, saved (once) to qmaster.
+*        Department name. Set by scheduler.
 *
 *     Data related to job script
 *     ===========================
@@ -317,11 +317,11 @@ extern "C" {
 *     ===========================
 *
 *     SGE_HOST(JB_host)                    
-*        host job is executing on. Local to schedd.
+*        host job is executing on. Local to scheduler.
 *        Not spooled.
 *
 *     SGE_REF(JB_category)
-*        Category string reference used in schedd.
+*        Category string reference used in scheduler.
 *
 *     Misc
 *     ====

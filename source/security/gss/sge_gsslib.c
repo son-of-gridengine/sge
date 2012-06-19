@@ -26,7 +26,9 @@
  *   Copyright: 2001 by Sun Microsystems, Inc.
  * 
  *   All Rights Reserved.
- * 
+ *
+ *   Copyright (C) 2012 Dave Love, University of Liverpool
+ *
  ************************************************************************/
 /*___INFO__MARK_END__*/
 

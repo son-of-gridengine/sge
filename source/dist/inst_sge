@@ -33,6 +33,7 @@
 #  All Rights Reserved.
 #
 #  Portions of this code are Copyright 2011 Univa Corp.
+#  Copyright (C) David Love 2011, 2012, University of Liverpool
 #
 ##########################################################################
 #___INFO__MARK_END__
@@ -221,7 +222,7 @@ while [ $ARGC != 0 ]; do
      ;;
    -rst)
      RESTORE=true
-     #restore a backuped database
+     #restore a backed-up database
      ;;
    -upd)
      #update from 6.0 or higher to 6.2

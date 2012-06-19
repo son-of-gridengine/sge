@@ -121,7 +121,7 @@ int do_signal_queue(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg, sge_pack_buffe
 
             /* iterate through all queues of a parallel job -
                this is done to ensure that signal delivery is also
-               forwarded to the job in case the master queue keeps still active */
+               forwarded to the job in case the master queue is still active */
             for_each (gdil_ep, lGetList(jatep, JAT_granted_destin_identifier_list)) {
                master_q = lGetObject(gdil_ep, JG_queue);
                if (master_q != NULL) {
@@ -129,7 +129,7 @@ int do_signal_queue(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg, sge_pack_buffe
                   if (strcmp(qname, qnm) == 0) {
                      char tmpstr[SGE_PATH_MAX];
 
-                     /* job signaling triggerd by a queue signal */
+                     /* job signaling triggered by a queue signal */
                      snprintf(tmpstr, sizeof(tmpstr), "%s (%s)", sge_sig2str(signal), qnm);
                      /* if the queue gets suspended and the job is already suspended
                         we do not deliver a signal */
@@ -311,7 +311,7 @@ int sge_execd_deliver_signal(u_long32 sig, lListElem *jep, lListElem *jatep)
 
 /****** execd_signal_queue/sge_send_suspend_mail() *****************************
 *  NAME
-*     sge_send_suspend_mail() -- send suspend / condinue mail if enabled
+*     sge_send_suspend_mail() -- send suspend / continue mail if enabled
 *
 *  SYNOPSIS
 *     void sge_send_suspend_mail(u_long32 signal, lListElem *master_q, 
@@ -342,7 +342,7 @@ void sge_send_suspend_mail(u_long32 signal, lListElem *master_q, lListElem *jep,
 
    mail_options = lGetUlong(jep, JB_mail_options); 
 
-   /* only if mail at suspendsion is enabled */
+   /* only if mail at suspension is enabled */
    if (VALID(MAIL_AT_SUSPENSION, mail_options)) {
 
        lList *mail_users      = NULL; 
