@@ -38,7 +38,7 @@
 %define username sgeadmin
 
 Name:    gridengine
-Version: 8.1.0
+Version: 8.1.1
 Release: 1%{?dist}
 Summary: Grid Engine - Distributed Resource Manager
 
@@ -354,6 +354,12 @@ fi
 %endif
 
 %changelog
+* Tue Jun 19 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.1-1
+- Revert last (temporary) change and update version
+
+* Thu Jun 14 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.0-2
+- Don't require rshd etc. in install script.
+
 * Mon May 14 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.0
 - Add IzPack, swing-layout and build GUI installer.
 - Support optional Hadoop build.
