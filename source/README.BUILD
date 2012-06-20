@@ -49,6 +49,8 @@ Content
    To compile and install Grid Engine, the following steps need to be
    carried out:
 
+      - Ensure you have a version of csh and the normal packages for
+        building C source
       - To provide CSP security, install the openSSL library
         <http://www.openssl.org/>, preferably as your OS's packaged
         version (openssl-devel on Red Hat, libssl-dev on Debian).

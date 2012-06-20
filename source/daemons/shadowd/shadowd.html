@@ -15,11 +15,10 @@ to provide service, the cluster operation is strongly affected (note, however,
 that executing jobs will finish normally). To prevent from qmaster becoming
 a single point of failure, the shadowd is available. It will detect when
 the currently active qmaster becomes unavailable and it will startup a
-new qmaster/ <a href="/cod_home/cr114091/CollabNet_OpenSource/gridengine/source/daemons/schedd/schedd.html">schedd</a>
-pair. The shadowd has to run on a so called shadow master host, which has
+new qmaster. The shadowd has to run on a so called shadow master host, which has
 to have identical access permissions to the qmaster spool files as the
 currently active qmaster host. If multiple shadowds are active in a cluster,
-they will run a protocol to ensure that only one new qmaster/schedd pair
+they will run a protocol to ensure that only one new qmaster
 is started. For more detailed information look at the man page <i>sge_shadowd(8).</i></font>
 <p><font size=+1>The shadowd mechanism will only work if all Grid Engine
 client commands can access the same shared file system for the cell directory
@@ -27,14 +26,14 @@ client commands can access the same shared file system for the cell directory
 files and the spooling directories for the cluster).</font>
 <p><font size=+1>To start up a shadowd use the Grid Engine cluster startup
 script <i>sge5</i> with the <i>-shadowd</i>&nbsp; option.</font>
-<p><font size=+1>Note that the shadowd will <b>not</b> start a new qmaster/schedd
+<p><font size=+1>Note that the shadowd will <b>not</b> start a new qmaster
 if the file "lock" exists in the qmaster spool directory. This file is
 written by the qmaster in the case of a regular shutdown of the cluster
 (<i>qconf -km</i>). The shadowd identifies unavailability of the qmaster
 service first by reading a so called heartbeat file, which an active qmaster
 updates from time to time. If it does not get updated, the shadowd will
 <b>not</b>
-start a new qmaster/schedd immediatelly. It will wait for several minutes
+start a new qmaster immediatelly. It will wait for several minutes
 to ensure that a temporary network overload or breakdown are not the cause
 of the problem.</font>
 <br>&nbsp;
@@ -62,8 +61,7 @@ interval time and delay time:</font>
 <blockquote><font size=+1>if no valid lock file ( from other shadowd )
 found:</font>
 <blockquote><font size=+1>- lock qmaster</font>
-<br><font size=+1>- startup&nbsp; <a href="/cod_home/cr114091/CollabNet_OpenSource/gridengine/source/daemons/qmaster/qmaster.html">qmaster</a>&nbsp;
-and <a href="/cod_home/cr114091/CollabNet_OpenSource/gridengine/source/daemons/schedd/schedd.html">schedd</a>
+<br><font size=+1>- startup&nbsp; <a href="../qmaster/qmaster.html">qmaster</a>&nbsp;
 on local host</font></blockquote>
 </blockquote>
 </blockquote>
