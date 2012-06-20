@@ -75,6 +75,7 @@ static config_entry *config_list = NULL;
 char *pe_variables[] = {
    "pe_hostfile",
    "host",
+   "ja_task_id",
    "job_owner",
    "job_id",
    "job_name",
@@ -104,6 +105,7 @@ char *pe_variables[] = {
 /* these variables may get used to replace variables in prolog/epilog */
 char *prolog_epilog_variables[] = {
    "host",
+   "ja_task_id",
    "job_owner",
    "job_id",
    "job_name",
@@ -139,6 +141,7 @@ char *pe_alloc_rule_variables[] = {
 
 char *ckpt_variables[] = {
    "host",
+   "ja_task_id",
    "job_owner",
    "job_id",
    "job_name",
@@ -151,6 +154,7 @@ char *ckpt_variables[] = {
 
 char *ctrl_method_variables[] = {
    "host",
+   "ja_task_id",
    "job_owner",
    "job_id",
    "job_name",
