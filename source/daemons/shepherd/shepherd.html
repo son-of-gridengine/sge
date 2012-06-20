@@ -31,7 +31,7 @@ sets the jobs environment, limits etc.</li>
 starts the job (as a child process of shepherd).</li>
 
 <li>
-controlls the job - sends signals to the job (suspend/unsuspend, terminate),
+controls the job &mdash; sends signals to the job (suspend/unsuspend, terminate),
 takes care of checkpointing/migration of a job.</li>
 
 <li>
@@ -89,10 +89,10 @@ set for the job.</li>
 If available and requested: setup AFS security mechanism.</li>
 
 <li>
-If requested: start a prolog script - see <font color="#000000"><a href="../../../doc/htmlman/htmlman5/queue_conf.html">queue_conf(5)</a></font>.</li>
+If requested: start a prolog script &mdash; see <font color="#000000"><a href="../../../doc/htmlman/htmlman5/queue_conf.html">queue_conf(5)</a></font>.</li>
 
 <li>
-In case of parallel jobs that need special setup: start a pe startup procedure
+In case of parallel jobs that need special setup: start a PE startup procedure
 - see <font color="#000000"><a href="../../../doc/htmlman/htmlman5/sge_pe.html">sge_pe(5)</a></font>.</li>
 </ul>
 This process environment is setup in <tt>source/daemons/shepherd/shepherd.c:
@@ -134,12 +134,12 @@ Setup the environment variables.</li>
 
 <li>
 If requested, set a special group id different from the users primary group
-id - see execd_param <tt>USE_QSUB_GID</tt> in the cluster configuration:
+id &mdash; see execd_param <tt>USE_QSUB_GID</tt> in the cluster configuration:
 <font color="#000000"><a href="../../../doc/htmlman/htmlman5/sge_conf.html">sge_conf(5)</a></font>.</li>
 
 <li>
 Set an operating system job id, if the operating system provides this feature,
-otherwise set an additional user group id to controll/monitor all child
+otherwise set an additional user group id to control/monitor all child
 processes of the job, see <font color="#000000"><a href="../execd/execd.html">documentation
 of the execd</a></font></li>
 
@@ -147,24 +147,25 @@ of the execd</a></font></li>
 Setup the redirection of stdin (from /dev/null) and stdout/stderr (to files)</li>
 
 <li>
-Setup the commandline depending on the type of job (jobscript, qsh, qlogin/qrsh):</li>
+Setup the command line depending on the type of job (jobscript, qsh, qlogin/qrsh):</li>
 
 <ul>
 <li>
-If it is a batch job, execute the jobscript with commandline parameters.</li>
+If it is a batch job, execute the jobscript with command line parameters.</li>
 
 <li>
 If it is a qsh job, start an xterm process as defined in the cluster configuration,
 parameter xterm, see <font color="#000000"><a href="../../../doc/htmlman/htmlman5/sge_conf.html">sge_conf(5)</a></font>.</li>
 
 <li>
-If it is a qrsh or qlogin job, call the qlogin_starter that starts a telnetd,
-rshd or rlogind as defined in the cluster configuration, parameters qlogin_daemon,
-rsh_daemon and rlogin_daemon, see <font color="#000000"><a href="../../../doc/htmlman/htmlman5/sge_conf.html">sge_conf(5)</a></font>.</li>
+If it is a qrsh or qlogin job, call the method that starts builtin
+startup or a telnetd,
+rshd, or rlogind, as defined in the cluster configuration, parameters qlogin_daemon,
+rsh_daemon and rlogin_daemon, see <font color="#000000"><a href="../../../doc/htmlman/htmlman5/remote_startup.html">remote_startup(5)</a></font>.</li>
 </ul>
 
 <li>
-Execute the commandline built in the previous step.</li>
+Execute the command line built in the previous step.</li>
 </ul>
 </blockquote>
 After a job exits, job information is spooled in the job's spool directory
@@ -182,8 +183,8 @@ Cleaning up the job environment</h3>
 After a job has terminated, the job is cleaned up:
 <ul>
 <li>
-If it is a parallel job and a pe stop procedure has been defined: Execute
-the pe stop procedure, see <font color="#000000"><a href="../../../doc/htmlman/htmlman5/sge_pe.html">sge_pe(5)</a></font>.</li>
+If it is a parallel job and a PE stop procedure has been defined: Execute
+the PE stop procedure, see <font color="#000000"><a href="../../../doc/htmlman/htmlman5/sge_pe.html">sge_pe(5)</a></font>.</li>
 
 <li>
 Execute an epilog script if defined, see <font color="#000000"><a href="../../../doc/htmlman/htmlman5/queue_conf.html">queue_conf(5)</a></font>.</li>
@@ -201,7 +202,7 @@ also "<a href="#Communication with qlogin/qrsh">Communication with qrsh</a>").</
 The process environment is cleaned up in <tt>source/daemons/shepherd/shepherd.c:
 main</tt>
 <h2>
-Communication with the execd - spooled files</h2>
+Communication with the execd &mdash; spooled files</h2>
 The Shepherd and the execution daemon share some information by writing
 spool files .
 <p>The execution daemon passes information like the jobs configuration
@@ -212,7 +213,7 @@ information back to the execution daemon (see for example <tt>source/daemons/she
 wait_my_child</tt>).
 <p>The spool files are located in a host specific spool directory (usually
 <tt>$SGE_ROOT/default/spool/&lt;hostname></tt>).
-The spool directory can be defined in the cluster configuration - see parameter
+The spool directory can be defined in the cluster configuration &mdash; see parameter
 <tt>execd_spool_dir</tt>
 in the cluster configuration, <font color="#000000"><a href="../../../doc/htmlman/htmlman5/sge_conf.html">sge_conf(5)</a></font>.
 <p>Under the host specific spool directory, a subdirectory active_jobs
@@ -240,7 +241,7 @@ new checkpoint will be written.
 <li>
 <b><tt>config</tt></b></li>
 
-<br>The job's configuration - contains one line per configuration parameter
+<br>The job's configuration &mdash; contains one line per configuration parameter
 <li>
 <b><tt>environment</tt></b></li>
 
@@ -298,7 +299,7 @@ allow the execution of the next task.
 notify the shepherd with (potentially another) signal, which the shepherd
 then maps to the signal to deliver and sends it to the job's process group.
 <br>If shepherd receives a <tt>SIGTTIN</tt>, it reads the signal to deliver
-from the spoolfile "<tt>signal</tt>" and sends this signal to the job's
+from the spool file "<tt>signal</tt>" and sends this signal to the job's
 process group.
 <li>
 <b><tt>trace</tt></b></li>
@@ -323,8 +324,10 @@ slots (tasks) per host</ul>
 <h2>
 <a NAME="Communication with qlogin/qrsh"></a>Communication with qlogin/qrsh</h2>
 Interactive jobs submitted using qlogin or qrsh require additional communication
-between shepherd and the qlogin/qrsh client command - see also <font color="#FF0000"><a href="../../clients/qrsh/qrsh.html">documentation
+between shepherd and the qlogin/qrsh client command &mdash; see also <font color="#FF0000"><a href="../../clients/qrsh/qrsh.html">documentation
 of qrsh</a></font>.
+<p>The following refers to the old remote startup mechanisms, not the
+"builtin" ones (see remote_startup(5)).
 <p>Qlogin/qrsh sets up a socket and writes the port address to an environment
 variable "QRSH_PORT" in the format "&lt;host>:&lt;port>" (see <tt>source/clients/qsh/qsh.c:
 main</tt>).
@@ -336,10 +339,10 @@ If an error occurs during job setup or the further job monitoring, an error
 message will be sent to qlogin/qrsh in the format:</li>
 
 <br>"<tt>1:&lt;error message></tt>"
-<br>(see <tt>source/daemons/common/err_trace.c: shepherd_error_impl</tt>)
+<br>(see <tt>source/daemons/common/err_trace.c: shepherd_error</tt>)
 <li>
 To initialize a telnet/rsh/rlogin connection, the shepherd creates a socket
-port to which the client command telnet/rsh/rlogin shall connect.</li>
+port to which the client command telnet/rsh/rlogin will connect.</li>
 
 <br>The address of this port is communicated to the qlogin/qrsh client
 in the format:

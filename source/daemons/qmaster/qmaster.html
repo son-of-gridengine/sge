@@ -34,20 +34,19 @@ about requested changes. Every daemon and client application which is interested
 in information about a specific object has to ask the qmaster daemon. Communication
 with qmaster is possible via the Grid Engine Database Interface (<a href="../../libs/gdi/gdi.html">GDI</a>
 )
-<p>Qmaster interoperates with the scheduler daemon <a href="../schedd/schedd.html">schedd</a><font color="#000000">
-for the task of assigning suitable resources (hosts, queues) to jobs waiting
+<p>Qmaster incorporates a scheduler thread, which may be referred to
+as "<a href="schedd.html">schedd</a>, which was the name of the separate daemon which
+originally did the scheduling for the task of assigning suitable resources (hosts, queues) to jobs waiting
 for execution.</font>
-<br>Schedd gets all its information from the qmaster via an event driven
-update protocol utilizing the GDI. Once schedd has determined an assignment
-of jobs to queues, qmaster will get notified via a list of so called "orders",
-which is again a GDI-based communication.
-<p>Such a job execution order will result in the action, that qmaster sends
+<br>Once schedd has determined an assignment
+of jobs to queues, it produces a list of so called "orders".
+<p>Such a job execution order will result in qmaster sending
 the corresponding job to the execution daemon <a href="../execd/execd.html">execd
 </a>of the selected host. This execd will start with the execution of the
 job. The current status of a job or a host again will be reported to qmaster
 by execd using the GDI.
 <h2>
-Interoperating with Clients - Implementing the Grid Engine Database Interface</h2>
+Interoperating with Clients &mdash; Implementing the Grid Engine Database Interface</h2>
 GDI stands for Grid Engine Database Interface. All functions which are
 needed for a client application or a daemon to use this interface are packaged
 together in the library libgdi.a. Documentation for this library can be
@@ -82,13 +81,7 @@ and
 sent to the client before the request is completely finished.</ol>
 
 <h2>
-Interoperating with the Scheduler - Events and Orders</h2>
-The communication and interoperation with schedd is another core task of
-qmaster. The data exchange between the both is performed via an event and
-order protocol being based upon the GDI. An introduction concerning this
-protocol can be found <a href="../schedd/schedd.html">here</a>.<i><font color="#CC0000"></font></i>
-<h2>
-Interoperating with the Execution Daemon - Job and Load Protocols</h2>
+Interoperating with the Execution Daemon &mdash; Job and Load Protocols</h2>
 Jobs get dispatched to execd by qmaster and execd reports job, host status
 and load information back to qmaster. A protocol between qmaster and execd
 handles these and similar tasks. More information about it can be found
@@ -97,12 +90,9 @@ handles these and similar tasks. More information about it can be found
 Process Flow</h2>
 When Qmaster starts up successfully following actions are taken:
 <blockquote>
-<div STYLE="margin-left: 0.79in">Start a Commd process when none is running.</div>
 
-<div STYLE="margin-left: 0.79in">Connect to Commd.</div>
-
-<div STYLE="margin-left: 0.79in">Prevent that other Qmaster processes can
-start up successfully.</div>
+<div STYLE="margin-left: 0.79in">Prevent other Qmaster processes
+starting up successfully.</div>
 
 <div STYLE="margin-left: 0.79in">Read Qmasters configuration</div>
 
