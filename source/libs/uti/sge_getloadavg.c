@@ -909,7 +909,7 @@ static int get_load_avg(double loadv[], int nelem)
 }
 
 #elif defined(__linux__) || defined(__CYGWIN__)
-
+/* fixme:  I always see 0 0 0 in /proc/loadavg under Cygwin/Windows 7 */
 static int get_load_avg(
 double loadv[],
 int nelem 
