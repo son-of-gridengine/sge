@@ -130,6 +130,7 @@ int main(int argc, char *argv[]) {
    printf("%s\n", buf.f_fstypename);
 #elif defined(LINUX)
    /* 0x6969 is NFS_SUPER_MAGIC (see statfs(2) man page) */
+   /* See also more values in linux/magic.h (which we can't include).  */
    if (buf.f_type == 0x6969) {
       /*
        * Linux is not able to detect the right nfs version form the statfs struct.
@@ -169,9 +170,20 @@ int main(int argc, char *argv[]) {
          }
       }
    } else {
-      if (buf.f_type == 0x52654973) {
+      switch (buf.f_type) {
+      case 0x52654973:
          printf("reiserfs\n");
-      } else {
+         break;
+      case 0x517B:
+         printf("smb\n");
+         break;
+      case 0x5346414F:
+         printf("afs\n");
+         break;
+      case 0x73757245:
+         printf("coda\n");      /* is it POSIX-compliant?  */
+         break;
+      default:
          printf("%lx\n", (long unsigned int)buf.f_type);
       }
    }
