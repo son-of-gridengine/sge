@@ -37,19 +37,26 @@ xxqs_name_sxx_request \- xxQS_NAMExx default request definition file format
 .\"
 .SH DESCRIPTION
 .I xxqs_name_sxx_request
-reflects the format of the files defining default request profiles. If
+reflects the format of the files defining default request profiles.
+These apply to
+.M qsub 1 ,
+.M qsh 1 ,
+.M qrsh 1 ,
+.\" fixme: qalter, qresub?
+and
+.M qlogin 1 ,
+but for convenience, only qsub is mentioned below.
+If
 available, default request files are read and processed during job
 submission, before any submit options embedded in the job script, and
 before any options in the
 .M qsub 1
-or
-.M qsh 1
 command-line are considered. Thus, the command-line and embedded script
 options may overwrite the settings in the default request files (see
 .M qsub 1
-or
-.M qsh 1
-for details).
+for details).  However, where options may be repeated and accumulated,
+typically they are collected into a list from the various sources,
+which may not be what you want.
 .PP
 There is a cluster global, a user private, and a working directory local
 default request
@@ -61,14 +68,10 @@ cluster global default request file.
 .I -clear
 option to
 .M qsub 1
-or
-.M qsh 1
 can be used to discard any previous settings at any
 time in a default request file, in the embedded script flags
 or in a
 .M qsub 1
-or
-.M qsh 1
 command-line option.
 .PP
 .\"
@@ -142,7 +145,6 @@ qsub -l arch=sun4,s_cpu=5:0:0 -r n test.sh
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
-.M qsh 1 ,
 .M qsub 1
 \" .M qsub 1 ,
 \" .I xxQS_NAMExx Installation and Administration Guide
