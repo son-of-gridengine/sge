@@ -448,7 +448,7 @@ if [ $ONLY_ENABLE_JMX = "true" ]; then
    QMDIR=`BootstrapGetValue "$SGE_ROOT/$SGE_CELL/common" qmaster_spool_dir`
    CheckRunningDaemon sge_qmaster
    is_running=$?
-   if [ $is_running - ne 0 ]; then
+   if [ $is_running -ne 0 ]; then
       $INFOTEXT "Qmaster %s is not running! Cannot enable JMX." $qmaster_host
       exit 2
    fi
