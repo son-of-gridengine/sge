@@ -149,8 +149,10 @@ that it is only accessed by a single process.  This allows the
 \fIdatabase directory\fP to be on an NFSv3 filesystem (as opposed to
 an NFSv4 one, which is otherwise necessary), but it is unsafe to
 access it with any other program.  In particular, this means that the
-backup script (inst_sge \-bup), and similar scripts using the DB
-utilities, should not be used while qmaster is running with berkeleydb
+backup script (inst_sge \-bup), similar scripts using the DB
+utilities, 
+.I spooledit
+etc., must not be used while qmaster is running with berkeleydb
 spooling.
 .PP
 For spooling method \fIclassic\fP the spooling parameters take the form
