@@ -58,3 +58,9 @@ instbdb=false
 instopenssl=false
 insthadoop=true
 QMON_NEED_SHARED_LIBRARIES=""
+
+# Use this in distinst.private if you have a suitable install(1), such
+# as the GNU one, particularly for distinst -local, in case of a live
+# update of the binaries
+
+# INSTALL=install

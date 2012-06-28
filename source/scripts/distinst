@@ -328,17 +328,21 @@ Cleanup()
 # Install user.group permissions source destination
 Install()
 {
-   Execute cp $3 $4
-   if [ $IAMROOT = true ]; then
-      target_uid=`echo $1 | cut -d. -f1`
-      target_gid=`echo $1 | cut -d. -f2`
-      Execute chown $target_uid $4
-      Execute chgrp $target_gid $4
-   fi
-   if [ -d $4 ]; then
-      Execute chmod $2 $4/`basename $3`
+   target_uid=`echo $1 | cut -d. -f1`
+   target_gid=`echo $1 | cut -d. -f2`
+   if [ -n "$INSTALL" ]; then
+      Execute "$INSTALL" -o $target_uid -g $target_gid -m "$2" "$3" "$4"
    else
-      Execute chmod $2 $4
+      Execute cp $3 $4
+      if [ $IAMROOT = true ]; then
+         Execute chown $target_uid "$4"
+         Execute chgrp $target_gid "$4"
+      fi
+      if [ -d $4 ]; then
+         Execute chmod $2 $4/`basename $3`
+      else
+         Execute chmod $2 $4
+      fi
    fi
 }
 
