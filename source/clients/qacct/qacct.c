@@ -1342,6 +1342,14 @@ static void qacct_usage(sge_gdi_ctx_class_t **ctx, FILE *fp)
    DRETURN_VOID;
 }
 
+static const char *
+print_double_to_string(double secs, dstring *string, char *fmt)
+{
+   sge_dstring_clear(string);
+   sge_dstring_sprintf(string, fmt, secs);
+   sge_dstring_strip_white_space_at_eol(string);
+   return sge_dstring_get_string(string);
+}
 
 /*
 ** NAME
@@ -1374,7 +1382,7 @@ sge_rusage_type *dusage
    if (dusage->task_number) {
       printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_TASKID, dusage->task_number);              /* job-array task number */
    } else {
-      printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_TASKID, "undefined");             
+      printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_TASKID, "undefined");
    }
 
    printf("%-13.12s%-20s\n",MSG_HISTORY_SHOWJOB_ACCOUNT, (dusage->account ? dusage->account : MSG_HISTORY_SHOWJOB_NULL ));
@@ -1400,11 +1408,16 @@ sge_rusage_type *dusage
 
    printf("%-13.12s%-13.3f\n",MSG_HISTORY_SHOWJOB_RUUTIME, dusage->ru_utime);    /* user time used */
    printf("%-13.12s%-13.3f\n", MSG_HISTORY_SHOWJOB_RUSTIME, dusage->ru_stime);    /* system time used */
-      printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUMAXRSS,  dusage->ru_maxrss);     /* maximum resident set size */
-      printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUIXRSS,  dusage->ru_ixrss);       /* integral shared text size */
-      printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUISMRSS,  dusage->ru_ismrss);     /* integral shared memory size*/
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUIDRSS,      dusage->ru_idrss);      /* integral unshared data "  */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUISRSS,      dusage->ru_isrss);      /* integral unshared stack "  */
+   printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_RUMAXRSS,
+          double_print_memory_to_string(dusage->ru_maxrss, &string)); /* maximum resident set size */
+   printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_RUIXRSS,
+          double_print_memory_to_string(dusage->ru_ixrss, &string)); /* integral shared text size */
+   printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_RUISMRSS,
+          double_print_memory_to_string(dusage->ru_ismrss, &string)); /* integral shared memory size*/
+   printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_RUIDRSS,
+          double_print_memory_to_string(dusage->ru_idrss, &string)); /* integral unshared data "  */
+   printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_RUISRSS,
+          double_print_memory_to_string(dusage->ru_isrss, &string)); /* integral unshared stack "  */
    printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUMINFLT,     dusage->ru_minflt);     /* page reclaims */
    printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUMAJFLT,     dusage->ru_majflt);     /* page faults */
    printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUNSWAP,      dusage->ru_nswap);      /* swaps */
@@ -1416,20 +1429,17 @@ sge_rusage_type *dusage
    printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUNVCSW,      dusage->ru_nvcsw);      /* voluntary context switches */
    printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUNIVCSW,     dusage->ru_nivcsw);     /* involuntary */
 
-   printf("%-13.12s%-13.3f\n",   MSG_HISTORY_SHOWJOB_CPU,          dusage->cpu);
-   printf("%-13.12s%-18.3f\n",   MSG_HISTORY_SHOWJOB_MEM,          dusage->mem);
-   printf("%-13.12s%-18.3f\n",   MSG_HISTORY_SHOWJOB_IO,           dusage->io);
-   printf("%-13.12s%-18.3f\n",   MSG_HISTORY_SHOWJOB_IOW,          dusage->iow);
+   printf("%-13.12s%ss\n",   MSG_HISTORY_SHOWJOB_CPU, print_double_to_string(dusage->cpu, &string, "%-13.3f"));
+   printf("%-13.12s%s\n",   MSG_HISTORY_SHOWJOB_MEM,
+          double_print_memory_to_string(dusage->mem, &string));
+   printf("%-13.12s%s\n",   MSG_HISTORY_SHOWJOB_IO,
+          double_print_memory_to_string(dusage->io, &string));
+   printf("%-13.12s%ss\n", MSG_HISTORY_SHOWJOB_IOW,
+          print_double_to_string(dusage->iow, &string, "%-18.3f"));
 
-#if 1
-   /* enable this to get unit of memory value (G,M,K) */
    /* CR TODO: create units for complete qacct output: IZ: #1047 */
-   sge_dstring_clear(&string);
-   double_print_memory_to_dstring(dusage->maxvmem, &string);
-   printf("%-13.12s%s\n",        MSG_HISTORY_SHOWJOB_MAXVMEM,      sge_dstring_get_string(&string));
-#else
-   printf("%-13.12s%-18.3f\n",   MSG_HISTORY_SHOWJOB_MAXVMEM,      dusage->maxvmem);
-#endif
+   printf("%-13.12s%s\n", MSG_HISTORY_SHOWJOB_MAXVMEM,
+          double_print_memory_to_string(dusage->maxvmem, &string));
    if (dusage->ar != 0) {
       printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_ARID, dusage->ar);              /* job-array task number */
    } else {

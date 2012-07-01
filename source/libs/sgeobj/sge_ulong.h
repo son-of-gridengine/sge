@@ -79,4 +79,6 @@ ulong_parse_value_from_string(u_long32 *this_ulong,
 bool
 ulong_parse_task_concurrency(lList **alpp, int *valp, const char *task_concurrency_str);
 
+const char *
+double_print_memory_to_string(double value, dstring *string);
 #endif /* __SGE_ULONG_H */
