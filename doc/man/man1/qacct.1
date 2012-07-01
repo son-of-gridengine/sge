@@ -139,11 +139,11 @@ for which accounting information is printed. If neither a name nor an ID
 is given, all jobs are listed.
 .br
 This option changes the output format of
-\fIqacct\fP. If activated, CPU times are no longer accumulated but the
-"raw" accounting information is printed in a formatted form instead.
-See
-.M accounting 5
-for an explanation of the displayed information.
+\fIqacct\fP. If activated, CPU times are no longer accumulated but
+"raw" per-job accounting information is printed in a formatted form
+instead.  CPU time (seconds), integrated memory usage (byte seconds),
+total i/o (bytes), i/o wait time (seconds), and maximum virtual memory
+(bytes).
 .\"
 .IP "\fB\-l attr=val,...\fP"
 A resource requirement specification which must be met by the queues

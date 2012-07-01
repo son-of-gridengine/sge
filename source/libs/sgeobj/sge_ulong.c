@@ -154,6 +154,13 @@ bool double_print_memory_to_dstring(double value, dstring *string)
    return ret;
 }
 
+const char *double_print_memory_to_string(double value, dstring *string)
+{
+   sge_dstring_clear(string);
+   double_print_memory_to_dstring(value, string);
+   return sge_dstring_get_string(string);
+}
+
 /****** sgeobj/double_print_int_to_dstring() ***********************************
 *  NAME
 *     double_print_int_to_dstring() -- Print a double into a dstring as an int
