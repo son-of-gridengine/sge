@@ -54,6 +54,7 @@ Prefix: %{sge_home}
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+BuildRequires: gcc, make, binutils
 BuildRequires: /bin/csh, openssl-devel, db4-devel, ncurses-devel, pam-devel
 BuildRequires: libXmu-devel, libXpm-devel, hwloc-devel >= 1.1
 # This used to test %{?rhel}, but that's not defined on RHEL 5, and
@@ -64,7 +65,7 @@ BuildRequires: lesstif-devel
 BuildRequires: openmotif-devel
 %endif
 %if %{with java}
-BuildRequires: java-devel >= 1.6.0, javacc, ant-junit, ant-nodeps
+BuildRequires: java-devel >= 1.6.0, javacc, ant-junit
 %if %{with hadoop}
 BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
@@ -262,7 +263,6 @@ fi
 %defattr(-,root,root,-)
 # Ensure we can make sgeadmin-owned cell directory
 %attr(775,root,%{username}) %{sge_home}
-%exclude %{sge_bin}/*/qacct
 %exclude %{sge_bin}/*/qmon
 %exclude %{sge_bin}/*/sge_*
 %if %{with java}
@@ -284,7 +284,6 @@ fi
 %exclude %{sge_home}/pvm/src
 %exclude %{sge_bin}/process-scheduler-log
 %exclude %{sge_bin}/qsched
-%exclude %{sge_bin}/jobstats
 %exclude %{sge_home}/util/resources/drmaa4ruby
 %{sge_bin}
 %{sge_lib}
@@ -334,12 +333,10 @@ fi
 
 %files qmaster
 %defattr(-,root,root,-)
-%{sge_bin}/*/qacct
 %{sge_bin}/*/sge_qmaster
 %{sge_bin}/*/sge_shadowd
 %{sge_bin}/process-scheduler-log
 %{sge_bin}/qsched
-%{sge_bin}/jobstats
 %{sge_home}/install_qmaster
 %{sge_mandir}/man8/sge_qmaster.8.gz
 %{sge_mandir}/man8/sge_shadowd.8.gz
@@ -356,7 +353,9 @@ fi
 %endif
 
 %changelog
-* Tue Jun 19 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.1-1
+* Mon Jul  2 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.1-1
+- Build-require gcc etc. and not ant-nodeps.
+- Move qacct, jobstats.
 - Revert last (temporary) change and update version
 
 * Thu Jun 14 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.0-2
