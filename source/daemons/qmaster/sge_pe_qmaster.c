@@ -191,6 +191,9 @@ int pe_mod(sge_gdi_ctx_class_t *ctx, lList **alpp, lListElem *new_pe, lListElem 
       lSetString(new_pe, PE_urgency_slots, s);
    }
 
+   /* ---- PE_accounting_summary */
+   attr_mod_bool(pe, new_pe, PE_accounting_summary, "accounting_summary");
+
 #ifdef SGE_PQS_API
    /* -------- PE_qsort_args */
    if (lGetPosViaElem(pe, PE_qsort_args, SGE_NO_ABORT) >= 0) {
@@ -206,9 +209,6 @@ int pe_mod(sge_gdi_ctx_class_t *ctx, lList **alpp, lListElem *new_pe, lListElem 
       /* lSetUlong(new_pe, PE_qsort_validated, 1); */
    }
 #endif
-
-   /* ---- PE_accounting_summary */
-   attr_mod_bool(pe, new_pe, PE_accounting_summary, "accounting_summary");
 
    /* -------- PE_resource_utilization */
    if (add) {
