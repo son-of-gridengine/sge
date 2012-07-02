@@ -578,10 +578,10 @@ spooling_field PE_fields[] = {
    {  PE_control_slaves,  18,   "control_slaves",    NULL, NULL, NULL, NULL},
    {  PE_job_is_first_task, 18,   "job_is_first_task", NULL, NULL, NULL, NULL},
    {  PE_urgency_slots,   18,   "urgency_slots",     NULL, NULL, NULL, NULL},
+   {  PE_accounting_summary, 18,   "accounting_summary", NULL, NULL, NULL, NULL},
 #ifdef SGE_PQS_API
    {  PE_qsort_args,      18,   "qsort_args",        NULL, NULL, NULL, NULL},
 #endif
-   {  PE_accounting_summary, 18,   "accounting_summary", NULL, NULL, NULL, NULL},
    {  NoName,             18,   NULL,                NULL, NULL, NULL, NULL}
 };
 

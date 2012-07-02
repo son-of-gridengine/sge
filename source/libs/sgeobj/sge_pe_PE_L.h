@@ -116,10 +116,10 @@ enum {
    PE_job_is_first_task,
    PE_resource_utilization,
    PE_urgency_slots,
+   PE_accounting_summary,
 #ifdef SGE_PQS_API
-   PE_qsort_args,
+   PE_qsort_args
 #endif
-   PE_accounting_summary
 };
 
 
@@ -137,10 +137,10 @@ LISTDEF(PE_Type)
    SGE_BOOL_D(PE_job_is_first_task, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, "TRUE")
    SGE_LIST(PE_resource_utilization, RUE_Type, CULL_DEFAULT | CULL_JGDI_HIDDEN)
    SGE_STRING_D(PE_urgency_slots, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, "min")
+   SGE_BOOL_D(PE_accounting_summary, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, "FALSE")
 #ifdef SGE_PQS_API
    SGE_STRING(PE_qsort_args, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF)
 #endif
-   SGE_BOOL_D(PE_accounting_summary, CULL_DEFAULT | CULL_SPOOL | CULL_JGDI_CONF, "FALSE")
 LISTEND 
 
 NAMEDEF(PEN)
@@ -155,10 +155,10 @@ NAMEDEF(PEN)
    NAME("PE_job_is_first_task")
    NAME("PE_resource_utilization")
    NAME("PE_urgency_slots")
+   NAME("PE_accounting_summary")
 #ifdef SGE_PQS_API
    NAME("PE_qsort_args")
 #endif
-   NAME("PE_accounting_summary")
 NAMEEND
 
 /* *INDENT-ON* */ 
