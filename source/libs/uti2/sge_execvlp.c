@@ -28,11 +28,27 @@
 #include "uti/sge_string.h"
 
 extern char **environ;
+static char **
+
+newargs (const char *file, char *const argv[])
+{
+   int i, na = 0;
+   char **newargv;
+
+   while (argv[na++]) ;
+   newargv = malloc ((na + 1) * sizeof (char *));
+   if (!newargv) return NULL;
+   newargv[0] = "/bin/sh";
+   newargv[1] = (char *) file;
+   for (i = 2; i < na + 1; i++)
+      newargv[i] = argv[i-1];
+   return newargv;
+}
 
 /****** uti/sge_execvlp() ****************************************
 *
 *  NAME
-*     sge_execvlp -- like execve, but search path
+*     sge_execvlp -- like execve, but search the path
 *
 *  SYNOPSIS
 *     #include "uti/execvlp.h"
@@ -63,12 +79,28 @@ sge_execvlp (const char *file, char *const argv[], char *const envp[])
    if (!path)                    /* use file directly if no path */
       return execve (file, argv, envp);
 
-   if (strchr (file, '/'))       /* directory path -- don't search */
-      return execve (file, argv, envp);
+   if (strchr (file, '/')) {	/* directory path -- don't search */
+      int late_errno = errno;
+
+      errno = 0;
+      execve (file, argv, envp);
+      if (errno == ENOEXEC) {
+	 char **newargv;
+
+         errno = late_errno;
+         newargv = newargs (file, argv);
+         if (!newargv) return -1;
+	 execve (newargv[0], newargv, envp);
+	 free (newargv);
+      }
+      return -1;
+   }
 
    /* Else try path components */
    path = strdup (path);
    while ((component = strtok ((first ? path : NULL), ":"))) {
+      int late_errno = errno;
+
       first = 0;
       execpath[0] = '\0';
       if (strlen (component) != 0) { /* else current directory */
@@ -81,8 +113,19 @@ sge_execvlp (const char *file, char *const argv[], char *const envp[])
       if (sge_strlcat(execpath, file, sizeof(execpath)) >= sizeof(execpath))
          continue;
       errno = 0;
-      if (execve (execpath, argv, envp) == -1 && errno != ENOENT)
-         return -1;
+      execve (execpath, argv, envp);
+      if (errno == ENOEXEC) {
+	 char **newargv;
+
+         newargv = newargs (file, argv);
+         if (!newargv) return -1;
+	 execve (newargv[0], newargv, envp);
+	 free (newargv);
+         errno = late_errno;
+	 return -1;
+      }
+      if (errno != ENOENT)
+	 return -1;
    }
    return -1;
 }
