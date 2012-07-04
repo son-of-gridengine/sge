@@ -589,10 +589,10 @@ void cull_show_job(lListElem *job, int flags, bool show_binding)
             continue;
 
          if (first_task) {
-            printf("usage %4d:                 ", (int)lGetUlong(jatep, JAT_task_number));
+            printf("usage %9d:            ", (int)lGetUlong(jatep, JAT_task_number));
             first_task = 0;
          } else
-            printf("      %4d:                 ", (int)lGetUlong(jatep, JAT_task_number));
+            printf("      %9d:            ", (int)lGetUlong(jatep, JAT_task_number));
 
          cpu = mem = io = vmem = maxvmem = 0.0;
 
@@ -658,7 +658,7 @@ void cull_show_job(lListElem *job, int flags, bool show_binding)
                break;
             }
          }
-         printf("%s %4d:               %s\n", first_task ? "binding" : "       ", 
+         printf("%s %7d:            %s\n", first_task ? "binding" : "       ",
             (int)lGetUlong(jatep, JAT_task_number), binding_inuse != NULL ? binding_inuse : "NONE");
          if (first_task) {
             first_task = 0;
@@ -676,7 +676,7 @@ void cull_show_job(lListElem *job, int flags, bool show_binding)
             const char *message = lGetString(mesobj, QIM_message);
 
             if (message != NULL) {
-               printf(SFN" %4d:          "SFN"\n", 
+               printf(SFN" %10d:      "SFN"\n",
                       first_task ? "error reason" : "            ",
                       (int)lGetUlong(jatep, JAT_task_number),
                       message);
