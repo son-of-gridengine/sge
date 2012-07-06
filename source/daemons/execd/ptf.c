@@ -953,8 +953,7 @@ static void ptf_get_usage_from_data_collector(void)
 
             tid = lGetString(osjob, JO_task_id_str);
             DPRINTF(("JOB " sge_u32 "." sge_u32 ": %s: (cpu = %8.3lf / mem = "
-                     UINT64_FMT " / io = " UINT64_FMT " / vmem = "
-                     UINT64_FMT " / himem = " UINT64_FMT ")\n",
+                     UINT64_FMT " / io = " UINT64_FMT " / vmem = %10.5f  / himem = %10.5f)\n",
                      lGetUlong(job, JL_job_ID), 
                      lGetUlong(osjob, JO_ja_task_ID), tid ? tid : "",
                      tmp_jobs->jd_utime_c + tmp_jobs->jd_utime_a +
