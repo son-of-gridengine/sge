@@ -82,6 +82,8 @@ spool_dynamic_create_context(lList **answer_list, const char *method,
                                         "sl"
 #elif defined(DARWIN)
                                         "dylib"
+#elif __CYGWIN_
+                                        "dll"
 #else
                                         "so"
 #endif

@@ -1561,6 +1561,10 @@ for i in $ARCH; do
             shlibext="dylib"
             jnilibext="jnilib"
             ;;
+         cygwin*)
+            shlibext="dll"
+            jnilibext="dll"
+            ;;
          *)
             shlibext="so"
             jnilibext="so"

@@ -1078,6 +1078,13 @@ static int cl_com_ssl_build_symbol_table(void) {
       cl_com_ssl_crypto_handle = dlopen ("libssl.sl", RTLD_LAZY );
 #endif /* RTLD_NODELETE */
 
+#elif defined(__CYGWIN__)
+#ifdef RTLD_NODELETE
+      cl_com_ssl_crypto_handle = dlopen ("libssl.dll", RTLD_LAZY | RTLD_NODELETE);
+#else
+      cl_com_ssl_crypto_handle = dlopen ("libssl.ll", RTLD_LAZY );
+#endif /* RTLD_NODELETE */
+
 #else   
 #ifdef RTLD_NODELETE
       cl_com_ssl_crypto_handle = dlopen ("libssl.so" LIBSSL_VER, RTLD_LAZY | RTLD_NODELETE);
