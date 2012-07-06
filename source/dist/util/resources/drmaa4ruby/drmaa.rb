@@ -186,6 +186,7 @@ private
 			case osname
 			when "Darwin"
 				libext = ".dylib"
+                        # fixme: cygwin etc.
 			else
 				libext = ".so"
 			end

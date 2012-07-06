@@ -2198,7 +2198,7 @@ bool sge_daemonize_prepare(sge_gdi_ctx_class_t *ctx) {
    /* child */
    SETPGRP;
 
-#if !(defined(__hpux) || defined(WIN32) || defined(INTERIX)) || defined(__CYGWIN__)
+#if !(defined(__hpux) || defined(WIN32) || defined(INTERIX) || defined(__CYGWIN__))
    if ((fd = open("/dev/tty", O_RDWR)) >= 0) {
       /* disassociate contolling tty */
       ioctl(fd, TIOCNOTTY, (char *) NULL);
@@ -2345,7 +2345,7 @@ bool sge_daemonize_finalize(sge_gdi_ctx_class_t *ctx)
 int sge_daemonize(int *keep_open, unsigned long nr_of_fds, sge_gdi_ctx_class_t *ctx)
 {
 
-#if !(defined(__hpux) || defined(WIN32) || defined(INTERIX)) || defined(__CYGWIN__)
+#if !(defined(__hpux) || defined(WIN32) || defined(INTERIX) || defined(__CYGWIN__))
    int fd;
 #endif
  
