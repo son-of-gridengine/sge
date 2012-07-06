@@ -308,6 +308,10 @@ if [ $createdist = true ]; then
             shlibext="dylib"
             jnilibext="jnilib"
             ;;
+         cygwin-*)
+            shlibext="dll"
+            jnilibext="dll"
+            ;;
          *)
             shlibext="so"
             jnilibext="so"
