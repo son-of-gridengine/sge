@@ -4,16 +4,131 @@ Notable changes in Son of Grid Engine
 For earlier changes (comprising Sun Grid Engine), see Changelog in the
 source distribution, and the bug lists at
 http://arc.liv.ac.uk/SGE/howto/Installation,%20Upgrade,%20Patches.
-For detailed recent change information, including credits for patches,
-see https://arc.liv.ac.uk/trac/SGE/log/sge/
+For detailed recent change information, including credits for changes
+not listed here, see https://arc.liv.ac.uk/trac/SGE/log/sge/
 
 "[#<n>]" below refers to ticket <n> at
-https://arc.liv.ac.uk/trac/SGE/ticket/<n>.  (The issues fixed by Univa
-changes aren't publicly available as such, and many other changes have been
-made without raising Trac tickets.)  Changes due to Univa (or Sun)
-from the Univa repo are tagged as "[U]", and items partially due to
-them or appearing first in this version are tagged as "[(U)]".
+https://arc.liv.ac.uk/trac/SGE/ticket/<n>.  For historical reasons,
+changes due to Univa/Sun are tagged as "[U]", or "[(U)]" if partially
+due to them or appearing first in this version.
 
+
+Version 8.1.1
+-------------
+
+* Bug fixes
+
+  * Many man and other documentation fixes
+  * Various build fixes; including correct linking of libdrmaa.so
+  * Fix various messages
+  * Fix ownership of pty created with "-pty y" per submit(1)
+  * Fix setting of non-"explicit" binding parameters with JSV
+  * Fix qevent crash when printing usage
+  * Avoid qsub crash when user information is unavailable [#772]
+  * Fix problems with qmon and optimized compiles due to invalid C
+  * Fix effective units for memory reporting on Darwin
+  * Delay closing descriptors for interactive sessions
+  * Avoid sensitivity of internal floating-point handling to numeric
+    locale [#1394]
+  * Allow full wildcard patterns for wc_pe_name type in parallel
+    environment requests, not just "*" [#1410]
+  * Pass the user environment with MS Windows display_win_gui=true
+    jobs [#1380]
+  * Treat -pty the same as qsh for qlogin and command-less qrsh
+  * Fix handling of newlines in qrsh commands, exposed by qmake update
+    [#1420], and preserve "\n" in environment values
+  * Avoid breaking some NSS modules, resulting in failed passwd lookup
+  * Fix suspension of parallel jobs [#577]
+  * Improve portability of qstatus(1)
+  * Fix signature of drmaa_run_bulk_jobs [#362]
+  * Treat -pty for qlogin/qrlogin as for qsh
+  * Fix some cases with shell_start_mode=unix_behaviour
+  * Use correct KRB5CCNAME when deleting Kerberos credentials [#64]
+    (though GSS security is not currently useful)
+  * Fix spurious deletion of the job script with multiple PE array
+    jobs on a node
+
+* Security
+
+  * Don't pass any user environment to remote startup daemons -- better
+    fix for half of CVE-2012-0208
+
+* Enhancements
+
+  * SGE_BINDING is set in the environment for all types of binding
+  * New jobstats(1) provides historical job summary
+  * Berkeleydb spools can optionally be opened "private" to allow
+    operation on NFS3 filesystems.  Currently no installer support, but
+    see bootstrap(5) and the health warning
+  * Environment variable SGE_DRMAA_ALLOW_JOB_ERROR_STATE allows DRMAA
+    jobs to enter the error state [#1374]; see drmaa_submit(3)
+  * Define SGE_JOBEXIT_STAT environment variable in epilog; see submit(1)
+  * The user from which mail is sent can be configured in sge_conf(5)
+  * Topology items are now static load values; see load_parameters(5)
+  * qstat now prints array job dependency info
+  * Default to support for qsort_args in sge_pe(5)
+  * Include an example of logrotate usage
+  * Install an "smp" PE
+  * Distribute/document sge_share_mon(1) to print share tree [#1373]
+  * Improve install template defaults [#1362]
+  * GPU load sensor (dist/util/resources/loadsensors/gpu-loadsensor.c)
+  * Allow building Kerberos/GSSAPI security modules against Heimdal
+    (but GSS is still not properly usable)
+  * Support arm and mipsel on GNU/Linux, completing the set
+    of official Debian Linux-based ports
+  * Support for OpenBSD (untested)
+  * Preliminary support for Cygwin: everything builds, clients work
+    (lightly tested), daemons need fixing
+  * Add ja_task_id to expandable variables in ckpt_command and similar
+    methods
+  * distinst supports installation with install(1) for use with -local
+
+* Incompatible changes
+
+  * The CA directory is now /var/lib/sgeCA instead of /var/sgeCA
+    [#293] but installation will offer to move it [fixme]
+  * Drop (any pretence at) support for Cray/Unicos, NEC SX, Darwin 6
+  * The spool format for parallel job tasks has changed from any previous
+    version built with qsort_args (as above), which will make live
+    upgrades from such a version fail on nodes running parallel jobs
+
+* Other changes
+
+  * Extensive internal changes to improve robustness, e.g. of
+    string-handling against buffer overruns -- somewhat error-prone
+    and may have caused regressions; more required
+  * Install script allows rsh et al to be omitted from binary distribution
+    in favour of ssh
+
+
+Version 8.1.0
+-------------
+
+* Security fix
+
+  * Prevent users other than root deleting entries with sgepasswd
+
+* Version numbering
+
+  * Switch to a more logical numbering scheme now that the Univa
+    baseline is irrelevant
+
+* Bug fixes
+
+  * Correct patch for [#1328]
+  * Build libdrmaa against libhwloc when appropriate
+  * Install AUTHORS and sge_pqs_api.h
+  * Actually use AIX perflib (and drop ibm-loadsensor)
+  * Man fixes
+
+* Other changes
+
+  * Update RPM spec file to include gui-installer and herd in RPM
+  * Link duplicated man pages rather than copying them [#1408]
+  * Update copyright licences
+  * Hadoop support now for a more recent Hadoop distribution (see
+    README.BUILD)
+  * Drop support for AIX 4.3 and earlier and HPUX 10 (from patch dependency)
 
 Version 8.0.0e
 --------------
@@ -32,6 +147,7 @@ Mostly build and security issues
     (e.g. Ubuntu 12.04)
   * Rename status(1) to qstatus(1) to avoid name clash with upstart
   * Update LICENCES with some missing items
+  * Fix qevent crash printing usage and add man page
 
 * Security fixes
 
