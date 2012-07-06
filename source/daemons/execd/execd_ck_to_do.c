@@ -223,13 +223,13 @@ static void force_job_rlimit(const char* qualified_hostname)
             cpu_val = lGetDouble(cpu_ep, UA_value);
          }
 
-         if ((vmem_ep = lGetElemStr(usage_list, UA_name, USAGE_ATTR_VMEM))) {
+         if ((vmem_ep = lGetElemStr(usage_list, UA_name, USAGE_ATTR_MAXVMEM))) {
             vmem_val = lGetDouble(vmem_ep, UA_value);
          }
             
          DPRINTF(("JOB "sge_u32" %s %10.5f %s %10.5f\n", jobid,
             cpu_ep != NULL ? USAGE_ATTR_CPU : "("USAGE_ATTR_CPU")", cpu_val,
-            vmem_ep != NULL ? USAGE_ATTR_VMEM : "("USAGE_ATTR_VMEM")", vmem_val));
+            vmem_ep != NULL ? USAGE_ATTR_VMEM : "("USAGE_ATTR_MAXVMEM")", vmem_val));
 
          /* free no longer needed usage_list */
          lFreeList(&usage_list);
