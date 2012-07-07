@@ -453,7 +453,8 @@ AC_ARG_WITH(sge,
             [sge="$withval"], [sge=no])
 if test "$sge" != no; then
    GRDDEF="-I../../../libs/gdi"
-   GRDLIB="-L../../../$sge \$(SGE_LIBS) ${LDFLAGS}"
+dnl -lm potentially required for fabs (double_print_memory_to_dstring)
+   GRDLIB="-L../../../$sge \$(SGE_LIBS) -lm ${LDFLAGS}"
    CFLAGS="$CFLAGS -DPROG_NAME='\"qtcsh\"' -D$sge"
 fi
 AC_SUBST(GRDDEF)
