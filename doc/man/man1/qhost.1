@@ -161,64 +161,12 @@ reservation), used and, available (according to the queue's
 parameter) job slots,
 .IP "\(bu" 3n
 the state of the queue \- one of
-.\" Fixme:  `orphaned' occurs in sge_qinstance_state.c -- what does it mean?
-u(nknown) if the corresponding
-.M xxqs_name_sxx_execd 8
-cannot be contacted, a(larm), A(larm), C(alendar suspended), s(uspended),
+u(nknown), a(larm), A(larm), C(alendar suspended), s(uspended),
 S(ubordinate), d(isabled), D(isabled), E(rror), (c)configuration
-ambiguous, or combinations thereof.
-.PP
-If the state is a(alarm) at least one of the load thresholds defined in the 
-\fIload_thresholds\fP list of the queue configuration (see
-.M queue_conf 5 )
-is 
-currently exceeded, which prevents from scheduling further jobs to that 
-queue.
-.PP
-As opposed to this, the state A(larm) indicates that at least one of the
-suspend thresholds of the queue (see
-.M queue_conf 5 )
-is currently exceeded. This will result in jobs running in that queue being
-successively suspended until no threshold is violated.
-.PP
-The states s(uspended) and d(isabled) can be assigned to queues and
-released via the
-.M qmod 1
-command. Suspending a queue will cause all jobs executing in that queue to
-be suspended.
-.PP
-The states D(isabled) and C(alendar suspended) indicate that the queue 
-has been disabled or suspended automatically via the calendar facility of 
-xxQS_NAMExx (see
-.M calendar_conf 5 ),
-while the S(ubordinate) state 
-indicates, that the queue has been suspend via subordination to another 
-queue (see
-.M queue_conf 5
-for details). When suspending a queue 
-(regardless of the cause) all jobs executing in that queue are suspended 
-too.
-.PP
-If an E(rror) state is displayed for a queue,
-.M xxqs_name_sxx_execd 8
-on that host was unable to locate the
-.M xxqs_name_sxx_shepherd 8
-executable
-on that host in order to start a job. Please check the
-error logfile of that
-.M xxqs_name_sxx_execd 8
-for leads on how to resolve the problem. Please enable the
-queue afterwards via the \fB-c\fP option of the
-.M qmod 1
-command manually.
-.PP
-The c(onfiguration ambiguous) state indicates a problem with
-overlapping hosts groups (see
-.M queue_conf 5 ).
-Use
-.M qstat 1 's
-.B "-explain c"
-to diagnose it.
+ambiguous, (o)rphaned, (P)reempted, or some combinations thereof.
+See section "Full Format" in
+.M qstat 1
+for explanation of the status flags.
 .PP
 If the \fB\-F\fP option was used, resource availability information is printed 
 following the host status line. For each resource (as selected in an option 

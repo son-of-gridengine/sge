@@ -140,6 +140,13 @@ displayed by
 and \fIJID\fP being the job's identification number.
 Likewise,
 the standard error output is redirected to \fIREQUEST\fP.pe\fIJID\fP.
+.\" Fixme: check & xref with submit
+If the
+.B \-e
+or
+.B \-o
+options are given on job submission, the PE error and standard output
+is merged into the paths specified.
 .PP
 The following special
 variables, expanded at runtime, can be used (besides any other

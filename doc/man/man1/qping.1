@@ -255,7 +255,11 @@ application status.
 .in -3
 .in -3
 \fIMonitor:\fP
-If available, displays statistics on a thread. The data for each thread is
+If available (see
+.I MONITOR_TIME
+in qmaster_params in
+.M xxqs_name_sxx_conf 5 ),
+displays statistics on a thread. The data for each thread are
 displayed in one line. The format of this line can be changed at any time. Only the
 master implements monitoring.
 
@@ -405,7 +409,9 @@ info:                     ok
 .\"
 .\"
 .SH BUGS
-The command is currently broken, so that it always produces error output.
+The command currently always produces error output in the
+.I info:
+line.
 .SH "ENVIRONMENT VARIABLES"
 .\" 
 .IP "\fBxxQS_NAME_Sxx_ROOT\fP" 1.5i
@@ -420,6 +426,7 @@ If set, specifies the default xxQS_NAMExx cell.
 .M xxqs_name_sxx_intro 1 ,
 .M host_aliases 5 ,
 .M xxqs_name_sxx_qmaster 8 ,
+.M xxqs_name_sxx_conf 5 ,
 .M xxqs_name_sxx_execd 8 .
 .\"
 .SH "COPYRIGHT"
