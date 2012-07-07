@@ -34,7 +34,7 @@ qacct \- report and account for xxQS_NAMExx usage
 .SH SYNOPSIS
 .B qacct
 .RB [ \-ar
-.IR ar_id ] 
+.RI [ ar_id ]]
 .RB [ \-A
 .IR Account ]
 .RB [ \-b
@@ -43,29 +43,29 @@ qacct \- report and account for xxQS_NAMExx usage
 .IR Days ]
 .RB [ \-e
 .IR EndTime ]
-.RB [ \-g 
-.IR GroupId | GroupName ]
+.RB [ \-g
+.RI [ GroupId | GroupName ]]
 .RB [ \-h
-.IR HostName ]
+.RI [ HostName ]]
 .RB [ \-help ]
 .RB [ \-j
-.IR job_id | job_name | pattern ]
+.RI [ job_id | job_name | pattern ]]
 .RB [ \-l
 .IR attr = val ,...]
 .RB [ \-o
-.IR Owner ]
+.RI [ Owner ]]
 .RB [ \-pe
-.IR PEname ]
+.RI [ PEname ]]
 .RB [ \-q
-.IR wc_queue ]
+.RI [ wc_queue ]]
 .RB [ \-slots
-.IR SlotNumber ]
+.RI [ SlotNumber ]]
 .RB [ \-t
 .IR task_id_range_list ]
 .RB [ \-P
-.IR Project ]
+.RI [ Project ]]
 .RB [ \-D
-.IR Department ]
+.RI [ Department ]]
 .RB [ \-f
 .IR AcctFileName ]
 .\"
@@ -88,42 +88,42 @@ owner, but not for two queues in the same request.
 .\"
 .\"
 .SH OPTIONS
-.IP "\fB\-ar\fP [\fBar_id\fP]"
+.IP "\fB\-ar\fP [\fIar_id\fP]"
 The ID of the advance reservation for which usage is summarized.
-If \fBar_id\fP is not given, accounting data are
+If \fIar_id\fP is not given, accounting data are
 listed for each advance reservation separately.
 .\"
-.IP "\fB\-A Account\fP"
+.IP "\fB\-A\fB \fIAccount\fP"
 The account for jobs to be summarized. 
 .\"
-.IP "\fB\-b BeginTime\fP"
+.IP "\fB\-b\fP \fIBeginTime\fP"
 The earliest start time for jobs to be summarized, in the format
 [[CC]YY]MMDDhhmm[.SS]. See also the \fB\-d\fP option. If CC is not
 specified, a YY of < 70 means 20YY.
 .\"
-.IP "\fB\-d Days\fP"
+.IP "\fB\-d\fP \fIDays\fP"
 The number of days for which to summarize and print accounting information. If
 used together with the \fB\-b \fIBeginTime\fR option (see above), jobs
-started within \fBBeginTime\fP to \fBBeginTime\fP + \fBDays\fP are
-counted. If used together with \fB\-e \fIEndTime\fP (see below)
-option, count starts at \fBEndTime\fP \- \fBDays\fP.
+started within \fIBeginTime\fP to \fIBeginTime\fP+\fIDays\fP are
+counted. If used together with \fB\-e\fP \fIEndTime\fP (see below)
+option, count starts at \fIEndTime\fP\-\fIDays\fP.
 .\"
-.IP "\fB\-e EndTime\fP"
+.IP "\fB\-e\fP \fIEndTime\fP"
 The latest start time for jobs to be summarized, in the format
 [[CC]YY]MMDDhhmm[.SS]. See also \fB\-d\fP option. If CC is not
 specified, a YY of < 70 means 20YY.
 .\"
-.IP "[\fB\-f\fP \fBAcctFileName\fP]"
+.IP "[\fB\-f\fP \fIAcctFileName\fP]"
 The accounting file to be used. If omitted, the system
 default accounting file is processed.
 .\"
-.IP "\fB\-g\fP [\fBGroupId\fP|\fBGroupName\fP]"
+.IP "\fB\-g\fP [\fIGroupId\fP|\fIGroupName\fP]"
 The numeric system group id or the group alphanumeric name of the
 job owners to be included
-in the accounting. If \fBGroupId\fP/\fBGroupName\fP is omitted, all
+in the accounting. If \fIGroupId\fP/\fIGroupName\fP is omitted, all
 groups are accounted.
 .\"
-.IP "\fB\-h\fP [\fBHostName\fP]"
+.IP "\fB\-h\fP [\fIHostName\fP]"
 The case-insensitive name of the host upon which accounting
 information is requested. If the name is omitted, totals for each host are
 listed separately.
@@ -133,7 +133,7 @@ Display help information for the
 .I qacct
 command.
 .\"
-.IP "\fB\-j\fP [\fBjob_id|job_name|pattern\fP]"
+.IP "\fB\-j\fP [\fIjob_id\fP|\fIjob_name\fP|\fIpattern\fP]"
 The name, an expression for matching names, or ID of the job during execution 
 for which accounting information is printed. If neither a name nor an ID 
 is given, all jobs are listed.
@@ -145,52 +145,52 @@ instead.  CPU time (seconds), integrated memory usage (byte seconds),
 total i/o (bytes), i/o wait time (seconds), and maximum virtual memory
 (bytes).
 .\"
-.IP "\fB\-l attr=val,...\fP"
+.IP "\fB\-l \fIattr\fP=\fIval\fP,..."
 A resource requirement specification which must be met by the queues
 in which the jobs being accounted were executing. The resource request 
 is very similar to the one described in
 .M qsub 1 .
 .\"
-.IP "\fB\-o\fP [\fBOwner\fP]"
+.IP "\fB\-o\fP [\fIOwner\fP]"
 The name of the owner of the jobs for which accounting statistics
-are assembled. If the optional \fBOwner\fP argument is omitted,
+are assembled. If the optional \fIOwner\fP argument is omitted,
 a listing of the accounting statistics of all job owners
 present in the accounting file is produced.
 .\"
-.IP "\fB\-pe\fP [\fBPEname\fP]"
+.IP "\fB\-pe\fP [\fIPEname\fP]"
 The name of the parallel environment for which usage is summarized.
-If \fBPEname\fP is not given, accounting data are
+If \fIPEname\fP is not given, accounting data are
 listed for each parallel environment separately.
 .\"
-.IP "\fB\-q\fP [\fBwc_queue_name\fP]"
+.IP "\fB\-q\fP [\fIwc_queue_name\fP]"
 An expression for queues for which usage is summarized. All
 queue instances matching the expression will be listed. If
 no expression is specified, a cluster queue summary will be 
 given.
 .\"
-.IP "\fB\-slots\fP [\fBSlotNumber\fP]"
+.IP "\fB\-slots\fP [\fISlotNumber\fP]"
 The number of queue slots for which usage is summarized.
-If \fBSlotNumber\fP is not given, accounting data are
+If \fISlotNumber\fP is not given, accounting data are
 listed for each number of queue slots separately.
 .\"
-.IP "\fB\-t task_id_range_list\fP"
+.IP "\fB\-t \fItask_id_range_list\fP"
 Only available together with the \fB\-j\fP option described above.
 .sp 1
 The \fB\-t\fP switch specifies the array job task range, for which
 accounting information should be printed. Syntax and semantics of
-\fBtask_id_range_list\fP are identical to that one described under the
+\fItask_id_range_list\fP are identical to that one described under the
 \fB\-t\fP option to
 .M qsub 1 .
 Please see there also for further information on array jobs.
 .\"
-.IP "\fB\-P\fP [\fBProject\fP"
+.IP "\fB\-P\fP [\fIProject\fP]"
 The name of the project for which usage is summarized.
-If \fBProject\fP is not given, accounting data are
+If \fIProject\fP is not given, accounting data are
 listed for each relevant project separately.
 .\"
-.IP "\fB\-D\fP [\fBDepartment\fP]"
+.IP "\fB\-D\fP [\fIDepartment\fP]"
 The name of the department for which usage is summarized.
-If \fBDepartment\fP is not given, accounting data are
+If \fIDepartment\fP is not given, accounting data are
 listed for each relevant department separately.
 .\"
 .\"
@@ -235,6 +235,7 @@ is expected to listen for communication requests.
 Most installations will use a services map entry for the
 service "sge_execd" instead to define that port.
 .\"
+.\" Fixme: add SGE_QACCT_DEBUG
 .\"
 .SH FILES
 .nf

@@ -4,8 +4,6 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: access_list.5,v $     Last Update: $Date: 2011-05-19 00:16:38 $     Revision: $Revision: 1.9 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -29,7 +27,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH ACCESS_LIST 5 "$Date: 2011-05-19 00:16:38 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH ACCESS_LIST 5 "2011-05-19" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 access_list \- xxQS_NAMExx access list file format
@@ -46,7 +44,7 @@ access lists can be displayed via the
 \fB\-sul\fP option. The contents of each access list can
 shown via the \fB\-su\fP switch. The output follows the
 .I access_list
-format description. New access lists can be created and existing can be
+format description. New access lists can be created and existing ones can be
 modified via the \fB\-au\fP and \fB\-du\fP options to
 .M qconf 1 .
 .PP
@@ -66,19 +64,18 @@ content:
 The name of the access list in the format for \fIuserset_name\fP in
 .M sge_types 5 .
 .SS "\fBtype\fP"
-The type of the access list, currently  one  of 
+The type of the access list, currently one of
 .I ACL,
-or 
-.I DEPT 
-or a  combination of both in a comma separated list. Depending on this parameter  
-the access list can be used as access list only or as a department. 
+or
+.I DEPT
+or a  combination of both in a comma-separated list. Depending on this parameter,
+the access list can be used as an access list only, or as a department.
 .SS "\fBoticket\fP"
-The amount of override tickets currently assigned to the department.
+The number of override tickets currently assigned to the department.
 .SS "\fBfshare\fP"
 The current functional share of the department.
 .SS "\fBentries\fP"
-The entries parameter contains the comma separated list of 
-those UNIX users (see \fIuser_name\fP in
+A comma-separated list of those UNIX users (see \fIuser_name\fP in
 .M sge_types 5 )
 or those primary UNIX groups that are assigned to the access list 
 or the department. Only a user's primary UNIX group is used; secondary groups
