@@ -383,7 +383,6 @@ int packint64(sge_pack_buffer *pb, u_long64 i)
    PACK_FORMAT
  */
 int packdouble(sge_pack_buffer *pb, double d) {
-/* CygWin does not know RPC u. XDR */
    char buf[32];
 #if !(defined(WIN32))                                         /* var not needed */
    XDR xdrs;
@@ -719,7 +718,6 @@ int unpackdouble(sge_pack_buffer *pb, double *dp)
 
    /* copy double */
 
-   /* CygWin does not know RPC u. XDR */
 #if !(defined(WIN32) || defined(INTERIX))                   /* XDR not called */
    memcpy(buf, pb->cur_ptr, DOUBLESIZE);
    xdrmem_create(&xdrs, buf, DOUBLESIZE, XDR_DECODE);
