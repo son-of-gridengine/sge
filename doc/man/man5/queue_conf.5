@@ -2,6 +2,7 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
+.\" Copyright (C) 2012  Dave Love, University of Liverpool
 .\"
 .\"___INFO__MARK_END__
 .\"
@@ -494,10 +495,15 @@ Anything else: Put queue in error state
 .RE
 .SS "\fBstarter_method\fP"
 The specified executable path will be used as a job starter
-facility responsible for starting batch jobs.
-The executable path will be executed instead of the configured
-shell to start the job. The job arguments will be passed as
-arguments to the job starter. The following environment
+facility responsible for starting batch jobs instead of the built-in
+starter (which typically passes the job to a shell).  The starter
+method is passed as arguments the command to run.  This is typically
+the name of a copy of the batch script file, followed by any arguments
+supplied at job submission.  However, depending on how the job was
+submitted, it might be a binary (with arguments), or a more general
+shell command line, e.g. supplied to
+.IR qrsh .
+The following environment
 variables are used to pass information to the job starter
 concerning the shell environment which was configured or
 requested to start the job.
@@ -510,6 +516,16 @@ The configured \fBshell_start_mode\fP
 Set to "true" if the shell is supposed to be used as a login shell
 (see \fBlogin_shells\fP in
 .M xxqs_name_sxx_conf 5 ).
+Ignoring those, a trivial starter method could be
+.nf
+    #!/bin/sh
+    # set the environment somehow
+    exec "$@"
+.fi
+It is, at best, tricky to write a proper substitute for the builtin
+method as a shell script, taking account of the variables above.  It
+is best to do so in a non-macro expanded scripting language (or a
+compiled language, as appropriate).
 .PP
 The starter_method will not be invoked for qsh, qlogin, or qrsh acting as rlogin.
 

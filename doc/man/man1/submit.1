@@ -1076,8 +1076,8 @@ The job share influences the Share Tree Policy and the Functional
 Policy. It has no effect on the Urgency and Override Policies (see
 .M share_tree 5 ,
 .M sched_conf 5
-\" and the
-\" .I "xxQS_NAMExx Installation and Administration Guide"
+.\" and the
+.\" .I "xxQS_NAMExx Installation and Administration Guide"
 for further information on the resource management policies supported by xxQS_NAMExx).
 .sp 1
 In case of the Share Tree Policy, users can distribute the tickets to
@@ -1259,11 +1259,11 @@ The amount of time delay is controlled by the \fBnotify\fP
 parameter in each queue configuration (see
 .M queue_conf 5 ).
 .\" Shouldn't be relevant now
-\" .sp 1
-\" Note that the Linux operating system "misused" the user signals SIGUSR1
-\" and SIGUSR2 in some early Posix thread implementations. You might not want
-\" to use the \fB\-notify\fP option if you are running multi-threaded applications
-\" in your jobs under Linux, particularly on 2.0 or earlier kernels.
+.\" .sp 1
+.\" Note that the Linux operating system "misused" the user signals SIGUSR1
+.\" and SIGUSR2 in some early Posix thread implementations. You might not want
+.\" to use the \fB\-notify\fP option if you are running multi-threaded applications
+.\" in your jobs under Linux, particularly on 2.0 or earlier kernels.
 .sp 1
 .I Qalter
 allows changing this option even while the job executes.
@@ -1883,31 +1883,27 @@ Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and \fIqalter\fP.
 Specifies a validation level applied to the job to be submitted
 (\fIqsub\fP, \fIqlogin\fP,
 and \fIqsh\fP) or the specified queued job (\fIqalter\fP).
-The information displayed 
-indicates whether the job can possibly be scheduled assuming an empty 
-system with no other jobs. Resource requests exceeding the configured 
-maximal thresholds or requesting unavailable resource attributes are  
-possible causes for jobs to fail this validation.
 .sp 1
-The specifiers e, w, n and v define the following validation modes:
+The specifiers e, w, n, p, and v define the following validation modes:
 .sp 1
 .nf
 .ta \w'|b|  'u
-`e'	error \- jobs with invalid requests will be
-	rejected.
-`w'	warning \- only a warning will be displayed
-	for invalid requests.
-`n'	none \- switches off validation; the default for
-	\fIqsub\fP, \fIqalter\fP, \fIqrsh\fP, \fIqsh\fP
-	and \fIqlogin\fP.
-`p'	poke \- does not submit the job but prints a 
-     validation report based on a cluster as is with 
-     all resource utilizations in place.
+`e'	error \- jobs with invalid requests will be rejected.
+`w'	warning \- only a warning will be displayed for invalid
+	requests.
+`n'	none \- switches off validation; the default for \fIqsub\fP,
+	\fIqalter\fP, \fIqrsh\fP, \fIqsh\fP and \fIqlogin\fP.
+`p'	poke \- does not submit the job but prints a validation
+	report based on a cluster as is with all resource
+	utilizations in place.
 `v'	verify \- does not submit the job but prints a
-     validation report based on an empty cluster.
+	validation report based on an empty cluster.
 .fi
-.sp 1
-Note, that the necessary checks are performance consuming and hence the 
+Resource requests exceeding the configured maximal thresholds or
+requests for unavailable resource attributes are possible causes for
+jobs to fail `v' validation.
+'.sp 1
+Note that the necessary checks are performance consuming and hence the
 checking is switched off by default.
 It should also be noted that load values are not taken into account with 
 the verification since they are assumed to be too volatile. To cause \-w e 
@@ -1915,7 +1911,7 @@ verification to be passed at submission time, it is possible to specify
 non-volatile values (non-consumables) or maximum values (consumables) in 
 complex_values.
 .sp 1
-If this option, or a corresponding value in qmon is specified,
+If this option, or a corresponding value in qmon, is specified,
 then this value will be passed to defined JSV instances as
 a parameter with the name \fBw\fP. (See the \fB\-jsv\fP option above or
 find more information concerning JSV in
@@ -2023,6 +2019,11 @@ switch, the contents of the DISPLAY environment variable are used as default.
 Wrapper for
 .I qrsh
 commands (see above).
+.IP "\fBxxQS_NAME_Sxx_JSV_TIMEOUT\fP" 1.5i
+If the response time of the client JSV is greater than this timeout value, then the
+JSV will attempt to be re-started. The default value is 10 seconds, and this value
+must be greater than 0. If the timeout has been reached, the JSV will only try to
+re-start once, if the timeout is reached again an error will occur.
 .PP
 In addition to those environment variables specified to be
 exported to the job via the \fB\-v\fP or the \fB\-V\fP option
@@ -2040,7 +2041,7 @@ environment as follows.  The context variables are displayed by
 .M qstat 1
 with the \-j option.
 .TP 1.5i
-.BR xxQS_NAME_Sxx_O_HOME ,\  xxQS_NAME_Sxx_O_HOST ,\  xxQS_NAME_Sxx_O_MAIL ,\  xxQS_NAME_Sxx_O_PATH ,\  xxQS_NAME_Sxx_O_TZ
+.BR xxQS_NAME_Sxx_O_HOME ,\  xxQS_NAME_Sxx_O_HOST ,\  xxQS_NAME_Sxx_O_MAIL ,\  xxQS_NAME_Sxx_O_PATH ,\  xxQS_NAME_Sxx_O_TZ ,\  xxQS_NAME_Sxx_O_SHELL
 As in the description of
 .RI xxQS_NAME_Sxx_ O_NAME
 above, but the xxQS_NAME_Sxx clients
@@ -2206,11 +2207,6 @@ if set.
 The user's login name from the
 .M passwd 5
 file.
-.IP "\fBxxQS_NAME_Sxx_JSV_TIMEOUT\fP" 1.5i
-If the response time of the client JSV is greater than this timeout value, then the
-JSV will attempt to be re-started. The default value is 10 seconds, and this value 
-must be greater than 0. If the timeout has been reached, the JSV will only try to 
-re-start once, if the timeout is reached again an error will occur.
 .\"
 .\"
 .SH RESTRICTIONS

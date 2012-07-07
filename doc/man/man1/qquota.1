@@ -58,7 +58,8 @@ qquota \- shows current usage of xxQS_NAMExx resource quotas
 .SH DESCRIPTION
 .I qquota
 shows the current xxQS_NAMExx resource quota sets. Only resource quota sets
-with a positive usage count or a static limit are printed.
+with a positive usage count or a static limit are printed, as
+described in OUTPUT FORMATS below.
 .PP
 Selection options allow you to filter for specific hosts, cluster queues,
 projects, parallel environments (pe), resources or users.
@@ -112,7 +113,7 @@ This option can be used with all other options, and changes the output to XML. T
 schema used is referenced in the XML output. The output is printed to stdout.
 .\"
 .\"
-.SH "OUTPUT FORMATS"
+.SH "OUTPUT FORMAT"
 A line is printed for every resource quota with a positive usage count or static resource.
 The line consists of
 .IP "\(bu" 3n

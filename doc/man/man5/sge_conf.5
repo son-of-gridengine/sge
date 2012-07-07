@@ -1572,6 +1572,7 @@ It is specified as a time value in the format HH:MM:SS.
 Sensible values range from a few seconds to one minute. Setting it too low may
 slow down the qmaster. Setting it too high will make the qmaster consume large
 amounts of memory for buffering data.
+The reporting file is opened and closed for each flush.
 .PP
 .IP "\fIaccounting_flush_time\fP"
 The contents of the accounting file are buffered in the
@@ -1584,6 +1585,7 @@ amounts of memory for buffering data.  Setting it to 00:00:00 will disable
 accounting data buffering; as soon as data is generated, it will be written to
 the accounting file.  If this parameter is not set, the accounting data flush
 interval will default to the value of the \fIflush_time\fP parameter.
+The accounting file is opened and closed for each flush.
 .PP
 .IP "\fIjoblog\fP"
 If this parameter is set to true, the reporting file will contain job logging 
@@ -1626,7 +1628,7 @@ xxQS_NAMExx stores a certain number of \fIjust finished\fP jobs to provide
 post mortem status information via
 .IR "qstat -s z" .
 The \fBfinished_jobs\fP parameter defines the
-number of finished jobs stored. If this maximum number is reached, the
+number of finished ("zombie") jobs stored. If this maximum number is reached, the
 eldest finished job will be discarded for every new job added to the
 finished job list.
 .PP
@@ -1848,8 +1850,8 @@ may need to be recreated (as
 .M xxqs_name_sxx_shepherd 8 ,
 .M cron 8 ,
 .M remote_startup 5
-\" .M remote_startup 5 ,
-\" .I xxQS_NAMExx Installation and Administration Guide.
+.\" .M remote_startup 5 ,
+.\" .I xxQS_NAMExx Installation and Administration Guide.
 .\"
 .SH "COPYRIGHT"
 See

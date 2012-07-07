@@ -2,7 +2,7 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004-2007 by Sun Microsystems, Inc.
-.\" Copyright (C) 2011  Dave Love, University of Liverpool
+.\" Copyright (C) 2011, 2012  Dave Love, University of Liverpool
 .\"
 .\"___INFO__MARK_END__
 .\"
@@ -208,7 +208,7 @@ The pending jobs are restricted to jobs that might run in
 one of the above queues. In a similar fashion also the queue-job
 matching bases only on non-mutable resource availability 
 information.
-If there are multiple -l resource requests they will be concatenated by
+If there are multiple \-l resource requests they will be concatenated by
 a logical AND: a queue needs to match all resources to be displayed.
 .\"
 .IP "\fB\-ne\fP"
@@ -233,7 +233,7 @@ at least one of the parallel environments listed in the comma-separated
 option argument. Status information for jobs is displayed either for those 
 which execute in one of the selected queues or which are pending and 
 might get scheduled to those queues in principle.
-\"
+.\"
 .IP "\fB\-pri\fP"
 Displays additional information for each job related to the job priorities in 
 general.
@@ -261,7 +261,10 @@ possible. \fB\-s prs\fP (pending, running, and stopped jobs)
 corresponds to the regular
 .I qstat
 output without \fB\-s\fP
-at all. To show recently finished jobs, use \fB\-s z\fP.
+at all. To show recently finished ("zombie") jobs (according to the
+.M sge_conf 5
+.B finished_jobs
+parameter, use \fB\-s z\fP.
 To display jobs in user/operator/system/array-dependency hold,
 use
 .BR "\-s hu" / ho / hs / hd . 
@@ -302,7 +305,7 @@ The string
 is a placeholder for the current username. An asterisk "*" can be used 
 as username wildcard to request any users' jobs be displayed. The default
 value for this switch is \fB\-u $user\fP.
-\"
+.\"
 .IP "\fB\-urg\fP"
 Displays additional information for each job related to the job urgency policy scheme
 (see OUTPUT FORMATS below).
@@ -336,7 +339,7 @@ Internal state.
 .\"
 .\"
 .SH "OUTPUT FORMATS"
-Depending on the presence or absence of the \fB-explain\fP, \fB\-f\fP, \fB\-F\fP, or \fB\-qs\fP and
+Depending on the presence or absence of the \fB\-explain\fP, \fB\-f\fP, \fB\-F\fP, or \fB\-qs\fP and
 \fB\-r\fP and \fB\-t\fP option three output formats need to be differentiated.
 .PP
 The \fB\-ext\fP and \fB\-urg\fP options may be used 
@@ -356,7 +359,7 @@ slots is used as a weighting factor when determining cluster queue load.
 Please note that only hosts with an np_load_value are considered for this
 value. When queue selection is applied, only data about selected queues
 is considered in this formula. If the load value is not available at 
-any of the hosts '-NA-' is printed instead of the value from the complex 
+any of the hosts '\-NA\-' is printed instead of the value from the complex
 attribute definition.
 .IP "\(bu" 3n
 the number of currently used slots. 
@@ -423,7 +426,7 @@ or the
 .M qsub 1
 \fB\-h\fP option or that the job is waiting for completion of the jobs
 to which job dependencies have been assigned to the job via the
-\fB\-hold_jid\fP or \fB\-hold_jid-ad\fP options of
+\fB\-hold_jid\fP or \fB\-hold_jid_ad\fP options of
 .M qsub 1
 or
 .M qalter 1 .
@@ -486,20 +489,22 @@ SGE_LOAD_AVG in the ENVIRONMENT VARIABLES section below,
 .IP "\(bu" 3n
 the architecture of the queue host and
 .IP "\(bu" 3n
+.\" also listed in qhost(1)
 the state of the queue \- one of
-u(nknown) if the corresponding
-.M xxqs_name_sxx_execd 8
-cannot be contacted, a(larm), A(larm), C(alendar suspended), s(uspended),
-S(ubordinate), d(isabled), D(isabled), E(rror) or 
-combinations thereof.
+u(nknown), a(larm), A(larm), C(alendar suspended), s(uspended),
+S(ubordinate), d(isabled), D(isabled), E(rror), (c)configuration
+ambiguous, o(rphaned), P(reempted), or some combinations thereof.
 .PP
-If the state is a(larm) at least on of the load thresholds defined in the 
+If the state is u(nknown), the corresponding
+.M xxqs_name_sxx_execd 8
+cannot be contacted.
+.PP
+If the state is a(larm), at least on of the load thresholds defined in the
 \fIload_thresholds\fP list of the queue configuration (see
 .M queue_conf 5 )
 is 
-currently exceeded, which prevents from scheduling further jobs to that 
+currently exceeded, which prevents scheduling further jobs to that
 queue.
-.PP
 As opposed to this, the state A(larm) indicates that at least one of the
 suspend thresholds of the queue (see
 .M queue_conf 5 )
@@ -513,36 +518,33 @@ command. Suspending a queue will cause all jobs executing in that queue to
 be suspended.
 .PP
 The states D(isabled) and C(alendar suspended) indicate that the queue 
-has been disabled or suspended automatically via the calendar facility of 
+has been disabled, or suspended automatically via the calendar facility of
 xxQS_NAMExx (see
 .M calendar_conf 5 ),
-while the S(ubordinate) state 
-indicates, that the queue has been suspended via subordination to another
+while the S(ubordinate) state
+indicates that the queue has been suspended via subordination to another
 queue (see
 .M queue_conf 5
 for details). When suspending a queue 
 (regardless of the cause) all jobs executing in that queue are suspended 
 too.
+The state (o)rphaned
 .PP
 The state P(reempted) indicates that the queue has been disabled via
 slotwise subordination to another queue, preventing it getting jobs
 which would simply be suspended.
 .PP
-If an E(rror) state is displayed for a queue,
-.M xxqs_name_sxx_execd 8
-on that host was unable to locate the
-.M xxqs_name_sxx_shepherd 8
-executable
-on that host in order to start a job. Please check the
+An E(rror) state is displayed for a queue for various reasons such as
+failing to find executables or directories. Please check the
 error logfile of that
 .M xxqs_name_sxx_execd 8
-for leads on how to resolve the problem. Please enable the
-queue afterwards via the \fB-c\fP option of the
+for the reason, indicating how to resolve the problem. Please enable the
+queue afterwards via the \fB\-c\fP option of the
 .M qmod 1
 command manually.
 .PP
 If the c(onfiguration ambiguous) state is displayed for a queue
-instance this indicates that the configuration specified for this
+instance, the configuration specified for this
 queue instance in
 .M sge_conf 5
 is ambiguous. This state is cleared when
@@ -552,7 +554,9 @@ a queue instance entered the c(onfiguration ambiguous) state can
 be found in the
 .M sge_qmaster 8
 messages file and are shown by the
-qstat -explain switch. For queue instances in this state the cluster
+.M qstat 1
+.B \-explain
+switch. For queue instances in this state the cluster
 queue's default settings are used for the ambiguous attribute.
 .PP
 If an o(rphaned) state is displayed for a queue instance, it
@@ -563,9 +567,9 @@ jobs are still associated with it, and it will vanish from qstat output
 when these jobs have finished. To quicken vanishing of an orphaned
 queue instance associated job(s) can be deleted using 
 .M qdel 1 .
-A queue instance in (o)rphaned state can be revived by changing
-the cluster queue configuration accordingly to cover that queue
-instance. This state prevents from scheduling further jobs to that
+A queue instance in the orphaned state can be revived by changing
+the cluster queue configuration to cover that queue
+instance. This state prevents scheduling further jobs to that
 queue instance.
 .PP
 If the \fB\-F\fP option was used, resource availability information is printed 
@@ -576,26 +580,26 @@ omitted) a single line is displayed with the following format:
 a one letter specifier indicating whether the current resource availability 
 value was dominated by either
 .br
-`\fBg\fP' - a cluster global,
+`\fBg\fP' \- a cluster global,
 .br
-`\fBh\fP' - a host total or
+`\fBh\fP' \- a host total or
 .br
-`\fBq\fP' - a queue related resource consumption.
+`\fBq\fP' \- a queue related resource consumption.
 .IP "\(bu" 3n
 a second one letter specifier indicating the source for the current resource 
 availability value, being one of
 .br
-`\fBl\fP' - a load value reported for the
+`\fBl\fP' \- a load value reported for the
 resource,
 .br
-`\fBL\fP' - a load value for the resource after administrator
+`\fBL\fP' \- a load value for the resource after administrator
 defined load scaling has been applied,
 .br
-`\fBc\fP' - availability derived from
+`\fBc\fP' \- availability derived from
 the consumable resources facility (see
 .M complexes 5 ),
 .br
-`\fBf\fP' - a fixed 
+`\fBf\fP' \- a fixed
 availability definition derived from a non-consumable complex attribute or 
 a fixed resource limit.
 .IP "\(bu" 3n
@@ -620,7 +624,7 @@ If the \fB\-explain\fP option was used with the character 'a' or 'A',
 information about resources is displayed, that
 violate load or suspend thresholds.
 .br
-The same format as with the \fB-F\fP option is used with following extensions:
+The same format as with the \fB\-F\fP option is used with following extensions:
 .IP "\(bu" 3n
 the line starts with the keyword `alarm'
 .br
