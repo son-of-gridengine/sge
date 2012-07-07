@@ -676,7 +676,6 @@ int sge_peclose(pid_t pid, FILE *fp_in, FILE *fp_out, FILE *fp_err,
       if (i==0) { /* not yet exited */
          if (timeout->tv_sec == 0) {
 #ifdef WIN32 /* kill not called */
-            /* CygWin has no kill command */
             DPRINTF(("killing not yet implemented\n"));
             timeout = NULL;
             /* kill(pid, SIGKILL); */
