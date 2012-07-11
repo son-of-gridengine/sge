@@ -1293,8 +1293,4 @@ extern int    filec;
 
 #include "tc.nls.h"
 
-#if defined(LINUX86) || defined(ALINUX) || defined(LINUXIA64) || defined(LINUXAMD64) || defined(LINUXSPARC) || defined(LINUX)
-#include <time.h>
-#endif
-
 #endif /* _h_sh */
