@@ -1523,8 +1523,7 @@ int use_starter_method /* If this flag is set the shell path contains the
 
       /* build trace string */
       pc = err_str;
-      snprintf(pc, sizeof(err_str), "execvp(%s,", filename);
-      sprintf(pc, "execvlp(%s,", filename);
+      snprintf(pc, sizeof(err_str), "execvlp(%s,", filename);
       pc += strlen(pc);
       for (pstr = args; pstr && *pstr; pstr++) {
       

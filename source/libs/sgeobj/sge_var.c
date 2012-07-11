@@ -651,7 +651,7 @@ void var_list_split_prefix_vars(lList **varl,
    lListElem *var_elem = NULL;
    lListElem *next_var_elem = NULL;
 
-   DENTER(TOP_LAYER, "var_list_remove_prefix_vars");
+   DENTER(TOP_LAYER, "var_list_split_prefix_vars");
    next_var_elem = lFirst(*varl);
    while((var_elem = next_var_elem)) {
       const char *prefix_name = lGetString(var_elem, VA_variable);

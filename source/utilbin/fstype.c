@@ -112,7 +112,8 @@ int main(int argc, char *argv[]) {
                }
                if (fsid  == ksp->ks_instance) {
                   if ( mnt_info.mik_vers >= 4 ) {
-                     sprintf(buf.f_basetype, "%s%i", buf.f_basetype, mnt_info.mik_vers);
+                     snprintf(buf.f_basetype, sizeof buf.f_basetype,
+                              "nfs%i", mnt_info.mik_vers);
                   }
                   break;
                }

@@ -213,15 +213,9 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
                /* TODO: required protocol step? If sending fails, exit? */
             }
 #if !(defined(WIN32) || defined(INTERIX))  /* initgroups not called */
-            res = initgroups(pw->pw_name, pw->pw_gid);
-#  if defined(SVR3) || defined(sun)
-            if (res < 0)
-#  else
-            if (res)
-#  endif
-            {
-               sprintf(err_str, MSG_SYSTEM_INITGROUPSFORUSERFAILED_ISS ,
-                     res, user, strerror(errno));
+            if (initgroups(pw->pw_name, pw->pw_gid) != 0) {
+               sprintf(err_str, MSG_SYSTEM_INITGROUPSFORUSERFAILED_ISS,
+                       user, strerror(errno));
                sprintf(err_str, "\n");
                if (write(2, err_str, strlen(err_str)) != strlen(err_str)) {
                   /* nothing we can do here - we are anyway about to exit */
@@ -456,10 +450,6 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
        * only prepare change of user if target user is different from current one
        */
       if (myuid != pw->pw_uid) {
-#if !(defined(WIN32) || defined(INTERIX)) /* var not needed */
-         int res;
-#endif 
-
          if (myuid != SGE_SUPERUSER_UID) {
             DPRINTF(("only root is allowed to switch to a different user\n"));
             ERROR((SGE_EVENT, SFNMAX, MSG_SYSTEM_NOROOTRIGHTSTOSWITCHUSER));
@@ -470,14 +460,9 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
          DPRINTF(("Before initgroups\n"));
 
 #if !(defined(WIN32) || defined(INTERIX))  /* initgroups not called */
-         res = initgroups(pw->pw_name, pw->pw_gid);
-#  if defined(SVR3) || defined(sun)
-         if (res < 0)
-#  else
-         if (res)
-#  endif
-         {
-            ERROR((SGE_EVENT, MSG_SYSTEM_INITGROUPSFORUSERFAILED_ISS, res, user, strerror(errno)));
+         if (initgroups(pw->pw_name, pw->pw_gid) != 0) {
+            ERROR((SGE_EVENT, MSG_SYSTEM_INITGROUPSFORUSERFAILED_ISS,
+                   user, strerror(errno)));
             sge_free(&buffer);
             SGE_EXIT(NULL, 1);
          }

@@ -55,16 +55,4 @@ typedef pid_t JobID_t;
 #define JOBID_T_FMT pid_t_fmt
 #endif
 
-/*
- * Prototypes for external interface
- */
-int		psStartCollector(void);
-int		psStopCollector(void);
-int		psWatchJob(JobID_t JobID);
-int		psIgnoreJob(JobID_t JobID);
-struct psStat_s	*psStatus(void);
-struct psJob_s *psGetOneJob(JobID_t JobID);
-struct psJob_s *psGetAllJobs(void);
-struct psSys_s *psGetSysdata(void);
-
 #endif /* SGEDEFS_H */
