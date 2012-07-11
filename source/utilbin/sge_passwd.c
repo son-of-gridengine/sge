@@ -737,19 +737,6 @@ buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
    DEXIT;
    return 0;
 }
-static const char*
-sge_get_file_dotpasswd(void)
-{
-   static dstring dfile = DSTRING_INIT;
-
-   DENTER(TOP_LAYER, "sge_get_file_dotpasswd");
-   const char *sge_root = sge_get_root_dir(0, NULL, 0, 1);
-   const char *sge_cell = sge_get_default_cell();
-
-   sge_dstring_sprintf(&dfile, "%s/%s/common/.sgepasswd", sge_root, sge_cell);
-   DEXIT;
-   return sge_dstring_get_string(&dfile);
-}
 
 unsigned char *
 buffer_encode_hex(unsigned char *input, size_t len, unsigned char **output)
@@ -813,6 +800,19 @@ buffer_decode_hex(unsigned char *input, size_t *len, unsigned char **output)
 }
 
 #ifdef DEFINE_SGE_PASSWD_MAIN
+static const char*
+sge_get_file_dotpasswd(void)
+{
+   static dstring dfile = DSTRING_INIT;
+
+   DENTER(TOP_LAYER, "sge_get_file_dotpasswd");
+   const char *sge_root = sge_get_root_dir(0, NULL, 0, 1);
+   const char *sge_cell = sge_get_default_cell();
+
+   sge_dstring_sprintf(&dfile, "%s/%s/common/.sgepasswd", sge_root, sge_cell);
+   DEXIT;
+   return sge_dstring_get_string(&dfile);
+}
 
 static void
 password_write_file(char *users[], char *encryped_pwds[], 

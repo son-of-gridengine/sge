@@ -167,15 +167,7 @@ extern "C" {
 #  define pid_t_fmt    "%d"
 #endif
 
-#if (defined(SOLARIS) && defined(TARGET_32BIT)) || defined(IRIX) || defined(INTERIX)
-#  define gid_t_fmt    "%ld"
-#elif defined(LINUX86) || defined(FREEBSD)
-#  define gid_t_fmt    "%u"
-#elif defined __CYGWIN__
-#  define gid_t_fmt    "%lu"
-#else
-#  define gid_t_fmt    "%d"
-#endif
+#define gid_t_fmt    uid_t_fmt
 
 /* _POSIX_PATH_MAX is only 255 and this is less than in most real systmes */
 /* NB although this fixed value is necessary for static string

@@ -186,12 +186,21 @@ typedef struct {
 
 extern long pagesize;
 
-#if defined(LINUX)
-   int sup_groups_in_proc(void);
-#endif
-
 #if defined(ALPHA) || defined(LINUX) || defined(SOLARIS) || defined(FREEBSD) || defined(DARWIN)
    void pdc_kill_addgrpid(gid_t, int, tShepherd_trace);
 #endif
+
+/*
+ * Prototypes for external interface
+ */
+
+int		psStartCollector(void);
+int		psStopCollector(void);
+int		psWatchJob(JobID_t JobID);
+int		psIgnoreJob(JobID_t JobID);
+struct psStat_s	*psStatus(void);
+struct psJob_s *psGetOneJob(JobID_t JobID);
+struct psJob_s *psGetAllJobs(void);
+struct psSys_s *psGetSysdata(void);
 
 #endif /* _PDC_H_ */

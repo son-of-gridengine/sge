@@ -496,7 +496,7 @@ psSetCollectionIntervals(int jobi, int prci, int sysi)
    if (sysi != -1)
       ps_config.sys_collection_interval = sysi;
 }
-
+static
 int psRetrieveSystemData(void)
 {
 #if defined(IRIX)
@@ -1832,7 +1832,7 @@ int psWatchJob(JobID_t JobID)
    if ((curr=find_job(JobID))) {
       LNK_DATA(curr, job_elem_t, link)->precreated = 0;
    } else {
-      job_elem_t *job_elem = (job_elem_t *)malloc(sizeof(job_elem_t));
+      job_elem_t *job_elem = sge_malloc(sizeof(job_elem_t));
       memset(job_elem, 0, sizeof(job_elem_t));
       job_elem->starttime = get_gmt();
       job_elem->job.jd_jid = JobID;
@@ -2027,6 +2027,12 @@ struct psJob_s *psGetAllJobs(void)
 }
 
 
+int psVerify(void)
+{
+   return 0;
+}
+
+
 #ifdef PDC_STANDALONE
 struct psSys_s *psGetSysdata(void)
 {
@@ -2041,15 +2047,6 @@ struct psSys_s *psGetSysdata(void)
    memcpy(sd, &sysdata, sizeof(psSys_t));
    return sd;
 }
-#endif
-
-int psVerify(void)
-{
-   return 0;
-}
-
-
-#ifdef PDC_STANDALONE
 
 #define INTOMEGS(x) (((double)x)/(1024*1024))
 
@@ -2498,6 +2495,6 @@ main(int argc, char **argv)
    return 0;
 }
 
-#endif
+#endif  /* PDC_STANDALONE */
 
 #endif /* !defined(COMPILE_DC) */

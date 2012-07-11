@@ -79,119 +79,102 @@
       rmon_menter (SGE_FUNC, NULL);                                          \
    }        
 
-#define DRETURN(ret)                                                             \
-   do { \
-   if (rmon_condition(xaybzc, TRACE)) {                                          \
-      cl_thread_settings_t* ___thread_config = cl_thread_get_thread_config();    \
-      if (___thread_config != NULL) {                                            \
-         rmon_mexit(SGE_FUNC, __FILE__, __LINE__, ___thread_config->thread_name);\
-      } else {                                                                   \
-         rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);                         \
-      }                                                                          \
-   }                                                                             \
-   return ret; } while (0)
+#define DRETURN(ret)                            \
+  do {                                          \
+    DEXIT;                                      \
+    return ret;                                 \
+  } while (0)
 
-#define DRETURN_(ret)                                                            \
-   if (rmon_condition(xaybzc, TRACE)) {                                          \
-      rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);                            \
-   }                                                                             \
-   return ret
+#define DRETURN_(ret)                                                   \
+   do {                                                                 \
+      DEXIT_;                                                           \
+      return ret;                                                       \
+   } while (0)
 
-#define DRETURN_VOID                                                             \
-   do { if (rmon_condition(xaybzc, TRACE)) {                                     \
-      cl_thread_settings_t* ___thread_config = cl_thread_get_thread_config();    \
-      if (___thread_config != NULL) {                                            \
-         rmon_mexit(SGE_FUNC, __FILE__, __LINE__, ___thread_config->thread_name);\
-      } else {                                                                   \
-         rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);                         \
-      }                                                                          \
-   }                                                                             \
-   return;} while (0) 
+#define DRETURN_VOID DRETURN()
 
-#define DRETURN_VOID_                                                            \
-   if (rmon_condition(xaybzc, TRACE)) {                                          \
-      rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);   \
-   }                                                                             \
+#define DEXIT                                                           \
+   if (rmon_condition(xaybzc, TRACE)) {                                 \
+      cl_thread_settings_t* ___thread_config = cl_thread_get_thread_config(); \
+      if (___thread_config != NULL) {                                   \
+         rmon_mexit(SGE_FUNC, __FILE__, __LINE__, ___thread_config->thread_name); \
+      } else {                                                          \
+         rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);                \
+      }                                                                 \
+   }
+
+#define DEXIT_                                                          \
+   if (rmon_condition(xaybzc, TRACE)) {                                 \
+      rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);                   \
+   }                                                                    \
+
+#define DRETURN_VOID_                                                   \
+   DEXIT_                                                               \
    return 
 
-#define DEXIT                                                                    \
-   if (rmon_condition(xaybzc, TRACE)) {                                          \
-      cl_thread_settings_t* ___thread_config = cl_thread_get_thread_config();    \
-      if (___thread_config != NULL) {                                            \
-         rmon_mexit(SGE_FUNC, __FILE__, __LINE__, ___thread_config->thread_name);\
-      } else {                                                                   \
-         rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);                         \
-      }                                                                          \
-   }
-
-#define DEXIT_                                                                   \
-   if (rmon_condition(xaybzc, TRACE)) {                                          \
-      rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);                            \
-   }                                                                             \
-
-#define DTRACE                                                                     \
-   if (rmon_condition(xaybzc, TRACE)) {                                            \
-      cl_thread_settings_t* ___thread_config = cl_thread_get_thread_config();      \
-      if (___thread_config != NULL) {                                              \
+#define DTRACE                                                          \
+   if (rmon_condition(xaybzc, TRACE)) {                                 \
+      cl_thread_settings_t* ___thread_config = cl_thread_get_thread_config(); \
+      if (___thread_config != NULL) {                                   \
          rmon_mtrace(SGE_FUNC, __FILE__, __LINE__, ___thread_config->thread_name); \
-      } else {                                                                     \
-         rmon_mtrace(SGE_FUNC, __FILE__, __LINE__, NULL);                          \
-      }                                                                            \
+      } else {                                                          \
+         rmon_mtrace(SGE_FUNC, __FILE__, __LINE__, NULL);               \
+      }                                                                 \
    }
 
-#define DTRACE_                                                                  \
-   if (rmon_condition(xaybzc, TRACE)) {                                          \
-      rmon_mtrace(SGE_FUNC, __FILE__, __LINE__, NULL);                           \
+#define DTRACE_                                                         \
+   if (rmon_condition(xaybzc, TRACE)) {                                 \
+      rmon_mtrace(SGE_FUNC, __FILE__, __LINE__, NULL);                  \
    }
 
-#define DLOCKPRINTF(msg)                                                         \
-   if (rmon_condition(xaybzc, LOCK)) {                                           \
-      rmon_helper_t *helper = rmon_get_helper();                                 \
-      if (helper != NULL) {                                                      \
+#define DLOCKPRINTF(msg)                                                \
+   if (rmon_condition(xaybzc, LOCK)) {                                  \
+      rmon_helper_t *helper = rmon_get_helper();                        \
+      if (helper != NULL) {                                             \
          cl_thread_settings_t* ___thread_config = cl_thread_get_thread_config(); \
-         if (___thread_config != NULL) {                                         \
-            strcpy(helper->thread_name, ___thread_config->thread_name);          \
-         }                                                                       \
-      }                                                                          \
-      rmon_mprintf_lock msg ;                                                    \
-      if (helper != NULL) {                                                      \
-         helper->thread_name[0] = '\0';                                          \
-      }                                                                          \
+         if (___thread_config != NULL) {                                \
+            strcpy(helper->thread_name, ___thread_config->thread_name); \
+         }                                                              \
+      }                                                                 \
+      rmon_mprintf_lock msg ;                                           \
+      if (helper != NULL) {                                             \
+         helper->thread_name[0] = '\0';                                 \
+      }                                                                 \
    }
 
-#define DLOCKPRINTF_(msg)                                                         \
-   if (rmon_condition(xaybzc, LOCK)) {                                           \
-      rmon_mprintf_lock msg ;                                                    \
+#define DLOCKPRINTF_(msg)                       \
+   if (rmon_condition(xaybzc, LOCK)) {          \
+      rmon_mprintf_lock msg ;                   \
    }
 
 
-#define DPRINTF(msg)                                                             \
-   if (rmon_condition(xaybzc, INFOPRINT)) {                                      \
-      rmon_helper_t *helper = rmon_get_helper();                                 \
-      if (helper != NULL) {                                                      \
+#define DPRINTF(msg)                                                    \
+   if (rmon_condition(xaybzc, INFOPRINT)) {                             \
+      rmon_helper_t *helper = rmon_get_helper();                        \
+      if (helper != NULL) {                                             \
          cl_thread_settings_t* ___thread_config = cl_thread_get_thread_config(); \
-         if (___thread_config != NULL) {                                         \
-            strcpy(helper->thread_name, ___thread_config->thread_name);          \
-         }                                                                       \
-      }                                                                          \
-      rmon_mprintf_info msg ;                                                    \
-      if (helper != NULL) {                                                      \
-         helper->thread_name[0] = '\0';                                          \
-      }                                                                          \
+         if (___thread_config != NULL) {                                \
+            strcpy(helper->thread_name, ___thread_config->thread_name); \
+         }                                                              \
+      }                                                                 \
+      rmon_mprintf_info msg ;                                           \
+      if (helper != NULL) {                                             \
+         helper->thread_name[0] = '\0';                                 \
+      }                                                                 \
    }
 
-#define DPRINTF_(msg)                                                            \
-   if (rmon_condition(xaybzc, INFOPRINT)) {                                      \
-      rmon_mprintf_info msg ;                                                    \
+#define DPRINTF_(msg)                           \
+   if (rmon_condition(xaybzc, INFOPRINT)) {     \
+      rmon_mprintf_info msg ;                   \
    }
 
 
-#define DTIMEPRINTF(msg)                                                         \
-   if (rmon_condition(xaybzc, TIMING))                                           \
+#define DTIMEPRINTF(msg)                                                \
+   if (rmon_condition(xaybzc, TIMING))                                  \
       rmon_mprintf_timing msg
 
-#define DSPECIALPRINTF(msg)                                                      \
-   if (rmon_condition(xaybzc, SPECIAL))                                          \
+#define DSPECIALPRINTF(msg)                                             \
+   if (rmon_condition(xaybzc, SPECIAL))                                 \
       rmon_mprintf_special msg
 
 #define ISTRACE (rmon_condition(xaybzc, TRACE))
