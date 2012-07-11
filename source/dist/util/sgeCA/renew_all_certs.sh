@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/sh
 #___INFO__MARK_BEGIN__
 ##########################################################################
 #
@@ -32,37 +32,37 @@
 #___INFO__MARK_END__
 
 # extend the validity of the CA certificate by
-set CADAYS = 365 
+CADAYS=365
 # extend the validity of the daemon certificate by
-set DAEMONDAYS = 365
+DAEMONDAYS=365
 # extend the validity of the user certificate by
-set USERDAYS = 365
+USERDAYS=365
 
 
 
-if ( ! ($?SGE_ROOT && $?SGE_CELL) ) then
-   echo "SGE_ROOT environment not set"
+if [ ! -n "$SGE_ROOT" && -n "$SGE_CELL" ]; then
+   echo "SGE_ROOT environment variable not set"
    exit 1
 endif
 
-if ( $?SGE_QMASTER_PORT ) then
-   set CA_PORT = port$SGE_QMASTER_PORT
+if [ -n "$SGE_QMASTER_PORT" ]; then
+   CA_PORT=port$SGE_QMASTER_PORT
 else
-   set CA_PORT = sge_qmaster
-endif
+   CA_PORT=sge_qmaster
+fi
 
-set CERT = "/var/lib/sgeCA/$CA_PORT/$SGE_CELL/userkeys"
+CERT="/var/lib/sgeCA/$CA_PORT/$SGE_CELL/userkeys"
 
 echo $CERT
 
 # renew the ca certificate
-$SGE_ROOT/util/sgeCA/sge_ca -renew_ca -days $CADAYS
+"$SGE_ROOT/util/sgeCA/sge_ca" -renew_ca -days $CADAYS
 
 # renew the daemon certificate
-$SGE_ROOT/util/sgeCA/sge_ca -renew_sys -days $DAEMONDAYS 
+"$SGE_ROOT/util/sgeCA/sge_ca" -renew_sys -days $DAEMONDAYS
 
 # renew all user certificates
-foreach i ($CERT/*)
-   set user = `basename $i`
-   $SGE_ROOT/util/sgeCA/sge_ca -renew $user -days $USERDAYS
-end
+for i in $CERT/*; do
+   user=`basename $i`
+   "$SGE_ROOT/util/sgeCA/sge_ca" -renew $user -days $USERDAYS
+done
