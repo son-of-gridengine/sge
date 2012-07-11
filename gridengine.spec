@@ -70,7 +70,7 @@ BuildRequires: java-devel >= 1.6.0, javacc, ant-junit
 BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
-BuildRequires: elfutils-libelf-devel, net-tools, man, gzip
+BuildRequires: elfutils-libelf-devel, net-tools, man
 %if 0%{?fedora}
 BuildRequires: fedora-usermgmt-devel
 %endif
@@ -232,8 +232,10 @@ echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
   for l in lib/*/libdrmaa.so.1.0; do
     ( cd $(dirname $l); ln -sf libdrmaa.so.1.0 libdrmaa.so )
   done
-  find man -type l | xargs rm -f
-  gzip man/man*/*
+# This won't work on RH5 or 6 unless we fiddle with the previously-linked
+# pages, so don't bother.
+#   find man -type l | xargs rm -f
+#   gzip man/man*/*
 )
 cat ../README - > $RPM_BUILD_ROOT/%{sge_home}/doc/README <<+
 
@@ -256,7 +258,7 @@ if [ -f /usr/sbin/mandb ]; then
   # Later Fedora
   mandb %{sge_home}/man
 else
-  makewhatis %{sge_home}/man
+  makewhatis -u %{sge_home}/man
 fi
 
 %files
@@ -269,12 +271,12 @@ fi
 %exclude %{sge_docdir}/javadocs
 %endif
 %exclude %{sge_home}/examples/drmaa
-%exclude %{sge_mandir}/man1/qmon.1.gz
-%exclude %{sge_mandir}/man8/sge_qmaster.8.gz
-%exclude %{sge_mandir}/man8/sge_execd.8.gz
-%exclude %{sge_mandir}/man8/sge_*shepherd.8.gz
-%exclude %{sge_mandir}/man8/sge_shadowd.8.gz
-%exclude %{sge_mandir}/man8/pam*8.gz
+%exclude %{sge_mandir}/man1/qmon.1
+%exclude %{sge_mandir}/man8/sge_qmaster.8
+%exclude %{sge_mandir}/man8/sge_execd.8
+%exclude %{sge_mandir}/man8/sge_*shepherd.8
+%exclude %{sge_mandir}/man8/sge_shadowd.8
+%exclude %{sge_mandir}/man8/pam*8
 %exclude %{sge_mandir}/man3
 %exclude %{sge_lib}/*/pam*
 %if %{with hadoop}
@@ -298,9 +300,9 @@ fi
 #%attr(4755,root,root) %{sge_home}/utilbin/*/authuser
 # Avoid this for safety, assuming no MS Windows hosts
 #%attr(4755,root,root) %{sge_home}/utilbin/*/sgepasswd
-%{sge_mandir}/man1/*.1.gz
-%{sge_mandir}/man5/*.5.gz
-%{sge_mandir}/man8/*.8.gz
+%{sge_mandir}/man1/*.1
+%{sge_mandir}/man5/*.5
+%{sge_mandir}/man8/*.8
 %{sge_home}/examples
 %{sge_lib}/*/libdrmaa.so*
 
@@ -308,7 +310,7 @@ fi
 %defattr(-,root,root,-)
 %{sge_include}
 %{sge_home}/pvm/src
-%{sge_mandir}/man3/*.3.gz
+%{sge_mandir}/man3/*.3
 %if %{with java}
 %doc %{sge_docdir}/javadocs
 %endif
@@ -318,7 +320,7 @@ fi
 %defattr(-,root,root,-)
 %{sge_bin}/*/qmon
 %{sge_home}/qmon
-%{sge_mandir}/man1/qmon.1.gz
+%{sge_mandir}/man1/qmon.1
 
 %files execd
 %defattr(-,root,root,-)
@@ -326,9 +328,9 @@ fi
 %{sge_bin}/*/sge_shepherd
 %{sge_bin}/*/sge_coshepherd
 %{sge_home}/install_execd
-%{sge_mandir}/man8/sge_execd.8.gz
-%{sge_mandir}/man8/sge_*shepherd.8.gz
-%{sge_mandir}/man8/pam*8.gz
+%{sge_mandir}/man8/sge_execd.8
+%{sge_mandir}/man8/sge_*shepherd.8
+%{sge_mandir}/man8/pam*8
 %{sge_lib}/*/pam*
 
 %files qmaster
@@ -338,8 +340,8 @@ fi
 %{sge_bin}/process-scheduler-log
 %{sge_bin}/qsched
 %{sge_home}/install_qmaster
-%{sge_mandir}/man8/sge_qmaster.8.gz
-%{sge_mandir}/man8/sge_shadowd.8.gz
+%{sge_mandir}/man8/sge_qmaster.8
+%{sge_mandir}/man8/sge_shadowd.8
 
 %files drmaa4ruby
 %defattr(-,root,root,-)
@@ -357,6 +359,7 @@ fi
 - Build-require gcc etc. and not ant-nodeps.
 - Move qacct, jobstats.
 - Revert last (temporary) change and update version
+- Don't compress man pages
 
 * Thu Jun 14 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.0-2
 - Don't require rshd etc. in install script.
