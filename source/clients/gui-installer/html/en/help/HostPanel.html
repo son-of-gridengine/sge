@@ -33,6 +33,7 @@ ___INFO__MARK_END__-->
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+    <title>Installing hosts</title>
 </HEAD>
 <BODY LANG="en-US" DIR="LTR">
 <H1>Select hosts &amp; Installing</H1>
@@ -45,7 +46,7 @@ host</B> value from the <I>Main configuration</I> screen by default.
 <P><BR>
 </P>
 <H2>Selecting hosts</H2>
-<P>You can select the hosts by a host name, host name pattern , an IP
+<P>You can select the hosts by a host name, host name pattern, an IP
 address or IP address pattern. Custom installation mode displays an
 additional component selection panel. Before pressing the <I>Add</I>
 button, one may setup a selection of components which will be applied
@@ -56,67 +57,67 @@ installation).
 types of installation (express and custom) is displayed in the
 following table:</P>
 <CENTER>
-	<TABLE WIDTH=95% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=2 CELLSPACING=0>
-		<COL WIDTH=32*>
-		<COL WIDTH=113*>
-		<COL WIDTH=112*>
+	<TABLE WIDTH="95%" BORDER=1 CELLPADDING=2 CELLSPACING=0>
+		<COL WIDTH="32*">
+		<COL WIDTH="113*">
+		<COL WIDTH="112*">
 		<TR>
-			<TH WIDTH=12%>
+			<TH WIDTH="12%">
 				<P>Component</P>
 			</TH>
-			<TH WIDTH=44%>
+			<TH WIDTH="44%">
 				<P>Description</P>
 			</TH>
-			<TH WIDTH=44%>
+			<TH WIDTH="44%">
 				<P>Default Value</P>
 			</TH>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P><FONT COLOR="#000000">Shadow daemon</FONT></P>
 			</TD>
-			<TD WIDTH=44%>
+			<TD WIDTH="44%">
 				<P>Provides a high availability. Takes over the main qmaster
 				daemon when it becomes unavailable.</P>
 			</TD>
-			<TD WIDTH=44%>
+			<TD WIDTH="44%">
 				<P>Not selected</P>
 				<P><BR>
 				</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P>Execution daemon</P>
 			</TD>
-			<TD WIDTH=44%>
-				<P>Execution daemon is reposnsible for execution jobs and
+			<TD WIDTH="44%">
+				<P>Execution daemon is responsible for execution jobs and
 				reporting host status.</P>
 			</TD>
-			<TD WIDTH=44%>
+			<TD WIDTH="44%">
 				<P>Selected</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P>Admin host</P>
 			</TD>
-			<TD WIDTH=44%>
+			<TD WIDTH="44%">
 				<P>Administrative commands can be run only from the admin hosts
 				as a user who belongs either to managers or operators</P>
 			</TD>
-			<TD WIDTH=44%>
+			<TD WIDTH="44%">
 				<P>Not selected</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P>Submit Host</P>
 			</TD>
-			<TD WIDTH=44%>
+			<TD WIDTH="44%">
 				<P>Submit host can be used to submit jobs to Grid Engine.</P>
 			</TD>
-			<TD WIDTH=44%>
+			<TD WIDTH="44%">
 				<P>Selected</P>
 			</TD>
 		</TR>
@@ -129,84 +130,84 @@ pattern syntax. The patterns do not support regular expressions. The
 supported expressions are lists and numeric ranges. 
 </P>
 <CENTER>
-	<TABLE WIDTH=95% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=2 CELLSPACING=0>
-		<COL WIDTH=47*>
-		<COL WIDTH=84*>
-		<COL WIDTH=125*>
+	<TABLE WIDTH="95%" BORDER=1 CELLPADDING=2 CELLSPACING=0>
+		<COL WIDTH="47*">
+		<COL WIDTH="84*">
+		<COL WIDTH="125*">
 		<TR>
-			<TH WIDTH=18%>
+			<TH WIDTH="18%">
 				<P>Description</P>
 			</TH>
-			<TH WIDTH=33%>
+			<TH WIDTH="33%">
 				<P>Input</P>
 			</TH>
-			<TH WIDTH=49%>
+			<TH WIDTH="49%">
 				<P>Resolved as</P>
 			</TH>
 		</TR>
 		<TR>
-			<TD WIDTH=18%>
+			<TD WIDTH="18%">
 				<P>Host name</P>
 			</TD>
-			<TD WIDTH=33%>
+			<TD WIDTH="33%">
 				<P><TT>grid00</TT></P>
 			</TD>
-			<TD WIDTH=49%>
+			<TD WIDTH="49%">
 				<P><TT>grid00</TT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=18%>
+			<TD WIDTH="18%">
 				<P>IP address</P>
 			</TD>
-			<TD WIDTH=33%>
+			<TD WIDTH="33%">
 				<P><TT>192.168.0.1</TT></P>
 			</TD>
-			<TD WIDTH=49%>
+			<TD WIDTH="49%">
 				<P><TT>192.168.0.1</TT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=18%>
+			<TD WIDTH="18%">
 				<P>List of hosts</P>
 			</TD>
-			<TD WIDTH=33%>
+			<TD WIDTH="33%">
 				<P><TT>grid00 grid01 grid05</TT></P>
 			</TD>
-			<TD WIDTH=49%>
+			<TD WIDTH="49%">
 				<P><TT>grid00, grid01, grid05</TT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=18%>
+			<TD WIDTH="18%">
 				<P>List of IP addresses</P>
 			</TD>
-			<TD WIDTH=33%>
+			<TD WIDTH="33%">
 				<P><TT>192.168.0.1 192.168.0.2 192.168.0.5</TT></P>
 			</TD>
-			<TD WIDTH=49%>
+			<TD WIDTH="49%">
 				<P><TT>192.168.0.1, 192.168.0.2, 192.168.0.5</TT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=18%>
+			<TD WIDTH="18%">
 				<P>Host ranges</P>
 			</TD>
-			<TD WIDTH=33%>
+			<TD WIDTH="33%">
 				<P><TT>grid[00-10]</TT></P>
 			</TD>
-			<TD WIDTH=49%>
+			<TD WIDTH="49%">
 				<P><TT>grid00, grid01, ..., grid10</TT></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=18%>
+			<TD WIDTH="18%">
 				<P>Range of IP addresses</P>
 			</TD>
-			<TD WIDTH=33%>
+			<TD WIDTH="33%">
 				<P><TT>192.[168-169].0.[50-60]</TT></P>
 			</TD>
-			<TD WIDTH=49%>
+			<TD WIDTH="49%">
 				<P><TT>192.168.0.50 ... 192.168.0.60, 192.169.0.50 ...
 				192.169.0.60</TT></P>
 			</TD>
@@ -222,7 +223,7 @@ By performing right mouse click on the host selection table and selecting
 can modify host specific values for the selected/all hosts have been added to the table.
 <UL>
 <LI><P><B>Local execd spool directory</B> - The pathname of the local spool directory
-        for the execution host. If differs from the gobal spool directory this value will be used.
+        for the execution host. If differs from the global spool directory this value will be used.
         The specified admin user must have the right to create this directory and
         to write into it.</P>
 <LI><P><B>JVM library path</B> - Path to the JVM library on the qmaster and/or shadow host(s).
@@ -241,7 +242,7 @@ can modify host specific values for the selected/all hosts have been added to th
         Increase the default value if you see that the installation tasks are
         failing with a <FONT COLOR="#ff0000">Timeout</FONT> state.</P>
 </UL>
-</P>
+
 <H2>Explanation of Host and Install Task States</H2>
 <P>Complete lists and description of all possible states one may
 encounter in this screen can be found below. The states can be
@@ -254,49 +255,49 @@ only if we can retrieve it's architecture. All other states specify
 an error. The GUI installer won't be able to perform any installation
 on such host. Following table lists all possible states:</P>
 <CENTER>
-	<TABLE WIDTH=95% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=2 CELLSPACING=0>
-		<COL WIDTH=39*>
-		<COL WIDTH=217*>
+	<TABLE WIDTH="95%" BORDER=1 CELLPADDING=2 CELLSPACING=0>
+		<COL WIDTH="39*">
+		<COL WIDTH="217*">
 		<TR>
-			<TH WIDTH=15%>
+			<TH WIDTH="15%">
 				<P>State</P>
 			</TH>
-			<TH WIDTH=85%>
+			<TH WIDTH="85%">
 				<P>Description</P>
 			</TH>
 		</TR>
 		<TR>
-			<TD WIDTH=15%>
+			<TD WIDTH="15%">
 				<P><FONT COLOR="#ff0000">New unknown host</FONT></P>
 			</TD>
-			<TD WIDTH=85%>
+			<TD WIDTH="85%">
 				<P>Initial host state. When host is added it will immediately
 				start resolving it's name/address if we have available threads in
 				the resolve pool.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=15%>
+			<TD WIDTH="15%">
 				<P>Resolving</P>
 			</TD>
-			<TD WIDTH=85%>
+			<TD WIDTH="85%">
 				<P>Temporary state. Host is being resolved based on the host name
 				or address via default name service.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=15%>
+			<TD WIDTH="15%">
 				<P><FONT COLOR="#ff0000">Unknown host</FONT></P>
 			</TD>
-			<TD WIDTH=85%>
+			<TD WIDTH="85%">
 				<P>Final state. Host could not be resolved by the name service.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=15%>
+			<TD WIDTH="15%">
 				<P><FONT COLOR="#ff0000">Resolvable</FONT></P>
 			</TD>
-			<TD WIDTH=85%>
+			<TD WIDTH="85%">
 				<P>Both temporary and final state. Once host has been resolved and if we
                                 have available threads in the resolve pool, we immediately try to get the
 				host's architecture via an ssh or rsh call. If this is the final state,
@@ -307,19 +308,19 @@ on such host. Following table lists all possible states:</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=15%>
+			<TD WIDTH="15%">
 				<P>Contacting</P>
 			</TD>
-			<TD WIDTH=85%>
+			<TD WIDTH="85%">
 				<P>Temporary state. Host has been resolved and it's architecture
 				is being retrieved.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=15%>
+			<TD WIDTH="15%">
 				<P><FONT COLOR="#ff0000">Missing remote file</FONT></P>
 			</TD>
-			<TD WIDTH=85%>
+			<TD WIDTH="85%">
 				<P>Final state. Missing file '$SGE_ROOT/util/arch' on remote
 				host.Is the <EM>sge-root</EM> path the same of the remote host
 				and on the local host? If not, either fix that or refer to using
@@ -327,20 +328,20 @@ on such host. Following table lists all possible states:</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=15%>
+			<TD WIDTH="15%">
 				<P><FONT COLOR="#008000">Reachable</FONT></P>
 			</TD>
-			<TD WIDTH=85%>
+			<TD WIDTH="85%">
 				<P>Final state. Host architecture could be retrieved.
 				Password-less <TT>ssh</TT> or <TT>rsh</TT> to remote hosts is
 				working properly.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=15%>
+			<TD WIDTH="15%">
 				<P><FONT COLOR="#ff0000">Unreachable</FONT></P>
 			</TD>
-			<TD WIDTH=85%>
+			<TD WIDTH="85%">
 				<P>Final state. Host architecture could NOT be retrieved.
 				Password-less <TT>ssh</TT> or <TT>rsh</TT> to remote hosts is
 				not working properly.
@@ -348,10 +349,10 @@ on such host. Following table lists all possible states:</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=15%>
+			<TD WIDTH="15%">
 				<P><FONT COLOR="#ff0000">Canceled</FONT></P>
 			</TD>
-			<TD WIDTH=85%>
+			<TD WIDTH="85%">
 				<P>Final state. User canceled further host resolving.</P>
 			</TD>
 		</TR>
@@ -369,31 +370,31 @@ errors (see red and orange states in the list below), installation is
 not started and user is informed about this fact. He can return to
 the host selection or proceed with the installation anyway.</P>
 <CENTER>
-	<TABLE WIDTH=95% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=2 CELLSPACING=0>
-		<COL WIDTH=31*>
-		<COL WIDTH=105*>
-		<COL WIDTH=120*>
+	<TABLE WIDTH="95%" BORDER=1 CELLPADDING=2 CELLSPACING=0>
+		<COL WIDTH="31*">
+		<COL WIDTH="105*">
+		<COL WIDTH="120*">
 		<TR>
-			<TH WIDTH=12%>
+			<TH WIDTH="12%">
 				<P>State</P>
 			</TH>
-			<TH WIDTH=41%>
+			<TH WIDTH="41%">
 				<P>Description</P>
 			</TH>
-			<TH WIDTH=47%>
+			<TH WIDTH="47%">
 				<P>Problem Resolution</P>
 			</TH>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P><FONT COLOR="#ff0000">Copy timeout</FONT></P>
 			</TD>
-			<TD WIDTH=41%>
+			<TD WIDTH="41%">
 				<P>Timeout occurred when copying <TT>check_host</TT> or
 				<TT>install_component</TT> files.See tooltip for the exact file
 				name.</P>
 			</TD>
-			<TD WIDTH=47%>
+			<TD WIDTH="47%">
 				<P>Try again (press <TT>Install</TT> button one more time).If
 				timeout reoccurs, save your host list to a file, stop the
 				installer and restart it with increased timeout values. See
@@ -401,14 +402,14 @@ the host selection or proceed with the installation anyway.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P><FONT COLOR="#ff0000">Copy failed</FONT></P>
 			</TD>
-			<TD WIDTH=41%>
+			<TD WIDTH="41%">
 				<P>Copying files <TT>check_host</TT> or <TT>install_component</TT>
 				to the remote host failed.See tooltip for the exact file name.</P>
 			</TD>
-			<TD WIDTH=47%>
+			<TD WIDTH="47%">
 				<P>Try again (press <TT>Install</TT> button one more time).If
 				problems reoccurs try to copy any file with <TT>scp</TT> or <TT>rcp</TT>
 				to verify these commands work properly. If not make sure they do
@@ -416,91 +417,93 @@ the host selection or proceed with the installation anyway.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P><FONT COLOR="#ffa500">Permission denied</FONT></P>
 			</TD>
-			<TD WIDTH=41%>
-				<P>Either of Berkeley DB, qmaster, execution daemon spool
-				directory or JMX keystore file is not writable. See tooltip for
-				the exact message.Installation will most likely fail, if you
+			<TD WIDTH="41%">
+				<P>Either the Berkeley DB, qmaster, execution daemon spool
+				directory, or JMX keystore file is not writable. See tooltip for
+				the exact message. Installation will most likely fail, if you
 				proceed anyway.</P>
 			</TD>
-			<TD WIDTH=47%>
-				<P>Did you start the installation as root?What permissions are
-				for the first existing directory?Are you on a NFS file system
-				with <TT>root</TT> mapped to <TT>nobody</TT>?Is the UID for the
+			<TD WIDTH="47%">
+				<P>Did you start the installation as
+				root? What permissions are
+				for the first existing directory? Are you on a NFS file system
+				with <TT>root</TT> mapped to
+				<TT>nobody</TT>? Is the UID for the
 				admin user the same on the local and remote machine?</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P><FONT COLOR="#ffa500">Admin user missing</FONT></P>
 			</TD>
-			<TD WIDTH=41%>
+			<TD WIDTH="41%">
 				<P>The admin user entered in the main configuration screen does
 				not exist on the remote machine.</P>
 			</TD>
-			<TD WIDTH=47%>
+			<TD WIDTH="47%">
 				<P>Setup the host properly so that name service provides the name
 				properly to the remote machine (or create the user locally).</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P><FONT COLOR="#ffa500">Directory exists</FONT></P>
 			</TD>
-			<TD WIDTH=41%>
+			<TD WIDTH="41%">
 				<P>Berkeley DB spool directory already exists!</P>
 			</TD>
-			<TD WIDTH=47%>
+			<TD WIDTH="47%">
 				<P>Check the remote host for existing Berkeley DB
-				installations.Remove the existing directory.</P>
+				installations. Remove the existing directory.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P><FONT COLOR="#ffa500">Wrong FS type</FONT></P>
 			</TD>
-			<TD WIDTH=41%>
-				<P>Specified Berkeley DB spool directory is on a local file
+			<TD WIDTH="41%">
+				<P>Specified Berkeley DB spool directory is not on a local file
 				system.</P>
 			</TD>
-			<TD WIDTH=47%>
+			<TD WIDTH="47%">
 				<P>Go back to the spooling configuration screen and choose a
 				proper local directory.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P><FONT COLOR="#ffa500">Unknown error</FONT></P>
 			</TD>
-			<TD WIDTH=41%>
+			<TD WIDTH="41%">
 				<P>Unknown error has occurred.</P>
 			</TD>
-			<TD WIDTH=47%>
+			<TD WIDTH="47%">
 				<P>Try again (press <TT>Install</TT> button one more time).If
 				reoccurring, ignore and try to install anyway.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P><FONT COLOR="#008000">Reachable</FONT></P>
 			</TD>
-			<TD WIDTH=41%>
+			<TD WIDTH="41%">
 				<P>Validation did not discover any issues for this remote host.</P>
 			</TD>
-			<TD WIDTH=47%>
+			<TD WIDTH="47%">
 				<P>&nbsp;</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=12%>
+			<TD WIDTH="12%">
 				<P><FONT COLOR="#ff0000">Canceled</FONT></P>
 			</TD>
-			<TD WIDTH=41%>
+			<TD WIDTH="41%">
 				<P>User canceled further host validation.</P>
 			</TD>
-			<TD WIDTH=47%>
+			<TD WIDTH="47%">
 				<P>&nbsp;</P>
 			</TD>
 		</TR>
@@ -514,64 +517,64 @@ components is transformed to a task list. The task list is better
 suited to handle dependencies. These are the states one may encounter
 during the installation.</P>
 <CENTER>
-	<TABLE WIDTH=95% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=2 CELLSPACING=0>
-		<COL WIDTH=44*>
-		<COL WIDTH=212*>
+	<TABLE WIDTH="95%" BORDER=1  CELLPADDING=2 CELLSPACING=0>
+		<COL WIDTH="44*">
+		<COL WIDTH="212*">
 		<TR>
-			<TD WIDTH=17%>
+			<TD WIDTH="17%">
 				<P><FONT COLOR="#008000">Waiting</FONT></P>
 			</TD>
-			<TD WIDTH=83%>
+			<TD WIDTH="83%">
 				<P>Task is waiting to be executed.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=17%>
+			<TD WIDTH="17%">
 				<P>Processing</P>
 			</TD>
-			<TD WIDTH=83%>
+			<TD WIDTH="83%">
 				<P>Temporary state. Task is being processed.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=17%>
+			<TD WIDTH="17%">
 				<P><FONT COLOR="#ff0000">Timeout</FONT></P>
 			</TD>
-			<TD WIDTH=83%>
+			<TD WIDTH="83%">
 				<P>Task did not finish before timeout value has been reached.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=17%>
+			<TD WIDTH="17%">
 				<P><FONT COLOR="#008000">Success</FONT></P>
 			</TD>
-			<TD WIDTH=83%>
+			<TD WIDTH="83%">
 				<P>Task finished successfully.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=17%>
+			<TD WIDTH="17%">
 				<P><FONT COLOR="#ff0000">Failed</FONT></P>
 			</TD>
-			<TD WIDTH=83%>
+			<TD WIDTH="83%">
 				<P>Task finished unsuccessfully. Click the <TT>Log</TT> button to
 				get more information.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=17%>
+			<TD WIDTH="17%">
 				<P><FONT COLOR="#ff0000">Failed due to dependency</FONT></P>
 			</TD>
-			<TD WIDTH=83%>
+			<TD WIDTH="83%">
 				<P>Task was not started, because it depended on a task that
 				failed. Click the <TT>Log</TT> button to get more information.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=17%>
+			<TD WIDTH="17%">
 				<P><FONT COLOR="#ff0000">Component already exists</FONT></P>
 			</TD>
-			<TD WIDTH=83%>
+			<TD WIDTH="83%">
 				<P>Task was not started. The installation detected a previous
 				conflicting component installation. Click the <TT>Log</TT> button
 				to get more information. Remove any remains of the old
@@ -579,10 +582,10 @@ during the installation.</P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=17%>
+			<TD WIDTH="17%">
 				<P><FONT COLOR="#ff0000">Canceled</FONT></P>
 			</TD>
-			<TD WIDTH=83%>
+			<TD WIDTH="83%">
 				<P>User canceled the installation process.</P>
 			</TD>
 		</TR>
