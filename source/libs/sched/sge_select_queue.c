@@ -878,7 +878,8 @@ parallel_maximize_slots_pe(sge_assignment_t *best, int *available_slots)
 
    DPRINTF(("MAXIMIZE SLOT: FIRST %d LAST %d MAX SLOT %d\n", first, last, max_pe_slots));
 
-   /* this limits max range number RANGE_INFINITY (i.e. -pe pe 1-) to reasonable number */
+   /* This limits max range number RANGE_INFINITY (i.e. -pe pe 1-) to a
+      reasonable number.  See also the check on max_pe_slots below.  */
    max_slots = MIN(last, max_pe_slots);
 
    DPRINTF(("MAXIMIZE SLOT FOR "sge_u32" using \"%s\" FROM %d TO %d\n", 
@@ -887,8 +888,13 @@ parallel_maximize_slots_pe(sge_assignment_t *best, int *available_slots)
    old_logging = schedd_mes_get_logging(); /* store logging mode */  
 
    if ((max_slots < min_slots) ||
-      (min_slots <= 0)) {
-      ERROR((SGE_EVENT, "invalid pe job range setting for job "sge_u32"\n", best->job_id));
+       (min_slots <= 0)) {
+      /* If, say, max_pe_slots == 0 (to disable the PE), limiting
+         max_slots above gets us here with max_slots < min_slots and a
+         spurious error message every time.  */
+      if (max_pe_slots < min_slots)
+         ERROR((SGE_EVENT, "invalid pe job range setting "sge_u32"-"sge_u32
+                " for job "sge_u32"\n", min_slots, max_slots, best->job_id));
       DRETURN(DISPATCH_NEVER_CAT);
    }
 
