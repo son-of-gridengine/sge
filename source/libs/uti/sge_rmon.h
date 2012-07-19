@@ -80,6 +80,7 @@
    }        
 
 #define DRETURN(ret)                                                             \
+   do { \
    if (rmon_condition(xaybzc, TRACE)) {                                          \
       cl_thread_settings_t* ___thread_config = cl_thread_get_thread_config();    \
       if (___thread_config != NULL) {                                            \
@@ -88,7 +89,7 @@
          rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);                         \
       }                                                                          \
    }                                                                             \
-   return ret
+   return ret; } while (0)
 
 #define DRETURN_(ret)                                                            \
    if (rmon_condition(xaybzc, TRACE)) {                                          \
@@ -97,7 +98,7 @@
    return ret
 
 #define DRETURN_VOID                                                             \
-   if (rmon_condition(xaybzc, TRACE)) {                                          \
+   do { if (rmon_condition(xaybzc, TRACE)) {                                     \
       cl_thread_settings_t* ___thread_config = cl_thread_get_thread_config();    \
       if (___thread_config != NULL) {                                            \
          rmon_mexit(SGE_FUNC, __FILE__, __LINE__, ___thread_config->thread_name);\
@@ -105,7 +106,7 @@
          rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);                         \
       }                                                                          \
    }                                                                             \
-   return 
+   return;} while (0) 
 
 #define DRETURN_VOID_                                                            \
    if (rmon_condition(xaybzc, TRACE)) {                                          \
@@ -121,7 +122,7 @@
       } else {                                                                   \
          rmon_mexit(SGE_FUNC, __FILE__, __LINE__, NULL);                         \
       }                                                                          \
-   }                                                                             \
+   }
 
 #define DEXIT_                                                                   \
    if (rmon_condition(xaybzc, TRACE)) {                                          \
