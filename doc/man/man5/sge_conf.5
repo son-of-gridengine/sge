@@ -1532,6 +1532,13 @@ The default for \fBexecd_params\fP is none.
 .PP
 The global configuration entry for this value
 may be overwritten by the execution host local configuration.
+.IP \fIUSE_CGROUPS\fP
+Use cgroups/cpusets for resource management if the system supports
+them and the necessary directories exist under the relevant
+filesystems (created by
+.IR util/resources/scripts/setup-cgroups-etc ).
+This option is experimental, and at least the default is likely to
+change in future.  Default is no.
 .\"
 .\"
 .SS "\fBreporting_params\fP"

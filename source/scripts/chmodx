@@ -92,6 +92,7 @@ xargs chmod +x <<EOF
 ./dist/util/upgrade_modules/save_sge_config.sh
 ./dist/util/upgrade_modules/load_sge_config.sh
 ./dist/mpi/hostname
+./dist/util/resources/scripts/setup-cgroups-etc
 ./dist/mpi/mpi_cpi.sh
 ./dist/mpi/stopmpi.sh
 ./dist/mpi/myrinet/gmps

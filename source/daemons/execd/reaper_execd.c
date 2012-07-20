@@ -60,6 +60,7 @@
 #include "uti/sge_prog.h"
 #include "uti/sge_time.h"
 #include "uti/sge_stdio.h"
+#include "uti2/sge_cgroup.h"
 
 #include "sgeobj/config.h"
 #include "sgeobj/sge_job.h"
@@ -921,6 +922,10 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
          }
       }
 
+      /* cgroup/cpuset.  */
+      if (have_cgroup_task_dir(cg_cpuset, job_id, ja_task_id))
+         remove_task_cpuset (job_id, ja_task_id); /* writes own warings */
+
       /* increment # of free slots. In case no slot is used any longer 
          we have to remove queues tmpdir for this job */
       /* decrement the number of used slots.
@@ -1010,7 +1015,7 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
    } else {
       /* must be an ack of an ask job request from qmaster */
       DPRINTF(("REMOVING WITHOUT jep && jatep\n"));
-      /* clean up active jobs entry */
+      /* clean up active jobs entry etc. */
       if (pe_task_id_str == NULL) {
          ERROR((SGE_EVENT, MSG_SHEPHERD_ACKNOWLEDGEFORUNKNOWNJOBXYZ_UUS, 
                 sge_u32c(job_id),  sge_u32c(ja_task_id), 
@@ -1079,6 +1084,10 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
                       sge_dstring_get_string(&jobdir), err_str_buffer));
             }
          }
+
+         /* cgroup/cpuset.  */
+         if (have_cgroup_task_dir(cg_cpuset, job_id, ja_task_id))
+            remove_task_cpuset (job_id, ja_task_id); /* writes own warings */
       }
       del_job_report(jr);
       cleanup_job_report(job_id, ja_task_id);
@@ -1205,6 +1214,9 @@ void job_unknown(u_long32 jobid, u_long32 jataskid, char *qname)
  If startup is true this is the first call of the execd. We produce more
  output for the administrator the first time.
  ************************************************************************/
+
+/* fixme: deal with old cpusets/cgroups too */
+
 int clean_up_old_jobs(sge_gdi_ctx_class_t *ctx, int startup)
 {
    SGE_STRUCT_DIRENT *dent = NULL;

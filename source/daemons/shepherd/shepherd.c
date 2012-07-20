@@ -69,6 +69,7 @@
 #include "uti/sge_afsutil.h"
 #include "uti/sge_os.h"
 #include "uti/sge_pty.h"
+#include "uti2/sge_cgroup.h"
 
 #include "gdi/version.h"
 
@@ -210,6 +211,7 @@ static int do_prolog(int timeout, int ckpt_type);
 static int do_epilog(int timeout, int ckpt_type);
 static int do_pe_start(int timeout, int ckpt_type, pid_t *pe_pid);
 static int do_pe_stop(int timeout, int ckpt_type, pid_t *pe_pid);
+static void cpusetting(void);
 
 /****** shepherd/handle_io_file() ********************************************
 *  NAME
@@ -887,6 +889,9 @@ int main(int argc, char **argv)
     */ 
    do_core_binding();
 
+   /* Make a cpuset if appropriate */
+   cpusetting();
+
    /*
     * this blocks sge_shepherd until the first time the token is
     * sucessfully set, then we start the sge_coshepherd in background
@@ -1029,6 +1034,15 @@ int main(int argc, char **argv)
     * Free previously created processor set
     */
    sge_pset_free_processor_set();
+
+   /* Clean up our cpuset */
+   {
+      u_long32 job = atoi(get_conf_val("job_id"));
+      u_long32 task = MAX(1, atoi(get_conf_val("ja_task_id")));
+
+      if (!empty_shepherd_cpuset (job, task, getpid()))
+         shepherd_trace("failed to empty cpuset: "SFN, strerror(errno));
+   }
 
    if (coshepherd_pid > 0) {
       shepherd_trace("sending SIGTERM to sge_coshepherd");
@@ -3195,4 +3209,48 @@ static void shepherd_signal_handler(int dummy) {
 #if 0
    shepherd_trace("SIGPIPE received");
 #endif
+
+}
+
+static void
+cpusetting(void)
+{
+   u_long32 job = atoi(get_conf_val("job_id"));
+   u_long32 task = MAX(1, atoi(get_conf_val("ja_task_id")));
+   char *binding = (char *) sge_getenv("SGE_BINDING");
+   char path[SGE_PATH_MAX];
+   pid_t pid = getpid();
+
+   if (!have_cgroup(cg_cpuset)) return;
+   if (!have_cgroup_task_dir(cg_cpuset, job, task)) {
+      shepherd_trace ("have cpusets but no cpuset directory");
+      return;
+   }
+   errno = 0;
+   if (!make_shepherd_cpuset(job, task, getpid())) {
+      shepherd_trace("failed to make shepherd cpuset: "SFN, strerror (errno));
+      return;
+   }
+   if (set_pid_shepherd_cgroup (cg_cpuset, pid, job, task)) {
+      snprintf (path, sizeof path, "%s/"sge_u32"."sge_u32"/"pid_t_fmt,
+                cpusetdir, job, task, pid);
+      shepherd_trace("put into cpuset "SFN, path);
+   } else {
+      shepherd_trace("failed to put into cpuset with euid"uid_t_fmt": "SFN,
+                     geteuid(), strerror(errno));
+      return;
+   }
+   if (binding) {
+      binding = strdup(binding);
+      /* We got a space-separated binding string which needs to be
+         comma-separated.  */
+      replace_char(binding, strlen(binding), ' ', ',');
+      errno = 0;
+      if (write_to_cgroup_proc_file (cg_cpuset, "cpus", binding, job, task, pid))
+         shepherd_trace("cpuset cpus set per core binding");
+      else
+         shepherd_trace("failed to set cpus in cpuset with euid "uid_t_fmt": "SFN,
+                        geteuid(), strerror(errno));
+      free (binding);
+   }
 }
