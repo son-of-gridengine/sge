@@ -20,13 +20,13 @@ UTI2LIB_DIR  = $(SDIR)/libs/uti2
 
 UTI2LIB  = libuti2$(LIBEXT)
 
-UTI2LIB_SRC = sge_execvlp.c
+UTI2LIB_SRC = sge_execvlp.c sge_cgroup.c util.c
 UTI2LIB_OBJS = $(UTI2LIB_SRC:.c=.o)
 
 uti2lib: $(UTI2LIB)
 
 uti2lib_clean: 
-	$(RM) $(UTI2LIB_OBJS) libuti2.a libuti2$(SHAREDEXT)
+	$(RM) $(UTI2LIB_OBJS) $(UTI2LIB) libuti2$(SHAREDEXT)
 
 uti2lib_depend:
 	$(DEPEND) -f$(UTI2LIB_DIR)/uti2_dependencies $(UTI2LIB_DIR)/*.c
@@ -38,8 +38,8 @@ uti2lib_messages:
 	done
 
 libuti2.a: $(UTI2LIB_OBJS)
-	$(AR) $(ARFLAGS) libuti2.a $(UTI2LIB_OBJS)
-	$(RANLIB) libuti2.a
+	$(AR) $(ARFLAGS) $(UTI2LIB) $(UTI2LIB_OBJS)
+	$(RANLIB) $(UTI2LIB)
 
 libuti2$(SHAREDEXT):  $(UTI2LIB_OBJS)
 	$(SHAREDLD) $(SHARED_LFLAGS) -o libuti2$(SHAREDEXT) $(UTI2LIB_OBJS) $(LOADAVGLIBS) $(LIBS) -lc
@@ -48,3 +48,9 @@ include $(UTI2LIB_DIR)/uti2_dependencies
 
 sge_execvlp.o: $(UTI2LIB_DIR)/sge_execvlp.c
 	$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $(UTI2LIB_DIR)/sge_execvlp.c
+
+util.o: $(UTI2LIB_DIR)/util.c
+	$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $(UTI2LIB_DIR)/util.c
+
+sge_cgroup.o: $(UTI2LIB_DIR)/sge_cgroup.c
+	$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $(UTI2LIB_DIR)/sge_cgroup.c

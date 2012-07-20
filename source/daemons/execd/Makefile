@@ -74,9 +74,9 @@ EXECD_OBJS    = $(EXECD_SRC:.c=.o)
 
 EXECD_ADD_OBJS = $(EXECD_ADD_SRC:.c=.o)
 
-EXECD_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
+EXECD_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti -luti2 $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
 
-EXECD_LIB_DEPENDS = $(SCHEDLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) \
+EXECD_LIB_DEPENDS = $(SCHEDLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(UTI2LIB) \
                     $(KRBLIBS)  $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) \
                     $(WINGRIDLIB_DEP) $(UTILIB) $(TPLIB)
 

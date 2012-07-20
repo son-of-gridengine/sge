@@ -195,6 +195,7 @@ static char s_memorylocked[100];
 static char h_memorylocked[100];
 static char s_locks[100];
 static char h_locks[100];
+static bool use_cgroups = false;
 
 /* 
  * reporting params 
@@ -872,6 +873,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       sharelog_time = 0;
       log_consumables = false;
       enable_addgrp_kill = false;
+      use_cgroups = false;
       strcpy(s_descriptors, "UNDEFINED");
       strcpy(h_descriptors, "UNDEFINED");
       strcpy(s_maxproc, "UNDEFINED");
@@ -1023,6 +1025,9 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
          if (parse_bool_param(s, "IGNORE_NGROUPS_MAX_LIMIT", &ignore_ngroups_max_limit)) {
             continue;
          } 
+         if (parse_bool_param(s, "USE_CGROUPS", &use_cgroups)) {
+            continue;
+         }
       }
       SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_WRITE);
       sge_free_saved_vars(conf_context);
@@ -2610,4 +2615,16 @@ int mconf_get_jsv_timeout(void) {
 
    SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_READ);
    DRETURN(timeout);
+}
+
+bool mconf_get_use_cgroups(void) {
+   bool ret;
+
+   DENTER(BASIS_LAYER, "mconf_get_use_cgroups");
+   SGE_LOCK(LOCK_MASTER_CONF, LOCK_READ);
+
+   ret = use_cgroups;
+
+   SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_READ);
+   DRETURN(ret);
 }
