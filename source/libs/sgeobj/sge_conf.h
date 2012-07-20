@@ -161,5 +161,6 @@ void mconf_get_s_locks(char **pret);
 int mconf_get_jsv_timeout(void);
 int mconf_get_jsv_threshold(void);
 bool mconf_get_ignore_ngroups_max_limit(void);
+bool mconf_get_use_cgroups(void);
 
 #endif /* __SGE_CONF_H */

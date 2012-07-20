@@ -63,6 +63,7 @@
 #include "uti/sge_binding_parse.h"
 #include "uti/sge_stdio.h"
 #include "uti/sge_parse_num_par.h"
+#include "uti2/sge_cgroup.h"
 
 #include "gdi/qm_name.h"
 
@@ -400,6 +401,15 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
             sge_free(&pw_buffer);
             DRETURN(-2);
          }
+      }
+
+      /* Make cgroups/cpuset directories.  */
+      if (0 == used_slots && mconf_get_use_cgroups()) {
+         errno = 0;
+         sge_switch2admin_user();
+         if (have_cgroup (cg_cpuset))
+            make_task_cpuset (job_id, ja_task_id); /* writes own warning */
+         sge_switch2start_user();
       }
 
       /* increment used slots */

@@ -931,6 +931,8 @@ static int psRetrieveOSJobData(void) {
       /* There is no way to retrieve a pid list containing all processes 
          of a session id. So we have to iterate through the whole process 
          table to decide whether a process is needed for a job or not. */
+     /* Fixme:  We could do better now by tracking processes in job
+        cpusets/cgroups (when available).  */
       pt_open();
 
       while (!pt_dispatch_proc_to_job(&job_list, time_stamp, last_time))
