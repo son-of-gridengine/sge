@@ -19,10 +19,11 @@
 
 /* This is to support aspects of Linux cgroups, if they are present
    (Linux 2.6.24+), and otherwise the older cpuset implementation
-   (e.g. Red Hat 5).  The two cpuset implementations have the same
-   interface, although the mount can be done differently with the
-   cgroup emulation.  We tend to refer to things as "cgroup" even if
-   it's actually the old cpusets.
+   (e.g. Red Hat 5, apparently available sometime post-Linux 2.6.9).
+   The two cpuset implementations have the same interface, although
+   the mount can be done differently with the cgroup emulation.
+   [Actually, this has changed -- see below.]  We tend to refer to
+   things as "cgroup" even if it's actually the old cpusets.
 
    There are existing libraries, libcpuset and libcgroup, but it seems
    best not to depend on them, and it's not clear that it's a good
@@ -74,6 +75,16 @@
    pressure etc.; add cgroups.
 
    Fixme below:  Add doc headers, catalogue messages, tidy up.
+
+   Sigh.  The file structure has changed, e.g. in Ubuntu 12.04.
+   There's a default mount on /sys/fs/cgroup/cpuset with cpuset.mems
+   and cpuset.cpus instead of mems and cpus.  It doesn't work to mount
+   on /dev/cpuset with -onoprefix, which is supposed to make it
+   compatible (but presumably doesn't work for a second mount).  We
+   need to be prepared for both.  Presumably it's OK to link the
+   filesystem to /dev/cpuset, but we probably need to make the mount
+   point configurable.  Maybe just grovel /proc/mounts for
+   cpuset/cgroup mounts and look for the sge directory in them.
 */
 
 #include <errno.h>
@@ -271,6 +282,9 @@ make_sub_cpuset(char *parent, char *child)
    }
    /* You need to populate the mems and cpus before you can use the
       cpuset -- they're not inherited.  */
+   if (file_exists(cpusetdir"/cpuset.mems"))
+      DRETURN(copy_from_parent(child_dir, "cpuset.mems") &&
+              copy_from_parent(child_dir, "cpuset.cpus"));
    DRETURN(copy_from_parent(child_dir, "mems") &&
            copy_from_parent(child_dir, "cpus"));
 }
@@ -284,7 +298,9 @@ make_task_cpuset(u_long32 job, u_long32 task)
 
    DENTER(TOP_LAYER, "make_task_cpuset");
    snprintf(path, sizeof path, "%s/mems", cpusetdir);
-   dev_file2string(path, buf, &l);
+   if (!file_exists(path))
+      snprintf(path, sizeof path, "%s/cpuset.mems", cpusetdir);
+   dev_file2string(path, shortbuf, &l);
    if (l <= 1)                  /* we get a newline when it's empty */
       ERROR((SGE_EVENT,
              SFN" needs cpus and mems populated -- cpusets will fail",
