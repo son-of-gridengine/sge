@@ -9,6 +9,8 @@
 # relevant directory exists.  The sge directories are owned by the
 # admin user for convenience of execd.
 
+# Fixme:  Do something about /sys/fs/cgroup with prefixed files.
+
 [ "$(uname -s)" == Linux -a $# -eq 1 ] || exit 0
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
