@@ -1466,6 +1466,7 @@ when a job is deleted, or when
 .M xxqs_name_sxx_shepherd 8
 cleans up after job termination.
 This currently only works under GNU/Linux, Solaris, and Tru64.
+Irrelevant with cpuset support (see USE_CGROUPS below).
 .PP
 .IP "\fIPDC_INTERVAL\fP"
 This parameter defines the interval (default 1s) between runs of the PDC (Portable
@@ -1537,6 +1538,7 @@ Use cgroups/cpusets for resource management if the system supports
 them and the necessary directories exist under the relevant
 filesystems (created by
 .IR util/resources/scripts/setup-cgroups-etc ).
+Makes ENABLE_ADDGRP_KILL irrelevant.
 This option is experimental, and at least the default is likely to
 change in future.  Default is no.
 .\"
