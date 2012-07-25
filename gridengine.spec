@@ -295,6 +295,7 @@ fi
 %{sge_home}/mpi
 %{sge_home}/pvm
 %{sge_home}/util
+%config %{sge_home}/util/install_modules/inst_template.conf
 %{sge_home}/utilbin
 %attr(4755,root,root) %{sge_home}/utilbin/*/testsuidroot
 #%attr(4755,root,root) %{sge_home}/utilbin/*/authuser
@@ -355,6 +356,9 @@ fi
 %endif
 
 %changelog
+* Wed Jul 25 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.2-1
+- Make inst_template.conf a config file (from Florian La Roche)
+
 * Mon Jul  2 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.1-1
 - Build-require gcc etc. and not ant-nodeps.
 - Move qacct, jobstats.
