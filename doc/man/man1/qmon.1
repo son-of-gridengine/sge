@@ -504,13 +504,11 @@ cell
 uses (in the order of precedence):
 .sp 1
 .RS
-.RS
 The name of the cell specified in the environment 
 variable xxQS_NAME_Sxx_CELL, if it is set.
 .sp 1
 The name of the default cell, i.e. \fBdefault\fP.
 .sp 1
-.RE
 .RE
 .\"
 .IP "\fBxxQS_NAME_Sxx_DEBUG_LEVEL\fP" 1.5i
@@ -525,6 +523,13 @@ is expected to listen for communication requests.
 Most installations will use a services map entry instead
 to define that port.
 .\"
+.\"
+.IP \fBSGE_LOAD_AVG\fP 1.5i
+Specify a load parameter (see
+.M load_parameters 5 )
+to use instead of
+.B load_avg
+when displaying/selecting load values.
 .\"
 .SH "RESTRICTIONS"
 If the line to be entered in an editing window is longer than the
