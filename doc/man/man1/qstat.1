@@ -353,8 +353,8 @@ the cluster queue name.
 an average of the normalized load average of all queue hosts. In order 
 to reflect each hosts different significance the number of configured 
 slots is used as a weighting factor when determining cluster queue load. 
-Please note that only hosts with a np_load_value are considered for this 
-value. When queue selection is applied only data about selected queues 
+Please note that only hosts with an np_load_value are considered for this
+value. When queue selection is applied, only data about selected queues
 is considered in this formula. If the load value is not available at 
 any of the hosts '-NA-' is printed instead of the value from the complex 
 attribute definition.
@@ -481,7 +481,8 @@ P(arallel), or combinations thereof or N(one),
 .IP "\(bu" 3n
 the number of used and available job slots,
 .IP "\(bu" 3n
-the load average of the queue host,
+the load average of the queue host or another load value \- see
+SGE_LOAD_AVG in the ENVIRONMENT VARIABLES section below,
 .IP "\(bu" 3n
 the architecture of the queue host and
 .IP "\(bu" 3n
@@ -866,6 +867,13 @@ too much or not enough, one can set a custom length with this
 variable. The minimum display length is 10 characters. If one does
 not know the best display length, one can set SGE_LONG_QNAMES to
 \-1 and qstat will figure out the best length.
+.\"
+.IP \fBSGE_LOAD_AVG\fP 1.5i
+Specify a load parameter (see
+.M load_parameters 5 )
+to use instead of
+.B load_avg
+when displaying/selecting load values.
 .\"
 .\"
 .SH FILES
