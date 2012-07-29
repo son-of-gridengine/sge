@@ -45,9 +45,11 @@
 #include "uti/sge_language.h"
 #include "uti/sge_prog.h"
 #include "uti/sge_binding_hlp.h"
+#include "uti/sge_string.h"
 
 #include "sgeobj/sge_host.h"
 #include "sgeobj/sge_binding.h"
+#include "binding_support.h"
 
 #include "basis_types.h"
 #include "msg_utilbin.h"

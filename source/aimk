@@ -69,6 +69,7 @@ set SECTARGETS  = ""
 set SECDEPEND   = ""
 set SECCLEAN    = ""
 set RM = "rm -f"
+set HWLOCLIB    = ""
 
 if ( -f dist/util/arch ) then
    set buildarch = `dist/util/arch`
@@ -1984,7 +1985,7 @@ endsw
 
 if ( $HWLOC == 1 && $NO_HWLOC != 1 ) then
    set CFLAGS = "$CFLAGS -DHAVE_HWLOC=1"
-   set LIBS = "-lhwloc $LIBS"
+   set HWLOCLIB = -lhwloc
    if ( "$HWLOC_DIR" != "" ) then
       set CORE_INCLUDE = "$CORE_INCLUDE -I$HWLOC_DIR/include"
       set LIBS = "-L$HWLOC_DIR/lib $LIBS"
@@ -2532,7 +2533,7 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
          "AUTHUSER_OBJ=$AUTHUSER_OBJ" "LOADCHECK_OBJ=$LOADCHECK_OBJ" \
          "JUTI_OBJ=$JUTI_OBJ" \
          "WINCC=$WINCC" "WINCFLAGS=$WINCFLAGS" "WINLFLAGS=$WINLFLAGS" \
-         "WINLIBS=$WINLIBS" "LIBRARY_LIBS=$LIBRARY_LIBS" \
+         "WINLIBS=$WINLIBS" "LIBRARY_LIBS=$LIBRARY_LIBS" HWLOCLIB=$HWLOCLIB \
          $argv
    if ( $status != 0 ) then
       echo not done

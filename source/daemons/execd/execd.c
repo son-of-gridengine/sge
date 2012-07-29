@@ -71,6 +71,7 @@
 #include "sge.h"
 #include "msg_common.h"
 #include "msg_execd.h"
+#include "binding_support.h"
 
 #ifdef COMPILE_DC
 #   include "ptf.h"
