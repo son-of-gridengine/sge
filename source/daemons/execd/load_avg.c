@@ -73,6 +73,7 @@
 #include "execd_ck_to_do.h"
 #include "sge_report_execd.h"
 #include "msg_execd.h"
+#include "binding_support.h"
 
 #ifdef COMPILE_DC
 #  include "ptf.h"

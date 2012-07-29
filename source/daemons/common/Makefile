@@ -47,12 +47,12 @@ DAEMONS_COMMON_SRC = admin_mail.c \
                     unparse_job_cull.c \
                     sge_processes_irix.c \
                     pdc.c \
-                    procfs.c
+                    procfs.c \
+                    binding_support.c
 
 DAEMONS_COMMON_TEST_OBJS = \
               test_category.o \
               test_heartbeat.o
-              
 
 DAEMONS_COMMON_TEST_PROGS = \
               test_category \
@@ -147,6 +147,9 @@ pdc.o: 	$(DAEMONS_COMMON_DIR)/pdc.c
 
 procfs.o: 	$(DAEMONS_COMMON_DIR)/procfs.c
 		$(CC) $(CFLAGS) $(MEMCFLAG) -c $(DAEMONS_COMMON_DIR)/procfs.c
+
+binding_support.o: 	$(DAEMONS_COMMON_DIR)/binding_support.c
+		$(CC) $(CFLAGS) $(MEMCFLAG) -c $(DAEMONS_COMMON_DIR)/binding_support.c
 
 test_category.o : $(DAEMONS_COMMON_DIR)/test_category.c
 		$(CC) $(CFLAGS) -c $(DAEMONS_COMMON_DIR)/test_category.c

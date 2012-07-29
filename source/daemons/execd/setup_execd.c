@@ -67,6 +67,7 @@
 #include "msg_common.h"
 #include "msg_daemons_common.h"
 #include "msg_execd.h"
+#include "binding_support.h"
 
 extern char execd_spool_dir[SGE_PATH_MAX];
 extern lList *jr_list;

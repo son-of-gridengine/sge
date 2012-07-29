@@ -58,13 +58,14 @@ SHEPHERD_ADD_SRC = \
            procfs.c \
            sge_mt_init.c \
            sge_processes_irix.c \
-           sge_spool.c
+           sge_spool.c \
+           binding_support.c
 
 SHEPHERD_OBJS = $(SHEPHERD_SRC:.c=.o) sge_ijs_comm.o sge_ijs_threads.o
 
 SHEPHERD_ADD_OBJS = $(SHEPHERD_ADD_SRC:.c=.o) 
 
-SHEPHERD_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd $(KRBLIB) -lcull -lcomm_static -lcommlists -luti -luti2 $(WINGRIDLIB_STATIC) $(DLLIB)
+SHEPHERD_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd $(KRBLIB) -lcull -lcomm_static -lcommlists -luti -luti2 $(HWLOCLIB) $(WINGRIDLIB_STATIC) $(DLLIB)
 
 SHEPHERD_LIB_DEPENDS = $(GDILIB) $(SGEOBJDLIB) $(SGEOBJLIB) $(KRBLIBS) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(COMMLIB_STATIC) $(UTILIB) $(UTI2LIB) $(WINGRIDLIB_DEP)  
 

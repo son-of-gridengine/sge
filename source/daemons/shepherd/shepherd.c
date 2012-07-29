@@ -77,6 +77,8 @@
 #include "sgeobj/sge_report.h"
 #include "sgeobj/sge_feature.h"
 
+#include "binding_support.h"
+
 #if defined(IRIX)
 #  include "sge_processes_irix.h"
 #endif
