@@ -63,6 +63,7 @@
 #include "uti/sge_binding_parse.h"
 #include "uti/sge_stdio.h"
 #include "uti/sge_parse_num_par.h"
+#include "uti/sge_spool.h"
 #include "uti2/sge_cgroup.h"
 
 #include "gdi/qm_name.h"
@@ -105,6 +106,7 @@
 #include "msg_common.h"
 #include "msg_execd.h"
 #include "msg_daemons_common.h"
+#include "binding_support.h"
 
 #if defined(SOLARIS)
 #   include "sge_smf.h"

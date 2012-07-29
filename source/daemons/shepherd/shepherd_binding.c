@@ -39,6 +39,7 @@
 
 #include "shepherd_binding.h"
 #include "err_trace.h"
+#include "binding_support.h"
 
 static bool binding_set_linear(int first_socket, int first_core,
                int number_of_cores, int offset, const binding_type_t type);

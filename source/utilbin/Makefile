@@ -187,8 +187,8 @@ signals.o:	$(UTILBIN_DIR)/signals.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/signals.c
 
 #---------------------------------------------------------------------
-loadcheck: loadcheck.o version.o $(WINGRIDLIB_DEP) $(UTILIB) $(COMMLISTSLIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB)
-	$(CC) -o $@ $(LFLAGS) loadcheck.o version.o -lsgeobj -lsgeobjd -lcull -luti $(WINGRIDLIB) $(COMMLISTSLIB) $(LOADAVGLIBS) $(LIBS)
+loadcheck: loadcheck.o version.o $(WINGRIDLIB_DEP) $(UTILIB) $(COMMLISTSLIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB) binding_support.o
+	$(CC) -o $@ $(LFLAGS) loadcheck.o version.o binding_support.o $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB) $(UTILIB) $(WINGRIDLIB) $(COMMLISTSLIB) $(LOADAVGLIBS) $(HWLOCLIB) $(LIBS)
 
 loadcheck.o: $(UTILBIN_DIR)/loadcheck.c
 	$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/loadcheck.c

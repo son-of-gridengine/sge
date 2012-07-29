@@ -55,7 +55,8 @@ EXECD_SRC   =  execd.c \
               reaper_execd.c \
               sge_report_execd.c \
               setup_execd.c \
-              tmpdir.c
+              tmpdir.c \
+              binding_support.c
 
 EXECD_ADD_SRC =  usage.c \
                  sge_options.c \
@@ -74,7 +75,7 @@ EXECD_OBJS    = $(EXECD_SRC:.c=.o)
 
 EXECD_ADD_OBJS = $(EXECD_ADD_SRC:.c=.o)
 
-EXECD_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti -luti2 $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
+EXECD_ADD_LIBS = -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti -luti2 $(HWLOCLIB) $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB)
 
 EXECD_LIB_DEPENDS = $(SCHEDLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(UTI2LIB) \
                     $(KRBLIBS)  $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) \
