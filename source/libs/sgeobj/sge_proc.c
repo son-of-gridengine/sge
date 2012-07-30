@@ -81,7 +81,9 @@ void append_pr (lListElem *pr)
 *******************************************************************************/
 void gen_procList()
 {
+#ifdef LINUX
    procList = lCreateListHash("procList", PRO_Type, true);
+#endif
 }
 
 /****** sge_proc/free_procList() ***********************************************
@@ -96,7 +98,9 @@ void gen_procList()
 *******************************************************************************/
 void free_procList()
 {
+#ifdef LINUX
    lFreeList(&procList);
+#endif
 }
 
 /****** sge_proc/clean_procList() **********************************************
@@ -112,7 +116,7 @@ void free_procList()
 *******************************************************************************/
 void clean_procList()
 {
-
+#ifdef LINUX
    lListElem *next = NULL;
    lListElem *ep = NULL;
    lCondition *cp = lWhere("%T(%I == %b)", PRO_Type, PRO_run, false); 
@@ -135,4 +139,5 @@ void clean_procList()
    for_each(next, procList) {
       lSetPosBool(next, pos, false);
    }
+#endif
 }

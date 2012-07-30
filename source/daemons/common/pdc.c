@@ -2238,9 +2238,7 @@ main(int argc, char **argv)
    
    psStartCollector();
 
-#if defined (LINUX)
    gen_procList();
-#endif
    if (argc < 2) {
       usage();
       exit(1);
@@ -2489,9 +2487,7 @@ main(int argc, char **argv)
 
       sleep(interval);
    }
-#if defined(LINUX)
    free_procList();
-#endif
    return 0;
 }
 

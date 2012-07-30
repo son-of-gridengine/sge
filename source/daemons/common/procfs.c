@@ -625,9 +625,7 @@ int pt_dispatch_proc_to_job(lnk_link_t *job_list, int time_stamp,
    sge_free(&list);
 
    if (!dent) {/* visited all files in procfs */
-#if defined(LINUX)
       clean_procList();
-#endif
       DEXIT;
       return 1;
    }
