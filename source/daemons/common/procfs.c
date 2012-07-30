@@ -675,9 +675,7 @@ time_t last_time
    sge_free(&list);
 
    if (!dent) {/* visited all files in procfs */
-#if defined(LINUX)
       clean_procList();
-#endif
       DEXIT;
       return 1;
    }
