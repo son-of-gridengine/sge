@@ -168,9 +168,7 @@ int main(int argc, char **argv)
 
    DENTER_MAIN(TOP_LAYER, "execd");
 
-#if defined(LINUX)
    gen_procList ();
-#endif
    init_topology();
    sge_maybe_set_dumpable();
    init_cgroups();
