@@ -745,6 +745,8 @@ int main(int argc, char **argv)
    }
 
    set_shepherd_signal_mask();
+
+   init_cgroups();
       
    config_errfunc = shepherd_error_ptr;
 
@@ -891,7 +893,6 @@ int main(int argc, char **argv)
     */ 
    do_core_binding();
 
-   /* Make a cpuset if appropriate */
    cpusetting();
 
    /*
@@ -3220,39 +3221,42 @@ cpusetting(void)
    u_long32 job = atoi(get_conf_val("job_id"));
    u_long32 task = MAX(1, atoi(get_conf_val("ja_task_id")));
    char *binding = (char *) sge_getenv("SGE_BINDING");
-   char path[SGE_PATH_MAX];
+   char path[SGE_PATH_MAX], child[64];
    pid_t pid = getpid();
 
-   if (!have_cgroup(cg_cpuset)) return;
-   if (!have_cgroup_task_dir(cg_cpuset, job, task)) {
-      shepherd_trace ("have cpusets but no cpuset directory");
-      return;
-   }
-   errno = 0;
-   if (!make_shepherd_cpuset(job, task, getpid())) {
-      shepherd_trace("failed to make shepherd cpuset: "SFN, strerror (errno));
-      return;
-   }
-   if (set_pid_shepherd_cgroup (cg_cpuset, pid, job, task)) {
-      snprintf (path, sizeof path, "%s/"sge_u32"."sge_u32"/"pid_t_fmt,
-                cpusetdir, job, task, pid);
-      shepherd_trace("put into cpuset "SFN, path);
-   } else {
-      shepherd_trace("failed to put into cpuset with euid"uid_t_fmt": "SFN,
-                     geteuid(), strerror(errno));
-      return;
-   }
-   if (binding) {
-      binding = strdup(binding);
-      /* We got a space-separated binding string which needs to be
-         comma-separated.  */
-      replace_char(binding, strlen(binding), ' ', ',');
+   if (have_cgroup(cg_cpuset)) {
+      if (!get_cgroup_job_dir(cg_cpuset, path, sizeof path, job, task)) {
+         shepherd_trace("no job task cpuset");
+         goto cpuset_end;
+      }
+      snprintf(child, sizeof child, pid_t_fmt, pid);
       errno = 0;
-      if (write_to_cgroup_proc_file (cg_cpuset, "cpus", binding, job, task, pid))
-         shepherd_trace("cpuset cpus set per core binding");
-      else
-         shepherd_trace("failed to set cpus in cpuset with euid "uid_t_fmt": "SFN,
-                        geteuid(), strerror(errno));
-      free (binding);
+      if (!make_sub_cgroup(cg_cpuset, path, child)) {
+         shepherd_trace("Can't make cpuset %s/%s: %s",
+                        path, child, strerror(errno));
+         goto cpuset_end;
+      }
+      if (binding) {
+         binding = strdup(binding);
+         /* We got a space-separated binding string which needs to be
+            comma-separated.  */
+         replace_char(binding, strlen(binding), ' ', ',');
+         errno = 0;
+         if (write_to_shepherd_cgroup (cg_cpuset, "cpus",
+                                       binding, job, task, pid))
+            shepherd_trace("set cpuset cpus per core binding");
+         else
+            shepherd_trace("failed to set cpuset with euid "uid_t_fmt": "SFN,
+                           geteuid(), strerror(errno));
+         free (binding);
+      }
+      /* maybe the shepherd shouldn't be in the group, and just the
+         child should be in it */
+      if (!set_shepherd_cgroup(cg_cpuset, job, task, pid)) {
+         shepherd_trace("Can't set shepherd cpuset: %s", strerror(errno));
+         goto cpuset_end;
+      }
    }
+ cpuset_end:
+   return;
 }

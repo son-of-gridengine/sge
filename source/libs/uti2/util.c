@@ -115,7 +115,7 @@ bool
 file_exists(const char *file)
 {
    SGE_STRUCT_STAT statbuf;
-   return (SGE_STAT(file, &statbuf) == 0);
+   return file && *file && (SGE_STAT(file, &statbuf) == 0);
 }
 
 /* Copy line-by-line (unbuffered writes) from file SRC to file DST,
