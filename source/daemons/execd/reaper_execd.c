@@ -924,8 +924,8 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
       }
 
       /* cgroup/cpuset.  */
-      if (have_cgroup_task_dir(cg_cpuset, job_id, ja_task_id))
-         remove_task_cpuset (job_id, ja_task_id); /* writes own warings */
+      if (have_cgroup_job_dir(cg_cpuset, job_id, ja_task_id))
+         remove_job_cpuset (job_id, ja_task_id); /* writes own warings */
 
       /* increment # of free slots. In case no slot is used any longer 
          we have to remove queues tmpdir for this job */
@@ -1087,8 +1087,8 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
          }
 
          /* cgroup/cpuset.  */
-         if (have_cgroup_task_dir(cg_cpuset, job_id, ja_task_id))
-            remove_task_cpuset (job_id, ja_task_id); /* writes own warings */
+         if (have_cgroup_job_dir(cg_cpuset, job_id, ja_task_id))
+            remove_job_cpuset (job_id, ja_task_id); /* writes own warings */
       }
       del_job_report(jr);
       cleanup_job_report(job_id, ja_task_id);

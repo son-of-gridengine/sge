@@ -39,7 +39,7 @@
    run on Linux with suitable support (checked by entries in
    /proc/self) and directories /dev/cpuset/sge and/or /cgroup/sge and
    (currently) if USE_CGROUPS=true is set in the execd_params.  Execd
-   maintains per-job task sub-directories with names in the usual
+   maintains per-job/task sub-directories with names in the usual
    $JOB_ID.$SGE_TASK_ID format.  Shepherd creates a directory of that
    named as its pid to be able to identify the child processes.  Thus
    the cpuset structure is
@@ -69,6 +69,8 @@
 
    On Red Hat 6 and Ubuntu 10.04 have extra:  cgroup.procs,
       release_agent, sched_load_balance mem_hardwall.
+
+   Things are rather different in Ubuntu 12.04...
 
    Todo: Extend the use of cpusets (for process tracking); clean up
    dead cpusets in execd as for active_jobs; investigate use of memory
@@ -102,101 +104,188 @@
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
 #include "uti/sge_uidgid.h"
+#include "uti/sge_unistd.h"
 #include "uti/sge_string.h"
 #include "sgeobj/sge_conf.h"
 #include "uti2/sge_cgroup.h"
 
 #define PID_BSIZE 24            /* enough to hold formatted 64-bit */
 
+#define build_path(buffer, dir, tail)                                   \
+   do {                                                                 \
+      buffer[0] = '\0';                                                 \
+      if (*(dir))                                                       \
+         snprintf((buffer), sizeof(buffer), "%s/%s", (dir), (tail));    \
+   } while(0)
+
+static bool initialized = false;
+/* do we have "cpus" or "cpuset.cpus"? */
+static bool cpuset_prefix = false;
+
+/* cgroup names consistent with the cgroup_t enum */
+static const char *group_name[cg_num] = {"cpuset",
+                                         /* "freezer", "cpuacct", "cpu",
+                                            "memory", "devices", "blkio" */
+};
+static char group_dir[cg_num][SGE_PATH_MAX];
+
+static bool copy_from_parent(char *dir, const char *cfile);
+static bool find_cgroup_dir(cgroup_t group, char *dir, size_t ldir);
+
+/* Look for existing cgroups and set up the group_dir array.
+   Not MT-safe:  call before thread setup.  */
+void
+init_cgroups(void) {
+   cgroup_t group;
+
+   DENTER(TOP_LAYER, "init_cgroups");
+   for (group = (cgroup_t)0; group < cg_num; group++) {
+      group_dir[group][0] = 0;
+      if (find_cgroup_dir(group, group_dir[group], SGE_PATH_MAX))
+         /* special treatment for cpuset */
+         if (cg_cpuset == group) {
+            char path[SGE_PATH_MAX], shortbuf[10];
+            size_t l = sizeof shortbuf;
+
+            build_path(path, group_dir[group], "cpuset.mems");
+            cpuset_prefix = file_exists(path);
+            if (!cpuset_prefix)
+               build_path(path, group_dir[group], "mems");
+            dev_file2string(path, shortbuf, &l);
+            if (l <= 1) {       /* get a newline when it's empty */
+               WARNING((SGE_EVENT, "Populating "SFN" in " SFN
+                        " so cpusets will work",
+                        cpuset_prefix ? "cpuset.mems" : "mems",
+                        group_dir[group]));
+               copy_from_parent (group_dir[group], "mems");
+            }
+            build_path(path, group_dir[group],
+                       cpuset_prefix ? "cpuset.cpus" : "cpus");
+            l = sizeof shortbuf;
+            dev_file2string(path, shortbuf, &l);
+            if (l <= 1) {
+               WARNING((SGE_EVENT, "Populating "SFN" in " SFN
+                        " so cpusets will work",
+                        cpuset_prefix ? "cpuset.mems" : "mems",
+                        group_dir[group]));
+               copy_from_parent (group_dir[group], "cpus");
+            }
+         }
+   }
+   initialized = true;
+   DRETURN_VOID;
+}
+
+char *
+cgroup_dir(cgroup_t group)
+{
+   if (!initialized) abort();
+   return group_dir[group];
+}
+
+const char *
+cgroup_name(cgroup_t group)
+{
+   if (!initialized) abort();
+   return group_name[group];
+}
+
 /* Can we use the controller GROUP, e.g. cpuset?  */
 bool
-have_cgroup (group_t group)
+have_cgroup (cgroup_t group)
 {
-   struct stat statbuf;
-
-   errno = 0;
 #if ! __linux__
-   errno = ENOSYS;
    return false;
 #endif
-   switch(group) {
-   case cg_cpuset:
-      if (stat("/proc/self/cpuset", &statbuf) != 0) {
-         errno = ENOSYS;
-         return false;
-      }
-      return file_exists(cpusetdir"/tasks");
-   case cg_cpuacct:
-   case cg_freezer:
-   case cg_memory:
-      if (stat("/proc/self/cgroup", &statbuf) != 0) {
-         errno = ENODEV;
-         return false;
-      }
-      if (!is_dir(cgroupdir)) {
-         errno = ENODEV;
-         return false;
-      }
-      /* fixme:  read cgroup to check for each when we're using them */
-      switch(group) {
-      case cg_cpuacct:
-      case cg_freezer:
-      case cg_memory:
-      default:
-         return false;
+   if (group >= cg_num) abort();
+   return *(cgroup_dir(group)) != '\0';
+}
+
+/* look for an "sge" directory under a mount point of the cgroup */
+static bool
+find_cgroup_dir(cgroup_t group, char *dir, size_t ldir)
+{
+   FILE *fp;
+   char path[2048], fstype[64], options[256];
+   bool ret = false, is_cpuset = (cg_cpuset == group);
+
+   *dir = '\0';
+   if ((fp = fopen("/proc/self/mounts", "r")) == NULL)
+      return ret;
+   while (fscanf(fp, "%*s %2047s %63s %255s %*d %*d\n", path, fstype, options)
+          == 3) {
+      if (is_cpuset && strcmp(fstype, "cpuset") == 0) {
+         ret = true;
+         break;
+      } else if ((strcmp(fstype, "cgroup") == 0)) {
+         char *s = options, *tok, *save = NULL;
+         bool rw = false, got_type = is_cpuset;
+         while ((tok = strtok_r(s, ",", &save))) {
+            if (strcmp(tok, "rw") == 0) rw = true;
+            if (strcmp(tok, group_name[group]) == 0) got_type = true;
+            if (rw && got_type) break;
+            s = NULL;
+         }
+         sge_strlcat(path, "/sge", sizeof path);
+         ret = rw && got_type && is_dir(path);
+         if (ret) break;
       }
    }
-   return true;
+   fclose(fp);
+   if (ret) sge_strlcpy(dir, path, ldir);
+   return ret;
 }
 
 /* Return the directory for the given controller GROUP of JOB and TASK
-   in buffer DIR or length LDIR (e.g. /dev/cpuset/sge/123.1).  DIR is
+   in buffer DIR of length LDIR (e.g. /dev/cpuset/sge/123.1).  DIR is
    zero-length on failure.  */
-static void
-get_cgroup_task_dir(group_t group, char *dir, size_t ldir, u_long32 job, u_long32 task)
+bool
+get_cgroup_job_dir(cgroup_t group, char *dir, size_t ldir, u_long32 job, u_long32 task)
 {
    const char *cdir;
 
-   DENTER(TOP_LAYER, "get_cgroup_task_dir");
-   if (cg_cpuset == group)
-      cdir = cpusetdir;
-   else
-      cdir = cgroupdir;
+   DENTER(TOP_LAYER, "get_cgroup_job_dir");
+   dir[0] = '\0';
+   cdir = cgroup_dir(group);
+   if (*cdir == '\0') DRETURN(false);
    if (snprintf(dir, ldir, "%s/%d.%d", cdir, job, task) >= ldir) {
-      WARNING((SGE_EVENT, "Can't build cgroup_task_dir value"));
-      DRETURN_VOID;
+      WARNING((SGE_EVENT, "Can't build cgroup_job_dir value"));
+      DRETURN(false);
    }
    if (!is_dir(dir)) {
       dir[0] = '\0';
-      DRETURN_VOID;
+      DRETURN(false);
    }
-   DRETURN_VOID;
+   DRETURN(true);
 }
 
 /* Does the controller directory for the job exist?  */
 bool
-have_cgroup_task_dir(group_t group, u_long32 job, u_long32 task)
+have_cgroup_job_dir(cgroup_t group, u_long32 job, u_long32 task)
 {
    char dir[SGE_PATH_MAX];
 
-   get_cgroup_task_dir(group, dir, sizeof dir, job, task);
-   return is_dir(dir);
+   if (!get_cgroup_job_dir(group, dir, sizeof dir, job, task))
+      return false;
+   return *dir && is_dir(dir);
 }
 
 /* Write string RECORD to the task's GROUP controller file CFILE with
-   MODE copy or append.  */
+   MODE copy or append.  For a cpuset, add "cpuset." prefix to CFLE if
+   necessary.  */
 bool
-write_to_cgroup_proc_file(group_t group, const char *cfile, const char *record, u_long32 job, u_long32 task, pid_t pid)
+write_to_shepherd_cgroup(cgroup_t group, const char *cfile, const char *record, u_long32 job, u_long32 task, pid_t pid)
 {
-   char path[SGE_PATH_MAX], *cdir;
+   char path[SGE_PATH_MAX], buf[64], *prefix = "";
 
-   if (cg_cpuset == group) cdir = cpusetdir;
-   else cdir = cgroupdir;
-   snprintf(path, sizeof path, "%s/"sge_u32"."sge_u32"/"pid_t_fmt"/%s",
-            cdir, job, task, pid, cfile);
-   if (sge_string2file(record, strlen(record), path) == 0)
-      return true;
-   return false;
+   if (!get_cgroup_job_dir(group, path, sizeof path, job, task))
+      return false;
+   if (cg_cpuset == group && cpuset_prefix
+       && strncmp("cpuset.", cfile, 7) != 0)
+      prefix = "cpuset.";
+   snprintf(buf, sizeof buf, "/"pid_t_fmt"/%s%s", pid, prefix, cfile);
+   sge_strlcat(path, buf, sizeof path);
+   return sge_string2file(record, strlen(record), path) == 0;
 }
 
 /* Put the process PID into controller directory DIR.  */
@@ -210,7 +299,7 @@ set_pid_cgroup(pid_t pid, char *dir)
    DENTER(TOP_LAYER, "set_pid_cgroup");
    if (!pid) pid = getpid();
    snprintf(spid, sizeof spid, pid_t_fmt, pid);
-   snprintf(path, sizeof path, "%s/tasks", dir);
+   build_path(path, dir, "tasks");
    sge_running_as_admin_user(&error, &is_admin);
    if (error) {
       CRITICAL((SGE_EVENT, "Can't get admin user"));
@@ -238,12 +327,12 @@ set_pid_cgroup(pid_t pid, char *dir)
 
 /* Put process PID into the task's controller GROUP.  */
 bool
-set_pid_shepherd_cgroup(group_t group, pid_t pid, u_long32 job, u_long32 task)
+set_shepherd_cgroup(cgroup_t group, u_long32 job, u_long32 task, pid_t pid)
 {
    char dir[SGE_PATH_MAX];
 
-   get_cgroup_task_dir(group, dir, sizeof dir, job, task);
-   if (dir[0] == '\0') return false;
+   if (!get_cgroup_job_dir(group, dir, sizeof dir, job, task))
+      return false;
    snprintf(dir+strlen(dir), sizeof(dir)-strlen(dir), "/"pid_t_fmt, pid);
    errno = 0;
    return set_pid_cgroup(pid, dir);
@@ -255,23 +344,28 @@ static bool
 copy_from_parent(char *dir, const char *cfile)
 {
    char parent_path[SGE_PATH_MAX], path[SGE_PATH_MAX], dirx[SGE_PATH_MAX];
+   char *prefix = "";
 
    /* For some reason we're not getting the glibc version of dirname
       that doesn't alter its arg.  */
    sge_strlcpy(dirx, dir, sizeof dirx);
-   snprintf(path, sizeof path, "%s/%s", dir, cfile);
-   snprintf(parent_path, sizeof parent_path, "%s/%s",
-            dirname(dirx), cfile);
+   if (strncmp(dir, cgroup_dir(cg_cpuset), strlen(cgroup_dir(cg_cpuset)))
+       && cpuset_prefix
+       && strncmp("cpuset.", cfile, 7) != 0)
+      prefix = "cpuset.";
+   snprintf(path, sizeof path, "%s/%s%s", dir, prefix, cfile);
+   snprintf(parent_path, sizeof parent_path, "%s/%s%s",
+            dirname(dirx), prefix, cfile);
    return sge_copy_append(parent_path, path, SGE_MODE_COPY) ? false : true;
 }
 
-static bool
-make_sub_cpuset(char *parent, char *child)
+bool
+make_sub_cgroup(cgroup_t group, char *parent, char *child)
 {
    char child_dir[SGE_PATH_MAX];
 
-   DENTER(TOP_LAYER, "make_sub_cpuset");
-   snprintf(child_dir, sizeof child_dir, "%s/%s", parent, child);
+   DENTER(TOP_LAYER, "make_sub_cgroup");
+   build_path(child_dir, parent, child);
    if (!is_dir(child_dir)) {
       errno = 0;
       if (mkdir(child_dir, 0755) != 0) {
@@ -281,51 +375,40 @@ make_sub_cpuset(char *parent, char *child)
       }
    }
    /* You need to populate the mems and cpus before you can use the
-      cpuset -- they're not inherited.  */
-   if (file_exists(cpusetdir"/cpuset.mems"))
-      DRETURN(copy_from_parent(child_dir, "cpuset.mems") &&
-              copy_from_parent(child_dir, "cpuset.cpus"));
-   DRETURN(copy_from_parent(child_dir, "mems") &&
-           copy_from_parent(child_dir, "cpus"));
+      cpuset -- they're not inherited.
+      Checkme: it looks as if clone_children can deal with this
+      (present in Ubuntu's Linux 3.2, at least).  */
+   if (cg_cpuset == group) {
+      DRETURN(copy_from_parent(child_dir, "mems") &&
+              copy_from_parent(child_dir, "cpus"));
+   }
+   DRETURN(true);
 }
 
-/* Make the controller directory for the given task.  */
-bool
-make_task_cpuset(u_long32 job, u_long32 task)
+/* Create cpuset/cgroups directories corresponding to the job task  */
+void
+make_job_cgroups(u_long32 job, u_long32 task)
 {
-   char child[64], path[SGE_PATH_MAX], shortbuf[10];
-   size_t l = sizeof shortbuf;
+   char child[64];
+   cgroup_t group;
 
-   DENTER(TOP_LAYER, "make_task_cpuset");
-   snprintf(path, sizeof path, "%s/mems", cpusetdir);
-   if (!file_exists(path))
-      snprintf(path, sizeof path, "%s/cpuset.mems", cpusetdir);
-   dev_file2string(path, shortbuf, &l);
-   if (l <= 1)                  /* we get a newline when it's empty */
-      ERROR((SGE_EVENT,
-             SFN" needs cpus and mems populated -- cpusets will fail",
-             cpusetdir));
-   snprintf(child, sizeof child, sge_u32"."sge_u32, job, task);
-   INFO((SGE_EVENT, "making task cpuset "SFN"/"SFN, cpusetdir, child));
-   if (!make_sub_cpuset(cpusetdir, child))
-      return false;
-   /* orphan processes end up in "0" in the job dir */
-   snprintf(path, sizeof path, "%s/%s", cpusetdir, child);
-   DRETURN(make_sub_cpuset(path, "0"));
-}
-
-/* Create a cpuset directory corresponding to the shepherd's pid in
-   the job cpuset.  */
-bool
-make_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
-{
-   char parent[SGE_PATH_MAX], child[64];
-
-   DENTER(TOP_LAYER, "make_shepherd_cpuset");
-   snprintf(parent, sizeof parent, "%s/"sge_u32"."sge_u32, cpusetdir,
-            job, task);
-   snprintf(child, sizeof child, pid_t_fmt, pid);
-   DRETURN(make_sub_cpuset(parent, child));
+   DENTER(TOP_LAYER, "make_job_cgroups");
+   for (group = 0; group < cg_num; group++)
+      if (have_cgroup(group)) {
+         snprintf(child, sizeof child, sge_u32"."sge_u32, job, task);
+         errno = 0;
+         if (!make_sub_cgroup(group, cgroup_dir(group), child))
+            WARNING((SGE_EVENT, "Can't make cgroup "SFN"/"SFN": "SFN,
+                     cgroup_dir(group), child, strerror(errno)));
+         if (cg_cpuset == group) {
+            char path[SGE_PATH_MAX];
+            build_path (path, cgroup_dir(group), child);
+            if (!make_sub_cgroup(cg_cpuset, path, "0"))
+              WARNING ((SGE_EVENT, "Can't make job "sge_u32"."sge_u32" cpuset 0",
+                        job, task));
+         }
+      }
+   DRETURN_VOID;
 }
 
 /* Put PROC (string version of pid) into the controller DIR */
@@ -337,7 +420,7 @@ reparent_proc(const char *proc, char *dir)
 
    if (!pid) return false;
    /* Don't fail if the process no longer exists.  */
-   snprintf(path, sizeof path, "/proc/%s", proc);
+   build_path(path, "/proc", proc);
    if (!is_dir(path)) return true;
    return set_pid_cgroup(pid, dir);
 }
@@ -353,11 +436,11 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
 
    DENTER(TOP_LAYER, "remove_shepherd_cpuset");
    snprintf(dir, sizeof dir, "%s/"sge_u32"."sge_u32"/"pid_t_fmt,
-            cpusetdir, job, task, pid);
-   snprintf(taskfile, sizeof taskfile, "%s/tasks", dir);
+            cgroup_dir(cg_cpuset), job, task, pid);
+   build_path(taskfile, dir, "tasks");
    /* We should have an empty task list.  If we can't remove it, kill
       anything there.  Arguably this should be repeated in case of a
-      race against things spawning.  */
+      race against things spawning if we don't have the freezer cgroup.  */
    errno = 0;
    if (rmdir(dir) == 0) DRETURN(true);
    /* EBUSY means it still has tasks.  */
@@ -384,7 +467,7 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
       if (l) INFO((SGE_EVENT, "rogue: "SFN2, replace_char(cmd, l, '\0', ' ')));
       /* Move the task away to avoid waiting for it to die.  */
       /* Fixme:  Keep the cpusetdir tasks open and just write to that.  */
-      reparent_proc(spid, cpusetdir);
+      reparent_proc(spid, cgroup_dir(cg_cpuset));
       pid = atoi(spid);
       if (pid) kill(pid, SIGKILL);
    }
@@ -398,20 +481,22 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
 /* Remove the job task cpuset directory after first removing shepherd
    sub-directories.  */
 bool
-remove_task_cpuset(u_long32 job, u_long32 task)
+remove_job_cpuset(u_long32 job, u_long32 task)
 {
-#if __linux__                   /* using non-portable dirent-isms */
+#if ! __linux__
+   return true;
+#else  /* using non-portable dirent-isms */
    char dirpath[SGE_PATH_MAX];
    DIR *dir;
    struct dirent *dent;
 
-   DENTER(TOP_LAYER, "remove_task_cpuset");
+   DENTER(TOP_LAYER, "remove_job_cpuset");
    snprintf(dirpath, sizeof dirpath, "%s/"sge_u32"."sge_u32,
-            cpusetdir, job, task);
+            cgroup_dir(cg_cpuset), job, task);
    INFO((SGE_EVENT, "removing task cpuset "SFN, dirpath));
    if (!is_dir(dirpath)) return true;
    errno = 0;
-   /* Maybe this shoud be made reentrant, though there's existing code
+   /* Maybe this should be made reentrant, though there's existing code
       which does the same sort of thing in the same context.  */
    if ((dir = opendir(dirpath)) == NULL) {
       ERROR((SGE_EVENT, MSG_FILE_CANTOPENDIRECTORYX_SS, dirpath,
@@ -428,9 +513,7 @@ remove_task_cpuset(u_long32 job, u_long32 task)
       DRETURN(false);
    }
    DRETURN(true);
-#else
-   return true;
-#endif  /* __linux__ */
+#endif  /* !__linux__ */
 }
 
 /* Move the shepherd tasks to the job cpuset 0 and remove the shepherd
@@ -442,11 +525,11 @@ empty_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
    bool ret;
 
    snprintf(dir, sizeof dir, "%s/"sge_u32"."sge_u32"/"pid_t_fmt,
-            cpusetdir, job, task, pid);
+            cgroup_dir(cg_cpuset), job, task, pid);
    if (!is_dir(dir)) return true;
-   snprintf(taskfile, sizeof taskfile, "%s/tasks", dir);
+   build_path(taskfile, dir, "tasks");
    snprintf(taskfile0, sizeof taskfile0, "%s/"sge_u32"."sge_u32"/0/tasks",
-            cpusetdir, job, task);
+            cgroup_dir(cg_cpuset), job, task);
    errno = 0;
    sge_seteuid(SGE_SUPERUSER_UID);
    /* This could fail at least if a task is respawning.
@@ -454,7 +537,7 @@ empty_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
    ret = copy_linewise(taskfile, taskfile0);
    if (sge_switch2admin_user() != 0)
       abort();
-   if (ret != 0) return false;
+   if (!ret) return false;
    /* If rmdir fails, execd will try to kill it. */
    return rmdir(dir) ? false : true;
 }
