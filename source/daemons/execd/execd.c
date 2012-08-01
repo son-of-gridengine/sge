@@ -41,6 +41,7 @@
 #include "uti/sge_log.h"
 #include "uti/sge_time.h"
 #include "uti/sge_binding_hlp.h"
+#include "uti2/sge_cgroup.h"
 
 #include "gdi/sge_gdi.h"
 #include "gdi/sge_gdi2.h"
@@ -172,6 +173,7 @@ int main(int argc, char **argv)
 #endif
    init_topology();
    sge_maybe_set_dumpable();
+   init_cgroups();
    prof_mt_init();
 
    set_thread_name(pthread_self(),"Execd Thread");

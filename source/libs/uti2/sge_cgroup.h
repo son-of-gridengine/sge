@@ -6,22 +6,28 @@
 
 typedef enum {
   /* "cpuset", for instance, clashes with other uses */
-  cg_cpuset,
+  cg_cpuset = 0,
+  /*  cg_freezer,
   cg_cpuacct,
-  cg_freezer,
-  cg_memory
-} group_t;
+  cg_cpu,
+  cg_memory,
+  cg_devices,
+  cg_blkio, */
+  cg_num                        /* end marker */
+} cgroup_t;
 
-#define cpusetdir "/dev/cpuset/sge"
-#define cgroupdir "/cgroups/sge"
-
-bool have_cgroup (group_t group);
-bool make_task_cpuset (u_long32 job, u_long32 task);
-bool remove_task_cpuset (u_long32 job, u_long32 task);
+void init_cgroups(void);
+char *cgroup_dir(cgroup_t group);
+const char *cgroup_name(cgroup_t group);
+bool have_cgroup (cgroup_t group);
+void make_job_cgroups (u_long32 job, u_long32 task);
+void make_shepherd_cgroups (u_long32 job, u_long32 task, pid_t pid);
+bool remove_job_cpuset (u_long32 job, u_long32 task);
 bool remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid);
-bool have_cgroup_task_dir(group_t group, u_long32 job, u_long32 task);
-bool write_to_cgroup_proc_file (group_t group, const char *cfile, const char *record, u_long32 job, u_long32 task, pid_t pid);
-bool set_pid_shepherd_cgroup (group_t group, pid_t pid, u_long32 job, u_long32 task);
-bool make_shepherd_cpuset (u_long32 job, u_long32 task, pid_t pid);
-bool empty_shepherd_cpuset (u_long32 job, u_long32 task, pid_t pid);
+bool have_cgroup_job_dir(cgroup_t group, u_long32 job, u_long32 task);
+bool write_to_shepherd_cgroup(cgroup_t group, const char *cfile, const char *record, u_long32 job, u_long32 task, pid_t pid);
+bool set_shepherd_cgroup(cgroup_t group, u_long32 job, u_long32 task, pid_t pid);
+bool empty_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid);
+bool get_cgroup_job_dir(cgroup_t group, char *dir, size_t ldir, u_long32 job, u_long32 task);
+bool make_sub_cgroup(cgroup_t group, char *parent, char *child);
 #endif  /* __SGE_CGROUP_H */
