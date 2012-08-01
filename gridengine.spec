@@ -1,4 +1,4 @@
-# This spec flie is intended to build gridengine rpms on RedHat or
+# This spec file is intended to build gridengine rpms on RedHat or
 # Fedora, but has only been tested under RHEL 5.  It installs into
 # /opt/sge, intended to support shared installations like the original
 # Sun distribution.  It doesn't deal with the configuration of the
@@ -16,6 +16,7 @@
 #   Fedora one.
 # * Patch or hook for installation scripts to default appropriately for
 #   packaged installation.
+# * Build GSS modules?
 
 # Use "rpmbuild --without java" to omit all Java bits
 %bcond_without java
@@ -53,6 +54,8 @@ Source2: swing-layout-1.0.3.tar.gz
 Prefix: %{sge_home}
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+# opensuse needs at least: libdb-4_8-devel, libopenssl-devel, java-1_6_0-openjdk, libelf-devel
 
 BuildRequires: gcc, make, binutils
 BuildRequires: /bin/csh, openssl-devel, db4-devel, ncurses-devel, pam-devel
@@ -266,7 +269,11 @@ fi
 # Ensure we can make sgeadmin-owned cell directory
 %attr(775,root,%{username}) %{sge_home}
 %exclude %{sge_bin}/*/qmon
-%exclude %{sge_bin}/*/sge_*
+%exclude %{sge_bin}/*/sge_coshepherd
+%exclude %{sge_bin}/*/sge_execd
+%exclude %{sge_bin}/*/sge_qmaster
+%exclude %{sge_bin}/*/sge_shadowd
+%exclude %{sge_bin}/*/sge_shepherd
 %if %{with java}
 %exclude %{sge_docdir}/javadocs
 %endif
@@ -358,6 +365,7 @@ fi
 %changelog
 * Wed Jul 25 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.2-1
 - Make inst_template.conf a config file (from Florian La Roche)
+- Don't exclude sge_share_mon
 
 * Mon Jul  2 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.1-1
 - Build-require gcc etc. and not ant-nodeps.
