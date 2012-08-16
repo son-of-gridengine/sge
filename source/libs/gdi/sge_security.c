@@ -1467,7 +1467,7 @@ static bool sge_decrypt(char *intext, int inlen, char *outbuf, int* outsize)
    }   
    decbuf[declen] = '\0';
 
-   sge_strlcpy(outbuf, (char*)decbuf, declen);
+   sge_strlcpy(outbuf, (char*)decbuf, 2*SGE_SEC_BUFSIZE);
 
 /*    DPRINTF(("======== outbuf:\n"SFN"\n=========\n", outbuf)); */
 
