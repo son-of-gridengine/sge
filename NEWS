@@ -13,6 +13,30 @@ changes due to Univa/Sun are tagged as "[U]", or "[(U)]" if partially
 due to them or appearing first in this version.
 
 
+Version 8.1.2
+-------------
+
+* Bug fixes
+
+  * Man and other documentation fixes
+  * Fix possible failure building qtcsh
+  * Remove spurious runtime dependencies on hwloc
+  * Include sge_share_mon in RPM
+  * Deal gracefully with requesting fewer PE slots than defined for a PE
+  * Fix regression from string-handling changes (e.g. failure with Unix
+    groups in ACLs)
+
+* Enhancements
+
+  * Use cpusets for process containment on fairly recent Linux-based systems
+    (see USE_CGROUPS in sge_conf(5))
+  * Add bootstrap build script
+  * Make SGE template an RPM conf file [#1383, #1430]
+
+* Incompatible changes
+
+  * Make CRL and certificate expiry consistent [#1423]
+
 Version 8.1.1
 -------------
 
