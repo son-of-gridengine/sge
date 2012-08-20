@@ -82,7 +82,7 @@ if ( $MANMODE == "ge" || $MANMODE == "sge") then
    set xxQS_NAMExx = "Grid Engine" 
    set xxQS_NAME_Sxx = "SGE"
    set xxqs_name_sxx = "sge"
-   set xxRELxx = "SGE 8.1.2pre"
+   set xxRELxx = "SGE 8.1.2"
 else
    echo error wrong MANMODE=$MANMODE. Exit
    exit 1
