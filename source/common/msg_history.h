@@ -58,10 +58,11 @@
 #define MSG_HISTORY_PE              "PE"
 #define MSG_HISTORY_SLOTS           "SLOTS"
 #define MSG_HISTORY_AR              "AR"
+#define MSG_HISTORY_ACCOUNT         "ACCOUNT"
 #define MSG_HISTORY_TOTSYSTEMUSAGE  _MESSAGE(25089, _("Total System Usage"))
 #define MSG_HISTORY_USAGE           _MESSAGE(25090, _("usage:"    ))
-#define MSG_HISTORY_A_OPT_USAGE     _MESSAGE(25091, _("jobs accounted to the given account"      ))
-#define MSG_HISTORY_help_OPT_USAGE  _MESSAGE(25092, _("display this message"  ))
+#define MSG_HISTORY_A_OPT_USAGE     _MESSAGE(25091, _("list [matching] account"))
+#define MSG_HISTORY_help_OPT_USAGE  _MESSAGE(25092, _("display this message"))
 #define MSG_HISTORY_h_OPT_USAGE     _MESSAGE(25093, _("list [matching] host"))
 #define MSG_HISTORY_q_OPT_USAGE     _MESSAGE(25094, _("list [matching] queue"))
 #define MSG_HISTORY_g_OPT_USAGE     _MESSAGE(25095, _("list [matching] group"))
