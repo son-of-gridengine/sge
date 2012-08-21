@@ -125,5 +125,6 @@
 #define MSG_HISTORY_SHOWJOB_IOW               "iow"
 #define MSG_HISTORY_SHOWJOB_MAXVMEM           "maxvmem"
 #define MSG_HISTORY_SHOWJOB_ARID              "arid"
+#define MSG_HISTORY_SHOWJOB_CATEGORY          "category"
 
 #endif /* __MSG_HISTORY_H   */
