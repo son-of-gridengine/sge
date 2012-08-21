@@ -133,12 +133,12 @@ static void qacct_usage(sge_gdi_ctx_class_t **ctx, FILE *fp);
 static void print_full(int length, const char* string);
 static void print_full_ulong(int length, u_long32 value); 
 static void calc_column_sizes(lListElem* ep, sge_qacct_columns* column_size_data );
-static void showjob(sge_rusage_type *dusage);
+static void showjob(sge_rusage_type *dusage, char **category);
 static bool get_qacct_lists(sge_gdi_ctx_class_t *ctx, lList **alpp,
                             lList **ppcomplex, lList **ppqeues, lList **ppexechosts,
                             lList **hgrp_l);
 static void free_qacct_lists(lList **ppcomplex, lList **ppqeues, lList **ppexechosts, lList **hgrp_l);
-static int sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *szLine, size_t size);
+static int sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *szLine, size_t size, char **category);
 
 /*
 ** statics
@@ -195,6 +195,7 @@ int main(int argc, char **argv)
 
    char szLine[MAX_STRING_SIZE * 10];
    size_t szLine_size = sizeof(szLine);
+   char *category;
 
    DENTER_MAIN(TOP_LAYER, "qacct");
 
@@ -725,7 +726,7 @@ int main(int argc, char **argv)
       int i_ret;
       line++;
 
-      i_ret = sge_read_rusage(fp, &dusage, &options, szLine, szLine_size);
+      i_ret = sge_read_rusage(fp, &dusage, &options, szLine, szLine_size, &category);
       if (i_ret == -2) {
          /* ignore, the line just doesn't match the command options */
          continue;
@@ -770,7 +771,7 @@ int main(int argc, char **argv)
       } /* endif complexflag */
 
       if (options.jobflag || options.job_number || options.job_name != NULL) {
-         showjob(&dusage);
+         showjob(&dusage, &category);
       }
 
       totals.ru_wallclock += dusage.ru_wallclock;
@@ -1405,9 +1406,7 @@ print_double_to_string(double secs, dstring *string, char *fmt)
 ** DESCRIPTION
 **   detailed display of job accounting data
 */
-static void showjob(
-sge_rusage_type *dusage 
-) {
+static void showjob(sge_rusage_type *dusage, char **category) {
    dstring string = DSTRING_INIT;
 
    printf("==============================================================\n");
@@ -1485,6 +1484,7 @@ sge_rusage_type *dusage
    } else {
       printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_ARID, "undefined");
    }
+   printf("%-13.12s%s\n", MSG_HISTORY_SHOWJOB_CATEGORY, *category);
    sge_dstring_free(&string);
 }
 
@@ -1640,7 +1640,7 @@ static void free_qacct_lists(lList **ppcentries, lList **ppqueues, lList **ppexe
 }
 
 static int 
-sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *szLine, size_t size) 
+sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *szLine, size_t size, char **category)
 {
    char  *pc;
    int len;
@@ -2074,7 +2074,11 @@ sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *s
    d->io = ((pc=strtok(NULL, ":")))?atof(pc):0;
 
    /* skip job category */
+   /* Presumably we could still have a colon in at least a
+      string-valued resource request (as below, but the category
+      doesn't currently end in a space).  */
    pc=strtok(NULL, ":");
+   *category = pc;
 #if 0   
    while ((pc=strtok(NULL, ":")) &&
           strlen(pc) &&
@@ -2104,4 +2108,3 @@ sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *s
 
    DRETURN(0);
 }
-
