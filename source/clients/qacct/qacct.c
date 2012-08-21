@@ -91,6 +91,7 @@ typedef struct {
    int granted_pe;
    int slots;
    int arid;
+   int account;
 } sge_qacct_columns;
 
 typedef struct {
@@ -218,6 +219,7 @@ int main(int argc, char **argv)
    column_sizes.project    = strlen(MSG_HISTORY_PROJECT)+1;
    column_sizes.department = strlen(MSG_HISTORY_DEPARTMENT)+1;  
    column_sizes.granted_pe = strlen(MSG_HISTORY_PE)+1;
+   column_sizes.account    = strlen(MSG_HISTORY_ACCOUNT)+1;
    column_sizes.slots      = 5;
    column_sizes.arid       = 5;
 
@@ -503,12 +505,15 @@ int main(int argc, char **argv)
       /*
       ** -A account
       */
-      else if (!strcmp("-A",argv[ii])) {
+      else if (!strcmp("-A", argv[ii])) {
          if (argv[ii+1]) {
-            options.account = argv[++ii];
-            options.accountflag = 1;
+            if (*(argv[ii+1]) == '-') {
+               options.accountflag = 1;
+            } else {
+               options.account = argv[++ii];
+            }
          } else {
-            qacct_usage(&ctx, stderr);
+            options.accountflag = 1;
          }
       } else if (!strcmp("-help",argv[ii])) {
          qacct_usage(&ctx, stdout);
@@ -682,8 +687,10 @@ int main(int argc, char **argv)
    totals.io = 0;
    totals.iow = 0;
 
-   if (options.hostflag || options.queueflag || options.groupflag || options.ownerflag || options.projectflag ||
-       options.departmentflag || options.granted_peflag || options.slotsflag || options.arflag) {
+   if (options.hostflag || options.queueflag || options.groupflag
+       || options.ownerflag || options.projectflag || options.departmentflag
+       || options.granted_peflag || options.slotsflag || options.arflag
+       || options.accountflag) {
       sorted_list = lCreateList("sorted_list", QAJ_Type);
       sort_order = lParseSortOrderVarArg(QAJ_Type, "%I+ %I+ %I+ %I+ %I+ %I+ %I+ %I+ %I+",
                                          QAJ_host,
@@ -786,7 +793,8 @@ int main(int argc, char **argv)
                 (options.hostflag && (sge_hostcmp(lGetHost(ep, QAJ_host), dusage.hostname))) || 
                 (options.queueflag && (sge_strnullcmp(lGetString(ep, QAJ_queue), dusage.qname))) ||
                 (options.groupflag && (sge_strnullcmp(lGetString(ep, QAJ_group) , dusage.group))) ||
-                (options.arflag && (lGetUlong(ep, QAJ_arid) != dusage.ar))
+                (options.arflag && (lGetUlong(ep, QAJ_arid) != dusage.ar)) ||
+                (options.accountflag && (sge_strnullcmp(lGetString(ep, QAJ_account), dusage.account)))
                 )){
              ep = lNext(ep);
          }
@@ -838,6 +846,8 @@ int main(int argc, char **argv)
                lSetUlong(new_ep, QAJ_slots, dusage.slots);
             if (options.arflag)
                lSetUlong(new_ep, QAJ_arid, dusage.ar);
+            if (options.accountflag && dusage.account)
+               lSetString(new_ep, QAJ_account, dusage.account);
 
             lSetDouble(new_ep, QAJ_ru_wallclock, dusage.ru_wallclock);
             lSetDouble(new_ep, QAJ_ru_utime, dusage.ru_utime);
@@ -921,6 +931,9 @@ int main(int argc, char **argv)
    if (options.granted_pe != NULL) {
       column_sizes.granted_pe = strlen(options.granted_pe) + 1;
    }
+   if (options.account != NULL) {
+      column_sizes.account = strlen(options.account) + 1;
+   }
  
    calc_column_sizes(lFirst(sorted_list), &column_sizes);
    {
@@ -963,6 +976,10 @@ int main(int argc, char **argv)
       if (options.ar_number > 0 || options.arflag) {
          print_full(column_sizes.slots, MSG_HISTORY_AR);
          dashcnt += column_sizes.slots;
+      }
+      if (options.account != NULL || options.accountflag) {
+         print_full(column_sizes.account, MSG_HISTORY_ACCOUNT);
+         dashcnt += column_sizes.account;
       }
          
       if (!dashcnt) {
@@ -1072,6 +1089,15 @@ int main(int argc, char **argv)
             }
             print_full_ulong(column_sizes.arid, lGetUlong(ep, QAJ_arid));
          }         
+
+         if (options.account != NULL) {
+            print_full(column_sizes.account, options.account);
+         } else if (options.accountflag) {
+            if (ep == NULL) {
+               break;
+            }
+            print_full(column_sizes.account, ((cp = lGetString(ep, QAJ_account)) ? cp : ""));
+         }
          
          if (summary_view) {
              printf("%13.0f %13.3f %13.3f %13.3f %18.3f %18.3f %18.3f\n",
@@ -1197,6 +1223,9 @@ static void calc_column_sizes(lListElem* ep, sge_qacct_columns* column_size_data
    if (column_size_data->arid < 5) {
       column_size_data->arid = 5;
    } 
+   if (column_size_data->account < strlen(MSG_HISTORY_ACCOUNT)+1) {
+      column_size_data->account = strlen(MSG_HISTORY_ACCOUNT)+1;
+   }
 
    if (ep != NULL) {
       char tmp_buf[100];
@@ -1313,7 +1342,7 @@ static void qacct_usage(sge_gdi_ctx_class_t **ctx, FILE *fp)
          
    fprintf(fp, "%s qacct [options]\n", MSG_HISTORY_USAGE);
    fprintf(fp, " [-ar [ar_id]]                     %s\n", MSG_HISTORY_ar_OPT_USAGE); 
-   fprintf(fp, " [-A account_string]               %s\n", MSG_HISTORY_A_OPT_USAGE); 
+   fprintf(fp, " [-A [account_string]]             %s\n", MSG_HISTORY_A_OPT_USAGE);
    fprintf(fp, " [-b begin_time]                   %s\n", MSG_HISTORY_b_OPT_USAGE);
    fprintf(fp, " [-d days]                         %s\n", MSG_HISTORY_d_OPT_USAGE ); 
    fprintf(fp, " [-D [department]]                 %s\n", MSG_HISTORY_D_OPT_USAGE);
@@ -1717,7 +1746,7 @@ sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *s
       DRETURN(-1);
    }
    d->account = pc;
-   if (options->accountflag && sge_strnullcmp(options->account, d->account)) {
+   if (options->account && sge_strnullcmp(options->account, d->account)) {
       DRETURN(-2);
    }
 
