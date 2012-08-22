@@ -120,6 +120,7 @@ typedef struct {
    int granted_peflag;
    int slotsflag;
    int arflag;
+   int endflag;
    u_long32 taskstart;
    u_long32 taskend;
    u_long32 taskstep;
@@ -515,7 +516,13 @@ int main(int argc, char **argv)
          } else {
             options.accountflag = 1;
          }
-      } else if (!strcmp("-help",argv[ii])) {
+      }
+      /*
+      ** -E
+      */
+      else if (!strcmp("-E",argv[ii]))
+         options.endflag = 1;
+      else if (!strcmp("-help",argv[ii])) {
          qacct_usage(&ctx, stdout);
       } else {
          qacct_usage(&ctx, stderr);
@@ -537,7 +544,7 @@ int main(int argc, char **argv)
    {
       SGE_STRUCT_STAT buf;
  
-      if (SGE_STAT(acct_file, &buf)) {
+      if (strcmp(acct_file, "-") && SGE_STAT(acct_file, &buf)) {
          perror(acct_file); 
          printf("%s\n", MSG_HISTORY_NOJOBSRUNNINGSINCESTARTUP);
          goto QACCT_EXIT;
@@ -1358,6 +1365,7 @@ static void qacct_usage(sge_gdi_ctx_class_t **ctx, FILE *fp)
    fprintf(fp, " [-q [queue]]                      %s\n", MSG_HISTORY_q_OPT_USAGE );
    fprintf(fp, " [-slots [slots]]                  %s\n", MSG_HISTORY_slots_OPT_USAGE);
    fprintf(fp, " [-t taskid[-taskid[:step]]]       %s\n", MSG_HISTORY_t_OPT_USAGE );
+   fprintf(fp, " [-E]                              %s\n", MSG_HISTORY_E_OPT_USAGE );
    fprintf(fp, " [[-f] acctfile]                   %s\n", MSG_HISTORY_f_OPT_USAGE );
    
    fprintf(fp, "\n");
@@ -1783,12 +1791,6 @@ sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *s
       DPRINTF(("skipping job that never ran\n"));
       DRETURN(-2);
    }
-   if ((options->begin_time != -1) && ((time_t) d->start_time < options->begin_time)) { 
-      DRETURN(-2);
-   }
-   if ((options->end_time != -1) && ((time_t) d->start_time > options->end_time)) {
-      DRETURN(-2);
-   }
 
    /*
     * end_time
@@ -1798,6 +1800,27 @@ sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *s
       DRETURN(-1);
    }
    d->end_time = atol(pc);
+
+   if (options->endflag) {
+      if ((options->begin_time != -1)
+          && ((time_t) d->end_time < options->begin_time)) {
+         DRETURN(-2);
+      }
+      if ((options->end_time != -1) &&
+          ((time_t) d->end_time > options->end_time)) {
+         DRETURN(-2);
+      }
+   }
+   else {
+      if ((options->begin_time != -1)
+          && ((time_t) d->start_time < options->begin_time)) {
+         DRETURN(-2);
+      }
+      if ((options->end_time != -1)
+          && ((time_t) d->start_time > options->end_time)) {
+         DRETURN(-2);
+      }
+   }
 
    /*
     * failed

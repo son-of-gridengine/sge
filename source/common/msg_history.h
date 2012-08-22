@@ -80,6 +80,7 @@
 #define MSG_HISTORY_ar_OPT_USAGE    _MESSAGE(25107, _("list [matching] advance reservations"))
 #define MSG_HISTORY_f_OPT_USAGE           _MESSAGE(25109, _("use alternate accounting file"))
 #define MSG_HISTORY_beginend_OPT_USAGE    _MESSAGE(25110, _("[[CC]YYMMDDhhmm[.SS]"))
+#define MSG_HISTORY_E_OPT_USAGE     _MESSAGE(25111, _("select job end time, not start"))
 #define MSG_HISTORY_SHOWJOB_QNAME             "qname"
 #define MSG_HISTORY_SHOWJOB_HOSTNAME          "hostname"
 #define MSG_HISTORY_SHOWJOB_GROUP             "group"

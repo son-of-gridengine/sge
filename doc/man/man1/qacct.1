@@ -68,6 +68,7 @@ qacct \- report and account for xxQS_NAMExx usage
 .RI [ Department ]]
 .RB [ \-f
 .IR AcctFileName ]
+.RB [ \-E ]
 .\"
 .\"
 .SH DESCRIPTION
@@ -98,20 +99,40 @@ The account for jobs to be summarized.
 .\"
 .IP "\fB\-b\fP \fIBeginTime\fP"
 The earliest start time for jobs to be summarized, in the format
-[[CC]YY]MMDDhhmm[.SS]. See also the \fB\-d\fP option. If CC is not
-specified, a YY of < 70 means 20YY.
+.RI [[ CC ] YY ] MMDDhhmm [. SS ].
+See also the \fB\-d\fP option. If
+.I CC
+is not specified, a
+.I YY
+of <70 means
+.RI 20 YY .
+If the
+.B \-E
+option is specified, this specifies the earliest job end time instead.
 .\"
 .IP "\fB\-d\fP \fIDays\fP"
 The number of days for which to summarize and print accounting information. If
 used together with the \fB\-b \fIBeginTime\fR option (see above), jobs
-started within \fIBeginTime\fP to \fIBeginTime\fP+\fIDays\fP are
+started (or, with the
+.B \-E
+option, finished) within \fIBeginTime\fP to \fIBeginTime\fP+\fIDays\fP are
 counted. If used together with \fB\-e\fP \fIEndTime\fP (see below)
-option, count starts at \fIEndTime\fP\-\fIDays\fP.
+option, selection is from \fIEndTime\fP\-\fIDays\fP.  With neither,
+consider the last
+.IR Days .
 .\"
 .IP "\fB\-e\fP \fIEndTime\fP"
 The latest start time for jobs to be summarized, in the format
-[[CC]YY]MMDDhhmm[.SS]. See also \fB\-d\fP option. If CC is not
-specified, a YY of < 70 means 20YY.
+.RI [[ CC ] YY ] MMDDhhmm [. SS ].
+See also the \fB\-d\fP option. If
+.I CC
+is not specified, a
+.I YY
+of <70 means
+.RI 20 YY .
+If the
+.B \-E
+option is specified, this specifies the latest job end time instead.
 .\"
 .IP "[\fB\-f\fP \fIAcctFileName\fP]"
 The accounting file to be used. If omitted, the system
@@ -193,6 +214,13 @@ The name of the department for which usage is summarized.
 If \fIDepartment\fP is not given, accounting data are
 listed for each relevant department separately.
 .\"
+.IP \fB\-E\fP
+When selecting times with
+.BR \-b ,
+.BR \-e ,
+.BR -d ,
+use the job end time rather than the start time to select.  This may
+be useful because the accounting record is written at the job end.
 .\"
 .SH "ENVIRONMENT VARIABLES"
 .\" 
