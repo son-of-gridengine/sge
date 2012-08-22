@@ -231,7 +231,7 @@ int main(int argc, char **argv)
       /*
       ** owner
       */
-      if (!strcmp("-o", argv[ii])) {
+      if (!strcmp("-o", argv[ii]) || !strcmp("-u", argv[ii])) {
          if (argv[ii+1]) {
             if (*(argv[ii+1]) == '-') {
                options.ownerflag = 1;
@@ -1363,6 +1363,7 @@ static void qacct_usage(sge_gdi_ctx_class_t **ctx, FILE *fp)
    fprintf(fp, " [-j [job_id|job_name|pattern]]    %s\n", MSG_HISTORY_j_OPT_USAGE);
    fprintf(fp, " [-l attr=val,...]                 %s\n", MSG_HISTORY_l_OPT_USAGE );
    fprintf(fp, " [-o [owner]]                      %s\n", MSG_HISTORY_o_OPT_USAGE);
+   fprintf(fp, " [-u [owner]]                      %s\n", MSG_HISTORY_o_OPT_USAGE);
    fprintf(fp, " [-pe [pe_name]]                   %s\n", MSG_HISTORY_pe_OPT_USAGE );
    fprintf(fp, " [-P [project]]                    %s\n", MSG_HISTORY_P_OPT_USAGE );
    fprintf(fp, " [-q [queue]]                      %s\n", MSG_HISTORY_q_OPT_USAGE );
