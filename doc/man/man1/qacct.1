@@ -54,6 +54,8 @@ qacct \- report and account for xxQS_NAMExx usage
 .IR attr = val ,...]
 .RB [ \-o
 .RI [ Owner ]]
+.RB [ \-u
+.RI [ Owner ]]
 .RB [ \-pe
 .RI [ PEname ]]
 .RB [ \-q
@@ -173,11 +175,15 @@ in which the jobs being accounted were executing. The resource request
 is very similar to the one described in
 .M qsub 1 .
 .\"
-.IP "\fB\-o\fP [\fIOwner\fP]"
+.IP "\fB\-o\fP [\fIOwner\fP] | \fB\-u\fP [\fIOwner\fP]"
 The name of the owner of the jobs for which accounting statistics
 are assembled. If the optional \fIOwner\fP argument is omitted,
 a listing of the accounting statistics of all job owners
 present in the accounting file is produced.
+.B \-u
+and
+.B \-o
+are synonyms.
 .\"
 .IP "\fB\-pe\fP [\fIPEname\fP]"
 The name of the parallel environment for which usage is summarized.
