@@ -679,7 +679,10 @@ int main(int argc, char **argv)
       lWriteListTo(hgrp_list, stdout);
    }
 
-   fp = fopen(acct_file, "r");
+   if (strcmp(acct_file, "-") != 0)
+      fp = fopen(acct_file, "r");
+   else
+      fp = stdin;
    if (fp == NULL) {
       ERROR((SGE_EVENT, MSG_HISTORY_ERRORUNABLETOOPENX_S ,acct_file));
       printf("%s\n", MSG_HISTORY_NOJOBSRUNNINGSINCESTARTUP);
