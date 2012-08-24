@@ -67,7 +67,13 @@ lListElem* xml_getHead(const char *name, lList *list, lList *attributes) {
       lSetString(xml_head, XMLH_Name, name);
       lSetList(xml_head, XMLH_Attribute, attributes);
       lSetList(xml_head, XMLH_Element, list);
-      xml_addAttribute(xml_head, "xmlns:xsd", "http://arc.liv.ac.uk/repos/darcs/sge/source/dist/util/resources/schemas/qstat/qstat.xsd");
+      if (strcmp(name, "detailed_job_info") == 0)
+         xml_addAttribute(xml_head, "xmlns:xsd", "http://arc.liv.ac.uk/repos/darcs/sge/source/dist/util/resources/schemas/qstat/detailed_job_info.xsd");
+      else if (strcmp(name, "job_info") == 0)
+         xml_addAttribute(xml_head, "xmlns:xsd", "http://arc.liv.ac.uk/repos/darcs/sge/source/dist/util/resources/schemas/qstat/qstat.xsd");
+      else if (strcmp(name, "message") == 0)
+         xml_addAttribute(xml_head, "xmlns:xsd", "http://arc.liv.ac.uk/repos/darcs/sge/source/dist/util/resources/schemas/qstat/message.xsd");
+      /* fixme:  also called with "comunication_error" and "unknown_jobs"  */
 
 /* we do not support stylesheets yet */
 /*    xml_addStylesheet(xml_head, "xmlns:xsl", "http://www.w3.org/1999/XSL/Transform", "1.0");*/
