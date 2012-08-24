@@ -540,6 +540,13 @@ void cull_show_job(lListElem *job, int flags, bool show_binding)
          printf("job-array tasks:            "sge_u32"-"sge_u32":"sge_u32"\n", start, end, step);
    }
 
+   if (lGetPosViaElem(job, JB_ja_task_concurrency, SGE_NO_ABORT)>=0) {
+      if (lGetUlong(job, JB_ja_task_concurrency)) {
+         printf("maximum concurrency:        %d\n",
+                (int) lGetUlong(job, JB_ja_task_concurrency));
+      }
+   }
+
    if (lGetPosViaElem(job, JB_context, SGE_NO_ABORT)>=0)
       if (lGetList(job, JB_context)) {
          int fields[] = {VA_variable, VA_value, 0 };
