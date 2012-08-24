@@ -31,7 +31,7 @@
  ************************************************************************/
 ___INFO__MARK_END__-->
     <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-               targetNamespace="http://arc.liv.ac.uk/repos/darcs/sge/source/dist/util/resources/schemas/qstat/detailed_job_info.xsd"
+              targetNamespace="http://arc.liv.ac.uk/repos/darcs/sge/source/dist/util/resources/schemas/qstat/detailed_job_info.xsd"
                xmlns="http://arc.liv.ac.uk/repos/darcs/sge/source/dist/util/resources/schemas/qstat/detailed_job_info.xsd"
                elementFormDefault="qualified">
 	<xs:element name="detailed_job_info">
@@ -108,6 +108,7 @@ ___INFO__MARK_END__-->
                         <xs:element name="JB_version" type="xs:unsignedInt"/>
                         <xs:element name="JB_ja_structure" type="JB_ja_structure_t"/>
                         <xs:element name="JB_type" type="xs:unsignedInt"/>
+                        <xs:element name="JB_binding" type="JB_binding_t"/>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -375,6 +376,23 @@ ___INFO__MARK_END__-->
 			<xs:element name="RN_step" type="xs:unsignedInt"/>
 		</xs:sequence>
 	</xs:complexType>
+         <!-- JB_binding -->
+         <xs:complexType name="JB_binding_t">
+            <xs:sequence>
+               <xs:element name="binding" type="BT_binding_element_t"/>
+            </xs:sequence>
+         </xs:complexType>
+         <xs:complexType name="BT_binding_element_t">
+            <xs:sequence >
+               <xs:element name="BN_strategy" type="xs:string"/>
+               <xs:element name="BN_parameter_n" type="xs:unsignedInt"/>
+               <xs:element name="BN_parameter_socket_offset" type="xs:unsignedInt"/>
+               <xs:element name="BN_parameter_core_offset" type="xs:unsignedInt"/>
+               <xs:element name="BN_parameter_striding_first_core" type="xs:unsignedInt"/>
+               <xs:element name="BN_parameter_striding_last_core" type="xs:unsignedInt"/>
+               <xs:element name="BN_parameter_striding_step_size" type="xs:unsignedInt"/>
+            </xs:sequence>
+         </xs:complexType>
         <!-- message_t -->	
 	<xs:complexType name="message_t">
          <xs:annotation>
