@@ -56,7 +56,10 @@ drmaa_job_ps, drmaa_control, \- Monitor and control jobs
 .\"
 .SH DESCRIPTION
 The drmaa_job_ps() function returns the status of the xxQS_NAMExx job \fIjob_id\fP 
-into the integer pointed to by \fIremote_ps\fP. Possible return values are 
+into the integer pointed to by \fIremote_ps\fP. Possible return values are
+listed below.  See
+.M sge_status 5
+for the correspondence between them and the xxQS_NAMExx status.
 .sp 1
 .RS
 .nf
@@ -202,5 +205,6 @@ The job is not in a hold state.
 .\" 
 .\" 
 .SH "SEE ALSO"
-.M drmaa_submit 3 and
-.M drmaa_wait 3 .
+.M drmaa_submit 3 ,
+.M drmaa_wait 3 ,
+.M sge_status 5 .
