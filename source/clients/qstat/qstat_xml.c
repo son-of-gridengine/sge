@@ -420,20 +420,23 @@ static int qstat_xml_job(job_handler_t* handler, u_long32 jid, job_summary_t *su
    
    xml_append_Attr_I(attribute_list, "JB_job_number", jid); 
    xml_append_Attr_D(attribute_list, "JAT_prio", summary->nprior);
-   if( sge_ext) {
+   if(sge_ext || sge_pri) {
       xml_append_Attr_D(attribute_list, "JAT_ntix", summary->ntckts);
    }
-   
-   if (sge_urg) {
+   if (sge_pri) {
+      xml_append_Attr_D(attribute_list, "JB_nppri", summary->nppri);
+   }
+
+   if (sge_urg || sge_pri) {
       xml_append_Attr_D(attribute_list, "JB_nurg", summary->nurg);
-      xml_append_Attr_D8(attribute_list, "JB_urg", summary->urg);
+   }
+   if (sge_urg) {
       xml_append_Attr_D8(attribute_list, "JB_rrcontr", summary->rrcontr);
       xml_append_Attr_D8(attribute_list, "JB_wtcontr", summary->wtcontr);
       xml_append_Attr_D8(attribute_list, "JB_dlcontr", summary->dlcontr);
-   } 
+   }
 
    if (sge_pri) {
-      xml_append_Attr_D(attribute_list, "JB_nppri", summary->nppri);
       xml_append_Attr_I(attribute_list, "JB_priority", summary->priority);
    } 
 
