@@ -40,10 +40,10 @@ USERDAYS=365
 
 
 
-if [ ! -n "$SGE_ROOT" && -n "$SGE_CELL" ]; then
+if [ ! -n "$SGE_ROOT" -a -n "$SGE_CELL" ]; then
    echo "SGE_ROOT environment variable not set"
    exit 1
-endif
+fi
 
 if [ -n "$SGE_QMASTER_PORT" ]; then
    CA_PORT=port$SGE_QMASTER_PORT
