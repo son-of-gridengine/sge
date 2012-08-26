@@ -1,0 +1,95 @@
+'\" t
+.\" Copyright (C), 2012  Dave Love, University of Liverpool
+.\" You may distribute this file under the terms of the GNU Free
+.\" Documentation License.
+.de M		\" SGE man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
+.TH sge_status 5 2012-08-25
+.SH NAME
+sge_status \- xxQS_NAMExx job status values
+.SH DESCRIPTION
+The following table lists the job states shown by
+.M qstat 1
+and returned by
+.M drmaa_jobcontrol 3 .
+The DRMAA
+.I state
+corresponds to the
+.BI DRMAA_PS_ state
+value that may be returned by
+.M drmaa_job_ps 3 .
+.PP
+.TS
+tab(@), allbox;
+cbcbcbcb
+ltltltlt.
+Category@State@SGE@DRMAA state
+Pending@pending@qw@QUEUED_ACTIVE
+\^@pending, user hold@hqw@USER_ON_HOLD
+\^@pending, system hold@hqw@SYSTEM_ON_HOLD
+\^@T{
+.na
+pending, user and system hold
+T}@hqw@USER_SYSTEM_ON_HOLD
+\^@T{
+.na
+pending, user hold, re-queue
+T}@hRwq@USER_ON_HOLD
+\^@T{
+.na
+pending, system hold, re-queue
+T}@hRwq@SYSTEM_ON_HOLD
+\^@T{
+.na
+pending, user and system hold, re-queue
+T}@hRwq@USER_SYSTEM_ON_HOLD
+T{
+.na
+Running / transferring
+T}@running@r, t@RUNNING
+\^@T{
+.na
+running, re-run / transferring
+T}@Rr, Rt@RUNNING
+Suspended@job suspended@s, ts@USER_SUSPENDED
+\^@queue suspended@S, tS@SYSTEM_SUSPENDED
+\^@T{
+.na
+queue suspended by alarm
+T}@T, tT@SYSTEM_SUSPENDED
+\^@T{
+.na
+all suspended with re-run
+T}@T{
+.na
+Rs, Rts, RS, RtS, RT, RtT
+T}@SYSTEM_SUSPENDED
+Error@T{
+.na
+all pending states with error
+T}@T{
+Eqw, Ehqw, EhRqw
+T}@FAILED
+Deleting@T{
+.na
+all running and suspended states with deletion
+T}@T{
+.na
+dr, dt, dRr, dRt, ds, dS, dT, dRs, dRS, dRT
+T}@T{
+.na
+same as equivalent DRMAA states without the "d"
+T}
+Finished@T{
+.na
+job finished normally
+T}@@DONE
+Unkown@T{
+.na
+status cannot be determined
+T}@@UNDETERMINED
+.TE
+.SH "SEE ALSO"
+.M drmaa_jobcontrol 3 ,
+.M qstat 1 .
