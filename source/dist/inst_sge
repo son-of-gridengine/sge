@@ -43,7 +43,7 @@
 # fixme: sort out for Cysgwin
 
 SCRIPT_VERSION="8"
-SGE_VERSION="8.1.2"
+SGE_VERSION="8.1.3pre"
 
 #Reset PATH to a safe value
 #

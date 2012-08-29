@@ -39,7 +39,7 @@
 %define username sgeadmin
 
 Name:    gridengine
-Version: 8.1.2
+Version: 8.1.3pre
 Release: 1%{?dist}
 Summary: Grid Engine - Distributed Resource Manager
 
