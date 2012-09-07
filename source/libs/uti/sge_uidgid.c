@@ -51,8 +51,7 @@
 #include "uti/sge_string.h"
 #include "uti/sge_stdio.h"
 #include "uti/sge_bootstrap.h"
-
-#include "basis_types.h"
+#include "uti/sge_uidgid.h"
 
 #include "msg_common.h"
 

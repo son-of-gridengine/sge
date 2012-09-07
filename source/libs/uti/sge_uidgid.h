@@ -37,17 +37,9 @@
 #include <grp.h>
 #include <pwd.h>
 
-#include "sge_dstring.h"
 #include "sge_unistd.h"
 
-#if defined(HPUX)
-#  define seteuid(euid) setresuid(-1, euid, -1)
-#  define setegid(egid) setresgid(-1, egid, -1)
-#endif 
-
 #if defined(INTERIX) && !defined(INTERIX52)
-#  define seteuid(euid) setreuid(-1, euid)
-#  define setegid(egid) setregid(-1, egid)
 #  define SGE_SUPERUSER_UID wl_get_superuser_id()
 #  define SGE_SUPERUSER_GID wl_get_superuser_gid() 
 #else
