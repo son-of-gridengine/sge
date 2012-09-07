@@ -34,7 +34,7 @@
 
 #include <stdlib.h>
 
-char *sge_malloc(int size);
+void *sge_malloc(size_t size);
 
 void *sge_realloc(void *ptr, int size, int do_abort);
 
