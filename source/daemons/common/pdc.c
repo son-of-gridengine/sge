@@ -1761,7 +1761,7 @@ int psStartCollector(void)
    pagesize = getpagesize();
 
    /* retrieve static parameters */
-#if defined(LINUX) || defined(ALINUX) || defined(IRIX) || defined(SOLARIS) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(HP1164)
+#if defined(LINUX) || defined(IRIX) || defined(SOLARIS) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(HP1164)
 #ifdef PDC_STANDALONE
    ncpus = sge_nprocs();
 #endif   

@@ -153,8 +153,8 @@ case $buildarch in
       TARGET_BITS=TARGET_64BIT
       ;;
    lx-alpha)
-      BUILDARCH=ALINUX
-      COMPILE_ARCH=ALINUX
+      BUILDARCH=LINUX
+      COMPILE_ARCH=LINUX
       TARGET_BITS=TARGET_64BIT
       ;;
    lx-arm)
@@ -228,8 +228,8 @@ case $buildarch in
       TARGET_BITS=TARGET_32BIT
       ;;
    ulx-alpha)
-      BUILDARCH=ALINUX
-      COMPILE_ARCH=UALINUX
+      BUILDARCH=LINUX
+      COMPILE_ARCH=LINUX
       TARGET_BITS=TARGET_64BIT
       ;;
    ulx-amd64)
