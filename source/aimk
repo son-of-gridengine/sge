@@ -1436,7 +1436,6 @@ case HP1164:
    endif
    breaksw
    
-case ALINUX:
 case LINUX86:
 case LINUXAMD64:
 case LINUXIA64:
@@ -1547,15 +1546,9 @@ case LINUXARM:
 
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
 
-   if ($BUILDARCH != ALINUX) then
-      set XINCD    = "$XMTINCD $XINCD -I/usr/X11R6/include"
-      set XCFLAGS  = "-Wno-strict-prototypes -Wno-error $XMTDEF $XINCD"
-      set XLIBS    = "-lXm -lXpm -lXt -lXext -lXmu -lX11 -lSM -lICE"
-   else
       set XINCD    = "$XMTINCD $XINCD"
       set XCFLAGS  = "-DNeedFunctionPrototypes -Wno-error $XMTDEF $XINCD"
       set XLIBS    = "-Xlinker -Bstatic -Xlinker -Bdynamic -lXpm -lXt -lXext -lX11 -lSM -lICE -lXp -lXm"
-   endif
    set JAVA_ARCH = "linux"
 
    # due to -rpath relative_path the LD_LIBRARY_PATH not needed anymore
