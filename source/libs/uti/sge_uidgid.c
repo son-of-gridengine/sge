@@ -1140,7 +1140,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
 
          if(wl_setuser(pw->pw_uid, pw->pw_gid, pass, err_str) != 0) {
             sge_free(&pass);
-            snprintf(buf, sizoef(buf), MSG_SYSTEM_SETUSERFAILED_UU,
+            snprintf(buf, sizeof(buf), MSG_SYSTEM_SETUSERFAILED_UU,
                      sge_u32c(pw->pw_uid), sge_u32c(pw->pw_gid));
             sge_strlcat(err_str, buf, sizeof(err_str));
             return 4;
