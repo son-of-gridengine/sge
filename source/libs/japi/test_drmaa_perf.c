@@ -40,6 +40,7 @@
 #include <sys/types.h>
 #include <sys/time.h>
 
+#include "uti/sge_uidgid.h"
 #include "drmaa.h"
 
 /* program defaults */
