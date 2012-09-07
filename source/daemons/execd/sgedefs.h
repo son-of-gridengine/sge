@@ -49,8 +49,10 @@ typedef unsigned long uint64;   /* This should work on all current machines */
 /* ?? */
 #if !defined(LINUX) && !defined(__alpha__) && !defined(SOLARIS) && !defined(DARWIN) && !defined(INTERIX6)
 typedef uint64 JobID_t;
+#define JOBID_T_FMT sge_u64
 #else
 typedef pid_t JobID_t;
+#define JOBID_T_FMT pid_t_fmt
 #endif
 
 #endif /* SGEDEFS_H */

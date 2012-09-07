@@ -248,7 +248,7 @@ get_cgroup_job_dir(cgroup_t group, char *dir, size_t ldir, u_long32 job, u_long3
    dir[0] = '\0';
    cdir = cgroup_dir(group);
    if (*cdir == '\0') DRETURN(false);
-   if (snprintf(dir, ldir, "%s/%d.%d", cdir, job, task) >= ldir) {
+   if (snprintf(dir, ldir, "%s/"sge_u32"."sge_u32, cdir, job, task) >= ldir) {
       WARNING((SGE_EVENT, "Can't build cgroup_job_dir value"));
       DRETURN(false);
    }
@@ -457,8 +457,8 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
       size_t l = sizeof buf;
 
       if (!rogue)
-         WARNING((SGE_EVENT, "rogue process(es) found for task %d.%d",
-                  job, task));
+         WARNING((SGE_EVENT, "rogue process(es) found for task "
+		  sge_u32"."sge_u32, job, task));
       rogue = true;
       replace_char(spid, strlen(spid), '\n', '\0');
       snprintf(cfile, sizeof cfile, "/proc/%s/cmdline", spid);
