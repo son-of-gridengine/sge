@@ -45,32 +45,33 @@
 #include "uti/sge_dstring.h"
 #include "uti/sge_log.h" 
 #include "uti/msg_utilib.h"
+#include "uti/sge_uidgid.h"
 
 bool sge_dumpable = false;
 
 /****** uti/stdlib/sge_malloc() ***********************************************
 *  NAME
-*     sge_malloc() -- replacement for malloc() 
+*     sge_malloc() -- replacement for malloc()
 *
 *  SYNOPSIS
-*     char* sge_malloc(int size) 
+*     void* sge_malloc(size_t size)
 *
 *  FUNCTION
 *     Allocates a memory block. Initilizes the block (0). Aborts in case
-*     of error. 
+*     of error.
 *
 *  INPUTS
-*     int size - size in bytes 
+*     size_t size - size in bytes
 *
 *  RESULT
-*     char* - pointer to memory block
+*     void* - pointer to memory block
 *
 *  NOTES
 *     MT-NOTE: sge_malloc() is MT safe
 ******************************************************************************/
-char *sge_malloc(int size) 
+void *sge_malloc(size_t size)
 {
-   char *cp = NULL;
+   void *cp = NULL;
 
    DENTER_(BASIS_LAYER, "sge_malloc");
 
@@ -78,7 +79,7 @@ char *sge_malloc(int size)
       DRETURN_(NULL);
    }
 
-   cp = (char *) malloc(size);
+   cp = malloc(size);
    if (!cp) {
       CRITICAL((SGE_EVENT, SFNMAX, MSG_MEMORY_MALLOCFAILED));
       DEXIT_;
@@ -86,7 +87,7 @@ char *sge_malloc(int size)
    }
 
    DRETURN_(cp);
-}   
+}
 
 /****** uti/stdlib/sge_realloc() **********************************************
 *  NAME
@@ -140,23 +141,20 @@ void *sge_realloc(void *ptr, int size, int do_abort)
 *     sge_free() -- replacement for free 
 *
 *  SYNOPSIS
-*     void sge_free(char **cp) 
+*     void sge_free(void *cp)
 *
 *  FUNCTION
 *     Replacement for free function. Accepts NULL pointers.
 *
 *  INPUTS
-*     char **cp - pointer to a pointer of a memory block 
-*
-*  RESULT
-*     char* - NULL
+*     void *cp - pointer to a pointer of a memory block
 *
 *  NOTES
 *     MT-NOTE: sge_free() is MT safe
 ******************************************************************************/
 void sge_free(void *cp) 
 {
-   char **mem = (char **)cp;
+   void **mem = (void **)cp;
 
    if (mem != NULL && *mem != NULL) {
       free(*mem);
