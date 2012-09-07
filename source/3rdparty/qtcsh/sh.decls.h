@@ -120,7 +120,7 @@ extern	void		  dowhere	(Char **, struct command *);
 extern	int		  find_cmd	(Char *, int);
  
 #ifdef CATCH_EXEC
-extern	void		  doqrshmode	__P((Char **, struct command *));
+extern	void		  doqrshmode	(Char **, struct command *);
 #endif
 
 /*

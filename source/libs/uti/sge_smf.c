@@ -48,7 +48,7 @@
 #include "uti/sge_uidgid.h"
 #include "uti/msg_utilib.h"
 
-#if defined(__SunOS_5_7) || defined(__SunOS_5_8) || defined(__SunOS_5_9) || defined(__GNUC__)
+#if defined(__SunOS_5_7) || defined(__SunOS_5_8) || defined(__SunOS_5_9)
    /* Redefinitions from S10+ sys/types.h */
    typedef id_t    ctid_t;
    /* Missing in SunOS < 10 */
@@ -839,7 +839,7 @@ static int contracts_post_fork(int ctfd, int pid, char *err_str, int err_length)
    latest = shared_contract_func__ct_status_get_id(st);
    shared_contract_func__ct_status_free(st);
    close(cfd);
-   n = snprintf(path, PATH_MAX, CTFS_ROOT "/all/%ld/ctl", latest);
+   n = snprintf(path, PATH_MAX, CTFS_ROOT "/all/%ld/ctl", (long) latest);
    if (n >= PATH_MAX) {
       snprintf(err_str, err_length, MSG_SMF_CONTRACT_CONTROL_OPEN_FAILED_S,
                strerror(ENAMETOOLONG));

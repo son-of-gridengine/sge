@@ -269,9 +269,10 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    pid = getpid();
    pgrp = GETPGRP;
 
-#ifdef SOLARIS
+#ifdef SOLARIS                  /* ?? */
    if(!is_qlogin_starter || is_rsh)
 #endif
+   {
    /* 
     * g_newpgrp is != -1 if setsid() was already called in pty.c, fork_pty(),
     * in case of new IJS when a pty was created.
@@ -290,6 +291,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       }
    } else {
       newpgrp = g_newpgrp;
+   }
    }
 
    /* run these procedures under a different user ? */
