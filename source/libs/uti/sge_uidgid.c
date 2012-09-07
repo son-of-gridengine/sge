@@ -1085,9 +1085,9 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
       UGH!!!
     */      
 
-#if defined(SVR3) || defined(sun)
+#if defined(SVR3) || defined(__sun__)
    if (status < 0) {
-      snprintf(err_str, MSG_SYSTEM_INITGROUPSFAILED_I, status);
+      snprintf(err_str, lstr, MSG_SYSTEM_INITGROUPSFAILED_I, status);
       return 1;
    }
 #else

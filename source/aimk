@@ -1754,9 +1754,6 @@ case SOLARISAMD64:
    set COMPILE_DC = 1
    set HWLOC = 1
 
-   set ERR_WARN_NONE = "-errwarn=%none" # is set in XCFLAGS and for R_E_M_O_T_E target to switch off -errwarn=%all
-   set ERR_WARN_ALL = "-errwarn=%all"  # is set in cc specific section below
-   set NOERR_CFLAG = "$ERR_WARN_NONE"
    set CFLAGS = "$CFLAGS -DSOLARIS -D$BUILDARCH -D__EXTENSIONS__ -D_POSIX_C_SOURCE=199506L -DGETHOSTBYNAME_R5 -DGETHOSTBYADDR_R7 -DUSE_POLL"
    set SHAREDLD = $CC
 
@@ -1768,10 +1765,12 @@ case SOLARISAMD64:
             # Do not compile Grid Engine with -xO4 on SOLARIS86 platform
             # unless WS8 compiler with patch 112756-01 or higher is installed
 
+            # fixme: bail out if cc not found
+
             set compversion = `cc -V |& head -1 | cut -f4 -d" "`
             set patchcnt = `/bin/sh -c 'ls -d /var/sadm/patch/112756-* 2> /dev/null' | wc -l`
             set haspatch = `expr $patchcnt ">=" 1`
-            if ( $compversion == 5.5 && $haspatch == 1 || $compversion != 5.5 ) then
+            if ( "$compversion" == 5.5 && "$haspatch" == 1 || "$compversion" != 5.5 ) then
                # set OFLAG = "-fast -xchip=pentium -xcache=generic"
                #
                # Due to compiler bugs in the X86 compiler
@@ -1846,6 +1845,9 @@ case SOLARISAMD64:
    endif
 
    if ( $CC == cc ) then
+      set ERR_WARN_NONE = "-errwarn=%none" # is set in XCFLAGS and for R_E_M_O_T_E target to switch off -errwarn=%all
+      # always get warnings
+      set ERR_WARN_ALL = ""  # is set in cc specific section below
       set LFLAGS = "-xildoff $LFLAGS"
       # the ERR_WARN_ALL breaks insure instrumented builds
       if ( $USE_INSURE == 0 ) then
@@ -1855,8 +1857,8 @@ case SOLARISAMD64:
 
       # need the compiler version for building the compiler flags
       set compversion = `cc -V | & head -1 | sed 's/[a-zA-Z :]*\([0-9].[0-9]*\).*$/\1/'`
-      set major = `echo $compversion | cut -f1 -d"."`
-      set minor = `echo $compversion | cut -f2 -d"."`
+      set major = `echo "$compversion" | cut -f1 -d"."`
+      set minor = `echo "$compversion" | cut -f2 -d"."`
 
       if ( $BUILDARCH == SOLARIS64 ) then
          if ($major <= 5 && $minor <= 8) then
@@ -1892,6 +1894,9 @@ case SOLARISAMD64:
       set CFLAGS = "-Wall -Wstrict-prototypes $CFLAGS $OFLAG"
       set SHARED_CFLAGS = "-fPIC"
       set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared"
+      # always get warnings
+      set ERR_WARN_NONE = ""
+      set ERR_WARN_ALL = ""
 
       if ( $BUILDARCH == SOLARIS64 ) then
          set CFLAGS = "-m64 $CFLAGS"
@@ -1908,6 +1913,7 @@ case SOLARISAMD64:
          set MEMFLAG = ""
       endif
    endif
+   set NOERR_CFLAG = "$ERR_WARN_NONE"
 
    # This is workaround for not POSIX fork() behaviour of -lthread
    # library. The man page of fork() tells following:
@@ -2715,7 +2721,7 @@ if ( "$QMAKE" == 1) then
       cd $SOURCE/3rdparty/qmake/$COMPILE_ARCH
       ../configure --srcdir=.. REMOTE=sge CC="$CC" \
         CFLAGS="${CFLAGS} ${NOERR_CFLAG} ${NOERR_PROTO}" \
-       SGE_ARCH=$buildarch LDFLAGS="$LFLAGS"
+       SGE_ARCH=$buildarch LDFLAGS="$LFLAGS" LIBS="$LIBS"
    endif
 
    if ("$argv" != depend) then
