@@ -893,8 +893,10 @@ parallel_maximize_slots_pe(sge_assignment_t *best, int *available_slots)
          max_slots above gets us here with max_slots < min_slots and a
          spurious error message every time.  */
       if (max_pe_slots < min_slots)
-         ERROR((SGE_EVENT, "invalid pe job range setting "sge_u32"-"sge_u32
-                " for job "sge_u32"\n", min_slots, max_slots, best->job_id));
+         ERROR((SGE_EVENT, "invalid pe job range setting "
+		sge_U32CFormat"-"sge_U32CFormat
+                " for job "sge_u32"\n", sge_u32c(min_slots),
+		sge_u32c(max_slots), best->job_id));
       DRETURN(DISPATCH_NEVER_CAT);
    }
 

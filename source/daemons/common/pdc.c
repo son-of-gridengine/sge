@@ -2076,7 +2076,7 @@ print_job_data(psJob_t *job)
 {
    setlocale (LC_NUMERIC, "C");
    printf("%s\n", MSG_SGE_JOBDATA );
-   printf("jd_jid="OSJOBID_FMT"\n", job->jd_jid);
+   printf("jd_jid="JOBID_T_FMT"\n", job->jd_jid);
    printf("jd_length=%d\n", job->jd_length);
    printf("jd_uid="uid_t_fmt"\n", job->jd_uid);
    printf("jd_gid="uid_t_fmt"\n", job->jd_gid);
@@ -2314,7 +2314,7 @@ main(int argc, char **argv)
       }
 
    for (arg=optind; arg<argc; arg++) {
-      if (sscanf(argv[arg], OSJOBID_FMT, &osjobid) != 1) {
+      if (sscanf(argv[arg], JOBID_T_FMT, &osjobid) != 1) {
          fprintf(stderr, MSG_SGE_XISNOTAVALIDJOBID_S , argv[arg]);
          fprintf(stderr, "\n");
          exit(2);
