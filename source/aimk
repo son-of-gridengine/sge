@@ -219,6 +219,7 @@ usage:
    echo "-only-depend      -> only compile 3rdparty/sge_depend"
    echo "-only-java        -> only compile Java[TM] class files"
    echo "-only-gui-inst    -> only compile Java[TM] GUI installer"
+   echo "-only-herd        -> only compile herd Hadoop interface"
    echo "-only-jemalloc    -> build only the jemalloc library"
    echo "-only-qmake       -> build only qmake"
    echo "-only-qmon        -> build only qmon 3rdparty libs and qmon client"
@@ -726,12 +727,16 @@ while ($#argv >= 1 && $?found)
       set ONLY_PARAM_SPEC = 1
       set MAKEPAM = 0
       breaksw
-   case  "-only-java"
-      set JAVA = 2
-      set ONLY_PARAM_SPEC = 1
-      breaksw
    case  "-only-gui-inst"
       set JAVA_GUI_INST = 2
+      set ONLY_PARAM_SPEC = 1
+      breaksw
+   case  "-only-herd"
+      set JAVA_HERD = 2
+      set ONLY_PARAM_SPEC = 1
+      breaksw
+   case  "-only-java"
+      set JAVA = 2
       set ONLY_PARAM_SPEC = 1
       breaksw
    case "-only-jemalloc":
@@ -2208,6 +2213,19 @@ if ( "$JAVA_GUI_INST" == 2 ) then
       setenv AIMK_COPYRIGHT ""
    endif
    ant -f clients/gui-installer/build.xml $argv
+
+   if ( $status != 0 ) then
+      echo not done
+      exit 1
+   endif
+   echo done
+   exit 0
+endif
+
+# -only-herd option
+if ( "$JAVA_HERD" == 2 ) then
+   echo _____Making JAVA GUI Installer_____
+   ant -f clients/libs/herd/build.xml $argv
 
    if ( $status != 0 ) then
       echo not done
