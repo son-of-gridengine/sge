@@ -173,9 +173,7 @@ int getpagesize(void);
 #if defined(PDC_STANDALONE)
 #  include "sge_log.h"
 #  include "sge_language.h"
-#  if defined(LINUX)
-#     include "sge_proc.h"
-#  endif
+#  include "sge_proc.h"
 #endif
 
 typedef struct {

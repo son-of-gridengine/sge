@@ -54,6 +54,7 @@
 #include "sgeobj/sge_job.h"
 #include "sgeobj/sge_report.h"
 #include "sgeobj/sge_conf.h"
+#include "sgeobj/sge_proc.h"
 
 #include "spool/classic/read_write_job.h"
 
@@ -84,10 +85,7 @@
 #   include "sge_string.h"
 #endif
 
-#if defined(LINUX)
-#  include "sge_proc.h"
-#endif
-
+#include "sge_proc.h"
 
 
 volatile int jobs_to_start = 1;
