@@ -60,14 +60,18 @@
 #endif
 
 /* In POSIX, but possibly not on all relevant platforms -- let's see.  */
+#ifndef WINDOWS
 #include <sys/utsname.h>
+
+/* no dstring with Windows native compiler */
+void fill_socket_core_topology(dstring* msocket, dstring* mcore, dstring* mthread, dstring* mtopology);
+#endif
 
 void usage(void);
 void print_mem_load(char *, char *, int, double, char*);
 void check_core_binding(void);
 
 void test_binding(void);
-void fill_socket_core_topology(dstring* msocket, dstring* mcore, dstring* mthread, dstring* mtopology);
 
 static bool can_bind, has_topology;
 
@@ -85,10 +89,12 @@ int main(int argc, char *argv[])
    double avg[3];
    int loads;
    char *name = NULL;
+#ifndef WINDOWS
    dstring msocket   = DSTRING_INIT;
    dstring mcore     = DSTRING_INIT;
    dstring mthread   = DSTRING_INIT;
    dstring mtopology = DSTRING_INIT;
+#endif	/* WINDOWS */
 
 #ifdef SGE_LOADMEM
    sge_mem_info_t mem_info;
@@ -113,8 +119,10 @@ int main(int argc, char *argv[])
                          (textdomain_func_type)     textdomain);
    sge_init_language(NULL,NULL);   
 #endif /* __SGE_COMPILE_WITH_GETTEXT__  */
+#ifndef WINDOWS
    can_bind = has_core_binding();
    has_topology = has_topology_information();
+#endif
    if (argc == 2 && !strcmp(argv[1], "-cb")) {
       core_binding = 1;
    } else {
@@ -135,8 +143,8 @@ int main(int argc, char *argv[])
    }   
    
    if (core_binding) {
-      check_core_binding();
 #ifndef WINDOWS
+      check_core_binding();
       DEXIT;
 #endif
       return 1;
@@ -174,9 +182,10 @@ int main(int argc, char *argv[])
 #else
       nprocs = sge_nprocs();
       printf("num_proc        %d\n", nprocs);
-#endif
+#endif	/* WINDOWS */
    }
 
+#ifndef WINDOWS
    if (true == has_topology) {
       fill_socket_core_topology(&msocket, &mcore, &mthread, &mtopology);
       if ((pos && !strcmp("m_socket", argv[pos])) || !pos) {
@@ -192,7 +201,9 @@ int main(int argc, char *argv[])
         printf("m_topology      %s\n", sge_dstring_get_string(&mtopology));
       }
    }
-   else {
+   else
+#endif	/* !WINDOWS */
+     {
       if ((pos && !strcmp("m_socket", argv[pos])) || !pos) {
         printf("m_socket        -\n");
       }
@@ -233,11 +244,11 @@ int main(int argc, char *argv[])
       fprintf(stderr, "%s\n", MSG_SYSTEM_RETMEMORYINDICESFAILED);
 #ifndef WINDOWS
       DEXIT;
-#endif
       sge_dstring_free(&mcore);
       sge_dstring_free(&msocket);
       sge_dstring_free(&mthread);
       sge_dstring_free(&mtopology);
+#endif
       return 1;
    }
 
@@ -269,11 +280,11 @@ int main(int argc, char *argv[])
 #endif /* SGE_LOADCPU */
 #ifndef WINDOWS
    DEXIT;
-#endif
    sge_dstring_free(&mcore);
    sge_dstring_free(&msocket);
    sge_dstring_free(&mthread);
    sge_dstring_free(&mtopology);
+#endif	/* WINDOWS */
    return 0;
 }
 
@@ -289,6 +300,7 @@ char *m
       printf("%-15s %.*f%s\n", name, precision, value, m);
 }
 
+#ifndef WINDOWS
 /****** loadcheck/check_core_binding() *****************************************
 *  NAME
 *     check_core_binding() -- Checks core binding functionality on current host. 
@@ -410,3 +422,4 @@ void fill_socket_core_topology(dstring* msocket, dstring* mcore, dstring* mthrea
    sge_dstring_append(mtopology, topo);
    sge_free(&topo);
 }
+#endif	/* WINDOWS */

@@ -161,7 +161,7 @@ extern "C" {
 #  define uid_t_fmt pid_t_fmt
 #endif
 
-#if (defined(SOLARIS) && defined(TARGET_32BIT)) || defined(IRIX) || defined(INTERIX)
+#if (defined(SOLARIS) && defined(TARGET_32BIT)) || defined(IRIX) || (defined(INTERIX) && !defined INTERIX6)
 #  define pid_t_fmt    "%ld"
 #else
 #  define pid_t_fmt    "%d"

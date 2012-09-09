@@ -70,6 +70,8 @@ set SECDEPEND   = ""
 set SECCLEAN    = ""
 set RM = "rm -f"
 set HWLOCLIB    = ""
+set GSSLIBS = ""
+set AR = ar
 
 if ( -f dist/util/arch ) then
    set buildarch = `dist/util/arch`
@@ -241,7 +243,7 @@ usage:
    echo "-system-libs      -> use dynamic system libraries (specifically libssl)"
    echo "-tight-ssh        -> compile SSH daemon with tight SGE integration"
    echo "                     (normally obsoleted by sge-sshd-control PAM module)"
-   echo "-umap             -> compile with usermapping and hostgroup feature (currently broken)"
+#   echo "-umap             -> compile with usermapping and hostgroup feature (currently broken)"
    echo "-with-jemalloc    -> build SGE with the jemalloc library (default on GNU/Linux)"
   exit
 }
@@ -381,8 +383,8 @@ set SEC               = 1
 # LIBSSL_VER can be defined to link against libssl.soLIBSSL_VER at runtime.
 set SECFLAGS          = "-DSECURE -I$OPENSSL_HOME/include"
 set SECLIB            = ""
-set SECLIBS_STATIC    = "$OPENSSL_HOME/lib/libssl.a $OPENSSL_HOME/lib/libcrypto.a"
-set KLFLAGS           = "-L$OPENSSL_HOME/lib"
+set SECLIBS_STATIC    = "$OPENSSL_HOME/lib${SSL_LIB_SUFFIX}/libssl.a $OPENSSL_HOME/lib${SSL_LIB_SUFFIX}/libcrypto.a"
+set KLFLAGS           = "-L$OPENSSL_HOME/lib${SSL_LIB_SUFFIX}"
 
 set CORELIB           = ""
 
@@ -513,7 +515,7 @@ while ($#argv >= 1 && $?found)
       breaksw
    case "-crypto":
       set CFLAGS  = "-DCRYPTO -I$OPENSSL_HOME/include $CFLAGS"
-      set LFLAGS  = "-L$OPENSSL_HOME/lib $LFLAGS"
+      set LFLAGS  = "-L$OPENSSL_HOME/lib${SSL_LIB_SUFFIX} $LFLAGS"
       switch ($BUILDARCH)
          case HP11:
             set KLIBS = "-lcrypto"
@@ -628,7 +630,7 @@ while ($#argv >= 1 && $?found)
       set KRBLIBS    = "libkrb.a"
       set KRBLIB     = "-lkrb"
       set CFLAGS     = "-DKERBEROS -I../security/krb -I$KRB_HOME/include -I$KRB_HOME/include/gssapi $CFLAGS"
-      set KLFLAGS    = "-L$KRB_HOME/lib"
+      set KLFLAGS    = "-L$KRB_HOME/lib${SSL_LIB_SUFFIX}"
       set KLIBS      = "-lkrb -lkrb5 -lk5crypto -lcom_err -lresolv"
       breaksw
    case "-man":
@@ -953,8 +955,8 @@ endif
 if ( $SYSTEM_LIBS != 1 ) then
    # we generate a berkeley db shared lib, so we need bdb include and lib path
    set CFLAGS        = "-I$BERKELEYDB_HOME/include/${BDB_INCLUDE_SUBDIR} $CFLAGS"
-   set LFLAGS        = "-L$BERKELEYDB_HOME/lib/${BDB_LIB_SUBDIR} $LFLAGS"
-   set SHARED_LFLAGS = "$SHARED_LFLAGS -L$BERKELEYDB_HOME/lib/${BDB_LIB_SUBDIR}"
+   set LFLAGS        = "-L$BERKELEYDB_HOME/lib${BDB_LIB_SUFFIX} $LFLAGS"
+   set SHARED_LFLAGS = "$SHARED_LFLAGS -L$BERKELEYDB_HOME/lib${BDB_LIB_SUFFIX}"
 endif
 set CFLAGS = "$CFLAGS -DSPOOLING_$SPOOLING_METHOD $SECFLAGS"
 
@@ -1586,14 +1588,14 @@ case WIN32_X86:
    # setenv LD_LIBRARY_PATH /usr/lib/x86:/usr/local/lib
    set CC = gcc
    set WINCC = "env TMP=$WINTEMPDIR cl.exe"
-   set MAKE = gmake
-   set HWLOC = 1
+   # set MAKE = gmake
+   set HWLOC = 0
+   set ARFLAGS = "rcv"
 
    # Default build targets for WIN32_X86 for which we have seperate make files
    set MAKEWINGRIDLIB   = 1
    set MAKEWINGRIDAPP   = 1
    set QMON             = 0
-   set WITH_USERMAPPING = 0 # Compile without usermapping feature
    set COMPILE_DC       = 1
    set AUTHLIBS         = ""
    set JUTI_ALL         = ""
@@ -1604,12 +1606,14 @@ case WIN32_X86:
    set AUTHUSER_OBJ     = authuser.obj
    set LOADCHECK_OBJ    = loadcheck.obj
    set JUTI_OBJ         = juti.obj
+   set SECLIBS_STATIC   = "$OPENSSL_HOME/lib${SSL_LIB_SUFFIX}/libssl.a $OPENSSL_HOME/lib${SSL_LIB_SUFFIX}/libcrypto.a"
+   set SECLIB = ""
    
-   set CORE_INCLUDE     = "$CORE_INCLUDE -I../libs/wingrid"
+   set CORE_INCLUDE     = "$CORE_INCLUDE -I../libs/wingrid -I$OPENSSL_HOME/include"
    # libwingrid.a needs libdl for dlopen() etc.
-   set WINGRIDLIB       = "-lwingrid -ldl"
+   set WINGRIDLIB       = "-lwingrid -L$OPENSSL_HOME/lib${SSL_LIB_SUFFIX} $SECLIBS_STATIC -ldl"
    set WINGRIDLIB_DEP   = "libwingrid.a"
-   set WINGRIDLIB_A     = "-lwingrid_static -ldl"
+   set WINGRIDLIB_A     = "-lwingrid_static $SECLIBS_STATIC -ldl"
    set WINGRIDLIB_A_DEP = "libwingrid_static.a"
 
    if ($OPTIMIZATION == 1) then
@@ -1623,13 +1627,25 @@ case WIN32_X86:
       set CXX = gcc
       set CFLAGS = "$DEBUG_FLAG $CFLAGS"
       set CFLAGS = "-DGETHOSTBYADDR_M -D_ALL_SOURCE -D_REENTRANT $CFLAGS"
-      if (`uname -r` == "3.5") then
+      set INTERIX6 = 0
+      switch (`uname -r`)
+      case 3.5:
          set CFLAGS = "-DINTERIX $CFLAGS"
-      else
+	 breaksw
+      case 6.*:
+         set CFLAGS = "-DINTERIX -DINTERIX6 $CFLAGS"
+         set INTERIX6 = 1
+	 # The -m was necessary on 64-bit windows 7 with interix 6.1, else ar
+	 # fails obscurely.  Maybe breaks other versions.
+	 set AR = "ar -m x86"		# only for qmake
+	 breaksw
+      default:
          set CFLAGS = "-DINTERIX -DINTERIX52 $CFLAGS"
-      endif
-      set CFLAGS = "-D$COMPILE_ARCH -DGETHOSTBYNAME_M -DUSE_SGE_UNSETENV $CFLAGS" 
-      set CFLAGS = "-Wall -Werror -O0 -pipe $CFLAGS -rpath /usr/lib"
+      endsw
+      # _ALL_SOURCE allows compiling qtcsh, in particular
+      set CFLAGS = "-D_ALL_SOURCE -D$COMPILE_ARCH -DGETHOSTBYNAME_M -DUSE_SGE_UNSETENV $CFLAGS" 
+      # fixme:  why -O0?
+      set CFLAGS = "-Wall -O0 -pipe $CFLAGS -rpath /usr/lib"
       # For Windows Vista:
       #set CFLAGS = "-Wall -Werror -O0 -pipe $CFLAGS -rpath /usr/lib/x86"
       #set LFLAGS = "-Wl,-EL,-b=pe-i1386 $LFLAGS"
@@ -1656,7 +1672,7 @@ case WIN32_X86:
       endif
    endif
 
-   set LFLAGS        = "$DEBUG_FLAG $LFLAGS -L$SOURCE/$COMPILE_ARCH"
+   set LFLAGS        = "$DEBUG_FLAG $LFLAGS -L$SOURCE/$COMPILE_ARCH -L$OPENSSL_HOME/lib${SSL_LIB_SUFFIX}"
 
    set SHAREDLD      = $CC
    set SHARED_LFLAGS = "-L. -shared"
@@ -1673,9 +1689,9 @@ case WIN32_X86:
    set XLIBS        = "-lXm -lXpm -lXt -lXext -lXmu -lX11 -lSM -lICE -lXp"
 
    if ( $DEBUGGED == 1 ) then
-      set WINCFLAGS = "/Od /D "WIN32" /D "_DEBUG" /MTd /Zi"
+      set WINCFLAGS = "/Od /D "WIN32" /D "_DEBUG" /MTd /Zi $WINCFLAGS"
    else
-      set WINCFLAGS = "/MT"
+      set WINCFLAGS = "/MT $WINCFLAGS"
    endif
    set WINCFLAGS = "${WINCFLAGS} /D "WINDOWS" /D "_CONSOLE""
    set WINCFLAGS = "${WINCFLAGS} /D "_CRT_SECURE_NO_WARNINGS" /W3 /WX"
@@ -1686,11 +1702,10 @@ case WIN32_X86:
    set WINCFLAGS = "${WINCFLAGS} -I'..\\common'"
    set WINCFLAGS = "${WINCFLAGS} -I'..\\utilbin'"
    set WINCFLAGS = "${WINCFLAGS} -I'..\\libs\\juti'"
+   set WINCFLAGS = "${WINCFLAGS} -I'..\\libs'"
 
    if ( $DEBUGGED == 1 ) then
-      set WINLFLAGS = "/DEBUG"
-   else
-      set WINLFLAGS = ""
+      set WINLFLAGS = "${WINLFLAGS} /DEBUG"
    endif 
    set WINLFLAGS = "${WINLFLAGS} /INCREMENTAL:NO /NOLOGO"
    set WINLFLAGS = "${WINLFLAGS} /MACHINE:X86"
@@ -1698,7 +1713,12 @@ case WIN32_X86:
    set WINLFLAGS = "${WINLFLAGS} /LIBPATH:'${WIN32_VS_L2}'"
    #set WINLFLAGS = "${WINLFLAGS} /LIBPATH:'${WIN32_VS_L3}'"
 
-   set WINLIBS = "pdh.lib ws2_32.lib advapi32.lib user32.lib"
+   if ( $INTERIX6 == 1 ) then
+      # userenv.lib is necessary for interix 6.1 -- may break older versions
+      set WINLIBS = "pdh.lib ws2_32.lib advapi32.lib user32.lib userenv.lib"
+   else
+      set WINLIBS = "pdh.lib ws2_32.lib advapi32.lib user32.lib"
+   endif
    breaksw
 
 case CYGWIN_X86:
@@ -1998,7 +2018,7 @@ else
    set CFLAGS = "$CFLAGS -DHAVE_HWLOC=0"
 endif
 
-set DEPEND_FLAGS = "`echo $DEPEND_FLAGS | sed -e 's/-[^DI][^ ]*//g'`"
+set DEPEND_FLAGS = "`echo $DEPEND_FLAGS | sed -e 's/-rpath  *[^ ]*//g' -e 's/-[^DI][^ ]*//g'`"
 
 # we set SGE_ARCH_STRING down here because the sed command above
 # would mess up the quotes around buildarch
@@ -2710,6 +2730,7 @@ if ( "$REMOTE" == 1) then
       "LFLAGS=$REMOTE_LFLAGS $KLFLAGS" "STRIP=$STRIP" "RANLIB=$RANLIB" \
       "AR=$AR" "ARFLAGS=$ARFLAGS" "LIBEXT=$LIBEXT" \
       "WINGRIDLIB=$WINGRIDLIB" "WINGRIDLIB_DEP=$WINGRIDLIB_DEP" \
+      "WINGRIDLIB_STATIC=$WINGRIDLIB_A" "WINGRIDLIB_STATIC_DEP=$WINGRIDLIB_A_DEP" \
       "MEMCFLAG=$MEMCFLAG" "COMPILE_ARCH=$COMPILE_ARCH" $argv
 
    if ( $status != 0 ) then
@@ -2730,8 +2751,9 @@ if ( "$QMAKE" == 1) then
       mkdir -p $SOURCE/3rdparty/qmake/$COMPILE_ARCH
       cd $SOURCE/3rdparty/qmake
       cd $SOURCE/3rdparty/qmake/$COMPILE_ARCH
-      ../configure --srcdir=.. REMOTE=sge CC="$CC" \
-        CFLAGS="${CFLAGS} ${NOERR_CFLAG} ${NOERR_PROTO}" \
+      # see qtcsh about the sed-ism below
+      ../configure --srcdir=.. REMOTE=sge CC="$CC" AR="$AR" \
+        CFLAGS="`echo ${CFLAGS} | sed -e's/-DSGE_ARCH_STRING=[^ ]*//'` ${NOERR_CFLAG} ${NOERR_PROTO}" \
        SGE_ARCH=$buildarch LDFLAGS="$LFLAGS" LIBS="$LIBS"
    endif
 
@@ -2780,7 +2802,7 @@ if ( "$SGESSH" == 1) then
       mkdir -p $SOURCE/3rdparty/openssh/$COMPILE_ARCH
       cd $SOURCE/3rdparty/openssh/$COMPILE_ARCH
 
-      env REMOTE=sge SGE_ARCH=$buildarch LD_LIBRARY_PATH=${OPENSSL_HOME}/lib\
+      env REMOTE=sge SGE_ARCH=$buildarch LD_LIBRARY_PATH=${OPENSSL_HOME}/lib${SSL_LIB_SUFFIX} \
       MAKE="${MAKE}" CFLAGS="${CFLAGS} ${NOERR_CFLAG}" CC="${CC}" AR="${AR}" \
       ../configure --with-grd=${COMPILE_ARCH} --srcdir=.. \
          --with-cflags="${MEMCFLAG} ${NOERR_SSH} ${NOERR_PROTO} -DSGESSH_INTEGRATION" \
@@ -2825,9 +2847,11 @@ if ( "$QTCSH" == 1) then
 	! -r $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH/Makefile ) then
       mkdir -p $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH
       cd $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH
+      ln -sf ../config_f.h .
       # _GNU_SOURCE is defined by config.h, so we get wranings if we keep it
-      # in CFLAGS here.
-      env REMOTE=sge CC="$CC" CFLAGS="${CFLAGS} -U_GNU_SOURCE ${NOERR_CFLAG}" SGE_ARCH=$buildarch \
+      # in CFLAGS here.  The quoting of the arch string loses with some csh
+      # (e.g. interix), so zap it.
+      env REMOTE=sge CC="$CC" CFLAGS="`echo ${CFLAGS} | sed -e's/-DSGE_ARCH_STRING=[^ ]*//'` -U_GNU_SOURCE ${NOERR_CFLAG}" SGE_ARCH=$buildarch \
        ../configure --with-sge=${COMPILE_ARCH} --srcdir=..
    endif
 
