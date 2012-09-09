@@ -37,8 +37,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-#include <rpc/xdr.h>
 #include <rpc/types.h>
+#include <rpc/xdr.h>
 
 #if defined(INTERIX)
 #include <arpa/inet.h>

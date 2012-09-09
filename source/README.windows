@@ -1,0 +1,46 @@
+Building on MS Windows with SUA/SFU
+-----------------------------------
+
+These are notes on building pre-sge-8.1.3 on 64-bit MS "Windows 7
+Enterprise" in the "normal" way with the "SUA" system.  (It is also
+possible to build with Cygwin, but the the server components currently
+seem to have problems and building the native Windows components isn't
+set up.)  The procedure will be different for installing the basic
+environment with the earlier "SFU" system in MS Windows XP.  aimk may
+well need hacking for other versions, as well as aimk.site.
+
+The initial SUA installation is via:
+
+Control panel -> Programs and Features -> Turn Windows features on and
+off -> Subsystem for UNIX-based applications
+
+Then go to "Download utilities ..." from the SUA item in the All
+Programs menu & install the package.  You also need the GNU SDK from
+the Developers section of http://www.suacommunity.com/bundles.aspx and
+the openssl_dev package from
+http://www.suacommunity.com/tool_warehouse.htm (to be able to build
+the CSP security support).
+
+You also need the native compiler from Microsoft Visual C++.  You can
+use the gratis "Express Edition", but I don't know from where it's
+currently downloadable.  This was with "Visual Studio 9.0" "2008
+Express Edition".  There's a crucial, obscure step necessary to be
+able to run the compiler.  Without it, cl.exe won't run (or the
+Interix /bin/ar), and you won't see why not (a missing dll) unless you
+run the binary explicitly -- not via the path.  Assuming the this
+location for the VS installation; then the PATH environment variable
+must have the _two_ components:
+
+  PATH=/Program Files (x86)/Microsoft Visual Studio 9.0/VC/bin:Program Files (x86)/Microsoft Visual Studio 9.0/Common7/IDE
+
+The latter one is where mspdb80.dll (in this version) resides.
+
+It's similarly non-obvious that /bin/ar won't work (at least in this
+64-bit version for 32-bit objects) without option "-m x86".
+
+The 32-bit OpenSSL library from suacommunity is installed in
+usr/local/ssl/lib/x86.  It is set up to link statically in the aimk
+files.  The hwloc library isn't currently available on Interix, so
+core binding and topology information isn't available.
+
+It isn't currently clear whether a 64-bit Interix version can be built.
