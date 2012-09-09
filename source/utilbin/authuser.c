@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/types.h>
 
 #ifdef WINDOWS
 #  define _WIN32_WINNT 0x0500
@@ -50,7 +51,14 @@
 #  define SFN  "%-.100s"
 #  define _(x)              (x)
 #  define _MESSAGE(x,y)     (y)
-
+void sge_free(void *cp)
+{
+   char **mem = (char **)cp;
+   if (mem != NULL && *mem != NULL) {
+      free(*mem);
+      *mem = NULL;
+   }
+}
 #else
 
 #  include <pwd.h>
@@ -95,6 +103,7 @@
 #define BUF_SIZE 1024
 
 #ifdef WINDOWS
+typedef int uid_t;
 typedef int gid_t;
 #endif
 
@@ -799,6 +808,10 @@ error:
    HeapFree(GetProcessHeap(), 0, pTokenInfo);
    return ret;
 }
+
+#ifdef WINDOWS
+#define strdup _strdup		/* else VC 9 fails objects */
+#endif
 
 static auth_result_t do_windows_system_authentication(const char *username,
                                               const char *password,
