@@ -203,6 +203,7 @@ unsigned int get_path_max (void);
 #if defined (STDC_HEADERS) || defined (__GNU_LIBRARY__)
 # include <stdlib.h>
 # include <string.h>
+# include <stdint.h>
 # define ANSI_STRING 1
 #else   /* No standard headers.  */
 # ifdef HAVE_STRING_H
@@ -213,6 +214,9 @@ unsigned int get_path_max (void);
 # endif
 # ifdef HAVE_MEMORY_H
 #  include <memory.h>
+# endif
+# ifdef HAVE_STDINT_H
+#  include <stdint.h>
 # endif
 # ifdef HAVE_STDLIB_H
 #  include <stdlib.h>
