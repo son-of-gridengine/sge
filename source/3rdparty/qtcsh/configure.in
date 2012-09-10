@@ -256,6 +256,10 @@ case "${host}" in
     tcsh_config_file=qnx6
   ;;
 
+  *-interix*)
+    tcsh_config_file=interix
+  ;;
+
   * )
   changequote([, ])dnl
   AC_MSG_ERROR([Tcsh can't guess the configuration file name
