@@ -382,7 +382,7 @@ static inline void ignore(intptr_t a)
 #ifndef HAVE_STRUCT_DIRENT_D_INO
 # define d_ino d_fileno
 #endif
-#if defined(hpux) || defined(sgi) || defined(OREO)
+#if defined(hpux) || defined(sgi) || defined(OREO) || defined(__INTERIX)
 # include <stdio.h>	/* So the fgetpwent() prototypes work */
 #endif /* hpux || sgi || OREO */
 #ifndef WINNT_NATIVE

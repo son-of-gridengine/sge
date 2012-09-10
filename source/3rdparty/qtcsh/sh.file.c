@@ -234,8 +234,12 @@ pushback(const Char *string)
     (void) ioctl(SHOUT, TCSETAW, (ioctl_t) &tty);
 # endif /* POSIX */
     tty_normal = tty;
-    tty.c_lflag &= ~(ECHOKE | ECHO | ECHOE | ECHOK | ECHONL |
-#ifndef __QNXNTO__
+    tty.c_lflag &= ~(
+#ifdef ECHOKE
+		     ECHOKE |
+#endif
+		     ECHO | ECHOE | ECHOK | ECHONL |
+#ifdef ECHOPRT
 	ECHOPRT |
 #endif
 	ECHOCTL);
