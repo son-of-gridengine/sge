@@ -54,8 +54,10 @@ IconList, Spinbox, Xmt, XBae, XmTab: widgets used by qmon
 jemalloc: jemalloc library
 NanoXML: (GUI installer binary)
 tango: qmon icons
-top, hwloc, OpenSSL, BerkeleyDB: gridengine core.
+top, hwloc, OpenSSL, BerkeleyDB: gridengine core
+Cygwin:  binaries linked against the Cygwin library
 
 The corresponding source for external copyleft libraries which are
-only included in binaries (specifically swing-layout, for the GUI
-installer) is available from http://arc.liv.ac.uk/downloads/SGE/support/
+only included in binaries (specifically JAXB, and swing-layout for the
+GUI installer) is available from
+http://arc.liv.ac.uk/downloads/SGE/support/
