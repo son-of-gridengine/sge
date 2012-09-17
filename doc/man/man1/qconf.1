@@ -28,7 +28,10 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH QCONF 1 "2011-06-22" "xxRELxx" "xxQS_NAMExx User Commands"
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
+.TH QCONF 1 "2012-09-17" "xxRELxx" "xxQS_NAMExx User Commands"
 .SH NAME
 qconf \- xxQS_NAMExx Queue Configuration
 .SH SYNTAX
@@ -62,70 +65,70 @@ Unless denoted otherwise, the following options and the corresponding
 operations are available to all users with a valid account.
 .PP
 .ta 3i
-.IP "\fB\-Aattr obj_spec fname obj_instance,...\fP"
+.IP "\fB\-Aattr\fP \fIobj_spec\fP \fIfname\fP \fIobj_instance\fP,..."
 .ta 2.3i
 	\fI<add to object attributes>\fP
 .ta 3i
 .br
 Similar to \fB\-aattr\fP (see below) but takes specifications for the object
-attributes to be enhanced from file named \fBfname\fP. As opposed to
+attributes to be enhanced from file named \fIfname\fP. As opposed to
 \fB\-aattr\fP,
 multiple attributes can be enhanced. Their specification has to be listed
-in \fBfname\fP following the file format of the corresponding object (see
+in \fIfname\fP following the file format of the corresponding object (see
 .M queue_conf 5
 for the queue, for example).
 .br
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Acal fname\fP	\fI<add calendar>\fP"
+.IP "\fB\-Acal\fP \fIfname\fP	\fI<add calendar>\fP"
 Adds a new calendar definition to the xxQS_NAMExx environment. 
 Calendars are used in xxQS_NAMExx for defining availability and 
 unavailability schedules of queues. The format of a calendar definition is 
 described in
 .M calendar_conf 5 .
 .sp 1
-The calendar definition is taken from the file \fBfname\fP. Requires root or
+The calendar definition is taken from the file \fIfname\fP. Requires root or
 manager privileges. 
 .\"
-.IP "\fB\-Ackpt fname\fP	\fI<add ckpt. environment>\fP"
-Add the checkpointing environment as defined in \fBfname\fP (see 
+.IP "\fB\-Ackpt\fP \fIfname\fP	\fI<add ckpt. environment>\fP"
+Add the checkpointing environment as defined in \fIfname\fP (see
 .M checkpoint 5 )
 to the list of supported checkpointing environments. 
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Aconf fname_list\fP	\fI<add configurations>\fP"
+.IP "\fB\-Aconf\fP \fIfname_list\fP	\fI<add configurations>\fP"
 Add the configurations (see
 .M xxqs_name_sxx_conf 5 )
 specified in the files
-in the comma separated \fBfname_list\fP. The configuration
+in the comma separated \fIfname_list\fP. The configuration
 is added for the host that is identical to the file name.
 .br
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Ae fname\fP	\fI<add execution host>\fP"
-Add the execution host defined in \fBfname\fP
+.IP "\fB\-Ae\fP \fIfname\fP	\fI<add execution host>\fP"
+Add the execution host defined in \fIfname\fP
 to the xxQS_NAMExx cluster. The format of the execution host
 specification is described in
 .M host_conf 5 .
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Ahgrp fname\fP		\fI<add host group configuration>\fP"
-Add the host group configuration defined in \fBfile\fP. 
-The file format of \fBfname\fP must comply
+.IP "\fB\-Ahgrp\fP \fIfname\fP		\fI<add host group configuration>\fP"
+Add the host group configuration defined in \fIfile\fP.
+The file format of \fIfname\fP must comply
 with the format specified in 
 .M hostgroup 5 .
 Requires root or manager privileges. 
 .\"
-.IP "\fB\-Arqs fname\fP	\fI<add RQS configuration>\fP"
+.IP "\fB\-Arqs\fP \fIfname\fP	\fI<add RQS configuration>\fP"
 Add the resource quota set (RQS) defined in the
-file named \fBfname\fP to the xxQS_NAMExx
+file named \fIfname\fP to the xxQS_NAMExx
 cluster. Requires root or manager privileges.
 .\"
-.IP "\fB\-Ap fname\fP	\fI<add PE configuration>\fP"
-Add the parallel environment (PE) defined in \fBfname\fP to the xxQS_NAMExx
+.IP "\fB\-Ap\fP \fIfname\fP	\fI<add PE configuration>\fP"
+Add the parallel environment (PE) defined in \fIfname\fP to the xxQS_NAMExx
 cluster. Requires root or manager privileges.
 .\"
-.IP "\fB\-Aprj fname\fP	\fI<add new project>\fP"
+.IP "\fB\-Aprj\fP \fIfname\fP	\fI<add new project>\fP"
 Adds the project description defined in
 .B fname
 to the list of registered projects (see
@@ -134,17 +137,17 @@ Requires root or manager privileges.
 .\"
 .\" usermapping start
 .\" .IP "\fB\-Aumap fname\fP   \fI<add user mapping configuration>\fP"
-.\" Add the user mapping configuration defined in \fBfname\fP.
-.\" The file format of \fBfname\fP must comply
+.\" Add the user mapping configuration defined in \fIfname\fP.
+.\" The file format of \fIfname\fP must comply
 .\" to the format specified in 
 .\" .M usermapping 5 .
 .\" Requires root or manager privileges. 
 .\" usermapping end
-.IP "\fB\-Aq fname\fP	\fI<add new queue>\fP"
-Add the queue defined in \fBfname\fP to the xxQS_NAMExx
+.IP "\fB\-Aq\fP \fIfname\fP	\fI<add new queue>\fP"
+Add the queue defined in \fIfname\fP to the xxQS_NAMExx
 cluster. Requires root or manager privileges.
 .\"
-.IP "\fB\-Au fname\fP	\fI<add an ACL>\fP"
+.IP "\fB\-Au\fP \fIfname\fP	\fI<add an ACL>\fP"
 Add the user access list (ACL) defined in file
 .B fname
 to xxQS_NAMExx. User lists
@@ -170,93 +173,93 @@ the next major release.
 .br
 Similar to \fB\-dattr\fP (see below) but the definition of the list
 attributes from which entries are to be deleted is contained in the
-file named \fBfname\fP. As opposed to \fB\-dattr\fP, multiple
+file named \fIfname\fP. As opposed to \fB\-dattr\fP, multiple
 attributes can be modified. Their specification has to be listed in
-\fBfname\fP following the file format of the corresponding object (see
+\fIfname\fP following the file format of the corresponding object (see
 .M queue_conf 5
 for the queue, for example).
 .br
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Mattr obj_spec fname obj_instance,...\fP"
+.IP "\fB\-Mattr\fP \fIobj_spec fname obj_instance,...\fP"
 .ta 2.3i
 	\fI<mod. object attributes>\fP
 .ta 3i
 .br
 Similar to \fB\-mattr\fP (see below) but takes specifications for the object
-attributes to be modified from file named \fBfname\fP. As opposed to
+attributes to be modified from file named \fIfname\fP. As opposed to
 \fB\-mattr\fP,
 multiple attributes can be modified. Their specification has to be listed
-in \fBfname\fP following the file format of the corresponding object
+in \fIfname\fP following the file format of the corresponding object
 (see
 .M queue_conf 5
 for the queue, for example).
 .br
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Mc fname\fP	\fI<modify complex>\fP"
-Overwrites the complex configuration with the contents of \fBfname\fP.
+.IP "\fB\-Mc\fP \fIfname\fP	\fI<modify complex>\fP"
+Overwrites the complex configuration with the contents of \fIfname\fP.
 The argument file must comply with the format specified in
 .M complex 5 .
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Mcal fname\fP	\fI<modify calendar>\fP"
-Overwrites the calendar definition as specified in \fBfname\fP. The argument 
+.IP "\fB\-Mcal\fP \fIfname\fP	\fI<modify calendar>\fP"
+Overwrites the calendar definition as specified in \fIfname\fP. The argument 
 file must comply with the format described in
 .M calendar_conf 5 .
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Mckpt fname\fP	\fI<modify ckpt. environment>\fP"
+.IP "\fB\-Mckpt\fP \fIfname\fP	\fI<modify ckpt. environment>\fP"
 Overwrite an existing checkpointing environment with the definitions in 
-\fBfname\fP (see
+\fIfname\fP (see
 .M checkpoint 5 ).
-The name attribute in \fBfname\fP has to match an 
+The name attribute in \fIfname\fP has to match an 
 existing checkpointing environment. Requires root or manager privileges.
 .\"
-.IP "\fB\-Mconf fname_list\fP	\fI<modify configurations>\fP"
+.IP "\fB\-Mconf\fP \fIfname_list\fP	\fI<modify configurations>\fP"
 Modify the configurations (see
 .M xxqs_name_sxx_conf 5 )
 specified in the files
-in the comma separated \fBfname_list\fP. The configuration
+in the comma separated \fIfname_list\fP. The configuration
 is modified for the host that is identical to the file name.
 .br
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Me fname\fP	\fI<modify execution host>\fP"
+.IP "\fB\-Me\fP \fIfname\fP	\fI<modify execution host>\fP"
 Overwrites the execution host configuration for the
-specified host with the contents of \fBfname\fP, which must
+specified host with the contents of \fIfname\fP, which must
 comply with the format defined in
 .M host_conf 5 .
 Requires root or manager privilege.
 .\"
-.IP "\fB\-Mhgrp fname\fP		\fI<modify host group configuration>\fP"
+.IP "\fB\-Mhgrp\fP \fIfname\fP		\fI<modify host group configuration>\fP"
 Allows changing the host group configuration with a single command.
 All host group configuration entries contained in
 .B fname
 will be applied. Configuration entries not contained in
 .B fname
-will be deleted. The file format of \fBfname\fP must comply
+will be deleted. The file format of \fIfname\fP must comply
 to the format specified in 
 .M hostgroup 5 .
 Requires root or manager privileges.
 .\" 
-.IP "\fB\-Mrqs fname [mrqs_name]\fP	\fI<modify RQS configuration>\fP"
+.IP "\fB\-Mrqs\fP \fIfname [mrqs_name]\fP	\fI<modify RQS configuration>\fP"
 Same as \fB\-mrqs\fP (see below) but
 instead of invoking an editor to modify the
-RQS configuration, the file \fBfname\fP
+RQS configuration, the file \fIfname\fP
 is considered to
-contain a changed configuration. The name of the rule set in \fBfname\fP
+contain a changed configuration. The name of the rule set in \fIfname\fP
 must be the same as \fBrqs_name\fP. If \fBrqs_name\fR is not set, all rule sets
-are overwritten by the rule sets in \fBfname\fP
+are overwritten by the rule sets in \fIfname\fP
 Refer to
 .M xxqs_name_sxx_resource_quota 5
 for details on the RQS configuration format.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Mp fname\fP	\fI<modify PE configuration>\fP"
+.IP "\fB\-Mp\fP \fIfname\fP	\fI<modify PE configuration>\fP"
 Same as \fB\-mp\fP (see below) but
 instead of invoking an editor to modify the
-PE configuration the file \fBfname\fP
+PE configuration the file \fIfname\fP
 is considered to
 contain a changed configuration.
 Refer to
@@ -264,10 +267,10 @@ Refer to
 for details on the PE configuration format.
 Requires root or manager privilege.
 .\"
-.IP "\fB\-Mprj fname\fP	\fI<modify project configuration>\fP"
+.IP "\fB\-Mprj\fP \fIfname\fP	\fI<modify project configuration>\fP"
 Same as \fB\-mprj\fP (see below) but
 instead of invoking an editor to modify the
-project configuration the file \fBfname\fP
+project configuration the file \fIfname\fP
 is considered to
 contain a changed configuration.
 Refer to
@@ -275,10 +278,10 @@ Refer to
 for details on the project configuration format.
 Requires root or manager privilege.
 .\"
-.IP "\fB\-Mq fname\fP	\fI<modify queue configuration>\fP"
+.IP "\fB\-Mq\fP \fIfname\fP	\fI<modify queue configuration>\fP"
 Same as \fB\-mq\fP (see below) but
 instead of invoking an editor to modify the
-queue configuration the file \fBfname\fP
+queue configuration the file \fIfname\fP
 is considered to
 contain a changed configuration.
 Refer to
@@ -286,55 +289,55 @@ Refer to
 for details on the queue configuration format.
 Requires root or manager privilege.
 .\"
-.IP  "\fB\-Msconf fname\fP	\fI<modify scheduler configuration from fname>\fP"
+.IP  "\fB\-Msconf\fP \fIfname\fP	\fI<modify scheduler configuration from fname>\fP"
 The current scheduler configuration (see
 .M sched_conf 5 )
 is overridden with the configuration specified in the file.
 Requires root or manager privilege.
 .\"
-.IP "\fB\-Mstree fname\fP	\fI<modify share tree>\fP"
+.IP "\fB\-Mstree \fIfname\fP	\fI<modify share tree>\fP"
 Modifies the definition of the share tree (see
 .M share_tree 5 ). 
 The modified sharetree is read from file
-.BR fname .
+.IR fname .
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Mu fname\fP	\fI<modify ACL>\fP"
+.IP "\fB\-Mu \fIfname\fP	\fI<modify ACL>\fP"
 Takes the user access list (ACL) defined in
-.B fname
+.I fname
 to overwrite any existing ACL with the same name. See
 .M access_list 5
 for information on the ACL configuration format. Requires root or
 manager privilege.
 .\"
 .\" usermapping start
-.\" .IP "\fB\-Mumap fname\fP   \fI<modify user mapping configuration>\fP"
+.\" .IP "\fB\-Mumap \fIfname\fP   \fI<modify user mapping configuration>\fP"
 .\" Allows changing of mapping configuration with a single command. 
 .\" All mapping configuration entries contained in
 .\" .B fname
 .\" will be applied. Configuration entries not contained in
 .\" .B fname
-.\" will be deleted. The file format of \fBfname\fP must comply
+.\" will be deleted. The file format of \fIfname\fP must comply
 .\" to the format specified in 
 .\" .M usermapping 5 . Requires root or manager privilege.
 .\" usermapping end
 .\"
-.IP "\fB\-Muser fname\fP	\fI<modify user>\fP"
-Modify the user defined in \fBfname\fP
+.IP "\fB\-Muser \fIfname\fP	\fI<modify user>\fP"
+Modify the user defined in \fIfname\fP
 in the xxQS_NAMExx cluster. The format of the user
 specification is described in
 .M user 5 .
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Rattr obj_spec fname obj_instance,...\fP"
+.IP "\fB\-Rattr\fP \fIobj_spec\fP \fIfname\fP \fIobj_instance,...\fP"
 .ta 2.3i
 	\fI<replace object attribs>\fP
 .ta 3i
 .br
 Similar to \fB\-rattr\fP (see below) but the definition of the list
 attributes whose content is to be replaced is contained in the file
-named \fBfname\fP. As opposed to \fB\-rattr\fP, multiple attributes can
-be modified. Their specification has to be listed in \fBfname\fP
+named \fIfname\fP. As opposed to \fB\-rattr\fP, multiple attributes can
+be modified. Their specification has to be listed in \fIfname\fP
 following the file format of the corresponding object (see
 .M queue_conf 5
 for the queue, for example).
@@ -352,20 +355,20 @@ of an object with a single command. Currently
 supported objects are the queue, the host, the host group, 
 the parallel environment, the resource quota sets
 and the checkpointing interface configuration being specified as
-.IR queue ,
-.IR exechost ,
-.IR hostgroup ,
-.IR pe ,
-.IR rqs ,
+.BR queue ,
+.BR exechost ,
+.BR hostgroup ,
+.BR pe ,
+.BR rqs ,
 or
-.I ckpt
-in \fBobj_spec\fP. 
-For the obj_spec 
-.I queue
-the obj_instance can be a cluster queue name, a queue domain name or a queue
+.B ckpt
+in \fIobj_spec\fP. 
+For the \fIobj_spec\fP 
+.B queue
+the \fIobj_instance\fP can be a cluster queue name, a queue domain name or a queue
 instance name. Find more information concerning different queue names in 
 .M sge_types 5 .
-Depending on the type of the obj_instance, this adds to the cluster queues
+Depending on the type of the \fIobj_instance\fP, this adds to the cluster queues
 attribute sublist the cluster queue's implicit default configuration value or
 the queue domain configuration value or queue instance configuration value.
 The queue
@@ -375,17 +378,17 @@ entries can be added to such lists, while they can
 be deleted with \fB\-dattr\fP, modified with \fB\-mattr\fP, and
 replaced with \fB\-rattr\fP.
 .br
-For the obj_spec 
+For the \fIobj_spec\fP
 .I rqs
-the obj_instance is a unique identifier for a specific rule. The identifier
+the \fIobj_instance\fP is a unique identifier for a specific rule. The identifier
 consists of a rule-set name and either the number of the rule in the list,
 or the name of the rule, separated by a "/".
 .br
 The name of the configuration attribute to be enhanced is specified with
-.B attr_name
+.I attr_name
 followed by
-.B val
-as a \fIname=value\fP pair. The comma separated list
+.I val
+as a \fIname\fP=\fIvalue\fP pair. The comma-separated list
 of object instances (e.g., the list of queues) to
 which the changes have to be applied are specified
 at the end of the command.
@@ -400,7 +403,7 @@ attribute cannot be modified
 .br
 Requires root or manager privileges.
 .\"
-.IP "\fB\-acal calendar_name\fP	\fI<add calendar>\fP"
+.IP "\fB\-acal\fP \fIcalendar_name\fP	\fI<add calendar>\fP"
 Adds a new calendar definition to the xxQS_NAMExx environment. 
 Calendars are used in xxQS_NAMExx for defining availability and 
 unavailability schedules of queues. The format of a calendar definition is 
@@ -412,14 +415,14 @@ With the calendar name given in the option argument,
 will open a 
 temporary file and start up the text editor indicated by the environment 
 variable EDITOR (default
-.M vi 1
+.MO vi 1
 if EDITOR is not set). After 
 entering the calendar definition and closing the editor the new calendar is 
 checked and registered with
 .M xxqs_name_sxx_qmaster 8 .
 Requires root/manager privileges. 
 .\"
-.IP "\fB\-ackpt ckpt_name\fP	\fI<add ckpt. environment>\fP"
+.IP "\fB\-ackpt\fP \fIckpt_name\fP	\fI<add ckpt. environment>\fP"
 Adds a checkpointing environment under the name \fBckpt_name\fP to the list 
 of checkpointing environments maintained by xxQS_NAMExx and to be usable 
 to submit checkpointing jobs (see
@@ -429,20 +432,20 @@ of a checkpointing environment definition).
 .I Qconf
 retrieves a default 
 checkpointing environment configuration and executes
-.M vi 1
+.MO vi 1
 (or $EDITOR if the EDITOR environment variable is set) to allow you to 
 customize the checkpointing environment configuration. Upon exit from 
 the editor, the checkpointing environment is registered with 
 .M xxqs_name_sxx_qmaster 8 .
 Requires root/manager privileges.
 .\"
-.IP "\fB\-aconf host,...\fP	\fI<add configuration>\fP"
+.IP "\fB\-aconf\fP \fIhost\fP,...	\fI<add configuration>\fP"
 Successively adds configurations (see
 .M xxqs_name_sxx_conf 5 )
 For the hosts in the
 comma separated host list.
 For each host, an editor ($EDITOR, if defined, or
-.M vi 1 )
+.MO vi 1 )
 is invoked and the configuration for the host
 can be entered. The configuration is registered with
 .M xxqs_name_sxx_qmaster 8
@@ -450,7 +453,7 @@ after saving the file and quitting the editor.
 .br
 Requires root or manager privileges.
 .\"
-.IP "\fB\-ae [host_template]\fP	\fI<add execution host>\fP"
+.IP "\fB\-ae\fP [\fIhost_template\fP]	\fI<add execution host>\fP"
 Adds a host to the list of xxQS_NAMExx execution
 hosts. If a queue is configured on a host this host is
 automatically added to the xxQS_NAMExx execution host list.
@@ -461,7 +464,7 @@ these parameters can be modified (from their defaults)
 at any later time via
 the \fB\-me\fP option described below.
 .br
-If the \fBhost_template\fP argument is present,
+If the \fIhost_template\fP argument is present,
 .I qconf
 retrieves the configuration of the specified execution
 host from
@@ -470,7 +473,7 @@ or a generic template otherwise.
 The template is then stored in a file and
 .I qconf
 executes
-.M vi 1
+.MO vi 1
 (or the editor indicated by $EDITOR if the EDITOR environment
 variable is set) to change the entries in the file.
 The format of the execution host
@@ -481,8 +484,8 @@ quit the new execution host is registered with
 .M xxqs_name_sxx_qmaster 8 .
 Requires root/manager privileges.
 .\"
-.IP "\fB\-ah hostname,...\fP	\fI<add administrative host>\fP"
-Adds hosts \fBhostname\fP to the xxQS_NAMExx trusted host list (a
+.IP "\fB\-ah\fP \fIhostname,...\fP	\fI<add administrative host>\fP"
+Adds hosts \fIhostname\fP to the xxQS_NAMExx trusted host list (a
 host must be in this list to execute administrative xxQS_NAMExx
 commands, the sole exception to this being the execution of
 .I qconf
@@ -494,21 +497,21 @@ usually add all designated execution hosts
 to the xxQS_NAMExx trusted host list automatically.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-ahgrp group\fP		\fI<add host group configuration>\fP"
+.IP "\fB\-ahgrp\fP \fIgroup\fP		\fI<add host group configuration>\fP"
 Adds a new host group with the name specified in 
-.B group.
+.IR group .
 This command invokes an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by the EDITOR environment variable). 
 The new host group entry is registered after 
 changing the entry and
 exiting the editor. 
 Requires root or manager privileges.
 .\" 
-.IP "\fB\-arqs [rqs_name]\fP	\fI<add new RQS>\fP"
+.IP "\fB\-arqs\fP [\fIrqs_name\fP]	\fI<add new RQS>\fP"
 Adds one or more \fIResource Quota Set\fP (RQS) description
 under the names
-.B rqs_name
+.I rqs_name
 to the list
 of RQSs maintained by xxQS_NAMExx. (See
 .M xxqs_name_sxx_resource_quota 5
@@ -516,22 +519,22 @@ for details on the format of an RQS definition.)
 .I Qconf
 retrieves a default RQS configuration
 and executes
-.M vi 1
+.MO vi 1
 (or $EDITOR if the EDITOR environment variable is set) to
 allow you to customize the RQS configuration. Upon exit
 from the editor, the RQS is registered with
 .M xxqs_name_sxx_qmaster 8 .
 Requires root or manager privileges.
 .\"
-.IP "\fB\-am user,...\fP	\fI<add managers>\fP"
+.IP "\fB\-am\fP \fIuser\fP,...	\fI<add managers>\fP"
 Adds the indicated users to the xxQS_NAMExx manager list. Requires
 root or manager privileges.
 .\"
-.IP "\fB\-ao user,...\fP	\fI<add operators>\fP"
+.IP "\fB\-ao\fP \fIuser\fP,...	\fI<add operators>\fP"
 Adds the indicated users to the xxQS_NAMExx operator list.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-ap pe_name\fP	\fI<add new PE>\fP"
+.IP "\fB\-ap\fP \fIpe_name\fP	\fI<add new PE>\fP"
 Adds a \fIParallel Environment\fP (PE) description
 under the name
 .B pe_name
@@ -543,16 +546,16 @@ for details on the format of a PE definition).
 .I Qconf
 retrieves a default PE configuration
 and executes
-.M vi 1
+.MO vi 1
 (or $EDITOR if the EDITOR environment variable is set) to
 allow you to customize the PE configuration. Upon exit
 from the editor, the PE is registered with
 .M xxqs_name_sxx_qmaster 8 .
 Requires root/manager privileges.
 .\"
-.IP "\fB\-at thread_name\fP \fI<activates thread in master>\fP"
+.IP "\fB\-at\fP \fIthread_name\fP \fI<activates thread in master>\fP"
 Activates an additional thread in the master process. 
-.B thread_name 
+.I thread_name
 might be either "scheduler" or "jvm". The corresponding thread
 is only started when it is not already running. There might be
 only one scheduler and only one JVM thread in the master process
@@ -563,19 +566,19 @@ Adds a project description to the list of registered projects (see
 .M project 5 ).
 .I Qconf
 retrieves a template project configuration and executes
-.M vi 1
+.MO vi 1
 (or $EDITOR if
 the EDITOR environment variable is set) to allow you to customize the new 
 project. Upon exit from the editor, the template is registered with 
 .M xxqs_name_sxx_qmaster 8 .
 Requires root or manager privileges.
 .\"
-.IP "\fB\-aq [queue_name]\fP	\fI<add new queue>\fP"
+.IP "\fB\-aq\fP [\fIqueue_name\fP]	\fI<add new queue>\fP"
 .I Qconf
 retrieves the default queue configuration (see
 .M queue_conf 5 )
 and executes
-.M vi 1
+.MO vi 1
 (or $EDITOR if the EDITOR environment variable is set) to
 allow you to customize the queue configuration. Upon exit
 from the editor, the queue is registered with
@@ -584,16 +587,16 @@ A minimal configuration requires only that the
 queue name and queue hostlist be set.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-as hostname,...\fP	\fI<add submit hosts>\fP"
+.IP "\fB\-as\fP \fIhostname\fP,...	\fI<add submit hosts>\fP"
 Add hosts \fBhostname\fP to the list of hosts allowed to
 submit xxQS_NAMExx jobs and control their behavior only.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-astnode node_path=shares,...\fP	\fI<add share tree node>\fP"
+.IP "\fB\-astnode\fP \fInode_path\fP\fB=\fP\fIshares\fP,...	\fI<add share tree node>\fP"
 Adds the specified share tree node(s) to the share tree (see
 .M share_tree 5 ).
-The \fBnode_path\fP is a hierarchical path
-(\fB[/]node_name[[/.]node_name...]\fP)
+The \fInode_path\fP is a hierarchical path
+([\fB/\fP]\fInode_name\fP[[\fB/.\fP]\fInode_name\fP...])
 specifying the location of the new node in the share tree.
 The base name of the node_path is the name of the new node.
 The node is initialized to the number of specified shares.
@@ -603,21 +606,21 @@ Requires root or manager privileges.
 Adds the definition of a share tree to the system (see
 .M share_tree 5 ).
 A template share tree is retrieved and an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by $EDITOR) is invoked for modifying
 the share tree definition. Upon exiting the editor, the modified data
 is registered with
 .M xxqs_name_sxx_qmaster 8 .
 Requires root or manager privileges.
 .\"
-.IP "\fB\-Astree fname\fP	\fI<add share tree>\fP"
+.IP "\fB\-Astree\fP \fIfname\fP	\fI<add share tree>\fP"
 Adds the definition of a share tree to the system (see
 .M share_tree 5 ) 
 from the file
-.BR fname .
+.IR fname .
 Requires root or manager privileges.
 .\"
-.IP "\fB\-au user,... acl_name,...\fP	\fI<add users to ACLs>\fP"
+.IP "\fB\-au\fP \fIuser\fP,... \fIacl_name\fP,...	\fI<add users to ACLs>\fP"
 Adds users to xxQS_NAMExx user access lists (ACLs). User lists
 are used for queue usage authentication. Requires
 root/manager/operator privileges.
@@ -626,15 +629,15 @@ root/manager/operator privileges.
 .\" Adds user mapping for the cluster user specified in 
 .\" .B user.
 .\" This command invokes an editor (either
-.\" .M vi 1
+.\" .MO vi 1
 .\" or the editor indicated by the EDITOR environment variable). 
 .\" The new user mapping entry is registered after 
 .\" changing the entry and
 .\" exiting the editor. 
 .\" Requires root or manager privileges.
 .\" usermapping end
-.IP "\fB\-Auser fname\fP	\fI<add user>\fP"
-Add the user defined in \fBfname\fP
+.IP "\fB\-Auser\fP \fIfname\fP	\fI<add user>\fP"
+Add the user defined in \fIfname\fP
 to the xxQS_NAMExx cluster. The format of the user
 specification is described in
 .M user 5 .
@@ -644,7 +647,7 @@ Requires root or manager privileges.
 Adds a user to the list of registered users (see
 .M user 5 ).
 This command invokes an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by the EDITOR environment variable) for a
 template user. The new user is registered after changing the entry and
 exiting the editor. Requires root or manager privileges.
@@ -660,13 +663,14 @@ shows the same information in a less-readable (linearized) form.
 Clears all user and project usage from the sharetree.  All usage will be initialized
 back to zero.
 .\"
-.IP "\fB\-cq wc_queue_list\fP	\fI<clean queue>\fP"
-Cleans queue from jobs which haven't been reaped. Primarily a
+.IP "\fB\-cq\fP \fIwc_queue_list\fP	\fI<clean queue>\fP"
+Cleans queue of jobs which haven't been reaped.  (Actually purges jobs
+remaining on the queue.)  Primarily a
 development tool. Requires root/manager/operator privileges.
-Find a description of wc_queue_list in 
+Find a description of \fIwc_queue_list\fP in
 .M sge_types 5 .
 .\"
-.IP "\fB\-dattr obj_spec attr_name val obj_instance,...\fP"
+.IP "\fB\-dattr\fP \fIobj_spec\fP \fIattr_name\fP \fIval\fP \fIobj_instance\fP,..."
 .ta 2.3i
 	\fI<delete in object attribs>\fP
 .ta 3i
@@ -678,79 +682,79 @@ Find more information concerning obj_spec and obj_instance
 in the description of 
 .B -aattr
 .\"
-.IP "\fB\-dcal calendar_name,...\fP	\fI<delete calendar>\fP"
+.IP "\fB\-dcal\fP \fIcalendar_name\fP,...	\fI<delete calendar>\fP"
 Deletes the specified calendar definition from xxQS_NAMExx. Requires 
 root/manager privileges. 
 .\"
-.IP "\fB\-dckpt ckpt_name\fP	\fI<delete ckpt. environment>\fP"
+.IP "\fB\-dckpt\fP \fIckpt_name\fP	\fI<delete ckpt. environment>\fP"
 Deletes the specified checkpointing environment. Requires root/manager 
 privileges.
 .\"
-.IP "\fB\-dconf host,...\fP	\fI<delete local configuration>\fP"
+.IP "\fB\-dconf\fP \fIhost\fP,...	\fI<delete local configuration>\fP"
 The local configuration entries for the specified hosts are deleted
 from the configuration list.
 Requires root or manager privilege.
 .\"
-.IP "\fB\-de host_name,...\fP	\fI<delete execution host>\fP"
+.IP "\fB\-de\fP \fIhost_name\fP,...	\fI<delete execution host>\fP"
 Deletes hosts from the xxQS_NAMExx execution host list.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-dh host_name,...\fP	\fI<delete administrative host>\fP"
+.IP "\fB\-dh\fP \fIhost_name\fP,...	\fI<delete administrative host>\fP"
 Deletes hosts from the xxQS_NAMExx trusted host list.  The host on which
 .M xxqs_name_sxx_qmaster 8
 is currently running cannot be removed from the list of administrative hosts.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-dhgrp group\fP	\fI<delete host group configuration>\fP"
+.IP "\fB\-dhgrp\fP \fIgroup\fP	\fI<delete host group configuration>\fP"
 Deletes host group configuration with the name specified in
 .B group.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-drqs rqs_name_list\fP	\fI<delete RQS>\fP"
+.IP "\fB\-drqs\fP \fIrqs_name_list\fP	\fI<delete RQS>\fP"
 Deletes the specified resource quota sets (RQS).
 Requires root or manager privileges.
 .\"
-.IP "\fB\-dm user[,user,...]\fP	\fI<delete managers>\fP"
+.IP "\fB\-dm\fP \fIuser\fP[,\fIuser\fP,...]	\fI<delete managers>\fP"
 Deletes managers from the manager list.
 Requires root or manager privileges.
 It is not possible to delete the admin user or the user root from the manager list.
 .\"
-.IP "\fB\-do user[,user,...]\fP	\fI<delete operators>\fP"
+.IP "\fB\-do\fP \fIuser\fP[,\fIuser\fP,...]	\fI<delete operators>\fP"
 Deletes operators from the operator list. 
 Requires root or manager privileges.
 It is not possible to delete the admin user or the user root from the operator list.
 .\"
-.IP "\fB\-dp pe_name\fP	\fI<delete parallel environment>\fP"
+.IP "\fB\-dp\fP \fIpe_name\fP	\fI<delete parallel environment>\fP"
 Deletes the specified parallel environment (PE).
 Requires root or manager privileges.
 .\"
-.IP "\fB\-dprj project,...\fP	\fI<delete projects>\fP"
+.IP "\fB\-dprj\fP \fIproject\fP,...	\fI<delete projects>\fP"
 Deletes the specified project(s). Requires root/manager privileges.
 .\"
-.IP "\fB\-dq queue_name,...\fP	\fI<delete queue>\fP"
+.IP "\fB\-dq\fP \fIqueue_name\fP,...	\fI<delete queue>\fP"
 Removes the specified queue(s), which must be empty.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-ds host_name,...\fP	\fI<delete submit host>\fP"
+.IP "\fB\-ds\fP \fIhost_name\fP,...	\fI<delete submit host>\fP"
 Deletes hosts from the xxQS_NAMExx submit host list.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-dstnode node_path,...\fP	\fI<delete share tree node>\fP"
+.IP "\fB\-dstnode\fP \fInode_path\fP,...	\fI<delete share tree node>\fP"
 Deletes the specified share tree node(s).
-The \fBnode_path\fP is a hierarchical path
-(\fB[/]node_name[[/.]node_name...]\fP)
+The \fInode_path\fP is a hierarchical path
+([\fB/\fP\fI]node_name\fP[[\fB/.\fP\fI]node_name\fP...])
 specifying the location of the node to be deleted in the share tree.
 Requires root or manager privileges.
 .\"
 .IP "\fB\-dstree\fP	\fI<delete share tree>\fP"
 Deletes the current share tree. Requires root or manager privileges.
 .\"
-.IP "\fB\-du user,... acl_name,...\fP	\fI<delete users from ACL>\fP"
+.IP "\fB\-du\fP \fIuser\fP,... \fIacl_name\fP,...	\fI<delete users from ACL>\fP"
 Deletes one or more users from one or more xxQS_NAMExx user
 access lists (ACLs). Requires root/manager/operator
 privileges.
 .\"
-.IP "\fB\-dul acl_name,...\fP	\fI<delete user lists>\fP"
+.IP "\fB\-dul\fP \fIacl_name\fP,...	\fI<delete user lists>\fP"
 Deletes one or more user lists from the system.
 Requires root/manager/operator privileges.
 .\" usermapping start
@@ -759,16 +763,16 @@ Requires root/manager/operator privileges.
 .\" .B user.
 .\" Requires root or manager privileges.
 .\" usermapping end
-.IP "\fB\-duser user,...\fP	\fI<delete users>\fP""
+.IP "\fB\-duser\fP \fIuser\fP,...	\fI<delete users>\fP"
 Deletes the specified user(s) from the list of registered users.
 Requires root or manager privileges.
 .\"
 .IP "\fB\-help\fP"
 Prints a listing of all options.
 .\"
-.IP "\fB\-k{m|s|e[j] {host,...|all}}\fP	\fI<shutdown xxQS_NAMExx>\fP"
+.IP "\fB\-k\fP{\fBm\fP|\fBs\fP|\fBe\fP[\fBj\fP] {\fIhost\fP,...|\fBall\fP}}	\fI<shutdown xxQS_NAMExx>\fP"
 .B Note:
-The \fB\-ks\fP switch is deprecated, may be removed in future release.
+The \fB\-ks\fP switch is deprecated and may be removed in future release.
 Please use the \fB\-kt\fP switch instead.
 .br
 Used to shutdown xxQS_NAMExx components (daemons).
@@ -796,13 +800,13 @@ is running again.
 .br
 Requires root or manager privileges.
 .\"
-.IP "\fB\-kt thread_name\fP   \fI<terminate master thread>\fP""
+.IP "\fB\-kt\fP \fIthread_name\fP   \fI<terminate master thread>\fP"
 Terminates a thread in the master process. Currently it is only
 supported to shutdown the "scheduler" and the "jvm" thread. The
 command will only be successful if the corresponding thread is 
 running.
 .\"
-.IP "\fB\-kec {id,...|all}\fP	\fI<kill event client>\fP"
+.IP "\fB\-kec\fP {\fIid\fP,...|\fBall\fP}	\fI<kill event client>\fP"
 Used to shutdown event clients registered at 
 .M xxqs_name_sxx_qmaster 8 .
 The comma separated event client list specifies the event clients
@@ -812,7 +816,7 @@ list, all running event clients except special clients like the
 scheduler thread are terminated.
 Requires root or manager privilege.
 .\"
-.IP "\fB\-mattr obj_spec attr_name val obj_instance,...\fP"
+.IP "\fB\-mattr\fP \fIobj_spec\fP \fIattr_name\fP \fIval\fP \fIobj_instance\fP,..."
 .ta 2.3i
 	\fI<modify object attributes>\fP
 .ta 3i
@@ -828,27 +832,27 @@ in the description of
 The complex configuration (see
 .M complex 5 )
 is retrieved, an editor is executed (either
-.M vi 1
+.MO vi 1
 or the editor indicated by $EDITOR)
 and the changed complex configuration is registered with
 .M xxqs_name_sxx_qmaster 8
 upon exit of the editor.
 Requires root or manager privilege.
 .\"
-.IP "\fB\-mcal calendar_name\fP	\fI<modify calendar>\fP"
+.IP "\fB\-mcal\fP \fIcalendar_name\fP	\fI<modify calendar>\fP"
 The specified calendar definition (see
 .M calendar_conf 5 )
 is retrieved, an editor is executed (either
-.M vi 1
+.MO vi 1
 or the editor indicated by $EDITOR) and 
 the changed calendar definition is registered with
 .M xxqs_name_sxx_qmaster 8
 upon exit of the editor. Requires root or manager privilege. 
 .\"
-.IP "\fB\-mckpt ckpt_name\fP	\fI<modify ckpt. environment>\fP"
+.IP "\fB\-mckpt\fP \fIckpt_name\fP	\fI<modify ckpt. environment>\fP"
 Retrieves the current configuration for the specified checkpointing 
 environment, executes an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by the 
 EDITOR environment variable) and registers the new configuration with 
 the
@@ -858,10 +862,10 @@ Refer to
 for details on the checkpointing environment configuration format.
 Requires root or manager privilege.
 .\"
-.IP "\fB\-mconf [host,...|global]\fP	\fI<modify configuration>\fP"
+.IP "\fB\-mconf\fP [\fIhost\fP,...|\fBglobal\fP]	\fI<modify configuration>\fP"
 The configuration for the specified host
 is retrieved, an editor is executed (either
-.M vi 1
+.MO vi 1
 or the editor indicated by $EDITOR)
 and the changed configuration is registered with
 .M xxqs_name_sxx_qmaster 8
@@ -875,10 +879,10 @@ described in
 .br
 Requires root or manager privilege.
 .\"
-.IP "\fB\-me hostname\fP	\fI<modify execution host>\fP"
+.IP "\fB\-me\fP \fIhostname\fP	\fI<modify execution host>\fP"
 Retrieves the current configuration for the specified execution host,
 executes an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by the EDITOR environment variable)
 and registers the changed configuration with
 .M xxqs_name_sxx_qmaster 8
@@ -887,11 +891,11 @@ The format of the execution host configuration is described in
 .M host_conf 5 .
 Requires root or manager privilege.
 .\"
-.IP "\fB\-mhgrp group\fP	\fI<modify host group configuration>\fP"
+.IP "\fB\-mhgrp\fP \fIgroup\fP	\fI<modify host group configuration>\fP"
 The host group entries for the host group specified in
 .B group
 are retrieved and an editor (either 
-.M vi 1
+.MO vi 1
 or the editor indicated by the EDITOR environment variable) is invoked
 for modifying the host group configuration. By closing the editor,
 the modified data is registered.
@@ -899,11 +903,11 @@ The format of the host group configuration is described in
 .M hostgroup 5 . 
 Requires root or manager privileges.
 .\"
-.IP "\fB\-mrqs [rqs_name]\fP	\fI<modify RQS configuration>\fP"
+.IP "\fB\-mrqs\fP [\fIrqs_name\fP]	\fI<modify RQS configuration>\fP"
 Retrieves the resource quota set (RQS)configuration defined in rqs_name,
 or if rqs_name is not given, retrieves all resource quota sets,
 executes an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by the EDITOR environment variable)
 and registers the new configuration with the
 .M xxqs_name_sxx_qmaster 8 .
@@ -912,11 +916,11 @@ Refer to
 for details on the RQS configuration format.
 Requires root or manager privilege.
 .\"
-.IP "\fB\-mp pe_name\fP	\fI<modify PE configuration>\fP"
+.IP "\fB\-mp\fP \fIpe_name\fP	\fI<modify PE configuration>\fP"
 Retrieves the current configuration for the specified
 .I parallel environment
 (PE), executes an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by the EDITOR environment variable)
 and registers the new configuration with the
 .M xxqs_name_sxx_qmaster 8 .
@@ -925,19 +929,19 @@ Refer to
 for details on the PE configuration format.
 Requires root or manager privilege.
 .\"
-.IP "\fB\-mprj project\fP	\fI<modify project>\fP"
+.IP "\fB\-mprj\fP \fIproject\fP	\fI<modify project>\fP"
 Data for the specific project is retrieved (see
 .M project 5 )
 and an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by $EDITOR) is invoked for modifying the project
 definition. Upon exiting the editor, the modified data is registered.
 Requires root or manager privileges.
 .\"
-.IP "\fB\-mq queuename\fP	\fI<modify queue configuration>\fP"
+.IP "\fB\-mq\fP \fIqueuename\fP	\fI<modify queue configuration>\fP"
 Retrieves the current configuration for the specified queue,
 executes an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by the EDITOR environment variable)
 and registers the new configuration with the
 .M xxqs_name_sxx_qmaster 8 .
@@ -951,37 +955,37 @@ The current scheduler configuration (see
 .M sched_conf 5 )
 is retrieved, an 
 editor is executed (either
-.M vi 1
+.MO vi 1
 or the editor indicated by $EDITOR) and 
 the changed configuration is registered with
 .M xxqs_name_sxx_qmaster 8
 upon exit of the editor.
 Requires root or manager privilege.
 .\"
-.IP "\fB\-mstnode node_path=shares,...\fP	\fI<modify share tree node>\fP"
+.IP "\fB\-mstnode\fP \fInode_path\fP\fB=\fP\fIshares\fP,...	\fI<modify share tree node>\fP"
 Modifies the specified share tree node(s) in the share tree (see
 .M share_tree 5 ).
 The \fBnode_path\fP is a hierarchical path
-(\fB[/]node_name[[/.]node_name...]\fP)
+(\fP[fB/\fP]\fInode_name\fP[[\fB/.\fP]\fInode_name\fP...])
 specifying the location of an existing node in the share tree.
-The node is set to the number of specified \fBshares\fP.
+The node is set to the number of specified \fIshares\fP.
 Requires root or manager privileges.
 .\"
 .IP "\fB\-mstree\fP	\fI<modify share tree>\fP"
 Modifies the definition of the share tree (see
 .M share_tree 5 ).
 The present share tree is retrieved and an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by $EDITOR) is invoked 
 for modifying the share tree definition. Upon exiting the editor,
 the modified data is registered with
 .M xxqs_name_sxx_qmaster 8 .
 Requires root or manager privileges.
 .\"
-.IP "\fB\-mu acl_name\fP	\fI<modify user access lists>\fP"
+.IP "\fB\-mu\fP \fIacl_name\fP	\fI<modify user access lists>\fP"
 Retrieves the current configuration for the specified user access list, 
 executes an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by the EDITOR 
 environment variable) and registers the new configuration with the 
 .M xxqs_name_sxx_qmaster 8 .
@@ -991,28 +995,28 @@ Requires root or manager privilege.
 .\" The mapping entries for the cluster user specified in
 .\" .B user
 .\" are retrieved and an editor (either 
-.\" .M vi 1
+.\" .MO vi 1
 .\" or the editor indicated by the EDITOR environment variable) is invoked
 .\" for modifying the user mapping configuration. By closing the editor,
 .\" the modified data is registered. Requires root or manager privileges.
 .\" usermapping end
 .\"
-.IP "\fB\-muser user\fP	\fI<modify user>\fP"
+.IP "\fB\-muser\fP \fIuser\fP	\fI<modify user>\fP"
 Data for the specific user is retrieved (see
 .M user 5 )
 and an editor (either
-.M vi 1
+.MO vi 1
 or the editor indicated by the EDITOR environment variable) is invoked
 for modifying the user definition. Upon exiting the editor, the
 modified data is registered. Requires root or manager privileges.
 .\"
-.IP "\fB\-purge queue attr_nm,... obj_spec\fP"
+.IP "\fB\-purge\fP \fIqueue\fP \fIattr_nm\fP,... \fIobj_spec\fP"
 .ta 2.3i
 	\fI<purge divergent attribute settings>\fP
 .ta 3i
 .br
-Delete the values of the attributes defined in \fBattr_nm\fP from the 
-object defined in \fBobj_spec\fP. Obj_spec can be "queue_instance"
+Delete the values of the attributes defined in \fIattr_nm\fP from the 
+object defined in \fIobj_spec\fP. \fIobj_spec\fP can be "queue_instance"
 or "queue_domain".  The names of the attributes are described in 
 .M queue_conf 5 .
 .br
@@ -1030,7 +1034,7 @@ overriding attribute settings from a cluster queue configuration.  With
 -purge, the entire attribute is deleted for the given queue instance or
 queue domain.
 .\"
-.IP "\fB\-rattr obj_spec attr_name val obj_instance,...\fP"
+.IP "\fB\-rattr\fP \fIobj_spec\fP \fIattr_name\fP \fIval\fP \fIobj_instance\fP,..."
 .ta 2.3i
 	\fI<replace object attributes>\fP
 .ta 3i
@@ -1044,31 +1048,31 @@ in the description of
 .br
 Requires root or manager privilege. 
 .\"
-.IP "\fB\-rsstnode node_path,...\fP	\fI<show share tree node>\fP"
+.IP "\fB\-rsstnode\fP \fInode_path\fP,...	\fI<show share tree node>\fP"
 Recursively shows the name and shares of the specified share tree node(s)
 and the names and shares of its child nodes. (see
 .M share_tree 5 ).
-The \fBnode_path\fP is a hierarchical path
-(\fB[/]node_name[[/.]node_name...]\fP)
+The \fInode_path\fP is a hierarchical path
+(\fB[/]\fInode_name\fP[[/.]\fInode_name\fP...])
 specifying the location of a node in the share tree.
 .\"
 .IP "\fB\-sc\fP	\fI<show complexes>\fP"
 Display the complex configuration.
 .\"
-.IP "\fB\-scal calendar_name\fP	\fI<show calendar>\fP"
+.IP "\fB\-scal\fP \fIcalendar_name\fP	\fI<show calendar>\fP"
 Display the configuration of the specified calendar. 
 .\"
 .IP "\fB\-scall\fP	\fI<show calendar list>\fP"
 Show a list of all calendars currently defined. 
 .\"
-.IP "\fB\-sckpt ckpt_name\fP	\fI<show ckpt. environment>\fP"
+.IP "\fB\-sckpt\fP \fIckpt_name\fP	\fI<show ckpt. environment>\fP"
 Display the configuration of the specified checkpointing environment.
 .\"
 .IP "\fB\-sckptl\fP	\fI<show ckpt. environment list>\fP"
 Show a list of the names of all checkpointing environments currently 
 configured.
 .\"
-.IP "\fB\-sconf [host,...|global]\fP	\fI<show configuration>\fP"
+.IP "\fB\-sconf\fP [\fIhost\fP,...|\fBglobal\fP]	\fI<show configuration>\fP"
 Print the global or local (host specific) configuration.
 If the optional comma separated host
 list argument is omitted or the special string \fBglobal\fP is
@@ -1088,7 +1092,7 @@ global configuration.
 Displays detached settings in the cluster configuration (see
 .M queue_conf 5 ).
 .\"
-.IP "\fB\-se hostname\fP	\fI<show execution host>\fP"
+.IP "\fB\-se\fP \fIhostname\fP	\fI<show execution host>\fP"
 Displays the definition of the specified execution host.
 .\"
 .IP "\fB\-sel\fP	\fI<show execution hosts>\fP"
@@ -1116,22 +1120,22 @@ be retrieved, a '0' character will be displayed.
 .IP "\fB\-sh\fP	\fI<show administrative hosts>\fP"
 Displays the xxQS_NAMExx administrative host list.
 .\"
-.IP "\fB\-shgrp group\fP		\fI<show host group configuration>\fP"
+.IP "\fB\-shgrp\fP \fIgroup\fP		\fI<show host group configuration>\fP"
 Displays the host group entries for the group specified in
 .B group.
 .IP "\fB\-shgrpl\fP		\fI<show host group lists>\fP"
 Displays a name list of all currently defined host groups
 which have a valid host group configuration.
 .\" 
-.IP "\fB\-shgrp_tree group\fP	\fI<show host group tree>\fP"
+.IP "\fB\-shgrp_tree\fP \fIgroup\fP	\fI<show host group tree>\fP"
 Shows a tree like structure of host group.
 .\" 
-.IP "\fB\-shgrp_resolved group\fP	\fI<show host group hosts>\fP"
+.IP "\fB\-shgrp_resolved\fP \fIgroup\fP	\fI<show host group hosts>\fP"
 Shows a list of all hosts which are part of the definition of
 host group. If the host group definition contains sub host groups
 than also these groups are resolved and the hostnames are printed.
 .\" 
-.IP "\fB\-srqs [rqs_name_list]\fP	\fI<show RQS configuration>\fP"
+.IP "\fB\-srqs\fP [\fIrqs_name_list\fP]	\fI<show RQS configuration>\fP"
 Show the definition of the
 .I resource quota sets
 (RQS) specified by the argument.
@@ -1146,17 +1150,17 @@ Displays the managers list.
 .IP "\fB\-so\fP	\fI<show operators>\fP"
 Displays the operator list.
 .\"
-.IP "\fB\-sobjl obj_spec attr_name val\fP	\fI<show object list>\fP"
+.IP "\fB\-sobjl\fP \fIobj_spec\fP \fIattr_name\fP \fIval\fP	\fI<show object list>\fP"
 Shows a list of all configuration objects for which val matches at least
-one configuration value of the attributes whose name matches with attr_name.
+one configuration value of the attributes whose name matches \fIattr_name\fP.
 .sp
-Obj_spec can be "queue" or "queue_domain" or "queue_instance" or "exechost".
-Note: When "queue_domain" or "queue_instance" is specified as obj_spec
+\fIobj_spec\fP can be "queue" or "queue_domain" or "queue_instance" or "exechost".
+Note: When "queue_domain" or "queue_instance" is specified as \fIobj_spec\fP,
 matching is only done with the attribute overridings concerning the host group
 or the execution host. In this case queue domain names resp. queue
 instances are returned.
 .sp
-Attr_name can be any of the configuration file keywords listed in
+\fIattr_name\fP can be any of the configuration file keywords listed in
 .M queue_conf 5  
 or 
 .M host_conf 5 . 
@@ -1164,7 +1168,7 @@ Also wildcards can be used to match multiple attributes.
 .sp
 Val can be an arbitrary string or a wildcard expression.
 .\"
-.IP "\fB\-sp pe_name\fP	\fI<show PE configuration>\fP"
+.IP "\fB\-sp\fP \fIpe_name\fP	\fI<show PE configuration>\fP"
 Show the definition of the
 .I parallel environment
 (PE) specified by the argument.
@@ -1173,16 +1177,16 @@ Show the definition of the
 Show a list of all currently defined
 \fIparallel environment\fPs (PEs).
 .\"
-.IP "\fB\-sprj project\fP	\fI<show project>\fP"
+.IP "\fB\-sprj\fP \fIproject\fP	\fI<show project>\fP"
 Shows the definition of the specified project (see
 .M project 5 ).
 .\"
 .IP "\fB\-sprjl\fP	\fI<show project list>\fP"
 Shows the list of all currently defined projects.
 .\"
-.IP "\fB\-sq wc_queue_list\fP	<show queues>"
+.IP "\fB\-sq\fP \fIwc_queue_list\fP	<show queues>"
 Displays one or multiple cluster queues or queue instances. A description
-of wc_queue_list can be found in
+of \fIwc_queue_list\fP can be found in
 .M sge_types 5 .
 .\"
 .IP "\fB\-sql\fP	\fI<show queue list>\fP"
@@ -1195,11 +1199,11 @@ Displays the xxQS_NAMExx submit host list.
 Displays the current scheduler configuration in the format explained in 
 .M sched_conf 5 .
 .\"
-.IP "\fB\-sstnode node_path,...\fP	\fI<show share tree node>\fP"
+.IP "\fB\-sstnode\fP \fInode_path,...\fP	\fI<show share tree node>\fP"
 Shows the name and shares of the specified share tree node(s) (see
 .M share_tree 5 ).
-The \fBnode_path\fP is a hierarchical path
-(\fB[/]node_name[[/.]node_name...]\fP)
+The \fInode_path\fP is a hierarchical path
+(\fB[/]\fInode_name\fP[[/.]\fInode_name\fP...]\fP)
 specifying the location of a node in the share tree.
 .\"
 .IP "\fB\-sstree\fP	\fI<show share tree>\fP"
@@ -1216,7 +1220,7 @@ Shows the definition of the share tree in a tree view (see
 Currently displays the host on which the xxQS_NAMExx scheduler is 
 active or an error message if no scheduler is running.
 .\"
-.IP "\fB\-su acl_name\fP	\fI<show user ACL>\fP"
+.IP "\fB\-su\fP \fIacl_name\fP	\fI<show user ACL>\fP"
 Displays a xxQS_NAMExx user access list (ACL).
 .\"
 .IP "\fB\-sul\fP	\fI<show user lists>\fP"
@@ -1231,7 +1235,7 @@ xxQS_NAMExx user access lists (ACLs).
 .\" Displays a name list of all currently defined cluster users
 .\" which have a guilty user mapping configuration.
 .\" usermapping end
-.IP "\fB\-suser user,...\fP	\fI<show user>\fP"
+.IP "\fB\-suser\fP \fIuser,...\fP	\fI<show user>\fP"
 Shows the definition of the specified user(s) (see
 .M user 5 ).
 .\"

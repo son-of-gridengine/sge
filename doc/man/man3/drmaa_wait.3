@@ -205,11 +205,12 @@ If \fIstat\fP is not a null pointer, then on return from a successful
 call, the status of the job is stored in the integer pointed to by \fIstat\fP.
 \fIstat\fP indicates whether job failed or finished and other information. The 
 information encoded in the integer value can be accessed via 
-.M drmaa_wifaborted 3
-.M drmaa_wifexited 3
-.M drmaa_wifsignaled 3
-.M drmaa_wcoredump 3
-.M drmaa_wexitstatus 3
+.M drmaa_wifaborted 3 ,
+.M drmaa_wifexited 3 ,
+.M drmaa_wifsignaled 3 ,
+.M drmaa_wcoredump 3 ,
+.M drmaa_wexitstatus 3,
+and
 .M drmaa_wtermsig 3 .
 .PP
 If \fIrusage\fP is not a null pointer, then on return from a successful

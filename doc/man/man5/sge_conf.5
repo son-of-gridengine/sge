@@ -1526,13 +1526,6 @@ or
 .I sources/experimental/qidle
 in the source repository, but it may be better to check the
 the screensaver state.
-.PP
-Changing \fBexecd_params\fP will take effect after it is propagated to the
-execution daemons. The propagation is done in one load report interval.
-The default for \fBexecd_params\fP is none.
-.PP
-The global configuration entry for this value
-may be overwritten by the execution host local configuration.
 .IP \fIUSE_CGROUPS\fP
 Use cgroups/cpusets for resource management if the system supports
 them and the necessary directories exist under the relevant
@@ -1541,6 +1534,13 @@ filesystems (created by
 Makes ENABLE_ADDGRP_KILL irrelevant.
 This option is experimental, and at least the default is likely to
 change in future.  Default is no.
+.PP
+Changing \fBexecd_params\fP will take effect after it is propagated to the
+execution daemons. The propagation is done in one load report interval.
+The default for \fBexecd_params\fP is none.
+.PP
+The global configuration entry for this value
+may be overwritten by the execution host local configuration.
 .\"
 .\"
 .SS "\fBreporting_params\fP"
