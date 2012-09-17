@@ -2366,7 +2366,7 @@ int sge_daemonize(int *keep_open, unsigned long nr_of_fds, sge_gdi_ctx_class_t *
    }
 #endif
  
-   if (ctx->is_daemonized(ctx)) {
+   if (ctx && ctx->is_daemonized(ctx)) {
       DRETURN(1);
    }
  
@@ -2416,7 +2416,7 @@ int sge_daemonize(int *keep_open, unsigned long nr_of_fds, sge_gdi_ctx_class_t *
 
    SETPGRP;
  
-   ctx->set_daemonized(ctx, true);
+   if (ctx) ctx->set_daemonized(ctx, true);
  
    DRETURN(1);
 }
