@@ -48,6 +48,14 @@ specified in the same place.
 The accounting file is processed by
 .M qacct 1
 to derive accounting statistics.
+.PP
+If output to the
+.M reporting 5
+file is enabled, accounting records containing similar data are
+written there.  They include "intermediate" records written at
+midnight for long-running jobs, not just ones written at the end of
+the jobs, and so may be more appropriate to process for some purposes
+than the accounting file.
 .\"
 .\"
 .SH FORMAT
@@ -205,7 +213,10 @@ ACCT_RESERVED_USAGE execd parameter (see
 .SS "\fBarid\fP"
 Advance reservation identifier. If the job used the resources of an advance
 reservation, then this field contains a positive integer identifier; otherwise the
-value is "\fB0\fP" .
+value is "\fB0\fP".
+.SS \fB\r_sub_time\fP
+Advance reservation submission time if the job uses the resources of
+an advance reservation; otherwise "\fB0\fP".
 .\"
 .SH FILES
 .I $SGE_ROOT/$SGE_CELL/common/accounting

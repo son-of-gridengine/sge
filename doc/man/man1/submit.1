@@ -1884,20 +1884,25 @@ Specifies a validation level applied to the job to be submitted
 (\fIqsub\fP, \fIqlogin\fP,
 and \fIqsh\fP) or the specified queued job (\fIqalter\fP).
 .sp 1
-The specifiers e, w, n, p, and v define the following validation modes:
+The specifiers
+.BR e ,\  w ,\  n ,\  p ,
+and
+.B v
+define the following validation modes:
 .sp 1
 .nf
 .ta \w'|b|  'u
-`e'	error \- jobs with invalid requests will be rejected.
-`w'	warning \- only a warning will be displayed for invalid
+\fBe\fP	error \- jobs with invalid requests will be rejected.
+\fBw\fP	warning \- only a warning will be displayed for invalid
 	requests.
-`n'	none \- switches off validation; the default for \fIqsub\fP,
+\fBn\fP	none \- switches off validation; the default for \fIqsub\fP,
 	\fIqalter\fP, \fIqrsh\fP, \fIqsh\fP and \fIqlogin\fP.
-`p'	poke \- does not submit the job but prints a validation
+\fBp\fP	poke \- does not submit the job but prints a validation
 	report based on a cluster as is with all resource
 	utilizations in place.
-`v'	verify \- does not submit the job but prints a
-	validation report based on an empty cluster.
+\fBv\fP	verify \- does not submit the job but prints a validation 
+	report based on a dry scheduling run on an empty cluster,
+	ignoring load values.
 .fi
 Resource requests exceeding the configured maximal thresholds or
 requests for unavailable resource attributes are possible causes for
