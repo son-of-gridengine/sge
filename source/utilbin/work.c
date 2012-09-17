@@ -52,18 +52,14 @@ volatile int should_stop = 0;
 
 /* cpu load profile */
 int working_time = 0;
-int nproc = 0;
+int nproc = 1;
 
 /* mem load profile */
-int stack_mb = 0;
-int stack_kb = 0;
+unsigned long stack_mb = 0;
+unsigned long stack_kb = 0;
 
-#if defined(DARWIN) || defined(LINUX)
-int malloc_mb = 0;
-#else
-size_t malloc_mb = 0;
-#endif
-int malloc_kb = 0;
+unsigned long malloc_mb = 0;
+unsigned long malloc_kb = 0;
 
 /* io load profile */
 int in = -1;
@@ -98,8 +94,8 @@ static void usage(int exit_code)
    fprintf(fp, "work [options]\n");
    fprintf(fp, "  options are:\n");
    fprintf(fp, "cpu\n");
-   fprintf(fp, "   [-f n]            do work 'n' times using 'n' processes default is 1 process\n");
-   fprintf(fp, "   [-w n]            work 'n' seconds default is 100 seconds\n");
+   fprintf(fp, "   [-f n]            do work 'n' times using 'n' processes, default 1 process\n");
+   fprintf(fp, "   [-w n]            work 'n' seconds, default 100 seconds\n");
 
    fprintf(fp, "io\n");
    fprintf(fp, "   [-in fname]       read from <fname>\n");
@@ -178,7 +174,7 @@ int main(int argc, char *argv[])
       if (!strcmp(argv[1], "-mallocM")) {
          argc--;
          argv++;
-         if (argc== 1 || sscanf(argv[1], "%d", &malloc_mb)!=1)
+         if (argc== 1 || sscanf(argv[1], "%ld", &malloc_mb)!=1)
             usage(1);
          argc--;
          argv++;
@@ -188,7 +184,7 @@ int main(int argc, char *argv[])
       if (!strcmp(argv[1], "-mallocK")) {
          argc--;
          argv++;
-         if (argc== 1 || sscanf(argv[1], "%d", &malloc_kb)!=1)
+         if (argc== 1 || sscanf(argv[1], "%ld", &malloc_kb)!=1)
             usage(1);
          argc--;
          argv++;
@@ -228,7 +224,7 @@ int main(int argc, char *argv[])
       if (!strcmp(argv[1], "-stackM")) {
          argc--;
          argv++;
-         if (argc== 1 || sscanf(argv[1], "%d", &stack_mb)!=1)
+         if (argc== 1 || sscanf(argv[1], "%ld", &stack_mb)!=1)
             usage(1);
          argc--;
          argv++;
@@ -238,7 +234,7 @@ int main(int argc, char *argv[])
       if (!strcmp(argv[1], "-stackK")) {
          argc--;
          argv++;
-         if (argc== 1 || sscanf(argv[1], "%d", &stack_kb)!=1)
+         if (argc== 1 || sscanf(argv[1], "%ld", &stack_kb)!=1)
             usage(1);
          argc--;
          argv++;
@@ -298,31 +294,31 @@ int main(int argc, char *argv[])
    }
 
    if (malloc_kb) {
-      printf("going to alloce %d kb via malloc\n", malloc_kb); fflush(stdout);
+      printf("going to allocate %ld kb via malloc\n", malloc_kb); fflush(stdout);
       if (!(kmp = malloc(1024*malloc_kb))) {
-         printf("failed getting %d kb mem via malloc\n", malloc_kb); fflush(stdout);
+         printf("failed getting %ld kb mem via malloc\n", malloc_kb); fflush(stdout);
          return 1;
       } else
-         printf("got %d kb mem via malloc\n", malloc_kb); fflush(stdout);
+         printf("got %ld kb mem via malloc\n", malloc_kb); fflush(stdout);
    }
    if (malloc_mb) { 
-      printf("going to alloce %d mb via malloc\n", malloc_mb); fflush(stdout);
+      printf("going to allocate %ld mb via malloc\n", malloc_mb); fflush(stdout);
       if (!(mmp = malloc(1024*1024*malloc_mb))) {
-         printf("failed getting %d mb mem via malloc\n", malloc_mb); fflush(stdout);
+         printf("failed getting %ld mb mem via malloc\n", malloc_mb); fflush(stdout);
          return 1;
       } else 
-         printf("got %d mb mem via malloc\n", malloc_mb); fflush(stdout);
+         printf("got %ld mb mem via malloc\n", malloc_mb); fflush(stdout);
    }
 
    if (stack_kb) {
-      printf("going to alloce %d kb on stack ", stack_kb); fflush(stdout);
+      printf("going to allocate %ld kb on stack ", stack_kb); fflush(stdout);
       reserve_stack_mem_kb(stack_kb);
-      printf("got %d kb mem on stack\n", stack_kb); fflush(stdout);
+      printf("got %ld kb mem on stack\n", stack_kb); fflush(stdout);
    }
    if (stack_mb) {
-      printf("going to alloce %d mb on stack ", stack_mb); fflush(stdout);
+      printf("going to allocate %ld mb on stack ", stack_mb); fflush(stdout);
       reserve_stack_mem_mb(stack_mb);
-      printf("got %d mb mem on stack\n", stack_mb); fflush(stdout);
+      printf("got %ld mb mem on stack\n", stack_mb); fflush(stdout);
    }
 
 
@@ -361,7 +357,7 @@ void work(char *mmp) {
 
    if (mmp) {
       miter = mmp;
-      miter_max = &mmp[1024*1024*malloc_mb];
+      miter_max = &mmp[1024*1024*malloc_mb - 1];
    }
 
    while (!should_stop) {
