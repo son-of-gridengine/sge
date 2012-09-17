@@ -188,7 +188,9 @@ of the administrator configuring the checkpointing environment.
 xxQS_NAMExx will just invoke these procedures and evaluate their
 exit status. If the procedures do not perform their tasks
 properly, or are not invoked in a proper fashion, the checkpointing
-mechanism may behave unexpectedly; xxQS_NAMExx has no means to detect this.
+mechanism may behave unexpectedly; xxQS_NAMExx has no means to detect
+this \- all exit codes are treated as successful operation except for
+the case of kernel checkpointing.
 .\"
 .\"
 .SH "SEE ALSO"

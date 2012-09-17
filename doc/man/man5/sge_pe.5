@@ -33,7 +33,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH xxQS_NAME_Sxx_PE 5 "$Date: 2011-05-19 00:21:08 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH xxQS_NAME_Sxx_PE 5 2012-09-11 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 xxqs_name_sxx_pe \- xxQS_NAMExx parallel environment configuration file format
@@ -357,14 +357,13 @@ is not requested in the job, a null string is substituted.
 .\"
 .\"
 .SH RESTRICTIONS
-\fBNote\fP that the functionality of the startup, shutdown,
-and signaling procedures remains the full responsibility
+\fBNote\fP that the functionality of the start and stop
+procedures remains the full responsibility
 of the administrator configuring the parallel environment.
-xxQS_NAMExx will just invoke these procedures and evaluate their
-exit status. If the procedures do not perform their tasks
-properly, or if the parallel environment or the parallel
-application behave unexpectedly, xxQS_NAMExx has no means to detect
-this.
+xxQS_NAMExx will invoke these procedures and evaluate their
+exit status.  A non-zero exit status will put the queue into an error
+state.  If the start procedure has a non-zero exit status, the job
+will be re-queued.
 .\"
 .SH SECURITY
 If
