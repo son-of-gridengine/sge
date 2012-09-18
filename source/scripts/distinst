@@ -53,7 +53,7 @@ DEFAULTPROG="sge_qmaster sge_execd sge_shadowd \
 UTILITYBINARIES="uidgid gethostname gethostbyname gethostbyaddr \
                  getservbyname filestat checkprog loadcheck now checkuser \
                  adminrun qrsh_starter testsuidroot authuser read_raw echo_raw \
-                 infotext spooldefaults spooledit spoolinit \
+                 infotext spooldefaults spooledit spoolinit work \
                  fstype SGE_Helper_Service.exe SGE_Starter.exe valid_jvmlib"
 
 BDBUTILITYBINARIES="db_deadlock db_dump db_load db_printlog db_recover db_stat db_upgrade db_verify"
