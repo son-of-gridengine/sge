@@ -2164,7 +2164,6 @@ static void change_shepherd_signal_mask()
 
 /*------------------------------------------------------------------------
  * check_ckpttype
- * currently only check if it's Hibernator checkpointing
  * Return:   -1 error,
  *           0 no checkpointing
  *           Bitmask of checkpointing type
@@ -2298,7 +2297,6 @@ static void handle_signals_and_methods(
          } else {
             shepherd_trace("no postponed signal");
 
-            /* userdefined ckpt has always ckpt_interval = 0 */ 
             if (p_ckpt_info->interval) {
                if (p_ckpt_info->type & CKPT_KERNEL) {
                   shepherd_trace("initiate regular kernel level checkpoint");
