@@ -223,11 +223,9 @@ expand_path(const char *in_path, u_long32 job_id, u_long32 ja_task_id,
             snprintf(printpos, nmax, sge_u32, job_id);
             s = t + sizeof("$JOB_ID") - 1;
          }
-         if (ja_task_id) {
-            if (!strncmp(t, "$TASK_ID", sizeof("$TASK_ID") - 1)) {
-               snprintf(printpos, nmax, sge_u32, ja_task_id);
-               s = t + sizeof("$TASK_ID") - 1;
-            }
+         if (!strncmp(t, "$TASK_ID", sizeof("$TASK_ID") - 1)) {
+            snprintf(printpos, nmax, sge_u32, ja_task_id);
+            s = t + sizeof("$TASK_ID") - 1;
          }
          if (!strncmp(t, "$JOB_NAME", sizeof("$JOB_NAME") - 1)) {
             snprintf(printpos, nmax, "%s", job_name);
