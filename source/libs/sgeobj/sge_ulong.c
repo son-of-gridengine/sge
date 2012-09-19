@@ -42,6 +42,7 @@
 #include <string.h>
 #include <limits.h>
 #include <locale.h>
+#include <errno.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
@@ -607,9 +608,12 @@ ulong_parse_priority(lList **answer_list, int *valp, const char *priority_str)
    char *s;
 
    DENTER(TOP_LAYER, "ulong_parse_priority");
+   errno = 0;
    *valp = strtol(priority_str, &s, 10);
-   if ((char*)valp == s || *valp > 1024 || *valp < -1023) {
-      SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_ULNG_INVALIDPRIO_I, (int) *valp));
+   if (priority_str == s || *valp > 1024 || *valp < -1023
+       || (errno == ERANGE && (*valp == LONG_MAX || *valp == LONG_MIN))
+       || (errno != 0 && *valp == 0)) {
+      SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_ULNG_INVALIDPRIO_I, *valp));
       answer_list_add(answer_list, SGE_EVENT, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR);
       ret = false;
    }
