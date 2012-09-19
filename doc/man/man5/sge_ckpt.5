@@ -5,8 +5,6 @@
 .\"
 .\"___INFO__MARK_END__
 .\"
-.\" $RCSfile: sge_ckpt.1,v $     Last Update: $Date: 2009-06-16 13:58:24 $     Revision: $Revision: 1.7 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -30,7 +28,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH xxQS_NAME_Sxx_CKPT 1 2009-06-16 "xxRELxx" "xxQS_NAMExx User Commands"
+.TH xxQS_NAME_Sxx_CKPT 1 2012-09-18 "xxRELxx" "xxQS_NAMExx User Commands"
 .\"
 .SH NAME
 xxQS_NAME_Sxx_ckpt \- the xxQS_NAMExx checkpointing mechanism and checkpointing
@@ -38,9 +36,9 @@ support
 .\"
 .SH DESCRIPTION
 xxQS_NAMExx
-supports two levels of checkpointing: the user level and a operating
-system provided transparent
-level. User level checkpointing refers to applications, which do their
+supports two levels of checkpointing: the user level and an operating
+system-provided transparent
+level. User level checkpointing refers to applications which do their
 own checkpointing by writing restart files at certain times or
 algorithmic steps and by properly processing these restart files when
 restarted.
@@ -65,11 +63,10 @@ options \fI\-ackpt\fP, \fI\-dckpt\fP, \fI\-mckpt\fP and \fI\-sckpt\fP. The
 option \fI\-c\fP can be used to overwrite the \fIwhen\fP
 attribute for the referenced checkpointing environment.
 .PP
-If a queue is of the type CHECKPOINTING, jobs need to have the
-checkpointing attribute flagged (see the \fB\-ckpt\fP option to
+As opposed to the behavior for
+regular batch jobs, checkpointing jobs (see the \fB\-ckpt\fP option to
 .M qsub 1 )
-to be permitted to run in such a queue. As opposed to the behavior for
-regular batch jobs, checkpointing jobs are aborted under conditions,
+are aborted under conditions
 for which batch or interactive jobs are suspended or even stay
 unaffected. These conditions are:
 .\"
@@ -99,8 +96,8 @@ submitted to one specific queue by an explicit user request.
 The migration of jobs leads to a dynamic load balancing.
 \fBNote:\fP The abortion of checkpointed jobs will free all resources
 (memory, swap space) which the job occupies at that time. This is
-opposed to the situation for suspended regular jobs, which still cover
-swap space.
+opposed to the situation for suspended regular jobs, which still use
+virtual memory and other consumable resources.
 .PP
 .\"
 .\"

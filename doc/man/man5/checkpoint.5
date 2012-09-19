@@ -27,6 +27,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH CHECKPOINT 5 "2012-01-07" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
@@ -109,7 +112,7 @@ initiate a checkpoint.  The following pseudo-variables are available to be
 substituted in the value:
 .\" fixme: explain them
 .IP \fB$host\fP
-.IP \fb$ja_task_id\fP
+.IP \fB$ja_task_id\fP
 .IP \fB$job_owner\fP
 .IP \fB$job_id\fP
 .IP \fB$job_name\fP
@@ -120,7 +123,9 @@ substituted in the value:
 .SS "\fBmigr_command\fP"
 A command-line type command string to be executed by xxQS_NAMExx during a
 migration of a checkpointing job from one host to another.  The same
-pseudo-variables are available as for \fBckpt_command\fP.
+pseudo-variables are available as for \fBckpt_command\fP.  Note that
+the command is expected to create a checkpoint itself \- the
+checkpointing command isn't called automatically on migration..
 .SS "\fBrestart_command\fP"
 A command-line type command string to be executed by xxQS_NAMExx when restarting
 a previously checkpointed application.  The same
@@ -136,7 +141,7 @@ size should be stored.
 A Unix signal to be sent to a job by xxQS_NAMExx to initiate checkpoint
 generation. The value for this field can either be a symbolic name from the
 list produced by the \fI\-l\fP option of the
-.M kill 1
+.MO kill 1
 command or an integer number which must be a valid signal on the systems
 used for checkpointing.
 .SS "\fBwhen\fP"
@@ -148,14 +153,15 @@ Valid values for this parameter are composed from the letters \fIs\fP,
 any combinations thereof without any separating character in between. The
 same letters are allowed for the \fI\-c\fP option of the
 .M qsub 1
-command which will overwrite the definitions in the used checkpointing
-environment.
-The meaning of the letters is defined as follows:
+command which will overwrite the definitions in the checkpointing environment
+used.
+The meaning of the letters is as follows:
 .IP "\fIs\fP"
-A job is checkpointed, aborted and if possible migrated if the
+A job is checkpointed, aborted and, if possible, migrated if the
 corresponding
 .M xxqs_name_sxx_execd 8
-is shut down on the job's machine.
+is shut down on the job's machine.  This operation is
+handled by the specified \fBmigr_command\fP.  Note that the 
 .IP "\fIm\fP"
 Checkpoints are generated periodically at the \fImin_cpu_interval\fP
 interval defined by the queue (see
@@ -163,7 +169,8 @@ interval defined by the queue (see
 in which a job executes.
 .IP "\fIx\fP"
 A job is checkpointed, aborted and, if possible, migrated as soon as the job
-gets suspended (manually as well as automatically).
+gets suspended (manually as well as automatically).  This operation is
+handled by the specified \fBmigr_command\fP.
 .IP "\fIr\fP"
 A job will be rescheduled (not checkpointed) when the host on which the job
 currently runs went into the "unknown" state and the time interval
