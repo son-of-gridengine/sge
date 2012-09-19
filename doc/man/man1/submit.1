@@ -1717,7 +1717,6 @@ with the tasks. The index numbers will be exported to the job tasks via the
 environment variable \fBxxQS_NAME_Sxx_TASK_ID\fP. The option arguments n, m and s will be available through the environment variables \fBxxQS_NAME_Sxx_TASK_FIRST\fP, \fBxxQS_NAME_Sxx_TASK_LAST\fP and  \fBxxQS_NAME_Sxx_TASK_STEPSIZE\fP.
 .sp 1
 .nf
-.RS
 The following restrictions apply to the values n and m:
 .sp 1
 .RS
@@ -1728,7 +1727,7 @@ n <= m
 .fi
 .sp 1
 \fImax_aj_tasks\fP is defined in the cluster configuration (see 
-.M sge_conf 5)
+.M sge_conf 5 ).
 .sp 1
 The task id range specified in the option argument
 may be a single number, a simple range of the form
@@ -1771,9 +1770,6 @@ this value will be passed to defined JSV instances as parameters
 with the names \fBt_min\fP, \fBt_max\fP and \fBt_step\fP
 (See \fB\-jsv\fP option above or find more information concerning JSV in
 .M jsv 1 .)
-.\"
-.\" Empty .SH required below to fix man indentation bug
-.SH
 .\"
 .IP "\fB\-tc max_running_tasks\fP"
 Available for \fIqsub\fP and \fIqalter\fP only.
@@ -2150,9 +2146,7 @@ option.
 The path to the job script which is executed. The value can not be 
 overwritten by the \fB\-v\fP or \fB\-V\fP option. 
 .IP "\fBLOGNAME\fP" 1.5i
-The user's login name from the
-.M passwd 5
-file.
+The user's login name from the passwd database.
 .IP "\fBNHOSTS\fP" 1.5i
 The number of hosts in use by a parallel job.
 .IP "\fBNQUEUES\fP" 1.5i
@@ -2193,13 +2187,12 @@ The request name of a job as specified with the
 script file.
 .IP "\fBRESTARTED\fP" 1.5i
 This variable is set to 1 if a job was restarted after a system crash,
-or after migration of a non-application-level checkpointing job.  It s
+or after migration of a non-application-level checkpointing job.  It is
 set to 2 when a job with application-level checkpointing is restarted
 with a checkpoint available.  Otherwise its value is 0.
 .IP "\fBSHELL\fP" 1.5i
-The user's login shell from the
-.M passwd 5
-file. \fBNote:\fP This is not necessarily the shell in use for the job.
+The user's login shell from the passwd
+database. \fBNote:\fP This is not necessarily the shell in use for the job.
 .IP "\fBTMPDIR\fP" 1.5i
 The absolute path to the job's temporary working directory.
 .IP "\fBTMP\fP" 1.5i
@@ -2209,9 +2202,7 @@ The time zone variable imported from
 .M xxqs_name_sxx_execd 8
 if set.
 .IP "\fBUSER\fP" 1.5i
-The user's login name from the
-.M passwd 5
-file.
+The user's login name from the passwd database.
 .\"
 .\"
 .SH RESTRICTIONS

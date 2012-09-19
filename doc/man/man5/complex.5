@@ -45,7 +45,7 @@ and for the interpretation of these parameters within the xxQS_NAMExx
 system.
 .PP
 The xxQS_NAMExx complex object defines all entries which are used for 
-configuring the global, the host, and queue objects. The system has a 
+configuring the global, host, and queue objects. The system has a
 set of pre-defined entries, which are assigned to a host or queue by default.
 In addition, the user can define new entries and assign them to one or more
 objects. Each load value has to have a corresponding complex entry object, which
@@ -75,10 +75,11 @@ such an attribute be changed.
 .\"
 .SS "\fBWorking with resource attributes\fP"
 Before a user can request a resource attribute it has to be attached to the global, host,
-or queue object. The resource attribute exists only for the objects it got attached to.
+or queue object. The resource attribute exists only for the objects to
+which it was attached.
 If it is attached to the global object (qconf \-me global), it exists
-system-wide.  Attached to a host object (qconf \-me NAME), it exists
-only on that host, and attached to queue object (qconf \-mq NAME),
+system-wide.  Attached to a host object (qconf \-me \fIhost\fP), it exists
+only on that host, and attached to queue object (qconf \-mq \fIqueue\fP),
 only on that queue.
 .sp 1
 When an administrator attaches a resource attribute to an object, they also have
@@ -88,7 +89,7 @@ configuring a load sensor for that attribute.
 .PP
 .\"
 .SS "\fBDefault queue resource attributes\fP"
-In its default form it contains a selection of parameters in the
+By default there is a selection of parameters in the
 queue configuration as defined in
 .M queue_conf 5 .
 The principal queue configuration parameters requestable for a job
@@ -141,7 +142,7 @@ for details.)
 Defining these attributes in the
 host complex is no contradiction to having them also in the queue
 configuration. It allows maintaining the corresponding resources on a
-host level and at the same time on a queue level. Total virtual free
+host level, and at the same time on a queue level. Total virtual free
 memory (h_vmem) can be managed for a host, for example, and a subset
 of the total amount can be associated with a queue on that host.
 .sp 1
@@ -152,26 +153,27 @@ periodically reports load to
 .M xxqs_name_sxx_qmaster 8 .
 The reported load values are either the standard xxQS_NAMExx load values,
 such as the CPU load average (see
-.M uptime 1 ),
+.MO uptime 1 ),
 or load values defined by the xxQS_NAMExx administration (see the
 .B load_sensor
-parameter in the cluster configuration
+parameter in the cluster configuration (see
 .M xxqs_name_sxx_conf 5
 .\" and the
 .\" .I xxQS_NAMExx Installation and Administration Guide
 for details).
 The definition of characteristics for the standard load values is part of
 the default host complex, while administrator-defined load values
-require extension of the host complex. Please refer to the file
-<xxqs_name_sxx_root>/doc/load_parameters.asc for detailed information on the
+require extension of the host complex. Please refer to
+.M load_parameters 5
+for detailed information on the
 standard set of load values.
 .\"
 .SS "\fBOverriding attributes\fP"
 An attribute can be assigned to the global object, host object, and queue object
 at the same time. On the host level it might get its value from the
 user-defined resource limit and a load sensor. If the attribute is a consumable,
-we have in addition to the resource limit and its load report at host level also
-the internal usage, which the system keeps track of. The merge is done as follows:
+we have, in addition to the resource limit and its load report at host level, also
+the internal usage which the system keeps track of. The merge is done as follows:
 .sp 1
 In general an attribute can be overridden on a lower level
    \- global by hosts and queues
@@ -181,20 +183,21 @@ and load values or resource limits on the same level.
 We have one limitation for overriding attributes based on their relational 
 operator:
 .sp 1
-!=, == operators can only be overridden on the same level, not on a 
+\fB!=\fP and \fB==\fP operators can only be overridden on the same level, not on a
 lower level. The user-defined value always overrides the load value.
-.sp 1   
->=, >, <=, < operators can only be overridden when the new value is more 
+.sp 1
+.BR >= ,
+.BR > ,
+.BR <= ,
+And
+.B <
+operators can only be overridden when the new value is more
 restrictive than the old one.
 .sp 1
 In the case of a consumable at host level which has also a load sensor, the
 system checks for the current usage, and if the internal accounting is more 
 restrictive than the load sensor report, the internal value is kept; if the
 load sensor report is more restrictive, that one is kept.
-.PP
-Note, xxQS_NAMExx allows backslashes (\\) be used to escape newline
-characters. The backslash and the newline are replaced with a
-space character before any interpretation.
 .\"
 .\"
 .PP
@@ -203,8 +206,13 @@ The principal format of a
 .I complex
 configuration is that of a tabulated list. Each line starting with
 a '#' character is a comment line. Each non-comment line
-defines one element of the complex. An element definition line
-consists of the following 8 column entries per line (in the order
+defines one element of the complex.
+Backslashes (\\) be used to escape newline
+characters. The backslash and the newline are replaced with a
+space character before any interpretation.
+.PP
+An element definition line
+consists of the following 8 column entries per line (in order
 of appearance):
 .SS "\fBname\fP"
 The name of the complex element to be used to request this attribute
@@ -219,8 +227,7 @@ complexes, i.e. the complex attribute definition is unique.
 A shortcut for \fBname\fP which may also be used to request this
 attribute for a job in the
 .M qsub 1
-\fB\-l\fP option. An attribute
-.B shortcut
+\fB\-l\fP option. A given shortcut
 may appear only once across 
 all complexes, so as to avoid the possibility of ambiguous complex attribute 
 references.
@@ -285,8 +292,6 @@ Examples:
 \fBHOST\fP is like \fBCSTRING\fP but the expression must match a valid host name.
 .\"
 .SS "\fBrelop\fP"
-The
-.B relation operator.
 The relation operator is used when the value requested by the user for
 this parameter is compared against the corresponding value configured for
 the considered queues. If the result of the comparison is false, the
@@ -296,8 +301,8 @@ is "==".
 .sp
 The "EXCL" relation operator implements exclusive scheduling and is
 only valid for consumable boolean type attributes. Exclusive means the result
-of the comparison is only true if a job requests to be exclusive and no
-other exclusive or non-exclusive jobs uses the complex. If the job does not request
+of the comparison is only true if a job requests to be exclusive, and no
+other exclusive or non-exclusive job uses the complex. If the job does not request
 to be exclusive and no other exclusive job uses the complex the comparison is also
 true.
 .\"
@@ -308,7 +313,7 @@ resource request if this field is set to 'y' or 'yes'.
 If set to 'n' or 'no' this entry cannot be used by a
 user in order to request a queue or a class of queues.
 If the entry is set to 'forced' or 'f' the 
-attribute has to be requested by a job or it is rejected.
+attribute has to be requested by a job, or it is rejected.
 .sp
 To enable resource request enforcement the existence of the
 resource has to be defined. This can be done on a cluster global, per host
@@ -351,7 +356,7 @@ attributes. The xxQS_NAMExx consumable resource management takes both
 the load (measuring availability of the resource) and the internal bookkeeping 
 into account in this case, and makes sure that neither exceeds a given limit.
 .sp 1
-To enable consumable resource management the basic availability of a 
+To enable consumable resource management, the basic availability of a
 resource has to be defined. This can be done on a cluster global, per host and 
 per queue basis, and these categories may supersede each other in the given 
 order (i.e. a host can restrict availability of a cluster resource and a
@@ -367,14 +372,14 @@ The
 definition of the "global" host specifies cluster global 
 consumable settings. To each consumable complex attribute in a 
 .B complex_values
-List, a value is assigned which denotes the maximum 
+list, a value is assigned which denotes the maximum
 available amount for that resource. The internal bookkeeping will subtract 
 from this total the assumed resource consumption by all running jobs as 
 expressed through the jobs' resource requests.
 .sp 1
 .B Note:
 Jobs can be forced to request a resource and thus to specify their 
-assumed consumption via the 'force' value of the
+assumed consumption via the 'forced' value of the
 .B requestable 
 parameter (see above).
 .sp 1
@@ -404,9 +409,9 @@ override this default value.
 .\"
 .SS "\fBurgency\fP"
 The urgency value allows influencing
-job priorities on a per resource base. The urgency value effects
-the addend for each resource when determining the resource request 
-related urgency contribution. For numeric type resource requests the 
+job priorities on a per-resource base. The urgency value effects
+the addend for each resource when determining the resource request-related
+urgency contribution. For numeric type resource requests the
 addend is the product of the urgency value, the job's assumed slot 
 allocation, and the per-slot request as specified via the \fI\-l\fP option to 
 .M qsub 1 .

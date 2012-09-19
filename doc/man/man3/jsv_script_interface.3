@@ -718,8 +718,8 @@ jsv_is_param(l_hard) @ "true"
 jsv_get_param(l_hard) @ "mem=1G,mem2=200M"
 jsv_sub_is_param(l_hard,mem) @ "true"
 jsv_sub_get_param(l_hard,mem) @ "1G"
-jsv_sub_get_param(l_hard,mem3) @ "false"
-jsv_sub_get_param(l_hard,mem3) @ "" 
+jsv_sub_is_param(l_hard,mem3) @ "false"
+jsv_sub_get_param(l_hard,mem3) @ ""
 .TE
 .RE
 .\"
