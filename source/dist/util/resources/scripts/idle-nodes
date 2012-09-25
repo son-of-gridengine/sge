@@ -39,7 +39,7 @@ qhost -j |
 	printf ("%s%s", sep, node)	# from previous line
        'sep=$sep'			# shell substitution!
     }
-    if ($4 == "-")
+    if ($7 == "-")
 	node = ""
     else
 	node = $1
