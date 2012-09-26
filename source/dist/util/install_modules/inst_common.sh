@@ -2351,7 +2351,7 @@ SetupDefaultUsers() {
       AddDefaultManager $USER
       AddDefaultOperator $USER
    fi
-
+}
 
 #-------------------------------------------------------------------------
 # AddSGEStartUpScript: Add startup script to rc files if root installs
