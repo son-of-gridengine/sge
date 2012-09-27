@@ -67,8 +67,7 @@ void report_signal_queue()
    i=next_sig;
 
    for (n=n_sigs; n; n--) {
-      sprintf(str, "%d. %d", i, sig_queue[i]); 
-      shepherd_trace(str);
+      shepherd_trace("%d. %d", i, sig_queue[i]);
       i = NEXT_INDEX(i);
    }
 
@@ -113,8 +112,7 @@ int add_signal(int signal)
       sig_queue[free_sig] = signal;
       free_sig = NEXT_INDEX(free_sig);
 
-      sprintf(err_str, "queued signal %s", sge_sys_sig2str(signal));
-      shepherd_trace(err_str);
+      shepherd_trace("queued signal %s", sge_sys_sig2str(signal));
    } 
    return ret;
 }  
