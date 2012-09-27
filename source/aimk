@@ -330,7 +330,7 @@ set XLIBS            = ""
 set LIBS             = "-lm -lpthread"
 set LIBRARY_LIBS     = ""  # used for linking shared objects like drmaa.so or jgdi.so. Overwritten by $LIBS if empty
 set LD_WRAPPER       = ""
-set DLLIB            = "-ldl"
+set DLLIB            = "-luti -ldl"
 set LOADAVGLIBS      = ""
 set FSTYPELIBS       = ""
 set TPLIB            = ""  # 3rdparty libs
@@ -1150,7 +1150,6 @@ case DARWIN_PPC:
 
    set CC = "gcc"
    set CXX = "g++"
-   set DLLIB = "-ldl"
 
    if ( $DEBUGGED == 1) then
       set DEBUG_FLAG = "-g -DSGE_LOCK_DEBUG"

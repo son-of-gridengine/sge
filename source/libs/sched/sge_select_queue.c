@@ -34,9 +34,6 @@
 #include <stdlib.h>
 #include <float.h>
 #include <limits.h>
-#ifdef SGE_PQS_API
-#include <dlfcn.h>
-#endif
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
@@ -88,6 +85,7 @@
 #include "sge_schedd_text.h"
 #include "sge_resource_quota_schedd.h"
 #ifdef SGE_PQS_API
+#include "uti/sge_dlopen.h"
 #include "sge_pqs_api.h"
 #endif
 
@@ -6722,7 +6720,7 @@ sge_dlib(const char *key, const char *lib_name, const char *fn_name,
    }
 
    /* open the library */
-   new_lib_handle = dlopen(lib_name, RTLD_LAZY);
+   new_lib_handle = sge_dlopen(lib_name, NULL);
    if (!new_lib_handle) {
       if ((error = dlerror()))
          ERROR((SGE_EVENT, "Unable to open library %s for %s - %s\n",
