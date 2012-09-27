@@ -86,7 +86,7 @@ while [ $end = false ]; do
    # ---------------------------------------- 
    # send load value arch
    #
-   echo "$HOST:nuser:`who | cut -f1 -d" " | sort | uniq |wc -l`"
+   echo "$HOST:nuser:`who | cut -f1 -d' ' | sort -u | wc -l`"
 
    # ---------------------------------------- 
    # send mark for end of load report

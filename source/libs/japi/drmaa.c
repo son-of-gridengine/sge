@@ -33,12 +33,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
-#include <pthread.h>
-
-#include <pthread.h>
 #include <pwd.h>
-
-#include "sge_mtutil.h"
 
 #include "drmaa.h"
 #include "msg_drmaa.h"

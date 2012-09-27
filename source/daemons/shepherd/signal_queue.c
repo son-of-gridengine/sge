@@ -105,7 +105,6 @@ int add_signal(int signal)
    int ret = -1;
 
    if (n_sigs != SGE_MAXSIG) {
-      char err_str[256];
       ret = 0;
 
       n_sigs++;

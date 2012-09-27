@@ -333,7 +333,7 @@ sge_var.o: $(SGEOBJLIB_DIR)/sge_var.c
 
 str2nm_converter.o: $(SGEOBJLIB_DIR)/str2nm_converter.c 
 		$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $(SGEOBJLIB_DIR)/str2nm_converter.c
-		
+
 sge_eval_expression.o: $(SGEOBJLIB_DIR)/sge_eval_expression.c 
 		$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $(SGEOBJLIB_DIR)/sge_eval_expression.c
 
