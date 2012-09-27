@@ -726,8 +726,8 @@ static void* commlib_to_pty(void *t_conf)
                 * This is also tells the child process that it can start
                 * the job 'in' the pty now.
                 */
-               shepherd_trace("commlib_to_pty: writing to child %d bytes: %s",
-                              strlen(recv_mess.data), recv_mess.data);
+               shepherd_trace("commlib_to_pty: writing to child %ld bytes: %s",
+                              (long) strlen(recv_mess.data), recv_mess.data);
                if (write(g_p_ijs_fds->pipe_to_child, recv_mess.data, 
                          strlen(recv_mess.data)) != strlen(recv_mess.data)) {
                   shepherd_trace("commlib_to_pty: error in communicating "
@@ -916,10 +916,14 @@ parent_loop(int job_pid, const char *childname, int timeout, ckpt_info_t *p_ckpt
    alarm(0);
 
    shepherd_trace("parent: wait_my_child returned exit_status = %d", *exit_status);
-   shepherd_trace("parent:            rusage.ru_stime.tv_sec  = %d", rusage->ru_stime.tv_sec);
-   shepherd_trace("parent:            rusage.ru_stime.tv_usec = %d", rusage->ru_stime.tv_usec);
-   shepherd_trace("parent:            rusage.ru_utime.tv_sec  = %d", rusage->ru_utime.tv_sec);
-   shepherd_trace("parent:            rusage.ru_utime.tv_usec = %d", rusage->ru_utime.tv_usec);
+   shepherd_trace("parent:            rusage.ru_stime.tv_sec  = %ld",
+                  (long) rusage->ru_stime.tv_sec);
+   shepherd_trace("parent:            rusage.ru_stime.tv_usec = %d",
+                  (int) rusage->ru_stime.tv_usec);
+   shepherd_trace("parent:            rusage.ru_utime.tv_sec  = %ld",
+                  (long) rusage->ru_utime.tv_sec);
+   shepherd_trace("parent:            rusage.ru_utime.tv_usec = %d",
+                  (int) rusage->ru_utime.tv_usec);
 
    /*
     * We are sure the job exited when we get here, but there could still be
@@ -1007,7 +1011,7 @@ int close_parent_loop(int exit_status)
       shepherd_trace("comm_write_message returned: %s", 
                              sge_dstring_get_string(&err_msg));
       shepherd_trace("close_parent_loop: comm_write_message() returned %d "
-                             "instead of %d!!!", ret, strlen(sz_exit_status));
+                             "instead of %d!!!", ret, (int) strlen(sz_exit_status));
    }
 
    /*

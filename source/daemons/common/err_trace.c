@@ -387,7 +387,7 @@ void shepherd_error(int do_exit, const char *format, ...)
       va_end(ap);
    }
 
-   shepherd_trace(sge_dstring_get_string(&message));
+   shepherd_trace("%s", sge_dstring_get_string(&message));
 
    /* File was closed (e.g. by an exec()) but fp was not set to NULL */
    if (shepherd_error_fp
