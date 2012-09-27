@@ -145,12 +145,6 @@ OpenBSD)
     ;;
 IRIX*)
    case $osrelease in
-   4*)
-      ARCH=UNSUPPORTED-irix4
-      ;;
-   5*)
-      ARCH=UNSUPPORTED-irix5
-      ;;
    6.5)
       ARCH=irix65
       ;;
@@ -166,15 +160,6 @@ HP-UX)
       ;;
    9000/*)
       case $osrelease in
-      *.09.*)
-         ARCH=UNSUPPORTED-hp
-         ;;
-      *.10.10)
-         ARCH=UNSUPPORTED-hp1010
-         ;;
-      *.10.*)
-         ARCH=hp10
-         ;;
       *.11.*)
       if [ -x /usr/bin/getconf ]; then
          bits="`/usr/bin/getconf KERNEL_BITS`"

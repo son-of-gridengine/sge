@@ -38,7 +38,7 @@
  * API.
  */
 
-#ifdef sun
+#ifdef __sun__
 /* Transarc obfascates these routines */
 #ifdef DCE_1_1
 

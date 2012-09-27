@@ -170,7 +170,7 @@ static int sge_ls_status(lListElem *this_ls)
 {
    fd_set writefds;
    int ret;
-   int higest_fd;
+   int highest_fd;
 
    DENTER(TOP_LAYER, "sge_ls_status");
 
@@ -180,11 +180,11 @@ static int sge_ls_status(lListElem *this_ls)
 
    /* build writefds */
    FD_ZERO(&writefds);
-   higest_fd = fileno((FILE *) lGetRef(this_ls, LS_in));
-   FD_SET(higest_fd, &writefds);
+   highest_fd = fileno((FILE *) lGetRef(this_ls, LS_in));
+   FD_SET(highest_fd, &writefds);
 
    /* is load sensor ready to read ? */
-   ret = select(higest_fd + 1, NULL, &writefds, NULL, NULL);
+   ret = select(highest_fd + 1, NULL, &writefds, NULL, NULL);
 
    if (ret <= 0) {
       DRETURN(LS_BROKEN_PIPE);
@@ -531,19 +531,19 @@ static int ls_send_command(lListElem *this_ls, const char *command)
    struct timeval timeleft;
    int ret;
    FILE *file;
-   int higest_fd;
+   int highest_fd;
 
    DENTER(TOP_LAYER, "ls_send_command");
 
    FD_ZERO(&writefds);
-   higest_fd = fileno((FILE *) lGetRef(this_ls, LS_in));
-   FD_SET(higest_fd, &writefds);
+   highest_fd = fileno((FILE *) lGetRef(this_ls, LS_in));
+   FD_SET(highest_fd, &writefds);
 
    timeleft.tv_sec = 0;
    timeleft.tv_usec = 0;
 
    /* wait for writing on fd_in */
-   ret = select(higest_fd + 1, NULL, &writefds, NULL, &timeleft);
+   ret = select(highest_fd + 1, NULL, &writefds, NULL, &timeleft);
    if (ret == -1) {
       switch (errno) {
       case EINTR:

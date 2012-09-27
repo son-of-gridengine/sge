@@ -160,7 +160,7 @@ int getpppid()
 	char *r;
 
 	/* Fixme:  make more portable, at least to Solaris */
-	pipe = popen("/bin/ps axeo '\%p \%P'", "r");
+	pipe = popen("/bin/ps axeo '%p %P'", "r");
 	r = fgets(buffer, MAX_STRLEN, pipe);
 	while ( r && fgets(buffer, MAX_STRLEN, pipe) ) {
 		sscanf(buffer, "%5d %5d", &proc_pid, &proc_ppid);

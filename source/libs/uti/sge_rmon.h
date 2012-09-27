@@ -186,10 +186,6 @@
 
 #define TRACEON  (rmon_is_enabled() && !rmon_mliszero(&RMON_DEBUG_ON))
 
-#define DCLOSE
-
-#define SGE_EXIT(x, y) sge_exit((x), (y))
-
 #else /* NO_SGE_COMPILE_DEBUG */
 
 #define DENTER_MAIN( layer, program )
@@ -202,11 +198,12 @@
 #define DPRINTF(x)
 #define DTIMEPRINTF(x)
 #define DSPECIALPRINTF(x)
-#define DCLOSE
 #define TRACEON
 #define ISTRACE
-#define SGE_EXIT(x, y)     sge_exit((x), (y))
 
 #endif /* NO_SGE_COMPILE_DEBUG */
+
+#define DCLOSE
+#define SGE_EXIT(x, y) sge_exit((x), (y))
 
 #endif /* __SGERMON_H */
