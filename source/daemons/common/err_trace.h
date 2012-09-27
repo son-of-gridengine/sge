@@ -44,7 +44,11 @@ void shepherd_error_init(void);
 void shepherd_error_exit(void);
 void shepherd_error_chown(const char* job_owner);
 
-int  shepherd_trace(const char *format, ...);
+int  shepherd_trace(const char *format, ...)
+#ifdef __GNUC__
+  __attribute__ ((format (printf, 1, 2)))
+#endif
+;
 void shepherd_error(int do_exit, const char *format, ...);
 void shepherd_error_ptr(const char *text);
 void shepherd_write_exit_status( const char *exit_status );

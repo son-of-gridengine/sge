@@ -517,9 +517,7 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
    int ret;
 
    if (get_resource_info(resource, &limit_str, &resource_type)) {
-      snprintf(trace_str, sizeof(trace_str),
-         "no %d-resource-limits set because " "unknown resource", resource);
-      shepherd_trace(trace_str);
+      shepherd_trace("no %d-resource-limits set because " "unknown resource", resource);
       return;
    }
 
@@ -551,9 +549,8 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
 
       errno = 0;
       if (sge_switch2start_user()) {
-         snprintf(trace_str, sizeof(trace_str),
-                  "failed to switch user for setrlimit: %s", strerror(errno));
-         shepherd_trace(trace_str);
+         shepherd_trace("failed to switch user for setrlimit: %s",
+                        strerror(errno));
          return;
       }
 #if defined(IRIX)
@@ -563,9 +560,7 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
 #endif
       errno = 0;
       if (sge_switch2admin_user()) {
-         snprintf(trace_str, sizeof(trace_str),
-                  "failed to switch user for setrlimit: %s", strerror(errno));
-         shepherd_trace(trace_str);
+         shepherd_trace("failed to switch user for setrlimit: %s", strerror(errno));
          return;
       }
       if (ret) {
@@ -575,7 +570,7 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
                   limit_str, FORMAT_LIMIT(rlp->rlim_cur),
                   FORMAT_LIMIT(rlp->rlim_max), strerror(errno));
          strip_bs(trace_str);
-         shepherd_trace(trace_str);
+         shepherd_trace("%s", trace_str);
       } else {
 #if defined(IRIX)
          getrlimit64(resource,&dlp);
@@ -594,7 +589,7 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
             FORMAT_LIMIT(dlp.rlim_cur),
             FORMAT_LIMIT(dlp.rlim_max));
          strip_bs(trace_str);
-         shepherd_trace(trace_str);
+         shepherd_trace("%s", trace_str);
       }
    }
 
@@ -615,7 +610,7 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
             FORMAT_LIMIT(dlp.rlim_cur),
             FORMAT_LIMIT(dlp.rlim_max));
          strip_bs(trace_str);
-         shepherd_trace(trace_str);
+         shepherd_trace("%s", trace_str);
       }
    }
 }

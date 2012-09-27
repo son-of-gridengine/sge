@@ -486,7 +486,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    }
 
    if (ret < 0) {
-      shepherd_trace(err_str);
+      shepherd_trace("%s", err_str);
       shepherd_trace("try running further with uid=%d", (int)getuid());
    } else if (ret > 0) {
       if(ret == 2) {
@@ -879,7 +879,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
                                       use_qsub_gid, gid, skip_silently);
       }
       if (ret < 0) {
-         shepherd_trace(err_str);
+         shepherd_trace("%s", err_str);
          shepherd_trace("try running further with uid=%d", (int)getuid());
       } else if (ret > 0) {
          if(ret == 2) {
@@ -1542,7 +1542,7 @@ int use_starter_method /* If this flag is set the shell path contains the
       }
 
       sprintf(pc, ")");
-      shepherd_trace(err_str);
+      shepherd_trace("%s", err_str);
 
       /* Bugfix: Issuezilla 1300
        * Because this fix could break pre-existing installations, it was made

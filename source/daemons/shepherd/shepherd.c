@@ -303,12 +303,12 @@ static int handle_io_file(const char* file, const char* owner, bool rw) {
 
    /* reset egid and euid to the stored values */
    if (sge_seteuid(old_euid) != 0) {
-      shepherd_trace("Cannot reset euid due to %s", owner, strerror(errno));
+      shepherd_trace("Cannot reset euid %s due to %s", owner, strerror(errno));
       SGE_CLOSE(fd);
       return -1;
    }
    if (sge_setegid(old_egid) != 0) {
-      shepherd_trace("Cannot reset egid due to %s", owner, strerror(errno));
+      shepherd_trace("Cannot reset egid %s due to %s", owner, strerror(errno));
       SGE_CLOSE(fd);
       return -1;
    }
@@ -515,9 +515,9 @@ static int do_pe_start(int timeout, int ckpt_type, pid_t *pe_pid)
    if (strcasecmp("none", pe_start)) {
       int i, n_exit_status = count_exit_status();
 
-      shepherd_trace(pe_start);
+      shepherd_trace("%s", pe_start);
       replace_params(pe_start, command, sizeof(command), pe_variables);
-      shepherd_trace(command);
+      shepherd_trace("%s", command);
 
       /* 
          starters of parallel environments may not get killed 
@@ -576,9 +576,9 @@ static int do_pe_stop(int timeout, int ckpt_type, pid_t *pe_pid)
 
       shepherd_state = SSTATE_BEFORE_PESTOP;
 
-      shepherd_trace(pe_stop);
+      shepherd_trace("%s", pe_stop);
       replace_params(pe_stop, command, sizeof(command), pe_variables);
-      shepherd_trace(command);
+      shepherd_trace("%s", command);
       exit_status = start_child("pe_stop", command, sizeof(command),
                                 NULL, timeout, ckpt_type, NULL);
 
@@ -923,7 +923,7 @@ int main(int argc, char **argv)
             shepherd_error(1, err_str);
          }
 
-         shepherd_trace(err_str);
+         shepherd_trace("%s", err_str);
          shepherd_trace("sucessfully set AFS token");
 
          memset(tokenbuf, 0, strlen(tokenbuf));
@@ -1247,8 +1247,8 @@ static int start_child(const char *childname, /* prolog, job, epilog */
                return ret;
             }
          }
-         shepherd_trace("child: starting son(%s, %s, 0, %d);", childname,
-                        script_file, lscript);
+         shepherd_trace("child: starting son(%s, %s, 0, %ld);", childname,
+                        script_file, (unsigned long) lscript);
          son(childname, script_file, 0, lscript);
       }
    }
@@ -2807,25 +2807,25 @@ static void set_ckpt_params(int ckpt_type, char *ckpt_command, int ckpt_len,
    if (ckpt_type & CKPT_KERNEL) {
       cmd = get_conf_val("ckpt_command");
       if (strcasecmp("none", cmd)) {
-         shepherd_trace(cmd);
+         shepherd_trace("%s", cmd);
          replace_params(cmd, ckpt_command, ckpt_len, ckpt_variables);
-         shepherd_trace(ckpt_command);
+         shepherd_trace("%s", ckpt_command);
       }
 
       cmd = get_conf_val("ckpt_migr_command");
       if (strcasecmp("none", cmd)) {
-         shepherd_trace(cmd);
+         shepherd_trace("%s", cmd);
          replace_params(cmd, migr_command, migr_len,
                         ckpt_variables);
-         shepherd_trace(migr_command);
+         shepherd_trace("%s", migr_command);
       }
 
       cmd = get_conf_val("ckpt_clean_command");
       if (strcasecmp("none", cmd)) {
-         shepherd_trace(cmd);
+         shepherd_trace("%s", cmd);
          replace_params(cmd, clean_command, clean_len,
                         ckpt_variables);
-         shepherd_trace(clean_command);
+         shepherd_trace("%s", clean_command);
       }
    }
       
@@ -2867,9 +2867,9 @@ static void set_ckpt_restart_command(const char *childname, int ckpt_type,
    if ((!strcmp(childname, "job")) && (ckpt_type & CKPT_REST_KERNEL)) {
       cmd = get_conf_val("ckpt_rest_command");
       if (strcasecmp("none", cmd)) {
-         shepherd_trace(cmd);
+         shepherd_trace("%s", cmd);
          replace_params(cmd, rest_command, rest_len, ckpt_variables);
-         shepherd_trace(rest_command);
+         shepherd_trace("%s", rest_command);
       }    
    }
 }
@@ -2964,7 +2964,7 @@ static int start_async_command(const char *descr, char *cmd)
       if (sge_set_uid_gid_addgrp(get_conf_val("job_owner"), NULL, 0, 0, 0, 
                                  err_str, sizeof(err_str), use_qsub_gid,
                                  gid, skip_silently) > 0) {
-         shepherd_trace(err_str);
+         shepherd_trace("%s", err_str);
          exit(1);
       }   
 
