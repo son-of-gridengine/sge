@@ -47,18 +47,6 @@
 /* Structures. */
 
 /*
- * The following structures are used to transmit the process, job, and system
- * data gathered by the DC.  They are sent raw to the execd when requested.
- * These are not the internally-used structures.
- */
-
-struct pkt_hdr
-	{
-	uint64	len;
-	char pktype;	
-	char unused[7];
-	};
-/*
  * Process data.  An array of jd_proccount of these structures is sent
  * after each job structure, and represents the processes "owned" by a job.
  */
@@ -198,24 +186,5 @@ struct psStat_s
 
 /* Function macros. */
 	/* None */
-
-/* Macros. */
-
-/*
- * Commands to the IFM
- * To avoid sign extension and printf problems, all jobIDs are 16 chars
- * of Hex
- */
-#define	PS_IFM_START	's'
-#define	PS_IFM_QUIT	'q'	/* 'q'		Quit */
-#define	PS_IFM_TRACK	't'	/* 't ID'	track a job */
-#define	PS_IFM_IGNORE	'i'	/* 'i ID'	track a job */
-#define	PS_IFM_STATUS	'?'	/* '?'		Request DC status */
-#define	PS_IFM_1JOB	'1'	/* '1 ID'	Get info for 1 job */
-#define	PS_IFM_ALL	'a'	/* 'a'		get info for all jobs */
-#define	PS_IFM_SYSTEM	'l'	/* 'l'		get info (load) for system */
-
-#define	PS_IFM_ACK	'A'	/* ACK string (seldom used) */
-#define	PS_IFM_NACK	'N'	/* ACK string (seldom used) */
 
 #endif /* EXEC_IFM_H */

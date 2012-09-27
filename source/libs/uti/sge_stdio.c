@@ -105,9 +105,6 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
    int i;
    char arg0[256];
    char err_str[256];
-#if !(defined(WIN32) || defined(INTERIX)) /* var not needed */
-   int res;
-#endif /* WIN32 */
    uid_t myuid;
  
    DENTER(TOP_LAYER, "sge_peopen");

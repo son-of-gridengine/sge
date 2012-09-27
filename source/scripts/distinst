@@ -215,7 +215,6 @@ ArchTable()
    echo "Arch Name             Platform"
    echo "-------------------------------------------"
    echo "aix51                 AIX 5.1"
-   echo "hp10                  HP-UX 10.x"
    echo "hp11                  HP-UX 11.x"
    echo "hp11-64               HP-UX 11.x 64bit"
    echo "irix65                Irix 6.5"
@@ -239,7 +238,6 @@ ArchTable()
    echo "ulx-sparc             SPARC GNU/Linux, libc < 2.3"
    echo "ulx-sparc64           SPARC 64bit GNU/Linux, libc < 2.3"
    echo "ulx-x86               x86 GNU/Linux, libc < 2.3"
-   echo "osf4                  OSF 4.x"
    echo "tru64                 TRU64 UNIX"
    echo "sol-x86               Solaris x86"
    echo "sol-amd64             Solaris 10 AMD64"
@@ -1562,7 +1560,7 @@ for i in $ARCH; do
       if [ $instsharedlibs = true ]; then
          # Install libraries - we need to evaluate shlib extension
          case $i in 
-         hp10|hp11|hp11-64)
+         hp11|hp11-64)
             shlibext="sl"
             jnilibext="sl"
             ;;

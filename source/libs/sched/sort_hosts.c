@@ -34,10 +34,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#if !defined(WIN32) && !defined(DARWIN) && !defined(FREEBSD)
-#   include <malloc.h>
-#endif
-
 #include "uti/sge_rmon.h"
 #include "uti/sge_string.h"
 #include "uti/sge_parse_num_par.h"
