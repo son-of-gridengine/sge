@@ -35,7 +35,6 @@
 
 #ifndef NO_JNI
 
-#include <dlfcn.h>
 #include <string.h>
 
 #ifdef SOLARIS
@@ -43,6 +42,9 @@
 #endif
 
 #include <jni.h>
+
+#include "uti/sge_dlopen.h"
+
 typedef int (*JNI_CreateJavaVM_Func)(JavaVM **pvm, void **penv, void *args);
 typedef int (*JNI_GetCreatedJavaVMs_Func)(JavaVM **pvm, jsize size, jsize *real_size);
 
@@ -81,25 +83,7 @@ int main(int argc, char** argv) {
     }
 
     /* open the shared lib */
-#if defined(DARWIN)
-#ifdef RTLD_NODELETE
-    libjvm_handle = dlopen(libjvm_path, RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE);
-#else
-    libjvm_handle = dlopen(libjvm_path, RTLD_NOW | RTLD_GLOBAL);
-#endif /* RTLD_NODELETE */
-#elif defined(HP11) || defined(HP1164)
-#ifdef RTLD_NODELETE
-    libjvm_handle = dlopen(libjvm_path, RTLD_LAZY | RTLD_NODELETE);
-#else
-    libjvm_handle = dlopen(libjvm_path, RTLD_LAZY);
-#endif /* RTLD_NODELETE */
-#else
-#ifdef RTLD_NODELETE
-    libjvm_handle = dlopen(libjvm_path, RTLD_LAZY | RTLD_NODELETE);
-#else
-    libjvm_handle = dlopen(libjvm_path, RTLD_LAZY);
-#endif /* RTLD_NODELETE */
-#endif
+    libjvm_handle = sge_dlopen(libjvm_path, NULL);
 
     if (libjvm_handle == NULL) {
         printf("Error: Unable to load %s library!\n", libjvm_path);

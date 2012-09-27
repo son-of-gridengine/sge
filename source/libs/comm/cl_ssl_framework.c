@@ -48,8 +48,6 @@
 
 #define ENABLE_CRL
 
-#include <dlfcn.h>
-
 #ifdef SOLARIS
 #include <link.h>
 #endif /* SOLARIS */
@@ -84,6 +82,7 @@
 #include "uti/sge_unistd.h"
 #include "uti/sge_os.h"
 #include "uti/sge_string.h"
+#include "uti/sge_dlopen.h"
 
 #if (OPENSSL_VERSION_NUMBER < 0x1000000fL)
 #  define OPENSSL_CONST
@@ -1057,41 +1056,7 @@ static int cl_com_ssl_build_symbol_table(void) {
 #ifndef LIBSSL_VER
 #  define LIBSSL_VER ""
 #endif
-#if defined(DARWIN)
-#ifdef RTLD_NODELETE
-      cl_com_ssl_crypto_handle = dlopen ("libssl.dylib", RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE);
-#else
-      cl_com_ssl_crypto_handle = dlopen ("libssl.dylib", RTLD_NOW | RTLD_GLOBAL );
-#endif /* RTLD_NODELETE */
-
-#elif defined(FREEBSD)
-#ifdef RTLD_NODELETE
-      cl_com_ssl_crypto_handle = dlopen ("libssl.so" LIBSSL_VER, RTLD_LAZY | RTLD_GLOBAL | RTLD_NODELETE);
-#else
-      cl_com_ssl_crypto_handle = dlopen ("libssl.so" LIBSSL_VER, RTLD_LAZY | RTLD_GLOBAL);
-#endif /* RTLD_NODELETE */
-
-#elif defined(HPUX)
-#ifdef RTLD_NODELETE
-      cl_com_ssl_crypto_handle = dlopen ("libssl.sl", RTLD_LAZY | RTLD_NODELETE);
-#else
-      cl_com_ssl_crypto_handle = dlopen ("libssl.sl", RTLD_LAZY );
-#endif /* RTLD_NODELETE */
-
-#elif defined(__CYGWIN__)
-#ifdef RTLD_NODELETE
-      cl_com_ssl_crypto_handle = dlopen ("libssl.dll", RTLD_LAZY | RTLD_NODELETE);
-#else
-      cl_com_ssl_crypto_handle = dlopen ("libssl.ll", RTLD_LAZY );
-#endif /* RTLD_NODELETE */
-
-#else   
-#ifdef RTLD_NODELETE
-      cl_com_ssl_crypto_handle = dlopen ("libssl.so" LIBSSL_VER, RTLD_LAZY | RTLD_NODELETE);
-#else
-      cl_com_ssl_crypto_handle = dlopen ("libssl.so" LIBSSL_VER, RTLD_LAZY);
-#endif /* RTLD_NODELETE */
-#endif
+      cl_com_ssl_crypto_handle = sge_dlopen ("libssl", LIBSSL_VER);
       
       if (cl_com_ssl_crypto_handle == NULL) {
          CL_LOG_STR(CL_LOG_ERROR, "can't load ssl library: ", dlerror());
@@ -5129,7 +5094,7 @@ static int cl_com_ssl_fill_private_from_peer_cert(cl_com_ssl_private_t *private,
       }
       return CL_RETVAL_OK;
 }
-#else
+#else  /* !SECURE */
 
 #include <stdio.h>
 #include <stdlib.h>

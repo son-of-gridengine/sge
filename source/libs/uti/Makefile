@@ -80,7 +80,8 @@ UTILIB_DRMAA_SRC = \
          sge_rmon_monitoring_level.c \
          sge_lock.c \
          sge_lock_fifo.c \
-         sge_mtutil.c
+         sge_mtutil.c \
+         sge_dlopen.c
 
 UTILIB_SRC = sge_pty.c sge_loadmem.c sge_getloadavg.c sge_monitor.c $(UTILIB_DRMAA_SRC)
 
@@ -309,6 +310,9 @@ sge_lock_fifo.o:  $(UTILIB_DIR)/sge_lock_fifo.c
 
 sge_mtutil.o:  $(UTILIB_DIR)/sge_mtutil.c
 		$(CC) $(CFLAGS) $(MEMCFLAG) $(SHARED_CFLAGS) -c $(UTILIB_DIR)/sge_mtutil.c
+
+sge_dlopen.o:  $(UTILIB_DIR)/sge_dlopen.c
+		$(CC) $(CFLAGS) $(MEMCFLAG) $(SHARED_CFLAGS) -c $(UTILIB_DIR)/sge_dlopen.c
 
 ###############################################################################
 # test targets
