@@ -141,7 +141,34 @@
    }
 #endif
 
-#define FCLOSE_IGNORE_ERROR(x) fclose(x) 
+#define FCLOSE_IGNORE_ERROR(x) fclose(x)
+
+/****** uti/stdio/CLOSE() ****************************************************
+*  NAME
+*     CLOSE() -- close() macro
+*
+*  SYNOPSIS
+*     #define CLOSE(argument)
+*     int close(int fd)
+*
+*  FUNCTION
+*     This CLOSE macro has to be used similar to the close
+*     function. It is not necessary to check the return value.
+*     In case of an error the macro will jump to a defined label.
+*     The label name is 'CLOSE_ERROR'.
+*
+*  INPUTS
+*     int fd       - file descriptor
+*
+*  NOTES
+*     Don't forget to define the 'CLOSE_ERROR'-label
+******************************************************************************/
+#define CLOSE(x) \
+   if (close(x) != 0) { \
+      goto CLOSE_ERROR; \
+   }
+
+#define CLOSE_IGNORE_ERROR(x) (void) close(x)
 
 pid_t sge_peopen(const char *shell, int login_shell, const char *command, 
                  const char *user, char **env, FILE **fp_in, FILE **fp_out, 
