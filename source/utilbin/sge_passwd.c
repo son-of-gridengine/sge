@@ -55,7 +55,6 @@ for MS Windows hosts.
 #include <fcntl.h>
 #include <string.h>
 #include <stdlib.h>
-#include <dlfcn.h>
 
 #include <openssl/evp.h>
 #include <openssl/x509.h>
@@ -73,6 +72,7 @@ for MS Windows hosts.
 #include "uti/sge_stdio.h"
 #include "uti/sge_string.h"
 #include "sgeobj/sge_var.h"
+#include "uti/sge_dlopen.h"
 
 #include "sge_passwd.h"
 #include "msg_utilbin.h"
@@ -123,24 +123,15 @@ sge_init_shared_ssl_lib(void)
 #ifdef LOAD_OPENSSL
    if (shared_ssl_lib == NULL) {
 #  if defined(DARWIN)
+      /* Fixme:  what's .bundle, c.f. .dylib elsewhere? */
 #     ifdef RTLD_NODELETE
       shared_ssl_lib = dlopen ("libcrypto.bundle", RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE);
 #     else
       shared_ssl_lib = dlopen ("libcrypto.bundle", RTLD_NOW | RTLD_GLOBAL );
 #     endif /* RTLD_NODELETE */
-#  elif defined(HP11) || defined(HP1164)
-#     ifdef RTLD_NODELETE
-      shared_ssl_lib = dlopen ("libcrypto.sl", RTLD_LAZY | RTLD_NODELETE);
-#     else
-      shared_ssl_lib = dlopen ("libcrypto.sl", RTLD_LAZY );
-#     endif /* RTLD_NODELETE */
-#  else
-#     ifdef RTLD_NODELETE
-      shared_ssl_lib = dlopen ("libcrypto.so", RTLD_LAZY | RTLD_NODELETE);
-#     else
-      shared_ssl_lib = dlopen ("libcrypto.so", RTLD_LAZY);
-#     endif /* RTLD_NODELETE */
-#endif
+#  else     /* !DARWIN */
+      shared_ssl_lib = sge_dlopen ("libcrypto", NULL);
+#  endif
 
       if (shared_ssl_lib != NULL) {
          const char *func_name[] = {

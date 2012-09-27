@@ -285,13 +285,13 @@ sge_jvm_initialize(sge_gdi_ctx_class_t *ctx, lList **answer_list)
 
 
 #include <jni.h>
-
-#include <dlfcn.h>
 #include <string.h>
 
 #ifdef SOLARIS
 #include <link.h>
 #endif
+
+#include "uti/sge_dlopen.h"
 
 typedef int (*JNI_CreateJavaVM_Func)(JavaVM **pvm, void **penv, void *args);
 typedef int (*JNI_GetCreatedJavaVMs_Func)(JavaVM **pvm, jsize size, jsize *real_size);
@@ -490,25 +490,7 @@ static JNIEnv* create_vm(const char *libjvm_path, int argc, char** argv)
 #endif   
 
       /* open the shared lib */
-      # if defined(DARWIN)
-      # ifdef RTLD_NODELETE
-      libjvm_handle = dlopen(libjvm_path, RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE);
-      # else
-      libjvm_handle = dlopen(libjvm_path, RTLD_NOW | RTLD_GLOBAL );
-      # endif /* RTLD_NODELETE */
-      # elif defined(HP11) || defined(HP1164)
-      # ifdef RTLD_NODELETE
-      libjvm_handle = dlopen(libjvm_path, RTLD_LAZY | RTLD_NODELETE);
-      # else
-      libjvm_handle = dlopen(libjvm_path, RTLD_LAZY );
-      # endif /* RTLD_NODELETE */
-      # else
-      # ifdef RTLD_NODELETE
-      libjvm_handle = dlopen(libjvm_path, RTLD_LAZY | RTLD_NODELETE);
-      # else
-      libjvm_handle = dlopen(libjvm_path, RTLD_LAZY);
-      # endif /* RTLD_NODELETE */
-      #endif
+      libjvm_handle = sge_dlopen(libjvm_path, NULL);
 
 #ifdef HP1164
       /*

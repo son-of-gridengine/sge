@@ -34,9 +34,6 @@
 #include <strings.h>
 #include <ctype.h>
 #include <string.h>
-#ifdef SGE_PQS_API
-#include <dlfcn.h>
-#endif
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
@@ -61,6 +58,9 @@
 #include "sgeobj/sge_str.h"
 #include "sgeobj/sge_resource_utilization_RUE_L.h"
 #include "sgeobj/msg_sgeobjlib.h"
+#ifdef SGE_PQS_API
+#include "uti/sge_dlopen.h"
+#endif
 
 #include "sge.h"
 #include "msg_common.h"
@@ -790,7 +790,7 @@ int pe_validate_qsort_args(lList **alpp, const char *qsort_args, lListElem *pe,
    }
 
    /* open library */
-   lib_handle = dlopen(lib_name, RTLD_LAZY);
+   lib_handle = sge_dlopen(lib_name, NULL);
    if (!lib_handle) {
       if (alpp == NULL) {
          ERROR((SGE_EVENT, "Unable to open %s library in pe_qsort_args for PE %s - %s\n",

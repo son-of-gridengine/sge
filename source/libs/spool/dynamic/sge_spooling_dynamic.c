@@ -30,7 +30,6 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/                                   
 
-#include <dlfcn.h>
 #include <string.h>
 
 #ifdef SOLARIS
@@ -39,6 +38,7 @@
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
+#include "uti/sge_dlopen.h"
 
 #include "sgeobj/sge_answer.h"
 
@@ -77,45 +77,16 @@ spool_dynamic_create_context(lList **answer_list, const char *method,
    /* build the full name of the shared lib - append architecture dependent
     * shlib postfix 
     */
-   shlib_fullname = sge_dstring_sprintf(&shlib_dstring, "%s.%s", shlib_name, 
-#if defined(HP11) || defined(HP1164)
-                                        "sl"
-#elif defined(DARWIN)
-                                        "dylib"
-#elif __CYGWIN__
-                                        "dll"
-#else
-                                        "so"
-#endif
-                                       );
+   shlib_fullname = sge_dstring_sprintf(&shlib_dstring, "%s%s", shlib_name,
+                                        sge_shlib_ext());
 
 #if defined(HP1164)   
-   /*
-   ** need to switch to start user for HP
-   */
+   /* need to switch to start user for HP */
    sge_switch2start_user();
-#endif   
-
-   /* open the shared lib */
-   # if defined(DARWIN)
-   # ifdef RTLD_NODELETE
-   shlib_handle = dlopen(shlib_fullname, RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE);
-   # else
-   shlib_handle = dlopen(shlib_fullname, RTLD_NOW | RTLD_GLOBAL );
-   # endif /* RTLD_NODELETE */
-   # else
-   # ifdef RTLD_NODELETE
-   shlib_handle = dlopen(shlib_fullname, RTLD_NOW | RTLD_NODELETE);
-   # else
-   shlib_handle = dlopen(shlib_fullname, RTLD_NOW);
-   # endif /* RTLD_NODELETE */
-   #endif
-
-#if defined(HP1164)
-   /*
-   ** switch back to admin user for HP
-   */
+   shlib_handle = sge_dlopen(shlib_fullname, NULL);
    sge_switch2admin_user();
+#else
+   shlib_handle = sge_dlopen(shlib_fullname, NULL);
 #endif
 
    if (shlib_handle == NULL) {
