@@ -1067,7 +1067,7 @@ sge_gdi_ctx_class_t *ctx, sge_gdi_packet_class_t *packet, sge_gdi_task_class_t *
       }
       if (lGetNumberOfElem(task->answer_list) == 0) {
          /* no exechosts have been killed */
-         DPRINTF((MSG_SGETEXT_NOEXECHOSTS));
+         DPRINTF(("%s", MSG_SGETEXT_NOEXECHOSTS));
          INFO((SGE_EVENT, SFNMAX, MSG_SGETEXT_NOEXECHOSTS));
          answer_list_add(&(task->answer_list), SGE_EVENT, STATUS_OK, ANSWER_QUALITY_INFO);
       }
@@ -1146,7 +1146,7 @@ notify(sge_gdi_ctx_class_t *ctx, lListElem *lel, sge_gdi_packet_class_t *packet,
                (execd_alive ? "" : MSG_OBJ_UNKNOWN), hostname));
          answer_list_add(&(task->answer_list), SGE_EVENT, STATUS_OK, ANSWER_QUALITY_INFO);
       }
-      DPRINTF((SGE_EVENT));
+      DPRINTF(("%s", SGE_EVENT));
    }
 
    if(kill_jobs) {

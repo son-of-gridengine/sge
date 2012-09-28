@@ -1149,8 +1149,7 @@ void sge_commit_job(sge_gdi_ctx_class_t *ctx,
                      add_to_reschedule_unknown_list(ctx, host, jobid, jataskid, RESCHEDULE_HANDLE_JR_WAIT);
 
                      DPRINTF(("RU: sge_commit_job: granted_queue %s job "sge_u32"."sge_u32"\n", 
-                              lGetString(granted_queue, JG_qname), jobid, jataskid,
-                              lGetUlong(jatep, JAT_task_number)));
+                              lGetString(granted_queue, JG_qname), jobid, jataskid));
                   }
                   is_master = false;
                }

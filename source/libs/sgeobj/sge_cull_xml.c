@@ -522,7 +522,7 @@ static void lWriteElemXML_(const lListElem *ep, int nesting_level, FILE *fp, int
                unknownType("lWriteElem");
             }
             if (!fp) {
-               DPRINTF(("</%s>\n", space, attr_name));
+               DPRINTF(("%s</%s>\n", space, attr_name));
             }
             else {
                fprintf(fp, "</%s>\n", attr_name);

@@ -660,7 +660,7 @@ int sge_compare_configuration(lListElem *aHost, lList *aConf)
       conf_version = lGetUlong(conf_entry, CONF_version);
       
       if (master_version != conf_version) {
-         DPRINTF(("%s: configuration for %s changed from version %ld to %ld\n", SGE_FUNC, host_name, master_version, conf_version));
+         DPRINTF(("%s: configuration for %s changed from version %ld to %ld\n", SGE_FUNC, host_name, (long) master_version, (long) conf_version));
          DRETURN(1);
       }
    }

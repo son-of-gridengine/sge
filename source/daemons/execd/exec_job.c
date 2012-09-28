@@ -360,8 +360,8 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       }
 
       DPRINTF(("job: %ld jatask: %ld petask: %s\n", 
-         job_id, ja_task_id,
-         pe_task_id != NULL ? pe_task_id : "none"));
+               (long) job_id, (long) ja_task_id,
+               pe_task_id != NULL ? pe_task_id : "none"));
 
       master_q = responsible_queue(jep, jatep, petep);
       SGE_ASSERT((master_q));
@@ -1991,7 +1991,7 @@ char *shell
    
       ret = strncmp(cp, shell, strlen(shell));
       DPRINTF(("strncmp(\"%s\", \"%s\", %d) = %d\n",
-              cp, shell, strlen(shell), ret));
+               cp, shell, (int) strlen(shell), ret));
       if (!ret) {
          sge_free(&login_shells);
          DEXIT;  

@@ -520,7 +520,7 @@ int comm_open_connection(bool        b_server,
    /* Check validity of parameters */
    if (*handle != NULL) {
       sge_dstring_sprintf(err_msg, "Invalid parameter: *handle is not NULL");
-      DPRINTF((sge_dstring_get_string(err_msg)));
+      DPRINTF(("%s", sge_dstring_get_string(err_msg)));
       DEXIT;
       return COMM_INVALID_PARAMETER;
    }
@@ -880,7 +880,7 @@ int comm_wait_for_connection(COMM_HANDLE *handle,
    }
    if (waited_usec/1000000 >= wait_secs) {
       sge_dstring_sprintf(err_msg, "Timeout occured while waiting for connection");
-      DPRINTF((sge_dstring_get_string(err_msg)));
+      DPRINTF(("%s", sge_dstring_get_string(err_msg)));
       ret_val = COMM_GOT_TIMEOUT;
    } else if (ret2 != CL_RETVAL_OK) {
       sge_dstring_sprintf(err_msg, cl_get_error_text(ret2));
@@ -997,7 +997,7 @@ int comm_wait_for_no_connection(COMM_HANDLE *handle, const char *component,
    if (waited_usec/1000000 >= wait_secs) {
       sge_dstring_sprintf(err_msg, 
                           "Timeout occured while waiting for no connection");
-      DPRINTF((sge_dstring_get_string(err_msg)));
+      DPRINTF(("%s", sge_dstring_get_string(err_msg)));
       ret_val = COMM_GOT_TIMEOUT;
    }
    if (ret2 != CL_RETVAL_OK) {
@@ -1352,7 +1352,7 @@ int comm_recv_message(COMM_HANDLE *handle, bool b_synchron,
       } else {
          sge_dstring_sprintf(err_msg, "Invalid parameter: recv_mess == NULL");
       }
-      DPRINTF((sge_dstring_get_string(err_msg)));
+      DPRINTF(("%s", sge_dstring_get_string(err_msg)));
       DEXIT;
       return COMM_INVALID_PARAMETER;
    }

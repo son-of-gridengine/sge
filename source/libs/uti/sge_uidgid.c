@@ -369,7 +369,7 @@ int sge_switch2admin_user(void)
    }
 
    if (!sge_is_start_user_superuser()) {
-      DPRINTF((MSG_SWITCH_USER_NOT_ROOT));
+      DPRINTF(("%s", MSG_SWITCH_USER_NOT_ROOT));
       ret = 0;
       goto exit;
    } else {
@@ -457,7 +457,7 @@ int sge_switch2start_user(void)
    start_gid = getgid();
 
    if(!sge_is_start_user_superuser()) {
-      DPRINTF((MSG_SWITCH_USER_NOT_ROOT));
+      DPRINTF(("%s", MSG_SWITCH_USER_NOT_ROOT));
       ret = 0;
       goto exit;
    } else {

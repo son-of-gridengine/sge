@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
          last = now;
 
       if (now - last < SLEEP) {
-         DPRINTF(("sleep(%d)\n", SLEEP - (now - last)));
+         DPRINTF(("sleep(%ld)\n", (long) (SLEEP - (now - last))));
          sleep(SLEEP - (now - last));
          continue;
       }

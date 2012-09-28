@@ -43,19 +43,25 @@ typedef void              (*rmon_print_callback_func_t) (const char *message, un
 
 extern monitoring_level RMON_DEBUG_ON;
 
+#ifdef __GNUC__
+#define PRATTR(idx, first) __attribute__ ((format (printf, idx, first)))
+#else
+#define PRATTR(idx, first)
+#endif
+
 int  rmon_condition(int layer, int debug_class);
 int  rmon_is_enabled(void);
 void rmon_mopen(int *argc, char *argv[], char *programname);
 void rmon_menter(const char *func, const char *thread_name);
 void rmon_mtrace(const char *func, const char *file, int line, const char *thread_name);
-void rmon_mprintf(int debug_class, const char *fmt, ...);
+void rmon_mprintf(int debug_class, const char *fmt, ...) PRATTR(2, 3);
 void rmon_mexit(const char *func, const char *file, int line, const char *thread_name);
 void rmon_debug_client_callback(int dc_connected, int debug_level);
 void rmon_set_print_callback(rmon_print_callback_func_t function_p);
 
-void rmon_mprintf_lock(const char* fmt, ...);
-void rmon_mprintf_info(const char* fmt, ...);
-void rmon_mprintf_timing(const char* fmt, ...);
+void rmon_mprintf_lock(const char* fmt, ...) PRATTR(1, 2);
+void rmon_mprintf_info(const char* fmt, ...) PRATTR(1, 2);
+void rmon_mprintf_timing(const char* fmt, ...) PRATTR(1, 2);
 /* void rmon_mprintf_special(const char* fmt, ...); */
 
 typedef struct rmon_ctx_str rmon_ctx_t;

@@ -670,7 +670,7 @@ int sge_peclose(pid_t pid, FILE *fp_in, FILE *fp_out, FILE *fp_err,
             kill(pid, SIGKILL);
 #endif /* WIN32 */
          } else {
-            DPRINTF(("%d seconds waiting for exit\n", timeout->tv_sec));
+            DPRINTF(("%d seconds waiting for exit\n", (int) timeout->tv_sec));
             sleep(1);
             timeout->tv_sec -= 1;
          }

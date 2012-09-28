@@ -1,4 +1,3 @@
-
 /*___INFO__MARK_BEGIN__*/
 /*************************************************************************
  * 
@@ -959,7 +958,7 @@ static void ptf_get_usage_from_data_collector(void)
                      tmp_jobs->jd_utime_c + tmp_jobs->jd_utime_a +
                      tmp_jobs->jd_stime_c + tmp_jobs->jd_stime_a,
                      tmp_jobs->jd_mem, tmp_jobs->jd_chars,
-                     tmp_jobs->jd_vmem, tmp_jobs->jd_himem));
+                     (double) tmp_jobs->jd_vmem, (double) tmp_jobs->jd_himem));
          } else {
             /* 
              * NOTE: Under what conditions would DC have a job

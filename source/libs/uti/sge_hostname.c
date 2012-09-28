@@ -1260,7 +1260,7 @@ int sge_hostcmp(const char *h1, const char*h2)
  
       cmp = SGE_STRCASECMP(h1_cpy, h2_cpy); 
 
-      DPRINTF(("sge_hostcmp(%s, %s) = %d\n", h1_cpy, h2_cpy));
+      DPRINTF(("sge_hostcmp(%s, %s) = %d\n", h1_cpy, h2_cpy, cmp));
    }
  
    DEXIT;
@@ -1308,7 +1308,7 @@ int sge_hostmatch(const char *h1, const char*h2)
  
       cmp=fnmatch(h1_cpy, h2_cpy, 0);
 
-      DPRINTF(("sge_hostmatch(%s, %s) = %d\n", h1_cpy, h2_cpy));
+      DPRINTF(("sge_hostmatch(%s, %s) = %d\n", h1_cpy, h2_cpy, cmp));
    }
  
    DEXIT;

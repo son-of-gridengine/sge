@@ -133,7 +133,7 @@ void job_related_adminmail(u_long32 progid, lListElem *jr, int is_array, const c
 
    sge_dstring_init(&ds, buffer, sizeof(buffer));
 
-   DPRINTF(("sizeof(admail_times) : %d\n", sizeof(admail_times)));
+   DPRINTF(("sizeof(admail_times) : %ld\n", (long) sizeof(admail_times)));
    if (first) {
       memset(admail_times, 0, sizeof(admail_times));
       first = 0;
