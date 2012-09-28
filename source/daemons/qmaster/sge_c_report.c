@@ -230,7 +230,7 @@ void sge_c_report(sge_gdi_ctx_class_t *ctx, char *rhost, char *commproc, int id,
          break;
 
       default:   
-         DPRINTF(("received invalid report type %ld\n", rep_type));
+         DPRINTF(("received invalid report type %ld\n", (long) rep_type));
       }
    } /* end for_each */
 

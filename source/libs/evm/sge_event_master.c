@@ -1620,7 +1620,7 @@ static void sge_event_master_process_send(lListElem *request, monitoring_t *moni
          for_each (event_client, Event_Master_Control.clients) {
             ec_id = lGetUlong(event_client, EV_id);
 
-            DPRINTF(("Preparing event for client %ld\n", ec_id));
+            DPRINTF(("Preparing event for client %ld\n", (long) ec_id));
 
             if (eventclient_subscribed(event_client, type, session)) {
                added = true;

@@ -747,10 +747,9 @@ buffer_encode_hex(unsigned char *input, size_t len, unsigned char **output)
    DENTER(TOP_LAYER, "buffer_encode_hex");
 
    s = len * 2 + 1;
-   DPRINTF(("len=%d, mallocing %d Bytes\n", len, s));
+   DPRINTF(("len=%d, mallocing %d Bytes\n", (int) len, (int) s));
 
    *output = malloc(s);
-   DPRINTF(("buffer output=%#x\n", *output));
 
    if(*output != NULL) {
       memset(*output, 0, s);
@@ -768,6 +767,7 @@ buffer_encode_hex(unsigned char *input, size_t len, unsigned char **output)
          strcat((char*) *output, buffer); /* RATS: ignore */
       }
    }
+   DPRINTF(("buffer output="SFN"\n", *output));
    DEXIT;
    return *output;
 }

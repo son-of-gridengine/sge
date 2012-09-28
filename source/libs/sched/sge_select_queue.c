@@ -3261,7 +3261,7 @@ sequential_tag_queues_suitable4job(sge_assignment_t *a)
                   &rue_string, &limit_name, &rule_name, got_solution?tt_best:U_LONG32_MAX)) != DISPATCH_OK) {
             best_queue_result = find_best_result(result, best_queue_result);
             if (is_global == false) {
-               DPRINTF(("no match due to GLOBAL RQS\n", eh_name));          
+               DPRINTF(("no match due to GLOBAL RQS\n"));
                continue;
             }
             break; /* hit a global limit */
@@ -4199,7 +4199,7 @@ parallel_tag_queues_suitable4job(sge_assignment_t *a, category_use_t *use_catego
             break;
          default:
             DPRINTF(("!!!!!!!! COMPREHSENSIVE ASSIGNMENT(%d) returns unexpected %d\n", 
-                  best_result));
+                     a->slots, best_result));
             break;
          }
       }

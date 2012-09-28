@@ -529,7 +529,7 @@ reporting_create_job_log(lList **answer_list,
                           account, REPORTING_DELIMITER,
                           message);
       /* write record to reporting buffer */
-      DPRINTF((sge_dstring_get_string(&job_dstring)));
+      DPRINTF(("%s", sge_dstring_get_string(&job_dstring)));
       ret = reporting_create_record(answer_list, "job_log", 
                                     sge_dstring_get_string(&job_dstring));
       sge_dstring_free(&job_dstring);

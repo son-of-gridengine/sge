@@ -166,11 +166,11 @@ slotwise_x_on_subordinate(sge_gdi_ctx_class_t *ctx,
          if (suspend == true) {
             SETBIT(JSUSPENDED_ON_SLOTWISE_SUBORDINATE, state);
             DPRINTF(("Setting status JSUSPENDED_ON_SLOTWISE_SUBORDINATE for job %lu.%lu\n",
-                     job_id, task_id));
+                     (unsigned long) job_id, (unsigned long) task_id));
          } else {
             CLEARBIT(JSUSPENDED_ON_SLOTWISE_SUBORDINATE, state);
             DPRINTF(("Clearing status JSUSPENDED_ON_SLOTWISE_SUBORDINATE for job %lu.%lu\n",
-                     job_id, task_id)); 
+                     (unsigned long) job_id, (unsigned long) task_id));
          }
          lSetUlong(jatep, JAT_state, state);
          ret = true;

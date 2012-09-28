@@ -136,7 +136,9 @@ void sge_set_next_spooling_time(void)
          Follow_Control.last_update = Follow_Control.now;
       } else if (Follow_Control.is_spooling == DO_SPOOL) {
          Follow_Control.last_update = Follow_Control.now  + mconf_get_spool_time();
-         DPRINTF(("next spooling now:%ld next: %ld time:%d\n\n",Follow_Control.now, Follow_Control.last_update, mconf_get_spool_time()));
+         DPRINTF(("next spooling now:%ld next: %ld time:%d\n\n",
+                  (long) Follow_Control.now,(long) Follow_Control.last_update,
+                  mconf_get_spool_time()));
       }
 
       Follow_Control.now = 0;
@@ -594,7 +596,7 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
 
          task_number = lGetUlong(ep, OR_ja_task_number);
 
-         DPRINTF(("ORDER : job("sge_u32")->pri/tickets reset"));
+         DPRINTF(("ORDER : job("sge_u32")->pri/tickets reset", job_number));
 
          jep = job_list_locate(*object_base[SGE_TYPE_JOB].list, job_number);
          if (jep == NULL) {
@@ -1108,7 +1110,9 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
 
             now = Follow_Control.now = sge_get_gmt();
 
-            DPRINTF((">>next spooling now: %ld next: %ld\n", Follow_Control.now, Follow_Control.last_update));
+            DPRINTF((">>next spooling now: %ld next: %ld\n",
+                     (long) Follow_Control.now,
+                     (long) Follow_Control.last_update));
 
             if (now >= Follow_Control.last_update) {
                Follow_Control.is_spooling = DO_SPOOL;
@@ -1247,7 +1251,9 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
 
             now = Follow_Control.now = sge_get_gmt();
 
-            DPRINTF((">>next spooling now:%ld next: %ld\n",Follow_Control.now, Follow_Control.last_update));
+            DPRINTF((">>next spooling now:%ld next: %ld\n",
+                     (long) Follow_Control.now,
+                     (long) Follow_Control.last_update));
 
             if (now >= Follow_Control.last_update) {
                Follow_Control.is_spooling = DO_SPOOL;

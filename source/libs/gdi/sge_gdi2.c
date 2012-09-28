@@ -1076,7 +1076,7 @@ bool sge_gdi2_check_permission(sge_gdi_ctx_class_t *ctx, lList **alpp, int optio
           if (value != 1) {
              failed_checks++;
           }
-          DPRINTF(("MANAGER_CHECK: %ld\n", value));
+          DPRINTF(("MANAGER_CHECK: %ld\n", (long) value));
        }
 
        /* operator check */
@@ -1086,7 +1086,7 @@ bool sge_gdi2_check_permission(sge_gdi_ctx_class_t *ctx, lList **alpp, int optio
           if (value != 1) {
              failed_checks++;
           }
-          DPRINTF(("OPERATOR_CHECK: %ld\n", value));
+          DPRINTF(("OPERATOR_CHECK: %ld\n", (long) value));
        }
 
      }

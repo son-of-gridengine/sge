@@ -2504,7 +2504,7 @@ static bool ec2_commit_local(sge_evc_class_t *thiz, lList **alpp)
       DPRINTF((SGE_EVENT, MSG_EVENT_UNINITIALIZED_EC));
    } else if (thiz->ec_need_new_registration(thiz)) {
       /* not (yet) registered? Cannot send modification to qmaster! */
-      DPRINTF((MSG_EVENT_NOTREGISTERED));
+      DPRINTF(("%s", MSG_EVENT_NOTREGISTERED));
    } else {
       const char *ruser = NULL;
       const char *rhost = NULL;
@@ -2541,10 +2541,10 @@ static bool ec2_ack(sge_evc_class_t *thiz)
 
    /* not yet initialized? Cannot send modification to qmaster! */
    if (sge_evc->ec == NULL) {
-      DPRINTF((MSG_EVENT_UNINITIALIZED_EC));
+      DPRINTF(("%s", MSG_EVENT_UNINITIALIZED_EC));
    } else if (thiz->ec_need_new_registration(thiz)) {
       /* not (yet) registered? Cannot send modification to qmaster! */
-      DPRINTF((MSG_EVENT_NOTREGISTERED));
+      DPRINTF(("%s", MSG_EVENT_NOTREGISTERED));
    } else {
       local_t *evc_local = &(thiz->ec_local);
       if (evc_local && evc_local->ack_func) {
@@ -2593,11 +2593,11 @@ static bool ec2_commit(sge_evc_class_t *thiz, lList **alpp)
 
    /* not yet initialized? Cannot send modification to qmaster! */
    if (sge_evc->ec == NULL) {
-      DPRINTF((MSG_EVENT_UNINITIALIZED_EC));
+      DPRINTF(("%s", MSG_EVENT_UNINITIALIZED_EC));
       answer_list_add(alpp, MSG_EVENT_UNINITIALIZED_EC, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
    } else if (thiz->ec_need_new_registration(thiz)) {
       /* not (yet) registered? Cannot send modification to qmaster! */
-      DPRINTF((MSG_EVENT_NOTREGISTERED));
+      DPRINTF(("%s", MSG_EVENT_NOTREGISTERED));
       answer_list_add(alpp, MSG_EVENT_NOTREGISTERED, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
    } else {
       lList *lp, *alp;
@@ -2677,10 +2677,10 @@ static bool ec2_commit_multi(sge_evc_class_t *thiz, lList **malpp, state_gdi_mul
 
    /* not yet initialized? Cannot send modification to qmaster! */
    if (sge_evc->ec == NULL) {
-      DPRINTF((MSG_EVENT_UNINITIALIZED_EC));
+      DPRINTF(("%s", MSG_EVENT_UNINITIALIZED_EC));
    } else if (thiz->ec_need_new_registration(thiz)) {
       /* not (yet) registered? Cannot send modification to qmaster! */
-      DPRINTF((MSG_EVENT_NOTREGISTERED));
+      DPRINTF(("%s", MSG_EVENT_NOTREGISTERED));
    } else {
       int commit_id, gdi_ret;
       lList *lp, *alp = NULL;
