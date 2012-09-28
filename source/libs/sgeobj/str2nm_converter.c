@@ -53,7 +53,7 @@ static int _lStr2Nm(const lNameSpace *nsp, const char *str)
 
    if (nsp) {
       for (i = 0; i < nsp->size; i++) {
-         DPRINTF(("%d: %s\n", nsp->namev[i]));
+         DPRINTF(("%d: %s\n", i, nsp->namev[i]));
          if (!strcmp(nsp->namev[i], str)) {
             found = 1;
             break;

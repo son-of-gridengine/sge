@@ -1979,7 +1979,7 @@ int main(int argc, char **argv)
       } else {
         job_id = 0;
       }
-      DPRINTF(("job id is: %ld\n", job_id));
+      DPRINTF(("job id is: %ld\n", (long) job_id));
 
       status = 0; 
       
@@ -2231,10 +2231,10 @@ int main(int argc, char **argv)
          ja_task = lFirst(lGetList(jep, JB_ja_tasks)); 
          if (ja_task) {
             job_status = lGetUlong(ja_task, JAT_status);
-            DPRINTF(("Job Status is: %lx\n", job_status));
+            DPRINTF(("Job Status is: %lx\n", (long) job_status));
          } else {
             job_status = JIDLE;
-            DPRINTF(("Job Status is: %lx (unenrolled)\n", job_status));
+            DPRINTF(("Job Status is: %lx (unenrolled)\n", (long) job_status));
          }
    
          lFreeList(&lp_poll);

@@ -168,7 +168,7 @@ long type
          DPRINTF(("Timer %d enabled\n", i)); 
          QmonListTimer[i].timercount++;
          DPRINTF(("Timer%d %s/%d enabled\n", i, 
-            sge_gdi_list_timers[i], QmonListTimer[i].timercount));
+                  sge_gdi_list_timers[i], (int) QmonListTimer[i].timercount));
          QmonListTimer[i].fetch = 0;
       }
    }
@@ -195,8 +195,7 @@ long type
       if ( (type&(1<<i)) && QmonListTimer[i].timercount) {
          QmonListTimer[i].timercount--;
          DPRINTF(("Timer %s/%d disabled\n", 
-            sge_gdi_list_timers[i], QmonListTimer[i].timercount+1 ));
-
+                  sge_gdi_list_timers[i], (int)QmonListTimer[i].timercount+1));
       }
    }
 

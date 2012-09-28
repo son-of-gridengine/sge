@@ -485,7 +485,7 @@ static void sge_csp_path_dprintf(sge_csp_path_class_t *thiz)
    DPRINTF(("rand_file           >%s<\n", es->rand_file ? es->rand_file : "NA"));
    DPRINTF(("reconnect_file      >%s<\n", es->reconnect_file ? es->reconnect_file : "NA"));
    DPRINTF(("CRL file            >%s<\n", es->crl_file ? es->crl_file : "NA"));
-   DPRINTF(("refresh_time        >%d<\n", es->refresh_time));
+   DPRINTF(("refresh_time        >%ld<\n", es->refresh_time));
    DPRINTF(("password            >%s<\n", es->password ? es->password : "NA"));
 
    DEXIT;

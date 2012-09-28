@@ -4182,7 +4182,7 @@ static void *japi_implementation_thread(void * a_user_data_pointer)
                job_list_subscribed = true;
             }
 
-            DPRINTF ((MSG_JAPI_RECONNECTED));
+            DPRINTF (("%s", MSG_JAPI_RECONNECTED));
             disconnected = false;
          }
 
@@ -4291,7 +4291,8 @@ static void *japi_implementation_thread(void * a_user_data_pointer)
                      object_delete_range_id(japi_job, NULL, JJ_not_yet_finished_ids, intkey2);
 
                      /* add an entry to the finished tasks */
-                     DPRINTF(("adding finished task %ld for job %ld\n", intkey2, intkey));
+                     DPRINTF(("adding finished task %ld for job %ld\n",
+                              (long) intkey2, (long) intkey));
                      japi_task = lAddSubUlong(japi_job, JJAT_task_id, intkey2, JJ_finished_tasks, JJAT_Type);
                      lSetUlong(japi_task, JJAT_stat, wait_status);
                      lSetString(japi_task, JJAT_failed_text, err_str);
@@ -4342,7 +4343,7 @@ static void *japi_implementation_thread(void * a_user_data_pointer)
 
                         /* add an entry to the started tasks */
                         DPRINTF(("adding started task %ld for job %ld\n",
-                                 intkey2, intkey));
+                                 (long) intkey2, (long) intkey));
                         range_list_insert_id (&range, &alp, intkey2);
                         JAPI_LOCK_EC_ALP(japi_ec_alp_struct);
                         range_list_sort_uniq_compress(range, &(japi_ec_alp_struct.japi_ec_alp), true);
@@ -4395,7 +4396,7 @@ static void *japi_implementation_thread(void * a_user_data_pointer)
                   error_handler(MSG_JAPI_QMASTER_DOWN);
                }
 
-               DPRINTF((MSG_JAPI_QMASTER_DOWN));
+               DPRINTF(("%s", MSG_JAPI_QMASTER_DOWN));
                disconnected = true;
             }
          } /* for_each */
@@ -4434,7 +4435,7 @@ static void *japi_implementation_thread(void * a_user_data_pointer)
             error_handler (MSG_JAPI_EC_GET_PROBLEM);
          }
 
-         DPRINTF ((MSG_JAPI_EC_GET_PROBLEM));
+         DPRINTF (("%s", MSG_JAPI_EC_GET_PROBLEM));
          stop_ec = true;
       }
       else if ((ec_get_ret == 0) && !stop_ec && !disconnected) {
@@ -4444,7 +4445,7 @@ static void *japi_implementation_thread(void * a_user_data_pointer)
             error_handler (MSG_JAPI_DISCONNECTED);
          }
 
-         DPRINTF ((MSG_JAPI_DISCONNECTED));
+         DPRINTF (("%s", MSG_JAPI_DISCONNECTED));
          disconnected = true;
       }
    } /* while */
@@ -4579,7 +4580,7 @@ static int japi_sync_job_tasks(lListElem *japi_job, lListElem *sge_job)
                                 taskid);
          /* add entry to the finished tasks */
          DPRINTF(("adding finished task %ld for job %ld which still exists\n",
-                  taskid, lGetUlong(japi_job, JJ_jobid)));
+                  (long) taskid, (long) lGetUlong(japi_job, JJ_jobid)));
          lAddSubUlong(japi_job, JJAT_task_id, taskid, JJ_finished_tasks,
                       JJAT_Type);
          finished_tasks++;
@@ -4640,7 +4641,7 @@ static int japi_clean_up_jobs(int flag, dstring *diag)
          while (japi_job != NULL) {
             jobid = lGetUlong(japi_job, JJ_jobid);
 
-            DPRINTF (("Stopping job %ld\n", jobid));
+            DPRINTF (("Stopping job %ld\n", (long) jobid));
 
             sge_dstring_sprintf(&job_task_specifier, sge_u32, jobid);
             id_entry = lAddElemStr(&id_list, ID_str,

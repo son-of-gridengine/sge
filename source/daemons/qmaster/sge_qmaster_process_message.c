@@ -446,7 +446,8 @@ static void do_c_ack(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg, monitoring_t 
       ack_ulong = lGetUlong(ack, ACK_id);
       ack_ulong2 = lGetUlong(ack, ACK_id2);
 
-      DPRINTF(("ack_ulong = %ld, ack_ulong2 = %ld\n", ack_ulong, ack_ulong2));
+      DPRINTF(("ack_ulong = %ld, ack_ulong2 = %ld\n", (long) ack_ulong,
+               (long) ack_ulong2));
       switch (ack_tag) { /* send by dispatcher */
       case ACK_SIGJOB:
       case ACK_SIGQUEUE:

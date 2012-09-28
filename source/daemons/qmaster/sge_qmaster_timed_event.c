@@ -53,7 +53,7 @@
 
 #define EVENT_LAYER CULL_LAYER
 
-#define EVENT_FRMT(x) SGE_FUNC, x->type, x->when, x->mode, x->str_key?x->str_key:MSG_SMALLNULL
+#define EVENT_FRMT(x) SGE_FUNC, x->type, (uint32_t) x->when, x->mode, x->str_key?x->str_key:MSG_SMALLNULL
 
 event_control_t Event_Control = {
    PTHREAD_MUTEX_INITIALIZER, 
@@ -241,7 +241,7 @@ void te_wait_next(te_event_t te, time_t now)
       int res = 0;
 
       DPRINTF(("%s: time:"sge_u32" next:"sge_u32" --> will wait\n", 
-               SGE_FUNC, now, Event_Control.next));
+               SGE_FUNC, (uint32_t) now, (uint32_t) Event_Control.next));
 
       res = pthread_cond_timedwait(&Event_Control.cond_var, &Event_Control.mutex, &ts);
       if (ETIMEDOUT == res) { break; }
@@ -463,8 +463,9 @@ void te_add_event(te_event_t anEvent)
    lSetUlong(le,  TE_uval1,    anEvent->ulong_key_2);
    lSetString(le, TE_sval,     anEvent->str_key);
 
-   DPRINTF(("%s: (t:"sge_u32" w:"sge_u32" m:"sge_u32" s:%s)\n", SGE_FUNC, anEvent->type,
-      when, anEvent->mode, anEvent->str_key?anEvent->str_key:MSG_SMALLNULL));
+   DPRINTF(("%s: (t:"sge_u32" w:"sge_u32" m:"sge_u32" s:%s)\n", SGE_FUNC,
+            anEvent->type, (uint32_t) when, anEvent->mode,
+            anEvent->str_key?anEvent->str_key:MSG_SMALLNULL));
 
    sge_mutex_lock("event_control_mutex", SGE_FUNC, __LINE__, &Event_Control.mutex);
 
@@ -1010,7 +1011,8 @@ void te_scan_table_and_deliver(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, mon
 
    DENTER(EVENT_LAYER, "te_scan_table_and_deliver");
 
-   DPRINTF(("%s: event (t:"sge_u32" w:"sge_u32" m:"sge_u32" s:%s)\n", EVENT_FRMT(anEvent)));
+   DPRINTF(("%s: event (t:"sge_u32" w:"sge_u32" m:"sge_u32" s:%s)\n",
+            EVENT_FRMT(anEvent)));
 
    sge_mutex_lock("handler_table_mutex", SGE_FUNC, __LINE__, &Handler_Tbl.mutex);
 

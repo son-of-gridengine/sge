@@ -701,7 +701,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    lSetUlong(jr, JR_failed, failed);
    DPRINTF(("job report for job "SFN": failed = %ld\n", 
             job_get_id_string(job_id, ja_task_id, pe_task_id, &id_dstring), 
-            failed));
+            (long) failed));
    /* err_str */
    if (*error) {
       lSetString(jr, JR_err_str, error);
@@ -830,7 +830,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    lSetUlong(jr, JR_general_failure, general_failure);
    DPRINTF(("job report for job "SFN": general_failure = %ld\n", 
             job_get_id_string(job_id, ja_task_id, pe_task_id, &id_dstring),
-            general_failure));
+            (long) general_failure));
 
    sge_dstring_free(&fname);
    sge_dstring_free(&jobdir);
@@ -1460,7 +1460,7 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
       INFO((SGE_EVENT, SFNMAX, err_str));
       modify_queue_limits_flag_for_job(ctx->get_qualified_hostname(ctx), jep, true);
    } else {
-      DPRINTF((err_str));
+      DPRINTF(("%s", err_str));
    }
 
    if (shepherd_alive) {     /* shepherd alive -> nothing to do */

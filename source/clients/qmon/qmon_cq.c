@@ -1655,7 +1655,7 @@ lListElem *qep
 
    sge_strlcat(info, "\n", sizeof(info)); 
 
-   DPRINTF(("info is %d long\n", strlen(info)));
+   DPRINTF(("info is %d long\n", (int) strlen(info)));
    
 #undef WIDTH
    DEXIT;

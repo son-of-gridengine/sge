@@ -3421,7 +3421,7 @@ static void qmonSubmitGetEnv(Widget w, XtPointer cld, XtPointer cad)
       }
       XbaeMatrixSetCell(matrix, row, 0, variable ? variable : "");
       XbaeMatrixSetCell(matrix, row, 1, value ? value : "");
-      DPRINTF(("[%0.3d] %s\n", row, *env));
+      DPRINTF(("[%.3d] %s\n", row, *env));
       XtFree((char*)temp);
    }
    

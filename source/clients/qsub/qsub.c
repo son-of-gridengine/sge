@@ -304,7 +304,7 @@ main(int argc, char **argv)
          goto Error;
       }
 
-      DPRINTF(("job id is: %ld\n", jobids->it.ji.jobid));
+      DPRINTF(("job id is: %ld\n", (long) jobids->it.ji.jobid));
       
       jobid_string = get_bulk_jobid_string((long)jobids->it.ji.jobid, start, end, step);
    }
