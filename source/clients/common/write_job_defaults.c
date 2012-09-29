@@ -229,7 +229,7 @@ int flags
 
 FCLOSE_ERROR:
    answer_list_add_sprintf(&answer, STATUS_EDISK, ANSWER_QUALITY_ERROR,
-                           MSG_FILE_ERRORCLOSEINGXY_SS, filename, strerror(errno));
+                           MSG_FILE_NOCLOSE_SS, filename, strerror(errno));
    DRETURN(answer);
 }
 

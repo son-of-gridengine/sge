@@ -244,7 +244,7 @@ static int path_alias_read_from_file(lList **path_alias_list, lList **alpp,
    DEXIT;
    return ret;
 FCLOSE_ERROR:
-   SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_FILE_ERRORCLOSEINGXY_SS, file_name,
+   SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_FILE_NOCLOSE_SS, file_name,
                   strerror(errno)));
    answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
    return -1;

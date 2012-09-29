@@ -87,7 +87,7 @@ href_list_add(lList **this_list, lList **answer_list, const char *host_or_group)
 
          h_or_g = lAddElemHost(this_list, HR_name, host_or_group, HR_Type);
          if (h_or_g == NULL) {
-            answer_list_add(answer_list, MSG_GDI_OUTOFMEMORY,
+            answer_list_add(answer_list, MSG_SGETEXT_NOMEM,
                             STATUS_EMALLOC, ANSWER_QUALITY_ERROR);
             ret = false;
          }

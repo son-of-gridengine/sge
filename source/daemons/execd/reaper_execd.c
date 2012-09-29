@@ -1706,7 +1706,7 @@ read_dusage(lListElem *jr, const char *jobdir, u_long32 jobid, u_long32 jataskid
 #endif
    DRETURN(0);
 FCLOSE_ERROR:
-   ERROR((SGE_EVENT, MSG_FILE_ERRORCLOSEINGXY_SS, "usage or pid", 
+   ERROR((SGE_EVENT, MSG_FILE_NOCLOSE_SS, "usage or pid",
           strerror(errno)));
    DRETURN(-1);
 }

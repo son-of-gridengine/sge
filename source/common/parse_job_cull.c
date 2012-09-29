@@ -1036,7 +1036,7 @@ u_long32 flags
    DRETURN(answer);
 FCLOSE_ERROR:
    snprintf(error_string, sizeof(error_string),
-            MSG_FILE_ERRORCLOSEINGXY_SS, script_file, strerror(errno));
+            MSG_FILE_NOCLOSE_SS, script_file, strerror(errno));
    answer_list_add(&answer, error_string,
                    STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
 

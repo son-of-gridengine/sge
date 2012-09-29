@@ -123,7 +123,7 @@ print_func_t ostream
    snprintf(fname, sizeof(fname), "%s/common/qtask", cell_root);
 
    if (!(fp = fopen(fname, "r")) && errno != ENOENT) {
-      SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_SGETEXT_CANT_OPEN_SS, fname, strerror(errno)));
+      SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_FILE_ERROROPENINGXY_SS, fname, strerror(errno)));
       answer_list_add(alpp, SGE_EVENT, STATUS_EDISK, ANSWER_QUALITY_ERROR);
       (*ostream)("%s", SGE_EVENT);
       goto Error;
@@ -167,7 +167,7 @@ print_func_t ostream
    snprintf(fname, sizeof(fname), "%s/.qtask", pwd->pw_dir);
    
    if (!(fp = fopen(fname, "r")) && errno != ENOENT) {
-      SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_SGETEXT_CANT_OPEN_SS, fname, strerror(errno)));
+      SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_FILE_ERROROPENINGXY_SS, fname, strerror(errno)));
       answer_list_add(alpp, SGE_EVENT, STATUS_EDISK, ANSWER_QUALITY_ERROR);
       (*ostream)("%s", SGE_EVENT);
       goto Error;

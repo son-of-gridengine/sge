@@ -1151,7 +1151,7 @@ int main(int argc, char **argv)
    DRETURN(0);
 
 FCLOSE_ERROR:
-   ERROR((SGE_EVENT, MSG_FILE_ERRORCLOSEINGXY_SS, acct_file, strerror(errno)));
+   ERROR((SGE_EVENT, MSG_FILE_NOCLOSE_SS, acct_file, strerror(errno)));
 QACCT_EXIT:
    sge_prof_cleanup();
    lFreeList(&sorted_list);

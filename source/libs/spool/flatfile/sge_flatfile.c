@@ -1560,7 +1560,7 @@ spool_flatfile_read_object(lList **answer_list, const lDescr *descr,
       spool_scanner_shutdown();
       answer_list_add_sprintf(answer_list, STATUS_EDISK,
                               ANSWER_QUALITY_ERROR, 
-                              MSG_GDI_OUTOFMEMORY);
+                              MSG_SGETEXT_NOMEM);
       if (file_opened) {
          FCLOSE(file);
       }
@@ -2186,7 +2186,7 @@ spool_flatfile_read_list(lList **answer_list, const lDescr *descr,
 
       answer_list_add_sprintf(answer_list, STATUS_EDISK,
                               ANSWER_QUALITY_ERROR, 
-                              MSG_GDI_OUTOFMEMORY);
+                              MSG_SGETEXT_NOMEM);
 
       if (file_opened) {
          FCLOSE(file);

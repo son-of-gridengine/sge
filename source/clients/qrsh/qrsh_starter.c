@@ -289,7 +289,7 @@ static char *setEnvironment(const char *jobdir, char **wrapper)
    
    return command;
 FCLOSE_ERROR:
-   qrsh_error(MSG_FILE_ERRORCLOSEINGXY_SS, envFileName, strerror(errno));
+   qrsh_error(MSG_FILE_NOCLOSE_SS, envFileName, strerror(errno));
    return NULL;
 }
 
