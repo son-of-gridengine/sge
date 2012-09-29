@@ -264,7 +264,7 @@ qref_list_add(lList **this_list, lList **answer_list, const char *qref_string)
 
       new_elem = lAddElemStr(this_list, QR_name, qref_string, QR_Type);
       if (new_elem == NULL) {
-         answer_list_add(answer_list, MSG_GDI_OUTOFMEMORY,
+         answer_list_add(answer_list, MSG_SGETEXT_NOMEM,
                          STATUS_EMALLOC, ANSWER_QUALITY_ERROR);
          ret = false;
       }

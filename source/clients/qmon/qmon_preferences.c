@@ -443,7 +443,7 @@ static lListElem* read_object( const char *dirname, const char *filename, int sp
       
    /* open file */
    if(!(fp = fopen(fullname, "r"))) {
-      ERROR((SGE_EVENT, MSG_SGETEXT_CANT_OPEN_SS, fullname, strerror(errno)));
+      ERROR((SGE_EVENT, MSG_FILE_ERROROPENINGXY_SS, fullname, strerror(errno)));
       DEXIT;
       return NULL;
    }

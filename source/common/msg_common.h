@@ -102,7 +102,6 @@
 #define MSG_PARSE_XOPTIONMUSTHAVEARGUMENT_S _MESSAGE(23062, _("ERROR! "SFN" option must have argument"))
 #define MSG_PARSE_XOPTIONALREADYSETOVERWRITINGSETING_S _MESSAGE(23063, _(SFQ" option has already been set, overriding previous setting"))
 #define MSG_SGETEXT_MUSTBEMANAGERORUSER_SS  _MESSAGE(23065, _("denied: "SFQ" must be manager or in userset "SFQ))
-#define MSG_FILE_ERRORCLOSEINGXY_SS         _MESSAGE(23066, _("error closing "SFN": "SFN))
 
 /*
 ** parse_qsub.c
@@ -950,7 +949,6 @@
  * used by various modules
  */
 #define MSG_SGETEXT_NOMEM                       _MESSAGE(23492, _("out of memory"))
-#define MSG_SGETEXT_CANT_OPEN_SS                _MESSAGE(23493, _("can't open "SFQ" ("SFN")"))
 #define MSG_GDI_UTEXT_TASK_OPR                  _MESSAGE(23494, _("delete all jobs given in list"))
 #define MSG_SYSTEM_GETPWNAMFAILED_S             _MESSAGE(23495, _("can't get password entry for user "SFQ". Either the user does not exist or NIS error!") ) 
 #define MSG_SGETEXT_NULLPTRPASSED_S             _MESSAGE(23497, _("NULL ptr passed to "SFN"()"))
@@ -1052,7 +1050,6 @@
 #define MSG_SEC_PUTCREDSTDERR_S       _MESSAGE(60414, _("put_cred stderr: "SFN))                                                                              
 #define MSG_SEC_NOSTARTCMD4GETCRED_SU _MESSAGE(60415, _("can't start command "SFQ" for job " sge_U32CFormat " to get credentials"))
 #define MSG_PE_ALLOCRULE_SS           _MESSAGE(60416, _("parameter allocation_rule of pe "SFQ": "SFN))
-#define MSG_GDI_OUTOFMEMORY           _MESSAGE(60418, _("out of memory"))
 #define MSG_COM_UNPACKINT_I          _MESSAGE(60419, _("unpacking integer %d failed"))
 #define MSG_COM_UNPACKOBJ_S          _MESSAGE(60420, _("unpacking a "SFN" object failed"))
 #define MSG_SGETEXT_ADDEDTOLIST_SSSS       _MESSAGE(60500, _(""SFN"@"SFN" added "SFQ" to "SFN" list"))

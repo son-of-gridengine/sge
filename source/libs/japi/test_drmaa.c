@@ -4758,7 +4758,7 @@ static int test(sge_gdi_ctx_class_t *ctx, int *argc, char **argv[], int parse_ar
 
    return 0;
 FCLOSE_ERROR:
-   fprintf(stderr, MSG_FILE_ERRORCLOSEINGXY_SS, input_path, strerror(errno));
+   fprintf(stderr, MSG_FILE_NOCLOSE_SS, input_path, strerror(errno));
    return 1;
 }
 

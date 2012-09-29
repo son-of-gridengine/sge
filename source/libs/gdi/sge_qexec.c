@@ -191,7 +191,7 @@ sge_tid_t sge_qexecve(sge_gdi_ctx_class_t *ctx,
 
    if (init_packbuffer(&pb, 1024, 0) != PACK_SUCCESS) {
       lFreeElem(&petrep);
-      snprintf(lasterror, sizeof(lasterror), "%s", MSG_GDI_OUTOFMEMORY);
+      snprintf(lasterror, sizeof(lasterror), "%s", MSG_SGETEXT_NOMEM);
       DRETURN(NULL);
    }
 

@@ -132,7 +132,7 @@ schedd_serf_record_func(u_long32 job_id, u_long32 ja_taskid, const char *state,
 
    DRETURN_VOID;
 FCLOSE_ERROR:
-   DPRINTF((MSG_FILE_ERRORCLOSEINGXY_SS, schedule_log_path, strerror(errno)));
+   DPRINTF((MSG_FILE_NOCLOSE_SS, schedule_log_path, strerror(errno)));
    DRETURN_VOID;
 }
 
@@ -150,7 +150,7 @@ static void schedd_serf_newline(u_long32 time)
    }
    DRETURN_VOID;
 FCLOSE_ERROR:
-   DPRINTF((MSG_FILE_ERRORCLOSEINGXY_SS, schedule_log_path, strerror(errno)));
+   DPRINTF((MSG_FILE_NOCLOSE_SS, schedule_log_path, strerror(errno)));
    DRETURN_VOID;
 }
 

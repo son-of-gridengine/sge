@@ -98,7 +98,7 @@ int schedd_log(const char *logstr, lList **monitor_alpp, bool monitor_next_run)
 
    DRETURN(0);
 FCLOSE_ERROR:
-   DPRINTF((MSG_FILE_ERRORCLOSEINGXY_SS, schedd_log_file, strerror(errno)));
+   DPRINTF((MSG_FILE_NOCLOSE_SS, schedd_log_file, strerror(errno)));
    DRETURN(-1);
 }
 

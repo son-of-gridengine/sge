@@ -1013,7 +1013,7 @@ int sge_set_environment(bool user_env)
    FCLOSE(fp);
    return 0;
 FCLOSE_ERROR:
-   snprintf(err_str, sizeof(err_str), MSG_FILE_ERRORCLOSEINGXY_SS,
+   snprintf(err_str, sizeof(err_str), MSG_FILE_NOCLOSE_SS,
             filename, strerror(errno));
    return 1;
 }

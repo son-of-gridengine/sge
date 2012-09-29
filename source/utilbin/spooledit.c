@@ -359,7 +359,7 @@ load_object(bdb_info info, const char *key, const char *fname)
    DRETURN(ret);
 
 FCLOSE_ERROR:
-   ERROR((SGE_EVENT, MSG_FILE_ERRORCLOSEINGXY_SS, fname, strerror(errno)));
+   ERROR((SGE_EVENT, MSG_FILE_NOCLOSE_SS, fname, strerror(errno)));
    DRETURN(EXIT_FAILURE);
 }
 

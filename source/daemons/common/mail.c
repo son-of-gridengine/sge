@@ -286,6 +286,6 @@ static void sge_send_mail(u_long32 progid, const char *mailer_in,
       exit(exit_status);
    }
 FCLOSE_ERROR:
-   CRITICAL((SGE_EVENT, MSG_FILE_ERRORCLOSEINGXY_SS, "<pipefds>", strerror(errno)));
+   CRITICAL((SGE_EVENT, MSG_FILE_NOCLOSE_SS, "<pipefds>", strerror(errno)));
    exit(1);
 }
