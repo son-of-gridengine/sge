@@ -396,7 +396,7 @@ static int map_signal(int sig)
    }
    return ret;
 FCLOSE_ERROR:
-   shepherd_trace(MSG_FILE_ERRORCLOSEINGXY_SS, "signal", strerror(errno));
+   shepherd_trace(MSG_FILE_NOCLOSE_SS, "signal", strerror(errno));
    return ret;
 }
 

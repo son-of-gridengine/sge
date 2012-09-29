@@ -321,7 +321,7 @@ void job_related_adminmail(u_long32 progid, lListElem *jr, int is_array, const c
    DEXIT;
    return;
 FCLOSE_ERROR:
-   DPRINTF((MSG_FILE_ERRORCLOSEINGXY_SS, shepherd_files[i].filepath, strerror(errno)));
+   DPRINTF((MSG_FILE_NOCLOSE_SS, shepherd_files[i].filepath, strerror(errno)));
    DEXIT;
    return;
 }
