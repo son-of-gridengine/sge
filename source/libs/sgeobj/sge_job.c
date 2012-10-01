@@ -1746,7 +1746,7 @@ void job_initialize_env(lListElem *job, lList **answer_list,
    {   
       int i = -1;
       const char* env_name[] = {"HOME", "LOGNAME", "PATH", 
-                                "SHELL", "TZ", "MAIL", NULL};
+                                "SHELL", "TZ", "MAIL", "TERM", NULL};
 
       while (env_name[++i] != NULL) {
          const char *env_value = sge_getenv(env_name[i]);
