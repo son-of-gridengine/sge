@@ -2042,7 +2042,7 @@ environment as follows.  The context variables are displayed by
 .M qstat 1
 with the \-j option.
 .TP 1.5i
-.BR xxQS_NAME_Sxx_O_HOME ,\  xxQS_NAME_Sxx_O_HOST ,\  xxQS_NAME_Sxx_O_MAIL ,\  xxQS_NAME_Sxx_O_PATH ,\  xxQS_NAME_Sxx_O_TZ ,\  xxQS_NAME_Sxx_O_SHELL
+.BR xxQS_NAME_Sxx_O_HOME ,\  xxQS_NAME_Sxx_O_HOST ,\  xxQS_NAME_Sxx_O_MAIL ,\  xxQS_NAME_Sxx_O_PATH ,\  xxQS_NAME_Sxx_O_TZ ,\  xxQS_NAME_Sxx_O_SHELL ,\  xxQS_NAME_Sxx_O_TERM
 As in the description of
 .RI xxQS_NAME_Sxx_ O_NAME
 above, but the xxQS_NAME_Sxx clients
@@ -2197,6 +2197,8 @@ database. \fBNote:\fP This is not necessarily the shell in use for the job.
 The absolute path to the job's temporary working directory.
 .IP "\fBTMP\fP" 1.5i
 The same as TMPDIR; provided for compatibility with NQS.
+.IP "\fBTERM\fP" 1.5i
+The terminal type imported from the submission session.
 .IP "\fBTZ\fP" 1.5i
 The time zone variable imported from
 .M xxqs_name_sxx_execd 8
