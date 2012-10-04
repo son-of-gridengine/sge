@@ -899,9 +899,9 @@ overwritten by the execution host local configuration.
 .\"
 .\"
 .SS "\fBset_token_cmd\fP"
-\fBNB.  Do not use AFS security unless you have taken steps to encrypt
-the credentials in the spool area, which is normally
-world-readable.\fP
+\fBNB.  If the qmaster spool area is world-readable for non-admin
+users, you must take steps to encrypt the credentials, since they are
+stored there after job submission.\fP
 .br
 \fBSet_token_cmd\fP points to a command which sets and extends AFS
 tokens for xxQS_NAMExx jobs.  It is run by
