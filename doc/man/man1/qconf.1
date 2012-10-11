@@ -90,7 +90,7 @@ described in
 The calendar definition is taken from the file \fIfname\fP. Requires root or
 manager privileges. 
 .\"
-.IP "\fB\-Ackpt\fP \fIfname\fP	\fI<add ckpt. environment>\fP"
+.IP "\fB\-Ackpt\fP \fIfname\fP	\fI<add checkpointing environment>\fP"
 Add the checkpointing environment as defined in \fIfname\fP (see
 .M checkpoint 5 )
 to the list of supported checkpointing environments. 
@@ -422,7 +422,7 @@ checked and registered with
 .M xxqs_name_sxx_qmaster 8 .
 Requires root/manager privileges. 
 .\"
-.IP "\fB\-ackpt\fP \fIckpt_name\fP	\fI<add ckpt. environment>\fP"
+.IP "\fB\-ackpt\fP \fIckpt_name\fP	\fI<add checkpointing environment>\fP"
 Adds a checkpointing environment under the name \fBckpt_name\fP to the list 
 of checkpointing environments maintained by xxQS_NAMExx and to be usable 
 to submit checkpointing jobs (see
@@ -686,7 +686,7 @@ in the description of
 Deletes the specified calendar definition from xxQS_NAMExx. Requires 
 root/manager privileges. 
 .\"
-.IP "\fB\-dckpt\fP \fIckpt_name\fP	\fI<delete ckpt. environment>\fP"
+.IP "\fB\-dckpt\fP \fIckpt_name\fP	\fI<delete checkpointing environment>\fP"
 Deletes the specified checkpointing environment. Requires root/manager 
 privileges.
 .\"
@@ -849,7 +849,7 @@ the changed calendar definition is registered with
 .M xxqs_name_sxx_qmaster 8
 upon exit of the editor. Requires root or manager privilege. 
 .\"
-.IP "\fB\-mckpt\fP \fIckpt_name\fP	\fI<modify ckpt. environment>\fP"
+.IP "\fB\-mckpt\fP \fIckpt_name\fP	\fI<modify checkpointing environment>\fP"
 Retrieves the current configuration for the specified checkpointing 
 environment, executes an editor (either
 .MO vi 1
@@ -1065,10 +1065,10 @@ Display the configuration of the specified calendar.
 .IP "\fB\-scall\fP	\fI<show calendar list>\fP"
 Show a list of all calendars currently defined. 
 .\"
-.IP "\fB\-sckpt\fP \fIckpt_name\fP	\fI<show ckpt. environment>\fP"
+.IP "\fB\-sckpt\fP \fIckpt_name\fP	\fI<show checkpointing environment>\fP"
 Display the configuration of the specified checkpointing environment.
 .\"
-.IP "\fB\-sckptl\fP	\fI<show ckpt. environment list>\fP"
+.IP "\fB\-sckptl\fP	\fI<show checkpointing environment list>\fP"
 Show a list of the names of all checkpointing environments currently 
 configured.
 .\"
