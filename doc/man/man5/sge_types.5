@@ -28,6 +28,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH xxQS_NAME_Sxx_TYPES 1 2011-06-22 "xxRELxx" "xxQS_NAMExx User Commands"
 .\"
 .SH NAME
@@ -114,6 +117,15 @@ whereas host names like "gridmaster" are called short host names. Note that
 the install time parameters default_domain and ignore_fqdn (see
 .M bootstrap 5 )
 affect how xxQS_NAMExx deals with host names in general.
+.PP
+The following host names are invalid or reserved:
+.\" fixme:  list is from old doc, but can't see where "all" &
+.\" "default" are excluded
+.BR global ,\  template ,\  all ,\  default ,\  unknown ,\  none .
+However, it may sometimes be useful to define a dummy host name of
+.B global
+for convenient use of
+.M qhost 1 .
 .fi
 .SS "\fBjsv_url\fP"
 The \fBjsv_url\fP has following format:
@@ -264,7 +276,7 @@ When patterns are used the following definitions apply:
         not; it is interpreted literally.
 
 For more details please see 
-.M fnmatch 5 .
+.MO fnmatch 5 .
 .\"
 
 .fi
@@ -545,7 +557,7 @@ Use of this option may cause unexpected results if the clocks of the
 hosts in the xxQS_NAMExx pool are out of sync. Also, the proper behavior of
 this option very much depends on the correct setting of the
 appropriate timezone, e.g. in the TZ environment variable (see
-.M date 1
+.MO date 1
 for details), when the xxQS_NAMExx daemons
 .M xxqs_name_sxx_qmaster 8
 and

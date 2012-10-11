@@ -30,6 +30,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH BOOTSTRAP 5 2012-04-26 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
@@ -186,7 +189,7 @@ directory and the messages
 log file \- may become quite large, depending on the size of the
 cluster and the number of jobs. Be sure to allocate enough disk space
 and regularly clean off the log files, e.g. via a
-.M cron 8
+.MO cron 8
 job.
 .PP
 As a parameter set at installation time, changing \fBqmaster_spool_dir\fP
@@ -207,9 +210,9 @@ are equivalent, calling the GSSAPI security modules in the same way,
 whether they were built for Kerberos/GSSAPI or DCE/GSSAPI.  Only the
 CSP method is currently properly functional and safe.
 .br
-\fBNB.  Do not use AFS security unless you have taken steps to modify
-the programs used so as to encrypt the credentials in the spool area,
-which is normally world-readable.\fP
+\fBNB.  Do not use AFS security without some means of user
+authentication, otherwise it is possible to submit jobs as another
+user and steal their credential from a job running on the same node.\fP
 .\"
 .\"
 .SS "\fBlistener_threads\fP"

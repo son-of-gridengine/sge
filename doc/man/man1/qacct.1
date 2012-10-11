@@ -88,6 +88,14 @@ or specific jobs can be listed with the \fB\-j\fP switch.
 For example the
 search criteria could include summarizing for a queue and an
 owner, but not for two queues in the same request.
+.PP
+Note that results including parallel jobs depend on the value of
+.B accounting_summary
+in the parallel environment definition (see
+.M sge_pe 5 ).
+If it is false, there is an accounting record for slave tasks as well
+as master tasks so that, for example, there is a contribution to
+wall-clock time from each task.
 .\"
 .\"
 .SH OPTIONS
