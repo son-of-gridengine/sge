@@ -73,7 +73,7 @@ lListElem* xml_getHead(const char *name, lList *list, lList *attributes) {
          xml_addAttribute(xml_head, "xmlns:xsd", "http://arc.liv.ac.uk/repos/darcs/sge/source/dist/util/resources/schemas/qstat/qstat.xsd");
       else if (strcmp(name, "message") == 0)
          xml_addAttribute(xml_head, "xmlns:xsd", "http://arc.liv.ac.uk/repos/darcs/sge/source/dist/util/resources/schemas/qstat/message.xsd");
-      /* fixme:  also called with "comunication_error" and "unknown_jobs"  */
+      /* fixme:  also called with "communication_error" and "unknown_jobs"  */
 
 /* we do not support stylesheets yet */
 /*    xml_addStylesheet(xml_head, "xmlns:xsl", "http://www.w3.org/1999/XSL/Transform", "1.0");*/
@@ -202,7 +202,7 @@ static void lWriteListXML_(const lList *lp, int nesting_level, FILE *fp, int ign
       if (is_XML_elem && (lGetBool(ep, XMLE_Print)))  {
          lListElem *elem = lGetObject(ep, XMLE_Element);
 	 const char *tag = lGetString(elem, XMLA_Name);
-	 int tag_ok = tag && strlen(tag);
+	 bool tag_ok = tag && strlen(tag);
          if (!fp){
             if (lGetString(elem, XMLA_Value) != NULL){
 	       if (tag_ok) {
@@ -242,21 +242,26 @@ static void lWriteListXML_(const lList *lp, int nesting_level, FILE *fp, int ign
       }
       else {
          const char* listName = lGetListName(lp);
+	 bool tag_ok = listName && strlen(listName);
          if (strcmp (listName, "No list name specified") == 0){
             listName = "element";
          }
          if (!fp){
-            DPRINTF(("%s<%s%s>\n", indent, listName, ((is_attr)?sge_dstring_get_string(&attr):"")));
+            if (tag_ok)
+               DPRINTF(("%s<%s%s>\n", indent, listName, ((is_attr)?sge_dstring_get_string(&attr):"")));
             
             lWriteElemXML_(ep, nesting_level+1, NULL, ignore_cull_name);
             
-            DPRINTF(("%s</%s>\n", indent, listName));
+            if (tag_ok)
+               DPRINTF(("%s</%s>\n", indent, listName));
          }
          else {
-            fprintf(fp, "%s<%s%s>\n", indent, listName, ((is_attr)?sge_dstring_get_string(&attr):""));
+            if (tag_ok)
+               fprintf(fp, "%s<%s%s>\n", indent, listName, ((is_attr)?sge_dstring_get_string(&attr):""));
             
             lWriteElemXML_(ep, nesting_level+1, fp, ignore_cull_name);
-            fprintf(fp, "%s</%s>\n", indent, listName);
+            if (tag_ok)
+               fprintf(fp, "%s</%s>\n", indent, listName);
          }
       }
    }
