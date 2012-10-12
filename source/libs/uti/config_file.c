@@ -41,6 +41,7 @@
 #include "uti/sge_parse_num_par.h"
 #include "uti/config_file.h"
 #include "uti/sge_uidgid.h"
+#include "uti/sge_arch.h"
 
 #include "basis_types.h"
 #include "err_trace.h"
@@ -83,6 +84,8 @@ char *pe_variables[] = {
    "pe_slots",
    "processors",
    "queue",
+   "sge_cell",
+   "sge_root",
    "stdin_path",
    "stdout_path",
    "stderr_path",
@@ -111,6 +114,8 @@ char *prolog_epilog_variables[] = {
    "job_name",
    "processors",
    "queue",
+   "sge_cell",
+   "sge_root",
    "stdin_path",
    "stdout_path",
    "stderr_path",
@@ -149,6 +154,8 @@ char *ckpt_variables[] = {
    "job_pid",
    "ckpt_dir",
    "ckpt_signal",
+   "sge_cell",
+   "sge_root",
    NULL
 };
 
@@ -160,6 +167,8 @@ char *ctrl_method_variables[] = {
    "job_name",
    "queue",
    "job_pid",
+   "sge_cell",
+   "sge_root",
    NULL
 };
 
@@ -404,6 +413,7 @@ char **allowed
    size_t max_dst_len = dst_len - 1;
    char **spp, *value = NULL;
    int just_check = 0;
+   char root[SGE_PATH_MAX];
 
    /* does caller just want to validate */
    if (!dst) {
@@ -466,16 +476,21 @@ char **allowed
          }
 
          /* check if this variable is in the config_entry list */
+         /* sge_root, sge_cell are special -- not in the config file */
          if (!just_check) {
             value=get_conf_val(name);
-            if (!value) { 
-               /* error func is called by get_conf_val() */
-               return -1;/* Arghh! we have promised to serve such a variable */
+            if (!value) {
+               if (strcmp(name, "sge_root") == 0) {
+                  sge_get_root_dir(0, root, sizeof root, 0);
+                  value = root;
+               }
+               else if (strcmp(name, "sge_cell") ==0)
+                  value = (char *) sge_get_default_cell();
+               else
+                  /* error func is called by get_conf_val() */
+                  return -1;/* Arghh! we have promised to serve such a variable */
             }
-         }
-
-         /* copy value into dst buffer */
-         if (!just_check) {
+            /* copy value into dst buffer */
             while (*value && dp_pos < max_dst_len) {
                dst[dp_pos++] = *value++;
             }
