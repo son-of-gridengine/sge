@@ -1979,8 +1979,8 @@ qstat_show_job(sge_gdi_ctx_class_t *ctx, lList *jid_list, u_long32 isXML, qstat_
          }
       }
    }
-   what = lWhat("%T(%I%I%I%I%I%I%I%I%I%I%I%I%I%I%I->%T%I%I%I%I%I%I->%T%I%I%I%I->%T(%I%I%I%I%I%I)"
-            "%I%I%I%I%I%I%I->%T(%I)%I%I->%T(%I)%I%I%I%I%I%I%I%I%I%I%I%I%I%I%I->%T%I%I%I%I%I%I%I%I%I%I%I%I%I)",
+   what = lWhat("%T(%I%I%I%I%I%I%I%I%I%I%I%I%I%I%I->%T%I%I%I%I%I%I->%T%I%I%I%I->%T(%I%I%I%I%I%I%I)"
+            "%I%I%I%I%I%I%I->%T(%I)%I%I->%T(%I)%I%I%I%I%I%I%I%I%I%I%I%I%I%I%I->%T%I%I%I%I%I%I%I%I%I%I%I%I)",
             JB_Type, JB_job_number, JB_ar, JB_exec_file, JB_submission_time, 
             JB_owner, JB_uid, JB_group, JB_gid, JB_account, JB_merge_stderr, 
             JB_mail_list, JB_project, JB_notify, JB_job_name, 
@@ -1992,7 +1992,7 @@ qstat_show_job(sge_gdi_ctx_class_t *ctx, lList *jid_list, u_long32 isXML, qstat_
             PN_Type, JB_env_list, JB_job_args, JB_script_file, JB_ja_tasks,
             /**/
             JAT_Type, JAT_status, JAT_task_number, JAT_scaled_usage_list,
-            JAT_task_list, JAT_message_list, JAT_start_time,
+            JAT_task_list, JAT_message_list, JAT_start_time, JAT_ntix,
             /**/
             JB_context, JB_cwd, JB_stderr_path_list, JB_jid_predecessor_list,
             JB_ja_ad_predecessor_list, JB_jid_request_list,
@@ -2014,7 +2014,7 @@ qstat_show_job(sge_gdi_ctx_class_t *ctx, lList *jid_list, u_long32 isXML, qstat_
             JB_verify_suitable_queues, JB_soft_wallclock_gmt,
             JB_hard_wallclock_gmt, JB_override_tickets, JB_version,
             JB_ja_structure, JB_type, JB_binding, JB_ja_task_concurrency,
-            JB_nurg, JAT_ntix);
+            JB_nurg);
    /* get job list */
    alp = ctx->gdi(ctx, SGE_JB_LIST, SGE_GDI_GET, &jlp, where, what, false);
    lFreeWhere(&where);
