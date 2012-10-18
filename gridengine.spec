@@ -296,7 +296,6 @@ fi
 %exclude %{sge_home}/util/resources/drmaa4ruby
 %{sge_bin}
 %{sge_lib}
-%{sge_home}/ckpt
 %doc %{sge_docdir}
 %{sge_home}/inst_sge
 %{sge_home}/mpi

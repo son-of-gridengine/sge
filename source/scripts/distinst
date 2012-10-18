@@ -164,7 +164,7 @@ ErrUsage()
    echo "       -vdir <dir>    = define version directory for distribution"
    echo "<other progs>:"
    echo "       \"arco\"       = ARCo files (dbwriter, reporting)"
-   echo "       \"ckpt\"       = checkpointing support files"
+#   echo "       \"ckpt\"       = checkpointing support files"
    echo "       \"common\"     = arch. independent, no man/ and no doc/"
    echo "       \"distcommon\" = arch. independent stuff + man + doc/"
    echo "       \"doc\"        = doc/ directory tree"
@@ -730,7 +730,7 @@ for prog in $PROG; do
       common|distcommon)
          instdrmaa=true
          instcommon=true
-         instckpt=true
+#         instckpt=true
          instdtrace=true
          instexamples=true
          instiscript=true
@@ -751,10 +751,10 @@ for prog in $PROG; do
             ;;
          esac
          ;;
-      ckpt)
-         instckpt=true
-         instcommon=true
-         ;;
+#       ckpt)
+#          instckpt=true
+#          instcommon=true
+#          ;;
       doc)
          instdoc=true
          insttxtdoc=true
