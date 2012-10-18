@@ -33,14 +33,6 @@ xargs chmod +x <<EOF
 ./scripts/test_spooling_performance.sh
 ./scripts/make-tags.sh
 ./scripts/update-version-no
-./dist/ckpt/migration_command
-./dist/ckpt/checkpoint_command
-./dist/ckpt/cpr_ckpt_command
-./dist/ckpt/restart_command
-./dist/ckpt/cpr_migration_command
-./dist/ckpt/cpr_restart_command
-./dist/ckpt/clean_command
-./dist/ckpt/cpr_clean_command
 ./dist/pvm/src/aimk
 ./dist/pvm/src/install.sh
 ./dist/pvm/pvm_nogs.sh
