@@ -576,7 +576,7 @@ void cull_show_job(lListElem *job, int flags, bool show_binding)
          dstring binding_param = DSTRING_INIT;
 
          binding_print_to_string(binding_elem, &binding_param);
-         printf("binding:                    "SFN"\n", sge_dstring_get_string(&binding_param));
+         printf("binding:                    %s\n", sge_dstring_get_string(&binding_param));
          sge_dstring_free(&binding_param);
       }
    }
@@ -683,7 +683,7 @@ void cull_show_job(lListElem *job, int flags, bool show_binding)
             const char *message = lGetString(mesobj, QIM_message);
 
             if (message != NULL) {
-               printf(SFN" %10d:      "SFN"\n",
+               printf("%s %10d:      %s\n",
                       first_task ? "error reason" : "            ",
                       (int)lGetUlong(jatep, JAT_task_number),
                       message);
