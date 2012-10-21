@@ -146,7 +146,7 @@ static void utilization_print_all(const lList* pe_list, lList *host_list, const 
    /* global */
    if ((ep=host_list_locate(host_list, SGE_GLOBAL_NAME))) {
       DPRINTF(("-------------------------------------------\n"));
-      DPRINTF(("GLOBL HOST RESOURCES\n"));
+      DPRINTF(("GLOBAL HOST RESOURCES\n"));
       for_each (cr, lGetList(ep, EH_resource_utilization)) {
          utilization_print(cr, SGE_GLOBAL_NAME);
       }

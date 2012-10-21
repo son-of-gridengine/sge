@@ -126,7 +126,9 @@ sge_parse_qrstat(sge_gdi_ctx_class_t *ctx, lList **answer_list,
    if (qrstat_env->is_summary) {
       char user[128] = "";
       if (sge_uid2user(geteuid(), user, sizeof(user), MAX_NIS_RETRIES)) {
-         answer_list_add_sprintf(answer_list, STATUS_ESEMANTIC, ANSWER_QUALITY_CRITICAL, MSG_SYSTEM_RESOLVEUSER);
+         answer_list_add_sprintf(answer_list, STATUS_ESEMANTIC,
+                                 ANSWER_QUALITY_CRITICAL,
+                                 MSG_SYSTEM_RESOLVEUSER_U, (u_long32)geteuid());
          ret = false;
       } else {
          str_list_transform_user_list(&(qrstat_env->user_list), answer_list, user);
