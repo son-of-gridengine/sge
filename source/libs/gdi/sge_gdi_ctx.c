@@ -1945,7 +1945,8 @@ sge_setup2(sge_gdi_ctx_class_t **context, u_long32 progid, u_long32 thread_id,
    uidgid_mt_init();
 
    if (sge_uid2user(geteuid(), user, sizeof(user), MAX_NIS_RETRIES)) {
-      answer_list_add_sprintf(alpp, STATUS_ESEMANTIC, ANSWER_QUALITY_CRITICAL, MSG_SYSTEM_RESOLVEUSER);
+      answer_list_add_sprintf(alpp, STATUS_ESEMANTIC, ANSWER_QUALITY_CRITICAL,
+                              MSG_SYSTEM_RESOLVEUSER_U, (u_long32) geteuid());
       DRETURN(AE_ERROR);
    }
 
@@ -1965,7 +1966,8 @@ sge_setup2(sge_gdi_ctx_class_t **context, u_long32 progid, u_long32 thread_id,
    }
 #else
    if (sge_gid2group(getegid(), group, sizeof(group), MAX_NIS_RETRIES)) {
-      answer_list_add_sprintf(alpp, STATUS_ESEMANTIC, ANSWER_QUALITY_CRITICAL, MSG_SYSTEM_RESOLVEGROUP);
+      answer_list_add_sprintf(alpp, STATUS_ESEMANTIC, ANSWER_QUALITY_CRITICAL,
+                              MSG_GDI_GETGRGIDXFAILEDERRORX_U, (u_long32)getegid());
       DRETURN(AE_ERROR);
    }
 #endif
