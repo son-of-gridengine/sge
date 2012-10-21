@@ -716,7 +716,8 @@ int sge_string2file(const char *str, int len, const char *fname)
    if (write(fp, str, len) != len)
    {
       int old_errno = errno;
-      ERROR((SGE_EVENT, MSG_FILE_WRITEBYTESFAILED_IS, len, fname));
+      ERROR((SGE_EVENT, MSG_FILE_WRITEBYTESFAILED_ISS, len, fname,
+             strerror(errno)));
       if (close(fp) != 0) { 
          goto FCLOSE_ERROR; 
       }

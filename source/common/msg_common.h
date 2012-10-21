@@ -359,10 +359,10 @@
 #define MSG_GDI_UTEXT_Acal_OPT_FNAME                     _MESSAGE(23295, _("add a new calendar from file"))
 
 #define MSG_GDI_USAGE_ackpt_OPT_CKPT_NAME                "[-ackpt ckpt_name]"
-#define MSG_GDI_UTEXT_ackpt_OPT_CKPT_NAME                _MESSAGE(23296, _("add a ckpt interface definition"))
+#define MSG_GDI_UTEXT_ackpt_OPT_CKPT_NAME                _MESSAGE(23296, _("add a checkpointing interface definition"))
 
 #define MSG_GDI_USAGE_Ackpt_OPT_FNAME                    "[-Ackpt fname]"
-#define MSG_GDI_UTEXT_Ackpt_OPT_FNAME                    _MESSAGE(23297, _("add a ckpt interface definition from file"))
+#define MSG_GDI_UTEXT_Ackpt_OPT_FNAME                    _MESSAGE(23297, _("add a checkpointing interface definition from file"))
 
 #define MSG_GDI_USAGE_aconf_OPT_HOST_LIST                "[-aconf host_list]"
 #define MSG_GDI_UTEXT_aconf_OPT_HOST_LIST                _MESSAGE(23298, _("add configurations"))
@@ -467,7 +467,7 @@
 #define MSG_GDI_UTEXT_dcal_OPT_CALENDAR_NAME             _MESSAGE(23332, _("delete calendar"))
 
 #define MSG_GDI_USAGE_dckpt_OPT_CKPT_NAME                "[-dckpt ckpt_name]"
-#define MSG_GDI_UTEXT_dckpt_OPT_CKPT_NAME                _MESSAGE(23333, _("delete ckpt interface definition"))
+#define MSG_GDI_UTEXT_dckpt_OPT_CKPT_NAME                _MESSAGE(23333, _("delete checkpointing interface definition"))
 
 #define MSG_GDI_USAGE_dconf_OPT_HOST_LIST                "[-dconf host_list]"
 #define MSG_GDI_UTEXT_dconf_OPT_HOST_LIST                _MESSAGE(23334, _("delete local configurations"))
@@ -577,7 +577,7 @@
 #define MSG_GDI_UTEXT_mc_OPT_COMPLEX                     _MESSAGE(23368, _("modify complex attributes"))
 
 #define MSG_GDI_USAGE_mckpt_OPT_CKPT_NAME                "[-mckpt ckpt_name]"
-#define MSG_GDI_UTEXT_mckpt_OPT_CKPT_NAME                _MESSAGE(23369, _("modify a ckpt interface definition"))
+#define MSG_GDI_UTEXT_mckpt_OPT_CKPT_NAME                _MESSAGE(23369, _("modify a checkpointing interface definition"))
 
 #define MSG_GDI_USAGE_Mc_OPT_COMPLEX_NAME_FNAME          "[-Mc fname]"
 #define MSG_GDI_UTEXT_Mc_OPT_COMPLEX_NAME_FNAME          _MESSAGE(23370, _("modify complex attributes from file"))
@@ -589,7 +589,7 @@
 #define MSG_GDI_UTEXT_Mcal_OPT_FNAME                     _MESSAGE(23372, _("modify calendar from file"))
 
 #define MSG_GDI_USAGE_Mckpt_OPT_FNAME                    "[-Mckpt fname]"
-#define MSG_GDI_UTEXT_Mckpt_OPT_FNAME                    _MESSAGE(23373, _("modify a ckpt interface definition from file"))
+#define MSG_GDI_UTEXT_Mckpt_OPT_FNAME                    _MESSAGE(23373, _("modify a checkpointing interface definition from file"))
 
 #define MSG_GDI_USAGE_mconf_OPT_HOSTLISTORGLOBAL         "[-mconf [host_list|global]]"
 #define MSG_GDI_UTEXT_mconf_OPT_HOSTLISTORGLOBAL         _MESSAGE(23374, _("modify configurations"))
@@ -711,10 +711,10 @@
 #define MSG_GDI_UTEXT_scall_OPT                          _MESSAGE(23411, _("show a list of all calendar names"))
 
 #define MSG_GDI_USAGE_sckpt_OPT_CKPT_NAME                "[-sckpt ckpt_name]"
-#define MSG_GDI_UTEXT_sckpt_OPT_CKPT_NAME                _MESSAGE(23412, _("show ckpt interface definition"))
+#define MSG_GDI_UTEXT_sckpt_OPT_CKPT_NAME                _MESSAGE(23412, _("show checkpointing interface definition"))
 
 #define MSG_GDI_USAGE_sckptl_OPT                         "[-sckptl]"
-#define MSG_GDI_UTEXT_sckptl_OPT                         _MESSAGE(23413, _("show all ckpt interface definitions"))
+#define MSG_GDI_UTEXT_sckptl_OPT                         _MESSAGE(23413, _("show all checkpointing interface definitions"))
 
 #define MSG_GDI_USAGE_sconf_OPT_HOSTLISTORGLOBAL         "[-sconf [host_list|global]]"
 #define MSG_GDI_UTEXT_sconf_OPT_HOSTLISTORGLOBAL         _MESSAGE(23415, _("show configurations"))
