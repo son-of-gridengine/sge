@@ -37,10 +37,13 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH remote_startup 5 "2010/11/22 20:58:24" "xxRELxx" "xxQS_NAMExx User Commands"
 .\"
 .SH NAME
-Remote startup \- the xxQS_NAMExx remote startup mechanism
+Remote\ startup \- the xxQS_NAMExx remote startup mechanism
 .\"
 .SH DESCRIPTION
 xxQS_NAMExx
@@ -371,7 +374,7 @@ Such a tight SSH integration can be achieved by two means:
 .TP
 .B Use of PAM
 The easiest way on supported platforms (at least GNU/Linux):  a
-.M pam 7
+.MO pam 7
 module
 .M pam_sge-qrsh-setup 8
 is available for use with the system ssh; it attaches the
@@ -430,9 +433,9 @@ with other others.
 There are two possible ways.  The cleanest uses
 .M pam_sge_authorize 8 .
 Otherwise you can use generic PAM modules, such as
-.M pam_limits 8
+.MO pam_limits 8
 or
-.M pam_access 8 ,
+.MO pam_access 8 ,
 with modifications to their configuration set up and taken down in the
 job prolog and epilog respectively.  See, for instance, a
 .URL http://gridengine.markmail.org/message/mu3i7haeshlevu6q?q=282211 "user list message" ,
