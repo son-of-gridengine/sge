@@ -1,4 +1,4 @@
-#!/bin/csh -fb
+#!/bin/sh
 #
 # Creates ASCII manual pages in ASCMAN/man/man{1,...} sudirectories from
 # nroff manual pages in SEDMAN/man/man{1,...} subdirectories.
@@ -49,141 +49,159 @@
 
 umask 022
 
-set MANBUILDDIR = $1/MANSBUILD_$2
-set MANMODE = $2
-set MANASC  = $3
-set MANHTML = $4
+MANBUILDDIR=$1/MANSBUILD_$2
+MANMODE=$2
+MANASC=$3
+MANHTML=$4
 
-# if ( $#argv > 5 ) then
-#   set CVS_MODULE = $6
-# else
-#   set CVS_MODULE = gridengine/doc/man
-# endif
-
-if ( $#argv > 6 ) then
-  set MANBUILDDIR = $7
-endif
+if [ $# -gt 6 ]; then
+  MANBUILDDIR=$7
+fi
 
 echo "Removing old manpages in $MANBUILDDIR"
-\rm -rf $MANBUILDDIR
+rm -rf $MANBUILDDIR
 mkdir -p $MANBUILDDIR
 
 cd $MANBUILDDIR
 
-set MANSRCDIR = $1/../doc/man
-# 
+MANSRCDIR=$1/../doc/man
+#
 # Changes magic strings in the checked-in man page versions into SGE,
 # etc. as appropriate.
 # Creates the changed man pages in SEDMAN/man/man{1,...} subdirectories,
 # which are created if they do not exist.
 #
 # Requires sed to be installed and accessible.
-if ( $MANMODE == "ge" || $MANMODE == "sge") then
-   set xxQS_NAMExx = "Grid Engine" 
-   set xxQS_NAME_Sxx = "SGE"
-   set xxqs_name_sxx = "sge"
-   set xxRELxx = "SGE 8.1.3pre"
+if [ $MANMODE = "ge" -o $MANMODE = "sge" ]; then
+   xxQS_NAMExx="Grid Engine"
+   xxQS_NAME_Sxx="SGE"
+   xxqs_name_sxx="sge"
+   xxRELxx="SGE 8.1.3pre"
 else
-   echo error wrong MANMODE=$MANMODE. Exit
+   echo "error wrong MANMODE=$MANMODE. Exit" >&2
    exit 1
-endif
+fi
 
 # Build the list of the available sections
-set SECTION_LIST = ""
-foreach n ( 1 2 3 4 5 6 7 8 )
-   if ( -d $MANSRCDIR/man${n} ) then
-     if ( "$SECTION_LIST" == "" ) then
-        set SECTION_LIST = $n
+SECTION_LIST=""
+for n in 1 2 3 4 5 6 7 8; do
+   if [ -d $MANSRCDIR/man${n} ]; then
+     if [ "$SECTION_LIST" = "" ]; then
+        SECTION_LIST=$n
      else
-        set SECTION_LIST = "$SECTION_LIST $n"
-     endif
-   endif
-end
+        SECTION_LIST="$SECTION_LIST $n"
+     fi
+   fi
+done
 
 echo "Building SEDMAN pages"
-foreach n ( $SECTION_LIST )
-   mkdir -p $MANBUILDDIR/SEDMAN/man/man${n} >& /dev/null
+for n in $SECTION_LIST; do
+   mkdir -p $MANBUILDDIR/SEDMAN/man/man${n} > /dev/null 2>&1
 
-   if ( ! -d $MANBUILDDIR/SEDMAN/man/man${n} ) then
-      echo "Error: Couldn't create subdirectory SEDMAN/man/man${n}."
+   if [ ! -d $MANBUILDDIR/SEDMAN/man/man${n} ]; then
+      echo "Error: Couldn't create subdirectory SEDMAN/man/man${n}." >&2
       exit 1
-   endif
-  
-   foreach f ( $MANSRCDIR/man${n}/*.${n} )
-      echo Processing $f
+   fi
+
+   for f in $MANSRCDIR/man${n}/*.${n}; do
+      echo "Processing $f"
       sed -e "s/xxQS_NAMExx/$xxQS_NAMExx/g" \
           -e "s/xxQS_NAME_Sxx/$xxQS_NAME_Sxx/g" \
           -e "s/xxqs_name_sxx/$xxqs_name_sxx/g" \
-          -e "s/xxRELxx/$xxRELxx/g" $f >! $MANBUILDDIR/SEDMAN/man/man${n}/`basename $f`
-   end
-end
+          -e "s/xxRELxx/$xxRELxx/g" $f > $MANBUILDDIR/SEDMAN/man/man${n}/`basename $f`
+   done
+done
 
 
 #
 # process the seded man pages with groff
 #
-if ( "$MANASC" == 1 ) then
+if [ "$MANASC" = 1 ]; then
    echo "Building ASCMAN from sedman pages"
-   foreach n ( $SECTION_LIST )
-      mkdir -p $MANBUILDDIR/ASCMAN/man/man${n} >& /dev/null
+   for n in $SECTION_LIST; do
+      mkdir -p $MANBUILDDIR/ASCMAN/man/man${n} > /dev/null 2>&1
 
-      if ( ! -d $MANBUILDDIR/ASCMAN/man/man${n} ) then
-         echo "Error: Couldn't create subdirectory ASCMAN/man/man${n}."
+      if [ ! -d $MANBUILDDIR/ASCMAN/man/man${n} ]; then
+         echo "Error: Couldn't create subdirectory ASCMAN/man/man${n}." >&2
          exit 1
-      endif
-           
-      cd $MANBUILDDIR/SEDMAN/man     
-      foreach f ( man${n}/*.${n} )
-         echo Processing $f
-         groff -man -t -Tascii $f >! $MANBUILDDIR/ASCMAN/man/man${n}/`basename $f .${n}`
-      end
-   end
-endif
+      fi
+
+      cd $MANBUILDDIR/SEDMAN/man
+      for f in man${n}/*.${n}; do
+         echo "Processing $f"
+         groff -man -t -Tascii $f > $MANBUILDDIR/ASCMAN/man/man${n}/`basename $f .${n}`
+      done
+   done
+fi
+
+# Echo all the names corresponding to this page, dealing with "\ " and "\-".
+altnames () {
+    # Not done on formatted version because of line breaks
+    grep -A 1 '\.SH NAME' "$1" | tail -n 1 |
+      sed -e 's/  *\\-.*$//' -e 's/, */ /g' -e 's/\\ /\&nbsp;/g' -e 's/\\-/\&ndash;/g' |
+      sed -e "s/xxQS_NAMExx/$xxQS_NAMExx/g" \
+          -e "s/xxQS_NAME_Sxx/$xxQS_NAME_Sxx/g" \
+          -e "s/xxqs_name_sxx/$xxqs_name_sxx/g" \
+          -e "s/xxRELxx/$xxRELxx/g"
+}
 
 #
 # build html man pages from sedman with man2html
 # NB, this is the html2man from http://www.nongnu.org/man2html/, not
 # the one in Debian, for instance.
 #
-if ( "$MANHTML" == 1 ) then
-   set PATHREV = ""
-
+if [ "$MANHTML" = 1 ]; then
    echo "Building HTML from sedman pages"
-   foreach n ( $SECTION_LIST )
+   for n in $SECTION_LIST; do
       mkdir -p $MANBUILDDIR/HTMLMAN/htmlman${n}
-      foreach i ($MANBUILDDIR/SEDMAN/man/man${n}/*)
-         echo Processing $i
-         set bn = `basename $i .${n}`
+      for i in $MANBUILDDIR/SEDMAN/man/man${n}/*; do
+         echo "Processing $i"
+         bn=`basename $i .${n}`
          # man -M$MANBUILDDIR/SEDMAN/man/ $bn | man2html -solaris > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
-         set secopt = -s
-         if ( Linux == `uname` ) then
-            set secopt = ""
-         endif
+         secopt=-s
+         if [ Linux = `uname` ]; then
+            secopt=""
+         fi
 	 # This used to use `man' on the SEDMAN files, but that loses
 	 # the overstriking.
-         groff -man -t -M$MANBUILDDIR/../scripts -my -Tascii $MANBUILDDIR/SEDMAN/man/man$n/$bn.$n | man2html -title $bn.$n -botm 4 -topm 4 -pgsize 999999 -cgiurl "../htmlman"'$section/$title'".html$PATHREV" | sed '2s/BODY/BODY BGCOLOR=white/' > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
+         groff -man -t -M$MANBUILDDIR/../scripts -my -Tascii $MANBUILDDIR/SEDMAN/man/man$n/$bn.$n | man2html -title $bn.$n -botm 4 -topm 4 -pgsize 999999 -cgiurl "../htmlman"'$section/$title'".html" | sed '2s/BODY/BODY BGCOLOR=white/' > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
 # This works, but the backend doesn't do .IP right, at least
 #          sed -e 's;\\\\fI\\\\\$1\\\\fR\\\\|(\\\\\$2)\\\\\$3;.URL ../htmlman\\\\$2/\\\\$1 \\\\fI\\\\$1\\\\fP(\\\\$2) \\\\$3;' $MANBUILDDIR/SEDMAN/man/man$n/$bn.$n | \
 #          groff -man -t -Thtml > $MANBUILDDIR/HTMLMAN/htmlman${n}/${bn}.html
-      end
-   end   
+      done
+   done
 
    #
-   # generate an index file 
+   # generate an index file with alternative names and links
    #
-   cp $1/scripts/template.html $MANBUILDDIR/HTMLMAN/index.html 
-   foreach n ( $SECTION_LIST )
+
+   cp $1/scripts/template.html $MANBUILDDIR/HTMLMAN/index.html
+   for n in $SECTION_LIST; do
       echo "<H3>Section $n</H3>" >> $MANBUILDDIR/HTMLMAN/index.html
       echo '<P><UL>' >> $MANBUILDDIR/HTMLMAN/index.html
-      foreach f ($MANBUILDDIR/HTMLMAN/htmlman${n}/*)
-         set base = `basename $f`
-         set title = `basename $base .html`
-         echo '<LI><A HREF=' >> $MANBUILDDIR/HTMLMAN/index.html
-         echo "htmlman${n}/$base$PATHREV" target="PAGE">> $MANBUILDDIR/HTMLMAN/index.html
-         echo ">$title</A>" >> $MANBUILDDIR/HTMLMAN/index.html 
-      end
+      for f in $MANBUILDDIR/HTMLMAN/htmlman${n}/*; do
+         base=`basename $f`
+         title=`basename $base .html`
+         names=`altnames $MANSRCDIR/man$n/$title.$n`
+         case $title in         # exceptions
+             usermapping) continue;;
+         esac
+         # duplicates fixed by sort -u if necessary
+         echo "<LI><A HREF=\"htmlman${n}/$base\" target=\"PAGE\">$title</A>"
+         for name in $names; do
+             # for utilbin/... etc., and html entities
+             name=`basename $name | sed -e 's/&ndash;/-/g'`
+             echo "<LI><A HREF=\"htmlman${n}/$base\" target=\"PAGE\">$name</A>"
+             if [ "$title" != "$name" ]; then
+                 case $name in
+                     *'&'*) ;; # exceptions
+                     *) (cd ; ln -sf "$base" "`dirname $f`/$name.html";)
+                 esac
+             fi
+         done
+      done | sort -u -t '>' -k 3 >> $MANBUILDDIR/HTMLMAN/index.html
       echo '</UL></P>' >> $MANBUILDDIR/HTMLMAN/index.html
-   end
+   done
    echo '</BODY></HTML>' >> $MANBUILDDIR/HTMLMAN/index.html
 
    #
@@ -193,11 +211,11 @@ if ( "$MANHTML" == 1 ) then
    echo " <HEAD><TITLE>$xxQS_NAME_Sxx Manual Pages</TITLE></HEAD>" >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo ' <frameset cols="230,*" frameborder="NO" framespacing="0" border="3">' >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo '  <frame src=' >> $MANBUILDDIR/HTMLMAN/manuals.html
-   echo "   index.html$PATHREV" >> $MANBUILDDIR/HTMLMAN/manuals.html
+   echo "   index.html" >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo '   marginwidth="0" marginheight=0 name="TOC" noresize>' >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo '  <frame src=' >> $MANBUILDDIR/HTMLMAN/manuals.html
-   echo "   htmlman1/sge_intro.html$PATHREV" >> $MANBUILDDIR/HTMLMAN/manuals.html
+   echo "   htmlman1/sge_intro.html" >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo '   marginwidth="0" marginheight=0 name="PAGE" noresize>' >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo ' </frameset>' >> $MANBUILDDIR/HTMLMAN/manuals.html
    echo '</HTML>' >> $MANBUILDDIR/HTMLMAN/manuals.html
-endif
+fi
