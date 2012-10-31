@@ -51,12 +51,14 @@
 #                   and the shepherd. This only works if the execution daemon 
 #                   spool directory is in the default location.
 #       softstop    do not kill the shepherd process
+#       restart     equivalent to softstop followed by start
 #
 # Unix commands which may be used in this script:
 #    cat cut tr ls grep awk sed basename
 #
 # This script requires the script $SGE_ROOT/util/arch
-#
+# Customization can be placed in /etc/default/sgemaster, which is sourced
+# after other setup.
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
@@ -108,6 +110,8 @@ case $ARCH in
    export $shlib_path_name
    ;;
 esac
+
+[ -f /etc/default/sgeexecd ] && . /etc/default/sgeexecd
 
 #---------------------------------------------------------------------------
 # DetectSMFService - sets service to a mask matching the name
