@@ -150,6 +150,7 @@ const char* cl_get_error_text(int error_id) {
       case CL_RETVAL_GETHOSTNAME_ERROR         : {
          return MSG_CL_RETVAL_GETHOSTNAME_ERROR;
       }
+      case CL_RETVAL_IP_NOT_RESOLVED_ERROR:
       case CL_RETVAL_GETHOSTADDR_ERROR         : {
          return MSG_CL_RETVAL_GETHOSTADDR_ERROR;
       }
@@ -254,9 +255,6 @@ const char* cl_get_error_text(int error_id) {
       }
       case CL_RETVAL_RESOLVING_SETUP_ERROR: {
          return MSG_CL_RETVAL_RESOLVING_SETUP_ERROR;
-      }
-      case CL_RETVAL_IP_NOT_RESOLVED_ERROR: {
-         return MSG_CL_RETVAL_IP_NOT_RESOLVED_ERROR;
       }
       case CL_RETVAL_MESSAGE_IN_BUFFER: {
          return MSG_CL_RETVAL_MESSAGE_IN_BUFFER;
