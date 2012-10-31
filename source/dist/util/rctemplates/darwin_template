@@ -33,6 +33,8 @@
 
 . /etc/rc.common
 
+# fixme:  should this source something like /etc/default/...?
+
 StartService()
 {
      ConsoleMessage "Starting SUN Grid Engine"
