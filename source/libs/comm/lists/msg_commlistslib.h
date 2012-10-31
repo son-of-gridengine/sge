@@ -100,7 +100,6 @@
 #define MSG_CL_RETVAL_SYNC_RECEIVE_TIMEOUT        _MESSAGE(80064, _("got syncron message receive timeout error"))
 #define MSG_CL_RETVAL_MAX_MESSAGE_LENGTH_ERROR    _MESSAGE(80065, _("reached max message length"))
 #define MSG_CL_RETVAL_RESOLVING_SETUP_ERROR       _MESSAGE(80066, _("resolve setup error"))
-#define MSG_CL_RETVAL_IP_NOT_RESOLVED_ERROR       _MESSAGE(80067, _("can't resolve ip address"))
 #define MSG_CL_RETVAL_MESSAGE_IN_BUFFER           _MESSAGE(80068, _("still messages in buffer"))
 #define MSG_CL_RETVAL_CONNECTION_GOING_DOWN       _MESSAGE(80069, _("connection is going down"))
 #define MSG_CL_RETVAL_CONNECTION_STATE_ERROR      _MESSAGE(80070, _("general connection state error")) 
