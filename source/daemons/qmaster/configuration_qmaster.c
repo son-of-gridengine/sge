@@ -164,11 +164,11 @@ int sge_read_configuration(sge_gdi_ctx_class_t *ctx, lListElem *aSpoolContext, l
    DPRINTF(("qualified_hostname: '%s'\n", qualified_hostname));
    if ((local = sge_get_configuration_for_host(qualified_hostname)) == NULL) {
       /* write a warning into messages file, if no local config exists*/
-      WARNING((SGE_EVENT, MSG_CONFIG_NOLOCAL_S, qualified_hostname));
+      WARNING((SGE_EVENT, MSG_CONF_NOLOCAL_S, qualified_hostname));
    }
 
    if ((global = sge_get_configuration_for_host(SGE_GLOBAL_NAME)) == NULL) {
-      ERROR((SGE_EVENT, SFNMAX, MSG_CONFIG_NOGLOBAL));
+      ERROR((SGE_EVENT, SFNMAX, MSG_CONF_NOGLOBAL));
       DRETURN(-1);
    }
 
@@ -369,11 +369,11 @@ int sge_mod_configuration(sge_gdi_ctx_class_t *ctx, lListElem *aConf, lList **an
       int accounting_flush_time = mconf_get_accounting_flush_time();
 
       if ((local = sge_get_configuration_for_host(qualified_hostname)) == NULL) {
-         WARNING((SGE_EVENT, MSG_CONFIG_NOLOCAL_S, qualified_hostname));
+         WARNING((SGE_EVENT, MSG_CONF_NOLOCAL_S, qualified_hostname));
       }
       
       if ((global = sge_get_configuration_for_host(SGE_GLOBAL_NAME)) == NULL) {
-         ERROR((SGE_EVENT, SFNMAX, MSG_CONFIG_NOGLOBAL));
+         ERROR((SGE_EVENT, SFNMAX, MSG_CONF_NOGLOBAL));
       }
             
       if (merge_configuration(&answer_list, progid, cell_root, global, local, NULL) != 0) {

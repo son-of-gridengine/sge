@@ -640,8 +640,6 @@
 #define MSG_CONFIG_ADDINGHOSTGLOBALTOEXECHOSTLIST     _MESSAGE(33620, _("adding host global to exechost_list"))
 #define MSG_CONFIG_CANTWRITEMANAGERLIST               _MESSAGE(33621, _("can't write manager list"))
 #define MSG_CONFIG_CANTWRITEOPERATORLIST              _MESSAGE(33622, _("can't write operator list"))
-#define MSG_CONFIG_NOLOCAL_S                          _MESSAGE(33623, _("local configuration "SFN" not defined - using global configuration"))
-#define MSG_CONFIG_NOGLOBAL                           _MESSAGE(33624, _("global configuration not defined"))
 #define MSG_CONFIG_CANTFINDQUEUEXREFERENCEDINJOBY_SU  _MESSAGE(33648, _("can't find queue "SFQ" referenced in job "sge_U32CFormat))
 #define MSG_CONFIG_CANTFINDARXREFERENCEDINJOBY_UU     _MESSAGE(33647, _("can't find advance reservation "sge_U32CFormat" referenced in job "sge_U32CFormat))
 
