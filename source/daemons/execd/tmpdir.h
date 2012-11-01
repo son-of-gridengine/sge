@@ -36,12 +36,13 @@
 #include "cull/cull.h"
 
 char *sge_make_tmpdir(lListElem *qep, u_long32 jobid, u_long32 jataskid, 
-                      uid_t uid, gid_t gid, char *tmpdir, size_t ltmpdir);
+                      uid_t uid, gid_t gid, char *tmpdir, size_t ltmpdir,
+                      const char *cell);
 
 char *sge_get_tmpdir(lListElem *qep, u_long32 jobid, u_long32 jataskid, 
-                     char *tmpdir, size_t ltmpdir);
+                     char *tmpdir, size_t ltmpdir, const char *cell);
 
 int sge_remove_tmpdir(const char *dir, const char *job_owner, u_long32 jobid, 
-                      u_long32 jataskid, const char *queue_name);
+                      u_long32 jataskid, const char *cell);
 
 #endif /* __TMPDIR_H */

@@ -835,7 +835,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
 /* ------------------------- */
 void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 ja_task_id, const char *pe_task_id, lListElem *jr)
 {
-   char *exec_file, *script_file, *tmpdir, *job_owner, *qname; 
+   char *exec_file, *script_file, *tmpdir, *job_owner;
    dstring jobdir = DSTRING_INIT;
    char fname[SGE_PATH_MAX];
    char err_str_buffer[1024];
@@ -844,6 +844,7 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
    lListElem *jep = NULL, *petep = NULL, *jatep = NULL;
    const char *pe_task_id_str; 
    const char *sge_root = ctx->get_sge_root(ctx);
+   const char *sge_cell = getenv("SGE_CELL")?getenv("SGE_CELL"):DEFAULT_CELL;
 
    DENTER(TOP_LAYER, "remove_acked_job_exit");
 
@@ -944,7 +945,7 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
          if (lGetUlong(jatep, JAT_status) != JSLAVE || pe_task_id_str != NULL) {
          sge_remove_tmpdir(lGetString(master_q, QU_tmpdir), 
                            lGetString(jep, JB_owner), lGetUlong(jep, JB_job_number), 
-                           ja_task_id, lGetString(master_q, QU_qname));
+                           ja_task_id, sge_cell);
          }
       }
 
@@ -1054,14 +1055,13 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
             }
             
             /* tmpdir */
-            if ((!(tmpdir = get_conf_val("queue_tmpdir"))) || 
-                 (!(qname = get_conf_val("queue"))) || 
-             (!(job_owner = get_conf_val("job_owner")))) {
+            if ((!(tmpdir = get_conf_val("queue_tmpdir"))) ||
+                (!(job_owner = get_conf_val("job_owner")))) {
                ERROR((SGE_EVENT, MSG_SHEPHERD_INCORRECTCONFIGFILEFORJOBXY_UU, 
                      sge_u32c(job_id), sge_u32c(ja_task_id)));
             } else {
                DPRINTF(("removing queue_tmpdir %s\n", tmpdir));
-               sge_remove_tmpdir(tmpdir, job_owner, job_id, ja_task_id, qname);
+               sge_remove_tmpdir(tmpdir, job_owner, job_id, ja_task_id, sge_cell);
             }
          }
 

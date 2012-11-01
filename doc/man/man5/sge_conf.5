@@ -1851,8 +1851,8 @@ interpreter-specific variables such as PYTHONPATH.  The locale
 specification is also sanitized.  See the source file
 .I source/libs/uti2/sge_execvlp.c
 for details.  Note that TMPDIR is one of the variables affected, and
-may need to be recreated (as
-.BR /tmp/$JOB_ID.$TASK_ID.$QUEUE ).
+may need to be recreated (typically as
+.BR /tmp/$JOB_ID.$TASK_ID.$SGE_CELL ).
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,

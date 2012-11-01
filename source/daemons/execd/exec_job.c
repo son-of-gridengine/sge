@@ -378,28 +378,34 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       sge_get_active_job_file_path(&active_dir, job_id, 
                     ja_task_id, pe_task_id, NULL);
 
+      used_slots=qinstance_slots_used(master_q);
+
       umask(022);
 
-      /* make tmpdir only when this is the first task that gets started 
-         in this queue instance. QU_job_slots_used holds actual number of used 
-         slots for this job in the queue */
-      if (!(used_slots=qinstance_slots_used(master_q))) {
-         if (!(sge_make_tmpdir(master_q, job_id, ja_task_id, 
-                               pw->pw_uid, pw->pw_gid, tmpdir, sizeof(tmpdir)))) {
-            snprintf(err_str, err_length, SFNMAX, MSG_SYSTEM_CANTMAKETMPDIR);
-            sge_free(&pw_buffer);
-            DRETURN(-2);
-         }
+      /* make tmpdir if it doesn't exist */
+      if (!(sge_get_tmpdir(master_q, job_id, ja_task_id, tmpdir,
+                           sizeof(tmpdir), default_cell))) {
+         snprintf(err_str, err_length, SFNMAX, MSG_SYSTEM_CANTGETTMPDIR);
+         sge_free(&pw_buffer);
+         DRETURN(-2);
       } else {
          SGE_STRUCT_STAT statbuf;
-         if(!(sge_get_tmpdir(master_q, job_id, ja_task_id, tmpdir, sizeof(tmpdir)))) {
-            snprintf(err_str, err_length, SFNMAX, MSG_SYSTEM_CANTGETTMPDIR);
-            sge_free(&pw_buffer);
-            DRETURN(-2);
-         }
-
+         errno = 0;
          if (SGE_STAT(tmpdir, &statbuf)) {
-            snprintf(err_str, err_length, MSG_SYSTEM_CANTOPENTMPDIR_S, tmpdir);
+            if (ENOENT == errno) {
+               errno = 0;
+               if (!(sge_make_tmpdir(master_q, job_id, ja_task_id,
+                               pw->pw_uid, pw->pw_gid, tmpdir,
+                               sizeof(tmpdir), default_cell))) {
+                  snprintf(err_str, err_length,
+                           MSG_SYSTEM_CANTMAKETMPDIR_S, strerror(errno));
+                  sge_free(&pw_buffer);
+                  DRETURN(-2);
+               }
+            }
+         } else {
+            snprintf(err_str, err_length, MSG_SYSTEM_CANTOPENTMPDIR_SS, tmpdir,
+                     strerror(errno));
             sge_free(&pw_buffer);
             DRETURN(-2);
          }
