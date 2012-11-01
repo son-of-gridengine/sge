@@ -207,9 +207,9 @@
 #define MSG_MAIL_STARTBODY_USSSSS     _MESSAGE(29117, _("Job "sge_U32CFormat" ("SFN") Started\n User       = "SFN"\n Queue      = "SFN"\n Host       = "SFN"\n Start Time = "SFN) ) 
 #define MSG_EXECD_NOFORK_S            _MESSAGE(29119, _("fork failed: "SFN))
 #define MSG_EXECD_NOSTARTSHEPHERD     _MESSAGE(29120, _("unable to start shepherd process"))
-#define MSG_SYSTEM_CANTMAKETMPDIR     _MESSAGE(29122, _("can't make tmpdir"))
+#define MSG_SYSTEM_CANTMAKETMPDIR_S   _MESSAGE(29122, _("can't make tmpdir: "SFN))
 #define MSG_SYSTEM_CANTGETTMPDIR      _MESSAGE(29123, _("can't get tmpdir"))
-#define MSG_SYSTEM_CANTOPENTMPDIR_S   _MESSAGE(29124, _("can't open tmpdir "SFN))
+#define MSG_SYSTEM_CANTOPENTMPDIR_SS  _MESSAGE(29124, _("can't open tmpdir "SFN": "SFN))
 #define MSG_EXECD_UNABLETOFINDSCRIPTFILE_SS  _MESSAGE(29125, _("unable to find script file "SFN": "SFN))
 
 /*

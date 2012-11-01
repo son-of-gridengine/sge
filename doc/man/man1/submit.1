@@ -2245,7 +2245,9 @@ with a checkpoint available.  Otherwise its value is 0.
 The user's login shell from the passwd
 database. \fBNote:\fP This is not necessarily the shell in use for the job.
 .IP "\fBTMPDIR\fP" 1.5i
-The absolute path to the job's temporary working directory.
+The absolute path to the job's temporary working directory.  This is
+usually of the form
+.BR /tmp/$JOB_ID.$TASK_ID.$SGE_CELL ).
 .IP "\fBTMP\fP" 1.5i
 The same as TMPDIR; provided for compatibility with NQS.
 .IP "\fBTERM\fP" 1.5i
