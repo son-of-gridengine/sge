@@ -8,7 +8,7 @@
 ..
 .if \n[.g] .mso www.tmac
 .\"
-.TH QSTATUS 1 "30 NOVEMBER 2010" "qstatus 1.5" "User Commands"
+.TH QSTATUS 1 "30 NOVEMBER 2010" "qstatus 1.6" "User Commands"
 .SH NAME
 qstatus \- xxQS_NAMExx qstatus script
 .SH SYNOPSIS
@@ -51,7 +51,8 @@ you are only interested in the statistic with the \fB\-c\fR switch.
 .TP
 .B \-m
 Display the machine instead of the name of the queue the job is
-running in under the column \[oq]running in\[cq].
+running in under the column \[oq]running in\[cq]. Only meaningful for
+SGE 6.0 or above.
 .TP
 .B \-n
 Suppress the listing of the individual owner, mostly useful when
@@ -128,3 +129,5 @@ There is NO WARRANTY, to the extent permitted by law.
 of xxQS_NAMExx.
 .SH BUGS
 Does not support the PBS or Torque resource manager.
+The Awk script used probably isn't portable and may require GNU Awk
+version 3 or higher.
