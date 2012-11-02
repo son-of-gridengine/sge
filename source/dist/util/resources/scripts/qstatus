@@ -22,8 +22,12 @@
 #                          Idea by Kristof Lebecki.
 #                          Machinename limited to short hostname.
 #
+# Version 1.5a- 2012-04-13 Removed [] suffix for non-array jobs if
+#                          -t was requested by the user.
+#
 # Version 1.6 - 2012-04-25 Rename to avoid clash with upstart and
 #                          fix for sge 8 and RedHat 5.
+#                          Dave Love
 #
 # Copyright (C) 2010 Reuti, email: reuti@staff.uni-marburg.de
 #
@@ -43,7 +47,7 @@
 #
 
 PGM_NAME="qstatus"
-PGM_VERSION="1.5"
+PGM_VERSION="1.6"
 
 #
 # If there is an unrecoverable error: display a message and exit.
@@ -431,7 +435,7 @@ eval $qstat_running | $awk_command -v utc_offset=$utc_offset '
 
         /^ *Full jobname:/   {
                                jobname=$3
-                               if (display_task)
+                               if (display_task && task != "")
                                    { jobname=jobname"["task"]" }
                              }
 
@@ -610,7 +614,7 @@ eval $qstat_waiting | $awk_command -v utc_offset=$utc_offset '
 
         /^ *Full jobname:/   {
                                jobname=$3
-                               if (display_task)
+                               if (display_task && task != "")
                                    { jobname=jobname"["task"]" }
                              }
 

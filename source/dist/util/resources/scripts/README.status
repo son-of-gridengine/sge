@@ -1,8 +1,8 @@
                               status script
 
 This archive contains a shell script, which makes heavy use of awk. The purpose
-is to beautify the output of the qstat command under SGE 5.x/6.x. The script is
-uniform for both versions of SGE.
+is to beautify the output of the qstat command under SGE 5.x/6.x/8.x. The script is
+uniform for all versions of SGE.
 
 For the -r option to work you will need gawk version 3.1.6 or higher. Unfortunately
 there seems no "--version" option to be available across different operating
