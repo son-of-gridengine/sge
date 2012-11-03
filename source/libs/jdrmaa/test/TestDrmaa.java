@@ -43,18 +43,18 @@ public class TestDrmaa {
     private static LinkedList jobIds = null;
     private static final Object lock = new Object();
     private static String script = null;
-    
+
     /** Creates a new instance of TestDrmaa */
     public TestDrmaa() throws Exception {
     }
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
         String arg = null;
         int duration = 300;
-        
+
         if ((args.length < 2) || (args.length > 3)) {
             printUsage();
             System.exit(1);
@@ -62,10 +62,10 @@ public class TestDrmaa {
             printUsage();
             System.exit(0);
         }
-        
+
         script = args[0];
         arg = args[1];
-        
+
         if (args.length > 2) {
             try {
                 duration = Integer.parseInt(args[2]);
@@ -74,41 +74,41 @@ public class TestDrmaa {
                 System.exit(1);
             }
         }
-        
+
         jobIds = new LinkedList();
-        
+
         SessionFactory factory = SessionFactory.getFactory();
-        
+
         session = factory.getSession();
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         session.init(null);
-        
+
         System.out.println("DRMS: " + session.getDrmSystem());
         System.out.println("Contact: " + session.getContact());
         System.out.println("Implementation: " + session.getDrmaaImplementation());
-        
+
         Version version = session.getVersion();
-        
+
         System.out.println("Version: " + Integer.toString(version.getMajor()) + "." + Integer.toString(version.getMinor()));
         System.out.println("--------------------------------------------------");
         System.out.println("");
-        
+
         log("0: Starting test threads...");
-        
+
         startThreads(arg);
-        
+
         sleep(5);
-        
+
         synchronized (lock) {
             lock.notifyAll();
         }
-        
+
         log("0: Sleeping");
         sleep(duration);
-        
+
         System.exit(0);
     }
-    
+
     private static void printUsage() {
         System.out.println("java TestDRMAA script codes [duration]");
         System.out.println("\tcodes: <number><code>[:codes]");
@@ -129,26 +129,26 @@ public class TestDrmaa {
         System.out.println("Example:");
         System.out.println("\tjava TestDRMAA 1S:4H:3s:2w:1d");
     }
-    
+
     private static void startThreads(String arg) throws DrmaaException {
         StringTokenizer tok = new StringTokenizer(arg, ":");
         int id = 1;
-        
+
         while (tok.hasMoreTokens()) {
             String code = tok.nextToken();
             int number = -1;
             char type = code.charAt(1);
-            
+
             try {
                 number = Integer.parseInt(code.substring(0, 1));
-                
+
                 if (number == 0) {
                     number = 10;
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid argument: " + arg);
             }
-            
+
             if (type == 'W') {
                 for (int count = 0; count < number; count++) {
                     new Thread(new SubmitWaitTester(id++)).start();
@@ -202,23 +202,23 @@ public class TestDrmaa {
             }
         }
     }
-    
+
     static synchronized void log(String message) {
         System.out.println(message);
     }
-    
+
     private static abstract class Tester implements Runnable {
         private int id = 0;
         protected JobTemplate jt = null;
-        
+
         Tester(int id) {
             this.id = id;
         }
-        
+
         void log(String message) {
             TestDrmaa.log(Integer.toString(id) + ": " + message);
         }
-        
+
         void log(Throwable e) {
             StringWriter sout = new StringWriter();
             PrintWriter pout = new PrintWriter(sout);
@@ -226,7 +226,7 @@ public class TestDrmaa {
             pout.close();
             TestDrmaa.log(Integer.toString(id) + ": " + sout.toString());
         }
-        
+
         public void run() {
             try {
                 synchronized (lock) {
@@ -236,9 +236,9 @@ public class TestDrmaa {
                 log(e);
                 return;
             }
-            
+
             log("Starting up");
-            
+
             while (true) {
                 try {
                     test();
@@ -250,9 +250,9 @@ public class TestDrmaa {
                 }
             }
         }
-        
+
         public abstract void test() throws DrmaaException;
-        
+
         public void cleanup() {
             try {
                 session.deleteJobTemplate(jt);
@@ -261,40 +261,40 @@ public class TestDrmaa {
             }
         }
     }
-    
+
     private static class SubmitWaitTester extends Tester {
         SubmitWaitTester(int id) throws DrmaaException {
             super(id);
-            
+
             log("SubmitWaitTester");
-            
+
             jt = createJobTemplate(script, 5, false);
         }
-        
+
         public void test() throws DrmaaException {
             LinkedList ids = new LinkedList();
             String jobId = null;
-            
+
             for (int count = 0; count < 10; count++) {
                 jobId = session.runJob(jt);
-                
+
                 log("Submitted job " + jobId);
-                
+
                 ids.add(jobId);
             }
-            
+
             Iterator i = ids.iterator();
-            
+
             while (i.hasNext()) {
                 JobInfo status = null;
                 jobId = (String)i.next();
-                
+
                 try {
                     status = session.wait(jobId, Session.TIMEOUT_WAIT_FOREVER);
                 } catch (ExitTimeoutException e) {
                     throw new NoActiveSessionException();
                 }
-                
+
                 /* report how job finished */
                 if (status.wasAborted()) {
                     log("job \"" + status.getJobId() + "\" never ran");
@@ -308,93 +308,93 @@ public class TestDrmaa {
             }
         }
     }
-    
+
     private static class BulkSubmitSyncTester extends Tester {
         BulkSubmitSyncTester(int id) throws DrmaaException {
             super(id);
-            
+
             log("BulkSubmitSyncTester");
-            
+
             jt = createJobTemplate(script, 5, true);
         }
-        
+
         public void test() throws DrmaaException {
             List jobIds = session.runBulkJobs(jt, 1, 20, 1);
-            
+
             log("Submitted " + jobIds.size() + " jobs");
-            
+
             try {
                 session.synchronize(jobIds, Session.TIMEOUT_WAIT_FOREVER, true);
             } catch (ExitTimeoutException e) {
                 throw new NoActiveSessionException();
             }
-            
+
             log("All jobs have finished");
         }
     }
-    
+
     private static class BulkSubmitTester extends Tester {
         private int sleep = 0;
-        
+
         BulkSubmitTester(int id, int sleep) throws DrmaaException {
             super(id);
-            
+
             log("BulkSubmitTester");
-            
+
             this.sleep = sleep;
-            
+
             jt = createJobTemplate(script, sleep, true);
         }
-        
+
         public void test() throws DrmaaException {
             List jobIds = session.runBulkJobs(jt, 1, 20, 1);
-            
+
             log("Submitted " + jobIds.size() + " jobs");
-            
+
             if (sleep > 0) {
                 sleep(sleep);
             }
         }
     }
-    
+
     private static class SubmitTester extends Tester {
         private int sleep = 0;
-        
+
         SubmitTester(int id, int sleep) throws DrmaaException {
             super(id);
-            
+
             log("SubmitTester");
-            
+
             this.sleep = sleep;
-            
+
             jt = createJobTemplate(script, sleep, false);
         }
-        
+
         public void test() throws DrmaaException {
             String jobId = session.runJob(jt);
-            
+
             log("Submitted job " + jobId);
-            
+
             if (sleep > 0) {
                 sleep(sleep);
             }
         }
     }
-    
+
     private static class WaitTester extends Tester {
         WaitTester(int id) throws DrmaaException {
             super(id);
-            
+
             log("WaitTester");
         }
-        
+
         public void test() throws DrmaaException {
             JobInfo info = null;
-            
+
             try {
                 info = session.wait(Session.JOB_IDS_SESSION_ANY,
                         Session.TIMEOUT_WAIT_FOREVER);
-                
+
                 if (info.wasAborted()) {
                     log("job \"" + info.getJobId() + "\" never ran");
                 } else if (info.hasExited()) {
@@ -407,105 +407,105 @@ public class TestDrmaa {
             } catch (ExitTimeoutException e) {
                 throw new NoActiveSessionException();
             }
-            
+
             if (info.getResourceUsage() == null) {
                 log("job \"" + info.getJobId() + "\" has already been reaped");
             }
         }
     }
-    
+
     private static class SyncTester extends Tester {
         private List all = Collections.singletonList(Session.JOB_IDS_SESSION_ALL);
-        
+
         SyncTester(int id) throws DrmaaException {
             super(id);
-            
+
             log("SyncTester");
         }
-        
+
         public void test() throws DrmaaException {
             try {
                 session.synchronize(all, Session.TIMEOUT_WAIT_FOREVER, false);
             } catch (ExitTimeoutException e) {
                 throw new NoActiveSessionException();
             }
-            
+
             log("All jobs have finished");
         }
     }
-    
+
     private static class SubmitDeleteTester extends Tester {
         SubmitDeleteTester(int id) throws DrmaaException {
             super(id);
-            
+
             log("SubmitDeleteTester");
-            
+
             jt = createJobTemplate(script, 600, false);
         }
-        
+
         public void test() throws DrmaaException {
             String jobId = null;
-            
+
             jobId = session.runJob(jt);
-            
+
             log("Submitted job " + jobId);
-            
+
             session.control(jobId, Session.TERMINATE);
-            
+
             log("Deleted job " + jobId);
         }
     }
-    
+
     private static class SubmitHoldReleaseTester extends Tester {
         SubmitHoldReleaseTester(int id) throws DrmaaException {
             super(id);
-            
+
             log("SubmitHoldReleaseTester");
-            
+
             jt = createJobTemplate(script, 60, false);
         }
-        
+
         public void test() throws DrmaaException {
             String jobId = null;
-            
+
             jobId = session.runJob(jt);
-            
+
             log("Submitted job " + jobId);
-            
+
             session.control(jobId, Session.HOLD);
-            
+
             log("Job state is " + statusToString(session.getJobProgramStatus(jobId)));
-            
+
             sleep(20);
-            
+
             log("Job state is " + statusToString(session.getJobProgramStatus(jobId)));
-            
+
             session.control(jobId, Session.RELEASE);
-            
+
             log("Job state is " + statusToString(session.getJobProgramStatus(jobId)));
-            
+
             sleep(20);
-            
+
             log("Job state is " + statusToString(session.getJobProgramStatus(jobId)));
         }
     }
-    
+
     private static class SubmitSuspendResumeTester extends Tester {
         SubmitSuspendResumeTester(int id) throws DrmaaException {
             super(id);
-            
+
             log("SubmitSuspendResumeTester");
-            
+
             jt = createJobTemplate(script, 60, false);
         }
-        
+
         public void test() throws DrmaaException {
             String jobId = null;
-            
+
             jobId = session.runJob(jt);
-            
+
             log("Submitted job " + jobId);
-            
+
             while (true) {
                 try {
                     session.control(jobId, Session.SUSPEND);
@@ -516,93 +516,93 @@ public class TestDrmaa {
                     sleep(10);
                 }
             }
-            
+
             log("Job state is " + statusToString(session.getJobProgramStatus(jobId)));
-            
+
             sleep(20);
-            
+
             log("Job state is " + statusToString(session.getJobProgramStatus(jobId)));
-            
+
             session.control(jobId, Session.RESUME);
-            
+
             log("Job state is " + statusToString(session.getJobProgramStatus(jobId)));
-            
+
             sleep(20);
-            
+
             log("Job state is " + statusToString(session.getJobProgramStatus(jobId)));
         }
     }
-    
+
     private static class SuspendResumeAllTester extends Tester {
         SuspendResumeAllTester(int id) throws DrmaaException {
             super(id);
-            
+
             log("SuspendResumeAllTester");
         }
-        
+
         public void test() throws DrmaaException {
             sleep(30);
-            
+
             session.control(Session.JOB_IDS_SESSION_ALL,
                     Session.SUSPEND);
-            
+
             sleep(20);
-            
+
             session.control(Session.JOB_IDS_SESSION_ALL,
                     Session.RESUME);
         }
     }
-    
+
     private static class HoldReleaseAllTester extends Tester {
         HoldReleaseAllTester(int id) throws DrmaaException {
             super(id);
-            
+
             log("HoldReleaseAllTester");
         }
-        
+
         public void test() throws DrmaaException {
             session.control(Session.JOB_IDS_SESSION_ALL,
                     Session.HOLD);
-            
+
             sleep(20);
-            
+
             session.control(Session.JOB_IDS_SESSION_ALL,
                     Session.RELEASE);
         }
     }
-    
+
     private static class DeleteAllTester extends Tester {
         DeleteAllTester(int id) throws DrmaaException {
             super(id);
-            
+
             log("DeleteAllTester");
         }
-        
+
         public void test() throws DrmaaException {
             sleep(50);
-            
+
             session.control(Session.JOB_IDS_SESSION_ALL,
                     Session.TERMINATE);
         }
     }
-    
+
     private static JobTemplate createJobTemplate(String jobPath, int seconds, boolean isBulkJob) throws DrmaaException {
         JobTemplate jt = session.createJobTemplate();
-        
+
         jt.setWorkingDirectory("$drmaa_hd_ph$");
         jt.setRemoteCommand(jobPath);
         jt.setArgs(Collections.singletonList(Integer.toString(seconds)));
         jt.setJoinFiles(true);
-        
+
         if (!isBulkJob) {
             jt.setOutputPath(":$drmaa_hd_ph$/DRMAA_JOB");
         } else {
             jt.setOutputPath(":$drmaa_hd_ph$/DRMAA_JOB$drmaa_incr_ph$");
         }
-        
+
         return jt;
     }
-    
+
     static String statusToString(int status) {
         switch (status) {
             case Session.QUEUED_ACTIVE:
@@ -627,7 +627,7 @@ public class TestDrmaa {
                 return "Undetermined";
         }
     }
-    
+
     static void sleep(int time) {
         try {
             Thread.sleep(time * 1000);
@@ -635,7 +635,7 @@ public class TestDrmaa {
             // Don't care
         }
     }
-    
+
     private static class ShutdownHook extends Thread {
         public void run() {
             try {

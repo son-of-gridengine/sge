@@ -57,13 +57,13 @@ public class FileTransferMode implements Serializable, Cloneable {
     private boolean inputStream = false;
     /** Whether to transfer output stream files. */
     private boolean outputStream = false;
-    
+
     /**
      * Creates a new instance of FileTransferMode
      */
     public FileTransferMode() {
     }
-    
+
     /**
      * Create a new instance with the property values preset.
      * @param inputStream whether to transfer input stream files
@@ -75,7 +75,7 @@ public class FileTransferMode implements Serializable, Cloneable {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
     }
-    
+
     /**
      * Set whether to transfer error stream files.
      * @param errorStream whether to transfer error stream files
@@ -83,7 +83,7 @@ public class FileTransferMode implements Serializable, Cloneable {
     public void setErrorStream(boolean errorStream) {
         this.errorStream = errorStream;
     }
-    
+
     /**
      * Whether to transfer error stream files.
      * @return whether to transfer error stream files
@@ -91,7 +91,7 @@ public class FileTransferMode implements Serializable, Cloneable {
     public boolean getErrorStream() {
         return errorStream;
     }
-    
+
     /**
      * Set whether to transfer error stream files.
      * @param inputStream whether to transfer error stream files
@@ -99,7 +99,7 @@ public class FileTransferMode implements Serializable, Cloneable {
     public void setInputStream(boolean inputStream) {
         this.inputStream = inputStream;
     }
-    
+
     /**
      * Whether to transfer error stream files.
      * @return whether to transfer error stream files
@@ -107,7 +107,7 @@ public class FileTransferMode implements Serializable, Cloneable {
     public boolean getInputStream() {
         return inputStream;
     }
-    
+
     /**
      * Set whether to transfer error stream files.
      * @param outputStream whether to transfer error stream files
@@ -115,7 +115,7 @@ public class FileTransferMode implements Serializable, Cloneable {
     public void setOutputStream(boolean outputStream) {
         this.outputStream = outputStream;
     }
-    
+
     /**
      * Whether to transfer error stream files.
      * @return whether to transfer error stream files
@@ -123,7 +123,7 @@ public class FileTransferMode implements Serializable, Cloneable {
     public boolean getOutputStream() {
         return outputStream;
     }
-    
+
     /**
      * Test whether two FileTransferMode objects have the same property
      * settings.
@@ -137,21 +137,21 @@ public class FileTransferMode implements Serializable, Cloneable {
                 (((FileTransferMode)obj).inputStream == inputStream) &&
                 (((FileTransferMode)obj).outputStream == outputStream));
     }
-    
+
     /**
      * Returns a hash code based on the file transfer properties.
      * @return a hash code based on the file transfer properties
      */
     public int hashCode() {
         int ret = 0;
-        
+
         ret += inputStream ? 1 : 0;
         ret += outputStream ? 2 : 0;
         ret += errorStream ? 4 : 0;
-        
+
         return ret;
     }
-    
+
     /**
      * Creates a copy of this FileTransferMode object.
      * @return a copy of this FileTransferMode object
@@ -164,7 +164,7 @@ public class FileTransferMode implements Serializable, Cloneable {
             throw new InternalError();
         }
     }
-    
+
     /**
      * Returns a string containing the stream settings.
      * @return a string containing the stream settings
@@ -172,30 +172,30 @@ public class FileTransferMode implements Serializable, Cloneable {
     public String toString() {
         StringBuffer out = new StringBuffer();
         boolean firstProperty = true;
-        
+
         if (inputStream) {
             out.append("input");
             firstProperty = false;
         }
-        
+
         if (outputStream) {
             if (firstProperty) {
                 firstProperty = false;
             } else {
                 out.append(", ");
             }
-            
+
             out.append("output");
         }
-        
+
         if (errorStream) {
             if (!firstProperty) {
                 out.append(", ");
             }
-            
+
             out.append("error");
         }
-        
+
         return out.toString();
     }
 }
