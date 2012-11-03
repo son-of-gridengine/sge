@@ -82,7 +82,7 @@ public class PartialTimestampFormat extends Format {
      * A formter for printing fields
      */
     private NumberFormat nf = null;
-    
+
     /**
      * Creates a new instance of PartialTimestampFormat
      */
@@ -90,7 +90,7 @@ public class PartialTimestampFormat extends Format {
         nf = NumberFormat.getIntegerInstance();
         nf.setMinimumIntegerDigits(2);
     }
-    
+
     /**
      * Creates a copy of this object.
      * @return a copy of this object
@@ -98,7 +98,7 @@ public class PartialTimestampFormat extends Format {
     public Object clone() {
         return super.clone();
     }
-    
+
     /**
      * Translates the PartialTimestamp into a DRMAA specified time string and
      * appends the string to the given StringBuffer.  Since the
@@ -121,10 +121,10 @@ public class PartialTimestampFormat extends Format {
         if (!(obj instanceof PartialTimestamp)) {
             throw new IllegalArgumentException("Cannot parse " + obj.getClass().getName());
         }
-        
+
         return this.format((PartialTimestamp)obj, stringBuffer, fieldPosition);
     }
-    
+
     /**
      * Translates the PartialTimestamp into a DRMAA specified time string and
      * appends the string to the given StringBuffer.  Since the
@@ -145,98 +145,98 @@ public class PartialTimestampFormat extends Format {
      */
     public StringBuffer format(PartialTimestamp obj, StringBuffer stringBuffer, FieldPosition fieldPosition) {
         boolean fieldSet = false;
-        
+
         if (stringBuffer == null) {
             throw new NullPointerException("stringBuffer parameter is null");
         } else if (fieldPosition == null) {
             throw new NullPointerException("fieldPosition parameter is null");
         }
-        
+
         /* We ignore the fieldPosition since we don't use fields. */
-        
+
         if (obj.isSet(obj.CENTURY)) {
             stringBuffer.append(nf.format(obj.get(obj.CENTURY)));
             fieldSet = true;
         }
-        
+
         if (obj.isSet(obj.YEAR)) {
             stringBuffer.append(nf.format(obj.get(obj.YEAR)));
             fieldSet = true;
         } else if (fieldSet) {
             throw new IllegalArgumentException("In PartialTimestamp object, CENTURY is set but YEAR is not");
         }
-        
+
         if (obj.isSet(obj.MONTH)) {
             if (fieldSet) {
                 stringBuffer.append('/');
             }
-            
+
             stringBuffer.append(nf.format(obj.get(obj.MONTH) + 1));
             fieldSet = true;
         } else if (fieldSet) {
             throw new IllegalArgumentException("In PartialTimestamp object, YEAR is set but MONTH is not");
         }
-        
+
         if (obj.isSet(obj.DAY_OF_MONTH)) {
             if (fieldSet) {
                 stringBuffer.append('/');
             }
-            
+
             stringBuffer.append(nf.format(obj.get(obj.DAY_OF_MONTH)));
             fieldSet = true;
         } else if (fieldSet) {
             throw new IllegalArgumentException("In PartialTimestamp object, MONTH is set but DAY_OF_MONTH is not");
         }
-        
+
         if (obj.isSet(obj.HOUR_OF_DAY)) {
             if (fieldSet) {
                 stringBuffer.append(' ');
             }
-            
+
             stringBuffer.append(nf.format(obj.get(obj.HOUR_OF_DAY)));
         } else {
             throw new IllegalArgumentException("In PartialTimestamp object, HOUR_OF_DAY is not set");
         }
-        
+
         if (obj.isSet(obj.MINUTE)) {
             stringBuffer.append(':');
             stringBuffer.append(nf.format(obj.get(obj.MINUTE)));
         } else {
             throw new IllegalArgumentException("In PartialTimestamp object, MINUTE is not set");
         }
-        
+
         if (obj.isSet(obj.SECOND)) {
             stringBuffer.append(':');
             stringBuffer.append(nf.format(obj.get(obj.SECOND)));
         }
-        
+
         if (obj.isSet(obj.ZONE_OFFSET)) {
             int offset = obj.get(obj.ZONE_OFFSET);
-            
+
             stringBuffer.append(' ');
-            
+
             if (offset < 0) {
                 stringBuffer.append('-');
                 offset *= -1;
             } else { // offset >= 0
                 stringBuffer.append('+');
             }
-            
+
             int hours = offset / ONE_HOUR;
-            
+
             offset %= ONE_HOUR;
             stringBuffer.append(nf.format(hours));
             stringBuffer.append(':');
-            
+
             int minutes = offset / ONE_MINUTE;
-            
+
             /* We don't care what happens to the rest of the timezone offset. */
             stringBuffer.append(nf.format(minutes));
         }
-        
+
         return stringBuffer;
     }
-    
+
     /**
      * Translates the PartialTimestamp into a DRMAA specified time string.
      * This method is equivalent to <code>format(obj, new StringBuffer (), new
@@ -254,10 +254,10 @@ public class PartialTimestampFormat extends Format {
     public String format(PartialTimestamp obj) {
         StringBuffer buffer = this.format(obj, new StringBuffer(),
                 new FieldPosition(0));
-        
+
         return buffer.toString();
     }
-    
+
     /**
      * Translates a DRMAA specified time string into a PartialTimestamp object.
      * This method will parse as far as possible, but after successfully parsing
@@ -271,15 +271,15 @@ public class PartialTimestampFormat extends Format {
     public PartialTimestamp parse(String str) throws ParseException {
         ParsePosition pp = new ParsePosition(0);
         PartialTimestamp pt = this.parse(str, pp);
-        
+
         if (pp.getErrorIndex() >= 0) {
             throw new ParseException("Unable to parse DRMAA date string: \"" +
                     str + "\"", pp.getErrorIndex());
         }
-        
+
         return pt;
     }
-    
+
     /**
      * Translates a DRMAA specified time string into a PartialTimestamp object.
      * This method will parse as far as possible.  Upon completion, the parse
@@ -291,7 +291,7 @@ public class PartialTimestampFormat extends Format {
     public PartialTimestamp parse(String str, ParsePosition parsePosition) {
         return (PartialTimestamp)this.parseObject(str, parsePosition);
     }
-    
+
     /**
      * Translates a DRMAA specified time string into a PartialTimestamp object.
      * This method will parse as far as possible.  Upon completion, the parse
@@ -304,7 +304,7 @@ public class PartialTimestampFormat extends Format {
         if (parsePosition == null) {
             throw new NullPointerException("parsePosition parameter is null");
         }
-        
+
         char[] chars = str.toCharArray();
         PartialTimestamp pt = new PartialTimestamp();
         char[][] fields = new char[][] {new char[4], new char[2], new char[2],
@@ -316,14 +316,14 @@ public class PartialTimestampFormat extends Format {
         int whitespaceIndex = 0;
         int minuteIndex = 0;
         int tzIndex = 0;
-        
+
         // Initialize field arrays
         for (int field_count = 0; field_count < fields.length; field_count++) {
             for (int char_count = 0; char_count < fields[field_count].length; char_count++) {
                 fields[field_count][char_count] = ' ';
             }
         }
-        
+
         for (int index = parsePosition.getIndex(); index < chars.length; index++) {
             /* If the character is a digit, and we're in a numeric field, and we
              * haven't reached the end of the field, append the character. */
@@ -335,7 +335,7 @@ public class PartialTimestampFormat extends Format {
                 if ((field == 4) && (count == 0)) {
                     minuteIndex = index;
                 }
-                
+
                 fields[field][count] = chars[index];
                 count++;
                 inWhitespace = false;
@@ -352,7 +352,7 @@ public class PartialTimestampFormat extends Format {
                 } else {
                     field++;
                 }
-                
+
                 count = 0;
                 inWhitespace = false;
             }
@@ -388,7 +388,7 @@ public class PartialTimestampFormat extends Format {
                     else if (count == 2) {
                         field++;
                     }
-                    
+
                     count = 0;
                     inWhitespace = true;
                     /* Note where the whitespace started. */
@@ -412,7 +412,7 @@ public class PartialTimestampFormat extends Format {
             else if (!inWhitespace && (count == 2) &&
                     ((field == 4) || (field == 5) || (field == 8))) {
                 parsePosition.setIndex(index);
-                
+
                 break;
             }
             /* If we're in a patch of whitespace, and we're in the second or offset
@@ -422,35 +422,35 @@ public class PartialTimestampFormat extends Format {
             else if (inWhitespace && (count == 0) &&
                     ((field == 5) || (field == 6))) {
                 parsePosition.setIndex(whitespaceIndex);
-                
+
                 break;
             }
             /* If we can't parse the next character, we have a problem. */
             else {
                 parsePosition.setErrorIndex(index);
-                
+
                 return null;
             }
         }
-        
+
         /* Check for ending in the middle of something. */
         if ((count != 0) && (count != 2) && (count != 4)) {
             parsePosition.setErrorIndex(chars.length);
-            
+
             return null;
         }
-        
+
         /* If the hour field was set, parse it. */
         if (Character.isDigit(fields[3][0])) {
             pt.set(pt.HOUR_OF_DAY, Integer.parseInt(new String(fields[3])));
-            
+
             /* If the day field was set, parse the day, month, and year. */
             if (Character.isDigit(fields[2][0])) {
                 pt.set(pt.DAY_OF_MONTH, Integer.parseInt(new String(fields[2])));
                 pt.set(pt.MONTH, Integer.parseInt(new String(fields[1])) - 1);
-                
+
                 String year = new String(fields[0]).trim();
-                
+
                 /* If the year has four digits, parse the year and century. */
                 if (year.length() == 4) {
                     pt.set(pt.YEAR, Integer.parseInt(year.substring(2, 4)));
@@ -465,13 +465,13 @@ public class PartialTimestampFormat extends Format {
           * month from the month and year fields. */
             else if (Character.isDigit(fields[1][0])) {
                 pt.set(pt.DAY_OF_MONTH, Integer.parseInt(new String(fields[1])));
-                
+
                 String month = new String(fields[0]).trim();
-                
+
                 /* The month should only have two digits. */
                 if (month.length() != 2) {
                     parsePosition.setErrorIndex(7);
-                    
+
                     return null;
                 } else {
                     pt.set(pt.MONTH, Integer.parseInt(month) - 1);
@@ -481,11 +481,11 @@ public class PartialTimestampFormat extends Format {
           * from the year field. */
             else if (Character.isDigit(fields[0][0])) {
                 String day = new String(fields[0]).trim();
-                
+
                 /* The day should only have 2 digits. */
                 if (day.length() != 2) {
                     parsePosition.setErrorIndex(4);
-                    
+
                     return null;
                 } else {
                     pt.set(pt.DAY_OF_MONTH, Integer.parseInt(day));
@@ -496,10 +496,10 @@ public class PartialTimestampFormat extends Format {
        * year field. */
         else if (Character.isDigit(fields[0][0])) {
             String hour = new String(fields[0]).trim();
-            
+
             if (hour.length() != 2) {
                 parsePosition.setErrorIndex(4);
-                
+
                 return null;
             } else {
                 pt.set(pt.HOUR_OF_DAY, Integer.parseInt(hour));
@@ -508,10 +508,10 @@ public class PartialTimestampFormat extends Format {
         /* If there is no hour, we have a problem. */
         else {
             parsePosition.setErrorIndex(0);
-            
+
             return null;
         }
-        
+
         /* If the minute field is set, parse it. */
         if (Character.isDigit(fields[4][0])) {
             pt.set(pt.MINUTE, Integer.parseInt(new String(fields[4])));
@@ -519,26 +519,26 @@ public class PartialTimestampFormat extends Format {
         /* If the minute field isn't set, we have a problem. */
         else {
             parsePosition.setErrorIndex(minuteIndex);
-            
+
             return null;
         }
-        
+
         /* If the second field is set, parse it. */
         if (Character.isDigit(fields[5][0])) {
             pt.set(pt.SECOND, Integer.parseInt(new String(fields[5])));
         }
-        
+
         /* if the offset is set, parse it. */
         if ((fields[6][0] != ' ') && Character.isDigit(fields[7][0]) &&
                 Character.isDigit(fields[8][0])) {
             int offset = Integer.parseInt(new String(fields[7])) * ONE_HOUR;
-            
+
             offset += Integer.parseInt(new String(fields[8])) * ONE_MINUTE;
-            
+
             if (fields[6][0] == '-') {
                 offset *= -1;
             }
-            
+
             pt.set(pt.ZONE_OFFSET, offset);
         }
         /* If the offset is partially set, we have a problem. */
@@ -557,12 +557,12 @@ public class PartialTimestampFormat extends Format {
                     tzIndex ++;
                 }
             }
-            
+
             parsePosition.setErrorIndex(tzIndex);
-            
+
             return null;
         }
-        
+
         return pt;
     }
 }

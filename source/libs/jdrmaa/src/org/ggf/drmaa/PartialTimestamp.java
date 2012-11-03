@@ -232,7 +232,7 @@ public class PartialTimestamp extends Calendar {
      * Whether any fields have been modified since the last adjustFields() call
      */
     private boolean fieldsModified = true;
-    
+
     /**
      * Constructs a default PartialTimestamp instance using the current time
      * in the default time zone with the default locale.
@@ -240,7 +240,7 @@ public class PartialTimestamp extends Calendar {
     public PartialTimestamp() {
         this(TimeZone.getDefault(), Locale.getDefault());
     }
-    
+
     /**
      * Constructs a PartialTimestamp instance based on the current time
      * in the given time zone with the default locale.
@@ -249,7 +249,7 @@ public class PartialTimestamp extends Calendar {
     public PartialTimestamp(TimeZone zone) {
         this(zone, Locale.getDefault());
     }
-    
+
     /**
      * Constructs a PartialTimestamp instance based on the current time
      * in the default time zone with the given locale.
@@ -258,7 +258,7 @@ public class PartialTimestamp extends Calendar {
     public PartialTimestamp(Locale aLocale) {
         this(TimeZone.getDefault(), aLocale);
     }
-    
+
     /**
      * Constructs a PartialTimestamp instance based on the current time
      * in the given time zone with the given locale.
@@ -267,11 +267,11 @@ public class PartialTimestamp extends Calendar {
      */
     public PartialTimestamp(TimeZone zone, Locale aLocale) {
         super(zone, aLocale);
-        
+
         this.initializeModifiers();
         this.initializeFields();
     }
-    
+
     /**
      * Sets all field modifiers to 0.
      */
@@ -279,7 +279,7 @@ public class PartialTimestamp extends Calendar {
         modifiers = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0,
                                0, 0, 0, 0, 0, 0, 0, 0, 0};
     }
-    
+
     /**
      * Returns the value of the modifier for the given field.
      * @param field the field whose modifier will be returned
@@ -288,7 +288,7 @@ public class PartialTimestamp extends Calendar {
     public int getModifier(int field) {
         return modifiers[field];
     }
-    
+
     /**
      * Sets the value of the modifier for the given field.
      * @param field the field whose modifier will be set
@@ -297,7 +297,7 @@ public class PartialTimestamp extends Calendar {
     public void setModifier(int field, int value) {
         modifiers[field] = value;
     }
-    
+
     /**
      * Sets all field values to UNSET.
      */
@@ -306,7 +306,7 @@ public class PartialTimestamp extends Calendar {
             fields[count] = UNSET;
         }
     }
-    
+
     /**
      * Constructs a PartialTimestamp instance with the given date
      * and time set for the default time zone with the default locale.
@@ -327,7 +327,7 @@ public class PartialTimestamp extends Calendar {
         this.set(HOUR_OF_DAY, hour);
         this.set(MINUTE, minute);
     }
-    
+
     /**
      * Constructs a PartialTimestamp instance with the given date
      * and time set for the default time zone with the default locale.
@@ -344,7 +344,7 @@ public class PartialTimestamp extends Calendar {
         this.set(MINUTE, minute);
         this.set(SECOND, second);
     }
-    
+
     /**
      * Constructs a PartialTimestamp instance with the given date
      * and time set for the default time zone with the default locale.
@@ -368,7 +368,7 @@ public class PartialTimestamp extends Calendar {
         this.set(MINUTE, minute);
         this.set(SECOND, second);
     }
-    
+
     // This needs to be completey rewritten to account for modifiers on unset fields
     /**
      * Adds the given value to the given <i>field</i>.  If the field< is unset, the
@@ -383,29 +383,29 @@ public class PartialTimestamp extends Calendar {
         if (amount == 0) {
             return;
         }
-        
+
         /* We can only add to valid fields. */
         if ((field < ERA) || (field >= FIELD_COUNT)) {
             throw new IllegalArgumentException("Invalid field");
         }
-        
+
         if (!isSet(field)) {
             modifiers[field] += amount;
         } else {
             adjustFields();
-            
+
             if ((field == MONTH) && isSet(MONTH) && isSet(DAY_OF_MONTH)) {
                 int month = internalGet(MONTH);
                 int dayOfMonth = internalGet(DAY_OF_MONTH);
                 int newMonth = (month + amount) % 12;
-                
+
                 modifiers[YEAR] += (month + amount) / 12;
-                
+
                 while (newMonth < JANUARY) {
                     newMonth += 12;
                     modifiers[YEAR]--;
                 }
-                
+
                 /* If there's no February involed, we don't care what the year
                  * is. */
                 if ((month != FEBRUARY) && (newMonth != FEBRUARY) &&
@@ -418,11 +418,11 @@ public class PartialTimestamp extends Calendar {
                     int fullYear = this.getYear();
                     int newMonthLength = getLengthOfMonth(newMonth,
                             isLeapYear(fullYear + modifiers[YEAR]));
-                    
+
                     if (dayOfMonth > newMonthLength) {
                         myInternalSet(DAY_OF_MONTH, newMonthLength);
                     }
-                    
+
                     /* Set the year */
                     fullYear += modifiers[YEAR];
                     myInternalSet(YEAR, fullYear % 100);
@@ -434,7 +434,7 @@ public class PartialTimestamp extends Calendar {
                  * math until later because for us to learn enough to be able to do
                  * the math, we'd have to make changes that would render the math
                  * pointless.  Therefore, we just ignore the pinning. */
-                
+
                 /* Set the new month. */
                 set(MONTH, newMonth);
             }
@@ -445,17 +445,17 @@ public class PartialTimestamp extends Calendar {
                 int daysInYear = this.getLengthOfYear(fullYear);
                 int dayOfYear = internalGet(DAY_OF_YEAR);
                 boolean pinDay = (dayOfYear == daysInYear);
-                
+
                 // Add in the amount
                 if (field == YEAR) {
                     fullYear += amount;
                 } else {
                     fullYear += amount * 100;
                 }
-                
+
                 // Figure out how many days in this year
                 daysInYear = this.getLengthOfYear(fullYear);
-                
+
                 // If we ended up in the next year, set it back to the end of this
                 // year
                 if (pinDay && (dayOfYear > daysInYear)) {
@@ -464,7 +464,7 @@ public class PartialTimestamp extends Calendar {
                     * 366 and was a leap year. */
                     myInternalSet(DAY_OF_YEAR, 365);
                 }
-                
+
                 /* Internal or not doesn't matter since I don't keep timestamps for
                  * these fields. */
                 set(YEAR, fullYear % 100);
@@ -475,10 +475,10 @@ public class PartialTimestamp extends Calendar {
                 super.set(field, internalGet(field) + amount);
             }
         }
-        
+
         fieldsModified = true;
     }
-    
+
     // Called by setTimeInMillis() and complete().  Always called after the time
     // has been explicitly set.
     /**
@@ -491,18 +491,18 @@ public class PartialTimestamp extends Calendar {
         long localTime = time;
         int year = 1970;
         int numDays = 0;
-        
+
         // First set timezone fields
         if (tz.inDaylightTime(new Date(localTime))) {
             set(DST_OFFSET, tz.getDSTSavings());
         } else {
             set(DST_OFFSET, 0);
         }
-        
+
         set(ZONE_OFFSET, tz.getOffset(localTime) - internalGet(DST_OFFSET));
-        
+
         localTime += internalGet(DST_OFFSET) + internalGet(ZONE_OFFSET);
-        
+
         // Next set the date fields
         /* To make the leap year math work out more easily, we skip the first
          * three years of the epoch if we can, so that we start on the year after
@@ -510,7 +510,7 @@ public class PartialTimestamp extends Calendar {
         if (localTime >= (THREE_YEARS + ONE_DAY)) {
             year = 1973;
             localTime -= THREE_YEARS + ONE_DAY;
-            
+
             int num400 = (int)(localTime / FOUR_HUNDRED_YEARS);
             localTime %= FOUR_HUNDRED_YEARS;
             int num100 = (int)(localTime / ONE_HUNDRED_YEARS);
@@ -522,7 +522,7 @@ public class PartialTimestamp extends Calendar {
             year += num400 * 400 + num100 * 100 + num4 * 4 + num1;
             numDays = (int)(localTime / ONE_DAY); // Zero-based
             localTime %= ONE_DAY;
-            
+
             /* If this is the end of a 4- or 400-year period, and we're short one day
              * of the full leap period, then we know that it's actually Dec 31st of
              * the previous year. */
@@ -542,16 +542,16 @@ public class PartialTimestamp extends Calendar {
          * years involved in the math. */
         else {
             int num1 = (int)(localTime / ONE_YEAR);
-            
+
             numDays = (int)(localTime % ONE_YEAR);
             year = 1970 + num1;
         }
-        
+
         numDays++; // No longer zero-based
-        
+
         /* Sets all date fields, including month, year and day of week */
         this.setDateFields(numDays, year);
-        
+
         /* Because the setDateFields uses myInternalSet(), we have to go back
          * through with set() to make sure that all the fields are recognized as
          * set. */
@@ -564,7 +564,7 @@ public class PartialTimestamp extends Calendar {
         set(DAY_OF_WEEK_IN_MONTH, internalGet(DAY_OF_WEEK_IN_MONTH));
         set(WEEK_OF_MONTH, internalGet(WEEK_OF_MONTH));
         set(WEEK_OF_YEAR, internalGet(WEEK_OF_YEAR));
-        
+
         // Finally, set time fields
         set(HOUR_OF_DAY, (int)(localTime / ONE_HOUR));
         set(HOUR, internalGet(HOUR_OF_DAY) % 12);
@@ -575,10 +575,10 @@ public class PartialTimestamp extends Calendar {
         set(SECOND, (int)(localTime / ONE_SECOND));
         localTime %= ONE_SECOND;
         set(MILLISECOND, (int)localTime);
-        
+
         fieldsModified = false;
     }
-    
+
     /**
      * Calculates whether the given year is a leap year.
      * @param year the year to test
@@ -587,7 +587,7 @@ public class PartialTimestamp extends Calendar {
     static boolean isLeapYear(int year) {
         return ((year % 400) == 0) || (((year % 100) != 0) && ((year % 4) == 0));
     }
-    
+
     /**
      * Returns the total number of days in the year up to and including the given
      * month.  If the <i>month</i> is less than JANUARY, 0 is returned.  For example, if
@@ -631,7 +631,7 @@ public class PartialTimestamp extends Calendar {
                 return 0;
         }
     }
-    
+
     /**
      * Calculates the current month from the day of the year.
      * @param dayOfYear the day of the year, starting with 1
@@ -644,10 +644,10 @@ public class PartialTimestamp extends Calendar {
                 return month;
             }
         }
-        
+
         throw new IllegalArgumentException();
     }
-    
+
     // Have to override this so I can implement my own time stamps
     /**
      * Sets the value of the given field.  After a call to set, the field is considered
@@ -691,12 +691,12 @@ public class PartialTimestamp extends Calendar {
                     break;
             }
         }
-        
+
         super.set(field, value);
-        
+
         fieldsModified = true;
     }
-    
+
     // Have to override because our fields are not based on a time in millis
     /**
      * Get the value of the given field.  If the field is unset, this method will
@@ -708,7 +708,7 @@ public class PartialTimestamp extends Calendar {
         this.adjustFields();
         return internalGet(field);
     }
-    
+
     /**
      * This method adjusts all fields so that they are within their valid value ranges.
      * Adjustments are only made if enough information is available; no assumptions are
@@ -718,7 +718,7 @@ public class PartialTimestamp extends Calendar {
         if (!fieldsModified) {
             return;
         }
-        
+
         int century = internalGet(CENTURY);
         int year = internalGet(YEAR);
         int month = internalGet(MONTH);
@@ -742,7 +742,7 @@ public class PartialTimestamp extends Calendar {
         int fullYear = 0;
         boolean isLeapYear = false;
         boolean dayFieldChanged = false;
-        
+
         int lastDayFieldSet = getLastDayFieldSet();
         /* This is the field with units of days that corresponds to the last day
          * field set. */
@@ -753,22 +753,22 @@ public class PartialTimestamp extends Calendar {
         /* Whether the last day field set needs the month to calculate the
          * date. */
         boolean lastDayFieldNeedsMonth = lastDayFieldNeedsMonth(lastDayFieldSet);
-        
+
         /* If being lenient, and a field overflows add the excess to the next
          * field up.  If a field is negative, borrow a unit from the next field
          * up. */
-        
+
         /* First we do the time calculations.  These are pretty easy because
          * smaller fields don't depend on larger fields. */
         if (isSet(MILLISECOND)) {
             millisecond += modifiers[MILLISECOND];
             modifiers[MILLISECOND] = 0;
-            
+
             if ((millisecond > 999) || (millisecond < 0)) {
                 if (isLenient()) {
                     modifiers[SECOND] += millisecond / 1000;
                     millisecond %= 1000;
-                    
+
                     if (millisecond < 0) {
                         millisecond += 1000;
                         modifiers[SECOND]--;
@@ -778,16 +778,16 @@ public class PartialTimestamp extends Calendar {
                 }
             }
         }
-        
+
         if (isSet(SECOND)) {
             second += modifiers[SECOND];
             modifiers[SECOND] = 0;
-            
+
             if ((second > 59) || (second < 0)) {
                 if (isLenient()) {
                     modifiers[MINUTE] += second / 60;
                     second %= 60;
-                    
+
                     if (second < 0) {
                         second += 60;
                         modifiers[MINUTE]--;
@@ -797,18 +797,18 @@ public class PartialTimestamp extends Calendar {
                 }
             }
         }
-        
+
         /* Required field, but we can't throw an exception because it might just
          * not be set yet. */
         if (isSet(MINUTE)) {
             minute += modifiers[MINUTE];
             modifiers[MINUTE] = 0;
-            
+
             if ((minute > 59) || (minute < 0)) {
                 if (isLenient()) {
                     modifiers[lastHourSet] += minute / 60;
                     minute %= 60;
-                    
+
                     if (minute < 0) {
                         minute += 60;
                         modifiers[lastHourSet]--;
@@ -818,33 +818,33 @@ public class PartialTimestamp extends Calendar {
                 }
             }
         }
-        
+
         /* Required field, but we can't throw an exception because it might just
          * not be set yet. */
         /* lastHourSet is HOUR_OF_DAY if neither hour field has been set yet. */
         if ((lastHourSet == HOUR_OF_DAY) && isSet(HOUR_OF_DAY)) {
             hourOfDay += modifiers[HOUR_OF_DAY];
             modifiers[HOUR_OF_DAY] = 0;
-            
+
             if ((hourOfDay > 23) || (hourOfDay < 0)) {
                 if (isLenient()) {
                     modifiers[lastTrueDayFieldSet] += hourOfDay / 24;
                     hourOfDay %= 24;
-                    
+
                     if (hourOfDay < 0) {
                         hourOfDay += 24;
                         modifiers[lastTrueDayFieldSet]--;
                     }
-                    
+
                     /* Set other hour fields. */
                     if (isSet(HOUR)) {
                         hour = hourOfDay % 12;
-                        
+
                         if (hour == 0) {
                             hour = 12;
                         }
                     }
-                    
+
                     if (isSet(AM_PM)) {
                         ampm = hourOfDay / 12;
                         /* We have to clear the modifiers here because AM_PM gets
@@ -858,59 +858,59 @@ public class PartialTimestamp extends Calendar {
             }
         } else if (lastHourSet == HOUR) {
             int rawHour = hour;
-            
+
             hour += modifiers[HOUR];
             modifiers[HOUR] = 0;
-            
+
             /* We enter here if the hour is greater than 12, or if the hour has
              * been made equal to 12 by modifiers. */
             if ((hour > 12) || ((hour == 12) && (rawHour < 12)) || (hour < 1)) {
                 if (isLenient()) {
                     modifiers[AM_PM] += hour / 12;
                     hour = hour % 12;
-                    
+
                     if (hour < 0) {
                         hour += 12;
                         modifiers[AM_PM]--;
                     }
-                    
+
                     /* Restore the normal hour. */
                     if (hour == 0) {
                         hour = 12;
                     }
-                    
+
                     /* Set other hour field when we handle AM_PM. */
                 } else {
                     throw new IllegalArgumentException("Invalid HOUR field");
                 }
             }
         }
-        
+
         /* This has to come after the hour calculation so that it can catch any
          * overflow. */
         if (isSet(AM_PM)) {
             ampm += modifiers[AM_PM];
             modifiers[AM_PM] = 0;
-            
+
             if ((ampm > PM) || (ampm < AM)) {
                 if (isLenient()) {
                     /* We treat AM_PM overflow as one day. */
                     modifiers[lastTrueDayFieldSet] += ampm / 2;
                     ampm %= 2;
-                    
+
                     if (ampm < 0) {
                         ampm += 2;
                         modifiers[lastTrueDayFieldSet]--;
                     }
-                    
+
                     /* Set the hour fo the day if we can. */
                     if (isSet(HOUR) && isSet(HOUR_OF_DAY)) {
                         hourOfDay = hour;
-                        
+
                         if (ampm == PM) {
                             hourOfDay += 12;
                         }
-                        
+
                         /* Readjust for misnight. */
                         if (hourOfDay == 24) {
                             hourOfDay = 0;
@@ -921,7 +921,7 @@ public class PartialTimestamp extends Calendar {
                 }
             }
         }
-        
+
         /* Now do the date calculations.  These get interesting because there are
          * dependencies in both directions, e.g. month depends on day depends on
          * month.  In order to deal with this, we first run through the day of
@@ -929,16 +929,16 @@ public class PartialTimestamp extends Calendar {
          * day of week, month, and year.  The result of the day math will be a
          * year and day of year, from which we can derive all the other date
          * fields. */
-        
+
         if (isSet(MONTH)) {
             month += modifiers[MONTH];
             modifiers[MONTH] = 0;
-            
+
             if ((month < JANUARY) || (month > DECEMBER)) {
                 if (isLenient()) {
                     modifiers[YEAR] += (month - JANUARY) / 12;
                     month = ((month - JANUARY) % 12) + JANUARY;
-                    
+
                     if (month < JANUARY) {
                         month += 12;
                         modifiers[YEAR]--;
@@ -948,16 +948,16 @@ public class PartialTimestamp extends Calendar {
                 }
             }
         }
-        
+
         if (isSet(YEAR)) {
             year += modifiers[YEAR];
             modifiers[YEAR] = 0;
-            
+
             if ((year < 0) || (year > 99)) {
                 if (isLenient()) {
                     modifiers[CENTURY] += year / 100;
                     year %= 100;
-                    
+
                     if (year < 0) {
                         year += 100;
                         modifiers[CENTURY]--;
@@ -967,31 +967,31 @@ public class PartialTimestamp extends Calendar {
                 }
             }
         }
-        
+
         if (isSet(CENTURY)) {
             century += modifiers[CENTURY];
             modifiers[CENTURY] = 0;
-            
+
             if ((century < 0) || (century > Integer.MAX_VALUE - 1)) {
                 if (!isLenient()) {
                     throw new IllegalArgumentException("Invalid CENTURY field");
                 }
             }
         }
-        
+
         /* Calculate useful values. */
         if (isSet(YEAR) && isSet(CENTURY)) {
             fullYear = year + century * 100;
             isLeapYear = isLeapYear(fullYear);
         }
-        
+
         /* We only need day of week for specific date sets.  It has to come after
          * the year and month, because we have to be able to calculate first day
          * of the month. */
         if (isSet(DAY_OF_WEEK)) {
             dayOfWeek += modifiers[DAY_OF_WEEK];
             modifiers[DAY_OF_WEEK] = 0;
-            
+
             if ((dayOfWeek < SUNDAY) || (dayOfWeek > SATURDAY)) {
                 /* Since the day of week in month isn't incremented on Saturday,
                  * as all the other week fields are, we delay handling the day
@@ -1000,7 +1000,7 @@ public class PartialTimestamp extends Calendar {
                         (lastWeekFieldSet != DAY_OF_WEEK_IN_MONTH)) {
                     modifiers[lastWeekFieldSet] += (dayOfWeek - SUNDAY) / 7;
                     dayOfWeek = ((dayOfWeek - SUNDAY) % 7) + SUNDAY;
-                    
+
                     if (dayOfWeek < SUNDAY) {
                         dayOfWeek += SATURDAY;
                         modifiers[lastWeekFieldSet]--;
@@ -1014,11 +1014,11 @@ public class PartialTimestamp extends Calendar {
                 }
             }
         }
-        
+
         /* Note that at this point if month, year, century, and/or day of week are
          * set, there are no modifiers on those set fields.  This will be
          * important when doing the say math, particularly for the year. */
-        
+
         /* Now comes the really tricky stuff.  First off, we can't resolve a date
          * past the bounds of our knowledge.  For example, we have to know the
          * month to resolve a day overflow.  The tables below show
@@ -1039,18 +1039,18 @@ public class PartialTimestamp extends Calendar {
          * DoY - fully
          * WoY - none - we need the day of the week to do anything
          */
-    
+
         if (lastDayFieldSet == DAY_OF_MONTH) {
             dayOfMonth += modifiers[DAY_OF_MONTH];
             modifiers[DAY_OF_MONTH] = 0;
-            
+
             if ((dayOfMonth < 1) ||
                     (dayOfMonth > this.getLengthOfMonth(month, false))) {
                 if (isLenient()) {
                     if (isSet(MONTH) && isSet(YEAR) && isSet(CENTURY)) {
                         date = dayOfMonth + getTotalDays(month - 1, isLeapYear);
                         dayFieldChanged = true;
-                        
+
                         if (date < 1) {
                             do {
                                 modifiers[YEAR]--;
@@ -1058,7 +1058,7 @@ public class PartialTimestamp extends Calendar {
                             } while (date < 1);
                         } else {
                             int length = getLengthOfYear(fullYear);
-                            
+
                             while (date > length) {
                                 date -= length;
                                 modifiers[YEAR]++;
@@ -1070,7 +1070,7 @@ public class PartialTimestamp extends Calendar {
                      * but we can do some resolution of day of month. */
                     else if (isSet(MONTH) && (dayOfMonth <= 0)) {
                         int days = getTotalDays(month - 1, false) + dayOfMonth;
-                        
+
                         if (month <= FEBRUARY) {
                             /* If we're in last year, but after February, decrement
                              * the year and do the math normally, assuming no leap
@@ -1110,12 +1110,12 @@ public class PartialTimestamp extends Calendar {
                                 month = MARCH;
                             }
                         }
-                        
+
                         // Recalculate year if there were any changes. */
                         if (isSet(YEAR) && (modifiers[YEAR] != 0)) {
                             fullYear += modifiers[YEAR];
                             modifiers[YEAR] = 0;
-                            
+
                             year = fullYear % 100;
                             century = fullYear / 100;
                         }
@@ -1154,7 +1154,7 @@ public class PartialTimestamp extends Calendar {
         } else if (lastDayFieldSet == WEEK_OF_MONTH) {
             weekOfMonth += modifiers[WEEK_OF_MONTH];
             modifiers[WEEK_OF_MONTH] = 0;
-            
+
             /* We use 4 here it's easier to just do the math for all cases that
              * aren't guaranteed to be safe than to figure out which ones are
              * valid. */
@@ -1164,7 +1164,7 @@ public class PartialTimestamp extends Calendar {
                             isSet(YEAR) && isSet(CENTURY)) {
                         date += getTotalDays(month - 1, isLeapYear);
                         dayFieldChanged = true;
-                        
+
                         if (weekOfMonth < 1) {
                             int lastDayOfMonth = calculateDayOfWeek(getLengthOfMonth(month, isLeapYear),
                                     month, fullYear);
@@ -1173,9 +1173,9 @@ public class PartialTimestamp extends Calendar {
                              * last week. */
                             date += ((weekOfMonth - 1) * 7) +
                                     (dayOfWeek - lastDayOfMonth);
-                            
+
                             int length = getLengthOfYear(fullYear);
-                            
+
                             while (date < 1) {
                                 date += length;
                                 modifiers[YEAR]--;
@@ -1184,15 +1184,15 @@ public class PartialTimestamp extends Calendar {
                         } else {
                             int firstDayOfMonth = calculateDayOfWeek(1, month,
                                     fullYear);
-                            
+
                             /* Add in the number of weeks times 7 plus the number of
                              * days in the first week and the number of days in the
                              * last week. */
                             date += ((weekOfMonth - 1) * 7) +
                                     (dayOfWeek - firstDayOfMonth) + 1;
-                            
+
                             int length = getLengthOfYear(fullYear);
-                            
+
                             while (date > length) {
                                 date -= length;
                                 modifiers[YEAR]++;
@@ -1207,7 +1207,7 @@ public class PartialTimestamp extends Calendar {
         } else if (lastDayFieldSet == DAY_OF_WEEK_IN_MONTH) {
             dayOfWeekInMonth += modifiers[DAY_OF_WEEK_IN_MONTH];
             modifiers[DAY_OF_WEEK_IN_MONTH] = 0;
-            
+
             /* We use 4  and -4 here it's easier to just do the math for all cases
              * that aren't guaranteed to be safe than to figure out which ones are
              * valid.  We have to check for 0 because the valid range is [-4,-1],
@@ -1232,26 +1232,26 @@ public class PartialTimestamp extends Calendar {
                              * the month.  That's the day on which the "week"
                              * begins. */
                             int diff = lastDayOfMonth + 1;
-                            
+
                             if (diff > SATURDAY) {
                                 diff -= 7;
                             }
-                            
+
                             diff = dayOfWeek - diff;
-                            
+
                             if (diff < SUNDAY) {
                                 diff += 7;
                             }
-                            
+
                             /* Find the day after the day that is
                              * (day of week in month * 7) days before the end of the
                              * month, and add the normalized day of week. */
                             date += (dayOfWeekInMonth * 7) + 1 + diff +
                                     getLengthOfMonth(month, isLeapYear);
-                            
+
                             /* Resolve any yearly slippage. */
                             int length = getLengthOfYear(fullYear);
-                            
+
                             while (date < 1) {
                                 date += length;
                                 modifiers[YEAR]--;
@@ -1262,19 +1262,19 @@ public class PartialTimestamp extends Calendar {
                                     fullYear);
                             /* We want to normalize to the first day of the month. */
                             int diff = dayOfWeek - firstDayOfMonth;
-                            
+
                             if (diff < SUNDAY) {
                                 diff += 7;
                             }
-                            
+
                             /* Find the day that is (day of week in month * 7) days
                              * after the first day of the month, and add the normalized
                              * day of week. */
                             date += ((dayOfWeekInMonth - 1) * 7) + diff + 1;
-                            
+
                             /* Resolve any yearly slippage that may have happened. */
                             int length = getLengthOfYear(fullYear);
-                            
+
                             /* If the day of week in month was 0, we could have slipped
                              * slightly into the previous year. */
                             if (date < 1) {
@@ -1290,7 +1290,7 @@ public class PartialTimestamp extends Calendar {
                                 }
                             }
                         }
-                        
+
                         /* Deal with day of week now that we have the day of week in
                          * month set.  Since we already have done all the important
                          * math, all we need to do here is get the value in range. */
@@ -1311,13 +1311,13 @@ public class PartialTimestamp extends Calendar {
         } else if (lastDayFieldSet == DAY_OF_YEAR) {
             dayOfYear += modifiers[DAY_OF_YEAR];
             modifiers[DAY_OF_YEAR] = 0;
-            
+
             if ((dayOfYear < 1) || (dayOfYear > 365)) {
                 if (isLenient()) {
                     if (isSet(YEAR) && isSet(CENTURY)) {
                         date = dayOfYear;
                         dayFieldChanged = true;
-                        
+
                         if (date < 1) {
                             do {
                                 modifiers[YEAR]--;
@@ -1325,7 +1325,7 @@ public class PartialTimestamp extends Calendar {
                             } while (date < 1);
                         } else {
                             int length = getLengthOfYear(fullYear);
-                            
+
                             while (date > length) {
                                 date -= length;
                                 modifiers[YEAR]++;
@@ -1340,7 +1340,7 @@ public class PartialTimestamp extends Calendar {
         } else if (lastDayFieldSet == WEEK_OF_YEAR) {
             weekOfYear += modifiers[WEEK_OF_YEAR];
             modifiers[WEEK_OF_YEAR] = 0;
-            
+
             if ((weekOfYear < 1) || (weekOfYear > 52)) {
                 if (isLenient()) {
                     if (isSet(DAY_OF_WEEK) && isSet(YEAR) && isSet(CENTURY)) {
@@ -1351,7 +1351,7 @@ public class PartialTimestamp extends Calendar {
                         date = (weekOfYear * 7) - (SATURDAY - dayOfWeek) -
                                 (firstDay - SUNDAY);
                         dayFieldChanged = true;
-                        
+
                         if (date < 1) {
                             do {
                                 modifiers[YEAR]--;
@@ -1359,7 +1359,7 @@ public class PartialTimestamp extends Calendar {
                             } while (date < 1);
                         } else {
                             int length = getLengthOfYear(fullYear);
-                            
+
                             while (date > length) {
                                 date -= length;
                                 modifiers[YEAR]++;
@@ -1372,7 +1372,7 @@ public class PartialTimestamp extends Calendar {
                 }
             }
         }
-        
+
         /* Now we have to do the last bits of cleanup.  In the course of the day
          * math, we may have generated modifiers on the year.  We now have to
          * apply those modifiers to the final year.  We know that since we only do
@@ -1383,7 +1383,7 @@ public class PartialTimestamp extends Calendar {
                 fullYear += modifiers[YEAR];
                 modifiers[YEAR] = 0;
             }
-            
+
             /* Now we have to use the date we generated to set all the other date
              * fields.  This sets the century, year, month, and all the day and week
              * fields. */
@@ -1401,7 +1401,7 @@ public class PartialTimestamp extends Calendar {
             myInternalSet(WEEK_OF_MONTH, weekOfMonth);
             myInternalSet(WEEK_OF_YEAR, weekOfYear);
         }
-        
+
         /* Next thing is to set the time fields.  Simple. */
         myInternalSet(MILLISECOND, millisecond);
         myInternalSet(SECOND, second);
@@ -1409,12 +1409,12 @@ public class PartialTimestamp extends Calendar {
         myInternalSet(HOUR, hour);
         myInternalSet(AM_PM, ampm);
         myInternalSet(HOUR_OF_DAY, hourOfDay);
-        
+
         fieldsModified = false;
-        
+
         /* All set fields are now consistent, and all unset fields remain unset.*/
     }
-    
+
     /**
      * Given the last day field set, this method returns the corresponding field whose
      * units are days.
@@ -1441,10 +1441,10 @@ public class PartialTimestamp extends Calendar {
                 lastTrueDayFieldSet = DAY_OF_MONTH;
                 break;
         }
-        
+
         return lastTrueDayFieldSet;
     }
-    
+
     /**
      * Given the last day field set, this method returns the corresponding field whose
      * units are weeks.
@@ -1454,7 +1454,7 @@ public class PartialTimestamp extends Calendar {
      */
     private static int getLastWeekFieldSet(int lastDayFieldSet) {
         int lastWeekFieldSet = 0;
-        
+
         switch (lastDayFieldSet) {
             case WEEK_OF_MONTH:
                 lastWeekFieldSet = WEEK_OF_MONTH;
@@ -1469,10 +1469,10 @@ public class PartialTimestamp extends Calendar {
                 lastWeekFieldSet = 0;
                 break;
         }
-        
+
         return lastWeekFieldSet;
     }
-    
+
     /**
      * Given the last day field set, this method determines if that field needs the
      * <CODE>MONTH</CODE> field to be set in order to adjust the field value.
@@ -1481,16 +1481,16 @@ public class PartialTimestamp extends Calendar {
      */
     private static boolean lastDayFieldNeedsMonth(int lastDayFieldSet) {
         boolean lastDayFieldNeedsMonth = false;
-        
+
         if ((lastDayFieldSet == DAY_OF_MONTH) ||
                 (lastDayFieldSet == WEEK_OF_MONTH) ||
                 (lastDayFieldSet == DAY_OF_WEEK_IN_MONTH)) {
             lastDayFieldNeedsMonth = true;
         }
-        
+
         return lastDayFieldNeedsMonth;
     }
-    
+
     /**
      * <p>Sets the value of all day fields.  Even though all day fields are assigned a
      * value, previously unset fields will still be considered unset.</p>
@@ -1510,7 +1510,7 @@ public class PartialTimestamp extends Calendar {
         int month = calculateMonth(dayOfYear, isLeapYear(year));
         int date = dayOfYear - getTotalDays(month - 1, isLeapYear(year));
         int dayOfWeek = calculateDayOfWeek(date, month, year);
-        
+
         myInternalSet(DAY_OF_MONTH, date);
         myInternalSet(DAY_OF_WEEK, dayOfWeek);
         setWeekOfMonth(dayOfWeek, date);
@@ -1521,7 +1521,7 @@ public class PartialTimestamp extends Calendar {
         myInternalSet(YEAR, year % 100);
         myInternalSet(CENTURY, year / 100);
     }
-    
+
     /**
      * Sets the <code>WEEK_OF_YEAR</code> field.
      * @param dayOfYear the day of the year, starting with 1
@@ -1538,10 +1538,10 @@ public class PartialTimestamp extends Calendar {
         int trailing = dayOfYear % 7;
         int weekOfYear = dayOfYear / 7 + ((leading > 0) ? 1 : 0) +
                 ((trailing > 0) ? 1 : 0);
-        
+
         myInternalSet(WEEK_OF_YEAR, weekOfYear);
     }
-    
+
     /**
      * Sets the D<code>AY_OF_WEEK_IN_MONTH</code> field.
      * @param date the day of the year
@@ -1550,14 +1550,14 @@ public class PartialTimestamp extends Calendar {
         /* Calculate how many weeks into the month we are.  The day
          * of the week is actually irrelevant. */
         int dayOfWeekInMonth = date / 7;
-        
+
         if (date % 7 != 0) {
             dayOfWeekInMonth++;
         }
-        
+
         myInternalSet(DAY_OF_WEEK_IN_MONTH, dayOfWeekInMonth);
     }
-    
+
     /**
      * Sets the <code>WEEK_IN_MONTH</code> field.
      * @param dayOfWeek the day of the week
@@ -1566,11 +1566,11 @@ public class PartialTimestamp extends Calendar {
     private void setWeekOfMonth(int dayOfWeek, int date) {
         /* Figure out what day the 1st of the month is */
         int firstDayOfMonth = dayOfWeek - ((date - 1) % 7);
-        
+
         if (firstDayOfMonth < SUNDAY) {
             firstDayOfMonth += SATURDAY;
         }
-        
+
         /* Subtract days in first week in previous month. */
         int leading = (SATURDAY + 1 - firstDayOfMonth) % 7;
         int newDays = date - leading;
@@ -1582,10 +1582,10 @@ public class PartialTimestamp extends Calendar {
         /* Count the weeks, including partial weeks on both ends */
         int weekOfMonth = newDays / 7 + ((trailing > 0) ? 1 : 0) +
                 ((leading > 0) ? 1 : 0);
-        
+
         myInternalSet(WEEK_OF_MONTH, weekOfMonth);
     }
-    
+
     /**
      * This method calculates the day of the week for the given date.
      * @param date the day of the month
@@ -1596,7 +1596,7 @@ public class PartialTimestamp extends Calendar {
     static int calculateDayOfWeek(int date, int month, int year) {
         int dayOfWeek = WEDNESDAY; // Jan 1, 1969
         int days = getTotalDays(month - 1, isLeapYear(year));
-        
+
         /* Each year advances the DoW by 1, except leap years which advance by 2.
          * Remember to account for double and triple leap years! */
         if (year > 2000) {
@@ -1607,15 +1607,15 @@ public class PartialTimestamp extends Calendar {
         else {
             dayOfWeek += (((year - 1969) / 4) * 5) + ((year - 1969) % 4);
         }
-        
+
         /* Add in the number of days past Jan 1 in the current year. */
         dayOfWeek += days + date - 1;
         /* Mod by the number of days in a week. */
         dayOfWeek = ((dayOfWeek - SUNDAY) % 7) + SUNDAY;
-        
+
         return dayOfWeek;
     }
-    
+
     // Called by updateTime(), which is called from writeObject(), complete(),
     // and getTimeInMillis()
     /**
@@ -1627,27 +1627,27 @@ public class PartialTimestamp extends Calendar {
      */
     protected void computeTime() {
         int firstSet = -1;
-        
+
         if (!isSet(HOUR_OF_DAY) && !isSet(HOUR) && !isSet(AM_PM)) {
             throw new IllegalArgumentException("HOUR_OF_DAY is a required field.");
         }
-        
+
         if (!isSet(MINUTE)) {
             throw new IllegalArgumentException("MINUTE is a required field.");
         }
-        
+
         /* Make sure all the fields are valid. */
         adjustFields();
-        
+
         /* Get a test calendar */
         Calendar then = Calendar.getInstance(this.getTimeZone());
-        
+
         // Fill in set field in then - handle year separately
         for (int count = 2; count < DRMAA_FIELDS.length; count++) {
             if (isSet(DRMAA_FIELDS[count])) {
                 then.set(DRMAA_FIELDS[count],
                         internalGet(DRMAA_FIELDS[count]));
-                
+
                 if (firstSet == -1) {
                     firstSet = DRMAA_FIELDS[count];
                 }
@@ -1657,7 +1657,7 @@ public class PartialTimestamp extends Calendar {
                 then.set(DRMAA_FIELDS[count], 0);
             }
         }
-        
+
         if (isSet(YEAR) && isSet(CENTURY)) {
             then.set(YEAR, internalGet(YEAR) + internalGet(CENTURY) * 100);
             firstSet = CENTURY;
@@ -1670,9 +1670,9 @@ public class PartialTimestamp extends Calendar {
                     internalGet(CENTURY) * 100);
             firstSet = CENTURY;
         }
-        
+
         then.set(MILLISECOND, 0);
-        
+
         // If then is less than now,
         if (then.getTimeInMillis() < System.currentTimeMillis()) {
             // Add 1 to the field above the highest order set field
@@ -1683,11 +1683,11 @@ public class PartialTimestamp extends Calendar {
                 then.add(getNextField(firstSet), 1);
             }
         }
-        
+
         // Set time to then.getTimeInMillis()
         time = then.getTimeInMillis();
     }
-    
+
     /**
      * Gets the next field up from the given field.  For example, <code>YEAR</code> is the next
      * field up from <code>MONTH</code>, <code>MONTH</code> is the next field up from <code>DAY_OF_MONTH</code>, and
@@ -1699,7 +1699,7 @@ public class PartialTimestamp extends Calendar {
      */
     private static int getNextField(int field) {
         int nextField = -1;
-        
+
         switch (field) {
             case YEAR:
             case MONTH:
@@ -1719,10 +1719,10 @@ public class PartialTimestamp extends Calendar {
                 nextField = DAY_OF_YEAR;
                 break;
         }
-        
+
         return nextField;
     }
-    
+
     /**
      * Gets the greatest minimum value that the field may ever have.
      * @param field the field of interest
@@ -1740,7 +1740,7 @@ public class PartialTimestamp extends Calendar {
                 return this.getMinimum(field);
         }
     }
-    
+
     /**
      * Gets the least maximum value that the field may ever have.
      * @param field the field of interest
@@ -1762,7 +1762,7 @@ public class PartialTimestamp extends Calendar {
                 return this.getMaximum(field);
         }
     }
-    
+
     /**
      * Gets the greatest maximum value that the field may ever have.
      * @param field the field of interest
@@ -1808,7 +1808,7 @@ public class PartialTimestamp extends Calendar {
                 throw new IllegalArgumentException();
         }
     }
-    
+
     /**
      * Gets the least minimum value that the field may ever have.
      * @param field the field of interest
@@ -1854,7 +1854,7 @@ public class PartialTimestamp extends Calendar {
                 throw new IllegalArgumentException();
         }
     }
-    
+
     /**
      * This method naively rolls the value of the given field by 1, either up or down.
      * If the resulting value is out of range for the field, the value will roll over
@@ -1865,7 +1865,7 @@ public class PartialTimestamp extends Calendar {
     public void roll(int field, boolean up) {
         roll(field, up ? +1 : -1);
     }
-    
+
     /**
      * This method naively rolls the value of the given field up by the given amount.
      * To roll down, use a negative amount.  If the resulting value is out of range for
@@ -1877,7 +1877,7 @@ public class PartialTimestamp extends Calendar {
         if (amount == 0) {
             return; // Nothing to do
         }
-        
+
         /* I am implementing this in a very naive way.  Except for day pinning, I
          * am simply rolling through the range of possible values for the fields.
          * The GregorianCalendar does a whole lot more.  I'm not exactly certain
@@ -1886,12 +1886,12 @@ public class PartialTimestamp extends Calendar {
          * implementation is not.  Given the likely uses of this implementation,
          * however, I doubt that is a problem, and if it becomes a problem, I can
          * do a better job in a later release. */
-        
+
         int min = 0;
         int max = 0;
         int gap = 0;
         boolean dayAtEnd = false;
-        
+
         /* We can only roll valid fields that have been set. */
         if ((field >= ERA) && (field < FIELD_COUNT) && isSet(field)) {
             adjustFields();
@@ -1902,19 +1902,19 @@ public class PartialTimestamp extends Calendar {
         } else {
             throw new IllegalArgumentException("Cannot roll unset fields");
         }
-        
+
         switch (field) {
             case MONTH: {
                 boolean isLeapYear = isLeapYear(this.getYear());
                 int length = getLengthOfMonth(internalGet(MONTH), isLeapYear);
-                
+
                 dayAtEnd = isSet(DAY_OF_MONTH) &&
                         (internalGet(DAY_OF_MONTH) == length);
                 break;
             }
             case YEAR: {
                 int length = getLengthOfYear(this.getYear());
-                
+
                 dayAtEnd = isSet(DAY_OF_YEAR) &&
                         (internalGet(DAY_OF_YEAR) == length);
                 break;
@@ -1929,9 +1929,9 @@ public class PartialTimestamp extends Calendar {
                 else {
                     max = 53;
                 }
-                
+
                 min = getActualMinimum(field);
-                
+
                 break;
             case WEEK_OF_MONTH:
                 if (isSet(YEAR) && isSet(CENTURY)) {
@@ -1944,20 +1944,20 @@ public class PartialTimestamp extends Calendar {
                 else {
                     max = 5;
                 }
-                
+
                 min = getActualMinimum(field);
-                
+
                 break;
             case DAY_OF_WEEK_IN_MONTH:
                 /* This on is a little interesting since we have to treat it as it
                  * is, without turning it into a date, doing the roll, and turning
                  * it back. */
                 int dayOfWeekInMonth = internalGet(field);
-                
+
                 if (dayOfWeekInMonth < 0) {
                     max = getActualMinimum(field);
                     max = -max;
-                    
+
                     if (isSet(YEAR) && isSet(CENTURY)) {
                         min = getActualMaximum(field);
                         min = -min;
@@ -1975,10 +1975,10 @@ public class PartialTimestamp extends Calendar {
                     else {
                         max = 5;
                     }
-                    
+
                     min = getActualMinimum(field);
                 }
-                
+
                 break;
             case CENTURY:
             case ZONE_OFFSET:
@@ -1990,40 +1990,40 @@ public class PartialTimestamp extends Calendar {
                 min = getActualMinimum(field);
                 break;
         }
-        
+
         // These are the standard roll instructions.  These work for all
         // simple cases, that is, cases in which the limits are fixed, such
         // as the hour, the month, and the era.
         int value = internalGet(field) + amount;
-        
+
         gap = max - min + 1;
         value = (value - min) % gap;
-        
+
         if (value < 0) {
             value += gap;
         }
-        
+
         value += min;
-        
+
         set(field, value);
-        
+
         // Pin the day if needed.
         if (dayAtEnd) {
             if (field == MONTH) {
                 boolean isLeapYear = isLeapYear(this.getYear());
                 int length = getLengthOfMonth(internalGet(MONTH), isLeapYear);
-                
+
                 myInternalSet(DAY_OF_MONTH, length);
             } else { // if (field == YEAR)
                 int length = getLengthOfYear(this.getYear());
-                
+
                 myInternalSet(DAY_OF_YEAR, length);
             }
         }
-        
+
         fieldsModified = true;
     }
-    
+
     /**
      * Returns the next available time stamp and increments the next available time
      * stamp.
@@ -2039,7 +2039,7 @@ public class PartialTimestamp extends Calendar {
             min = Math.min(min, dayOfYearSet);
             min = Math.min(min, weekOfMonthSet);
             min = Math.min(min, weekOfYearSet);
-            
+
             /* Now use that to normalize all the stamps to 0. */
             monthSet -= min;
             dayOfWeekSet -= min;
@@ -2048,7 +2048,7 @@ public class PartialTimestamp extends Calendar {
             dayOfYearSet -= min;
             weekOfMonthSet -= min;
             weekOfYearSet -= min;
-            
+
             /* Now find the maximum stamp value. */
             int max = Math.max(monthSet, dayOfWeekSet);
             max = Math.max(max, dayOfMonthSet);
@@ -2056,14 +2056,14 @@ public class PartialTimestamp extends Calendar {
             max = Math.max(max, dayOfYearSet);
             max = Math.max(max, weekOfMonthSet);
             max = Math.max(max, weekOfYearSet);
-            
+
             /* The next stamp will start one about the current max. */
             dayStamp = max + 1;
         }
-        
+
         return dayStamp++;
     }
-    
+
     /**
      * Returns the last day field set on this object. The day fields are:
      * <ul>
@@ -2079,56 +2079,56 @@ public class PartialTimestamp extends Calendar {
         int[] best = null;
         int[] thisBest = null;
         int bestField = -1;
-        
+
         /* compareStamps() gives preference to completely set groups. */
         if (isSet(DAY_OF_MONTH)) {
             thisBest = new int[] {monthSet, dayOfMonthSet};
-            
+
             if ((best == null) || (compareStamps(thisBest, best) == 1)) {
                 best = thisBest;
                 bestField = DAY_OF_MONTH;
             }
         }
-        
+
         if (isSet(WEEK_OF_MONTH)) {
             thisBest = new int[] {monthSet, weekOfMonthSet, dayOfWeekSet};
-            
+
             if ((best == null) || (compareStamps(thisBest, best) == 1)) {
                 best = thisBest;
                 bestField = WEEK_OF_MONTH;
             }
         }
-        
+
         if (isSet(DAY_OF_WEEK_IN_MONTH)) {
             thisBest = new int[] {monthSet, dayOfWeekInMonthSet, dayOfWeekSet};
-            
+
             if ((best == null) || (compareStamps(thisBest, best) == 1)) {
                 best = thisBest;
                 bestField = DAY_OF_WEEK_IN_MONTH;
             }
         }
-        
+
         if (isSet(DAY_OF_YEAR)) {
             thisBest = new int[] {dayOfYearSet};
-            
+
             if ((best == null) || (compareStamps(thisBest, best) == 1)) {
                 best = thisBest;
                 bestField = DAY_OF_YEAR;
             }
         }
-        
+
         if (isSet(WEEK_OF_YEAR)) {
             thisBest = new int[] {weekOfYearSet, dayOfWeekSet};
-            
+
             if ((best == null) || (compareStamps(thisBest, best) == 1)) {
                 /* No need to store best since we're done comparing. */
                 bestField = WEEK_OF_YEAR;
             }
         }
-        
+
         return bestField;
     }
-    
+
     /**
      * Compares to array of time stamps for equality.  This is down by comparing the
      * highest stamp in each array.  If they are equal, the next highest is compared,
@@ -2143,29 +2143,29 @@ public class PartialTimestamp extends Calendar {
     private static int compareStamps(int[] stamp1, int[] stamp2) {
         Arrays.sort(stamp1);
         Arrays.sort(stamp2);
-        
+
         int comparison = 0;
         int count = 1;
         int length1 = stamp1.length;
         int length2 = stamp2.length;
         boolean unset1 = false;
         boolean unset2 = false;
-        
+
         while ((count <= length1) && (stamp1[length1 - count] == UNSET)) {
             count++;
         }
-        
+
         unset1 = (count > 1);
         length1 = length1 - count;
         count = 1;
-        
+
         while ((count <= length2) && (stamp2[length2 - count] == UNSET)) {
             count++;
         }
-        
+
         unset2 = (count > 1);
         length2 = length2 - count;
-        
+
         // If 1 is complete and 2 is not
         if (!unset1 && unset2) {
             comparison = 1;
@@ -2189,7 +2189,7 @@ public class PartialTimestamp extends Calendar {
         // If neither is completely set or unset
         else {
             count = 0;
-            
+
             while (((length1 - count) >= 0) && ((length2 - count) >= 0)) {
                 if (stamp1[length1 - count] > stamp2[length2 - count]) {
                     comparison = 1;
@@ -2198,14 +2198,14 @@ public class PartialTimestamp extends Calendar {
                     comparison = -1;
                     break;
                 }
-                
+
                 count++;
             }
         }
-        
+
         return comparison;
     }
-    
+
     /**
      * Returns the length of the given month in days.
      * @param month the month of interest
@@ -2226,7 +2226,7 @@ public class PartialTimestamp extends Calendar {
             return 28;
         }
     }
-    
+
     /**
      * Returns the length of the given year in days.
      * @param year the year of interest
@@ -2239,7 +2239,7 @@ public class PartialTimestamp extends Calendar {
             return 365;
         }
     }
-    
+
     /**
      * Sets the value of the given field.  If the field is unset before the call,
      * it will still be &quotunset&quot; after the call finishes.
@@ -2249,7 +2249,7 @@ public class PartialTimestamp extends Calendar {
     protected void myInternalSet(int field, int value) {
         fields[field] = value;
     }
-    
+
     /**
      * Returns the actual minimum value for the field, based on the current field
      * values.
@@ -2262,7 +2262,7 @@ public class PartialTimestamp extends Calendar {
                 if (isSet(CENTURY) && (internalGet(CENTURY) == 19)) {
                     return 70; // Jan 1, 1970
                 }
-                
+
                 break;
             case DAY_OF_WEEK:
                 if (isSet(CENTURY) && (internalGet(CENTURY) == 19) &&
@@ -2281,13 +2281,13 @@ public class PartialTimestamp extends Calendar {
                         (internalGet(WEEK_OF_YEAR) == 1)))) {
                     return THURSDAY; // Jan 1, 1970
                 }
-                
+
                 break;
         }
-        
+
         return this.getMinimum(field);
     }
-    
+
     /**
      * Returns the actual maximum value for the field, based on the current field
      * values.
@@ -2303,7 +2303,7 @@ public class PartialTimestamp extends Calendar {
                         internalGet(YEAR)) == SUNDAY)) {
                     return 54;
                 }
-                
+
                 return 53;
             case WEEK_OF_MONTH:
             case DAY_OF_WEEK_IN_MONTH:
@@ -2311,20 +2311,20 @@ public class PartialTimestamp extends Calendar {
                     int numWeeks = 4;
                     int month = internalGet(MONTH);
                     int year = this.getYear();
-                    
+
                     // If the month doesn't start on a SUNDAY, there's a partial
                     // week at the beginning.
                     if (this.calculateDayOfWeek(1, month, year) != SUNDAY) {
                         numWeeks++;
                     }
-                    
+
                     // If the month doesn't end on a SATURDAY, there's a partial
                     // week at the end.
                     if (this.calculateDayOfWeek(getLengthOfMonth(month, isLeapYear(year)),
                             month, year) != SATURDAY) {
                         numWeeks++;
                     }
-                    
+
                     return numWeeks;
                 } else if (isSet(MONTH) && (internalGet(MONTH) == FEBRUARY)) {
                     return 5;
@@ -2347,13 +2347,13 @@ public class PartialTimestamp extends Calendar {
                         isLeapYear(this.getYear())) {
                     return 366;
                 }
-                
+
                 return 365;
         }
-        
+
         return this.getMaximum(field);
     }
-    
+
     /**
      * Gets the current year from the YEAR and CENTURY fields as YEAR + CENTURY * 100.
      * @return the current year
@@ -2361,7 +2361,7 @@ public class PartialTimestamp extends Calendar {
     private int getYear() {
         return internalGet(YEAR) + internalGet(CENTURY) * 100;
     }
-    
+
     /**
      * Compares two PartialTimestamp objects.  They are equal if they both have all of
      * the same field values and field modifier values.
@@ -2373,7 +2373,7 @@ public class PartialTimestamp extends Calendar {
             return false;
         } else {
             PartialTimestamp pt = (PartialTimestamp)obj;
-            
+
             for (int field = CENTURY; field < FIELD_COUNT; field++) {
                 if (this.isSet(field) && pt.isSet(field) &&
                         (this.get(field) != pt.get(field))) {
@@ -2381,7 +2381,7 @@ public class PartialTimestamp extends Calendar {
                 } else if (this.isSet(field) != pt.isSet(field)) {
                     return false;
                 }
-                
+
                 if (this.getModifier(field) != pt.getModifier(field)) {
                     return false;
                 }
@@ -2390,18 +2390,18 @@ public class PartialTimestamp extends Calendar {
                     (this.getLastDayFieldSet() == pt.getLastDayFieldSet()));
         }
     }
-    
+
     /**
      * Makes a complete copy of this object.
      * @return a complete copy of this object
      */
     public Object clone() {
         PartialTimestamp pt = (PartialTimestamp)super.clone();
-        
+
         pt.modifiers = new int[FIELD_COUNT];
-        
+
         System.arraycopy(this.modifiers, 0, pt.modifiers, 0, FIELD_COUNT);
-        
+
         pt.lastHourSet = this.lastHourSet;
         pt.fieldsModified = this.fieldsModified;
         pt.dayOfMonthSet = this.dayOfMonthSet;
@@ -2411,7 +2411,7 @@ public class PartialTimestamp extends Calendar {
         pt.weekOfYearSet = this.weekOfYearSet;
         pt.monthSet = this.monthSet;
         pt.dayStamp = this.dayStamp;
-        
+
         return pt;
     }
 }
