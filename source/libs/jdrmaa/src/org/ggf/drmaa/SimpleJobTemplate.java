@@ -143,22 +143,22 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
      * @see JobTemplate#setJoinFiles(boolean)
      */
     protected boolean joinFiles = false;
-    
+
     /**
      * Create a new instance of a JobTemplate.
      */
     public SimpleJobTemplate() {
     }
-    
+
     public void setRemoteCommand(String remoteCommand) throws DrmaaException {
         this.remoteCommand = remoteCommand;
         modified = true;
     }
-    
+
     public String getRemoteCommand() throws DrmaaException {
         return remoteCommand;
     }
-    
+
     public void setArgs(List args) throws DrmaaException {
         if (args != null) {
             this.args = new ArrayList(args);
@@ -168,7 +168,7 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
 
         modified = true;
     }
-    
+
     public List getArgs() throws DrmaaException {
         List returnValue = null;
 
@@ -178,20 +178,20 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
 
         return returnValue;
     }
-    
+
     public void setJobSubmissionState(int state) throws DrmaaException {
         if ((state != ACTIVE_STATE) && (state != HOLD_STATE)) {
             throw new IllegalArgumentException("Invalid state");
         }
-        
+
         this.jobSubmissionState = state;
         modified = true;
     }
-    
+
     public int getJobSubmissionState() throws DrmaaException {
         return jobSubmissionState;
     }
-    
+
     public void setJobEnvironment(Map env) throws DrmaaException {
         if (env != null) {
             this.jobEnvironment = new HashMap(env);
@@ -201,7 +201,7 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
 
         modified = true;
     }
-    
+
     public Map getJobEnvironment() throws DrmaaException {
         Map returnValue = null;
 
@@ -211,7 +211,7 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
 
         return returnValue;
     }
-    
+
     public void setWorkingDirectory(String wd) throws DrmaaException {
         if (wd.indexOf(HOME_DIRECTORY) > 0) {
             throw new InvalidAttributeFormatException(HOME_DIRECTORY +
@@ -220,33 +220,33 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
             throw new InvalidAttributeFormatException(WORKING_DIRECTORY +
                     " may not be used in the workingDirectory path.");
         }
-        
+
         this.workingDirectory = wd;
         modified = true;
     }
-    
+
     public String getWorkingDirectory() throws DrmaaException {
         return workingDirectory;
     }
-    
+
     public void setJobCategory(String category) throws DrmaaException {
         this.jobCategory = category;
         modified = true;
     }
-    
+
     public String getJobCategory() throws DrmaaException {
         return jobCategory;
     }
-    
+
     public void setNativeSpecification(String spec) throws DrmaaException {
         this.nativeSpecification = spec;
         modified = true;
     }
-    
+
     public String getNativeSpecification() throws DrmaaException {
         return nativeSpecification;
     }
-    
+
     public void setEmail(Set email) throws DrmaaException {
         if (email != null) {
             this.email = new HashSet(email);
@@ -256,7 +256,7 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
 
         modified = true;
     }
-    
+
     public Set getEmail() throws DrmaaException {
         Set returnValue = null;
 
@@ -266,22 +266,22 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
 
         return returnValue;
     }
-    
+
     public void setBlockEmail(boolean blockEmail) throws DrmaaException {
         this.blockEmail = blockEmail;
         modified = true;
     }
-    
+
     public boolean getBlockEmail() throws DrmaaException {
         return blockEmail;
     }
-    
+
     public void setStartTime(PartialTimestamp startTime) throws DrmaaException {
         if (startTime != null) {
             if (startTime.getTimeInMillis() < System.currentTimeMillis()) {
                 throw new IllegalArgumentException("Start time is in the past.");
             }
-            
+
             this.startTime = startTime;
         } else {
             startTime = null;
@@ -289,7 +289,7 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
 
         modified = true;
     }
-    
+
     public PartialTimestamp getStartTime() throws DrmaaException {
         if (startTime != null) {
             return (PartialTimestamp)startTime.clone();
@@ -297,130 +297,130 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
             return null;
         }
     }
-    
+
     public void setJobName(String name) throws DrmaaException {
         this.jobName = name;
         modified = true;
     }
-    
+
     public String getJobName() throws DrmaaException {
         return jobName;
     }
-    
+
     public void setInputPath(String inputPath) throws DrmaaException {
         this.checkPath(inputPath);
         this.inputPath = inputPath;
         modified = true;
     }
-    
+
     public String getInputPath() throws DrmaaException {
         return inputPath;
     }
-    
+
     public void setOutputPath(String outputPath) throws DrmaaException {
         this.checkPath(outputPath);
         this.outputPath = outputPath;
         modified = true;
     }
-    
+
     public String getOutputPath() throws DrmaaException {
         return outputPath;
     }
-    
+
     public void setErrorPath(String errorPath) throws DrmaaException {
         this.checkPath(errorPath);
         this.errorPath = errorPath;
         modified = true;
     }
-    
+
     public String getErrorPath() throws DrmaaException {
         return errorPath;
     }
-    
+
     public void setJoinFiles(boolean join) throws DrmaaException {
         this.joinFiles = join;
         modified = true;
     }
-    
+
     public boolean getJoinFiles() throws DrmaaException {
         return joinFiles;
     }
-    
+
     public void setTransferFiles(FileTransferMode mode) throws DrmaaException {
         throw new UnsupportedAttributeException("The transferFiles attribute " +
                                                 "is not supported.");
     }
-    
+
     public FileTransferMode getTransferFiles() throws DrmaaException {
         throw new UnsupportedAttributeException("The transferFiles attribute " +
                                                 "is not supported.");
     }
-    
+
     public void setDeadlineTime(PartialTimestamp deadline)
             throws DrmaaException {
         throw new UnsupportedAttributeException("The deadlineTime attribute " +
                                                 "is not supported.");
     }
-    
+
     public PartialTimestamp getDeadlineTime() throws DrmaaException {
         throw new UnsupportedAttributeException("The deadlineTime attribute " +
                                                 "is not supported.");
     }
-    
+
     public void setHardWallclockTimeLimit(long hardWallclockLimit)
              throws DrmaaException {
         throw new UnsupportedAttributeException("The hardWallclockTimeLimit " +
                                                 "attribute is not supported.");
     }
-    
+
     public long getHardWallclockTimeLimit() throws DrmaaException {
         throw new UnsupportedAttributeException("The hardWallclockTimeLimit " +
                                                 "attribute is not supported.");
     }
-    
+
     public void setSoftWallclockTimeLimit(long softWallclockLimit)
              throws DrmaaException {
         throw new UnsupportedAttributeException("The softWallclockTimeLimit " +
                                                 "attribute is not supported.");
     }
-    
+
     public long getSoftWallclockTimeLimit() throws DrmaaException {
         throw new UnsupportedAttributeException("The softWallclockTimeLimit " +
                                                 "attribute is not supported.");
     }
-    
+
     public void setHardRunDurationLimit(long hardRunLimit)
             throws DrmaaException {
         throw new UnsupportedAttributeException("The hardRunDurationLimit " +
                                                 "attribute is not supported.");
     }
-    
+
     public long getHardRunDurationLimit() throws DrmaaException {
         throw new UnsupportedAttributeException("The hardRunDurationLimit " +
                                                 "attribute is not supported.");
     }
-    
+
     public void setSoftRunDurationLimit(long softRunLimit)
             throws DrmaaException {
         throw new UnsupportedAttributeException("The softRunDurationLimit " +
                                                 "attribute is not supported.");
     }
-    
+
     public long getSoftRunDurationLimit() throws DrmaaException {
         throw new UnsupportedAttributeException("The softRunDurationLimit " +
                                                 "attribute is not supported.");
     }
-    
+
     public Set getAttributeNames() throws DrmaaException {
         if (allPropertyNames == null) {
             allPropertyNames = new HashSet();
             addRequiredNames(allPropertyNames);
             allPropertyNames.addAll(getOptionalAttributeNames());
         }
-        
+
         return allPropertyNames;
     }
-    
+
     /** This method returns the names of all optional and implementation-specific
      * properties supported by this DRMAA implementation.  Unless overridden by the
      * DRMAA implementation, this method returns an empty list.
@@ -462,12 +462,12 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
         if (path == null) {
             return;
         }
-        
+
         if (path.indexOf(HOME_DIRECTORY) > 0) {
             throw new IllegalArgumentException(HOME_DIRECTORY +
                     " may only appear at the beginning of the path.");
         }
-        
+
         if (path.indexOf(WORKING_DIRECTORY) > 0) {
             throw new IllegalArgumentException(WORKING_DIRECTORY +
                     " may only appear at the beginning of the path.");
@@ -496,7 +496,7 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
             StringBuffer out = new StringBuffer();
 
             List args = null;
-            
+
             try {
                 args = getArgs();
             } catch (DrmaaException e) {
@@ -557,7 +557,7 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
             }
 
             Set email = null;
-    
+
             try {
                 email = getEmail();
             } catch (DrmaaException e) {
@@ -582,7 +582,7 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
                     out.append(i.next());
                     out.append("\"");
                 }
-    
+
                 out.append("}");
             }
 
@@ -646,7 +646,7 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
             }
 
             Map env = null;
-            
+
             try {
                 env = getJobEnvironment();
             } catch (DrmaaException e) {
@@ -690,7 +690,7 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
             }
 
             out.append(" {jobSubmissionState = ");
-            
+
             try {
                 if (getJobSubmissionState() == HOLD_STATE) {
                     out.append("HOLD_STATE}");
@@ -703,14 +703,14 @@ public class SimpleJobTemplate implements JobTemplate, Serializable {
             }
 
             out.append(" {joinFiles = ");
-            
+
             try {
                 out.append(Boolean.toString(getJoinFiles()));
             } catch (DrmaaException e) {
                 out.append(" {joinFiles = <ERROR>}");
                 error = true;
             }
-                
+
             out.append("}");
 
             try {

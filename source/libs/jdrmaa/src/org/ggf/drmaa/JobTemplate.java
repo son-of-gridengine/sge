@@ -107,7 +107,7 @@ public abstract interface JobTemplate {
      * in the inputPath, outputPath, and errorPath properties
      */
     public static final String PARAMETRIC_INDEX = "$drmaa_incr_ph$";
-    
+
     /**
      * Set the command string to execute as the job.  The command
      * is relative to the execution host and is evaluated on the
@@ -133,7 +133,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setRemoteCommand(String remoteCommand) throws DrmaaException;
-    
+
     /**
      * Get the command string to execute as the job.
      * @return the command to execute as the job or null if it has not been set
@@ -151,7 +151,7 @@ public abstract interface JobTemplate {
      * @see #setRemoteCommand(String)
      */
     public String getRemoteCommand() throws DrmaaException;
-    
+
     /**
      * Sets the arguments to the job.
      * @param args the parameters passed as arguments to the job
@@ -176,7 +176,7 @@ public abstract interface JobTemplate {
      *
      */
     public void setArgs(List args) throws DrmaaException;
-    
+
     /**
      * Get the arguments to the job.
      * @return the parameters passed as arguments to the job or null if they have
@@ -195,7 +195,7 @@ public abstract interface JobTemplate {
      * @see #setArgs(List)
      */
     public List getArgs() throws DrmaaException;
-    
+
     /**
      * Set the job state at submission.  The states are
      * HOLD_STATE and ACTIVE_STATE:
@@ -229,7 +229,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setJobSubmissionState(int state) throws DrmaaException;
-    
+
     /**
      * Get the job state at submission.
      * @return the job state at submission
@@ -247,7 +247,7 @@ public abstract interface JobTemplate {
      * @see #setJobSubmissionState(int)
      */
     public int getJobSubmissionState() throws DrmaaException;
-    
+
     /**
      * Set the environment values that define the remote environment.
      * The values override any remote environment values if there is a
@@ -273,7 +273,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setJobEnvironment(Map env) throws DrmaaException;
-    
+
     /**
      * Get the environment values that define the remote environment.
      * @return the environment values that define the remote environment or null
@@ -292,7 +292,7 @@ public abstract interface JobTemplate {
      * @see #setJobEnvironment(Map)
      */
     public Map getJobEnvironment() throws DrmaaException;
-    
+
     /**
      * Set the directory where the job is executed.  If the working directory is
      * not set, behavior is implementation dependent.  The working directory is
@@ -336,7 +336,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setWorkingDirectory(String wd) throws DrmaaException;
-    
+
     /**
      * Get the directory where the job is executed.
      * @return the directory where the job is executed or null if it has not been
@@ -355,7 +355,7 @@ public abstract interface JobTemplate {
      * @see #setWorkingDirectory(String)
      */
     public String getWorkingDirectory() throws DrmaaException;
-    
+
     /**
      * Set an opaque string specifying how to resolve site-specific resources
      * and/or policies.  The job category can be used, for example, to submit
@@ -385,7 +385,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setJobCategory(String category) throws DrmaaException;
-    
+
     /**
      * Get the opaque string specifying how to resolve site-specific resources
      * and/or policies.
@@ -405,7 +405,7 @@ public abstract interface JobTemplate {
      * @see #setJobCategory(String)
      */
     public String getJobCategory() throws DrmaaException;
-    
+
     /**
      * Set an opaque string that is passed by the end user to DRMAA to specify
      * site-specific resources and/or policies.
@@ -431,7 +431,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setNativeSpecification(String spec) throws DrmaaException;
-    
+
     /**
      * Get the opaque string that is passed by the end user to DRMAA to specify
      * site-specific resources and/or policies.
@@ -452,7 +452,7 @@ public abstract interface JobTemplate {
      * @see #setNativeSpecification(String)
      */
     public String getNativeSpecification() throws DrmaaException;
-    
+
     /**
      * Set the list of email addresses used to report the job completion and
      * status.
@@ -478,7 +478,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setEmail(Set email) throws DrmaaException;
-    
+
     /**
      * Get the list of email addresses used to report the job completion and
      * status.
@@ -498,7 +498,7 @@ public abstract interface JobTemplate {
      * @see #setEmail(Set)
      */
     public Set getEmail() throws DrmaaException;
-    
+
     /**
      * Set whether to block sending e-mail by default, regardless of the DRMS
      * settings.  This property can only be used to prevent email from being
@@ -524,7 +524,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setBlockEmail(boolean blockEmail) throws DrmaaException;
-    
+
     /**
      * Get whether to block sending e-mail by default, regardless of the DRMS
      * settings.
@@ -543,7 +543,7 @@ public abstract interface JobTemplate {
      * @see #setBlockEmail(boolean)
      */
     public boolean getBlockEmail() throws DrmaaException;
-    
+
     /**
      * Set the earliest time when the job may be eligible to be run.
      * @param startTime the earliest time when the job may be eligible to be run
@@ -567,7 +567,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setStartTime(PartialTimestamp startTime) throws DrmaaException;
-    
+
     /**
      * Get the earliest time when the job may be eligible to be run.
      * @return the earliest time when the job may be eligible to be run or null
@@ -586,7 +586,7 @@ public abstract interface JobTemplate {
      * @see #setStartTime(PartialTimestamp)
      */
     public PartialTimestamp getStartTime() throws DrmaaException;
-    
+
     /**
      * Set the name of the job.  A job name will be comprised of alpha-numeric
      * and _ characters.  The DRMAA implementation may truncate client
@@ -613,7 +613,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setJobName(String name) throws DrmaaException;
-    
+
     /**
      * Get the name of the job.
      * @return the name of the job or null if it has not been set
@@ -631,7 +631,7 @@ public abstract interface JobTemplate {
      * @see #setJobName(String)
      */
     public String getJobName() throws DrmaaException;
-    
+
     /**
      * Set the job's standard input path.
      * Unless set elsewhere, if not explicitly set in the job template, the job
@@ -689,7 +689,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setInputPath(String inputPath) throws DrmaaException;
-    
+
     /**
      * Get the job's standard input path.
      * @return the job's standard input path or null if it has not been set
@@ -707,7 +707,7 @@ public abstract interface JobTemplate {
      * @see #setInputPath(String)
      */
     public String getInputPath() throws DrmaaException;
-    
+
     /**
      * Sets how to direct the job's standard output.
      * If not explicitly set in the job template, the whereabouts of the jobs
@@ -764,7 +764,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setOutputPath(String outputPath) throws DrmaaException;
-    
+
     /**
      * Gets how to direct the job's standard output.
      * @return how to direct the job's standard output or null if it has not been
@@ -783,7 +783,7 @@ public abstract interface JobTemplate {
      * @see #setOutputPath(String)
      */
     public String getOutputPath() throws DrmaaException;
-    
+
     /**
      * Sets how to direct the job's standard error.
      * If not explicitly set in the job template, the whereabouts of the job's
@@ -839,7 +839,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setErrorPath(String errorPath) throws DrmaaException;
-    
+
     /**
      * Gets how to direct the job's standard error.
      * @return how to direct the job's standard error
@@ -857,7 +857,7 @@ public abstract interface JobTemplate {
      * @see #setErrorPath(String)
      */
     public String getErrorPath() throws DrmaaException;
-    
+
     /**
      * Sets whether the error stream should be intermixed with the output
      * stream. If not explicitly set in the job template this property defaults
@@ -889,7 +889,7 @@ public abstract interface JobTemplate {
      * </UL>
      */
     public void setJoinFiles(boolean join) throws DrmaaException;
-    
+
     /**
      * Gets whether the error stream should be intermixed with the output
      * stream.
@@ -909,7 +909,7 @@ public abstract interface JobTemplate {
      * @see #setJoinFiles(boolean)
      */
     public boolean getJoinFiles() throws DrmaaException;
-    
+
     /**
      * Specifies, which of the standard I/O files (stdin, stdout and stderr) are
      * to be transferred to/from the execution host.  If not set, defaults to
@@ -957,7 +957,7 @@ public abstract interface JobTemplate {
      * @see #setErrorPath(String)
      */
     public void setTransferFiles(FileTransferMode mode) throws DrmaaException;
-    
+
     /**
      * Gets how to transfer files between hosts.
      * @return how to transfer files between hosts.
@@ -975,7 +975,7 @@ public abstract interface JobTemplate {
      * @see #setTransferFiles(FileTransferMode)
      */
     public FileTransferMode getTransferFiles() throws DrmaaException;
-    
+
     /**
      * Sets a deadline after which the DRMS will terminate the job.
      * @param deadline the deadline after which the DRMS will terminate the job
@@ -1000,7 +1000,7 @@ public abstract interface JobTemplate {
      */
     public void setDeadlineTime(PartialTimestamp deadline)
         throws DrmaaException;
-    
+
     /**
      * Sets a deadline after which the DRMS will terminate the job.
      * @return the deadline after which the DRMS will terminate the job
@@ -1018,7 +1018,7 @@ public abstract interface JobTemplate {
      * @see #setDeadlineTime(PartialTimestamp)
      */
     public PartialTimestamp getDeadlineTime() throws DrmaaException;
-    
+
     /**
      * Sets when the job's wall clock time limit has
      * been exceeded.  The DRMS will terminate a job that has exceeded its wall
@@ -1047,7 +1047,7 @@ public abstract interface JobTemplate {
      */
     public void setHardWallclockTimeLimit(long hardWallclockLimit)
         throws DrmaaException;
-    
+
     /**
      * Gets the duration of the job's wall clock time limit.
      * @return when the job's wall clock time limit has been exceeded.
@@ -1066,7 +1066,7 @@ public abstract interface JobTemplate {
      * @see #setHardWallclockTimeLimit(long)
      */
     public long getHardWallclockTimeLimit() throws DrmaaException;
-    
+
     /**
      * Sets an estimate as to how much wall clock time job will need to
      * complete. Note that time spent suspended is also accounted for here.<P>
@@ -1097,7 +1097,7 @@ public abstract interface JobTemplate {
      */
     public void setSoftWallclockTimeLimit(long softWallclockLimit)
         throws DrmaaException;
-    
+
     /**
      * Gets an estimate as to how much wall clock time job will need to
      * complete.
@@ -1117,7 +1117,7 @@ public abstract interface JobTemplate {
      * @see #setSoftWallclockTimeLimit(long)
      */
     public long getSoftWallclockTimeLimit() throws DrmaaException;
-    
+
     /**
      * Sets how long the job may be in a running state before its limit has been
      * exceeded, and therefore is terminated by the DRMS.
@@ -1144,7 +1144,7 @@ public abstract interface JobTemplate {
      */
     public void setHardRunDurationLimit(long hardRunLimit)
         throws DrmaaException;
-    
+
     /**
      * Gets how long the job may be in a running state before its limit has been
      * exceeded.
@@ -1164,7 +1164,7 @@ public abstract interface JobTemplate {
      * @see #setHardRunDurationLimit(long)
      */
     public long getHardRunDurationLimit() throws DrmaaException;
-    
+
     /**
      * Sets an estimate as to how long the job will need to remain in a running
      * state to complete.  This attribute is intended to assist the scheduler.
@@ -1193,7 +1193,7 @@ public abstract interface JobTemplate {
      */
     public void setSoftRunDurationLimit(long softRunLimit)
         throws DrmaaException;
-    
+
     /**
      * Gets an estimate as to how long the job will need to remain in a running
      * state to complete.
@@ -1213,7 +1213,7 @@ public abstract interface JobTemplate {
      * @see #setSoftRunDurationLimit(long)
      */
     public long getSoftRunDurationLimit() throws DrmaaException;
-    
+
     /**
      * Returns the list of supported property names.  This list
      * includes supported DRMAA reserved property names (both required and

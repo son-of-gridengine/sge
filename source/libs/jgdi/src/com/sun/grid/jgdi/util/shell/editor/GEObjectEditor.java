@@ -213,7 +213,7 @@ public class GEObjectEditor {
             //TODO LP: Since we do pd.removeAll() this works as setting null value, but some GEObjects expect to have default value set to null!
             //LP: Temp fix for some objects
             String cls = obj.getClass().getSimpleName();
-            boolean putNullValue = ( //cls.equals("ExecHost") || 
+            boolean putNullValue = ( //cls.equals("ExecHost") ||
                     cls.equals("ClusterQueueImpl") //calendar NONE => needs @/=null
                     ) ? true : false;
             if (val != null || putNullValue) {

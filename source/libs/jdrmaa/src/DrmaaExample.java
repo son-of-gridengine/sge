@@ -44,21 +44,21 @@ public class DrmaaExample {
     private static int NBULKS = 3;
     private static int JOB_CHUNK = 8;
     private static Session session = null;
-    
+
     public static void main(String[] args) throws Exception {
         String jobPath = args[0];
-        
+
         SessionFactory factory = SessionFactory.getFactory();
-        
+
         session = factory.getSession();
         session.init(null);
-        
+
         JobTemplate jt = createJobTemplate(jobPath, 5, true);
-        
+
         List allJobIds = new LinkedList();
         List jobIds = null;
         boolean retry = true;
-        
+
         for (int count = 0; count < NBULKS; count++) {
             do {
                 try {
@@ -66,31 +66,31 @@ public class DrmaaExample {
                     retry = false;
                 } catch (DrmCommunicationException e) {
                     System.err.println("runBulkJobs() failed - retry: " + e.getMessage());
-                    
+
                     Thread.sleep(1000);
                 }
             }
             while (retry);
-            
+
             allJobIds.addAll(jobIds);
-            
+
             System.out.println("submitted bulk job with jobids:");
-            
+
             Iterator i = jobIds.iterator();
-            
+
             while (i.hasNext()) {
                 System.out.println("\t \"" + i.next() + "\"");
             }
         }
-        
+
         session.deleteJobTemplate(jt);
-        
+
         /* submit some sequential jobs */
         jt = createJobTemplate(jobPath, 5, false);
-        
+
         String jobId = null;
         retry = true;
-        
+
         for (int count = 0; count < JOB_CHUNK; count++) {
             while(retry) {
                 try {
@@ -98,30 +98,30 @@ public class DrmaaExample {
                     retry = false;
                 } catch (DrmCommunicationException e) {
                     System.err.println("runBulkJobs() failed - retry: " + e.getMessage());
-                    
+
                     Thread.sleep(1000);
                 }
             }
-            
+
             System.out.println("\t \"" + jobId + "\"");
             allJobIds.add(jobId);
         }
-        
+
         session.deleteJobTemplate(jt);
-        
+
         /* synchronize with all jobs */
         session.synchronize(allJobIds, Session.TIMEOUT_WAIT_FOREVER, false);
         System.out.println("synchronized with all jobs");
-        
+
         /* wait all those jobs */
         Iterator i = allJobIds.iterator();
-        
+
         while (i.hasNext()) {
             JobInfo status = null;
             jobId = (String)i.next();
-            
+
             status = session.wait(jobId, Session.TIMEOUT_WAIT_FOREVER);
-            
+
             /* report how job finished */
             if (status.wasAborted()) {
                 System.out.println("job \"" + jobId + "\" never ran");
@@ -134,21 +134,21 @@ public class DrmaaExample {
             }
         }
     }
-    
+
     private static JobTemplate createJobTemplate(String jobPath, int seconds, boolean isBulkJob) throws DrmaaException {
         JobTemplate jt = session.createJobTemplate();
-        
+
         jt.setWorkingDirectory("$drmaa_hd_ph$");
         jt.setRemoteCommand(jobPath);
         jt.setArgs(Collections.singletonList(Integer.toString(seconds)));
         jt.setJoinFiles(true);
-        
+
         if (!isBulkJob) {
             jt.setOutputPath(":$drmaa_hd_ph$/DRMAA_JOB");
         } else {
             jt.setOutputPath(":$drmaa_hd_ph$/DRMAA_JOB$drmaa_incr_ph$");
         }
-        
+
         return jt;
     }
 }
