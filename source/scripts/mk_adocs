@@ -1,0 +1,46 @@
+#!/bin/sh
+
+COMPILE_ARCH=$1
+
+EDITION=1.0
+REVISION=`grep GDI_VERSION libs/gdi/version.* | cut -f 2 -d '"'`
+
+ADOC=3rdparty/adoc/$COMPILE_ARCH/adoc
+ARGS='--no-warnings -f -b -DEDITION "$EDITION" -DREVISION "SGE $REVISION" -DCOPYRIGHT "The Grid Engine Team" -DAUTHOR "The Grid Engine Team" -I -xon -xitemize -2'
+
+echo "Creating documentation for libs: libcomm.texi, libcomm.html"
+$ADOC $ARGS -DPROJECT "Grid Engine Communication Library" libs/comm/*.h libs/comm/*.c -o $COMPILE_ARCH/libcomm.texi
+
+echo "Creating documentation for libs: libcull.texi, libcull.html"
+$ADOC $ARGS -DPROJECT "Grid Engine CULL Library" libs/cull/*.h libs/cull/*.c -o $COMPILE_ARCH/libcull.texi
+
+echo "Creating documentation for libs: eventclient.texi, eventclient.html"
+$ADOC $ARGS -DPROJECT "Event Client Interface" libs/evc/*.h libs/evc/*.c libs/evm/*.h libs/evm/*.c -o $COMPILE_ARCH/eventclient.texi
+
+echo "Creating documentation for libs: libgdi.texi, libgdi.html"
+$ADOC $ARGS -DPROJECT "Grid Engine GDI Library" libs/gdi/*.h libs/gdi/*.c -o $COMPILE_ARCH/libgdi.texi
+
+echo "Creating documentation for libs: libmir.texi, libmir.html"
+$ADOC $ARGS -DPROJECT "Grid Engine Mirror Interface" libs/mir/*.h libs/mir/*.c -o $COMPILE_ARCH/libmir.texi
+makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libmir.html  $COMPILE_ARCH/libmir.texi
+
+echo "Creating documentation for libs: libsched.texi, libsched.html"
+$ADOC $ARGS -DPROJECT "Grid Engine SCHED Library" libs/sched/*.h libs/sched/*.c -o $COMPILE_ARCH/libsched.texi
+
+echo "Creating documentation for libs: libsgeobj.texi, libsgeobj.html"
+$ADOC $ARGS -DPROJECT "Grid Engine SGEOBJ Library" libs/sgeobj/*.h libs/sgeobj/*.c -o $COMPILE_ARCH/libsgeobj.texi
+
+echo "Creating documentation for libs: libjapi.texi, libjapi.html"
+$ADOC $ARGS -DPROJECT "Grid Engine Job API Library" libs/japi/japi.h libs/japi/japi.c -o $COMPILE_ARCH/libjapi.texi
+
+echo "Creating documentation for libs: libuti.texi, libuti.html"
+$ADOC $ARGS -DPROJECT "Grid Engine Utility Library" libs/uti/*.h libs/uti/*.c libs/uti2/*.[ch] -o $COMPILE_ARCH/libuti.texi
+
+echo "Creating documentation for libs: libwingrid.texi, libwingrid.html"
+$ADOC $ARGS -DPROJECT "Grid Engine MS Windows Library" libs/wingrid/*.h libs/wingrid/*.c -o $COMPILE_ARCH/libwingrid.texi
+
+echo "Creating documentation for libs: libspool.texi, libspool.html"
+$ADOC $ARGS -DPROJECT "Grid Engine Spooling Library" libs/spool/*.h libs/spool/*.c -o $COMPILE_ARCH/libspool.texi
+
+for root in libcomm libull eventclient libsgeobj libsched libmir libjapi libuti libwingrid libjapi libspool libgdi
+   makeinfo --no-validate --no-split --html -o $COMPILE_ARCH/libspool.html  $COMPILE_ARCH/libspool.texi
