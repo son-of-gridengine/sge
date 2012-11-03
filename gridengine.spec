@@ -232,7 +232,6 @@ echo 'y'| scripts/distinst -local -allall -noexit ${gearch}
 %if %{without hadoop}
   rm -r hadoop
 %endif
-  rm -r examples/jobsbin
   rm man/man8/SGE_Helper_Service.exe.8
   rm -r util/sgeSMF
   rm doc/arc_depend_*
