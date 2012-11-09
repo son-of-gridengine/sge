@@ -111,6 +111,8 @@ case $ARCH in
    ;;
 esac
 
+qma_run_dir=`GetExecdSpoolDir`
+
 [ -f /etc/default/sgeexecd ] && . /etc/default/sgeexecd
 
 #---------------------------------------------------------------------------
@@ -363,7 +365,7 @@ if [ $stop = true -o $softstop = true ]; then
       #Otherwise we use normal shutdown
       if [ "$usingSMF" != true ]; then
          # Send SIGTERM to execd
-         Shutdown sge_execd $execd_spool_dir/execd.pid
+         Shutdown sge_execd $execd_run_dir/execd.pid
          ret=$?
          if [ -f /var/lock/subsys/sgeexecd ]; then
              uid=`$utilbin_dir/uidgid -uid` 
