@@ -33,6 +33,9 @@ in this Software without prior written authorization from the X Consortium.
 #include <sys/stat.h>
 #include <unistd.h>
 
+#define NeedVarargsPrototypes 1
+#define NeedFunctionPrototypes 1
+
 #ifndef X_NOT_POSIX
 #ifndef _POSIX_SOURCE
 #define _POSIX_SOURCE
