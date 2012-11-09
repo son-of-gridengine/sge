@@ -75,7 +75,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 #    http://www.linuxfoundation.org/spec/booksets/LSB-Core-generic/LSB-Core-generic/initscrcomconv.html
 #
 ### BEGIN INIT INFO
-# Provides:       GENSGESVC
+# Provides:       SGEMASTER
 # Required-Start: $network $remote_fs
 # Required-Stop:
 # Default-Start:  3 5
