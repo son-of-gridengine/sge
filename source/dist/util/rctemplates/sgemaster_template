@@ -119,6 +119,9 @@ if [ -f /lib/svc/share/smf_include.sh ]; then
    NO_SMF=$?
 fi
 
+qmaster_spool_dir=`QmasterSpoolDir`
+qma_run_dir=$qmaster_spool_dir
+
 [ -f /etc/default/sgemaster ] && . /etc/default/sgemaster
 
 #---------------------------------------------------------------------------
@@ -512,7 +515,6 @@ fi
 
 HOST=`$utilbin_dir/gethostname -aname`
 UQHOST=`$utilbin_dir/gethostname -aname | cut -f1 -d.`
-qmaster_spool_dir=`QmasterSpoolDir`
 CheckIfShadowMasterHost $HOST
 
 if [  "$stop" = true ]; then
@@ -523,10 +525,10 @@ if [  "$stop" = true ]; then
          svcadm disable -st $service
       else
          # Send SIGTERM to shadowd
-         if [ -f $qmaster_spool_dir/shadowd_$UQHOST.pid ]; then
-            Shutdown sge_shadowd $qmaster_spool_dir/shadowd_$UQHOST.pid
-         elif [ -f $qmaster_spool_dir/shadowd_$HOST.pid ]; then
-            Shutdown sge_shadowd $qmaster_spool_dir/shadowd_$HOST.pid
+         if [ -f $qma_run_dir/shadowd_$UQHOST.pid ]; then
+            Shutdown sge_shadowd $qma_run_dir/shadowd_$UQHOST.pid
+         elif [ -f $qma_run_dir/shadowd_$HOST.pid ]; then
+            Shutdown sge_shadowd $qma_run_dir/shadowd_$HOST.pid
          fi	
       fi
    fi
@@ -540,7 +542,7 @@ if [  "$stop" = true ]; then
             exit $?
          else
             # Send SIGTERM to qmaster
-            Shutdown sge_qmaster $qmaster_spool_dir/qmaster.pid
+            Shutdown sge_qmaster $qma_run_dir/qmaster.pid
             ret=$?
             if [ -f /var/lock/subsys/sgemaster ]; then
                uid=`$utilbin_dir/uidgid -uid`
@@ -660,8 +662,8 @@ if [ "$startup" = true ]; then
    elif [ $qmaster = true ]; then
       already_running=false
       #Check if pid file exists      
-      if [ -s "$qmaster_spool_dir/qmaster.pid" ]; then
-         daemon_pid=`cat "$qmaster_spool_dir/qmaster.pid"`
+      if [ -s "$qma_run_dir/qmaster.pid" ]; then
+         daemon_pid=`cat "$qma_run_dir/qmaster.pid"`
          $utilbin_dir/checkprog $daemon_pid sge_qmaster > /dev/null
          if [ $? -eq 0 ]; then
             already_running=true
@@ -726,8 +728,8 @@ if [ "$startup" = true ]; then
       fi
    elif [ $shadowd = true ]; then
       start_shadowd=true
-      UQpidfile=$qmaster_spool_dir/shadowd_$UQHOST.pid
-      pidfile=$qmaster_spool_dir/shadowd_$HOST.pid
+      UQpidfile=$qma_run_dir/shadowd_$UQHOST.pid
+      pidfile=$qma_run_dir/shadowd_$HOST.pid
 
       if [ -f $pidfile ]; then
          pid=`cat $pidfile`

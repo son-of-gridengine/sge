@@ -33,6 +33,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_unistd.h"
@@ -163,6 +164,7 @@ int main(int argc, char **argv)
    lList **master_job_list = NULL;
    sge_gdi_ctx_class_t *ctx = NULL;
    lList *alp = NULL;
+   const char *pidfile = NULL;
 
    DENTER_MAIN(TOP_LAYER, "execd");
 
@@ -173,6 +175,10 @@ int main(int argc, char **argv)
    prof_mt_init();
 
    set_thread_name(pthread_self(),"Execd Thread");
+
+   pidfile = getenv("SGE_EXECD_PIDFILE");
+   if (!pidfile)
+       pidfile = EXECD_PID_FILE;
 
    prof_set_level_name(SGE_PROF_CUSTOM1, "Execd Thread", NULL); 
    prof_set_level_name(SGE_PROF_CUSTOM2, "Execd Dispatch", NULL); 
@@ -325,7 +331,7 @@ int main(int argc, char **argv)
     * We write pid file when we are connected to qmaster. Otherwise an old
     * execd might overwrite our pidfile.
     */
-   sge_write_pid(EXECD_PID_FILE);
+   sge_write_pid(pidfile);
 
    /*
     * At this point we are sure we are the only sge_execd and we are connected
@@ -405,8 +411,10 @@ int main(int argc, char **argv)
       }
    }
    sge_prof_cleanup();
-
    sge_shutdown((void**)&ctx, execd_exit_state);
+
+   unlink(pidfile);
+
    DRETURN(execd_exit_state);
 }
 

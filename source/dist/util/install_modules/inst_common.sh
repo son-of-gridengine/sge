@@ -129,6 +129,8 @@ BasicSettings()
   TOUCH="touch"
   MORE_CMD="more"
   CHMOD="chmod"
+  # where daemon pid is written
+  RUNDIR="$QMDIR"
 
 }
 
@@ -2763,7 +2765,7 @@ CheckRunningDaemon()
          start=`$SGE_UTILBIN/now 2>/dev/null`
          ready=false
          while [ $ready = "false" ]; do
-            if [ -s "$QMDIR/qmaster.pid" ]; then
+            if [ -s "$RUNDIR/qmaster.pid" ]; then
                ready="true"
             else
                now=`$SGE_UTILBIN/now 2>/dev/null`
@@ -2779,7 +2781,7 @@ CheckRunningDaemon()
                sleep 2
             fi
          done
-         daemon_pid=`cat "$QMDIR/qmaster.pid"`
+         daemon_pid=`cat "$RUNDIR/qmaster.pid"`
          $SGE_UTILBIN/checkprog $daemon_pid $daemon_name > /dev/null
          return $?
         ;;
