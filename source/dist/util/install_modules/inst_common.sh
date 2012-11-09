@@ -403,8 +403,6 @@ CheckBinaries()
 
    #SUIDFILES="rsh rlogin testsuidroot sgepasswd"
 
-   THIRD_PARTY_FILES="openssl"
-
    if [ "$SGE_ARCH" = "win32-x86" ]; then
       BINFILES="$WINBINFILES"
       UTILFILES="$WINUTILFILES"
@@ -416,18 +414,6 @@ CheckBinaries()
          missing=true
          $INFOTEXT "missing program >%s< in directory >%s<" $f $SGE_BIN
          $INFOTEXT -log "missing program >%s< in directory >%s<" $f $SGE_BIN
-      fi
-   done
-
-
-   for f in $THIRD_PARTY_FILES; do
-      if [ $f = openssl -a "$CSP" = true ]; then
-         if [ ! -f $SGE_UTILBIN/$f ]; then
-           missing=true
-           $INFOTEXT "missing program >%s< in directory >%s<" $f $SGE_BIN
-           $INFOTEXT -log "missing program >%s< in directory >%s<" $f $SGE_BIN
-
-         fi
       fi
    done
 
@@ -3665,6 +3651,7 @@ RestoreCheckBootStrapFile()
    if [ -f $BACKUP_DIR/bootstrap ]; then
       spooling_method=`cat $BACKUP_DIR/bootstrap | grep "spooling_method" | awk '{ print $2 }'`
       db_home=`cat $BACKUP_DIR/bootstrap | grep "spooling_params" | awk -F '[ 	;]+' '{ print $2 }'`
+      db_opt=`awk -F '[ 	;]+' '{/spooling_params/ print $3 }' $BACKUP_DIR/bootstrap`
       master_spool=`cat $BACKUP_DIR/bootstrap | grep "qmaster_spool_dir" | awk '{ print $2 }'`
       ADMINUSER=`cat $BACKUP_DIR/bootstrap | grep "admin_user" | awk '{ print $2 }'`
       if [ "$ADMINUSER" = "none" ]; then
