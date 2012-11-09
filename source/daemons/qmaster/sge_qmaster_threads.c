@@ -32,6 +32,8 @@
 
 #include "sge_thread_jvm.h"
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <signal.h>
 #include <pthread.h>
 #include <string.h>
@@ -218,6 +220,14 @@ bool sge_daemonize_qmaster()
    if (failed_fd  != -1) {
       CRITICAL((SGE_EVENT, MSG_CANNOT_REDIRECT_STDINOUTERR_I, failed_fd));
       SGE_EXIT(NULL, 0);
+   }
+
+   const char *pidfile = getenv("SGE_QMASTER_PIDFILE");
+   FILE *fd;
+   if (!pidfile) pidfile = QMASTER_PID_FILE;
+   if ((fd = fopen(pidfile, "w")) != NULL) {
+     fprintf(fd, "%d\n", (int)getpid());
+     fclose(fd);
    }
 
    DEXIT;
