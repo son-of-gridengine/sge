@@ -2153,8 +2153,10 @@ GiveHints()
                 "   - \$SGE_EXECD_PORT   (if you haven't added the service >sge_execd<)\n" \
                 "   - \$PATH/\$path       (to find the Grid Engine binaries)\n" \
                 "   - \$MANPATH          (to access the manual pages)\n" \
+                "Alternatively use module(1) after installing %s\n" \
                 "$SGE_ROOT_VAL"/$SGE_CELL_VAL/common/settings.csh \
-                "$SGE_ROOT_VAL"/$SGE_CELL_VAL/common/settings.sh
+                "$SGE_ROOT_VAL"/$SGE_CELL_VAL/common/settings.sh \
+                "$SGE_ROOT_VAL"/$SGE_CELL_VAL/common/sge.module
 
       $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to see where Grid Engine logs messages >> "
       $CLEAR
