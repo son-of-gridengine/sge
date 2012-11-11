@@ -34,6 +34,7 @@
 #___INFO__MARK_END__
 
 include $(SDIR)/libs/uti/Makefile
+include $(SDIR)/libs/uti2/Makefile
 include $(SDIR)/libs/cull/Makefile
 include $(SDIR)/libs/comm/Makefile
 include $(SDIR)/libs/sgeobj/Makefile
@@ -47,7 +48,6 @@ include $(SDIR)/libs/japi/Makefile
 include $(SDIR)/libs/juti/Makefile
 include $(SDIR)/libs/jgdi/Makefile
 include $(SDIR)/libs/ijs/Makefile
-include $(SDIR)/libs/uti2/Makefile
 
 ###############################################################################
 # Variable definitions for targets to build

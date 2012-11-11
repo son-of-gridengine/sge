@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/sh
 # 
 #
 #___INFO__MARK_BEGIN__
@@ -43,12 +43,12 @@
 # pe request
 #$ -pe pvm 16,8,4-1
 #$ -v SGE_QMASTER_PORT,DISPLAY
-#$ -S /bin/csh
+#$ -S /bin/sh
 # ---------------------------
 
 echo "Got $NSLOTS slots."
 
-/bin/echo Here I am on a $ARC called `hostname`.
+/bin/echo "Here I am on a $ARC called `hostname`."
 
 # spmd requests $NSLOTS on __different__ hosts
 $SGE_ROOT/pvm/bin/$ARC/spmd $NSLOTS

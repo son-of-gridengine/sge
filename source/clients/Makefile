@@ -54,7 +54,7 @@ include $(SDIR)/clients/showq/Makefile
 # global rules: all, clean, depend, messages
 ###############################################################################
 
-clients: clients_common qacct qalter qconf qdel qhost qquota qmod qrsh qsh qstat qsub qevent qrsub qrdel qrstat showq
+clients: clients_common qacct qalter qconf qdel qhost qquota qmod qrsh qsh qstat qsub qevent qrsub qrdel qrstat # showq
 
 clients_clean: clients_common_clean qacct_clean qalter_clean qconf_clean qdel_clean qhost_clean qquota_clean qmod_clean qrsh_clean qsh_clean qstat_clean qsub_clean qevent_clean qrsub_clean qrdel_clean qrstat_clean showq_clean
 

@@ -18,3 +18,4 @@ sed -i -e "s/Version: $old/Version: $new/" gridengine.spec
 sed -i -e "s/SGE_VERSION=\"$old\"/SGE_VERSION=\"$new\"/" source/dist/inst_sge
 sed -i -e "s/GDI_VERSION[[]] = \"$old\"/GDI_VERSION[] = \"$new\"/" source/libs/gdi/version.c
 sed -i -e "s/xxRELxx = \"SGE $old\"/xxRELxx = \"SGE $new\"/" source/scripts/mk_ascman
+sed -i -e "s/gridengine [(]$old/gridengine ($new/" debian/changelog

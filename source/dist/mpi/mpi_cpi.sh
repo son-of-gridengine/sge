@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/sh
 #
 #
 #___INFO__MARK_BEGIN__
