@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/sh
 #
 #
 #___INFO__MARK_BEGIN__
@@ -54,6 +54,6 @@
 echo "Got $NSLOTS slots."
 
 # enables $TMPDIR/rsh to catch rsh calls if available
-set path=($TMPDIR $path)
+PATH="$TMPDIR:$PATH"
 
 ( echo 100 ; echo 100 ) | $MPIR_HOME/lib/sun4/ch_p4/mpirun -np $NSLOTS -machinefile $TMPDIR/machines $MPIR_HOME/examples/contrib/life/life 

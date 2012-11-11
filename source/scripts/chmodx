@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # Ensure scripts have executable permission in case a checkout didn't
-# preserve/set the file modes.  These probably aren't all necessary.
+# preserve/set the file modes.  Only deal with the ones not acounted
+# for by distinst, though these probably aren't all necessary.
 
 xargs chmod +x <<EOF
 ./scripts/bootstrap.sh
@@ -20,7 +21,6 @@ xargs chmod +x <<EOF
 ./scripts/gen_subtype_info.sh
 ./scripts/gelint
 ./scripts/link_jnilib.sh
-./scripts/dtrace/monitor.sh
 ./scripts/detab.sh
 ./scripts/ldAix
 ./scripts/mk_catman
@@ -33,71 +33,10 @@ xargs chmod +x <<EOF
 ./scripts/test_spooling_performance.sh
 ./scripts/make-tags.sh
 ./scripts/update-version-no
-./dist/pvm/src/aimk
-./dist/pvm/src/install.sh
-./dist/pvm/pvm_nogs.sh
-./dist/pvm/startpvm.sh
-./dist/pvm/stoppvm.sh
-./dist/pvm/pvm.sh
-./dist/hadoop/jsv.sh
-./dist/hadoop/pestop.sh
-./dist/hadoop/make_conf.sh
-./dist/hadoop/load_sensor.sh
-./dist/hadoop/wait.sh
-./dist/hadoop/env.sh
-./dist/hadoop/ssh
-./dist/hadoop/setup.pl
-./dist/hadoop/pestart.sh
-./dist/examples/jobs/step_B_array_submitter.sh
-./dist/examples/jobs/worker.sh
-./dist/examples/jobs/pascal.sh
-./dist/examples/jobs/step_A_array_submitter.sh
-./dist/examples/jobs/sleeper.sh
-./dist/examples/jobs/env-tester.csh
-./dist/examples/jobs/array_submitter.sh
-./dist/examples/jobs/jobnet_submitter.sh
-./dist/examples/jobs/pminiworm.sh
-./dist/examples/jobs/simple.sh
-./dist/inst_sge
-./dist/util/logchecker.sh
-./dist/util/create_settings.sh
 ./dist/util/arch
-./dist/util/resources/starter_methods/settaskid.sh
-./dist/util/resources/loadsensors/maui.sh
-./dist/util/resources/loadsensors/load.sh
-./dist/util/resources/loadsensors/sgi_tty_sensor.sh
-./dist/util/resources/loadsensors/interix-loadsensor.sh
-./dist/util/resources/loadsensors/solaris-iidle.sh
-./dist/util/resources/loadsensors/nuser.sh
-./dist/util/resources/loadsensors/calendar.sh
-./dist/util/resources/jsv/jsv.sh
-./dist/util/resources/jsv/jsv.pl
-./dist/util/resources/jsv/jsv_include.sh
-./dist/util/resources/jsv/jsv_include.tcl
-./dist/util/resources/jsv/jsv.tcl
-./dist/util/resources/wrappers/qlogin_wrapper
-./dist/util/resources/wrappers/rshd-wrapper
 ./dist/util/setfileperm.sh
 ./dist/util/arch_variables
-./dist/util/sgeCA/renew_all_certs.sh
-./dist/util/sgeCA/sge_ca
-./dist/util/sgeremoterun
-./dist/util/certtool.sh
-./dist/util/upgrade_modules/save_sge_config.sh
-./dist/util/upgrade_modules/load_sge_config.sh
-./dist/mpi/hostname
 ./dist/util/resources/scripts/setup-cgroups-etc
-./dist/mpi/mpi_cpi.sh
-./dist/mpi/stopmpi.sh
-./dist/mpi/myrinet/gmps
-./dist/mpi/myrinet/sge_mpirun.x
-./dist/mpi/myrinet/stopmpi.sh
-./dist/mpi/myrinet/startmpi.sh.x
-./dist/mpi/myrinet/sge_mpirun
-./dist/mpi/myrinet/startmpi.sh
-./dist/mpi/mpi.sh
-./dist/mpi/rsh
-./dist/mpi/startmpi.sh
 ./3rdparty/qmake/config/install-sh
 ./3rdparty/qmake/config/mkinstalldirs
 ./3rdparty/qmake/configure
@@ -126,10 +65,5 @@ xargs chmod +x <<EOF
 ./libs/jgdi/eventmon
 ./libs/jgdi/run_util.sh
 ./libs/jgdi/jgdievc
-./security/gss/starter_cred.sh
-./security/gss/put_cred.sh
-./security/gss/aimk
-./security/gss/renew_cred.sh
-./security/gss/get_cred.sh
 ./aimk
 EOF
