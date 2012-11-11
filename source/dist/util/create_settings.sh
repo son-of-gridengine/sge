@@ -59,6 +59,7 @@ fi
 
 SP_CSH=$1/settings.csh
 SP_SH=$1/settings.sh
+SP_MODULE=$1/sge.module
 
 #
 # C shell settings file
@@ -193,3 +194,36 @@ echo 'unset DEFAULTMANPATH MANTYPE'                                 >> $SP_SH
 echo 'else'                                                         >> $SP_SH
 echo 'unset SGE_ROOT'                                               >> $SP_SH
 echo 'fi'                                                           >> $SP_SH
+
+#
+# environment modules file
+# NB this has a fixed ARCH value; presuambly we could write some Tcl
+# to set it at run time.
+
+cat > $SP_MODULE <<EOF
+#%Module1.0                         -*-tcl-*-
+
+proc ModulesHelp { } {
+    puts stderr "\tSets up the Grid Engine batch system"
+}
+
+module-whatis "Grid Engine batch system"
+
+set sge_root "$SGE_ROOT"
+set sge_cell "$SGE_CELL"
+set sge_arch "`$SGE_ROOT/util/arch`"
+
+setenv SGE_ROOT "\$sge_root"
+setenv SGE_CELL "\$sge_cell"
+setenv SGE_CLUSTER_NAME "`cat $SGE_ROOT/$SGE_CELL/common/cluster_name 2>/dev/null`"
+prepend-path PATH "\$sge_root/bin/\$sge_arch"
+prepend-path PATH "\$sge_root/bin"
+prepend-path MANPATH "\$sge_root/man"
+EOF
+
+if [ -n "$SGE_QMASTER_PORT" ]; then
+   echo "setenv SGE_QMASTER_PORT $SGE_QMASTER_PORT" >> $SP_MODULE
+fi
+if [ -n "$SGE_EXECD_PORT" ]; then
+   echo "setenv SGE_EXECD_PORT $SGE_EXECD_PORT" >> $SP_MODULE
+fi
