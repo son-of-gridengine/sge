@@ -66,8 +66,6 @@ set UNMODIFIED_ARGUMENTS = ( $argv )
 set FORCE_32BIT = 0
 set SYSTEM_LIBS = 0
 set SECTARGETS  = ""
-set SECDEPEND   = ""
-set SECCLEAN    = ""
 set RM = "rm -f"
 set HWLOCLIB    = ""
 set GSSLIBS = ""
@@ -178,7 +176,6 @@ usage:
    echo "-32               -> create 32 bit binaries (where supported)"
    echo "-64               -> create 64 bit binaries (where supported)"
    echo "-D*               -> include a macro definition in CFLAGS"
-   echo "-add-copyright    -> insert a special copyright string in each binary"
    echo "-adoc             -> create source code documentation in adoc format"
    echo "-catman           -> generate man pages in catman format"
    echo "-cc               -> use cc/CC to compile c/c++ code"
@@ -347,14 +344,13 @@ set SHARED_LFLAGS    = ""
 # linker flag for -ldrmaa name and version
 set SONAME_LFLAG_DRMAA10 = ""
 
-# Flags for man page creation, copyright stuff and adoc
+# Flags for man page creation stuff and adoc
 set BUILDMAN          = 0
 set BUILDCATMAN       = 0
 set BUILDGETTEXT      = 0
 set BUILDHTMLMAN      = 0
 set BUILDJAVADOC      = 0
 set SGE_PRODUCT_MODE  = sge
-set ADD_COPYRIGHT     = 0
 set ADOC              = 0
 
 # Default name and command line flags for some build commands
@@ -489,9 +485,6 @@ while ($#argv >= 1 && $?found)
    case -64:
    case -help:
    case --help:
-      breaksw
-   case "-add-copyright"
-      set ADD_COPYRIGHT = 1
       breaksw
    case "-adoc":
       set CORE   = 0
@@ -1285,11 +1278,11 @@ case NETBSD_*:
    set CC       = gcc
    set CXX      = g++
    set DLLIB    = ""
-   set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
    set PTHRDSFLAGS = "-D_REENTRANT -D__USE_REENTRANT"
    # If replacing NETBSD with __NetBSD__ note it's also used by openbsd in
    # addition to __OpenBSD__
    set CFLAGS   = "$OFLAG -Wall -DNETBSD -D$BUILDARCH -DGETHOSTBYNAME_M -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS -I/usr/X11R6/include"
+   set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
    set NOERR_CFLAG = "-Wno-error"
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS -export-dynamic"
    set LIBS     = "$LIBS -lkvm"
@@ -1442,20 +1435,7 @@ case HP1164:
    endif
    breaksw
    
-case LINUX86:
-case LINUXAMD64:
-case LINUXIA64:
-case LINUXMIPS:
-case LINUXMIPSEL:
-case LINUXMIPS64:
-case LINUXPARISC:
-case LINUXPPC:
-case LINUXPPC64:
-case LINUXS390:
-case LINUXS390X:
-case LINUXSPARC:
-case LINUXSPARC64:
-case LINUXARM:
+case LINUX*:
    set MAKEWINGRIDLIB   = 0
    set MAKEWINGRIDAPP   = 0
    set AUTHLIBS = "-lcrypt -lpam"
@@ -1469,7 +1449,7 @@ case LINUXARM:
 #   # Optimization on LINUXIA64 is broken, qmon dumps
 #    if ($OPTIMIZATION == 1 && $BUILDARCH != LINUXIA64) then
    if ($OPTIMIZATION == 1) then
-      set OFLAG = "-O3"
+      set OFLAG = "-O2"
    else
       set OFLAG = ""
    endif
@@ -1478,7 +1458,7 @@ case LINUXARM:
    set CXX = g++
 
    if ($BUILDARCH == LINUXPPC) then
-      set CFLAGS = "-m32 $CFLAGS"
+      set CFLAGS = "-m32 $CFLAGS" # fixme: why?
       set LFLAGS = "-m32 $LFLAGS"
       set SHARED_LFLAGS = "-m32 $SHARED_LFLAGS"
    else if ($BUILDARCH == LINUXSPARC64 || $BUILDARCH == LINUXPPC64 || $BUILDARCH == LINUXMIPS64) then
@@ -1554,7 +1534,7 @@ case LINUXARM:
 
       set XINCD    = "$XMTINCD $XINCD"
       set XCFLAGS  = "-DNeedFunctionPrototypes -Wno-error $XMTDEF $XINCD"
-      set XLIBS    = "-Xlinker -Bstatic -Xlinker -Bdynamic -lXpm -lXt -lXext -lX11 -lSM -lICE -lXp -lXm"
+      set XLIBS    = "-lXt -lXext -lX11 -lXm"
    set JAVA_ARCH = "linux"
 
    # due to -rpath relative_path the LD_LIBRARY_PATH not needed anymore
@@ -2040,6 +2020,7 @@ if ( $JNI == 1 ) then
          case nbsd-i386:
          case sol-x86:
          case usol-x86:
+         case obsd-i386:
              set JAVA_LIB_ARCH = i386
              breaksw
          case sol-sparc64:
@@ -2086,18 +2067,9 @@ if ( $JNI == 1 ) then
          case fbsd-i386:
              set JAVA_LIB_ARCH = linux
              breaksw
-         case obsd-i386:
-             set JAVA_LIB_ARCH = i386
-             breaksw
          case irix65:
-             set JAVA_LIB_ARCH = ""
-             breaksw
          case darwin-*:
-             set JAVA_LIB_ARCH = ""
-             breaksw
          case tru64:
-             set JAVA_LIB_ARCH = ""
-             breaksw
          case aix51:
              set JAVA_LIB_ARCH = ""
              breaksw
@@ -2224,13 +2196,6 @@ endif
 if ( "$JAVA_GUI_INST" == 2 ) then
    echo _____Making JAVA GUI Installer_____
 
-   if ( "$ADD_COPYRIGHT" == 1 ) then
-      setenv AIMK_COPYRIGHT_DIR "$COPYRIGHT_DIR"
-      setenv AIMK_COPYRIGHT "courtesy"
-   else
-      setenv AIMK_COPYRIGHT_DIR ""
-      setenv AIMK_COPYRIGHT ""
-   endif
    ant -f clients/gui-installer/build.xml $argv
 
    if ( $status != 0 ) then
@@ -2478,10 +2443,6 @@ if ( "$MAKEJEMALLOCLIB" == 1 ) then
    endif
 endif
 
-if ( "$ADD_COPYRIGHT" == 1 ) then
-   set CFLAGS = "-DADD_COPYRIGHT -I$COPYRIGHT_DIR $CFLAGS"
-endif
-
 if ( "$CORE" == 1 && "$JAVA" != 2 ) then
    if ( "$COMPILE_DIR" == "" ) then
       cd $COMPILE_ARCH
@@ -2542,7 +2503,7 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
          "KRBTARGETS=$KRBTARGETS" "KRBDEPEND=$KRBDEPEND" "KRBCLEAN=$KRBCLEAN"\
          "KRBLIBS=$KRBLIBS" "AUTHLIBS=$AUTHLIBS" \
          "KRBLIB=$KRBLIB" "GSSDEPEND=$GSSDEPEND" \
-         "SECTARGETS=$SECTARGETS" "SECDEPEND=$SECDEPEND" "SECCLEAN=$SECCLEAN" \
+         "SECTARGETS=$SECTARGETS" \
          "GSSCLEAN=$GSSCLEAN" "MSDIR=$MSDIR" "SLIBS=$GSSLIBS $KLIBS" "LIBS=$LIBS" \
          "XCFLAGS=$XCFLAGS" "XLFLAGS=$XLFLAGS" \
          "XLIBS=$XLIBS" "LFLAGS=$LFLAGS $KLFLAGS" "STRIP=$STRIP" \
@@ -2604,13 +2565,6 @@ if ( "$JAVA" > 0 ) then
       setenv AIMK_DEBUG ""
    endif  
 
-   if ( "$ADD_COPYRIGHT" == 1 ) then
-      setenv AIMK_COPYRIGHT_DIR "$COPYRIGHT_DIR"
-      setenv AIMK_COPYRIGHT "courtesy"
-   else
-      setenv AIMK_COPYRIGHT_DIR ""
-      setenv AIMK_COPYRIGHT ""
-   endif
    # -no-gui-inst option
    if ( "$JAVA_GUI_INST" == 0 ) then
       setenv BUILD_NO_GUI_INSTALLER 1

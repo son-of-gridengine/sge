@@ -80,6 +80,8 @@ BuildRequires: fedora-usermgmt-devel
 Requires: binutils, ncurses, shadow-utils
 # for makewhatis
 Requires: man
+# There's an implicit dependency on perl(XML::Simple), which is in
+# package perl-XML-Simple but only in the optional-rpms repo on RH6.
 
 %description
 Grid Engine (often known as SGE) is a distributed resource manager,
@@ -230,6 +232,7 @@ echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
 %endif
   rm man/man8/SGE_Helper_Service.exe.8
   rm -r util/sgeSMF
+  rm doc/arc_depend_*
   rm util/resources/loadsensors/interix-loadsensor.sh # uses ksh
   for l in lib/*/libdrmaa.so.1.0; do
     ( cd $(dirname $l); ln -sf libdrmaa.so.1.0 libdrmaa.so )
@@ -293,6 +296,7 @@ fi
 %exclude %{sge_bin}/process-scheduler-log
 %exclude %{sge_bin}/qsched
 %exclude %{sge_home}/util/resources/drmaa4ruby
+%exclude %{sge_mandir}/man1/qsched.1
 %{sge_bin}
 %{sge_lib}
 %doc %{sge_docdir}
@@ -348,6 +352,7 @@ fi
 %{sge_home}/install_qmaster
 %{sge_mandir}/man8/sge_qmaster.8
 %{sge_mandir}/man8/sge_shadowd.8
+%{sge_mandir}/man1/qsched.1
 
 %files drmaa4ruby
 %defattr(-,root,root,-)
