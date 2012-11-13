@@ -1,0 +1,9 @@
+Unlike the packages shipped with Debian, this native version of the
+packaging is intended as an add-on, installing into /opt/sge in
+vanilla form for sharing in a cluster.  (Obviously it can also be used
+for non-shared installations.)
+
+It needs to be further installed as usual by running ./inst_sge in
+/opt/sge to create a suitable cell.  The only real configuration it
+does on the installation system is to create an "sgeadmin" account for
+convenience.
