@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# status will reformat the output of the qstat command by SGE.
+# qstatus will reformat the output of the qstat command by SGE.
 #
 # Version 1.0 - 2004-08-23 Initial release
 #                          This version supports SGE 5.x and 6.x
