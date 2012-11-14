@@ -47,7 +47,8 @@ Apache-2: IzPack (GUI installer), jakarta-regexp (GUI installer binary),
           parts of DRMAA2 from Gridway
 BSD: rsh, rshd. rlogin, qtcsh
 GFDL-1.3: Some documentation
-GPL-3:  qmake, adoc [possibly using the "any later version" term]
+GPL-3:  qmake, adoc (not installed), several scripts [possibly using
+        the "any later version" term]
 LGPL-3: ListTree (qmon), pam_sge-qrsh-setup, libuti2
         [possibly using the "any later version" term] (gridengine kernel),
         Java swing-layout (GUI installer binary)
@@ -56,6 +57,7 @@ jemalloc: jemalloc library
 NanoXML: (GUI installer binary)
 tango: qmon icons
 top, hwloc, OpenSSL, BerkeleyDB: gridengine core
+FreeBSD: several scripts
 Cygwin:  binaries linked against the Cygwin library
 OGF:  Parts of DRMAA implementation
 

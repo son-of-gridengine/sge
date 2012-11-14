@@ -99,7 +99,8 @@ Content
 
    If in doubt for other systems, consult and adapt the Red Hat recipe
    given by the %build section of gridengine.spec at the top level of
-   the source directory.
+   the source directory.  The necessary packages for a Cygwin build need
+   checking.
 
    This document describes the process up to the creation of a distribution. 
    The result is a tar file (or virtually any other OS specific distribution

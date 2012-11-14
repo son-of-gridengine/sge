@@ -1,7 +1,7 @@
 Apache Hadoop is a distributed computation framework based on the
 Map/Reduce paper published by Google.  It is composed of two main
-parts: Map/Reduce and HDFS.  HDFS is a distributed file system where
-data is broken down into blocks of uniform size and replicated to
+parts:  Map/Reduce and HDFS.  HDFS is a distributed file system where
+data are broken down into blocks of uniform size and replicated to
 multiple node in the cluster.  Map/Reduce is a framework for running
 jobs written in the Java[TM] language that process data stored in
 HDFS.  The Map/Reduce framework divides jobs into tasks such that each
@@ -11,7 +11,7 @@ that are close to the data blocks, e.g. in the same rack.
 
 The Apache Hadoop Map/Reduce framework behaves very much like a
 classic parallel environment.  The integration components found in
-this directory will allow Apache Hadoop to be run from a Sun Grid
+this directory will allow Apache Hadoop to be run from a Grid
 Engine cluster as a parallel job.  This integration assumes that the
 HDFS cluster is statically configured and persistently available.  It
 attempts to assign nodes to Hadoop parallel jobs that offer the data
@@ -24,7 +24,7 @@ To configure this integration, follow these steps:
 1) Copy the $SGE_ROOT/hadoop directory to a location that is
 accessible from all execution nodes, $SGE_ROOT/$SGE_CELL/common/hadoop
 for example.  Make sure that the new directory and its contents are
-readable by all users and that scripts in the new directory are
+readable by all users, and that scripts in the new directory are
 executable by all users.
 
 2) Change to the newly created hadoop directory.
@@ -32,10 +32,10 @@ executable by all users.
 3) Edit the env.sh file to contain the path to the Hadoop installation
 ($HADOOP_HOME) and the path to the Java Runtime Environment
 installation ($JAVA_HOME).  Note that the value of $JAVA_HOME must be
-valid on all execution nodes and must be at least the Java SE 6
-platform.
+valid on all execution nodes and must  refer to an installation of at
+least the Java SE 6 platform.
 
-4) Source the Sun Grid Engine settings file.
+4) Source the Grid Engine settings file.
 
 5) Run "./setup.pl -i" to configure the cluster for the Hadoop
 integration.  This step will create a new parallel environment and a
@@ -43,8 +43,9 @@ number of new complexes, and it will install the Hadoop load sensor.
 
 6) Add the "hadoop" parallel environment to one or more queues.
 
-7) Create a conf directory and copy in whatever Hadoop configuration
-files are needed.  This directory will be copied into the temp
+7) Create a conf directoryin the copy of "hadoop" and copy in whatever
+Hadoop configuration files are needed from the "conf" directory of the
+Hadoop installation.  This directory will be copied into the temp
 directory of all Hadoop parallel jobs and used as the Map/Reduce
 configuration.  At a minimum, the core-site.xml file should be added
 to the conf directory so that the parallel jobs know how to contact
@@ -75,7 +76,7 @@ Note the job's id number.
 4) Check to see that the job's hdfs_input request was translated into
 blocks and racks:
   % qstat -j 123
-Look for the soft resource list.  If should look something like:
+Look for the soft resource list.  It should look something like:
   soft resource_list:         hdfs_secondary_rack=/default-rack,hdfs_blkb1=*f3678487bc
   1174*,hdfs_primary_rack=/default-rack,hdfs_blkf0=*2ffa6ee2aed419*,hdfs_blkb5=*90e12a
   07c3c054*f4f3a1cab15f0d*,hdfs_blkbf=*175fb8efd59ad1*,hdfs_blk7c=*6500d896fd6647*,hdf
@@ -119,7 +120,7 @@ should be 2.
 14) Submit a test HDFS job:
   % echo $HADOOP_HOME/bin/hadoop --config \$TMP/conf fs -lsr / | qsub -pe hadoop 1 -cwd
 Note that the Hadoop configuration must be specified as "--config
-\$TMP" as the value of the $TMP needs to be evaluated on the execution
+\$TMP" as the value of $TMP needs to be evaluated on the execution
 host, not the submission host.
 
 15) Look at the job's output:
@@ -147,7 +148,3 @@ state of the Map/Reduce cluster.  Watch the progress of the job.
 Assuming all of the above steps worked, the integration was
 successful.  If any of the above steps did not produce the expected
 output or results, there may be a problem with the integration.
-
-For more information about configuring and using the Apache Hadoop
-integration, please refer to the product documentation.
-
