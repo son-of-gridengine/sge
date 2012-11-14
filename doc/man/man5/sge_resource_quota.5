@@ -28,6 +28,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH xxQS_NAME_Sxx_RESOURCE_QUOTA 5 2012-04-02 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
@@ -178,7 +181,7 @@ applying for each member of the list individually, as opposed to for
 all elements of a non-braced list in total.  Alternatively, it is
 equivalent to an expansion into multiple instances of the rule, per
 the syntax which inspired it in shells such as
-.M bash 1 .
+.MO bash 1 .
 Thus
 .RS
 limit users {a, b} ... to ...
@@ -212,9 +215,11 @@ limit users {!user1,!user2,...} ...
 .RE
 and thus
 .RS
-limit users !user1 ...
-limit users !user2 ...
-...
+.nf
+ limit users !user1 ...
+ limit users !user2 ...
+ ...
+.fi
 .RE
 .SS "Formal Syntax"
 .TS
