@@ -243,7 +243,8 @@ bool
 sge_gdi_packet_unpack(sge_gdi_packet_class_t **packet, lList **answer_list,
                       sge_pack_buffer *pb)
 {
-   bool aret = true;
+   bool aret = true;		/* fixme: is this the right default
+				   (for when *packet == NULL)? */
    bool has_next;
    int pack_ret;
 
@@ -332,7 +333,8 @@ sge_gdi_packet_unpack(sge_gdi_packet_class_t **packet, lList **answer_list,
  error_with_mapping:
    aret = sge_gdi_map_pack_errors(pack_ret, answer_list);
  error:
-   sge_gdi_packet_free(packet);
+   /* The calls of this access packet even when aret is false.  */
+/*    sge_gdi_packet_free(packet); */
    DRETURN(aret);
 }
 
