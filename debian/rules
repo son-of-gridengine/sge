@@ -57,9 +57,9 @@ override_dh_auto_clean:
 	find source -name "*_dependencies" -print0 | xargs --null rm -f
 
 override_dh_strip:
-	dh_strip --dbg-package=gridengine-dbg
+	dh_strip --dbg-package=sge-dbg
 
 override_dh_gencontrol:
 # we need to depend on the db utils version corresponding to libdb-dev
-	sed -i debian/gridengine.substvars -e 's/ lib\(db[^ ,]*\)/ &, \1-util/'
+	sed -i debian/sge.substvars -e 's/ lib\(db[^ ,]*\)/ &, \1-util/'
 	dh_gencontrol

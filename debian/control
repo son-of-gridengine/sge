@@ -1,4 +1,4 @@
-Source: gridengine
+Source: sge
 Priority: optional
 Section: utils
 Maintainer: sge-bugs@liv.ac.uk
@@ -10,11 +10,11 @@ Build-Depends: debhelper (>= 4.0.0), csh | tcsh, libdb-dev, libssl-dev,
 Standards-Version: 3.9.1
 Homepage: http://arc.liv.ac.uk/SGE
 
-Package: gridengine
+Package: sge
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, gridengine-common
+Depends: ${shlibs:Depends}, ${misc:Depends}, sge-common
 Suggests: openssh-client
-Recommends: gridengine-doc
+Recommends: sge-doc
 Description: Grid Engine programs
  Grid Engine is software that facilitates "distributed resource
  management" (DRM).  Far more than just simple load-balancing tools or
@@ -35,7 +35,7 @@ Description: Grid Engine programs
  .
  This package contains the Grid Engine programs.
 
-Package: gridengine-common
+Package: sge-common
 Architecture: all
 Section: utils
 Depends: ${misc:Depends}, adduser, bsd-mailx | mailx
@@ -59,7 +59,7 @@ Description: Distributed resource management - common files
  .
  This package contains required shared files and the basic configuration.
 
-Package: gridengine-doc
+Package: sge-doc
 Architecture: all
 Section: doc
 Description: Grid Engine documentation
@@ -82,7 +82,7 @@ Description: Grid Engine documentation
  .
  This package contains the Grid Engine documentation.
 
-Package: gridengine-dbg
+Package: sge-dbg
 Architecture: any
 Section: debug
 Depends: ${misc:Depends}
