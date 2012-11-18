@@ -1,4 +1,4 @@
-gridengine (8.1.3) unstable; urgency=low
+sge (8.1.3) unstable; urgency=low
 
   * Initial packaging, installing into /opt/sge.
 
