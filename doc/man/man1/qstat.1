@@ -172,8 +172,8 @@ The resource usage reported is affected if \fBACCT_RESERVED_USAGE\fP
 or \fBSHARETREE_RESERVED_USAGE\fP is specified in the
 .M sge_conf 5
 configuration.  Then the requested values are reported, not the actual
-usage; if there is no memory request, 'mem' is reported as zero, and
-the vmem values as 'N/A'.
+usage (not multiplied by the slot count).   If there is no memory
+request, 'mem' is reported as zero, and the vmem values as 'N/A'.
 .sp
 Unless \fB\-ncb\fP is specified, the output
 contains the information of a requested binding (see \fB\-binding\fP
@@ -716,8 +716,8 @@ The job and master queue name.
 The hard and soft resource requirements of the job as specified
 with the
 .M qsub 1
-\fB\-l\fP option. The per resource 
-addend when determining the jobs urgency contribution value is 
+\fB\-l\fP option. The per-resource 
+addend when determining the job's urgency contribution value is 
 printed (see also 
 .M sge_priority 5 ).
 .IP "\(bu" 3n
@@ -758,6 +758,7 @@ The current accumulated CPU usage of the job in seconds.
 The current accumulated memory usage of the job in Gbytes seconds.
 .\"
 .IP "\fBio\fP"
+.\" fixme:  exactly what is this, at least under Linux?
 The current accumulated IO usage of the job.
 .\"
 .IP "\fBtckts\fP"

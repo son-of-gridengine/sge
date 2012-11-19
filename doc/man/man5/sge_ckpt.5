@@ -31,7 +31,7 @@
 .TH xxQS_NAME_Sxx_CKPT 1 2012-09-18 "xxRELxx" "xxQS_NAMExx User Commands"
 .\"
 .SH NAME
-xxQS_NAME_Sxx_ckpt \- the xxQS_NAMExx checkpointing mechanism and checkpointing
+xxqs_name_sxx_ckpt \- the xxQS_NAMExx checkpointing mechanism and checkpointing
 support
 .\"
 .SH DESCRIPTION
@@ -91,10 +91,11 @@ Shutdown of the xxQS_NAMExx execution daemon
 being responsible for the checkpointing job.
 .PP
 .\"
-After abortion, the jobs will migrate to other queues unless they were
-submitted to one specific queue by an explicit user request.
+After they are aborted, jobs will migrate to other hosts, and possibly
+other cluster queues, unless they were
+submitted to a specific one by an explicit user request.
 The migration of jobs leads to a dynamic load balancing.
-\fBNote:\fP The abortion of checkpointed jobs will free all resources
+\fBNote:\fP Aborting checkpointed jobs will free all resources
 (memory, swap space) which the job occupies at that time. This is
 opposed to the situation for suspended regular jobs, which still use
 virtual memory and other consumable resources.
@@ -102,10 +103,10 @@ virtual memory and other consumable resources.
 .\"
 .\"
 .SH RESTRICTIONS
-When a job migrates to a queue on another machine at present no files
+When a job migrates to another machine, at present no files
 are transferred automatically to that machine. This means that all files
-which are used throughout the entire job including restart files,
-executables and scratch files must be visible or transferred explicitly
+which are used throughout the entire job, including restart files,
+executables, and scratch files, must be visible or transferred explicitly
 (e.g. at the beginning of the job script).
 .PP
 .\"
@@ -122,6 +123,21 @@ transparent checkpointing job to a machine, even though that machine is
 idle. Since large virtual memory jobs must wait for a machine that is
 both idle, and has a sufficient amount of free disk space, such jobs
 may suffer long turnaround times.
+.PP
+There is no mechanism for restarting jobs with the same resources they
+were granted to run in, which might be important if they were
+submitted with a choice or range of resources and start running in a
+particular way with what they're given.
+.PP
+Similarly, with heterogeneous execution hosts, jobs may need to
+restart on a host which supports a superset of the instruction set
+where the job originally ran if the checkpoint mechanism (e.g. BLCR or
+DMTCP) dumps an image of the running process.  Runtime libraries, in
+particular, may initialize themselves depending on details of the
+architecture they start up on \- say to use a specific type of vector
+unit.  Then, they may fail if moved to an older host of similar
+architecture which lacks that feature, even if they were compiled for
+a common instruction set.
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,

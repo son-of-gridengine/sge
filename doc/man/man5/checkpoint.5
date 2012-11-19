@@ -49,8 +49,7 @@ the different types of checkpointing in use for your xxQS_NAMExx cluster or
 parts thereof. For that purpose you can define the operations which
 have to be executed in initiating a checkpoint generation, a migration
 of a checkpoint to another host, or a restart of a checkpointed
-application, as well as the list of queues which are eligible for a
-checkpointing method.
+application.
 .PP
 Supporting different operating systems may easily force xxQS_NAMExx to 
 introduce operating system dependencies for the configuration of the 
@@ -198,6 +197,9 @@ properly, or are not invoked in a proper fashion, the checkpointing
 mechanism may behave unexpectedly; xxQS_NAMExx has no means to detect
 this \- all exit codes are treated as successful operation except for
 the case of kernel checkpointing.
+.PP
+See also the restrictions in
+.M xxqs_name_sxx_ckpt 5 .
 .\"
 .\"
 .SH "SEE ALSO"
