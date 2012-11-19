@@ -4,8 +4,6 @@
 .\" Copyright: 2004 by Sun Microsystems, Inc.
 .\"
 .\"___INFO__MARK_END__
-.\" $RCSfile: host_aliases.5,v $     Last Update: $Date: 2011-05-18 01:57:41 $     Revision: $Revision: 1.1 $
-.\"
 .\"
 .\" Some handy macro definitions [from Tom Christensen's man(1) manual page].
 .\"
@@ -29,7 +27,7 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH HOST_ALIASES 5 "$Date: 2011-05-18 01:57:41 $" "xxRELxx" "xxQS_NAMExx File Formats"
+.TH HOST_ALIASES 5 "2011-05-18" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 host_aliases \- xxQS_NAMExx host aliases file format
@@ -40,11 +38,12 @@ the communication library to identify hosts via a unique hostname. The
 communication library itself references standard UNIX directory services
 such as DNS, NIS and /etc/hosts to resolve hostnames (through the Name
 Service Switch on systems which support it).
-In rare cases these standard services
-cannot be setup cleanly and xxQS_NAMExx communication daemons running on
-different hosts are unable to automatically determine a unique hostname
+In some cases, typically clusters with hosts on multiple networks,
+these standard services
+cannot be setup cleanly, and xxQS_NAMExx daemons running on
+different hosts are unable to determine automatically a unique hostname
 for one or all hosts which can be used on all hosts. In such situations
-a xxQS_NAMExx host aliases file can be used to provide the communication
+a xxQS_NAMExx host aliases file can be used to provide the
 daemons with a private and consistent hostname resolution database.
 .PP
 The location for the host aliases file is 
@@ -61,7 +60,7 @@ of the communication library.
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
-.M nsswitch.conf 5 .
+.MO nsswitch.conf 5 .
 .\"
 .SH "COPYRIGHT"
 See
