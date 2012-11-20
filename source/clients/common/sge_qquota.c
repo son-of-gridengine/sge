@@ -206,6 +206,7 @@ bool qquota_output(sge_gdi_ctx_class_t *ctx, lList *host_list, lList *resource_m
 
                               for_each(limit, lGetList(rule, RQR_limit)) {
                                  const char *limit_name = lGetString(limit, RQRL_name);
+                                 double limit_val;
                                  lList *rue_list = lGetList(limit, RQRL_usage);
                                  lListElem *raw_centry = centry_list_locate(centry_list, limit_name);
                                  lListElem *rue_elem = NULL;
@@ -298,14 +299,13 @@ bool qquota_output(sge_gdi_ctx_class_t *ctx, lList *host_list, lList *resource_m
                                           }
                                        }
                                        if (lGetBool(limit, RQRL_dynamic)) {
-                                          exec_host = host_list_locate(exechost_list, host); 
-                                          sge_dstring_sprintf(&limit_str, "%d", (int)scaled_mixed_load(lGetString(limit, RQRL_value),
-                                                                                                       global_host, exec_host, centry_list));
-
+                                          exec_host = host_list_locate(exechost_list, host);
+                                          limit_val = scaled_mixed_load(lGetString(limit, RQRL_value), global_host, exec_host, centry_list);
                                        } else {
-                                          lSetDouble(raw_centry, CE_pj_doubleval, lGetDouble(limit, RQRL_dvalue));
-                                          sge_get_dominant_stringval(raw_centry, &dominant, &limit_str);
+                                          limit_val = lGetDouble(limit, RQRL_dvalue);
                                        }
+                                       lSetDouble(raw_centry, CE_pj_doubleval, limit_val);
+                                       sge_get_dominant_stringval(raw_centry, &dominant, &limit_str);
 
                                        lSetDouble(raw_centry,CE_pj_doubleval, lGetDouble(rue_elem, RUE_utilized_now));
                                        sge_get_dominant_stringval(raw_centry, &dominant, &value_str);
