@@ -448,6 +448,12 @@ int main(int argc, char* argv[])
    sge_prof_cleanup();
 
    DEXIT;
+
+   const char *pidfile = getenv("SGE_MASTER_PIDFILE");
+   int ret;
+   if (!pidfile) pidfile = QMASTER_PID_FILE;
+   ret = unlink(pidfile);
+
    return 0;
 } /* main() */
 
