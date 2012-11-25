@@ -170,9 +170,7 @@ main(argc, argv)
    int port = 0;
 	speed_t ospeed;
 	struct sigaction sa;
-#ifndef CRAY
 	struct rlimit rlim;
-#endif
 #ifdef KERBEROS
 	KTEXT_ST ticket;
 	int sock;

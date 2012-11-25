@@ -936,118 +936,6 @@ int nelem
    return 0;
 }
 
-#elif defined(CRAY)
-
-void KmemRead(struct listreq *iolist, int size, int k_fd)
-{
-   struct listreq *lp;
-   struct iosw *sp;
-   int n;
-
-   lp = iolist;
-   for (n = 0; n < size; n++) {
-      sp = iolist[n].li_status;
-      *(word *)sp = 0;
-      iolist[n].li_fildes = k_fd;
-   }
-   if (listio(LC_WAIT, iolist, size) < 0) {
-          perror("listio:");
-          exit(1);
-   }
-   lp = iolist;
-   for (n = 0; n < size; n++) {
-          sp = iolist[n].li_status;
-          sp = lp->li_status;
-          lp++;
-   }
-}
-
-static int get_load_avg(
-double loadv[],
-int nelem 
-) {
-   struct listreq *lp;
-   struct iosw *sp;
-   struct pw cpuw;
-   int i;
-   double avenrun1=0, avenrun2=0, avenrun3=0;
-   int highest;
-
-   if (nlist("/unicos", nmlist) == -1) {
-      return -1;
-      perror("nlist()");
-      exit(1);
-   }
-
-   if (kernel_fd == -1) {
-      if ((kernel_fd = open("/dev/kmem", 0)) < 0) {
-         return -1;
-         perror("open(/dev/kmem)");
-         exit(1);
-      }
-   }
-
-   lp = &iolist[0];
-   sp = &iosw[0];
-
-   lp->li_offset = nmlist[0].n_value;
-   lp->li_buf = (char *)&cpuw;
-   lp->li_nbyte = sizeof(struct pw);
-   lp->li_fildes = kernel_fd;
-   lp->li_opcode = LO_READ;
-   lp->li_flags = LF_LSEEK;
-   lp->li_nstride = 1;
-   lp->li_filstride = lp->li_memstride = lp->li_nbyte;
-   lp->li_status = sp;
-
-   if (listio(LC_WAIT, iolist, 1) < 0) {
-      return -1;
-      perror("listio()");
-      exit(1);
-   }
-
-   /* cpuw now shold contain some data */
-   Ncpus = cpuw.pw_ccpu;
-   if (Ncpus < 1)
-      return -1;
-
-#if O
-   printf("Ncpus=%d\n", Ncpus);
-   printf("started cpus = %d\n", cpuw.pw_scpu);
-   printf("name = %x\n", cpuw.pw_name);
-#endif
-
-   Krdlist[0].li_offset = nmlist[1].n_value;
-   if ((i_sysinfoa = (struct sysinfo_t *)malloc(sizeof(*i_sysinfoa) * Ncpus))
-            == NULL) {
-      return -1;
-      perror("malloc");
-      exit(1);
-   }
-   Krdlist[0].li_nbyte = sizeof(*i_sysinfoa) * Ncpus;
-   Krdlist[0].li_buf = (char *)i_sysinfoa;
-
-   KmemRead(Krdlist, 1, kernel_fd);
-   highest = 0;
-   for (i = 0; i < Ncpus; i++) {
-      if (i_sysinfoa[i].avenrun[0] ||
-          i_sysinfoa[i].avenrun[1] ||
-          i_sysinfoa[i].avenrun[2])
-         highest++;	/* Ncpus may not be correct */
-      avenrun1 += i_sysinfoa[i].avenrun[0];
-      avenrun2 += i_sysinfoa[i].avenrun[1];
-      avenrun3 += i_sysinfoa[i].avenrun[2];
-   }
-   if (!highest)
-      highest = 1;
-   if (nelem > 0)
-      loadv[0] = ((double)avenrun1)/highest;
-   if (nelem > 1)
-      loadv[1] = ((double)avenrun2)/highest;
-   if (nelem > 2)
-      loadv[2] = ((double)avenrun3)/highest;
-   return 0;
-}
 #endif 
 
 
@@ -1070,7 +958,7 @@ int sge_getloadavg(double loadavg[], int nelem)
 
 #if defined(SOLARIS) || defined(FREEBSD) || defined(NETBSD) || defined(DARWIN)
    elem = getloadavg(loadavg, nelem); /* <== library function */
-#elif defined(ALPHA4) || defined(ALPHA5) || defined(IRIX) || defined(HPUX) || defined(CRAY) || defined(NECSX4) || defined(NECSX5) || defined(__linux__) || defined(HAS_AIX5_PERFLIB) || defined(__CYGWIN__)
+#elif defined(ALPHA5) || defined(IRIX) || defined(HPUX) || defined(__linux__) || defined(HAS_AIX5_PERFLIB) || defined(__CYGWIN__)
    elem = get_load_avg(loadavg, nelem); 
 #else
    elem = -2;

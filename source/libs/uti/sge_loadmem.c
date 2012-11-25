@@ -45,7 +45,7 @@
 #include "uti/sge_log.h"
 #include "uti/msg_utilib.h"
 
-#if !defined(__linux__) && !defined(CRAY) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD)
+#if !defined(__linux__) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD)
 
 #include <unistd.h>
 

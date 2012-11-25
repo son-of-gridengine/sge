@@ -134,7 +134,7 @@ static void sge_send_mail(u_long32 progid, const char *mailer_in,
    bool done;
    char *mailer;
 
-#if !(defined(CRAY) || defined(INTERIX))
+#if !defined(INTERIX)
    struct rusage rusage;
 #endif
 
@@ -252,7 +252,7 @@ static void sge_send_mail(u_long32 progid, const char *mailer_in,
       sigprocmask(SIG_SETMASK, &io_mask, &omask);
       sigaction(SIGALRM, &sigalrm_vec, &sigalrm_ovec);
 
-#if defined(CRAY) || defined(INTERIX)
+#if defined(INTERIX)
       pid2 = waitpid(pid, &status, 0);
 #else
       pid2 = wait3(&status, 0, &rusage);

@@ -92,7 +92,6 @@ extern "C" {
 *        jobscript. Meaning depends on the architecture of that 
 *        host were the task is started. 
 *           SOLARIS/LINUX/ALPHA  - supplementary group id
-*           CRAY/NEC             - jobid
 *           IRIX                 - array session id
 *
 *     SGE_LIST(JAT_usage_list)
