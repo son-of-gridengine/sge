@@ -468,7 +468,7 @@ get_gmt(void)
 #ifdef PDC_STANDALONE
 static psSys_t sysdata;
 
-#if defined(IRIX) || defined(CRAY)
+#if defined(IRIX)
 static struct {
    int initialized;
    double utime;
@@ -2077,7 +2077,7 @@ print_job_data(psJob_t *job)
    printf("jd_length=%d\n", job->jd_length);
    printf("jd_uid="uid_t_fmt"\n", job->jd_uid);
    printf("jd_gid="uid_t_fmt"\n", job->jd_gid);
-#if defined(IRIX) || defined(CRAY)
+#if defined(IRIX)
    printf("jd_acid="F64"\n", job->jd_acid);
 #endif
    printf("jd_tstamp=%s\n", ctime(&job->jd_tstamp));

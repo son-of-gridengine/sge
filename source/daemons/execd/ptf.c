@@ -38,7 +38,7 @@
 
 #if defined(COMPILE_DC) || defined(MODULE_TEST)
 
-#if defined(IRIX) || defined(ALPHA) || defined(LINUX) || defined(SOLARIS) || defined(NECSX4) || defined(NECSX5) || !defined(MODULE_TEST) || defined(HP1164) || defined(HP1164) || defined(FREEBSD) || defined(DARWIN)
+#if defined(IRIX) || defined(ALPHA) || defined(LINUX) || defined(SOLARIS) || !defined(MODULE_TEST) || defined(HP1164) || defined(HP1164) || defined(FREEBSD) || defined(DARWIN)
 #   define USE_DC
 #endif
 
@@ -236,7 +236,7 @@ static osjobid_t ptf_get_osjobid(lListElem *osjob)
 {
    osjobid_t osjobid;
 
-#if !defined(LINUX) && !defined(SOLARIS) && !defined(ALPHA5) && !defined(NECSX4) && !defined(NECSX5) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD) && !defined(INTERIX) && !defined(HP1164) && !defined(AIX)
+#if !defined(LINUX) && !defined(SOLARIS) && !defined(ALPHA5) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD) && !defined(INTERIX) && !defined(HP1164) && !defined(AIX)
 
    osjobid = lGetUlong(osjob, JO_OS_job_ID2);
    osjobid = (osjobid << 32) + lGetUlong(osjob, JO_OS_job_ID);
@@ -266,7 +266,7 @@ static osjobid_t ptf_get_osjobid(lListElem *osjob)
 ******************************************************************************/
 static void ptf_set_osjobid(lListElem *osjob, osjobid_t osjobid)
 {
-#if !defined(LINUX) && !defined(SOLARIS) && !defined(ALPHA5) && !defined(NECSX4) && !defined(NECSX5) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD) && !defined(INTERIX) && !defined(HP1164) && !defined(AIX)
+#if !defined(LINUX) && !defined(SOLARIS) && !defined(ALPHA5) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD) && !defined(INTERIX) && !defined(HP1164) && !defined(AIX)
 
    lSetUlong(osjob, JO_OS_job_ID2, ((u_osjobid_t) osjobid) >> 32);
    lSetUlong(osjob, JO_OS_job_ID, osjobid & 0xffffffff);
@@ -697,7 +697,7 @@ static lListElem *ptf_get_job_os(lList *job_list, osjobid_t os_job_id,
 
    DENTER(TOP_LAYER, "ptf_get_job_os");
 
-#if defined(LINUX) || defined(SOLARIS) || defined(ALPHA5) || defined(NECSX4) || defined(NECSX5) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(INTERIX) || defined(HP1164) || defined(AIX)
+#if defined(LINUX) || defined(SOLARIS) || defined(ALPHA5) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(INTERIX) || defined(HP1164) || defined(AIX)
    where = lWhere("%T(%I == %u)", JO_Type, JO_OS_job_ID, (u_long32) os_job_id);
 #else
    where = lWhere("%T(%I == %u && %I == %u)", JO_Type,
@@ -1749,18 +1749,6 @@ int ptf_init(void)
    }
 #if defined(__sgi)
    schedctl(RENICE, 0, 0);
-#elif defined(CRAY)
-
-   if (getuid() == 0) {
-      int nice;
-
-      if ((nice = nicem(C_PGRP, 0, 0)) > 0) {
-         if (nicem(C_PGRP, 0, 0 - nice) < 0) {
-            ERROR((SGE_EVENT, MSG_PRIO_NICEMFAILED_S, strerror(errno)));
-         }
-      }
-   }
-
 #elif defined(ALPHA) || defined(SOLARIS) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
    if (getuid() == 0) {
       if (setpriority(PRIO_PROCESS, getpid(), PTF_MAX_PRIORITY) < 0) {
@@ -2093,7 +2081,7 @@ int main(int argc, char **argv)
          sum_of_last_usage += lGetDouble(job, JL_last_usage);
       }
 
-#       if defined(CRAY) || defined(ALPHA)
+#       if defined(ALPHA)
 #         define XFMT "%20d"
 #       else
 #         define XFMT "%20lld"
