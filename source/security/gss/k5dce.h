@@ -32,9 +32,9 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 /* dummy K5 routines which are needed to get this to 
- * compile without having access ti the DCE versions 
+ * compile without having access to the DCE versions
  * of the header files.
- * Thiis is very crude, and OSF needs to expose the K5
+ * This is very crude, and OSF needs to expose the K5
  * API.
  */
 

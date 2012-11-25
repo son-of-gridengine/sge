@@ -171,7 +171,7 @@ main(int argc, char **argv)
    }
 
    /*
-    * We will only read commandline options from scripfile if the script
+    * We will only read commandline options from script file if the script
     * itself should not be handled as binary
     */
    if (opt_list_is_X_true(opts_cmdline, "-b") ||

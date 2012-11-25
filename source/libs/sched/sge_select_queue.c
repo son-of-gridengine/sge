@@ -780,11 +780,11 @@ parallel_reservation_max_time_slots(sge_assignment_t *best, int *available_slots
 *
 *  FUNCTION
 *     The largest possible slot amount is searched for a job assuming a 
-*     particular parallel environment be used at a particular start time. 
+*     particular parallel environment is used at a particular start time.
 *     If the slot number passed is 0 we start with the minimum 
 *     possible slot number for that job.
 *
-*     To search most efficent for the right slot value, it has three search
+*     To search most efficently for the right slot value, it has three search
 *     strategies implemented:
 *     - binary search
 *     - least slot value first
@@ -792,18 +792,18 @@ parallel_reservation_max_time_slots(sge_assignment_t *best, int *available_slots
 *
 *     To be able to use binary search all possible slot values are stored in 
 *     one array. The slot values in this array are sorted ascending. After the
-*     right slot value was found, it is very easy to compute the best strategy
+*     right slot value is found, it is very easy to compute the best strategy
 *     from the result. For each strategy it will compute how many iterations
 *     would have been needed to compute the correct result. These steps will
 *     be stored for the next run and used to figure out the best algorithm.
-*     To ensure that we can adapt to rapid changes and also ignore spiks we
+*     To ensure that we can adapt to rapid changes and also ignore spikes we
 *     are using the running avarage algorithm in a 80-20 setting. This means
 *     that the algorithm will need 4 (max 5) iterations to adopt to a new
 *     secenario. 
 *
 *  Further enhancements:
 *     It might be a good idea to store the derived values with the job cartegories
-*     and allow to find the best strategy per category.
+*     and allow finding the best strategy per category.
 *
 *  INPUTS
 *     sge_assignment_t *best - herein we keep all important in/out information

@@ -17,6 +17,11 @@ along with GNU Make; see the file COPYING.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
+/* Most of this file is actually copyright Sun Microsystems, Inc.
+   It seems to date originally from before 2001, with some changes
+   since then.  It is distributed under GPL v3 for consistency with
+   the current GNU make.  */
+
 #include <errno.h>
 #include <string.h>   /* strerror */
 #include <sys/types.h>
@@ -42,7 +47,7 @@ Boston, MA 02111-1307, USA.  */
 *
 *  FUNCTION
 *     Scheduled, parallel, distributed make.
-*     qmake is implemented based on GNU make 3.78.1 using the remote stub
+*     qmake is implemented based on GNU make 3.82 using the remote stub
 *     mechanism of gmake.
 *     qmake will start a parallel job and run make tasks as task in the
 *     parallel job using the Grid Engine qrsh -inherit command.

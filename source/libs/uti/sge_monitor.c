@@ -36,7 +36,7 @@
 #include <dlfcn.h>
 
 #if defined(LINUX) || defined(AIX43) || defined(AIX51) || defined(IRIX) || defined(SOLARIS) || defined(HP11)
-#  include <malloc.h>
+#  include <malloc.h>           /* mallinfo */
 #endif
 
 #include "uti/sge_mtutil.h"
@@ -357,7 +357,7 @@ sge_monitor_init(monitoring_t *monitor, const char *thread_name, extension_t ext
 *     u_long32 sge_monitor_status(char **info_message, u_long32 monitor_time) 
 *
 *  FUNCTION
-*     This method creats the health monitoring output and returns the monitoring
+*     This method creates the health monitoring output and returns the monitoring
 *     info to the commlib. 
 *
 *  INPUTS

@@ -179,6 +179,7 @@ extern "C" {
 #  define SGE_PATH_MAX 1024
 #endif
 
+/* NB needs to be consistent at least with SFNMAX */
 #define MAX_STRING_SIZE 2048
 typedef char stringT[MAX_STRING_SIZE];
 

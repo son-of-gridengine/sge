@@ -117,8 +117,9 @@
 #define MAXUJOBS                            0
 #define MAXGJOBS                            0
 #define SCHEDD_JOB_INFO                     "true"
+/* fixme:  see the comments below...  "infinity" == 0xFFFFFFFF */
 #define DEFAULT_DURATION                    "INFINITY" /* the default_duration and default_duration_I have to be */
-#define DEFAULT_DURATION_I                  600       /* in sync. On is the strin version of the other (based on seconds)*/
+#define DEFAULT_DURATION_I                  600       /* in sync. One is the string version of the other (based on seconds)*/
 #define DEFAULT_DURATION_OFFSET             60
 
 /**
@@ -2650,6 +2651,7 @@ void sconf_print_config(void){
    INFO((SGE_EVENT,MSG_ATTRIB_USINGXFORY_US,  sge_u32c (uval) , "flush_finish_sec"));
    
    /* --- SC_halftime */
+   /* fixme:  should allow time value, as man page originally said */
    uval = sconf_get_halftime();
    INFO((SGE_EVENT, MSG_ATTRIB_USINGXFORY_US ,  sge_u32c (uval), "halftime"));
 
