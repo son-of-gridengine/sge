@@ -2089,7 +2089,7 @@ static int reresolve_qualified_hostname(sge_gdi_ctx_class_t *thiz) {
 *******************************************************************************/
 bool sge_daemonize_prepare(sge_gdi_ctx_class_t *ctx) {
    pid_t pid;
-#if !(defined(__hpux) || defined(CRAY) || defined(WIN32) || defined(SINIX) || defined(INTERIX) || defined(__CYGWIN__))
+#if !(defined(__hpux) || defined(WIN32) || defined(INTERIX) || defined(__CYGWIN__))
    int fd;
 #endif
 

@@ -138,7 +138,7 @@ const char *buf
    stringT user_str;
    bool done;
 
-#if !(defined(CRAY) || defined(INTERIX))
+#if !defined(INTERIX)
    struct rusage rusage;
 #endif
 
@@ -254,7 +254,7 @@ const char *buf
       sigprocmask(SIG_SETMASK, &io_mask, &omask);
       sigaction(SIGALRM, &sigalrm_vec, &sigalrm_ovec);
 
-#if defined(CRAY) || defined(INTERIX)
+#if defined(INTERIX)
       pid2 = waitpid(pid, &status, 0);
 #else
       pid2 = wait3(&status, 0, &rusage);

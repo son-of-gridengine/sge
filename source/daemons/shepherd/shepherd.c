@@ -1168,7 +1168,7 @@ static int start_child(const char *childname, /* prolog, job, epilog */
                                rest_command, sizeof(rest_command) -1);
       shepherd_trace("restarting job from checkpoint arena");
 
-#if defined(IRIX) || defined(CRAY) || defined(NECSX4) || defined(NECSX5)
+#if defined(IRIX)
       /* reuse old osjobid for the migrated job and forward this one to ptf */
       shepherd_write_osjobid_file(get_conf_val("ckpt_osjobid"));
 
@@ -2554,7 +2554,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
          alarm(rest_ckpt_interval);
       }
 
-#if defined(CRAY) || defined(NECSX4) || defined(NECSX5) || defined(INTERIX)
+#if defined(INTERIX)
       npid = waitpid(-1, &status, wait_options);
 #else
       npid = wait3(&status, wait_options, rusage);

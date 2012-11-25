@@ -51,10 +51,6 @@
 #   define SIGWINCH 28
 #endif
 
-#if defined(CRAY) && !defined(SIGXCPU)
-#   define SIGXCPU SIGCPULIM
-#endif
-
 #if defined(ALPHA)
 #  undef NSIG
 #  define NSIG (SIGUSR2+1)

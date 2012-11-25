@@ -186,7 +186,7 @@ typedef char stringT[MAX_STRING_SIZE];
 #define MAX_VERIFY_STRING 512
 
 #define INTSIZE     4           /* (4) 8 bit bytes */
-#if defined(_UNICOS)
+#if 0
 #define INTOFF      4           /* big endian 64-bit machines where sizeof(int) = 8 */
 #else
 #define INTOFF      0           /* the rest of the world; see comments in request.c */
