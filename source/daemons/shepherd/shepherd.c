@@ -645,35 +645,35 @@ static int do_pe_stop(int timeout, int ckpt_type, pid_t *pe_pid)
            we do not.
 
  Each shepherdd has its own directory. The caller has to cd to this directory
- before starting shepherdd.
+ before starting sge_shepherd.
 
- Input to the shepherdd:
-    "config"-file   holds configuration data (config_file.c)
-    "signal"-file   when execd wants a signal to be delivered
+ Input to the shepherd:
+    "config" file   holds configuration data (config_file.c)
+    "signal" file   when execd wants a signal to be delivered
 
- Output from shepherdd:
-    "trace"-file    reports activities of shepherdd (err_trace.c)
-    "pid"-file      contains pid of shepherdd
-    "error"-file    contains error strings. This can be used by execd for
+ Output from shepherd:
+    "trace" file    reports activities of shepherd (err_trace.c)
+    "pid" file      contains pid of shepherd
+    "error" file    contains error strings. This can be used by execd for
                     problem reports. (err_trace.c):w
 
-    "exit_status"-file 
+    "exit_status" file
                     contains the exit status of shepherd after termination.
 
  
 
- How can a caller see whats going on:
+ How can a caller see what's going on:
 
- If the shepherd was started the "pid" file exists. This file contains the
+ If the shepherd was started, the "pid" file exists. This file contains the
  pid of the shepherd and can be used to search the process table.
 
- If shepherd cant be found in the process table and the "exit_status"-file 
- does not exist the shepherd terminated irregular. Only kill(-9) or a system
+ If shepherd can't be found in the process table and the "exit_status" file
+ does not exist the shepherd terminated abnormally. Only kill(-9) or a system
  breakdown should cause this.
 
- If the "exit_status"-file exists the shepherd has terminated regular.
+ If the "exit_status" file exists the shepherd has terminated normally.
  If exit_status==0 everything is fine. If exit_status!=0 a problem occured.
- The error file should give hints what happened.
+ The error file should give hints about what happened.
  exit_status values: see shepherd_states header file
 
  ************************************************************************/
@@ -1158,7 +1158,7 @@ static int start_child(const char *childname, /* prolog, job, epilog */
       }
    }
    
-   /* Don't care about checkpointing for "commands other than "job" */
+   /* Don't care about checkpointing for "commands" other than "job" */
    if (strcmp(childname, "job")) {
       ckpt_info.type = 0;
    }

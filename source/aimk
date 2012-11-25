@@ -2569,7 +2569,7 @@ if ( "$JAVA" > 0 ) then
    if ( "$JAVA_GUI_INST" == 0 ) then
       setenv BUILD_NO_GUI_INSTALLER 1
    endif
-   # -no-gui-inst option
+   # -no-herd option
    if ( "$JAVA_HERD" == 0 ) then
       setenv BUILD_NO_HERD 1
    endif

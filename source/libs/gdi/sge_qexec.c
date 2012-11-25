@@ -89,8 +89,8 @@ const char *qexec_last_err(void)
 *  FUNCTION
 *     Starts a task in a tightly integrated job.
 *     Builds a job object describing the task, 
-*     connects to the commd on the targeted execution host,
-*     deliveres the job object and waits for an answer.
+*     connects to the execd on the targeted execution host,
+*     delivers the job object and waits for an answer.
 *     The answer from the execution daemon on the execution host
 *     contains a task id that is returned to the caller of the function.
 *
