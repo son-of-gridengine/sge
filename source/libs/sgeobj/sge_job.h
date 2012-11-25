@@ -66,8 +66,8 @@
  */
 #define JSUSPENDED_ON_THRESHOLD              0x00010000
 /*
- * SGEEE: qmaster delays job removal till schedd 
- * does no longer need this finished job 
+ * SGEEE: qmaster delays job removal until scheduler longer needs this
+ * finished job
  */
 #define JFINISHED                            0x00010000
 /* used in execd to prevent slave jobs from getting started */

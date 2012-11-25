@@ -150,7 +150,7 @@ Enter()
 # Execute command as user $ADMINUSER and exit if exit status != 0
 # if ADMINUSER = default then execute command unchanged
 #
-# uses binary "adminrun" form SGE distribution
+# uses binary "adminrun" from SGE distribution
 #
 # USES: variables "$verbose"    (if set to "true" print arguments)
 #                  $ADMINUSER   (if set to "default" do not use "adminrun)

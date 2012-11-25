@@ -64,7 +64,7 @@
  *   
  *    <thread loop> {
  *       
- *       MONITOR_IDLE_TIME(<wait for something>,(&monitor), monitor_time);
+ *       MONITOR_IDLE_TIME(<wait for something>,(&monitor), monitor_time, monitor_message_p);
  *   
  *      < do your stuff and monitoring >
  *   

@@ -151,7 +151,7 @@ sge_dstring_allocate(dstring *sb, size_t request)
 
 /****** uti/dstring/sge_dstring_append() **************************************
 *  NAME
-*     sge_dstring_append() -- strcat() for dstring's 
+*     sge_dstring_append() -- strcat() for dstrings
 *
 *  SYNOPSIS
 *     const char* sge_dstring_append(dstring *sb, const char *a) 
@@ -296,7 +296,7 @@ const char* sge_dstring_append_mailopt(dstring *sb, u_long32 mailopt)
 
 /****** uti/dstring/sge_dstring_append_dstring() ******************************
 *  NAME
-*     sge_dstring_append() -- strcat() for dstring's 
+*     sge_dstring_append() -- strcat() for dstrings
 *
 *  SYNOPSIS
 *     const char* sge_dstring_append(dstring *sb, const dstring *a) 
@@ -321,7 +321,7 @@ const char* sge_dstring_append_dstring(dstring *sb, const dstring *a)
 
 /****** uti/dstring/sge_dstring_sprintf() *************************************
 *  NAME
-*     sge_dstring_sprintf() -- sprintf() for dstring's 
+*     sge_dstring_sprintf() -- sprintf() for dstrings
 *
 *  SYNOPSIS
 *     const char* sge_dstring_sprintf(dstring *sb, 
@@ -362,7 +362,7 @@ const char* sge_dstring_sprintf(dstring *sb, const char *format, ...)
 
 /****** uti/dstring/sge_dstring_vsprintf() *************************************
 *  NAME
-*     sge_dstring_vsprintf() -- vsprintf() for dstring's 
+*     sge_dstring_vsprintf() -- vsprintf() for dstrings
 *
 *  SYNOPSIS
 *     const char* sge_dstring_vsprintf(dstring *sb, const char *format,va_list ap)
@@ -398,7 +398,7 @@ const char* sge_dstring_vsprintf(dstring *sb, const char *format, va_list ap)
 
 /****** uti/dstring/sge_dstring_sprintf_append() ******************************
 *  NAME
-*     sge_dstring_sprintf_append() -- sprintf() and append for dstring's 
+*     sge_dstring_sprintf_append() -- sprintf() and append for dstrings
 *
 *  SYNOPSIS
 *     const char* sge_dstring_sprintf_append(dstring *sb, 
@@ -475,14 +475,14 @@ const char *sge_dstring_copy_string(dstring *sb, const char *str)
 
 /****** uti/dstring/sge_dstring_copy_dstring() ********************************
 *  NAME
-*     sge_dstring_copy_dstring() -- strcpy() for dstrings's 
+*     sge_dstring_copy_dstring() -- strcpy() for dstrings
 *
 *  SYNOPSIS
 *     const char* sge_dstring_copy_dstring(dstring *sb1, 
 *                                          const dstring *sb2) 
 *
 *  FUNCTION
-*     strcpy() for dstrings's 
+*     strcpy() for dstrings
 *
 *  INPUTS
 *     dstring *sb1 - destination dstring
@@ -511,7 +511,7 @@ const char *sge_dstring_copy_dstring(dstring *sb1, const dstring *sb2)
 
 /****** uti/dstring/sge_dstring_free() ****************************************
 *  NAME
-*     sge_dstring_free() -- sge_free() for dstring's 
+*     sge_dstring_free() -- sge_free() for dstrings
 *
 *  SYNOPSIS
 *     void sge_dstring_free(dstring *sb) 
@@ -591,13 +591,13 @@ const char *sge_dstring_get_string(const dstring *sb)
 
 /****** uti/dstring/sge_dstring_strlen() **************************************
 *  NAME
-*     sge_dstring_strlen() -- strlen() for dstring's 
+*     sge_dstring_strlen() -- strlen() for dstrings
 *
 *  SYNOPSIS
 *     size_t sge_dstring_strlen(const dstring *string) 
 *
 *  FUNCTION
-*     strlen() for dstring's 
+*     strlen() for dstrings
 *
 *  INPUTS
 *     const dstring *string - pointer to dynamic string 
@@ -692,7 +692,7 @@ void sge_dstring_init(dstring *sb, char *s, size_t size)
 *     sge_dstring_ulong_to_binstring(dstring *sb, u_long32 number) 
 *
 *  FUNCTION
-*     Convert ulong into bin-strin 
+*     Convert ulong into bin-string 
 *
 *  INPUTS
 *     dstring *sb     - dstring 
@@ -730,7 +730,7 @@ const char *sge_dstring_ulong_to_binstring(dstring *sb, u_long32 number)
 *                       dstring *before, dstring *after)
 *
 *  FUNCTION
-*     This functions tires to find the first occurence of "character"
+*     This functions tries to find the first occurrence of "character"
 *     in "string". The characters before will be copied into "before"
 *     and the characters behind into "after" dstring.
 *

@@ -111,7 +111,8 @@ static void sge_c_job_ack(sge_gdi_ctx_class_t *ctx,
 *     Get a pending message. Handle message based on message tag.
 *
 *  INPUTS
-*     void *anArg - none 
+*     sge_gdi_ctx_class_t *ctx
+*     monitoring_t *monitor
 *
 *  RESULT
 *     void* - none

@@ -418,10 +418,10 @@ size_t sge_strlcpy(char *dst, const char *src, size_t dstsize) {
 *
 *  FUNCTION
 *     Reentrant version of sge_strtok. When 'str' is not NULL, 
-*     '*context'has to be NULL. If 'str' is NULL, '*context' 
+*     '*context' has to be NULL. If 'str' is NULL, '*context'
 *     must not be NULL. The caller is responsible for freeing 
 *     '*context' with sge_free_saved_vars(). 
-*     If no delimitor is given isspace() is used. 
+*     If no delimiter is given, isspace() is used.
 *
 *  INPUTS
 *     const char *str               - str which should be tokenized 

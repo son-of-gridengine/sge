@@ -53,9 +53,9 @@
 *     lList *Master_SUser_List; 
 *
 *  FUNCTION
-*     The global variable 'Master_SUser_List' is hold within the master
+*     The global variable 'Master_SUser_List' is held within the master
 *     daemon. It containes one CULL element of type 'SU_Type' for each
-*     user which submittet a job.
+*     user who submitted a job.
 *     Enties within this list have to be updated when a new job 
 *     enters/leaves the SGE system
 *
@@ -284,13 +284,13 @@ int suser_check_new_job(const lListElem *job, u_long32 max_u_jobs)
 *                                int force_registration) 
 *
 *  FUNCTION
-*     This function checks whether a new "job" would exceed the maxium
+*     This function checks whether a new "job" would exceed the maximum
 *     number of allowed jobs per user ("max_u_jobs"). JB_owner of "job" 
 *     is the username which will be used by this function to compare
 *     the current number of registered jobs with "max_u_jobs". If the
-*     limit would be exceeded than the function will return 1 otherwise
+*     limit would be exceeded than the function will return 1, otherwise
 *     it will increase the jobcounter of the job owner and return 0.
-*     In some situation it may be necessary to force the incrementation
+*     In some situations it may be necessary to force the incrementating
 *     of the jobcounter (reading jobs from spool area). This may be done
 *     with "force_registration".
 *

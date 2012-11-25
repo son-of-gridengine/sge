@@ -105,7 +105,7 @@ void serf_init(record_schedule_entry_func_t write, new_schedule_func_t newline)
 *
 *                               RUNNING    - Job was running before scheduling run
 *                               SUSPENDED  - Job was suspended before scheduling run
-*                               PREEMPTING - Job gets preempted currently 
+*                               MIGRATING  - Job being preempted (unused)
 *                               STARTING   - Job will be started 
 *                               RESERVING  - Job reserves resources
 *
