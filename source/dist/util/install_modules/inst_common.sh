@@ -3651,7 +3651,7 @@ RestoreCheckBootStrapFile()
    if [ -f $BACKUP_DIR/bootstrap ]; then
       spooling_method=`cat $BACKUP_DIR/bootstrap | grep "spooling_method" | awk '{ print $2 }'`
       db_home=`cat $BACKUP_DIR/bootstrap | grep "spooling_params" | awk -F '[ 	;]+' '{ print $2 }'`
-      db_opt=`awk -F '[ 	;]+' '{/spooling_params/ print $3 }' $BACKUP_DIR/bootstrap`
+      db_opt=`awk -F '[ 	;]+' '/spooling_params/{ print $3 }' $BACKUP_DIR/bootstrap`
       master_spool=`cat $BACKUP_DIR/bootstrap | grep "qmaster_spool_dir" | awk '{ print $2 }'`
       ADMINUSER=`cat $BACKUP_DIR/bootstrap | grep "admin_user" | awk '{ print $2 }'`
       if [ "$ADMINUSER" = "none" ]; then
