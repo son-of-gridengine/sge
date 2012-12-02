@@ -63,6 +63,7 @@ OpenSSL, BerkeleyDB: optional external libraries; gridengine core
 hwloc: external library, but see note above; gridengine core
 FreeBSD: several scripts
 Cygwin:  binaries linked against the Cygwin library
+OGF:  Parts of DRMAA implementation
 
 The corresponding source for external copyleft libraries which are
 only included in binaries (specifically JAXB, and swing-layout for the
