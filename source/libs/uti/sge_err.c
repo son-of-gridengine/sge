@@ -41,8 +41,6 @@
 
 #define ERR_LAYER TOP_LAYER
 
-#define SGE_ERR_MAX_MESSAGE_LENGTH 256
-
 struct _sge_err_object_t {
    sge_err_t id;
    char message[SGE_ERR_MAX_MESSAGE_LENGTH];
@@ -131,7 +129,7 @@ sge_err_set(sge_err_t id, const char *format, ...) {
 }
 
 void
-sge_err_get(u_long32 pos, sge_err_t *id, char *message, size_t size) {
+sge_err_get(sge_err_t *id, char *message, size_t size) {
    DENTER(ERR_LAYER, "sge_err_get");
    if (id != NULL && message != NULL && size > 0) {
       sge_err_object_t *err_obj = NULL;
@@ -168,4 +166,3 @@ sge_err_clear(void) {
    err_obj->id = SGE_ERR_SUCCESS;
    DEXIT;
 }
-
