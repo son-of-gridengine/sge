@@ -56,6 +56,7 @@ NanoXML: (GUI installer binary)
 tango: qmon icons
 top, hwloc, OpenSSL, BerkeleyDB: gridengine core
 Cygwin:  binaries linked against the Cygwin library
+OGF:  Parts of DRMAA implementation
 
 The corresponding source for external copyleft libraries which are
 only included in binaries (specifically JAXB, and swing-layout for the
