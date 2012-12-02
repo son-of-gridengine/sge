@@ -33,23 +33,30 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-enum _sge_err_t {
-   SGE_ERR_SUCCESS = 0,
-   SGE_ERR_MEMORY,
-   SGE_ERR_PARAMETER,
-   SGE_ERR_FILE_EXIST
-};
+#include "drmaa2.h"
 
-typedef enum _sge_err_t sge_err_t;
+#define SGE_ERR_MAX_MESSAGE_LENGTH 256
+
+/* obsoleted original values (not widely used) */
+#define SGE_ERR_SUCCESS DRMAA2_SUCCESS
+#define SGE_ERR_MEMORY DRMAA2_OUT_OF_RESOURCE
+#define SGE_ERR_PARAMETER DRMAA2_INVALID_ARGUMENT
+
+typedef drmaa2_error sge_err_t;
 
 void 
 sge_err_init(void);
 
+#ifdef __GNUC__
+void
+sge_err_set(sge_err_t id, const char *format, ...) __attribute__ ((format (printf, 2, 3)));
+#else
 void
 sge_err_set(sge_err_t id, const char *format, ...);
+#endif
 
 void
-sge_err_get(u_long32 pos, sge_err_t *id, char *message, size_t size);
+sge_err_get(sge_err_t *id, char *message, size_t size);
 
 u_long32
 sge_err_get_errors(void);

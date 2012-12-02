@@ -54,7 +54,7 @@ test_err_has_which_error(void) {
 
    if (ret) {
       sge_err_set(SGE_ERR_PARAMETER, message);
-      sge_err_get(0, &id, buffer, 1024);
+      sge_err_get(&id, buffer, 1024);
    }
 
    if (sge_err_has_error() != true) {
@@ -79,7 +79,7 @@ test_err_has_which_error(void) {
       ret = false;
    }
    if (ret) {
-      sge_err_get(0, &id, buffer, 1024);
+      sge_err_get(&id, buffer, 1024);
    }
    if (id != SGE_ERR_SUCCESS) {
       fprintf(stderr, "got error id %d but expected %d in %s()\n", id, SGE_ERR_SUCCESS, SGE_FUNC);
