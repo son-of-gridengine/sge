@@ -2031,7 +2031,6 @@ if ( $JNI == 1 ) then
                 set JAVA_LIB_ARCH = sparcv9
              endif
              breaksw
-         case lx-sparc:
          case sol-sparc:
          case usol-sparc:
              set JAVA_LIB_ARCH = sparc
@@ -2046,10 +2045,16 @@ if ( $JNI == 1 ) then
              endif
              breaksw
          case lx-ia64:
-             set JAVA_LIB_ARCH = ia64
+         case lx-s390:
+         case lx-s390:
+         case lx-arm:
+         case lx-mips:
+         case lx-mipsel:
+         case lx-sparc:
+             set JAVA_LIB_ARCH = `expr substr $buildarch 4 9`
              breaksw
          case lx-ppc:
-             set JAVA_LIB_ARCH = ppc
+             set JAVA_LIB_ARCH = powerpc # at least Debian
              breaksw
          case lx-ppc64:
              if ($FORCE_32BIT == 1) then
