@@ -38,6 +38,8 @@
 # admin user maybe to create
 %define username sgeadmin
 
+%global _hardened_build 1
+
 Name:    gridengine
 Version: 8.1.3pre
 Release: 1%{?dist}
@@ -45,7 +47,7 @@ Summary: Grid Engine - Distributed Resource Manager
 
 Group:   Applications/System
 # per 3rd_party_licscopyrights
-License: (BSD and LGPLv3+ and MIT and SISSL) and GPLv3+ and GFDLv3+ and others
+License: (SISSL and BSD and LGPLv3+ and MIT) and GPLv3+ and GFDLv3+ and others
 URL:     https://arc.liv.ac.uk/trac/SGE
 Source:  https://arc.liv.ac.uk/downloads/SGE/releases/%{version}/sge-%{version}.tar.gz
 Source1: IzPack-4.1.1-mod.tar.gz
@@ -59,7 +61,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make, binutils
 BuildRequires: /bin/csh, openssl-devel, db4-devel, ncurses-devel, pam-devel
-BuildRequires: libXmu-devel, libXpm-devel, hwloc-devel >= 1.1
+BuildRequires: libXmu-devel, libXpm-devel, hwloc-devel >= 1.1, net-tools
 # This used to test %{?rhel}, but that's not defined on RHEL 5, and
 # I don't know whether _host_vendor distinguishes Fedora and RHEL.
 %if 0%{?fedora}
@@ -77,7 +79,7 @@ BuildRequires: elfutils-libelf-devel, net-tools, man
 %if 0%{?fedora}
 BuildRequires: fedora-usermgmt-devel
 %endif
-Requires: binutils, ncurses, shadow-utils
+Requires: binutils, ncurses, shadow-utils, net-tools
 # for makewhatis
 Requires: man
 # There's an implicit dependency on perl(XML::Simple), which is in
@@ -224,7 +226,7 @@ export SGE_ROOT
 mkdir -p $SGE_ROOT
 cd source
 gearch=`dist/util/arch`
-echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
+echo 'y'| scripts/distinst -local -allall -noexit ${gearch}
 ( cd $RPM_BUILD_ROOT/%{sge_home}
   rm -rf dtrace catman
 %if %{without hadoop}
@@ -245,7 +247,7 @@ echo 'y'| scripts/distinst -nobdb -noopenssl -local -allall -noexit ${gearch}
 cat ../README - > $RPM_BUILD_ROOT/%{sge_home}/doc/README <<+
 
 Note that, unlike the Fedora rpm, this version doesn't try to configure
-the system or provide its own init scripts, and installs into /opt/sge,
+the system, or provide its own init scripts, and installs into /opt/sge,
 which is appropriate for a cluster shared installation, consistent with
 the old Sun binaries.
 +
@@ -366,6 +368,10 @@ fi
 %endif
 
 %changelog
+* Mon Dec 10 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.3pre-1
+- Depend on net-tools (for hostname, at least)
+- Define _hardened_build
+
 * Wed Jul 25 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.2-1
 - Make inst_template.conf a config file (from Florian La Roche)
 - Don't exclude sge_share_mon
