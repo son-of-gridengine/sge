@@ -222,6 +222,7 @@ ArchTable()
    echo "lx-alpha              Alpha GNU/Linux"
    echo "lx-amd64              AMD64/x86_64 GNU/Linux"
    echo "lx-arm                ARM GNU/Linux"
+   echo "lx-armhf              ARM GNU/Linux with hard FP"
    echo "lx-parisc             HP PARISC GNU/Linux"
    echo "lx-ia64               IA64 GNU/Linux"
    echo "lx-mips64             64-bit MIPS GNU/Linux"
