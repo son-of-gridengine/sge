@@ -918,13 +918,13 @@ CheckConfigFile()
          is_valid="false"
       fi
 
-      if [ -z "$QMASTER_SPOOL_DIR" -o  "`echo "$QMASTER_SPOOL_DIR" | cut -d"/" -f1`" = "`echo "$QMASTER_SPOOL_DIR" | cut -d"/" -f2`" ]; then
+      if [ -z "$QMASTER_SPOOL_DIR" -o  "`echo '$QMASTER_SPOOL_DIR' | cut -d/ -f1`" = "`echo '$QMASTER_SPOOL_DIR' | cut -d/ -f2`" ]; then
          $INFOTEXT -e "Your >QMASTER_SPOOL_DIR< is empty or an invalid path. It must be a valid path!"
          $INFOTEXT -log "Your >QMASTER_SPOOL_DIR< is empty or an invalid path. It must be a valid path!"
          is_valid="false"
       fi
 
-      if [ -z "$EXECD_SPOOL_DIR" -o  "`echo "$EXECD_SPOOL_DIR" | cut -d"/" -f1`" = "`echo "$EXECD_SPOOL_DIR" | cut -d"/" -f2`" ]; then
+      if [ -z "$EXECD_SPOOL_DIR" -o  "`echo '$EXECD_SPOOL_DIR' | cut -d/ -f1`" = "`echo '$EXECD_SPOOL_DIR' | cut -d/ -f2`" ]; then
          $INFOTEXT -e "Your >EXECD_SPOOL_DIR< is empty or an invalid path. It must be a valid path!"
          $INFOTEXT -log "Your >EXECD_SPOOL_DIR< is empty or an invalid path. It must be a valid path!"
          is_valid="false"
@@ -974,7 +974,7 @@ CheckConfigFile()
          $INFOTEXT -log "Your >GID_RANGE< has invalid values."
          is_valid="false"
       fi
-      if [ "`echo "$EXECD_SPOOL_DIR_LOCAL" | cut -d"/" -f1`" = "`echo "$EXECD_SPOOL_DIR_LOCAL" | cut -d"/" -f2`" -a ! -z "$EXECD_SPOOL_DIR_LOCAL" ]; then
+      if [ "`echo '$EXECD_SPOOL_DIR_LOCAL' | cut -d/ -f1`" = "`echo '$EXECD_SPOOL_DIR_LOCAL' | cut -d/ -f2`" -a ! -z "$EXECD_SPOOL_DIR_LOCAL" ]; then
          $INFOTEXT -e "Your >EXECD_SPOOL_DIR_LOCAL< entry is not a path. It must be a valid path or empty!"
          $INFOTEXT -log "Your >EXECD_SPOOL_DIR_LOCAL< entry is not a path. It must be a valid path or empty!"
          is_valid="false"
@@ -1020,8 +1020,8 @@ CheckConfigFile()
             $INFOTEXT -log "Your >SGE_JVM_LIB_PATH< is empty. It must be a full path!"
             is_valid="false"
          else
-            first="`echo "$SGE_JVM_LIB_PATH" | cut -d"/" -f1`"
-            second="`echo "$SGE_JVM_LIB_PATH" | cut -d"/" -f2`"
+            first=`echo "$SGE_JVM_LIB_PATH" | cut -d/ -f1`
+            second=`echo "$SGE_JVM_LIB_PATH" | cut -d/ -f2`
             if [ "$first" != "" ]; then
                $INFOTEXT -e "Your >SGE_JVM_LIB_PATH< does not start with a \"/\". It must be a full path!"
                $INFOTEXT -log "Your >SGE_JVM_LIB_PATH< does not start with a \"/\". It must be a full path!"
@@ -2149,7 +2149,7 @@ GiveHints()
       $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to see where Grid Engine logs messages >> "
       $CLEAR
 
-      tmp_spool=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep qmaster_spool_dir | awk '{ print $2 }'`
+      tmp_spool=`awk '/qmaster_spool_dir/ { print $2 }' "$SGE_ROOT"/$SGE_CELL/common/bootstrap`
       master_spool=`dirname $tmp_spool`
 
       $INFOTEXT -u "\nGrid Engine messages"
@@ -3422,10 +3422,10 @@ CheckMasterHost()
 BackupCheckBootStrapFile()
 {
    if [ -f "$SGE_ROOT"/$SGE_CELL/common/bootstrap ]; then
-      spooling_method=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_method" | awk '{ print $2 }'`
+      spooling_method=`awk '/spooling_method/ { print $2 }' "$SGE_ROOT"/$SGE_CELL/common/bootstrap`
       # NB tab in the -F arg
-      db_home=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_params" | awk -F '[ 	;]+' '{ print $2 }'`
-      master_spool=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "qmaster_spool_dir" | awk '{ print $2 }'`
+      db_home=`awk -F '[ 	;]+' '/spooling_params/ { print $2 }' "$SGE_ROOT"/$SGE_CELL/common/bootstrap`
+      master_spool=`awk '/qmaster_spool_dir/ { print $2 }' "$SGE_ROOT"/$SGE_CELL/common/bootstrap`
       GetAdminUser
 
       $INFOTEXT -n "\nSpooling Method: %s detected!\n" $spooling_method
