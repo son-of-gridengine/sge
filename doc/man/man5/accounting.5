@@ -159,7 +159,14 @@ ACCT_RESERVED_USAGE execd parameter (see
 .M sge_conf 5 ).
 .SS "\fB39. io\fP"
 The amount of data transferred in input/output operations in GB (if
-available, otherwise 0).
+available, otherwise 0).  On Linux, this is summed over calls to
+.MO read 2 ,
+.MO pread 2 ,
+.MO write 2 ,
+and
+.MO pwrite 2 ;
+thus it includes i/o via cache, and may not reflect data actually
+written to filing system.
 .SS "\fB40. category\fP"
 A string specifying the job category.
 This contains a space-separated pseudo options list for the job, with
