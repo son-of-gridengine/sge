@@ -100,7 +100,7 @@ Requires root or manager privileges.
 Add the configurations (see
 .M xxqs_name_sxx_conf 5 )
 specified in the files
-in the comma separated \fIfname_list\fP. The configuration
+in the comma-separated \fIfname_list\fP. The configuration
 is added for the host that is identical to the file name.
 .br
 Requires root or manager privileges.
@@ -223,7 +223,7 @@ existing checkpointing environment. Requires root or manager privileges.
 Modify the configurations (see
 .M xxqs_name_sxx_conf 5 )
 specified in the files
-in the comma separated \fIfname_list\fP. The configuration
+in the comma-separated \fIfname_list\fP. The configuration
 is modified for the host that is identical to the file name.
 .br
 Requires root or manager privileges.
@@ -391,7 +391,7 @@ The name of the configuration attribute to be enhanced is specified with
 .I attr_name
 followed by
 .I val
-as a \fIname\fP=\fIvalue\fP pair. The comma-separated list
+as a \fIname\fP=\fIvalue\fP pair. The space-separated list
 of object instances (e.g., the list of queues) to
 which the changes have to be applied are specified
 at the end of the command.
@@ -446,7 +446,7 @@ Requires root/manager privileges.
 Successively adds configurations (see
 .M xxqs_name_sxx_conf 5 )
 For the hosts in the
-comma separated host list.
+comma-separated host list.
 For each host, an editor ($EDITOR, if defined, or
 .MO vi 1 )
 is invoked and the configuration for the host
@@ -791,7 +791,7 @@ processes currently registered is initiated by the
 jobs running on the execution hosts are aborted prior to 
 termination of the corresponding
 .M xxqs_name_sxx_execd 8 .
-The comma separated host list specifies the execution
+The comma-separated host list specifies the execution
 hosts to be addressed by the \fB\-ke\fP and \fB\-kej\fP
 option. If the keyword \fBall\fP is specified instead of a
 host list, all running
@@ -812,7 +812,7 @@ running.
 .IP "\fB\-kec\fP {\fIid\fP,...|\fBall\fP}	\fI<kill event client>\fP"
 Used to shutdown event clients registered at 
 .M xxqs_name_sxx_qmaster 8 .
-The comma separated event client list specifies the event clients
+The comma-separated event client list specifies the event clients
 to be addressed by the \fB\-kec\fP option.
 If the keyword \fBall\fP is specified instead of an event client
 list, all running event clients except special clients like the
@@ -1080,8 +1080,8 @@ configured.
 .\"
 .IP "\fB\-sconf\fP [\fIhost\fP,...|\fBglobal\fP]	\fI<show configuration>\fP"
 Print the global or local (host specific) configuration.
-If the optional comma separated host
-list argument is omitted or the special string \fBglobal\fP is
+If the optional comma-separated host
+list argument is omitted, or the special string \fBglobal\fP is
 given, the global configuration is displayed.
 The configuration in effect on a certain host is the merger of 
 the global configuration and the host specific local configuration.
