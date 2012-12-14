@@ -464,7 +464,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          if (sge_dstring_get_string(&core_binding_strategy_string) != NULL
                && strcmp(sge_dstring_get_string(&core_binding_strategy_string), "NULL") != 0) {
             
-            INFO((SGE_EVENT, "core binding: %s", sge_dstring_get_string(&core_binding_strategy_string)));
+            DPRINTF((SGE_EVENT, "core binding: %s", sge_dstring_get_string(&core_binding_strategy_string)));
 
             /* add to job report */
             jr = get_job_report(job_id, ja_task_id, pe_task_id);
