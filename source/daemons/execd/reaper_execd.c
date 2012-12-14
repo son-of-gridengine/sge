@@ -2174,7 +2174,7 @@ static void clean_up_binding(char* binding)
          char* topo = NULL;
          topo = strrchr(binding, ':');
          free_topology(++topo, -1);
-         INFO((SGE_EVENT, "topology used by job freed"));
+         DPRINTF((SGE_EVENT, "topology used by job freed"));
       } else {
          /* couldn't find valid topology string in config file */
          WARNING((SGE_EVENT, "No resource string found in config entry binding"));
