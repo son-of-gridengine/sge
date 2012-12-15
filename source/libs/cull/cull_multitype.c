@@ -90,9 +90,8 @@ int incompatibleType(const char *str)
    for (i = 0; i < 5; i++)
       DPRINTF(("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"));
 
-   abort();
    DEXIT;
-   return -1;
+   abort();
 }
 
 int incompatibleType2(const char *fmt,...)
@@ -108,9 +107,8 @@ int incompatibleType2(const char *fmt,...)
    CRITICAL((SGE_EVENT, SFNMAX, buf));
    fprintf(stderr, SFNMAX, buf);
 
-   abort();
    DEXIT;
-   return -1;
+   abort();
 }
 
 /* ------------------------------------------------------------ */

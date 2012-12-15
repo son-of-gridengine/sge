@@ -58,7 +58,6 @@ setenv TMPDIR /tmp
 # OPENSSL_HOME the directory where the include and lib directory of openssl
 # is installed
 #
-set OPENSSL_SOVERSION = 0.9.8h
 set OPENSSL_HOME = /usr
 
 # 
@@ -84,11 +83,6 @@ set KRB_HOME = /usr
 # groff path
 #
 #set GROFFPATH = ""
-
-#
-# tclsh path
-#
-#set TCLSHPATH = ""
 
 # for some platforms we cannot use dynamic loading of the spooling libraries.
 # fallback to berkeleydb spooling

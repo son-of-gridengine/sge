@@ -190,7 +190,7 @@ static Widget qmonCreateManopConfig(
 Widget parent 
 ) {
    Widget manop_layout, manop_add, manop_delete, manop_done, manop_help,
-          manop_main_link, user_layout, manop_tickets;
+          manop_main_link, manop_tickets;
 
    DENTER(GUI_LAYER, "qmonCreateManopConfig");
    
@@ -213,7 +213,7 @@ Widget parent
    userset_layout = qmonCreateUsersetConfig(manop_folder, NULL);
    XtManageChild(userset_layout);
 
-   user_layout = qmonCreateUserConfig(manop_folder, NULL);
+   qmonCreateUserConfig(manop_folder, NULL);
    XtAddCallback(manop_tickets, XmNactivateCallback, 
                      qmonPopupTicketOverview, NULL);
                                

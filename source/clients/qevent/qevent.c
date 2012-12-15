@@ -300,24 +300,24 @@ static void qevent_start_trigger_script(int qevent_event, const char* script_fil
    if (pid > 0) {
       int exit_status;
 
-#if !(defined(CRAY) || defined(INTERIX))
-         struct rusage rusage;
+#if !defined(INTERIX)
+      struct rusage rusage;
 #endif
 
 #if defined(SVR3) || defined(_BSD)
-         union wait status;
+      union wait status;
 #else
-         int status;
+      int status;
 #endif
-#if defined(CRAY) || defined(INTERIX)
-         waitpid(pid, &status, 0);
+#if defined(INTERIX)
+      waitpid(pid, &status, 0);
 #else
-         wait3(&status, 0, &rusage);
+      wait3(&status, 0, &rusage);
 #endif
 #if defined(SVR3) || defined(_BSD)
-         exit_status = status.w_retcode;
+      exit_status = status.w_retcode;
 #else
-         exit_status = status;
+      exit_status = status;
 #endif
 
       if ( WEXITSTATUS(exit_status) == 0 ) {

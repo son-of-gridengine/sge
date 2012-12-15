@@ -441,11 +441,6 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    lDelSubStr(jr, UA_name, USAGE_ATTR_MAXVMEM, JR_usage);
 #endif
 
-#if 0  
-   /* moved to remove_acked_job_exit() */
-   krb_destroy_forwarded_tgt(job_id);
-#endif
-
    /* set directory for job */
    sge_get_active_job_file_path(&jobdir, job_id, ja_task_id, pe_task_id, NULL);
 
@@ -2229,5 +2224,3 @@ int count_master_tasks(const lList *lp, u_long32 job_id)
 
    DRETURN(master_jobs);
 }
-
-

@@ -429,7 +429,7 @@ lListElem *ar
 ) {
    Pixel color;
    static Pixel fg = 0;
-   int state;
+/*    int state; */
 
    DENTER(GUI_LAYER, "qmonARStateToColor");
 
@@ -443,7 +443,9 @@ lListElem *ar
    }
       
 
+#if 0
    state = (int)lGetUlong(ar, AR_state);
+#endif
 
    /*
    ** the order is important

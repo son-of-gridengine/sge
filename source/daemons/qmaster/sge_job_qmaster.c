@@ -103,7 +103,6 @@
 #include "sge_reporting_qmaster.h"
 #include "sge_job_qmaster.h"
 #include "sge_job_verify.h"
-#include "sge_qmaster_main.h"
 #include "symbols.h"
 #include "mail.h"
 #include "sge_job_qmaster.h"

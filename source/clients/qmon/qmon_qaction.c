@@ -1490,7 +1490,6 @@ static void qmonQCCheckName(Widget w, XtPointer cld, XtPointer cad)
 static void qmonQCAdd(Widget w, XtPointer cld, XtPointer cad)
 {
    lList *alp = NULL;
-   bool ret = True;
    XmString xmhost = NULL;
    lListElem *copy = NULL;
    u_long32 gdi_command = 0;
@@ -1512,7 +1511,7 @@ static void qmonQCAdd(Widget w, XtPointer cld, XtPointer cad)
    } else {
       gdi_command = SGE_GDI_MOD | SGE_GDI_SET_ALL;
    }   
-   ret = cqueue_add_del_mod_via_gdi(ctx, copy, &alp, gdi_command); 
+   cqueue_add_del_mod_via_gdi(ctx, copy, &alp, gdi_command); 
    qmonMessageBox(w, alp, 0);
    
    if ( lFirst(alp) && lGetUlong(lFirst(alp), AN_status) == STATUS_OK ) {

@@ -557,7 +557,6 @@ hgroup_list_exists(const lList *this_list, lList **answer_list,
 *  SYNOPSIS
 *     bool 
 *     hgroup_list_find_matching_and_resolve(const lList *this_list, 
-*                                           lList **answer_list, 
 *                                           const char *hgroup_pattern, 
 *                                           lList **used_hosts) 
 *
@@ -568,7 +567,6 @@ hgroup_list_exists(const lList *this_list, lList **answer_list,
 *
 *  INPUTS
 *     const lList *this_list     - HGRP_Type 
-*     lList **answer_list        - AN_Type 
 *     const char *hgroup_pattern - fnmatch pattern 
 *     lList **used_hosts         - HR_Type 
 *
@@ -579,7 +577,6 @@ hgroup_list_exists(const lList *this_list, lList **answer_list,
 *******************************************************************************/
 bool
 hgroup_list_find_matching_and_resolve(const lList *this_list,
-                                      lList **answer_list,
                                       const char *hgroup_pattern,
                                       lList **used_hosts) 
 {
@@ -621,7 +618,6 @@ hgroup_list_find_matching_and_resolve(const lList *this_list,
 *  SYNOPSIS
 *     bool 
 *     hgroup_list_find_matching(const lList *this_list, 
-*                               lList **answer_list, 
 *                               const char *hgroup_pattern, 
 *                               lList **href_list) 
 *
@@ -632,7 +628,6 @@ hgroup_list_find_matching_and_resolve(const lList *this_list,
 *
 *  INPUTS
 *     const lList *this_list     - HGRP_Type list 
-*     lList **answer_list        - AN_Type list 
 *     const char *hgroup_pattern - hostgroup pattern 
 *     lList **used_hosts         - HR_Type list  
 *
@@ -642,7 +637,7 @@ hgroup_list_find_matching_and_resolve(const lList *this_list,
 *        false - error
 *******************************************************************************/
 bool
-hgroup_list_find_matching(const lList *this_list, lList **answer_list,
+hgroup_list_find_matching(const lList *this_list,
                           const char *hgroup_pattern, lList **href_list) 
 {
    bool ret = true;

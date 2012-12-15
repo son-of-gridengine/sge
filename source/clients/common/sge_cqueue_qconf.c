@@ -585,7 +585,7 @@ cqueue_show(sge_gdi_ctx_class_t *ctx, lList **answer_list, const lList *qref_pat
                lList *href_list = NULL;
                bool is_first = true;
 
-               hgroup_list_find_matching_and_resolve(hgroup_list, NULL,
+               hgroup_list_find_matching_and_resolve(hgroup_list,
                                                      d_pattern, &href_list);
                for_each(qref, qref_list) {
                   const char *cqueue_name = lGetString(qref, QR_name);

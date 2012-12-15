@@ -396,14 +396,14 @@ int pe_validate_slots(lList **alpp, u_long32 slots)
 {
    DENTER(TOP_LAYER, "pe_validate_slots");
 
-   if (slots > MAX_SEQNUM) {
+   if (slots > RANGE_INFINITY) {
       if (alpp == NULL) {
          ERROR((SGE_EVENT, MSG_ATTR_INVALID_ULONGVALUE_USUU, sge_u32c(slots), 
-                "slots", sge_u32c(0), sge_u32c(MAX_SEQNUM)));
+                "slots", sge_u32c(0), sge_u32c(RANGE_INFINITY)));
       } else {
          answer_list_add_sprintf(alpp, STATUS_EEXIST, ANSWER_QUALITY_ERROR,
                                  MSG_ATTR_INVALID_ULONGVALUE_USUU, sge_u32c(slots), 
-                                 "slots", sge_u32c(0), sge_u32c(MAX_SEQNUM));
+                                 "slots", sge_u32c(0), sge_u32c(RANGE_INFINITY));
       }
       DEXIT;
       return STATUS_ESEMANTIC;
@@ -756,7 +756,7 @@ int pe_validate_qsort_args(lList **alpp, const char *qsort_args, lListElem *pe,
    const char *old_qsort_args = lGetString(pe, PE_qsort_args);
    char *lib_name, *fn_name;
    struct saved_vars_s *cntx = NULL;
-   void *lib_handle=NULL, *fn_handle=NULL;
+   void *lib_handle=NULL;
    int ret = STATUS_OK;
    const char *error;
 
@@ -820,7 +820,7 @@ int pe_validate_qsort_args(lList **alpp, const char *qsort_args, lListElem *pe,
 
    /* lookup function address */
    error = dlerror();           /* clear status */
-   fn_handle = dlsym(lib_handle, fn_name);
+   dlsym(lib_handle, fn_name);
    if ((error = dlerror()) != NULL) {
       if (alpp == NULL) {
          ERROR((SGE_EVENT, "Unable to locate %s symbol in %s library for pe_qsort_args in PE %s - %s\n",

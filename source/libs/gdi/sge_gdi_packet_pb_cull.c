@@ -323,7 +323,7 @@ sge_gdi_packet_unpack(sge_gdi_packet_class_t **packet, lList **answer_list,
          aret = sge_gdi_packet_append_task(*packet, &a_list, target,
                                            command, &data_list, &a_list,
                                            &condition, &enumeration,
-                                           false, false);
+                                           false);
          if (aret == false) {
             goto error;
          }

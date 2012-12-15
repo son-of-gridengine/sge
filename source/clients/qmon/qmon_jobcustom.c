@@ -1888,7 +1888,7 @@ static void qmonJobFilterEditResource(Widget w, XtPointer cld, XtPointer cad)
    int type;
    char stringval[CL_MAXHOSTLEN];
    Boolean status = False;
-   StringConst name, value, strval;
+   StringConst name, strval;
    Boolean found = False;
    lListElem *fill_in_request = NULL;
    lListElem *global_fill_in_request = NULL;
@@ -1904,7 +1904,6 @@ static void qmonJobFilterEditResource(Widget w, XtPointer cld, XtPointer cad)
    }
    for_each (fill_in_request, jobfilter_resources) {
       name = lGetString(fill_in_request, CE_name);
-      value = lGetString(fill_in_request, CE_stringval);
       if (cbs->element->string[0] && name && 
          !strcmp(cbs->element->string[0], name)) {
             found = True;

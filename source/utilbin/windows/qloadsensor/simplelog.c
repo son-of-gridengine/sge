@@ -64,7 +64,7 @@ error_print(void)
 int 
 error_printf(const char *fmt, ...)
 {
-   int ret;
+   int ret = 0;
 
    if (error_traingenabled) {
       FILE *out = error_filestream ? error_filestream : stderr;
