@@ -89,6 +89,12 @@ int verydummyprocfs;
 
 #include "procfs.h"
 
+#ifdef MONITOR_PDC
+static bool monitor_pdc = true;
+#else
+static bool monitor_pdc = false;
+#endif
+
 #if defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
 #   if defined(SVR3)
 #      define PROC_DIR "/debug"
@@ -161,15 +167,13 @@ static void touch_time_stamp(const char *d_name, int time_stamp, lnk_link_t *job
    if ((proc = find_pid_in_jobs(pid, job_list))) {
       proc_elem = LNK_DATA(proc, proc_elem_t, link);
       proc_elem->proc.pd_tstamp = time_stamp;
-#ifdef MONITOR_PDC
-      INFO((SGE_EVENT, "found job to process %s: set time stamp\n", d_name));
-#endif
    }
-#ifdef MONITOR_PDC
-   else
-      INFO((SGE_EVENT, "found no job to process %s\n", d_name));
-#endif
-
+   if (monitor_pdc) {
+      if (proc)
+         INFO((SGE_EVENT, "found job to process %s: set time stamp\n", d_name));
+      else
+         INFO((SGE_EVENT, "found no job to process %s\n", d_name));
+   }
    DEXIT;
    return;
 }
@@ -208,7 +212,7 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
  * INSURE detects a WRITE_OVERFLOW when getgroups was invoked (LINUX).
  * Is this a bug in the kernel or in INSURE?
  */
-#if defined(LINUX)
+#if __linux__
    list = (gid_t*) malloc(2*max_groups*sizeof(gid_t));
 #else
    list = (gid_t*) malloc(max_groups*sizeof(gid_t));
@@ -239,16 +243,6 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
          DPRINTF(("open(%s) failed: %s\n", procnam, strerror(errno)));
          continue;
       }
-#elif defined(LINUX)
-      if (!strcmp(dent->d_name, "self"))
-         continue;
-
-      snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/status", dent->d_name);
-      if (!(fp = fopen(procnam, "r")))
-         continue;
-#endif
-
-#if defined(SOLARIS) || defined(ALPHA)
       /* get number of groups */
       if (ioctl(fd, PIOCCRED, &proc_cred) == -1) {
          close(fd);
@@ -261,8 +255,14 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
          close(fd);
          continue;
       }
-
+      close(fd);
 #elif defined(LINUX)
+      if (!strcmp(dent->d_name, "self"))
+         continue;
+
+      snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/status", dent->d_name);
+      if (!(fp = fopen(procnam, "r")))
+         continue;
       /* get number of groups and current uids, gids
        * uids[0], gids[0] => UID and GID
        * uids[1], gids[1] => EUID and EGID
@@ -298,14 +298,9 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
             }
          }
       }
-#endif
-
-#if defined(SOLARIS) || defined(ALPHA)
-      close(fd);
-#elif defined(LINUX)
       FCLOSE(fp);
 FCLOSE_ERROR:
-#endif
+#endif  /* SOLARIS || ALPHA */
 
       /* send each process a signal which belongs to add_grg_id */
       for (i = 0; i < groups; i++) {
@@ -443,7 +438,7 @@ time_t last_time
          continue;
 
 #if defined(LINUX)
-      /* check only processes which belongs to a GE job */
+      /* check only processes which belong to a GE job */
       if ((pr = get_pr(atoi(pidname))) != NULL) {
          /* set process as still running */
          lSetPosBool(pr, pos_run, true);
@@ -455,9 +450,9 @@ time_t last_time
 
       if (SGE_STAT(procnam, &fst)) {
          if (errno != ENOENT) {
-#ifdef MONITOR_PDC
-            INFO((SGE_EVENT, "could not stat %s: %s\n", procnam, strerror(errno)));
-#endif
+            if (monitor_pdc)
+               INFO((SGE_EVENT, "could not stat %s: %s\n", procnam,
+                     strerror(errno)));
             touch_time_stamp(dent->d_name, time_stamp, job_list);
          }
          continue;
@@ -472,14 +467,16 @@ time_t last_time
 #endif
          if ((fd = open(procnam, O_RDONLY, 0)) == -1) {
             if (errno != ENOENT) {
-#ifdef MONITOR_PDC
-               if (errno == EACCES)
-                  INFO((SGE_EVENT, "(uid:"gid_t_fmt" euid:"gid_t_fmt") could not open %s: %s\n",
-                           getuid(), geteuid(), procnam, strerror(errno)));
-               else
-                  INFO((SGE_EVENT, "could not open %s: %s\n", procnam, strerror(errno)));
-#endif
-                  touch_time_stamp(dent->d_name, time_stamp, job_list);
+               if (monitor_pdc) {
+                 if (errno == EACCES)
+                   INFO((SGE_EVENT, "(uid:"gid_t_fmt" euid:"gid_t_fmt
+                         ") could not open %s: %s\n",
+                         getuid(), geteuid(), procnam, strerror(errno)));
+                 else
+                   INFO((SGE_EVENT, "could not open %s: %s\n", procnam,
+                         strerror(errno)));
+               }
+               touch_time_stamp(dent->d_name, time_stamp, job_list);
             }
             continue;
          }
@@ -498,9 +495,9 @@ time_t last_time
          if ((ret = read(fd, buffer, BIGLINE-1))<=0) {
             close(fd);
             if (ret == -1 && errno != ENOENT) {
-#ifdef MONITOR_PDC
-               INFO((SGE_EVENT, "could not read %s: %s\n", procnam, strerror(errno)));
-#endif
+               if (monitor_pdc)
+                 INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
+                       strerror(errno)));
                touch_time_stamp(dent->d_name, time_stamp, job_list);
             }
             continue;
@@ -548,9 +545,10 @@ time_t last_time
          snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/status", dent->d_name);
          if (SGE_STAT(procnam, &fst) != 0) {
             if (errno != ENOENT) {
-#ifdef MONITOR_PDC
-               INFO((SGE_EVENT, "could not stat %s: %s\n", procnam, strerror(errno)));
-#endif
+               if (monitor_pdc) {
+                  INFO((SGE_EVENT, "could not stat %s: %s\n", procnam,
+                        strerror(errno)));
+               }
                touch_time_stamp(dent->d_name, time_stamp, job_list);
             }
             continue;
@@ -600,9 +598,9 @@ time_t last_time
       if (ioctl(fd, PIOCSTATUS, &pr)==-1) {
          close(fd);
          if (errno != ENOENT) {
-#ifdef MONITOR_PDC
-            INFO((SGE_EVENT, "could not ioctl(PIOCSTATUS) %s: %s\n", procnam, strerror(errno)));
-#endif
+            if (monitor_pdc)
+               INFO((SGE_EVENT, "could not ioctl(PIOCSTATUS) %s: %s\n",
+                     procnam, strerror(errno)));
             touch_time_stamp(dent->d_name, time_stamp, job_list);
          }
          continue;
@@ -615,9 +613,9 @@ time_t last_time
       if (ret < 0) {
          close(fd);
          if (errno != ENOENT) {
-#ifdef MONITOR_PDC
-            INFO((SGE_EVENT, "could not ioctl(PIOCCRED) %s: %s\n", procnam, strerror(errno)));
-#endif
+            if (monitor_pdc)
+               INFO((SGE_EVENT, "could not ioctl(PIOCCRED) %s: %s\n", procnam,
+                     strerror(errno)));
             touch_time_stamp(dent->d_name, time_stamp, job_list);
          }
          continue;
@@ -631,15 +629,15 @@ time_t last_time
       if (ret<0) {
          close(fd);
          if (errno != ENOENT) {
-#ifdef MONITOR_PDC
-            INFO((SGE_EVENT, "could not ioctl(PIOCCRED) %s: %s\n", procnam, strerror(errno)));
-#endif
+            if (monitor_pdc)
+               INFO((SGE_EVENT, "could not ioctl(PIOCCRED) %s: %s\n", procnam,
+                     strerror(errno)));
             touch_time_stamp(dent->d_name, time_stamp, job_list);
          }
          continue;
       }
 
-#  endif
+#  endif  /* LINUX */
 
       /* 
        * try to find a matching job 
@@ -710,8 +708,7 @@ time_t last_time
       LNK_ADD(job_elem->procs.prev, &proc_elem->link);
       job_elem->job.jd_proccount++;
 
-#ifdef MONITOR_PDC
-      {
+      if (monitor_pdc) {
          double utime, stime;
 #if defined(LINUX)
          utime = ((double)lGetPosUlong(pr, pos_utime))/sysconf(_SC_CLK_TCK);
@@ -725,10 +722,8 @@ time_t last_time
 
          INFO((SGE_EVENT, "new process "pid_t_fmt" for job "pid_t_fmt" (utime = %f stime = %f)\n", 
                pr.pr_pid, job_elem->job.jd_jid, utime, stime)); 
-#endif
+#endif  /* LINUX */
       }
-#endif
-
    } else {
       /* save previous usage data - needed to build delta usage */
       old_time = proc_elem->proc.pd_utime + proc_elem->proc.pd_stime;
@@ -804,7 +799,7 @@ time_t last_time
          }
       }
    }
-#else
+#else  /* !LINUX */
    proc_elem->proc.pd_pid    = pr.pr_pid;
    proc_elem->proc.pd_utime  = pr.pr_utime.tv_sec + pr.pr_utime.tv_nsec*1E-9;
    proc_elem->proc.pd_stime  = pr.pr_stime.tv_sec + pr.pr_stime.tv_nsec*1E-9;
@@ -817,7 +812,7 @@ time_t last_time
       proc_elem->rss            = pri.pr_rssize * pagesize;
       proc_elem->proc.pd_pstart = pri.pr_start.tv_sec + pri.pr_start.tv_nsec*1E-9;
    }
-#endif         
+#endif  /* LINUX */
 
    proc_elem->mem = 
          ((proc_elem->proc.pd_stime + proc_elem->proc.pd_utime) - old_time) * 
@@ -836,7 +831,7 @@ time_t last_time
          proc_elem->delta_chars = (proc_elem->ru_ioblock - old_ru_ioblock)* BLOCKSIZE;
       }
    }
-#endif
+#endif  /* ALPHA */
 
 
    close(fd);
