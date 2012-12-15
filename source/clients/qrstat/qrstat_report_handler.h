@@ -106,5 +106,8 @@ struct qrstat_report_handler_str {
 bool
 qrstat_print(lList **answer_list, qrstat_report_handler_t *handler, qrstat_env_t *qrstat_env); 
 
+#ifdef  __cplusplus
+}
+#endif
 
 #endif /* __SGE_QRSTAT_REPORT_HANDLER_H */

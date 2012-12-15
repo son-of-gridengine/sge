@@ -860,6 +860,7 @@ bool set_conf_list(lList **alpp, lList **clpp, int fields[], const char *key,
    return true;
 }
 
+#if unused
 bool set_conf_str_attr_list(lList **alpp, lList **clpp, int fields[], 
                             const char *key, lListElem *ep, int name_nm, 
                             lDescr *descr, int sub_name_nm) 
@@ -1310,6 +1311,7 @@ bool set_conf_inter_attr_list(lList **alpp, lList **clpp, int fields[],
    DEXIT;
    return true;
 }
+#endif
 
 /****
  **** set_conf_subordlist

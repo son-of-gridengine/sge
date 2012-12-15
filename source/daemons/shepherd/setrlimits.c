@@ -41,17 +41,6 @@
 
 #include <sys/resource.h>
 
-#if defined(IRIX)
-#   define RLIMIT_STRUCT_TAG rlimit64
-#   define RLIMIT_INFINITY RLIM64_INFINITY
-#else
-#   define RLIMIT_STRUCT_TAG rlimit
-#   define RLIMIT_INFINITY RLIM_INFINITY
-#endif
-
-/* Format the value, if val == INFINITY, print INFINITY for logs sake */
-#define FORMAT_LIMIT(x) (x==RLIMIT_INFINITY)?0:x, (x==RLIMIT_INFINITY)?"\bINFINITY":""
-
 #include "basis_types.h"
 #include "sge_parse_num_par.h"
 #include "config_file.h"
@@ -62,6 +51,16 @@
 #include "sge_os.h"
 #include "sgeobj/sge_conf.h"
 
+#if defined(IRIX)
+#   define RLIMIT_STRUCT_TAG rlimit64
+#   define RLIMIT_INFINITY RLIM64_INFINITY
+#   define setrlimit(a, b) setrlimit64(a, b)
+#   define setrlimit(a, b) setrlimit64(a, b)
+#else
+#   define RLIMIT_STRUCT_TAG rlimit
+#   define RLIMIT_INFINITY RLIM_INFINITY
+#endif
+
 static void pushlimit(int, struct RLIMIT_STRUCT_TAG *, int trace_rlimit);
 
 static int get_resource_info(u_long32 resource, const char **name, int *resource_type);
@@ -69,6 +68,9 @@ static int get_resource_info(u_long32 resource, const char **name, int *resource
 static int rlimcmp(sge_rlim_t r1, sge_rlim_t r2);
 static int sge_parse_limit(sge_rlim_t *rlvalp, char *s, char *error_str,
                            int error_len);
+
+/* Format the value, if val == INFINITY, print INFINITY for logs sake */
+#define FORMAT_LIMIT(x) (x==RLIMIT_INFINITY)?0:x, (x==RLIMIT_INFINITY)?"\bINFINITY":""
 
 /*
  * compare two sge_rlim_t values
@@ -553,11 +555,7 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
                         strerror(errno));
          return;
       }
-#if defined(IRIX)
-      ret = setrlimit64(resource, rlp);
-#else
       ret = setrlimit(resource,rlp);
-#endif
       errno = 0;
       if (sge_switch2admin_user()) {
          shepherd_trace("failed to switch user for setrlimit: %s", strerror(errno));
@@ -572,11 +570,7 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
          strip_bs(trace_str);
          shepherd_trace("%s", trace_str);
       } else {
-#if defined(IRIX)
-         getrlimit64(resource,&dlp);
-#else
          getrlimit(resource,&dlp);
-#endif
       }
 
       if (trace_rlimit) {

@@ -78,7 +78,6 @@ qref_list_resolve_qinstance_names(const lList *cq_qref_list,
 
 static bool
 qref_list_resolve_qdomain_names(const lList *cq_qref_list,
-                                lList **answer_list,
                                 dstring *host_or_hgroup,
                                 lList **qref_list,
                                 bool *found_something,
@@ -160,7 +159,6 @@ qref_list_resolve_qinstance_names(const lList *cq_qref_list,
 
 static bool
 qref_list_resolve_qdomain_names(const lList *cq_qref_list, 
-                                lList **answer_list,
                                 dstring *host_or_hgroup,
                                 lList **qref_list,
                                 bool *found_something,
@@ -181,11 +179,10 @@ qref_list_resolve_qdomain_names(const lList *cq_qref_list,
     * Possibly resolve them.
     */
    if (resolve_qdomain) {
-      hgroup_list_find_matching_and_resolve(hgroup_list, answer_list,
+      hgroup_list_find_matching_and_resolve(hgroup_list,
                                             hgroup_pattern, &href_list);
    } else {
-      hgroup_list_find_matching(hgroup_list, answer_list,
-                                hgroup_pattern, &href_list);
+      hgroup_list_find_matching(hgroup_list, hgroup_pattern, &href_list);
    }
    for_each(cq_qref, cq_qref_list) {
       const char *cqueue_name = lGetString(cq_qref, QR_name);
@@ -382,7 +379,7 @@ qref_list_resolve(const lList *src_qref_list, lList **answer_list,
           * Depending on the type of pattern -> resolve QC or QI names
           */
          if (has_domain) {
-            ret &= qref_list_resolve_qdomain_names(cq_ref_list, answer_list,
+            ret &= qref_list_resolve_qdomain_names(cq_ref_list,
                                                    &host_or_hgroup, qref_list,
                                                    &tmp_found_something,
                                                    cqueue_list, hgroup_list,

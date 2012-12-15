@@ -200,7 +200,7 @@ jsv_is_started(lListElem *jsv)
 }
 
 static bool
-jsv_is_send_ready(lListElem *jsv, lList **answer_list) {
+jsv_is_send_ready(lListElem *jsv) {
    bool ret = false;
    const int timeout = 5;
    int fd;
@@ -253,8 +253,8 @@ jsv_send_data(lListElem *jsv, lList **answer_list, const char *buffer, size_t si
    bool ret = true;
 
    DENTER(TOP_LAYER, "jsv_send_data");
-   if (jsv_is_send_ready(jsv, answer_list)) {
-      int lret;
+   if (jsv_is_send_ready(jsv)) {
+      size_t lret;
 
       lret = fprintf(lGetRef(jsv, JSV_in), "%s", buffer);
       fflush(lGetRef(jsv, JSV_in));

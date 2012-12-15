@@ -142,4 +142,7 @@ bool
 qrstat_xml_report_xacl_list_node(qrstat_report_handler_t* handler, 
                                  lList **alpp, const char *name);
 
+#ifdef  __cplusplus
+}
+#endif
 #endif /* __SGE_QRSTAT_REPORT_HANDLER_XML_H */

@@ -84,12 +84,11 @@ hgroup_list_exists(const lList *this_list, lList **answer_list,
 
 bool
 hgroup_list_find_matching_and_resolve(const lList *this_list,
-                                      lList **answer_list,
                                       const char *hgroup_pattern,
                                       lList **used_hosts);
 
 bool
-hgroup_list_find_matching(const lList *this_list, lList **answer_list,
+hgroup_list_find_matching(const lList *this_list,
                           const char *hgroup_pattern, lList **used_hosts);
 
 #endif /* __SGE_GROUPS_H__ */

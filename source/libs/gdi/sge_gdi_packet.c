@@ -540,8 +540,7 @@ sge_gdi_packet_create(sge_gdi_ctx_class_t * ctx, lList **answer_list, bool use_e
 *     used as they are. In that case they will direct to NULL after
 *     the function returns. The memory allocated by the provided
 *     pointer parameters will be released when the task is destroyed
-*     they are part of. "do_verify" defines if the input parameters
-*     are verified after the task element has been created.
+*     they are part of.
 *
 *     In case of any error the function will return "false"
 *     and the "answer_list" will be filled with a message.
@@ -560,7 +559,6 @@ sge_gdi_packet_create(sge_gdi_ctx_class_t * ctx, lList **answer_list, bool use_e
 *     lEnumeration **enumeration     - CULL enumeration
 *     bool do_copy                   - do copy all elements passed
 *                                      to this structure
-*     bool do_verify                 - do verification of input data
 *
 *  RESULT
 *     bool - error state
@@ -579,7 +577,7 @@ sge_gdi_packet_append_task(sge_gdi_packet_class_t * packet,
                            lList **answer_list, u_long32 target,
                            u_long32 command, lList **lp, lList **a_list,
                            lCondition **condition, lEnumeration **enumeration,
-                           bool do_copy, bool do_verify)
+                           bool do_copy)
 {
    bool ret = true;
    sge_gdi_task_class_t *task = NULL;

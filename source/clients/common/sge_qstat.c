@@ -82,8 +82,8 @@
 
 static int qstat_env_get_all_lists(qstat_env_t *qstat_env, bool need_job_list, lList** alpp);
 
-int qstat_env_filter_queues(qstat_env_t *qstat_env, lList** filtered_queue_list, lList **alpp);
-static int filter_jobs(qstat_env_t *qstat_env, lList **alpp);
+int qstat_env_filter_queues(qstat_env_t *qstat_env, lList **alpp);
+static int filter_jobs(qstat_env_t *qstat_env);
 static void calc_longest_queue_length(qstat_env_t *qstat_env);
 static int qstat_env_prepare(qstat_env_t* qstat_env, bool need_job_list, lList **alpp);
 
@@ -163,7 +163,7 @@ int qselect(qstat_env_t* qstat_env, qselect_handler_t* handler, lList **alpp) {
       DRETURN(1);
    }
    
-   if (qstat_env_filter_queues(qstat_env, NULL, alpp) <= 0) {
+   if (qstat_env_filter_queues(qstat_env, alpp) <= 0) {
       DRETURN(1);
    }
 
@@ -201,12 +201,12 @@ int qstat_cqueue_summary(qstat_env_t *qstat_env, cqueue_summary_handler_t *handl
       DRETURN(ret);
    }
    
-   if ((ret = qstat_env_filter_queues(qstat_env, NULL, alpp)) < 0) {
+   if ((ret = qstat_env_filter_queues(qstat_env, alpp)) < 0) {
       DPRINTF(("qstat_env_filter_queues failed\n"));
       DRETURN(ret);
    }
    
-   if ((ret = filter_jobs(qstat_env, alpp)) != 0) {
+   if ((ret = filter_jobs(qstat_env)) != 0) {
       DPRINTF(("filter_jobs failed\n"));
       DRETURN(ret);
    }
@@ -287,11 +287,11 @@ int qstat_no_group(qstat_env_t* qstat_env, qstat_handler_t* handler, lList **alp
       DRETURN(ret);
    }
 
-   if ((ret = qstat_env_filter_queues(qstat_env, NULL, alpp)) < 0 ) {
+   if ((ret = qstat_env_filter_queues(qstat_env, alpp)) < 0 ) {
       DRETURN(ret);
    }
 
-   if ((ret = filter_jobs(qstat_env, alpp)) != 0 ) {
+   if ((ret = filter_jobs(qstat_env)) != 0 ) {
       DRETURN(ret);
    }
    
@@ -702,7 +702,7 @@ error:
 }
 
 
-static int filter_jobs(qstat_env_t *qstat_env, lList **alpp) {
+static int filter_jobs(qstat_env_t *qstat_env) {
    
    lListElem *jep = NULL;
    lListElem *jatep = NULL;
@@ -832,7 +832,7 @@ static int filter_jobs(qstat_env_t *qstat_env, lList **alpp) {
 
 
 /*-------------------------------------------------------------------------*/
-int qstat_env_filter_queues( qstat_env_t *qstat_env, lList** filtered_queue_list, lList **alpp) {
+int qstat_env_filter_queues(qstat_env_t *qstat_env, lList **alpp) {
    
    int ret = 0;
 

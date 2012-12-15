@@ -2231,7 +2231,7 @@ int getgrgid_r(gid_t gid, struct group *grp, char *buffer,
    *result = NULL;
 
 #if defined(INTERIX)
-   if ((tgrp = getgrgid_nomembers(gid) == NULL)
+   if ((tgrp = getgrgid_nomembers(gid)) == NULL)
 #else
    if ((tgrp = getgrgid(gid)) == NULL)
 #endif
