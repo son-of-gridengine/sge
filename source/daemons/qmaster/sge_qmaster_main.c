@@ -82,7 +82,6 @@
 #endif
 
 static void init_sig_action_and_mask(void);
-static int set_file_descriptor_limit(void);
 
 /****** qmaster/sge_qmaster_main/sge_qmaster_application_status() ************
 *  NAME
@@ -126,7 +125,7 @@ unsigned long sge_qmaster_application_status(char** info_message)
    return sge_monitor_status(info_message, mconf_get_monitor_time());
 }
 
-/* used if not USE_POLL */
+#ifndef USE_POLL
 /****** qmaster/sge_qmaster_main/set_file_descriptor_limit() ********************
 *  NAME
 *     set_file_descriptor_limit() -- check and set file descriptor limit
@@ -236,7 +235,7 @@ static int set_file_descriptor_limit(void) {
    }
    return return_value;
 }
-
+#endif  /* ! USE_POLL */
 
 /****** qmaster/sge_qmaster_main/main() ****************************************
 *  NAME
@@ -447,14 +446,11 @@ int main(int argc, char* argv[])
    sge_shutdown((void**)&ctx, sge_qmaster_get_exit_state());
    sge_prof_cleanup();
 
-   DEXIT;
-
    const char *pidfile = getenv("SGE_MASTER_PIDFILE");
-   int ret;
    if (!pidfile) pidfile = QMASTER_PID_FILE;
-   ret = unlink(pidfile);
+   unlink(pidfile);
 
-   return 0;
+   DRETURN(0);
 } /* main() */
 
 

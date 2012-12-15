@@ -66,7 +66,6 @@
 #include "sig_handlers.h"
 #include "sge_c_gdi.h"
 #include "sge_c_report.h"
-#include "sge_qmaster_main.h"
 #include "sge_thread_worker.h"
 #include "msg_qmaster.h"
 #include "msg_common.h"
@@ -345,7 +344,7 @@ do_report_request(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg, monitoring_t *mo
    /* 
     * Append a pseudo GDI task
     */ 
-   sge_gdi_packet_append_task(packet, NULL, 0, 0, &rep, NULL, NULL, NULL, false, false);
+   sge_gdi_packet_append_task(packet, NULL, 0, 0, &rep, NULL, NULL, NULL, false);
 
    /*
     * Put the packet into the task queue so that workers can handle it

@@ -338,8 +338,8 @@ int sge_gdi2_multi(sge_gdi_ctx_class_t* ctx, lList **alpp,
     * multi GDI request (mode == SGE_GDI_SEND) then execute it
     */
    if (packet != NULL) {
-      local_ret = sge_gdi_packet_append_task(packet, alpp, target, cmd, lp, NULL, 
-                                             &cp, &enp, do_copy, true);
+      local_ret = sge_gdi_packet_append_task(packet, alpp, target, cmd, lp, NULL,
+                                             &cp, &enp, do_copy);
       if (local_ret != false) {
          ret = sge_gdi_packet_get_last_task_id(packet);
          if (mode == SGE_GDI_SEND) {

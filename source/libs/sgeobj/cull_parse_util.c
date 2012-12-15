@@ -58,6 +58,8 @@
 
 static int fprint_name_value_list(FILE *fp, char *name, lList *thresholds, int print_slots,
      int nm_name, int nm_strval, int nm_doubleval);
+static int parse_list_simpler(lList *lp, lList **destlist, int nm_var, int nm_value, u_long32 flags);
+
 /*
 ** NAME
 **   cull_parse_string_list
@@ -1271,7 +1273,7 @@ parse_list_simple(lList *cmdline, char *option, lListElem *job, int field,
       lp = NULL;
       lXchgList(ep, SPA_argval_lListT, &lp);
 
-      parse_list_simpler(lp, &destlist, option, job, field, nm_var, nm_value, flags);
+      parse_list_simpler(lp, &destlist, nm_var, nm_value, flags);
 
       lRemoveElem(cmdline, &ep);
    } 
@@ -1282,8 +1284,8 @@ parse_list_simple(lList *cmdline, char *option, lListElem *job, int field,
    return 0;
 }
 
-int 
-parse_list_simpler(lList *lp, lList **destlist, char *option, lListElem *job, int field, 
+static int
+parse_list_simpler(lList *lp, lList **destlist,
                   int nm_var, int nm_value, u_long32 flags) 
 {
    if (lp != NULL) {

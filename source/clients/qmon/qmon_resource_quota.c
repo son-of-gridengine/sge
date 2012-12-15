@@ -198,7 +198,7 @@ static void qmonRQSGetText(Widget tw, lList *rqs_list, lList **alpp)
    bool ret = false;
    bool ignore_unchanged_message = false;
    dstring sge_tmpnam_error = DSTRING_INIT;
-   int fd, res;
+   int fd;
 
    DENTER(GUI_LAYER, "qmonRQSGetText");
 
@@ -213,7 +213,7 @@ static void qmonRQSGetText(Widget tw, lList *rqs_list, lList **alpp)
       return;
    }
    sge_dstring_free(&sge_tmpnam_error);
-   res = close(fd);
+   close(fd);
 
    /*
    ** allocates a string

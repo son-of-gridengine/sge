@@ -446,7 +446,7 @@ const char *event_text(const lListElem *event, dstring *buffer)
    return sge_dstring_get_string(buffer);
 }
 
-static bool event_client_verify_subscription(const lListElem *event_client, lList **answer_list, int d_time)
+static bool event_client_verify_subscription(const lListElem *event_client, lList **answer_list)
 {
    bool ret = true;
    const lListElem *ep;
@@ -625,7 +625,7 @@ event_client_verify(const lListElem *event_client, lList **answer_list, bool add
 
    /* subscription */
    if (ret) {
-      ret = event_client_verify_subscription(event_client, answer_list, (int)d_time);
+      ret = event_client_verify_subscription(event_client, answer_list);
 #if 0      
 if (ret == false) {
    printf("event_client_verify_subscription false\n");         

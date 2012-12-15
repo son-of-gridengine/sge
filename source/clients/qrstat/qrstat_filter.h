@@ -83,5 +83,8 @@ qrstat_filter_add_ar_where(qrstat_env_t *qrstat_env);
 
 void
 qrstat_filter_set_ctx(qrstat_env_t *qrstat_env, sge_gdi_ctx_class_t *ctx);
-      
+
+#ifdef  __cplusplus
+}
+#endif
 #endif /* __SGE_QRSTAT_FILTER_H */

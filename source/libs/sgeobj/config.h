@@ -76,29 +76,10 @@ bool set_conf_list(lList **alpp, lList **clpp, int fields[], const char *key, lL
 
 bool set_conf_subordlist(lList **alpp, lList **clpp, int fields[], const char *key, lListElem *ep, int name_nm, lDescr *descr, int subname_nm, int subval_nm);
 
+#if unused
 bool set_conf_str_attr_list(lList **alpp, lList **clpp, int fields[],
                             const char *key, lListElem *ep, int name_nm,
                             lDescr *descr, int sub_name_nm);
-
-bool set_conf_ulng_attr_list(lList **alpp, lList **clpp, int fields[],
-                             const char *key, lListElem *ep, int name_nm,
-                             lDescr *descr, int sub_name_nm);
-
-bool set_conf_bool_attr_list(lList **alpp, lList **clpp, int fields[],
-                             const char *key, lListElem *ep, int name_nm,
-                             lDescr *descr, int sub_name_nm);
-
-bool set_conf_time_attr_list(lList **alpp, lList **clpp, int fields[],
-                             const char *key, lListElem *ep, int name_nm,
-                             lDescr *descr, int sub_name_nm);
-
-bool set_conf_mem_attr_list(lList **alpp, lList **clpp, int fields[],
-                             const char *key, lListElem *ep, int name_nm,
-                             lDescr *descr, int sub_name_nm);
-
-bool set_conf_inter_attr_list(lList **alpp, lList **clpp, int fields[],
-                              const char *key, lListElem *ep, int name_nm,
-                              lDescr *descr, int sub_name_nm);
 
 bool set_conf_strlist_attr_list(lList **alpp, lList **clpp, int fields[],
                                 const char *key, lListElem *ep, int name_nm,
@@ -123,6 +104,27 @@ bool set_conf_solist_attr_list(lList **alpp, lList **clpp, int fields[],
 bool set_conf_qtlist_attr_list(lList **alpp, lList **clpp, int fields[],
                                const char *key, lListElem *ep, int name_nm,
                                lDescr *descr, int sub_name_nm);
+
+bool set_conf_ulng_attr_list(lList **alpp, lList **clpp, int fields[],
+                             const char *key, lListElem *ep, int name_nm,
+                             lDescr *descr, int sub_name_nm);
+
+bool set_conf_bool_attr_list(lList **alpp, lList **clpp, int fields[],
+                             const char *key, lListElem *ep, int name_nm,
+                             lDescr *descr, int sub_name_nm);
+
+bool set_conf_time_attr_list(lList **alpp, lList **clpp, int fields[],
+                             const char *key, lListElem *ep, int name_nm,
+                             lDescr *descr, int sub_name_nm);
+
+bool set_conf_mem_attr_list(lList **alpp, lList **clpp, int fields[],
+                             const char *key, lListElem *ep, int name_nm,
+                             lDescr *descr, int sub_name_nm);
+
+bool set_conf_inter_attr_list(lList **alpp, lList **clpp, int fields[],
+                              const char *key, lListElem *ep, int name_nm,
+                              lDescr *descr, int sub_name_nm);
+#endif
 
 bool set_conf_centry_type(lList **alpp, lList **clpp, int fields[], 
                           const char *key, lListElem *ep, int name_nm);

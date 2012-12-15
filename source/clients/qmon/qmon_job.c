@@ -625,7 +625,7 @@ void updateJobList(void)
    lCondition *where_no_template = NULL;
    lCondition *where_notexiting = NULL;
    lEnumeration *what_queue = NULL;
-   u_long32 jstate, qstate;
+   u_long32 jstate;
    StringConst qnm;
    lList *ehl = NULL;
    lList *cl = NULL;
@@ -802,7 +802,6 @@ void updateJobList(void)
                qep = cqueue_list_locate_qinstance(qmonMirrorList(SGE_CQ_LIST), qnm);
                if (qep) {
                   lList *st = lGetList(qep, QU_suspend_thresholds);
-                  qstate = lGetUlong(qep, QU_state);
                   if ( sge_load_alarm(NULL, qep, st, ehl, cl, NULL, false)) {
                      jstate = lGetUlong(jap, JAT_state);
                      jstate &= ~JRUNNING; /* unset bit jrunning */

@@ -215,10 +215,14 @@ bool ja_task_add_finished_pe_task(lListElem *ja_task, const char *pe_task_id)
       DRETURN(false);
    }
 
-   pe_task = lAddSubStr(ja_task, FPET_id, pe_task_id, JAT_finished_task_list, 
-                        FPET_Type);
-
-   DRETURN(true);
+   if (lAddSubStr(ja_task, FPET_id, pe_task_id, JAT_finished_task_list,
+                  FPET_Type))
+      DRETURN(true);
+   else {
+      ERROR((SGE_EVENT, "ja_task_add_finished_pe_task: lAddSubStr failed, task "
+             SFQ, pe_task_id));
+      DRETURN(false);
+   }
 }
 
 /****** sgeobj/ja_task/ja_task_clear_finished_pe_tasks() ***********************

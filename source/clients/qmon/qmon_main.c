@@ -63,6 +63,7 @@
 #include "qmon_preferences.h"
 
 #include "uti/sge_prog.h"
+#include "uti/sge_string.h"
 
 #include "sgeobj/sge_feature.h"
 
@@ -136,7 +137,7 @@ char **argv
    /* INSTALL SIGNAL HANDLER */
    qmonInstSignalHandler();
 
-   strcpy(progname, argv[0]);
+   sge_strlcpy(progname, argv[0], sizeof progname);
 
    /* GENERAL SGE SETUP */
    if (!(argc > 1 && !strcmp(argv[1], "-help"))) {

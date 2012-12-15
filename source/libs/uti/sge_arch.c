@@ -42,6 +42,7 @@
 #include "uti/sge_unistd.h"
 #include "uti/sge_arch.h"
 #include "uti/sge_string.h"
+#include "uti/setup_path.h"
 
 #include "sge.h"
 

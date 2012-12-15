@@ -55,7 +55,7 @@ bool
 sge_gdi_packet_append_task(sge_gdi_packet_class_t *packet, lList **answer_list,
                            u_long32 target, u_long32 command, lList **lp, lList **a_list,
                            lCondition **condition, lEnumeration **enumeration,
-                           bool do_copy, bool do_verify);
+                           bool do_copy);
 
 u_long32 
 sge_gdi_packet_get_last_task_id(sge_gdi_packet_class_t *packet);
@@ -71,6 +71,3 @@ sge_gdi_task_get_operation_name(sge_gdi_task_class_t *task);
 #endif
 
 #endif 
-
-
-

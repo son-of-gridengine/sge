@@ -949,16 +949,12 @@ StringConst name
    lList *ehul = NULL;
    lList *usl = NULL;
    lList *entries = NULL;
-   lList *acls = NULL;
-   lList *prjs = NULL;
    static lCondition *where = NULL;
    
    DENTER(GUI_LAYER, "qmonExecHostSetAsk");
 
    cl = qmonMirrorList(SGE_CE_LIST);
    ehl = qmonMirrorList(SGE_EH_LIST);
-   acls = qmonMirrorList(SGE_US_LIST);
-   prjs = qmonMirrorList(SGE_PR_LIST);
 
    if (name) {
       /*

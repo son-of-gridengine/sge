@@ -49,4 +49,7 @@ bool
 qrstat_destroy_report_handler_stdout(qrstat_report_handler_t** handler, 
                                      lList **answer_list);
 
+#ifdef  __cplusplus
+}
+#endif
 #endif /* __SGE_QRSTAT_REPORT_HANDLER_STDOUT_H */
