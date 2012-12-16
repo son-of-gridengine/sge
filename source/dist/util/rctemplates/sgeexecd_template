@@ -388,6 +388,12 @@ if [ $stop = true -o $softstop = true ]; then
 fi
 
 if [ "$startup" = true ]; then
+      # Ensure the shepherd will run, e.g. not missing hwloc dynamic lib
+      if ! $bin_dir/sge_shepherd -help >/dev/null 2>&1; then
+          echo "sge_shepherd won't run -- dynamic library missing?"
+          exit 5
+      fi
+
       #We want to use smf
       if [ \( -z "$SMF_FMRI" -o "$SMF_FMRI" != "$service" \) -a -n "$service" ]; then
          svcadm enable -st $service

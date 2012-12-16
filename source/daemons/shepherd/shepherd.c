@@ -722,8 +722,9 @@ int main(int argc, char **argv)
    if (argc >= 2) {
       if ( strcmp(argv[1],"-help") == 0) {
          show_shepherd_version();
-         return 1;
+         return 0;
       }
+      return 1;
    }
 #if defined(INTERIX) && defined(SECURE)
    sge_init_shared_ssl_lib();
