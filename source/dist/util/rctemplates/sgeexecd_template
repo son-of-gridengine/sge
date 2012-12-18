@@ -111,8 +111,6 @@ case $ARCH in
    ;;
 esac
 
-qma_run_dir=`GetExecdSpoolDir`
-
 [ -f /etc/default/sgeexecd ] && . /etc/default/sgeexecd
 
 #---------------------------------------------------------------------------
@@ -344,6 +342,8 @@ if [ "$utilbin_dir" = "none" ]; then
    echo "can't determine path to Grid Engine utility binaries"
    exit 5  # LSB compliant exit status - program is not installed
 fi
+
+execd_run_dir=`GetExecdSpoolDir`
 
 # HOST is the aliased name (SGE name)
 # UQHOST is the local host name (unqualified name)
