@@ -119,9 +119,6 @@ if [ -f /lib/svc/share/smf_include.sh ]; then
    NO_SMF=$?
 fi
 
-qmaster_spool_dir=`QmasterSpoolDir`
-qma_run_dir=$qmaster_spool_dir
-
 [ -f /etc/default/sgemaster ] && . /etc/default/sgemaster
 
 #---------------------------------------------------------------------------
@@ -512,6 +509,9 @@ if [ "$utilbin_dir" = "none" ]; then
    echo "can't determine path to Grid Engine utility binaries"
    exit 5	# LSB compliant exit status - program is not installed
 fi
+
+qmaster_spool_dir=`QmasterSpoolDir`
+qma_run_dir=$qmaster_spool_dir
 
 HOST=`$utilbin_dir/gethostname -aname`
 UQHOST=`$utilbin_dir/gethostname -aname | cut -f1 -d.`
