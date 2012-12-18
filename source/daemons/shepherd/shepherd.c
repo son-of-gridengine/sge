@@ -723,7 +723,6 @@ int main(int argc, char **argv)
          show_shepherd_version();
          return 0;
       }
-      return 1;
    }
 #if defined(INTERIX) && defined(SECURE)
    sge_init_shared_ssl_lib();
