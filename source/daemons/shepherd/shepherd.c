@@ -116,7 +116,6 @@
 #include "sgedefs.h"
 #include "exec_ifm.h"
 #include "pdc.h"
-#include "procfs.h"
 #include "builtin_starter.h"
 #include "err_trace.h"
 #include "setrlimits.h"

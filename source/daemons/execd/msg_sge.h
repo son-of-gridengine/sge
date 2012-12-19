@@ -34,7 +34,7 @@
 
 #include "basis_types.h"
 
-#define MSG_SGE_USAGE         _MESSAGE(31025, _("usage: pdc [-snpgj] [-kK signo] [-iJPS secs] job_id [ ... ]"))
+#define MSG_SGE_USAGE         _MESSAGE(31025, _("usage: pdc [-snpgj] [-kK signo] [-iJPS secs] job_id [ ... ]\n\njob_id is the supplementary gid on Linux"))
 #define MSG_SGE_s_OPT_USAGE   _MESSAGE(31026, _("show system data"  ))
 #define MSG_SGE_n_OPT_USAGE   _MESSAGE(31027, _("no output"  ))
 #define MSG_SGE_p_OPT_USAGE   _MESSAGE(31028, _("show process information"  ))
@@ -63,10 +63,8 @@
 ** sge/procfs.c
 */ 
 #define MSG_SGE_NGROUPS_MAXOSRECONFIGURATIONNECESSARY    _MESSAGE(31048, _("NGROUPS_MAX <= 0: os reconfiguration necessary"))
-#define MSG_SGE_PROCFSKILLADDGRPIDMALLOCFAILED           _MESSAGE(31049, _("procfs_kill_addgrpid(): malloc failed" ))
 #define MSG_SGE_KILLINGPIDXY_UI                          _MESSAGE(31050, _("killing pid "sge_U32CFormat"/%d" ))
 #define MSG_SGE_DONOTKILLROOTPROCESSXY_UI                _MESSAGE(31051, _("do not kill root process "sge_U32CFormat"/%d"   ))
-#define MSG_SGE_PTDISPATCHPROCTOJOBMALLOCFAILED          _MESSAGE(31052, _("pt_dispatch_proc_to_job: malloc failed" ))
 /* #define MSG_SGE_PIOCPSINFOFAILED                         _message(31053, _("PIOCPSINFO failed")) __TS Removed automatically from testsuite!! TS__*/
 
 
