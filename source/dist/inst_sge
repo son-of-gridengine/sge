@@ -876,6 +876,7 @@ if [ "$QMASTER" = "install" -a "$UPDATE" != "true" ]; then
  CreateSGEStartUpScripts $euid true master
  CreateSGEStartUpScripts $euid true execd
  CreateSettingsFile
+ SetupDefaultUsers $euid
  InitCA
  AddSGEStartUpScript $euid master
  StartQmaster
