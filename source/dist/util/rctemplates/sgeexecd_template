@@ -275,6 +275,7 @@ GetExecdSpoolDir()
    if [ "$EXECD_SPOOL_DIR" = "" ]; then
       EXECD_SPOOL_DIR=`$bin_dir/qconf -sconf | grep execd_spool_dir | awk '{ print $2 }'`
    fi
+   echo "$EXECD_SPOOL_DIR"
 }
 
 #---------------------------------------------------------------------------
@@ -343,12 +344,12 @@ if [ "$utilbin_dir" = "none" ]; then
    exit 5  # LSB compliant exit status - program is not installed
 fi
 
-execd_run_dir=`GetExecdSpoolDir`
-
 # HOST is the aliased name (SGE name)
 # UQHOST is the local host name (unqualified name)
 HOST=`$utilbin_dir/gethostname -aname`
 UQHOST=`$utilbin_dir/gethostname -name | cut -f1 -d.`
+
+execd_run_dir=`GetExecdSpoolDir`/$UQHOST
 
 DetectSMFService execd
 
