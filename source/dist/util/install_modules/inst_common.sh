@@ -129,8 +129,6 @@ BasicSettings()
   TOUCH="touch"
   MORE_CMD="more"
   CHMOD="chmod"
-  # where daemon pid is written
-  RUNDIR="$QMDIR"
 
 }
 
@@ -918,13 +916,13 @@ CheckConfigFile()
          is_valid="false"
       fi
 
-      if [ -z "$QMASTER_SPOOL_DIR" -o  "`echo '$QMASTER_SPOOL_DIR' | cut -d/ -f1`" = "`echo '$QMASTER_SPOOL_DIR' | cut -d/ -f2`" ]; then
+      if [ -z "$QMASTER_SPOOL_DIR" -o  "`echo "$QMASTER_SPOOL_DIR" | cut -d/ -f1`" = "`echo "$QMASTER_SPOOL_DIR" | cut -d/ -f2`" ]; then
          $INFOTEXT -e "Your >QMASTER_SPOOL_DIR< is empty or an invalid path. It must be a valid path!"
          $INFOTEXT -log "Your >QMASTER_SPOOL_DIR< is empty or an invalid path. It must be a valid path!"
          is_valid="false"
       fi
 
-      if [ -z "$EXECD_SPOOL_DIR" -o  "`echo '$EXECD_SPOOL_DIR' | cut -d/ -f1`" = "`echo '$EXECD_SPOOL_DIR' | cut -d/ -f2`" ]; then
+      if [ -z "$EXECD_SPOOL_DIR" -o  "`echo "$EXECD_SPOOL_DIR" | cut -d/ -f1`" = "`echo "$EXECD_SPOOL_DIR" | cut -d/ -f2`" ]; then
          $INFOTEXT -e "Your >EXECD_SPOOL_DIR< is empty or an invalid path. It must be a valid path!"
          $INFOTEXT -log "Your >EXECD_SPOOL_DIR< is empty or an invalid path. It must be a valid path!"
          is_valid="false"
@@ -974,7 +972,7 @@ CheckConfigFile()
          $INFOTEXT -log "Your >GID_RANGE< has invalid values."
          is_valid="false"
       fi
-      if [ "`echo '$EXECD_SPOOL_DIR_LOCAL' | cut -d/ -f1`" = "`echo '$EXECD_SPOOL_DIR_LOCAL' | cut -d/ -f2`" -a ! -z "$EXECD_SPOOL_DIR_LOCAL" ]; then
+      if [ "`echo "$EXECD_SPOOL_DIR_LOCAL" | cut -d/ -f1`" = "`echo "$EXECD_SPOOL_DIR_LOCAL" | cut -d/ -f2`" -a ! -z "$EXECD_SPOOL_DIR_LOCAL" ]; then
          $INFOTEXT -e "Your >EXECD_SPOOL_DIR_LOCAL< entry is not a path. It must be a valid path or empty!"
          $INFOTEXT -log "Your >EXECD_SPOOL_DIR_LOCAL< entry is not a path. It must be a valid path or empty!"
          is_valid="false"
@@ -2751,7 +2749,7 @@ CheckRunningDaemon()
          start=`$SGE_UTILBIN/now 2>/dev/null`
          ready=false
          while [ $ready = "false" ]; do
-            if [ -s "$RUNDIR/qmaster.pid" ]; then
+            if [ -s "$QMDIR/qmaster.pid" ]; then
                ready="true"
             else
                now=`$SGE_UTILBIN/now 2>/dev/null`
@@ -2767,7 +2765,7 @@ CheckRunningDaemon()
                sleep 2
             fi
          done
-         daemon_pid=`cat "$RUNDIR/qmaster.pid"`
+         daemon_pid=`cat "$QMDIR/qmaster.pid"`
          $SGE_UTILBIN/checkprog $daemon_pid $daemon_name > /dev/null
          return $?
         ;;
