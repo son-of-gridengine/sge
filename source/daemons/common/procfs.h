@@ -37,10 +37,9 @@
 
 int pt_open(void);
 void pt_close(void);
-int pt_dispatch_proc_to_job(lnk_link_t *job_list, int time_stamp, time_t last_time);
-
 void procfs_kill_addgrpid(gid_t add_grp_id, int sig,
    tShepherd_trace shepherd_trace);
-
+void pt_dispatch_procs_to_jobs(lnk_link_t *job_list, int time_stamp, time_t last_time);
+void init_procfs(void);
 #endif  /* LINUX || ALPHA || SOLARIS */
 #endif /* __PROCFS_H */

@@ -44,16 +44,9 @@ int verydummyprocfs;
 #include <sys/types.h>
 #include <sys/signal.h>
 
-#if !defined(AIX) && !defined(__CYGWIN__)
-#include <sys/syscall.h>
-#endif
-
 #include <unistd.h>
 #include <sys/times.h>
 #include <sys/wait.h>
-#if defined(FREEBSD) || defined(DARWIN)
-#include <sys/time.h>
-#endif
 #include <sys/resource.h>
 #include <dirent.h>
 #include <stdlib.h>
@@ -79,6 +72,8 @@ int verydummyprocfs;
 #include "uti/sge_unistd.h"
 #include "uti/sge_log.h"
 
+#include "uti2/sge_cgroup.h"
+
 #include "cull/cull.h"
 
 #include "basis_types.h"
@@ -95,14 +90,6 @@ static bool monitor_pdc = true;
 static bool monitor_pdc = false;
 #endif
 
-#if defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
-#   if defined(SVR3)
-#      define PROC_DIR "/debug"
-#   else
-#      define PROC_DIR "/proc"
-#   endif
-#endif
-
 #ifdef LINUX
 #define BIGLINE 1024
 static int linux_proc_io(char *proc, uint64 *iochars);
@@ -114,8 +101,12 @@ static bool linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
 /*-----------------------------------------------------------------------*/
 #if defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
 
+#define PROC_DIR "/proc"
+
 static DIR *cwd;
 static struct dirent *dent;
+static u_long32 max_groups;
+static gid_t *list = 0;
 
 /* search in job list for the pid
    return the proc element */
@@ -209,19 +200,7 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
       if (shepherd_trace) {
          shepherd_trace(MSG_SGE_NGROUPS_MAXOSRECONFIGURATIONNECESSARY);
       }
-/*
- * INSURE detects a WRITE_OVERFLOW when getgroups was invoked (LINUX).
- * Is this a bug in the kernel or in INSURE?
- */
-#if __linux__
-   list = (gid_t*) malloc(2*max_groups*sizeof(gid_t));
-#else
-   list = (gid_t*) malloc(max_groups*sizeof(gid_t));
-#endif
-   if (list == NULL)
-      if (shepherd_trace) {
-         shepherd_trace(MSG_SGE_PROCFSKILLADDGRPIDMALLOCFAILED);
-      }
+   list = sge_malloc(max_groups*sizeof(gid_t));
 
    pt_open();
 
@@ -360,8 +339,8 @@ void pt_close(void)
    closedir(cwd);
 }
 
-int pt_dispatch_proc_to_job(lnk_link_t *job_list, int time_stamp,
-                            time_t last_time) {
+int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
+                            int time_stamp, time_t last_time) {
    int fd = -1;
 #if defined(LINUX)
    lListElem *pr = NULL;
@@ -382,13 +361,11 @@ int pt_dispatch_proc_to_job(lnk_link_t *job_list, int time_stamp,
    prpsinfo_t pri;
 #endif  /* LINUX */
 
-#if defined(SOLARIS) || defined(ALPHA)   
+#if defined(SOLARIS) || defined(ALPHA)
    prcred_t proc_cred;
    int ret;
 #endif
 
-   u_long32 max_groups;
-   gid_t *list;
    int groups=0;
    int pid_tmp;
 
@@ -399,261 +376,182 @@ int pt_dispatch_proc_to_job(lnk_link_t *job_list, int time_stamp,
    uint64 old_vmem = 0;
 
    DENTER(TOP_LAYER, "pt_dispatch_proc_to_job");
-
-   max_groups = sge_sysconf(SGE_SYSCONF_NGROUPS_MAX);
-   if (max_groups <= 0) {
-      ERROR((SGE_EVENT, SFNMAX, MSG_SGE_NGROUPS_MAXOSRECONFIGURATIONNECESSARY));
-      DEXIT;
-      return 1;  
-   }   
-
-   list = (gid_t*) malloc(max_groups*sizeof(gid_t));
-   if (list == NULL) {
-      ERROR((SGE_EVENT, SFNMAX, MSG_SGE_PTDISPATCHPROCTOJOBMALLOCFAILED));
-      DEXIT;
-      return 1;
-   }
-
-   /* find next valid entry in procfs */ 
-   while ((dent = readdir(cwd))) {
-      char *pidname;
-
-      if (!dent->d_name)
-         continue;
-      if (!dent->d_name[0])
-         continue;
-
-      if (!strcmp(dent->d_name, "..") || !strcmp(dent->d_name, "."))
-         continue;
-
-      if (dent->d_name[0] == '.') /* ?? */
-          pidname = &dent->d_name[1];
-      else
-          pidname = dent->d_name;
-
-      if (atoi(pidname) == 0)
-         continue;
+   if (!pidname || !pidname[0]
+       || !strcmp(pidname, "..") || !strcmp(pidname, "."))
+      goto return0;
+   if (pidname[0] == '.') /* ?? */
+      pidname++;
+   if (atoi(pidname) == 0)
+      goto return0;
 
 #if defined(LINUX)
-      /* check only processes which belong to a GE job */
-      if ((pr = get_pr(atoi(pidname))) != NULL) {
-         /* set process as still running */
-         lSetPosBool(pr, pos_run, true);
-         if (lGetPosBool(pr, pos_rel) != true) {
-            continue;
+   /* Ignore process known not to be in a GE job.  */
+   if ((pr = get_pr(atoi(pidname))) != NULL) {
+      lSetPosBool(pr, pos_run, true); /* set process as still running */
+      if (lGetPosBool(pr, pos_rel) != true)
+         goto return0;
+   }
+   if (!(linux_read_status(pidname, time_stamp, job_list,
+                           &pid, &utime, &stime, &vsize) != 0))
+      goto return0;
+   if (pr == NULL) {
+      pr = lCreateElem(PRO_Type);
+      lSetPosUlong(pr, pos_pid, pid);
+      lSetPosBool(pr, pos_rel, false);
+      append_pr(pr);
+   }
+   lSetPosUlong(pr, pos_utime, utime);
+   lSetPosUlong(pr, pos_stime, stime);
+   lSetPosUlong64(pr, pos_vsize, vsize);
+   lSetPosBool(pr, pos_run, true); /* mark proc as running */
+
+   /* get number of groups; get list of supplementary groups */
+   {
+      char procnam[256];
+      lList *groupTable = lGetPosList(pr, pos_groups);
+
+      snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/status", pidname);
+      if (stat(procnam, &fst) != 0) {
+         if (errno != ENOENT) {
+            if (monitor_pdc)
+               INFO((SGE_EVENT, "could not stat %s: %s\n", procnam,
+                     strerror(errno)));
+            touch_time_stamp(pidname, time_stamp, job_list);
          }
+         goto return0;
       }
+      groups = 0;
+      if (fst.st_mtime < last_time && groupTable != NULL) {
+         lListElem *group;
 
-      if (!(linux_read_status(dent->d_name, time_stamp, job_list,
-                              &pid, &utime, &stime, &vsize) != 0))
-         continue;
+         for_each(group, groupTable) {
+            list[groups] = lGetPosUlong(group, pos_group);
+            groups++;
+         }
+      } else {
+         char buf[1024];
+         FILE* f = fopen(procnam, "r");
 
-      if (pr == NULL) {
-         pr = lCreateElem(PRO_Type);
-         lSetPosUlong(pr, pos_pid, pid);
-         lSetPosBool(pr, pos_rel, false);
-         append_pr(pr);
+         if (!f) goto return0;
+         /* save groups also in the table */
+         groupTable = lCreateList("groupTable", GR_Type);
+         while (fgets(buf, sizeof(buf), f)) {
+            if (strcmp("Groups:", strtok(buf, "\t")) == 0) {
+               char *token;
+
+               while ((token=strtok(NULL, " "))) {
+                  lListElem *gr = lCreateElem(GR_Type);
+                  long group = atol(token);
+                  list[groups] = group;
+                  lSetPosUlong(gr, pos_group, group);
+                  lAppendElem(groupTable, gr);
+                  groups++;
+               }
+               break;
+            }
+         }
+         lSetPosList(pr, pos_groups, groupTable);
+         fclose(f);
       }
-         
-      lSetPosUlong(pr, pos_utime, utime);
-      lSetPosUlong(pr, pos_stime, stime);
-      lSetPosUlong64(pr, pos_vsize, vsize);
-         
-      /* mark this proc as running */
-      lSetPosBool(pr, pos_run, true);
-
-      /* 
-       * get number of groups; 
-       * get list of supplementary groups 
-       */
-      {
-         char procnam[256];
-         lList *groupTable = lGetPosList(pr, pos_groups);
-
-         snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/status", dent->d_name);
-         if (SGE_STAT(procnam, &fst) != 0) {
-            if (errno != ENOENT) {
-               if (monitor_pdc) {
-                  INFO((SGE_EVENT, "could not stat %s: %s\n", procnam,
-                        strerror(errno)));
-               }
-               touch_time_stamp(dent->d_name, time_stamp, job_list);
-            }
-            continue;
-         }
-
-         groups = 0;
-         if (fst.st_mtime < last_time && groupTable != NULL) {
-            lListElem *group;
-
-            for_each(group, groupTable) {
-               list[groups] = lGetPosUlong(group, pos_group);
-               groups++;
-            }
-         } else {
-            char buf[1024];
-            FILE* f = (FILE*) NULL;
-
-            if (!(f = fopen(procnam, "r"))) {
-               continue;
-            }
-            /* save groups also in the table */
-            groupTable = lCreateList("groupTable", GR_Type);
-            while (fgets(buf, sizeof(buf), f)) {
-               if (strcmp("Groups:", strtok(buf, "\t"))==0) {
-                  char *token;
-                  
-                  while ((token=strtok((char*) NULL, " "))) {
-                     lListElem *gr = lCreateElem(GR_Type);
-                     long group = atol(token);
-                     list[groups] = group;
-                     lSetPosUlong(gr, pos_group, group);
-                     lAppendElem(groupTable, gr);
-                     groups++;
-                  }
-                  break;
-               }
-            }
-            lSetPosList(pr, pos_groups, groupTable);
-            fclose(f);
-         }
-      } 
+   }
 
 #  elif defined(SOLARIS) || defined(ALPHA)
 
-      snprintf(procnam, sizeof(procnam), "%s/%s", PROC_DIR, dent->d_name);
-      if ((fd = open(procnam, O_RDONLY, 0)) == -1) {
-         if (errno != ENOENT) {
-            if (monitor_pdc) {
-               if (errno == EACCES)
-                  INFO((SGE_EVENT, "(uid:"gid_t_fmt" euid:"gid_t_fmt
-                        ") could not open %s: %s\n",
-                        getuid(), geteuid(), procnam, strerror(errno)));
-               else
-                  INFO((SGE_EVENT, "could not open %s: %s\n", procnam,
-                        strerror(errno)));
-            }
-            touch_time_stamp(dent->d_name, time_stamp, job_list);
+   snprintf(procnam, sizeof(procnam), "%s/%s", PROC_DIR, pidname);
+   if ((fd = open(procnam, O_RDONLY, 0)) == -1) {
+      if (errno != ENOENT) {
+         if (monitor_pdc) {
+            if (errno == EACCES)
+               INFO((SGE_EVENT, "(uid:"gid_t_fmt" euid:"gid_t_fmt
+                     ") could not open %s: %s\n",
+                     getuid(), geteuid(), procnam, strerror(errno)));
+            else
+               INFO((SGE_EVENT, "could not open %s: %s\n", procnam,
+                     strerror(errno)));
          }
-         continue;
+         touch_time_stamp(pidname, time_stamp, job_list);
       }
+      goto return0;
+   }
 
-      /**
-       ** get a list of supplementary group ids to decide
-       ** whether this process will be needed;
-       ** read also prstatus
-       **/
-      
-      /* 
-       * get prstatus 
-       */
-      if (ioctl(fd, PIOCSTATUS, &pr)==-1) {
-         close(fd);
-         if (errno != ENOENT) {
-            if (monitor_pdc)
-               INFO((SGE_EVENT, "could not ioctl(PIOCSTATUS) %s: %s\n",
-                     procnam, strerror(errno)));
-            touch_time_stamp(dent->d_name, time_stamp, job_list);
-         }
-         continue;
+   /**
+    ** get a list of supplementary group ids to decide whether this
+    ** process will be needed; read also prstatus
+    **/
+
+   /* get prstatus */
+   if (ioctl(fd, PIOCSTATUS, &pr)==-1) {
+      if (errno != ENOENT) {
+         if (monitor_pdc)
+            INFO((SGE_EVENT, "could not ioctl(PIOCSTATUS) %s: %s\n",
+                  procnam, strerror(errno)));
+         touch_time_stamp(pidname, time_stamp, job_list);
       }
-                                    
-      /* 
-       * get number of groups 
-       */
-      ret=ioctl(fd, PIOCCRED, &proc_cred);
-      if (ret < 0) {
-         close(fd);
-         if (errno != ENOENT) {
-            if (monitor_pdc)
-               INFO((SGE_EVENT, "could not ioctl(PIOCCRED) %s: %s\n", procnam,
-                     strerror(errno)));
-            touch_time_stamp(dent->d_name, time_stamp, job_list);
-         }
-         continue;
+      goto return0;
+   }
+
+   /* get number of groups */
+   ret=ioctl(fd, PIOCCRED, &proc_cred);
+   if (ret < 0) {
+      if (errno != ENOENT) {
+         if (monitor_pdc)
+            INFO((SGE_EVENT, "could not ioctl(PIOCCRED) %s: %s\n", procnam,
+                  strerror(errno)));
+         touch_time_stamp(pidname, time_stamp, job_list);
       }
-      
-      /* 
-       * get list of supplementary groups 
-       */
-      groups = proc_cred.pr_ngroups;
-      ret=ioctl(fd, PIOCGROUPS, list);
-      if (ret<0) {
-         close(fd);
-         if (errno != ENOENT) {
-            if (monitor_pdc)
-               INFO((SGE_EVENT, "could not ioctl(PIOCCRED) %s: %s\n", procnam,
-                     strerror(errno)));
-            touch_time_stamp(dent->d_name, time_stamp, job_list);
-         }
-         continue;
+      goto return0;
+   }
+
+   /* get list of supplementary groups */
+   groups = proc_cred.pr_ngroups;
+   ret=ioctl(fd, PIOCGROUPS, list);
+   if (ret<0) {
+      if (errno != ENOENT) {
+         if (monitor_pdc)
+            INFO((SGE_EVENT, "could not ioctl(PIOCCRED) %s: %s\n", procnam,
+                  strerror(errno)));
+         touch_time_stamp(pidname, time_stamp, job_list);
       }
+      goto return0;
+   }
 
 #  endif  /* LINUX */
 
-      /* 
-       * try to find a matching job 
-       */
-      for (curr=job_list->next; curr != job_list; curr=curr->next) {
-         int found_it = 0;
-         int group;
-         
-         job_elem = LNK_DATA(curr, job_elem_t, link);
-         for (group=0; !found_it && group<groups; group++) {
-            if (job_elem->job.jd_jid == list[group]) {
+   /* try to find a matching job */
+   for (curr=job_list->next; curr != job_list; curr=curr->next) {
+      int found_it = 0;
+      int group;
+
+      job_elem = LNK_DATA(curr, job_elem_t, link);
+      for (group=0; !found_it && group<groups; group++) {
+         if (job_elem->job.jd_jid == list[group]) {
 #if defined(LINUX)
-               /* mark this process as relevant */
-               lSetPosBool(pr, pos_rel, true);
+            lSetPosBool(pr, pos_rel, true); /* mark process as relevant */
 #endif
-               found_it = 1;
-            }
+            found_it = 1;
          }
-         if (found_it)
-            break;
       }
-
-      if (curr == job_list) { /* this is not a traced process */ 
-         close(fd);
-         continue;
-      }
-
-      /* we always read only one entry per function call
-         the while loop is needed to read next one */
-      break;
-   } /* while */
-
-   sge_free(&list);
-
-   if (!dent) {/* visited all files in procfs */
-      clean_procList();
-      DEXIT;
-      return 1;
+      if (found_it) break;
    }
-   /* 
-    * try to find process in this jobs' proc list 
-    */
 
+   if (curr == job_list)     /* this is not a traced process */
+      goto return0;
+
+   /* try to find process in this jobs' proc list */
 #if defined(LINUX)
    pid_tmp = lGetPosUlong(pr, pos_pid);
 #else
    pid_tmp = pr.pr_pid;
 #endif
-   for (curr=job_elem->procs.next; curr != &job_elem->procs; 
-            curr=curr->next) {
+   for (curr=job_elem->procs.next; curr != &job_elem->procs; curr=curr->next) {
       proc_elem = LNK_DATA(curr, proc_elem_t, link);
-      
       if (proc_elem->proc.pd_pid == pid_tmp)
          break;
    }
 
-   if (curr == &job_elem->procs) { 
+   if (curr == &job_elem->procs) {
       /* new process, add a proc element into jobs proc list */
-      if (!(proc_elem=(proc_elem_t *)malloc(sizeof(proc_elem_t)))) {
-         if (fd >= 0)
-            close(fd);
-         DEXIT;
-         return 0;
-      }
+      proc_elem = sge_malloc(sizeof(proc_elem_t));
       memset(proc_elem, 0, sizeof(proc_elem_t));
       proc_elem->proc.pd_length = sizeof(psProc_t);
       proc_elem->proc.pd_state  = 1; /* active */
@@ -695,26 +593,20 @@ int pt_dispatch_proc_to_job(lnk_link_t *job_list, int time_stamp,
    /* could retrieve uid/gid using stat() on stat file */
    proc_elem->vmem           = lGetPosUlong64(pr, pos_vsize);
 
-   /*
-    * I/O accounting
-    */
+   /* I/O accounting */
    proc_elem->delta_chars = 0UL;
    {
       uint64 new_iochars = 0UL;
 
-      if (linux_proc_io(dent->d_name, &new_iochars) == 0)
+      if (linux_proc_io(pidname, &new_iochars) == 0)
          lSetPosUlong(pr, pos_io, new_iochars);
       else
          new_iochars = lGetPosUlong(pr, pos_io);
-      /*
-       *  Update process I/O info
-       */
-      if (new_iochars > 0UL)
-      {
+      /* Update process I/O info */
+      if (new_iochars > 0UL) {
          uint64 old_iochars = proc_elem->iochars;
 
-         if (new_iochars > old_iochars)
-         {
+         if (new_iochars > old_iochars) {
             proc_elem->delta_chars = (new_iochars - old_iochars);
             proc_elem->iochars = new_iochars;
          }
@@ -724,7 +616,7 @@ int pt_dispatch_proc_to_job(lnk_link_t *job_list, int time_stamp,
    proc_elem->proc.pd_pid    = pr.pr_pid;
    proc_elem->proc.pd_utime  = pr.pr_utime.tv_sec + pr.pr_utime.tv_nsec*1E-9;
    proc_elem->proc.pd_stime  = pr.pr_stime.tv_sec + pr.pr_stime.tv_nsec*1E-9;
-    
+
    /* Don't care if this part fails */
    if (ioctl(fd, PIOCPSINFO, &pri) != -1) {
       proc_elem->proc.pd_uid    = pri.pr_uid;
@@ -753,10 +645,9 @@ int pt_dispatch_proc_to_job(lnk_link_t *job_list, int time_stamp,
       }
    }
 #endif  /* ALPHA */
-
-   close(fd);
-   DEXIT;
-   return 0;
+ return0:
+   if (fd >= 0) close(fd);
+   DRETURN(0);
 }
 #endif  /* LINUX || ALPHA || SOLARIS */
 
@@ -771,23 +662,21 @@ static int linux_proc_io(char *proc, uint64 *iochars)
    SGE_STRUCT_STAT fst;
 
    snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/io", proc);
-   if (SGE_STAT(procnam, &fst) != 0)
+   if (stat(procnam, &fst) != 0)
       return 1;
    FILE *fd;
 
    if ((fd = fopen(procnam, "r"))) {
-      char buf[1024];
+      char label[21];            /* must match width in sscanf */
+      unsigned long long nchar = 0UL;
 
-      while (fgets(buf, sizeof(buf), fd)) {
-         char *label = strtok(buf, " \t\n");
-         char *token = strtok((char*) NULL, " \t\n");
-
-         if (label && token)
-            if (!strcmp("rchar:", label) || !strcmp("wchar:", label)) {
-               unsigned long long nchar = 0UL;
-               if (sscanf(token, "%Lu", &nchar) == 1)
-                  *iochars += (uint64) nchar;
-            }
+      /* rchar and wchar are the bytes going through read(2), write(2)
+         and friends (such as pread), which may just access the cache.
+         read_bytes and write_bytes reflect actual i/o on disk
+         devices, but apparently not on network filesystems.  */
+      while (fscanf(fd, "%20s %Lu", label, &nchar) == 2) {
+         if (!strcmp("rchar:", label) || !strcmp("wchar:", label))
+            *iochars += (uint64) nchar;
       }
       fclose(fd);
       return 0;
@@ -841,8 +730,8 @@ bool swap_in_smaps(void)
 /* True if we can read PSS from /proc/self/smaps.
    This is the process' proportional share of RSS.  PSS+swap is the most
    useful memory consumption measure.
-   Not clear when PSS was introduced -- in Debian 2.6.32 but not RHEL 5.
-   [Why isn't the PSS total in status?]
+   It's not clear when PSS was introduced -- it's in Debian 2.6.32 but
+   not RHEL 5.  [Why isn't the PSS total in status?]
    Not thread-safe; initially called by psStartCollector. */
 bool pss_in_smaps(void)
 {
@@ -864,142 +753,137 @@ bool pss_in_smaps(void)
 }
 
 /* Read data from the status file in /proc for process named PROC,
-   updating the timestamp for in JOB_LIST.  Return process' PID, user
-   time (UTIME), system time (STIME) and memory size (VMSIZE).  */
+   updating the timestamp for the proc in JOB_LIST.  Return process'
+   PID, user time (UTIME), system time (STIME) and memory size
+   (VMSIZE).  */
 static bool
 linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
                   unsigned long *pid, unsigned long *utime,
                   unsigned long *stime, unsigned long *vmsize)
 {
-   char procnam[256], buffer[BIGLINE];
-/*    SGE_STRUCT_STAT fst; */
-   int fd, ret;
+   char procnam[256];
+   int ret;
+   FILE *fp;
 
    DENTER(TOP_LAYER, "linux_read_status");
    snprintf(procnam, sizeof(procnam), PROC_DIR "/%s/stat", proc);
    errno = 0;
-   /*
-   if (SGE_STAT(procnam, &fst)) {
+   if ((fp = fopen(procnam, "r")) == NULL) {
       if (errno != ENOENT) {
-         if (monitor_pdc)
-            INFO((SGE_EVENT, "could not stat %s: %s\n", procnam,
-                  strerror(errno)));
+         if (monitor_pdc) {
+            if (errno == EACCES)
+               INFO((SGE_EVENT,
+                     "(uid:"gid_t_fmt" euid:"gid_t_fmt") could not open %s: %s\n",
+                     getuid(), geteuid(), procnam, strerror(errno)));
+            else
+               INFO((SGE_EVENT, "could not open %s: %s\n", procnam,
+                     strerror(errno)));
+         }
          touch_time_stamp(proc, time_stamp, job_list);
       }
       DRETURN(false);
    }
-   */
-   /* TODO (SH): This does not work with Linux 2.6. I'm looking for a workaround.
-    * If the stat file was not changed since our last parsing there is no need to do it again
-    */
-   /*if (pr == NULL || fst.st_mtime > last_time) */
+
+   /* data from stat file */
+   ret = fscanf(fp, "%lu %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u "
+                "%*u %lu %lu %*d %*d %*d %*d %*d %*d %*u %lu",
+                pid, utime, stime, vmsize);
+   fclose(fp);
+   if (ret != 4) {
+      if (monitor_pdc)
+         INFO((SGE_EVENT, "could not read %s: %s\n", procnam, strerror(errno)));
+      DRETURN(false);
+   }
+   /* Get more accurate memory consumption than VMsize if possible.  */
    {
+      unsigned long vvmsize = 0, value = 0;
+      FILE *fp;
+      char key[21];             /* must match width in sscanf */
+
       errno = 0;
-      if ((fd = open(procnam, O_RDONLY, 0)) == -1) {
-         if (errno != ENOENT) {
-            if (monitor_pdc) {
-               if (errno == EACCES)
-                  INFO((SGE_EVENT,
-                        "(uid:"gid_t_fmt" euid:"gid_t_fmt
-                        ") could not open %s: %s\n",
-                        getuid(), geteuid(), procnam, strerror(errno)));
-               else
-                  INFO((SGE_EVENT, "could not open %s: %s\n", procnam,
-                        strerror(errno)));
-            }
-            touch_time_stamp(proc, time_stamp, job_list);
-         }
-         DRETURN(false);
-      }
-      if ((ret = read(fd, buffer, BIGLINE-1))<=0) {
-         close(fd);
-         if (ret == -1 && errno != ENOENT) {
-            if (monitor_pdc)
-               INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
-                     strerror(errno)));
-            touch_time_stamp(proc, time_stamp, job_list);
-         }
-         DRETURN(false);
-      }
-      close(fd);
-      buffer[BIGLINE-1] = '\0';
-
-      /* data from stat file */
-      ret = sscanf(buffer, "%lu %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u "
-                   "%*u %lu %lu %*d %*d %*d %*d %*d %*d %*u %lu",
-                   pid, utime, stime, vmsize);
-      if (ret != 4)
-         DRETURN(false);
-      /* Get more accurate memory consumption than VMsize if possible.  */
-      {
-         unsigned long vvmsize = 0, value = 0;
-         FILE *fp;
-         char key[20]; /* Size must match width in sscanf */
-
-         errno = 0;
-         /* Ideally, use PSS for best accuracy.  */
-         if (pss_in_smaps()) {
-            snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
-            if ((fp = fopen(procnam, "r"))) {
-               while(fgets(procnam, sizeof procnam, fp))
-                  if (sscanf(procnam, "%20s %lu", key, &value) == 2)
-                     if (strcmp(key, "Swap:") == 0
-                         || (strcmp(key, "Pss:") == 0))
-                        vvmsize += value * 1024;
-               fclose(fp);
-            } else if (monitor_pdc)
-               INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
-                     strerror(errno)));
-         } else if (swap_in_status()) {
-            /* Slightly quicker if we have it -- maybe not worth bothering.  */
-            snprintf(procnam, sizeof procnam, PROC_DIR "/%s/status", proc);
-            if ((fp = fopen(procnam, "r"))) {
-               bool gotone = false;
-               while(fgets(procnam, sizeof procnam, fp)) {
-                  if (sscanf(procnam, "%20s %lu", key, &value) == 2)
-                     if (strncmp(procnam, "VmRSS:", 6) == 0
-                         || strncmp(procnam, "VmSwap:", 7) == 0) {
-                        vvmsize += value * 1024;
-                        if (gotone) break;
-                        gotone = true;
-                     }
+      /* Ideally, use PSS for best accuracy.  */
+      if (pss_in_smaps()) {
+         snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
+         if ((fp = fopen(procnam, "r"))) {
+            while (fscanf(fp, "%20s %lu", key, &value) != EOF)
+               if (strcmp(key, "Swap:") == 0 || (strcmp(key, "Pss:") == 0))
+                  vvmsize += value * 1024;
+            fclose(fp);
+         } else if (monitor_pdc)
+            INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
+                  strerror(errno)));
+      } else if (swap_in_status()) {
+         /* Slightly quicker if we have it -- maybe not worth bothering.  */
+         snprintf(procnam, sizeof procnam, PROC_DIR "/%s/status", proc);
+         if ((fp = fopen(procnam, "r"))) {
+            bool gotone = false;
+            while (fscanf(fp, "%20s %lu", key, &value) != EOF)
+               if (strncmp(procnam, "VmRSS:", 6) == 0
+                   || strncmp(procnam, "VmSwap:", 7) == 0) {
+                  vvmsize += value * 1024;
+                  if (gotone) break;
+                  gotone = true;
                }
-               fclose(fp);
-            }
-            else if (monitor_pdc)
-               INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
-                     strerror(errno)));
-         } else if (swap_in_smaps()) {
-            snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
-            if ((fp = fopen(procnam, "r"))) {
-               while(fgets(procnam, sizeof procnam, fp))
-                  if (sscanf(procnam, "%20s %lu", key, &value) == 2)
-                     if (strcmp(key, "Swap:") == 0
-                         || (strcmp(key, "Rss:") == 0))
-                        vvmsize += value * 1024;
-               fclose(fp);
-            } else if (monitor_pdc)
-               INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
-                     strerror(errno)));
+            fclose(fp);
          }
-         if (vvmsize > 0)
-            *vmsize = vvmsize;
+         else if (monitor_pdc)
+            INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
+                  strerror(errno)));
+      } else if (swap_in_smaps()) {
+         snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
+         if ((fp = fopen(procnam, "r"))) {
+            while (fscanf(fp, "%20s %lu", key, &value) != EOF)
+               if (strcmp(key, "Swap:") == 0 || (strcmp(key, "Rss:") == 0))
+                  vvmsize += value * 1024;
+            fclose(fp);
+         } else if (monitor_pdc)
+            INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
+                  strerror(errno)));
       }
+      if (vvmsize > 0)
+         *vmsize = vvmsize;
    }
    DRETURN(true);
 }
 
+/* There is no way to retrieve a pid list containing all processes of
+   a session id.  So, in the absence of cpusets, we have to iterate
+   through the whole process table to decide whether a process is
+   needed for a job or not.  Otherwise we can get the relevant
+   processes from the cpusets.  */
+void
+pt_dispatch_procs_to_jobs(lnk_link_t *job_list, int time_stamp, time_t last_time)
+{
+   /* fixme: use fopen_cgroup_procs_dir */
+   pt_open();
+   while ((dent = readdir(cwd)))
+      if (!pt_dispatch_proc_to_job(dent->d_name, job_list, time_stamp, last_time))
+         break;
+   last_time = time_stamp;
+   clean_procList();
+   pt_close();
+}
 #endif  /* LINUX */
 
 void
 init_procfs(void)
 {
+   DENTER(TOP_LAYER, "init_procfs");
+   if (list) DRETURN_VOID;
 #ifdef LINUX
    /* Initialize the tests.  */
    (void) pss_in_smaps();
    (void) swap_in_smaps();
    (void) swap_in_status();
 #endif
+#if defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
+   max_groups = sge_sysconf(SGE_SYSCONF_NGROUPS_MAX);
+   if (max_groups <= 0) {
+      ERROR((SGE_EVENT, SFNMAX, MSG_SGE_NGROUPS_MAXOSRECONFIGURATIONNECESSARY));
+      DRETURN_VOID;
+   }
+   list = sge_malloc(max_groups*sizeof(gid_t));
+#endif
+   DRETURN_VOID;
 }
-
 #endif /* (!COMPILE_DC) */
