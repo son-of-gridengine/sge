@@ -112,7 +112,6 @@ u_long32 get_last_qmaster_register_time(void) {
    return last_qmaster_registration_time;
 }
 
-void init_procfs(void);
 
 /****** execd/sge_execd_application_status() ***********************************
 *  NAME
@@ -174,7 +173,6 @@ int main(int argc, char **argv)
    init_topology();
    sge_maybe_set_dumpable();
    init_cgroups();
-   init_procfs();
    prof_mt_init();
 
    set_thread_name(pthread_self(),"Execd Thread");

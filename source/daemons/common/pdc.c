@@ -924,20 +924,7 @@ static int psRetrieveOSJobData(void) {
    get_arsess_list(&arsess_list);
 
 #elif defined(ALPHA) || defined(LINUX) || defined(SOLARIS)
-   {
-
-      /* There is no way to retrieve a pid list containing all processes 
-         of a session id. So we have to iterate through the whole process 
-         table to decide whether a process is needed for a job or not. */
-     /* Fixme:  We could do better now by tracking processes in job
-        cpusets/cgroups (when available).  */
-      pt_open();
-
-      while (!pt_dispatch_proc_to_job(&job_list, time_stamp, last_time))
-         ; 
-      last_time = time_stamp;
-      pt_close();
-   }
+   pt_dispatch_procs_to_jobs(&job_list, time_stamp, last_time);
 #elif defined(AIX)
    {
       #define SIZE 16
@@ -1674,7 +1661,7 @@ static int psRetrieveOSJobData(void) {
       {
          lnk_link_t *currp, *nextp;
 
-         /* sum up usage of each processes for this job */
+         /* sum up usage of each process for this job */
          job->jd_utime_a = job->jd_stime_a = 0;
          job->jd_vmem = 0;
          job->jd_rss = 0;
@@ -1717,7 +1704,7 @@ static int psRetrieveOSJobData(void) {
             job->jd_himem = job->jd_vmem;
       } 
 
-#endif
+#endif  /* IRIX */
    }
 
 #ifdef IRIX
@@ -1751,20 +1738,14 @@ int psStartCollector(void)
    LNK_INIT(&job_list);
    start_time = get_gmt();
 
-
-#ifdef PDC_STANDALONE
-   /* Length of struct (set@run-time) */
-   sysdata.sys_length = sizeof(sysdata);
-#endif
-
    /* page size */
    pagesize = getpagesize();
 
    /* retrieve static parameters */
 #if defined(LINUX) || defined(IRIX) || defined(SOLARIS) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(HP1164)
-#ifdef PDC_STANDALONE
+#  ifdef PDC_STANDALONE
    ncpus = sge_nprocs();
-#endif   
+#  endif
 #elif defined(ALPHA)
    {
 #ifdef PDC_STANDALONE
@@ -1791,13 +1772,16 @@ int psStartCollector(void)
          return -1;
       }
 
-#endif
+#endif  /* PDC_STANDALONE */
    } 
 
-#endif
+#endif  /* ALPHA */
 #ifdef PDC_STANDALONE
+   /* Length of struct (set@run-time) [not actually used?] */
+   sysdata.sys_length = sizeof(sysdata);
    sysdata.sys_ncpus = ncpus;
-#endif   
+#endif
+   init_procfs();
    return 0;
 }
 
@@ -2030,7 +2014,6 @@ int psVerify(void)
    return 0;
 }
 
-
 #ifdef PDC_STANDALONE
 struct psSys_s *psGetSysdata(void)
 {
@@ -2168,7 +2151,7 @@ print_system_data(psSys_t *sys)
    printf("sys_readch="F64"\n", sys->sys_readch);
    printf("sys_writech="F64"\n", sys->sys_writech);
 }
-#endif
+#endif  /* 0 */
 
 
 static void
