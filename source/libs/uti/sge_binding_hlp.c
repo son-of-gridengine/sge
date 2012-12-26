@@ -828,8 +828,8 @@ topology_string_to_socket_core_lists(const char* topology, int** sockets,
             /* this core is in use hence we are collecting it */
             (*amount)++;
             current_core++;
-            *sockets = (int *) realloc(*sockets, (*amount) * sizeof(int));
-            *cores   = (int *) realloc(*cores, (*amount) * sizeof(int));
+            *sockets = sge_realloc(*sockets, (*amount) * sizeof(int),1 );
+            *cores   = sge_realloc(*cores, (*amount) * sizeof(int), 1);
             (*sockets)[(*amount)-1] = current_socket;
             (*cores)[(*amount)-1]   = current_core;
          }
