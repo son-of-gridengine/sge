@@ -239,9 +239,9 @@ static void obj_state_global_init(obj_state_t* state)
    int i;
 
    DENTER(TOP_LAYER, "obj_state_global_init");
-   state->global=true;
 
    if (state != NULL) {
+      state->global=true;
       memcpy(state->object_base, object_base, sizeof(object_description) * SGE_TYPE_ALL);
 
       /* initialize mirroring data structures - only changeable fields */
