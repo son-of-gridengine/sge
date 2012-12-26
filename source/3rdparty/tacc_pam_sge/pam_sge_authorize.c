@@ -361,7 +361,7 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
    
 #ifdef PAM_DEBUG 
    fprintf(fpd,"PAM_ACCT_EXPIRED returned - no valid user matches found...\n");
-   fflush(fpd);
+   fclose(fpd);
 #endif
    return PAM_ACCT_EXPIRED;
 	   

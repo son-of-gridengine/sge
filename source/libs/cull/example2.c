@@ -170,6 +170,7 @@ char *complexname
 
 /*      lWriteList(calp); */
 
+   fclose(calf);
    return calp;
 }
 

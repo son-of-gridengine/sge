@@ -648,6 +648,7 @@ buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
 #ifdef DEFINE_SGE_PASSWD_MAIN
       fprintf(stderr, "%s\n", err_str);
 #endif
+      sge_free(&encryptKey);
       DEXIT;
       return 1;
    }

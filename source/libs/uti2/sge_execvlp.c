@@ -122,11 +122,13 @@ sge_execvlp (const char *file, char *const argv[], char *const envp[])
 	 execve (newargv[0], newargv, envp);
 	 free (newargv);
          errno = late_errno;
+	 sge_free(&path);
 	 return -1;
       }
       if (errno != ENOENT)
 	 return -1;
    }
+   sge_free(&path);
    return -1;
 }
 

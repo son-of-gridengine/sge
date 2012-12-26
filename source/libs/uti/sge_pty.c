@@ -308,16 +308,19 @@ pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg, uid_t uid)
    if (chown(pts_name, uid, -1) != 0) {
       sge_dstring_sprintf(err_msg, "can't chown slave pty \"%s\": %d, %s",
                           pts_name, errno, strerror(errno));
+      close(fdm);
       return -1;
    }
 #if defined(USE_PTY_AND_PIPE_ERR)
    if (pipe(fd_pipe_err) == -1) {
       sge_dstring_sprintf(err_msg, "can't create pipe for stderr: %d, %s",
                           errno, strerror(errno));
+      close(fdm);
       return -1;
    }
 #endif
    if ((pid = fork()) < 0) {
+      close(fdm);
       return -1;
    } else if (pid == 0) {     /* child */
       if ((g_newpgrp = setsid()) < 0) {
