@@ -73,6 +73,7 @@
 #include "sgeobj/sge_answer.h"
 #include "sgeobj/sge_userprj.h"
 #include "sgeobj/sge_userset.h"
+#include "uti2/sge_cgroup.h"
 
 #include "sge.h"
 #include "basis_types.h"

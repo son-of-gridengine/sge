@@ -260,7 +260,7 @@ int cl_com_transformString2XML(const char* input, char** output) {
       if (used + add_length >= malloced_size) {
          /* worst case, need to realloc */
          malloced_size += malloced_size;
-         *output = realloc(*output, malloced_size + 1);
+         *output = sge_realloc(*output, malloced_size + 1, 1);
       }
 
       if (found == false) {

@@ -988,8 +988,8 @@ jsv_handle_param_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answe
                   if (do_resize) {
                      int i;
 
-                     socket_array = (int *)realloc(socket_array, new_length * sizeof(int));
-                     core_array = (int *)realloc(core_array, new_length * sizeof(int));
+                     socket_array = sge_realloc(socket_array, new_length * sizeof(int), 1);
+                     core_array = sge_realloc(core_array, new_length * sizeof(int), 1);
                      for (i = sockets; i < new_length; i++) {
                         socket_array[i] = 0;
                      }
