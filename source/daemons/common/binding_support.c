@@ -1015,10 +1015,10 @@ static int account_cores_on_socket(char** topology, const int topology_length,
             /* take this core */
             (*list_of_sockets_size)++;    /* the socket list is growing */
             (*list_of_cores_size)++;      /* the core list is growing */
-            *list_of_sockets = (int *) realloc(*list_of_sockets, (*list_of_sockets_size)
-                                          * sizeof(int));
-            *list_of_cores   = (int *) realloc(*list_of_cores, (*list_of_cores_size)
-                                          * sizeof(int));
+            *list_of_sockets = sge_realloc(*list_of_sockets, (*list_of_sockets_size)
+                                           * sizeof(int), 1);
+            *list_of_cores   = sge_realloc(*list_of_cores, (*list_of_cores_size)
+                                           * sizeof(int), 1);
             /* store the logical <socket,core> tuple inside the lists */
             (*list_of_sockets)[(*list_of_sockets_size) - 1]   = socket_number;
             (*list_of_cores)[(*list_of_cores_size) - 1]       = core_counter;
@@ -1088,7 +1088,7 @@ static bool get_free_sockets(const char* topology, const int topology_length,
          /* check if this socket had a core in use */
          if (free == true) {
             /* this socket can be used completely */
-            (*sockets) = (int *) realloc(*sockets, ((*sockets_size)+1)*sizeof(int));
+            (*sockets) = sge_realloc(*sockets, ((*sockets_size)+1)*sizeof(int), 1);
             (*sockets)[(*sockets_size)] = socket_number;
             (*sockets_size)++;
          }

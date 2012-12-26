@@ -144,8 +144,8 @@ bool binding_explicit_extract_sockets_cores(const char* parameter,
 
       /* adding first socket,core pair */
       *samount = *camount = 1;
-      *list_of_sockets = realloc(*list_of_sockets, (*samount)*sizeof(int));
-      *list_of_cores = realloc(*list_of_cores, (*camount)*sizeof(int));
+      *list_of_sockets = sge_realloc(*list_of_sockets, (*samount)*sizeof(int), 1);
+      *list_of_cores = sge_realloc(*list_of_cores, (*camount)*sizeof(int), 1);
       (*list_of_sockets)[0] = atoi(socket);
       (*list_of_cores)[0] = atoi(core);
 
@@ -165,8 +165,8 @@ bool binding_explicit_extract_sockets_cores(const char* parameter,
 
          /* adding the next <socket>,<core> tuple */
          (*samount)++; (*camount)++;
-         (*list_of_sockets) = realloc(*list_of_sockets, (*samount)*sizeof(int));
-         (*list_of_cores) = realloc(*list_of_cores, (*camount)*sizeof(int));
+         (*list_of_sockets) = sge_realloc(*list_of_sockets, (*samount)*sizeof(int), 1);
+         (*list_of_cores) = sge_realloc(*list_of_cores, (*camount)*sizeof(int), 1);
          (*list_of_sockets)[*samount-1] = atoi(socket);
          (*list_of_cores)[*camount-1] = atoi(core);
       }        /* we try to continue with the next socket if possible */
