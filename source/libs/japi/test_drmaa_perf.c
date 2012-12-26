@@ -248,6 +248,7 @@ int main(int argc, char *argv[])
          for (i = 0; i < nthreads; i++) {
             if (pthread_create(&ids[i], NULL, submit_jobs, NULL)) {
                fprintf(stderr, "pthread_create() failed: %s\n", strerror(errno));
+	       sge_free(&ids);
                return 1;
             }
          }

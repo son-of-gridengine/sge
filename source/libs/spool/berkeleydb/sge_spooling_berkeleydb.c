@@ -178,6 +178,8 @@ spool_berkeleydb_create_context(lList **answer_list, const char *args)
          answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                  ANSWER_QUALITY_WARNING, 
                                  MSG_BERKELEY_NORPC_S, server);
+	 sge_free(&path);
+	 sge_free(&options);
          DEXIT;
          return NULL;
       }

@@ -260,6 +260,7 @@ int cl_endpoint_list_define_endpoint(cl_raw_list_t* list_p, cl_com_endpoint_t* e
 
    /* lock the list */
    if ((ret_val = cl_raw_list_lock(list_p)) != CL_RETVAL_OK) {
+      sge_free(&new_elem);
       return ret_val;
    }
    new_elem->raw_elem = cl_raw_list_append_elem(list_p, (void*) new_elem);
