@@ -530,8 +530,7 @@ loadvalue_update_load(t_loadvalues *loadvalue, t_pdhquery *query,
 
       memset(state, 0, sizeof(DWORD) * 8); 
       size = counter_state->number_of_counters * sizeof(BOOL);
-      is_done = (BOOL*) malloc(size);
-      memset(is_done, 0, size);
+      is_done = calloc(size, 1);
       if (is_done != NULL) {
          PDH_FMT_COUNTERVALUE state_id;
          PDH_FMT_COUNTERVALUE pid;
