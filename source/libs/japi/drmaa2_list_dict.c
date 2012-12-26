@@ -523,12 +523,14 @@ drmaa2_string_list drmaa2_dict_list(const drmaa2_dict dict)
     if(dict->current == NULL)
     {
         _drmaa2_err_set (DRMAA2_INTERNAL, "Current element of dict is NULL!");
+	free(keys);
         return NULL;
     }
 
     if(MoveToHead_Dict(dict) != DRMAA2_SUCCESS)
     {
         _drmaa2_err_set (DRMAA2_INTERNAL, "Moving to head of dict failed!");
+	free(keys);
         return NULL;
     }
 
@@ -538,6 +540,7 @@ drmaa2_string_list drmaa2_dict_list(const drmaa2_dict dict)
         {
             _drmaa2_err_set (DRMAA2_OUT_OF_RESOURCE,
                              "Memory allocation failure!");
+	    free(key);
             return NULL;
         }
         key=strdup(dict->current->elem->key);
@@ -681,6 +684,8 @@ drmaa2_error drmaa2_dict_set(drmaa2_dict dict, const char* key, const char* valu
 
     if((newNode = (_drmaa2_dictentry_t *) malloc(sizeof(_drmaa2_dictentry_t))) == NULL)
     {
+        free (dictentry.key);
+        free (dictentry.value);
         return _drmaa2_err_set (DRMAA2_OUT_OF_RESOURCE,
                                 "Memory allocation failure!");
     }
@@ -688,6 +693,8 @@ drmaa2_error drmaa2_dict_set(drmaa2_dict dict, const char* key, const char* valu
     if((newData = (void *) malloc(dict->valuesize)) == NULL)
     {
        free(newNode);
+       free(dictentry.key);
+       free(dictentry.value);
        return _drmaa2_err_set (DRMAA2_OUT_OF_RESOURCE,
                                "Memory allocation failure!");
     }

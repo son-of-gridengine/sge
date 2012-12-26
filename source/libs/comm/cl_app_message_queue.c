@@ -96,7 +96,8 @@ int cl_app_message_queue_append(cl_raw_list_t*        list_p,
 
    /* lock the list */
    if (do_lock != 0) {
-      if (  ( ret_val = cl_raw_list_lock(list_p)) != CL_RETVAL_OK) {
+      if ((ret_val = cl_raw_list_lock(list_p)) != CL_RETVAL_OK) {
+	 sge_free(&new_elem);
          return ret_val;
       }
    }

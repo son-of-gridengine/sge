@@ -150,6 +150,7 @@ int cl_connection_list_append_connection(cl_raw_list_t* list_p, cl_com_connectio
    /* lock the list */
    if (do_lock != 0) {
       if ((ret_val = cl_raw_list_lock(list_p)) != CL_RETVAL_OK) {
+	 sge_free(&new_elem);
          return ret_val;
       }
    }

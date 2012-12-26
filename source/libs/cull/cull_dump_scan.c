@@ -187,6 +187,7 @@ lDescr *lUndumpDescr(FILE *fp)
       /* read descriptor */
       if (fGetDescr(fp, &(dp[i]))) {
          LERROR(LEFGETDESCR);
+	 sge_free(&dp);
          DEXIT;
          return NULL;
       }

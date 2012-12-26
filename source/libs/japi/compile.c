@@ -163,6 +163,7 @@ int main(int argc, char *argv[])
    /* initialize a drmaa session */
    if (drmaa_init(NULL, diagnosis, sizeof(diagnosis)-1) != DRMAA_ERRNO_SUCCESS) {
       fprintf(stderr, "drmaa_init() failed: %s\n", diagnosis);
+      fclose(fp);
       return 2;
    }
 

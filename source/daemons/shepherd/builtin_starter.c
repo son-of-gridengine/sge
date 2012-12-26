@@ -2005,6 +2005,7 @@ static void start_qrsh_job(void)
       sge_root = sge_get_root_dir(0, NULL, 0, 1);
       if (sge_root == NULL) {
          shepherd_trace("reading environment SGE_ROOT failed");
+	 sge_free(&buf);
          return;
       }
       arch = sge_get_arch();
