@@ -2303,7 +2303,9 @@ static void handle_signals_and_methods(
                   rest_ckpt_interval = 0;
                   if (*ckpt_cmd_pid == -1) {
                      *ckpt_cmd_pid = -999;
-                     *rest_ckpt_interval = p_ckpt_info->interval;
+		     /* fixme: had null pointer deref -- should it do
+			something else? */
+                     /* *rest_ckpt_interval = p_ckpt_info->interval; */
                   }
                   else
                      *inCkpt = 1;
