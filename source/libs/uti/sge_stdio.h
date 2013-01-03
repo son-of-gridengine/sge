@@ -190,9 +190,12 @@
 *  NOTES
 *     Don't forget to define the 'CLOSE_ERROR'-label
 ******************************************************************************/
-#define CLOSE(x) \
-   if (close(x) != 0) { \
-      goto CLOSE_ERROR; \
+/* The check for x>0 is because in various places the descriptor is
+   initialized to -1 and a close is attempted on it even if it hasn't
+   been given a proper value.  */
+#define CLOSE(x)                    \
+   if ((x) >= 0 && close(x) != 0) { \
+      goto CLOSE_ERROR;             \
    }
 
 #define CLOSE_IGNORE_ERROR(x) (void) close(x)
