@@ -120,15 +120,10 @@ void cull_mail(u_long32 progid, lList *user_list, const char *subj, const char *
 
 /************************************************************/
 
-static void sge_send_mail(
-u_long32 progid,
-const char *mailer,
-int mailer_has_subj_line,
-const char *user,
-const char *host,
-const char *subj,
-const char *buf 
-) {
+static void sge_send_mail(u_long32 progid, const char *mailer_in,
+                          int mailer_has_subj_line, const char *user,
+                          const char *host, const char *subj, const char *buf)
+{
    int pid;
    int pid2;
    int i;
@@ -137,6 +132,7 @@ const char *buf
    FILE *fp;
    stringT user_str;
    bool done;
+   char *mailer;
 
 #if !defined(INTERIX)
    struct rusage rusage;
@@ -214,15 +210,17 @@ const char *buf
 
       close(pipefds[1]);
 
+      mailer = strdup(mailer_in);
       /* switch user */
       {
-        char *user = parse_script_params((char **)&mailer);
+        char *user = parse_script_params(&mailer);
         if (user != NULL) {
            char err_str[256];
            if (sge_set_uid_gid_addgrp(user, NULL, 0, 0, 0, err_str,
                                       sizeof(err_str), 0, 0, false)) {
              ERROR((SGE_EVENT, MSG_SYSTEM_SWITCHTOUSERFAILED_SS, user,
                     strerror(errno)));
+             sge_free(&mailer);
              DEXIT;
              return;
            }
