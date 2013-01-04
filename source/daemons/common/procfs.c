@@ -761,7 +761,7 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
                   unsigned long *pid, unsigned long *utime,
                   unsigned long *stime, unsigned long *vmsize)
 {
-   char procnam[256];
+   char procnam[256], buffer[BIGLINE];
    int ret;
    FILE *fp;
 
@@ -784,64 +784,71 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
       DRETURN(false);
    }
 
-   /* data from stat file */
-   ret = fscanf(fp, "%lu %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u "
-                "%*u %lu %lu %*d %*d %*d %*d %*d %*d %*u %lu",
-                pid, utime, stime, vmsize);
-   fclose(fp);
-   if (ret != 4) {
-      if (monitor_pdc)
-         INFO((SGE_EVENT, "could not read %s: %s\n", procnam, strerror(errno)));
-      DRETURN(false);
-   }
-   /* Get more accurate memory consumption than VMsize if possible.  */
-   {
-      unsigned long vvmsize = 0, value = 0;
-      FILE *fp;
-      char key[21];             /* must match width in sscanf */
-
-      errno = 0;
-      /* Ideally, use PSS for best accuracy.  */
-      if (pss_in_smaps()) {
-         snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
-         if ((fp = fopen(procnam, "r"))) {
-            while (fscanf(fp, "%20s %lu", key, &value) != EOF)
-               if (strcmp(key, "Swap:") == 0 || (strcmp(key, "Pss:") == 0))
-                  vvmsize += value * 1024;
-            fclose(fp);
-         } else if (monitor_pdc)
-            INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
-                  strerror(errno)));
-      } else if (swap_in_status()) {
-         /* Slightly quicker if we have it -- maybe not worth bothering.  */
-         snprintf(procnam, sizeof procnam, PROC_DIR "/%s/status", proc);
-         if ((fp = fopen(procnam, "r"))) {
-            bool gotone = false;
-            while (fscanf(fp, "%20s %lu", key, &value) != EOF)
-               if (strncmp(procnam, "VmRSS:", 6) == 0
-                   || strncmp(procnam, "VmSwap:", 7) == 0) {
-                  vvmsize += value * 1024;
-                  if (gotone) break;
-                  gotone = true;
-               }
-            fclose(fp);
-         }
-         else if (monitor_pdc)
-            INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
-                  strerror(errno)));
-      } else if (swap_in_smaps()) {
-         snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
-         if ((fp = fopen(procnam, "r"))) {
-            while (fscanf(fp, "%20s %lu", key, &value) != EOF)
-               if (strcmp(key, "Swap:") == 0 || (strcmp(key, "Rss:") == 0))
-                  vvmsize += value * 1024;
-            fclose(fp);
-         } else if (monitor_pdc)
-            INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
-                  strerror(errno)));
+      /* data from stat file */
+      ret = fscanf(fp, "%lu %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u "
+                   "%*u %lu %lu %*d %*d %*d %*d %*d %*d %*u %lu",
+                   pid, utime, stime, vmsize);
+      fclose(fp);
+      if (ret != 4) {
+         if (monitor_pdc)
+            INFO((SGE_EVENT, "could not read %s: %s\n", procnam, strerror(errno)));
+         DRETURN(false);
       }
-      if (vvmsize > 0)
-         *vmsize = vvmsize;
+      /* Get more accurate memory consumption than VMsize if possible.  */
+      {
+         unsigned long vvmsize = 0, value = 0;
+         FILE *fp;
+         char key[21]; /* Size must match width in sscanf */
+
+         errno = 0;
+         /* Ideally, use PSS for best accuracy.  */
+         if (pss_in_smaps()) {
+            snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
+            if ((fp = fopen(procnam, "r"))) {
+               while (fgets(buffer, sizeof buffer, fp))
+                  if (sscanf(buffer, "%20s %lu", key, &value) == 2)
+                     if (strcmp(key, "Swap:") == 0
+                         || (strcmp(key, "Pss:") == 0))
+                        vvmsize += value * 1024;
+               fclose(fp);
+            } else if (monitor_pdc)
+               INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
+                     strerror(errno)));
+         } else if (swap_in_status()) {
+            /* Slightly quicker if we have it -- maybe not worth bothering.  */
+            snprintf(procnam, sizeof procnam, PROC_DIR "/%s/status", proc);
+            if ((fp = fopen(procnam, "r"))) {
+               bool gotone = false;
+               while (fgets(buffer, sizeof buffer, fp)) {
+                  if (sscanf(buffer, "%20s %lu", key, &value) == 2)
+                     if (strncmp(key, "VmRSS:", 6) == 0
+                         || strncmp(key, "VmSwap:", 7) == 0) {
+                        vvmsize += value * 1024;
+                        if (gotone) break;
+                        gotone = true;
+                     }
+               }
+               fclose(fp);
+            }
+            else if (monitor_pdc)
+               INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
+                     strerror(errno)));
+         } else if (swap_in_smaps()) {
+            /* Last resort is to examine all the maps in smaps.  */
+            snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
+            if ((fp = fopen(procnam, "r"))) {
+               while (fgets(buffer, sizeof buffer, fp))
+                  if (sscanf(buffer, "%20s %lu", key, &value) == 2)
+                     if (strcmp(key, "Swap:") == 0
+                         || (strcmp(key, "Rss:") == 0))
+                        vvmsize += value * 1024;
+               fclose(fp);
+            } else if (monitor_pdc)
+               INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
+                     strerror(errno)));
+         }
+         if (vvmsize > 0)
+           *vmsize = vvmsize;
    }
    DRETURN(true);
 }
@@ -857,8 +864,7 @@ pt_dispatch_procs_to_jobs(lnk_link_t *job_list, int time_stamp, time_t last_time
    /* fixme: use fopen_cgroup_procs_dir */
    pt_open();
    while ((dent = readdir(cwd)))
-      if (!pt_dispatch_proc_to_job(dent->d_name, job_list, time_stamp, last_time))
-         break;
+      pt_dispatch_proc_to_job(dent->d_name, job_list, time_stamp, last_time);
    last_time = time_stamp;
    clean_procList();
    pt_close();
