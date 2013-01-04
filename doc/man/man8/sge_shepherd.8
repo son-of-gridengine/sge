@@ -139,6 +139,40 @@ successful, did not happen (but migration will happen by xxQS_NAMExx).
 should not be invoked manually, but only by
 .M xxqs_name_sxx_execd 8 .
 .\"
+.SH "ENVIRONMENT VARIABLES"
+.IP "\fBxxQS_NAME_Sxx_ROOT\fP" 1.5i
+Specifies the location of the xxQS_NAMExx standard configuration
+files.
+.\"
+.IP "\fBxxQS_NAME_Sxx_CELL\fP" 1.5i
+If set, specifies the default xxQS_NAMExx cell. To address a xxQS_NAMExx
+cell
+.I xxqs_name_sxx_execd
+uses (in the order of precedence):
+.sp 1
+.RS
+.RS
+The name of the cell specified in the environment
+variable xxQS_NAME_Sxx_CELL, if it is set.
+.sp 1
+The name of the default cell, i.e. \fBdefault\fP.
+.sp 1
+.RE
+.RE
+.\"
+.IP "\fBSGE_ENABLE_COREDUMP\fP" 1.5i
+If set, enable core dumps on Linux when the admin_user is not root.
+Linux normally disables core dumps when the daemon has changed uid or
+gid.  Setting SGE_ENABLE_COREDUMP in xxqs_name_sxx_execd's environment
+defeats that to enable core dumps for debugging if they are otherwise
+allowed.  This is typically not a big hazard with xxQS_NAME_Sxx, since
+most information is exposed in the spool area anyhow.  Dumps will
+appear in the qmaster spool directory, which need not be
+world-readable.
+.br
+On Solaris,
+.M coreadm 1
+may be used to enable such dumps.
 .\"
 .SH FILES
 \fBsgepasswd\fP contains a list of user names and their corresponding
@@ -149,6 +183,9 @@ manually.
 .nf
 .ta \w'<execd_spool>/job_dir/<job_id>     'u
 \fI<execd_spool>/job_dir/<job_id>\fR	job specific directory
+\fI<xxqs_name_sxx_root>/<cell>/common/sgepasswd\fP
+	Password information used on Microsoft Windows hosts.  See
+.M sgepasswd 5 .
 .fi
 .\"
 .\"
@@ -156,6 +193,7 @@ manually.
 .M xxqs_name_sxx_intro 1 ,
 .M xxqs_name_sxx_conf 5 ,
 .M remote_startup 5 ,
+.M sgepasswd 5 ,
 .M xxqs_name_sxx_execd 8 .
 .\"
 .SH "COPYRIGHT"

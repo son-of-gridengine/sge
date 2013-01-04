@@ -43,7 +43,7 @@ destruction; see
 .PP
 The current share tree can be displayed via the
 .M qconf 1
-\fB\-sstree\fP or \fB\-sst\fB options. The
+\fB\-sstree\fP or \fB\-sst\fP options. The
 output follows the \fIshare_tree\fP format description. A share tree can be
 created and an existing one can be modified via the \fB\-astree\fP and
 \fB\-mstree\fP options to
@@ -68,7 +68,7 @@ numeric identification number of the node. Further attributes of that
 node follow until another \fBid\fP keyword is encountered.
 .IP "\(bu" 3n
 The attribute \fBtype\fP defines whether a sharetree node references
-a user (type=0), or a project (type=1)
+a user (type=0), or a project (type=1).
 .IP "\(bu" 3n
 The attribute \fBchildnodes\fP contains a comma-separated list of child
 nodes to this node.
@@ -86,20 +86,20 @@ The parameter \fBshares\fP defines the share of the node among the nodes
 with the same parent node.
 .IP "\(bu" 3n
 A user leaf node named 'default' can be defined as a descendant of a
-.M project 5 )
+.M project 5
 node in the share tree. The default node defines the number
 of shares for users who are running in the project, but who do not have
 a user node defined under the project. The default user node is a
 convenient way of specifying a single node for all users which should
 receive an equal share of the project resources. The default node may be
 specified by itself or with other 
-.M user 5 )
+.M user 5
 nodes at the same level below
 a project. All users, whether explicitly specified as a user node or
 those which map to the 'default' user node, must have a corresponding
-.M user 5 )
+.M user 5
 object defined in order to get shares. Do not configure a
-.M user 5 )
+.M user 5
 object named 'default'. 
 
 .\"
@@ -132,6 +132,7 @@ childnodes=NONE
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
 .M qconf 1 ,
+.M qmon 1 ,
 .M project 5 ,
 .M user 5 .
 .\"

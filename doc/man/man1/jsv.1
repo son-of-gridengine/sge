@@ -47,14 +47,14 @@ master host (Server JSV), or both.
 .\"
 .SH CONFIGURATION
 JSVs can be configured in various locations. Either a \fBjsv_url\fP can be
-provided with the \fB-jsv\fP submit parameter during job submission, a
+provided with the \fB\-jsv\fP submit parameter during job submission, a
 corresponding switch can be added to one of the \fBsge_request\fP files, or
 a \fBjsv_url\fP can be configured in the global cluster configuration of the
 xxQS_NAMExx installation. 
 .PP
 All defined JSV instances will be executed in following order:
 .PP
-   1) qsub -jsv ...
+   1) qsub \-jsv ...
    2) $cwd/.sge_request
    3) $HOME/.sge_request
    4) $SGE_ROOT/$SGE_CELL/common/sge_request
@@ -186,17 +186,17 @@ Multiple \fBparam_commands\fP will be sent to a JSV instance after
 the JSV has sent a \fBstarted_command\fP. The sum of all \fBparam_commands\fP
 sent represents a job specification of the job which should be verified.
 .sp 1
-\fBsubmit_parameters\fP are, for example, \fBb\fP (similar to the \fBqsub\fP \fB-b\fP switch), or
-\fBmasterq\fP (similar to \fBqsub\fP \fB-masterq\fP switch). Find a complete list of
+\fBsubmit_parameters\fP are, for example, \fBb\fP (similar to the \fBqsub\fP \fB\-b\fP switch), or
+\fBmasterq\fP (similar to \fBqsub\fP \fB\-masterq\fP switch). Find a complete list of
 \fBsubmit_parameters\fP in the 
 .M qsub 1 
 man page. Please note that
 the \fBparam_parameter\fP name and the corresponding \fBvalue\fP format
 is not equivalent to the qsub switch name and its argument format in
 all cases.
-E.g. the \fBqsub\fP \fB-pe\fP parameters will by available as a set of parameters
+E.g. the \fBqsub\fP \fB\-pe\fP parameters will by available as a set of parameters
 with the name \fBpe_name\fP, \fBpe_min\fP, \fBpe_max\fP and the switch combination
-\fB-soft -l\fP will be passed to JSV scripts as \fBl_soft\fP parameter. For
+\fB\-soft \-l\fP will be passed to JSV scripts as \fBl_soft\fP parameter. For
 details concerning this differences consult also the 
 .M qsub 1 
 man page.
@@ -364,7 +364,7 @@ Here is an example for the communication of a client with a JSV instance
 when the following job is submitted:
 .PP
 .nf
-> qsub -pe p 3 -hard -l a=1,b=5 -soft -l q=all.q $SGE_ROOT/examples/jobs/sleeper.sh
+> qsub \-pe p 3 \-hard \-l a=1,b=5 \-soft \-l q=all.q $SGE_ROOT/examples/jobs/sleeper.sh
 .fi
 .PP
 Data in the first column are sent from the client/qmaster to the

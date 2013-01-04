@@ -28,6 +28,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH QUEUE_CONF 5 2011-06-23 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
@@ -184,7 +187,7 @@ The syntax is that of a \fItime_specifier\fP in
 .\"
 .SS "\fBpriority\fP"
 The \fBpriority\fP parameter specifies the
-.M nice 2
+.MO nice 2
 value at which jobs in this queue will be run. It is of type "number" and the
 default is zero (which means no nice value is set explicitly). Negative 
 values (up to \-20) correspond to a higher scheduling priority; positive 
@@ -290,7 +293,7 @@ with the queue. The default is
 .SS "\fBrerun\fP"
 Defines a default behavior for jobs which are aborted by system crashes
 or manual "violent" (via
-.M kill 1 )
+.MO kill 1 )
 shutdown of the complete xxQS_NAMExx system (including the
 .M xxqs_name_sxx_shepherd 8
 of the jobs and their process hierarchy) on the queue host. As soon as
@@ -327,9 +330,9 @@ as the \fBshell_start_mode\fP parameter in
 .M xxqs_name_sxx_conf 5
 the \fBshell\fP parameter specifies the executable
 path of the command interpreter (e.g.
-.M sh 1
+.MO sh 1
 or
-.M csh 1 )
+.MO csh 1 )
 to be used to process the job scripts executed in the queue. The
 definition of \fBshell\fP can be overruled by the job owner
 via the
@@ -387,7 +390,7 @@ Thus setting \fBshell_start_mode\fP to \fIscript_from_stdin\fP also
 implies \fIposix_compliant\fP behavior. \fBNote\fP, however, that
 feeding scripts into the STDIN stream of a command interpreter may
 cause trouble if commands like
-.M rsh 1
+.MO rsh 1
 are invoked inside a job script as they also process the STDIN
 stream of the command interpreter. These problems can usually be
 resolved by redirecting the STDIN channel of those commands to come
@@ -582,7 +585,7 @@ the
 \fI\-notify\fP option.
 .SS "\fBowner_list\fP"
 The \fBowner_list\fP comprises comma-separated
-.M login 1 
+.MO login 1
 user names (see \fIuser_name\fP in
 .M sge_types 1 )
 of those users who are
@@ -592,8 +595,12 @@ authorized to disable and suspend this queue through
 to set this field for queues on
 interactive workstations where the computing resources are shared between
 interactive sessions and xxQS_NAMExx jobs, allowing the workstation owner to have
-priority access.
-(default: NONE).
+priority access.  Owners can be managers, operators, or users.  Owner
+privileges are necessary to use
+.B qidle
+(see
+.M xxqs_name_sxx_execd 8 ).
+(Default: NONE.)
 .SS "\fBuser_lists\fP"
 The \fBuser_lists\fP parameter contains a comma-separated list of xxQS_NAMExx user
 access list names as described in
@@ -935,7 +942,7 @@ xxQS_NAMExx. They define the "real time" (also called "elapsed" or
 "wall clock" time) passed since the start of the job. If \fBh_rt\fP
 is exceeded by a job running in the queue, it is aborted via the SIGKILL
 signal (see
-.M kill 1 ).
+.MO kill 1 ).
 If \fBs_rt\fP is exceeded, the job is first
 "warned" via the SIGUSR1 signal (which can be caught by the job) and
 finally aborted after the notification time 
@@ -954,7 +961,7 @@ impose a limit on the amount of combined CPU time consumed by all the
 processes in the job. 
 If \fBh_cpu\fP is exceeded by a job running in the queue, it is aborted via
 a SIGKILL signal (see 
-.M kill 1 ).
+.MO kill 1 ).
 If \fBs_cpu\fP is exceeded, the job is sent a SIGXCPU signal
 which can be caught by the job.  
 If you wish to allow a job to be "warned" so it can exit gracefully
@@ -985,24 +992,24 @@ the job before being applied.
 .PP
 The remaining parameters in the queue configuration template specify
 per-job soft and hard resource limits as implemented by the
-.M setrlimit 2
+.MO setrlimit 2
 system call. See this manual page on your system for more information.
 By default, each limit field is set to infinity (which means RLIM_INFINITY
 as described in the
-.M setrlimit 2
+.MO setrlimit 2
 manual page). The value type for the CPU-time limits \fBs_cpu\fP and
 \fBh_cpu\fP is time. The value type for the other limits is memory.
 \fBNote:\fP Not all systems support
-.M setrlimit 2 .
+.MO setrlimit 2 .
 .PP
 \fBNote also:\fP s_vmem and h_vmem (virtual memory) are only
 available on systems supporting RLIMIT_VMEM (see
-.M setrlimit 2
+.MO setrlimit 2
 on your operating system).
 .\"
 .SH SECURITY
 See
-.M sge_conf 1
+.M xxqs_name_sxx_conf 1
 for security considerations when specifying
 .B prolog
 and
@@ -1013,16 +1020,16 @@ prefix.
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
-.M sge_types 1 ,
-.M csh 1 ,
+.M xxqs_name_sxx_intro_types 1 ,
+.MO csh 1 ,
 .M qconf 1 ,
 .M qmon 1 ,
 .M qrestart 1 ,
 .M qstat 1 ,
 .M qsub 1 ,
-.M sh 1 ,
-.M nice 2 ,
-.M setrlimit 2 ,
+.MO sh 1 ,
+.MO nice 2 ,
+.MO setrlimit 2 ,
 .M access_list 5 ,
 .M calendar_conf 5 ,
 .M xxqs_name_sxx_conf 5 ,
