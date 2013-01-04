@@ -532,10 +532,17 @@ Requires root or manager privileges.
 .IP "\fB\-am\fP \fIuser\fP,...	\fI<add managers>\fP"
 Adds the indicated users to the xxQS_NAMExx manager list. Requires
 root or manager privileges.
+.br
+Managers have full access to the xxQS_NAMExx configuration and
+operational features.  Superusers on administration hosts have manager
+privileges by default.
 .\"
 .IP "\fB\-ao\fP \fIuser\fP,...	\fI<add operators>\fP"
 Adds the indicated users to the xxQS_NAMExx operator list.
 Requires root or manager privileges.
+.br
+Operators have the same privileges as managers except that they cannot
+make configuration changes.
 .\"
 .IP "\fB\-ap\fP \fIpe_name\fP	\fI<add new PE>\fP"
 Adds a \fIParallel Environment\fP (PE) description
@@ -627,6 +634,11 @@ Requires root or manager privileges.
 Adds users to xxQS_NAMExx user access lists (ACLs). User lists
 are used for queue usage authentication. Requires
 root/manager/operator privileges.
+.br
+Users can submit jobs and run them if they have access to a submit
+host and and execution host, but cannot affect the xxQS_NAMExx
+configuration or operation (other than altering or deleting their own
+jobs).
 .\" usermapping start
 .\" .IP "\fB\-aumap user\fP   \fI<add user mapping configuration>\fP"
 .\" Adds user mapping for the cluster user specified in 

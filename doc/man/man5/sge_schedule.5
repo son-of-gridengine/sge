@@ -8,13 +8,16 @@
 .de MO		\" other man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH sge_schedule 5 2012-07-25
 .SH NAME
 sge_schedule \- format of the xxQS_NAMExx schedule file
 .SH DESCRIPTION
 The
 .I schedule
-File is written by the qmaster when
+file is written by the qmaster when
 .B MONITOR=1
 is set in the
 .B params
@@ -23,7 +26,7 @@ item of
 .PP
 Note that the file tends to grow rapidly, and should be
 truncated/rotated, e.g. with
-.M logrotate 1 .
+.MO logrotate 1 .
 Also it should probably be placed on local disk, not an NFS-mounted
 filesystem, for instance, because of the large number of small writes
 it typically gets \- e.g. make a symbolic link into the qmaster spool
