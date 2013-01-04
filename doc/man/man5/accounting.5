@@ -111,8 +111,14 @@ However, in the case that the command exits abnormally, a value of 0200 (octal),
 128 (decimal) is added to the value of the command to make up the exit status.
 .P
 .RS
-For example: If a job dies through signal 9 (SIGKILL) then the exit status 
-becomes 128 + 9 = 137.
+For example: If a job dies through signal 9 (SIGKILL) \- probably issued
+by xxQS_NAMExx through
+.M qdel 1 ,
+or because the job exceeded time or memory hard limits \- then the
+exit status is 128\ +\ 9\ =\ 137.  The reason xxQS_NAMExx killed a job
+is recorded in the execd
+.I messages
+file at "W" or "I" level, depending on why it was killed.
 .RE
 .SS "\fB14. ru_wallclock\fP"
 Difference between \fBend_time\fP and \fBstart_time\fP (see above),

@@ -125,7 +125,7 @@ uses (in the order of precedence):
 .sp 1
 .RS
 .RS
-The name of the cell specified in the environment 
+The name of the cell specified in the environment
 variable xxQS_NAME_Sxx_CELL, if it is set.
 .sp 1
 The name of the default cell, i.e. \fBdefault\fP.
@@ -135,7 +135,7 @@ The name of the default cell, i.e. \fBdefault\fP.
 .\"
 .IP "\fBxxQS_NAME_Sxx_DEBUG_LEVEL\fP" 1.5i
 If set, specifies that debug information
-should be written to stderr. In addition the level of
+should be written to stderr. In addition, the level of
 detail in which debug information is generated is defined.
 .\"
 .IP "\fBxxQS_NAME_Sxx_QMASTER_PORT\fP" 1.5i
@@ -182,11 +182,6 @@ by that same user are handled correctly by the system.
 .\"
 .\"
 .SH FILES
-\fBsgepasswd\fP  contains  a  list  of  user  names   and   their
-corresponding encrypted passwords. If available, the
-password  file  will  be   used   by  \fBsge_execd\fP. To change the contents 
-of this file please use the \fBsgepasswd\fP command. It is not advised to  change  
-that file manually.
 .nf
 .ta \w'<xxqs_name_sxx_root>/     'u
 \fI<xxqs_name_sxx_root>/<cell>/common/configuration\fP
@@ -201,7 +196,9 @@ that file manually.
 	Default load sensor
 \fI<xxqs_name_sxx_root>/bin/<arch>/qidle\fP
 	Idle load sensor per USE_QIDLE in execd_params
-.fi
+\fI<xxqs_name_sxx_root>/<cell>/common/sgepasswd\fP
+	Password information used on Microsoft Windows hosts.  See
+.M sgepasswd 5 .
 .\"
 .\"
 .SH "SEE ALSO"
@@ -209,6 +206,7 @@ that file manually.
 .M xxqs_name_sxx_conf 5 ,
 .M complex 5 ,
 .M load_parameters 5 ,
+.M sgepasswd 5 ,
 .M xxqs_name_sxx_shepherd 8 ,
 .M xxqs_name_sxx_qmaster 8 .
 .\"
