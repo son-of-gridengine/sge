@@ -66,6 +66,7 @@
 
 #include "spool/sge_spooling.h"
 #include "spool/loader/sge_spooling_loader.h"
+#include "spool/flatfile/sge_spooling_flatfile.h"
 
 #include "sig_handlers.h"
 #include "usage.h"

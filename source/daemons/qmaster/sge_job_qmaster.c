@@ -113,6 +113,7 @@
 #include "msg_common.h"
 #include "msg_qmaster.h"
 
+#define SEQ_NUM_FILE              "jobseqnum"
 
 /****** qmaster/job/spooling ***************************************************
 *

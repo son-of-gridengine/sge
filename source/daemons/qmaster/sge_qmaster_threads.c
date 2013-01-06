@@ -71,6 +71,7 @@
 #include "msg_common.h"
 #include "msg_qmaster.h"
 #include "msg_daemons_common.h"
+#include "setup_qmaster.h"
 
 /****** qmaster/sge_qmaster_main/sge_gdi_kill_master() *************************
 *  NAME

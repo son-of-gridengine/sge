@@ -48,6 +48,7 @@
 #include "sgeobj/sge_utility.h"
 #include "sgeobj/sge_advance_reservation.h"
 #include "sgeobj/sge_qinstance.h"
+#include "sgeobj/sge_cqueue.h"
 
 #include "sched/sge_job_schedd.h"
 

@@ -66,6 +66,15 @@
 #include "msg_common.h"
 #include "msg_qmaster.h"
 
+#define SGE_ATTR_CKPT_NAME             "ckpt_name"
+#define SGE_ATTR_INTERFACE             "interface"
+#define SGE_ATTR_CKPT_COMMAND          "ckpt_command"
+#define SGE_ATTR_MIGR_COMMAND          "migr_command"
+#define SGE_ATTR_RESTART_COMMAND       "restart_command"
+#define SGE_ATTR_CLEAN_COMMAND         "clean_command"
+#define SGE_ATTR_CKPT_DIR              "ckpt_dir"
+#define SGE_ATTR_SIGNAL                "signal"
+
 /****** qmaster/ckpt/ckpt_mod() ***********************************************
 *  NAME
 *     ckpt_mod -- add/modify ckpt object in Master_Ckpt_List 

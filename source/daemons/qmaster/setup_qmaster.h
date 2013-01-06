@@ -47,7 +47,6 @@ sge_qmaster_thread_init(sge_gdi_ctx_class_t **ctx_ref, u_long32 prog_id,
 void 
 sge_setup_job_resend(void);
 
+#define QMASTER_PID_FILE          "qmaster.pid"
+
 #endif /* __SETUP_QMASTER_H */
-
-
-

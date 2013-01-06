@@ -88,6 +88,7 @@
 
 #include "sge_proc.h"
 
+#define EXECD_PID_FILE            "execd.pid"
 
 volatile int jobs_to_start = 1;
 

@@ -102,6 +102,7 @@
 #include "sge_resource_quota_qmaster.h"
 #include "sge_advance_reservation_qmaster.h"
 #include "sge_qinstance_qmaster.h"
+#include "setup_qmaster.h"
 
 #include "msg_daemons_common.h"
 #include "msg_qmaster.h"

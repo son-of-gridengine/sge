@@ -37,6 +37,8 @@
 #include "spool/sge_spooling.h"
 #include "spool/sge_spooling_utilities.h"
 
+#define SHARETREE_FILE            "sharetree"
+
 /****** spool/flatfile/--Spooling-Flatfile ************************************
 *
 *  NAME
