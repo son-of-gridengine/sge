@@ -569,7 +569,7 @@ static void create_hostfile()
       int slots = 0;
       int i;
       
-      sscanf(line, "%s %d", hostname, &slots);
+      sscanf(line, "%s %d", hostname, &slots); /* RATS: ignore */
       memset(buffer, 0, MAXHOSTNAMELEN);
       strncpy(buffer, hostname, MAXHOSTNAMELEN - 1);
       hostinfo.free_slots += slots;
@@ -638,14 +638,12 @@ static void init_remote()
       }
       
       /* lockfile_name */
-      sprintf(buffer, "%s/qmake_lockfile", tmpdir);
-      lockfile_name = (char *)malloc(strlen(buffer) + 1);
-      strcpy(lockfile_name, buffer);
+      snprintf(buffer, sizeof buffer, "%s/qmake_lockfile", tmpdir);
+      lockfile_name = strdup(buffer);
       
       /* hostfile_name */
-      sprintf(buffer, "%s/qmake_hostfile", tmpdir);
-      hostfile_name = (char *)malloc(strlen(buffer) + 1);
-      strcpy(hostfile_name, buffer);
+      snprintf(buffer, sizeof buffer, "%s/qmake_hostfile", tmpdir);
+      hostfile_name = strdup(buffer);
       
       /* sge_hostfile_name */
       c = getenv("PE_HOSTFILE");
@@ -654,8 +652,7 @@ static void init_remote()
                      "PE_HOSTFILE", strerror(errno));
       }
 
-      sge_hostfile_name = (char *)malloc(strlen(c) + 1);
-      strcpy(sge_hostfile_name, c);
+      sge_hostfile_name = strdup(c);
      
       if(be_verbose) {
          fprintf(stdout, "sge hostfile = %s\n", sge_hostfile_name);
@@ -740,7 +737,7 @@ static void lock_hostfile()
          if(be_verbose) {
             fprintf(stdout, "waiting for lock to qmake lockfile\n");
          }
-         usleep(LOCK_SLEEP_TIME);
+         usleep(LOCK_SLEEP_TIME); /* fixme: use nanosleep */
       } else {
          remote_exit(EXIT_FAILURE, "unable to access lockfile", strerror(errno));
       }
@@ -1259,7 +1256,7 @@ void set_default_options()
 
       /* append architecture */
       if(insert_resource_request) {
-         sprintf(buffer, "arch=%s", architecture);
+         snprintf(buffer, sizeof buffer, "arch=%s", architecture);
    
          if(be_verbose) {
             fprintf(stdout, "setting default options: -l %s\n", buffer);
@@ -1429,7 +1426,7 @@ static void equalize_pe_j()
    }
 
    /* append pe */
-   sprintf(buffer, "1-%d", nslots);
+   snprintf(buffer, sizeof buffer, "1-%d", nslots);
    sge_argv[sge_argc++] = "-pe";
    sge_argv[sge_argc++] = "make";
    sge_argv[sge_argc++] = buffer;
@@ -1537,7 +1534,8 @@ static void submit_qmake()
 
             if(WIFSIGNALED(status)) {
                char buffer[1024];
-               sprintf(buffer, "qrsh exited on signal %d", WTERMSIG(status));
+               snprintf(buffer, sizeof buffer, "qrsh exited on signal %d",
+                        WTERMSIG(status));
                remote_exit(EXIT_FAILURE, buffer, NULL);
             }
          }   
@@ -1587,11 +1585,10 @@ void remote_options(int *p_argc, char **p_argv[])
    makelevel = getenv("MAKELEVEL");
 
    /* store program name to detect recursive make calls */
-   program_name = (char *)malloc(strlen((*p_argv)[0]) + 1);
+   program_name = strdup((*p_argv)[0]);
    if(program_name == 0) {
       remote_exit(EXIT_FAILURE, "malloc failed", strerror(errno));
    }
-   strcpy(program_name, (*p_argv)[0]);
  
    /* split sge and gmake options */
    if(!parse_options(p_argc, p_argv)) {
@@ -1659,7 +1656,7 @@ void remote_options(int *p_argc, char **p_argv[])
 
 void remote_setup ()
 {
-   static char hostbuffer[1024];
+   static char hostbuffer[MAXHOSTNAMELEN];
    struct hostent *hostinfo;
    
    /* if remote enabled, initialize filenames, hostfile, filehandles, number of hosts  */
@@ -1675,12 +1672,10 @@ void remote_setup ()
          remote_exit(EXIT_FAILURE, "gethostbyname failed", strerror(errno));
       }
 
-      localhost = (char *)malloc(strlen(hostinfo->h_name) + 1);
+      localhost = strdup(hostinfo->h_name);
       if(localhost == NULL) {
          remote_exit(EXIT_FAILURE, "malloc failed", strerror(errno));
       }
-
-      strcpy(localhost, hostinfo->h_name);
    }
 }
 
@@ -2072,9 +2067,9 @@ int start_remote_job (char **argv, char **envp,
                return 1;
             }
             if (!first_hit) {
-               strcat(addtl_env_pass, ",");
+               strcat(addtl_env_pass, ","); /* RATS: ignore */
             }
-            strcat(addtl_env_pass, variable);
+            strcat(addtl_env_pass, variable); /* RATS: ignore */
 
             first_hit = 0;
          }
@@ -2119,14 +2114,14 @@ int start_remote_job (char **argv, char **envp,
          {
             int   i;
 
-            strcpy(envvar, "RECURSIVE_QMAKE_OPTIONS=-inherit");
+            strcpy(envvar, "RECURSIVE_QMAKE_OPTIONS=-inherit"); /* RATS: ignore */
 
             if(pass_cwd) {
-               strcat(envvar, "\n-cwd");
+               strcat(envvar, "\n-cwd"); /* RATS: ignore */
             }
 
             if(be_verbose) {
-               strcat(envvar, "\n-verbose");
+               strcat(envvar, "\n-verbose"); /* RATS: ignore */
             }
             
             for(i = 0; i < sge_v_argc; i++) {
@@ -2134,8 +2129,8 @@ int start_remote_job (char **argv, char **envp,
                   fprintf(stderr, "qmake: RECURSIVE_QMAKE_OPTIONS too big\n");
                   return 1;
                }
-               strcat(envvar, "\n");
-               strcat(envvar, sge_v_argv[i]);
+               strcat(envvar, "\n");          /* RATS: ignore */
+               strcat(envvar, sge_v_argv[i]); /* RATS: ignore */
             }
            
             if(be_verbose) {
@@ -2185,7 +2180,7 @@ int start_remote_job (char **argv, char **envp,
       /* set PAREND env var */
       if(getenv("JOB_ID")) {
          static char buffer[1024];
-         sprintf(buffer, "PARENT=%s", getenv("JOB_ID"));
+         snprintf(buffer, sizeof buffer, "PARENT=%s", getenv("JOB_ID"));
          putenv(buffer);
       }
   
