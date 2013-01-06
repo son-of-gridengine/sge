@@ -610,16 +610,16 @@ ulong_parse_priority(lList **answer_list, int *valp, const char *priority_str)
    DENTER(TOP_LAYER, "ulong_parse_priority");
    errno = 0;
    *valp = strtol(priority_str, &s, 10);
-   if (priority_str == s || *valp > 1024 || *valp < -1023
-       || (errno == ERANGE && (*valp == LONG_MAX || *valp == LONG_MIN))
-       || (errno != 0 && *valp == 0)) {
-      SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_ULNG_INVALIDPRIO_I, *valp));
+   if (priority_str == s || *s != '\0' || *valp > 1024 || *valp < -1023
+       || errno != 0) {
+      SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_ULNG_INVALIDPRIO_S, priority_str));
       answer_list_add(answer_list, SGE_EVENT, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR);
       ret = false;
    }
    DRETURN(ret);
 }
 
+#if unused
 /* DG: TODO: add ADOC */
 bool
 ulong_parse_value_from_string(u_long32 *this_ulong, 
@@ -639,6 +639,7 @@ ulong_parse_value_from_string(u_long32 *this_ulong,
 
    DRETURN(ret);
 }
+#endif
 
 bool
 ulong_parse_task_concurrency(lList **answer_list, int *valp, const char *task_concurrency_str)
@@ -647,9 +648,11 @@ ulong_parse_task_concurrency(lList **answer_list, int *valp, const char *task_co
    char *s;
 
    DENTER(TOP_LAYER, "ulong_parse_task_concurrency");
+   errno = 0;
    *valp = strtol(task_concurrency_str, &s, 10);
-   if (task_concurrency_str == s || *valp < 0) {
-      SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_ULNG_INVALID_TASK_CONCURRENCY_I, (int) *valp));
+   if (task_concurrency_str == s || *s != '\0' || errno != 0 || *valp < 0) {
+      SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_ULNG_INVALID_TASK_CONCURRENCY_S,
+                             task_concurrency_str));
       answer_list_add(answer_list, SGE_EVENT, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR);
       ret = false;
    }
