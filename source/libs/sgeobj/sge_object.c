@@ -550,7 +550,8 @@ object_get_name_prefix(const lDescr *descr, dstring *buffer)
          char *underscore = strchr(name, '_');
 
          if (underscore != NULL) {
-            sge_dstring_sprintf(buffer, "%.*s", underscore - name + 1, name);
+            sge_dstring_sprintf(buffer, "%.*s",
+                                (int) (underscore - name + 1), name);
             return sge_dstring_get_string(buffer);
          }
       }

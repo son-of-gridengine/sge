@@ -675,15 +675,15 @@ static int sh_str2file(const char *header_str, const char *str, FILE* fp)
        */
       if (ret_fp < 0) {
          sge_dstring_init(&ds, buffer, sizeof(buffer));
-         sge_dstring_sprintf(&ds, "fprintf(%x,%s,%s) failed: %s",
-                             fp, header_str?header_str:"<null>",
+         sge_dstring_sprintf(&ds, "fprintf(%lx,%s,%s) failed: %s",
+                             (unsigned long)fp, header_str?header_str:"<null>",
                              str?str:"<null>", strerror(errno));
          shepherd_panic(buffer);
       }
       if(ret_fl != 0) {
          sge_dstring_init(&ds, buffer, sizeof(buffer));
-         sge_dstring_sprintf(&ds, "fflush(%x) failed: %s",
-                             fp, strerror(errno));
+         sge_dstring_sprintf(&ds, "fflush(%lx) failed: %s",
+                             (unsigned long)fp, strerror(errno));
          shepherd_panic(buffer);
       }
    }

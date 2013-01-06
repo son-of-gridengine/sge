@@ -2670,7 +2670,8 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
                   if (lGetString(value_elem, CE_stringval) != NULL) {
                      sge_dstring_append(&value, lGetString(value_elem, CE_stringval));
                   } else {
-                     sge_dstring_sprintf_append(&value, "%f", lGetString(value_elem, CE_doubleval));
+                     sge_dstring_sprintf_append(&value, "%f",
+                                                lGetDouble(value_elem, CE_doubleval));
                   }
                   value_elem = lNext(value_elem);
                   if (value_elem != NULL) {

@@ -239,7 +239,7 @@ static int jgdi_report_host_ulong_value(qhost_report_handler_t* handler, const c
    
    DENTER(JGDI_LAYER, "jgdi_report_host_ulong_value");
 
-   DPRINTF(("add host value %s=%ld\n", name, value));
+   DPRINTF(("add host value %s="sge_u32"\n", name, value));
    
    jgdi_handler->result = Long_init_0(env, &value_obj, value, alpp);
    if (jgdi_handler->result != JGDI_SUCCESS) {
