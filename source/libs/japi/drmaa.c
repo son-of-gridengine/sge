@@ -2376,7 +2376,7 @@ static int drmaa_path2path_opt(const lList *attrs, lList **args, int is_bulk,
             lSetString( ep, PN_path, path );
          } else if( !strcmp( sw, "-i" ) && bFileStaging==true ) {
             /* No default stdin_path for file staging! */
-            sge_dstring_sprintf(diag, MSG_DRMAA_NEEDS_INPUT_PATH);
+            sge_dstring_sprintf(diag, "%s", MSG_DRMAA_NEEDS_INPUT_PATH);
             drmaa_errno = DRMAA_ERRNO_INVALID_ARGUMENT;
          }
 

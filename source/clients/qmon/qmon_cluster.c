@@ -2044,7 +2044,7 @@ int local
    return True;
 
    error:
-      qmonMessageShow(w, True, errstr);
+      qmonMessageShow(w, True, "%s", errstr);
       lFreeList(&lp);
       *lpp = NULL;
       DEXIT;

@@ -761,7 +761,8 @@ sge_prog_state_class_create(sge_env_state_class_t *sge_env,
    DENTER(TOP_LAYER, "sge_prog_state_class_create");
 
    if (!ret) {
-      eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+      eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, "%s",
+                MSG_MEMORY_MALLOCFAILED);
       DEXIT;
       return NULL;
    }   
@@ -794,7 +795,8 @@ sge_prog_state_class_create(sge_env_state_class_t *sge_env,
 
    ret->sge_prog_state_handle = sge_malloc(sizeof(sge_prog_state_t));
    if (ret->sge_prog_state_handle == NULL) {
-      eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+      eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, "%s",
+                MSG_MEMORY_MALLOCFAILED);
       sge_free(&ret);
       DEXIT;
       return NULL;

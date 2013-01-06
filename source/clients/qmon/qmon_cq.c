@@ -1564,12 +1564,12 @@ lList *centry_list, lList *exechost_list, u_long32 explain_bits)
    sge_dstring_sprintf(info, "Queue: %s\n", lGetString(q, QU_full_name));
    if ((explain_bits & QI_ALARM) > 0) {
       if(*load_alarm_reason) {
-         sge_dstring_sprintf_append(info, load_alarm_reason); 
+         sge_dstring_sprintf_append(info, "%s", load_alarm_reason);
       }
    }
    if ((explain_bits & QI_SUSPEND_ALARM) > 0) {
       if(*suspend_alarm_reason) {
-         sge_dstring_sprintf_append(info, suspend_alarm_reason); 
+         sge_dstring_sprintf_append(info, "%s", suspend_alarm_reason);
       }
    }
    if (explain_bits != QI_DEFAULT) {
@@ -1584,7 +1584,7 @@ lList *centry_list, lList *exechost_list, u_long32 explain_bits)
             const char *message = lGetString(qim, QIM_message);
 
             sge_dstring_sprintf_append(info, "\t"); 
-            sge_dstring_sprintf_append(info, message); 
+            sge_dstring_sprintf_append(info, "%s", message);
          }
       }
    }

@@ -90,7 +90,8 @@ sge_env_state_class_t *sge_env_state_class_create(const char *sge_root, const ch
 
    DENTER(TOP_LAYER, "sge_env_state_class_create");
    if (!ret) {
-      eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+      eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, "%s",
+                MSG_MEMORY_MALLOCFAILED);
       DEXIT;
       return NULL;
    }   
@@ -111,7 +112,8 @@ sge_env_state_class_t *sge_env_state_class_create(const char *sge_root, const ch
 
    ret->sge_env_state_handle = (sge_env_state_t*)sge_malloc(sizeof(sge_env_state_t));
    if (ret->sge_env_state_handle == NULL) {
-      eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+      eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, "%s",
+                MSG_MEMORY_MALLOCFAILED);
       sge_env_state_class_destroy(&ret);
       DEXIT;
       return NULL;

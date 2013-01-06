@@ -203,7 +203,7 @@ bool parse_binding_parameter_string(const char* parameter, binding_type_t* type,
          retval = false;   
       } else {
          if (socketcorelist == NULL) {
-            sge_dstring_sprintf(error, MSG_SYNTAX_DSTRINGBUG);
+            sge_dstring_sprintf(error, "%s", MSG_SYNTAX_DSTRINGBUG);
             retval = false;  
          } else {
             char* pos = strstr(parameter, "explicit"); 
@@ -456,7 +456,7 @@ bool binding_explicit_has_correct_syntax(const char* parameter, dstring* error)
 
    /* check if the head is correct */
    if (strstr(parameter, "explicit:") == NULL) {
-      sge_dstring_sprintf(error, MSG_SYN_EXPLICIT_NOTFOUND);
+      sge_dstring_sprintf(error, "%s", MSG_SYN_EXPLICIT_NOTFOUND);
       return false;
    }
 
@@ -467,24 +467,24 @@ bool binding_explicit_has_correct_syntax(const char* parameter, dstring* error)
       /* first socket,core is mandatory */ 
       if ((socket = sge_strtok(NULL, ",")) == NULL) {
          /* we have no first socket number */
-         sge_dstring_sprintf(error, MSG_SYN_EXPLICIT_NOPAIR);
+         sge_dstring_sprintf(error, "%s", MSG_SYN_EXPLICIT_NOPAIR);
          return false;
       }
       /* check if <socket> begins with a digit */
       if (!is_digit(socket, ',')) {
-         sge_dstring_sprintf(error, MSG_SYN_EXPLICIT_FIRSTSOCKNONUMBER);
+         sge_dstring_sprintf(error, "%s", MSG_SYN_EXPLICIT_FIRSTSOCKNONUMBER);
          return false;
       }
 
       /* check for core */
       if ((core = sge_strtok(NULL, ":")) == NULL) {
          /* we have no first core number */
-         sge_dstring_sprintf(error, MSG_SYN_EXPLICIT_MISSINGFIRSTCORE);
+         sge_dstring_sprintf(error, "%s", MSG_SYN_EXPLICIT_MISSINGFIRSTCORE);
          return false;
       }
       /* check if <core> begins with a digit */
       if (!is_digit(core, ':')) {
-         sge_dstring_sprintf(error, MSG_SYN_EXPLICIT_FIRSTCORENONUMBER);
+         sge_dstring_sprintf(error, "%s", MSG_SYN_EXPLICIT_FIRSTCORENONUMBER);
          return false;
       }
 
@@ -493,20 +493,20 @@ bool binding_explicit_has_correct_syntax(const char* parameter, dstring* error)
          if ((socket = sge_strtok(NULL, ",")) != NULL) {
             /* check if <socket> begins with a digit */
             if (!is_digit(socket, ',')) {
-               sge_dstring_sprintf(error, MSG_SYN_EXPLICIT_SOCKNONUMBER); 
+               sge_dstring_sprintf(error, "%s", MSG_SYN_EXPLICIT_SOCKNONUMBER);
                return false;
             }
 
             /* we have a socket therefore we need a core number */
             if ((core = sge_strtok(NULL, ":")) == NULL) {
                /* no core found */
-               sge_dstring_sprintf(error, MSG_SYN_EXPLICIT_NOCOREFORSOCKET);
+               sge_dstring_sprintf(error, "%s", MSG_SYN_EXPLICIT_NOCOREFORSOCKET);
                return false;
             }
             
             /* check if <core> is a number */
             if (!is_digit(core, ':')) {
-               sge_dstring_sprintf(error, MSG_SYN_EXPLICIT_COREISNONUMBER);
+               sge_dstring_sprintf(error, "%s", MSG_SYN_EXPLICIT_COREISNONUMBER);
                return false;
             }
 
@@ -522,7 +522,7 @@ bool binding_explicit_has_correct_syntax(const char* parameter, dstring* error)
    amount = get_explicit_number(parameter, true);
   
    if (check_explicit_binding_string(parameter, amount, true) == false) {
-      sge_dstring_sprintf(error, MSG_SYN_EXPLICIT_PAIRSNOTUNIQUE);
+      sge_dstring_sprintf(error, "%s", MSG_SYN_EXPLICIT_PAIRSNOTUNIQUE);
       return false;
    }
 

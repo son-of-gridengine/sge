@@ -111,7 +111,7 @@ test_sequence(sge_sl_list_t *list, bool forward, const char *expected,
       /* create string from stored characters */
       next = NULL;
       ret &= sge_sl_elem_next(list, &next, forward ? SGE_SL_FORWARD : SGE_SL_BACKWARD);
-      sge_dstring_sprintf(&test_string, "");
+      sge_dstring_sprintf(&test_string, "%s", "");
       while (ret && (current = next) != NULL) {
          ret &= sge_sl_elem_next(list, &next, forward ? SGE_SL_FORWARD : SGE_SL_BACKWARD);
          sge_dstring_append(&test_string, (char *)sge_sl_elem_data(current));
@@ -151,7 +151,7 @@ test_search_sequence(sge_sl_list_t *list, bool forward, const char *key,
       next = NULL;
       ret &= sge_sl_elem_search(list, &next, (void *)key, test_compare_first_char,
                                 forward ? SGE_SL_FORWARD : SGE_SL_BACKWARD);
-      sge_dstring_sprintf(&test_string, "");
+      sge_dstring_sprintf(&test_string, "%s", "");
       while (ret && (current = next) != NULL) {
          ret &= sge_sl_elem_search(list, &next, (void *)key, test_compare_first_char,
                                    forward ? SGE_SL_FORWARD : SGE_SL_BACKWARD);
@@ -209,7 +209,7 @@ test_create_insert_destroy(void) {
 
    /* cleanup: destroy function saves deletion sequence in test_string */
    if (ret) {
-      sge_dstring_sprintf(&test_string, "");
+      sge_dstring_sprintf(&test_string, "%s", "");
       ret &= sge_sl_destroy(&list, test_destroy_test);
    }
 

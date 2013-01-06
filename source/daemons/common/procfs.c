@@ -198,7 +198,7 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
    max_groups = sge_sysconf(SGE_SYSCONF_NGROUPS_MAX);
    if (max_groups <= 0)
       if (shepherd_trace) {
-         shepherd_trace(MSG_SGE_NGROUPS_MAXOSRECONFIGURATIONNECESSARY);
+         shepherd_trace("%s", MSG_SGE_NGROUPS_MAXOSRECONFIGURATIONNECESSARY);
       }
    list = sge_malloc(max_groups*sizeof(gid_t));
 
@@ -305,7 +305,7 @@ FCLOSE_ERROR:
 
                   snprintf(err_str, sizeof(err_str), MSG_SGE_KILLINGPIDXY_UI,
                            sge_u32c(pid), groups);
-                  shepherd_trace(err_str);
+                  shepherd_trace("%s", err_str);
                }
 
                kill(pid, sig);
@@ -316,7 +316,7 @@ FCLOSE_ERROR:
 
                   snprintf(err_str, sizeof(err_str), MSG_SGE_DONOTKILLROOTPROCESSXY_UI,
                            sge_u32c(atol(dent->d_name)), groups);
-                  shepherd_trace(err_str);
+                  shepherd_trace("%s", err_str);
                }
             }
 
