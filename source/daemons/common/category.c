@@ -325,9 +325,9 @@ sge_build_job_cs_category(dstring *category_str, lListElem *job, lListElem *cat_
 
    /*
     * id for the resource category
-    * I use teh address of the resource category as a hash value for its string.
+    * I use the address of the resource category as a hash value for its string.
     */
-   sge_dstring_sprintf_append(category_str, " %x", cat_obj);
+   sge_dstring_sprintf_append(category_str, " %lx", (unsigned long) cat_obj);
 
    DEXIT;
    return sge_dstring_get_string(category_str);

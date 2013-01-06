@@ -1315,7 +1315,7 @@ prof_get_info_string(prof_level level, bool with_sub, dstring *error)
          prof_start_measurement(SGE_PROF_OTHER, error);
 
          sge_dstring_sprintf(&total_string, PROF_GET_INFO_FORMAT,
-            "total", busy, utime, stime, utilization, level);
+            "total", busy, utime, stime, utilization);
 
          ret = sge_dstring_append_dstring(&theInfo[thread_num][SGE_PROF_ALL].info_string, &total_string);
 

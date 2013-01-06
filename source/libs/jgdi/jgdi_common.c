@@ -2648,9 +2648,8 @@ jgdi_result_t get_bool(JNIEnv *env, jclass bean_class, jobject obj, const char* 
       DRETURN(JGDI_ERROR);
    }
 
-   jgdi_log_printf(env, JGDI_LOGGER, FINER, "property %s =", property_name, *retb);
-
    *retb = (lBool)jb;
+   jgdi_log_printf(env, JGDI_LOGGER, FINER, "property %s = %c", property_name, *retb);
 
    DRETURN(JGDI_SUCCESS);
 }
@@ -2672,7 +2671,7 @@ jgdi_result_t set_bool(JNIEnv *env, jclass bean_class, jobject obj, const char* 
       DRETURN(JGDI_ERROR);
    }
 
-   jgdi_log_printf(env, JGDI_LOGGER, FINER, "property %s =", property_name, value);
+   jgdi_log_printf(env, JGDI_LOGGER, FINER, "property %s = %c", property_name, value);
    
    DRETURN(JGDI_SUCCESS);
 }
