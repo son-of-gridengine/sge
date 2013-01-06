@@ -33,6 +33,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+#include "sge.h"                /* for __attribute__ */
 #include "drmaa2.h"
 
 #define SGE_ERR_MAX_MESSAGE_LENGTH 256
@@ -47,13 +48,8 @@ typedef drmaa2_error sge_err_t;
 void 
 sge_err_init(void);
 
-#ifdef __GNUC__
 void
 sge_err_set(sge_err_t id, const char *format, ...) __attribute__ ((format (printf, 2, 3)));
-#else
-void
-sge_err_set(sge_err_t id, const char *format, ...);
-#endif
 
 void
 sge_err_get(sge_err_t *id, char *message, size_t size);

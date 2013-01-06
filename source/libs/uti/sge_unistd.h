@@ -32,6 +32,8 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/   
 
+#include "sge.h"                /* for __attribute__ */
+
 #include <unistd.h>
 #include <dirent.h>      
 #include <sys/stat.h> 
@@ -115,11 +117,7 @@
 
 #define GETPGRP getpgrp()
 
-void sge_exit(void **ctx_ref, int i)
-#ifdef __GNUC__
-  __attribute__ ((noreturn))
-#endif
-;
+void sge_exit(void **ctx_ref, int i) __attribute__ ((noreturn));
 
 int sge_chdir_exit(const char *path, int exit_on_error);  
 

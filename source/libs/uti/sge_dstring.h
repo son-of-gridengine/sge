@@ -32,6 +32,8 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+#include "sge.h"                /* for __attribute__ */
+
 /****** uti/dstring/DSTRING_INIT **********************************************
 *  NAME
 *     DSTRING_INIT -- Define to initialize dstring variables 
@@ -77,9 +79,9 @@ const char* sge_dstring_append_char(dstring *sb, const char a);
 const char* sge_dstring_append_time(dstring *sb, time_t time, bool as_xml);
 const char* sge_dstring_append_mailopt(dstring *sb, u_long32 mailopt);
 
-const char* sge_dstring_sprintf(dstring *sb, const char *fmt, ...);
+const char* sge_dstring_sprintf(dstring *sb, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
 const char* sge_dstring_vsprintf(dstring *sb, const char *fmt, va_list ap);
-const char* sge_dstring_sprintf_append(dstring *sb, const char *fmt, ...);
+const char* sge_dstring_sprintf_append(dstring *sb, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
 
 void sge_dstring_clear(dstring *sb);
 void sge_dstring_free(dstring *sb);

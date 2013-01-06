@@ -67,4 +67,11 @@
 #define EXEC_DIR                  "job_scripts"
 #define ERR_FILE                  "messages"
 
+/* Possibly supported by other compilers too.  */
+#ifndef __attribute__
+# if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 5) || __STRICT_ANSI__
+#  define __attribute__(x)
+# endif
+#endif
+
 #endif /* __SGE_H */

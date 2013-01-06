@@ -33,6 +33,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+#include "sge.h"                /* for __attribute__ */
 
 typedef enum {
    SEVERE = 0,
@@ -52,7 +53,7 @@ typedef enum {
 
 jobject jgdi_get_logger(JNIEnv *env, const char* logger);
 jboolean jgdi_is_loggable(JNIEnv *env, jobject logger, log_level_t level);
-void jgdi_log_printf(JNIEnv *env, const char* logger, log_level_t level, const char* fmt, ...);
+void jgdi_log_printf(JNIEnv *env, const char* logger, log_level_t level, const char* fmt, ...) __attribute__ ((format (printf, 4, 5)));
 void jgdi_log(JNIEnv *env, jobject logger, log_level_t level, const char* msg);
 void jgdi_log_list(JNIEnv *env, const char* logger, log_level_t level, lList* list);
 void jgdi_log_listelem(JNIEnv *env, const char* logger, log_level_t level, lListElem *elem);

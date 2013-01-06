@@ -34,6 +34,7 @@
 
 #include "basis_types.h"
 #include "cull.h"
+#include "sge.h"                /* for __attribute__ */
 
 typedef struct sge_error_class_str sge_error_class_t;
 
@@ -51,7 +52,7 @@ struct sge_error_iterator_class_str {
 
 struct sge_error_class_str {
    void *sge_error_handle;
-   void (*error)(sge_error_class_t* thiz, int error_type, int error_quality, const char*fmt, ...);
+   void (*error)(sge_error_class_t* thiz, int error_type, int error_quality, const char*fmt, ...) __attribute__ ((format (printf, 4, 5)));
    void (*verror)(sge_error_class_t* thiz, int error_type, int error_quality, const char*fmt, va_list ap);
    
    void (*clear)(sge_error_class_t *thiz);

@@ -36,6 +36,7 @@
 #include <stdio.h>
 
 #include "cull/cull_list.h"
+#include "sge.h"
 
 #ifdef  __cplusplus
 extern "C" {
@@ -147,8 +148,8 @@ int boolcmp(lBool u0, lBool u1);
 int longcmp(lLong u0, lLong u1);
 int refcmp(lRef u0, lRef u1);
 
-int incompatibleType(const char *str);
-int incompatibleType2(const char *fmt, ...);
+int incompatibleType(const char *str) __attribute__ ((noreturn));
+  int incompatibleType2(const char *fmt, ...) __attribute__ ((format (printf, 1, 2), noreturn));
 int unknownType(const char *str);
 
 

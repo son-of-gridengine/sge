@@ -35,7 +35,7 @@
 #include <Xmt/Xmt.h>
 
 #include "qmon_proto.h"
-
+#include "sge.h"                /* for __attribute__ */
 
 enum _type {
    MSG_MSGLINE,
@@ -43,7 +43,7 @@ enum _type {
    MSG_DIALOG
 };
 
-void qmonMessageShow(Widget w, Boolean msg_box, StringConst fmt, ...);
+void qmonMessageShow(Widget w, Boolean msg_box, StringConst fmt, ...) __attribute__ ((format (printf, 3, 4)));
 int qmonMessageBox(Widget w, lList *alp, int show_always);
 
 #endif /* _QMON_MESSAGE_H_ */
