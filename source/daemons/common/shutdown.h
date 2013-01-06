@@ -32,10 +32,10 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-
+#include "sge.h"
  
 void starting_up(void);
-void sge_shutdown(void **context, int i);
+void sge_shutdown(void **context, int i) __attribute__ ((noreturn));
 
 #endif /* __SHUTDOWN_H */
 
