@@ -104,6 +104,8 @@ static void host_update_categories(const lListElem *new_hep, const lListElem *ol
 static int attr_mod_threshold(sge_gdi_ctx_class_t *ctx, lList **alpp, lListElem *ep, lListElem *new_ep,
                               int sub_command, char *attr_name, char *object_name);
 
+#define SGE_ATTR_USAGE_SCALING "usage_scaling"
+
 void 
 host_initalitze_timer(void)
 {

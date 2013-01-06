@@ -36,6 +36,8 @@
 #include "sge_dstring.h"
 
 #define COMMENT_CHAR '#'
+#define ZOMBIE_DIR "zombies"
+#define JOB_DIR "jobs"
 
 /****** uti/spool/sge_file_path_id_t ******************************************
 *  NAME

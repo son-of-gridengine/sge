@@ -81,6 +81,7 @@
 
 #define SGE_BIN "bin"
 #define STREESPOOLTIMEDEF 240
+#define SPOOL_DIR "spool"
 
 #ifndef HAVE_HWLOC
   #define HAVE_HWLOC 0

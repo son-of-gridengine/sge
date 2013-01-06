@@ -47,6 +47,7 @@
 #include "sgeobj/sge_ja_task.h"
 #include "sgeobj/sge_str.h"
 #include "sgeobj/sge_userset.h"
+#include "sgeobj/sge_cqueue.h"
 
 #include "spool/sge_spooling.h"
 

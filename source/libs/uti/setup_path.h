@@ -49,6 +49,8 @@
 #define REPORTING_FILE            "reporting"
 #define LOCAL_CONF_DIR            "local_conf"
 #define SHADOW_MASTERS_FILE       "shadow_masters"
+#define ALIAS_FILE                "host_aliases"
+#define QINSTANCES_DIR            "qinstances"
 
 #define PATH_SEPARATOR "/"
 #define PATH_SEPARATOR_CHAR '/'
