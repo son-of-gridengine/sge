@@ -66,6 +66,10 @@
 #include "msg_common.h"
 #include "msg_qmaster.h"
 
+#define SGE_ATTRVAL_MIN                "min"
+#define SGE_ATTRVAL_MAX                "max"
+#define SGE_ATTRVAL_AVG                "avg"
+
 bool pe_name_is_matching(const char *pe_name, const char *wildcard)
 {
    return fnmatch(wildcard, pe_name, 0) == 0 ? true : false;
@@ -609,6 +613,7 @@ lListElem* pe_create_template(char *pe_name)
    lSetString(pep, PE_start_proc_args, "NONE");
    lSetString(pep, PE_stop_proc_args, "NONE");
 
+   /* Fixme:  This should probably be flipped.  */
    /* PE_control_slaves initialized implicitly to false */
    lSetBool(pep, PE_job_is_first_task, TRUE);
 

@@ -48,6 +48,7 @@
 #include "uti/sge_unistd.h"
 #include "uti/sge_string.h"
 #include "uti/sge_mtutil.h"
+#include "uti/setup_path.h"
 
 #include "sgeobj/sge_hgroup.h"
 #include "sgeobj/sge_cqueue.h"

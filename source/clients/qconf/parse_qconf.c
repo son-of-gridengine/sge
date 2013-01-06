@@ -101,6 +101,10 @@
 #include "msg_clients_common.h"
 #include "msg_qconf.h"
 
+#ifndef __SGE_NO_USERMAPPING__
+#define SGE_OBJ_USER_MAPPING           "usermapping"
+#endif
+
 static int sge_next_is_an_opt(char **ptr);
 static int sge_error_and_exit(sge_gdi_ctx_class_t *ctx, const char *ptr);
 

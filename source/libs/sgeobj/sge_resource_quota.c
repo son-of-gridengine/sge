@@ -62,6 +62,8 @@
 
 static bool rqs_match_user_host_scope(lList *scope, int filter_type, const char *value, lList *master_userset_list, lList *master_hgroup_list, const char *group, bool is_xscope);
 
+#define SGE_ATTR_DYNAMICAL_LIMIT       "dynamical_limit"
+
 /****** sge_resource_quota/rqs_parse_filter_from_string() *************************
 *  NAME
 *     rqs_parse_filter_from_string() -- parse a RQRF Object from string

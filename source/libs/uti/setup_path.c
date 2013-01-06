@@ -53,6 +53,7 @@
 #include "sge.h"
 #include "msg_common.h"
 
+#define ACT_QMASTER_FILE          "act_qmaster"
 
 typedef struct {
     char* sge_root;      

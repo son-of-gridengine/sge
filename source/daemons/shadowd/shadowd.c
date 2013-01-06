@@ -82,17 +82,11 @@
 #   include "sge_string.h"
 #endif
 
-#ifndef FALSE
-#   define FALSE 0
-#endif
-
-#ifndef TRUE
-#   define TRUE  1
-#endif
-
 #define CHECK_INTERVAL      60 
 #define GET_ACTIVE_INTERVAL 240
 #define DELAY_TIME          600 
+
+#define SHADOWD_PID_FILE          "shadowd_%s.pid"
 
 int main(int argc, char **argv);
 static void shadowd_exit_func(void **ctx_ref, int i);

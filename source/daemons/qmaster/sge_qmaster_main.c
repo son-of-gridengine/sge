@@ -76,6 +76,7 @@
 #include "sge.h"
 #include "sge_qmaster_threads.h"
 #include "msg_qmaster.h"
+#include "setup_qmaster.h"
 
 #if defined(SOLARIS)
 #   include "sge_smf.h"

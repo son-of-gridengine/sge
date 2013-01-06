@@ -103,6 +103,9 @@
 #include "msg_qmaster.h"
 #include "msg_daemons_common.h"
 
+#define ARSEQ_NUM_FILE "arseqnum"
+#define SGE_ATTR_MAIL_LIST "mail_list"
+
 typedef struct {
    u_long32 ar_id;
    bool changed;

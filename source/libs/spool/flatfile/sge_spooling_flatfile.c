@@ -41,6 +41,7 @@
 #include "uti/sge_string.h"
 #include "uti/sge_dstring.h"
 #include "uti/sge_io.h"
+#include "uti/sge_spool.h"
 
 #include "sgeobj/sge_feature.h"
 #include "sgeobj/sge_answer.h"
@@ -76,6 +77,30 @@ const char *get_classic_spooling_method(void)
 
 static bool write_manop(int spool, int target);
 static bool read_manop(int target);
+
+
+/* These files exist in the qmaster spool directory. These files may be
+ * accessed directly, since they are used after chdir() of qmaster/execd
+ * to their spool directory
+ */
+#define EXECHOST_DIR              "exec_hosts"
+#define ADMINHOST_DIR             "admin_hosts"
+#define SUBMITHOST_DIR            "submit_hosts"
+#define ACCESS_DIR                "access_lists"
+#define CQUEUE_DIR                "cqueues"
+#define PE_DIR                    "pe"
+#define UME_DIR                   "usermapping"
+#define HGROUP_DIR                "hostgroups"
+#define CENTRY_DIR                "centry"
+#define CKPTOBJ_DIR               "ckpt"
+#define CAL_DIR                   "calendars"
+#define RESOURCEQUOTAS_DIR        "resource_quotas"
+#define MAN_FILE                  "managers"
+#define OP_FILE                   "operators"
+#define USER_DIR                  "users"
+#define USERSET_DIR               "usersets"
+#define PROJECT_DIR               "projects"
+#define AR_DIR                    "advance_reservations"
 
 /****** spool/flatfile/spool_flatfile_create_context() ********************
 *  NAME
