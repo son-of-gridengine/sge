@@ -32,7 +32,10 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-typedef int (*tShepherd_trace)(const char *format, ...); 
+#include "sge.h"                /* for __attribute__ */
+
+typedef int (*tShepherd_trace)(const char *format, ...)
+  __attribute__ ((format (printf, 1, 2)));
 
 extern int foreground;      /* != 0 if we can write to stderr/out     */
 
@@ -45,11 +48,9 @@ void shepherd_error_exit(void);
 void shepherd_error_chown(const char* job_owner);
 
 int  shepherd_trace(const char *format, ...)
-#ifdef __GNUC__
-  __attribute__ ((format (printf, 1, 2)))
-#endif
-;
-void shepherd_error(int do_exit, const char *format, ...);
+  __attribute__ ((format (printf, 1, 2)));
+void shepherd_error(int do_exit, const char *format, ...)
+  __attribute__ ((format (printf, 2, 3)));
 void shepherd_error_ptr(const char *text);
 void shepherd_write_exit_status( const char *exit_status );
 
