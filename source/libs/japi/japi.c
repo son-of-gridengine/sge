@@ -1115,7 +1115,8 @@ int japi_string_vector_get_next(drmaa_attr_values_t* iter, dstring *val)
          DRETURN(DRMAA_ERRNO_NO_MORE_ELEMENTS);
       }
       if (val != NULL) {
-         sge_dstring_sprintf(val, "%ld.%d", iter->it.ji.jobid, iter->it.ji.next_pos);
+         sge_dstring_sprintf(val, "%ld.%d", (long)iter->it.ji.jobid,
+                             iter->it.ji.next_pos);
       }
 
       iter->it.ji.next_pos += iter->it.ji.incr;
@@ -1455,7 +1456,7 @@ int japi_run_job(dstring *job_id, lListElem **sge_job_template, bool use_euid_eg
    
    /* return jobid as string */
    if (job_id)
-      sge_dstring_sprintf(job_id, "%ld", jobid);
+      sge_dstring_sprintf(job_id, "%ld", (long) jobid);
 
    DRETURN(DRMAA_ERRNO_SUCCESS);
 }
@@ -2672,9 +2673,10 @@ int japi_wait(const char *job_id, dstring *waited_job, int *stat,
    /* copy jobid of finished job into buffer provided by caller */
    if (wait_result==JAPI_WAIT_FINISHED && waited_job) {
       if (waited_is_task_array) {
-         sge_dstring_sprintf(waited_job, "%ld.%d", waited_jobid, waited_taskid);
+         sge_dstring_sprintf(waited_job, "%ld.%d", (long)waited_jobid,
+                             waited_taskid);
       } else {
-         sge_dstring_sprintf(waited_job, "%ld", waited_jobid);
+         sge_dstring_sprintf(waited_job, "%ld", (long)waited_jobid);
       }
    }
 

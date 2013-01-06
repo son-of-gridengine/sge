@@ -212,7 +212,7 @@ static void test_dstring_performance(dstring *ds, int max, const char *data)
 
    gettimeofday(&before, NULL);
    for (i = 0; i < max; i++) {
-      sge_dstring_sprintf(ds, "%s", data, data);
+      sge_dstring_sprintf(ds, "%s", data);
    }
    gettimeofday(&after, NULL);
 

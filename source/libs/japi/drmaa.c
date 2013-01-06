@@ -2509,7 +2509,7 @@ static int drmaa_path2sge_path(const lList *attrs, int is_bulk,
          }
 
          if (p != value) {
-            sge_dstring_sprintf_append(&ds, "%.*s", p-value, value);
+            sge_dstring_sprintf_append(&ds, "%.*s", (int) (p-value), value);
             value = p;
          }
          sge_dstring_append(&ds, "$TASK_ID");
