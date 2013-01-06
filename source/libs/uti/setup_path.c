@@ -542,7 +542,8 @@ sge_path_state_class_t *sge_path_state_class_create(sge_env_state_class_t *sge_e
    DENTER(TOP_LAYER, "sge_path_state_class_create");
 
    if (!ret) {
-      eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+      eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, "%s",
+                MSG_MEMORY_MALLOCFAILED);
       DEXIT;
       return NULL;
    }

@@ -427,7 +427,7 @@ XtIntervalId *id
               XmtLocalize(AppShell, "No free slots for interactive job %d !",
                           "No free slots for interactive job %d !"), 
                           (int) job_number);
-      qmonMessageShow(AppShell, True, msg);
+      qmonMessageShow(AppShell, True, "%s", msg);
       cont = False;
    }
 

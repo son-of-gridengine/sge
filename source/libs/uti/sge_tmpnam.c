@@ -89,13 +89,13 @@ int sge_mkstemp(char *aBuffer, size_t size, dstring *error_message)
    DENTER(TOP_LAYER, "sge_mkstemp");
 
    if (aBuffer == NULL) {
-      sge_dstring_sprintf(error_message, MSG_TMPNAM_GOT_NULL_PARAMETER);
+      sge_dstring_sprintf(error_message, "%s", MSG_TMPNAM_GOT_NULL_PARAMETER);
       DEXIT;
       return -1;
    }
 
    if (elect_path(&s) < 0) {
-      sge_dstring_sprintf(error_message, MSG_TMPNAM_CANNOT_GET_TMP_PATH);
+      sge_dstring_sprintf(error_message, "%s", MSG_TMPNAM_CANNOT_GET_TMP_PATH);
       sge_dstring_free(&s);
       DEXIT;
       return -1;
@@ -182,6 +182,6 @@ static int spawn_file(dstring *aBuffer, dstring *error_message) {
    /*
     * finally copy the resulting path to aBuffer
     */
-   sge_dstring_sprintf(aBuffer, tmp_string);
+   sge_dstring_sprintf(aBuffer, "%s", tmp_string);
    return mkstemp_return;
 }

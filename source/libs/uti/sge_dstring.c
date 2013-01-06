@@ -716,7 +716,7 @@ const char *sge_dstring_ulong_to_binstring(dstring *sb, u_long32 number)
       number /= 2;
    }  
    sge_strip_blanks(buffer);
-   sge_dstring_sprintf(sb, buffer);
+   sge_dstring_sprintf(sb, "%s", buffer);
    return sge_dstring_get_string(sb);
 }
 

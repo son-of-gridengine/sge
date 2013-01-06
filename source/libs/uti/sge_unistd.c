@@ -436,7 +436,7 @@ int sge_rmdir(const char *cp, dstring *error)
    DENTER(TOP_LAYER, "sge_rmdir");
  
    if (!cp) {
-      sge_dstring_sprintf(error, MSG_POINTER_NULLPARAMETER);
+      sge_dstring_sprintf(error, "%s", MSG_POINTER_NULLPARAMETER);
       DEXIT;
       return -1;
    }
@@ -472,7 +472,7 @@ int sge_rmdir(const char *cp, dstring *error)
     if (S_ISDIR(statbuf.st_mode) && !S_ISLNK(statbuf.st_mode)) 
     {
     if (sge_rmdir(fname, error)) {
-               sge_dstring_sprintf(error, MSG_FILE_RECURSIVERMDIRFAILED );
+               sge_dstring_sprintf(error, "%s", MSG_FILE_RECURSIVERMDIRFAILED );
                closedir(dir);
                DEXIT;
                return -1;

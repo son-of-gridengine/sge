@@ -473,7 +473,7 @@ bool sge_bootstrap(const char *bootstrap_file, dstring *error_dstring)
       if (error_dstring == NULL) {
          CRITICAL((SGE_EVENT, SFNMAX, MSG_UTI_CANNOTRESOLVEBOOTSTRAPFILE));
       } else {
-         sge_dstring_sprintf(error_dstring, MSG_UTI_CANNOTRESOLVEBOOTSTRAPFILE);
+         sge_dstring_sprintf(error_dstring, "%s", MSG_UTI_CANNOTRESOLVEBOOTSTRAPFILE);
       }
       ret = false;
    /* read bootstrapping information */   
@@ -642,7 +642,7 @@ sge_bootstrap_state_class_t *sge_bootstrap_state_class_create(sge_path_state_cla
 
    if (!ret) {
       if (eh != NULL) {
-         eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+         eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, "%s", MSG_MEMORY_MALLOCFAILED);
       }
       DEXIT;
       return NULL;
@@ -706,7 +706,7 @@ static bool sge_bootstrap_state_class_init(sge_bootstrap_state_class_t *st, sge_
    
    if (st->sge_bootstrap_state_handle == NULL ) {
       if (eh != NULL) {
-         eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+         eh->error(eh, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, "%s", MSG_MEMORY_MALLOCFAILED);
       }
       DEXIT;
       return false;
@@ -803,7 +803,7 @@ static bool sge_bootstrap_state_setup(sge_bootstrap_state_class_t *thiz, sge_pat
    /* get filepath of bootstrap file */
    bootstrap_file = sge_paths->get_bootstrap_file(sge_paths);
    if (bootstrap_file == NULL) {
-      eh->error(eh, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR, MSG_UTI_CANNOTRESOLVEBOOTSTRAPFILE);
+      eh->error(eh, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR, "%s", MSG_UTI_CANNOTRESOLVEBOOTSTRAPFILE);
       DEXIT;
       return false;
    } 
@@ -811,7 +811,7 @@ static bool sge_bootstrap_state_setup(sge_bootstrap_state_class_t *thiz, sge_pat
    /* read bootstrapping information */   
    if (sge_get_confval_array(bootstrap_file, NUM_BOOTSTRAP, NUM_REQ_BOOTSTRAP, name, 
                                     value, &error_dstring)) {
-      eh->error(eh, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR, sge_dstring_get_string(&error_dstring));
+      eh->error(eh, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR, "%s", sge_dstring_get_string(&error_dstring));
       sge_dstring_free(&error_dstring);
       DEXIT;
       return false;

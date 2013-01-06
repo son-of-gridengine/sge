@@ -898,7 +898,8 @@ Cardinal size
          range_list_parse_from_string(&ret_list, &alp, str,
                                       0, 0, INF_ALLOWED);
          if (alp) {
-            qmonMessageShow(w, True, (StringConst)lGetString(lFirst(alp), AN_text));
+            qmonMessageShow(w, True, "%s",
+                            (StringConst)lGetString(lFirst(alp), AN_text));
             lFreeList(&alp);
          }
       }
@@ -906,7 +907,8 @@ Cardinal size
          range_list_parse_from_string(&ret_list, &alp, str,
                                       0, 1, INF_NOT_ALLOWED);
          if (alp) {
-            qmonMessageShow(w, True, (StringConst)lGetString(lFirst(alp), AN_text));
+            qmonMessageShow(w, True, "%s",
+                            (StringConst)lGetString(lFirst(alp), AN_text));
             lFreeList(&alp);
          }
       }

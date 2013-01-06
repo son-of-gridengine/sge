@@ -661,7 +661,7 @@ void sge_monitor_reset(monitoring_t *monitor)
 *******************************************************************************/
 static void ext_sch_output(dstring *message, void *monitoring_extension, double time)
 {
-   sge_dstring_sprintf_append(message, "");
+   sge_dstring_sprintf_append(message, "%s", "");
 }
 
 /****** uti/monitor/ext_gdi_output() *******************************************

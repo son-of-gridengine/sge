@@ -558,7 +558,7 @@ static void* commlib_to_pty(void *t_conf)
       recv_mess.cl_message = NULL;
       recv_mess.data       = NULL;
       sge_dstring_free(&err_msg);
-      sge_dstring_sprintf(&err_msg, "");
+      sge_dstring_sprintf(&err_msg, "%s", "");
 
       ret = comm_recv_message(g_comm_handle, true, &recv_mess, &err_msg);
 
@@ -800,7 +800,7 @@ parent_loop(int job_pid, const char *childname, int timeout, ckpt_info_t *p_ckpt
    /*
     * Initialize err_msg, so it's never NULL.
     */
-   sge_dstring_sprintf(err_msg, "");
+   sge_dstring_sprintf(err_msg, "%s", "");
 
    ret = comm_init_lib(err_msg);
    if (ret != COMM_RETVAL_OK) {

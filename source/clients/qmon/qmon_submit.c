@@ -1633,7 +1633,7 @@ static void qmonSubmitJobSubmit(Widget w, XtPointer cld, XtPointer cad)
    return;
 
    error:
-      qmonMessageShow(w, True, buf);
+      qmonMessageShow(w, True, "%s", buf);
       XmtDisplayDefaultCursor(w);
       DEXIT;
 }
