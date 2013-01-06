@@ -501,7 +501,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       /*
       ** violation of min_gid or min_uid
       */
-      shepherd_error(1, err_str);
+      shepherd_error(1, "%s", err_str);
    }
 
    shell_start_mode = get_conf_val("shell_start_mode");
@@ -889,7 +889,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
          } else if (ret == 4) {
             shepherd_state = SSTATE_PASSWD_WRONG;
          }
-         shepherd_error(1, err_str);
+         shepherd_error(1, "%s", err_str);
       }
    }
    shepherd_trace("now running with uid="uid_t_fmt", euid="uid_t_fmt, 
@@ -1439,7 +1439,7 @@ int use_starter_method /* If this flag is set the shell path contains the
       if (check_configured_method(pre_args_ptr[1], conf_name, err_str) != 0
           && g_new_interactive_job_support == false) {
          shepherd_state = SSTATE_CHECK_DAEMON_CONFIG;
-         shepherd_error(1, err_str);
+         shepherd_error(1, "%s", err_str);
       }
 
       pre_args_ptr[2] = "-d"; 
@@ -1652,7 +1652,7 @@ int use_starter_method /* If this flag is set the shell path contains the
                i.e. -S /etc/passwd */
             shepherd_state = SSTATE_NO_SHELL;
             /* EXIT HERE IN CASE IF FAILURE */
-            shepherd_error(1, failed_str);
+            shepherd_error(1, "%s", failed_str);
          }
       }
    }
@@ -1758,7 +1758,7 @@ int type
                sprintf(err_str+strlen(err_str), uid_t_fmt" ", groups[i]);
          }
          shepherd_state = SSTATE_OPEN_OUTPUT; /* job's failure */
-         shepherd_error(1, err_str);
+         shepherd_error(1, "%s", err_str);
       }
       return base; /* does not exist - must be path of file to be created */
    }

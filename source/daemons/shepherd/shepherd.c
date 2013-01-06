@@ -827,7 +827,7 @@ int main(int argc, char **argv)
    /* init admin user stuff */
    admin_user = get_conf_val("admin_user");
    if (sge_set_admin_username(admin_user, err_str, sizeof(err_str))) {
-      shepherd_error(1, err_str);
+      shepherd_error(1, "%s", err_str);
    }
 
    if (sge_switch2admin_user()) {
@@ -861,7 +861,7 @@ int main(int argc, char **argv)
    pid = getpid();
 
    if(!shepherd_write_pid_file(pid, &ds)) {
-      shepherd_error(1, sge_dstring_get_string(&ds));
+      shepherd_error(1, "%s", sge_dstring_get_string(&ds));
    }
 
    uid = getuid();
@@ -919,7 +919,7 @@ int main(int argc, char **argv)
                                   atoi(token_extend_time), err_str,
                                   sizeof(err_str))) {
             shepherd_state = SSTATE_AFS_PROBLEM;
-            shepherd_error(1, err_str);
+            shepherd_error(1, "%s", err_str);
          }
 
          shepherd_trace("%s", err_str);

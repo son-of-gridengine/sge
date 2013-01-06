@@ -349,7 +349,7 @@ int comm_init_lib(dstring *err_msg)
    /*ret = cl_com_setup_commlib(CL_RW_THREAD, CL_LOG_DEBUG, my_log_list_flush_list);*/
    ret = cl_com_setup_commlib(CL_RW_THREAD, CL_LOG_OFF, NULL); 
    if (ret != CL_RETVAL_OK) {
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
       DPRINTF(("cl_com_setup_commlib() failed: %s (%d)\n", sge_dstring_get_string(err_msg), ret));
       ret_val = COMM_CANT_SETUP_COMMLIB;
    } else {
@@ -359,7 +359,7 @@ int comm_init_lib(dstring *err_msg)
       alias_path = sge_get_alias_path();
       ret = cl_com_set_alias_file(alias_path);
       if (ret != CL_RETVAL_OK) {
-         sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+         sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
          DPRINTF(("cl_com_set_alias_file() failed: %s (%d)\n", sge_dstring_get_string(err_msg), ret));
          ret_val = COMM_CANT_SETUP_COMMLIB;
       }
@@ -382,7 +382,7 @@ int comm_init_lib(dstring *err_msg)
 
          ret = cl_com_set_resolve_method(resolve_method, default_domain);
          if (ret != CL_RETVAL_OK) {
-            sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+            sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
             DPRINTF(("cl_com_set_resolve_method() failed: %s (%d)\n", sge_dstring_get_string(err_msg), ret));
             ret_val = COMM_CANT_SETUP_COMMLIB;
          }
@@ -429,7 +429,7 @@ int comm_cleanup_lib(dstring *err_msg)
 
    ret = cl_com_cleanup_commlib();
    if (ret != CL_RETVAL_OK) {
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
       DPRINTF(("cl_com_cleanup_commlib() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
       ret_val = COMM_CANT_CLEANUP_COMMLIB;
@@ -592,7 +592,7 @@ int comm_open_connection(bool        b_server,
          }
 
          if (*handle == NULL) {
-            sge_dstring_sprintf(err_msg, cl_get_error_text(commlib_error));
+            sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(commlib_error));
             DPRINTF(("cl_com_create_handle() failed: %s (%d)\n",
                      sge_dstring_get_string(err_msg), commlib_error));
             ret_val = COMM_CANT_CREATE_HANDLE;
@@ -686,7 +686,7 @@ int comm_shutdown_connection(COMM_HANDLE *handle, const char *component_name,
                                      (char*)component_name, 1, false);
    if (ret != CL_RETVAL_OK && ret != CL_RETVAL_UNKNOWN_ENDPOINT) {
       /* shutting down the endpoint returned commlib error */
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
       DPRINTF(("cl_commlib_close_connection() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
       ret_val = COMM_CANT_CLOSE_CONNECTION;
@@ -695,7 +695,7 @@ int comm_shutdown_connection(COMM_HANDLE *handle, const char *component_name,
    } else {
       ret = cl_commlib_shutdown_handle(handle, false);
       if (ret != CL_RETVAL_OK) {
-         sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+         sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
          DPRINTF(("cl_commlib_close_connection() failed: %s (%d)\n",
                   sge_dstring_get_string(err_msg), ret));
          ret_val = COMM_CANT_SHUTDOWN_HANDLE;
@@ -744,7 +744,7 @@ int comm_set_connection_param(COMM_HANDLE *handle, int param, int value,
    DENTER(TOP_LAYER, "comm_set_connection_param");
    ret = cl_commlib_set_connection_param(handle, param, value);
    if (ret != CL_RETVAL_OK) {
-         sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+         sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
          DPRINTF(("cl_commlib_set_connection_param() failed: %s (%d)\n",
                   sge_dstring_get_string(err_msg), ret));
          ret_val = COMM_CANT_SET_CONNECTION_PARAM;
@@ -789,7 +789,7 @@ int comm_ignore_timeouts(bool b_ignore, dstring *err_msg)
    
    cl_com_ignore_timeouts(b_ignore==true ? true : false);
    if (ret != CL_RETVAL_OK) {
-         sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+         sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
          DPRINTF(("cl_com_ignore_timeouts() failed: %s (%d)\n",
                   sge_dstring_get_string(err_msg), ret));
          ret_val = COMM_CANT_SET_IGNORE_TIMEOUTS;
@@ -883,12 +883,12 @@ int comm_wait_for_connection(COMM_HANDLE *handle,
       DPRINTF(("%s", sge_dstring_get_string(err_msg)));
       ret_val = COMM_GOT_TIMEOUT;
    } else if (ret2 != CL_RETVAL_OK) {
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret2));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret2));
       DPRINTF(("cl_commlib_trigger() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret2));
       ret_val = COMM_CANT_TRIGGER;
    } else if (ret != CL_RETVAL_OK) {
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
       DPRINTF(("cl_commlib_search_endpoint() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
       ret_val = COMM_CANT_SEARCH_ENDPOINT;
@@ -1001,13 +1001,13 @@ int comm_wait_for_no_connection(COMM_HANDLE *handle, const char *component,
       ret_val = COMM_GOT_TIMEOUT;
    }
    if (ret2 != CL_RETVAL_OK) {
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret2));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret2));
       DPRINTF(("cl_commlib_trigger() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret2));
       ret_val = COMM_CANT_TRIGGER;
    }
    if (ret != CL_RETVAL_OK) {
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
       DPRINTF(("cl_commlib_search_endpoint() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
       ret_val = COMM_CANT_SEARCH_ENDPOINT;
@@ -1057,7 +1057,7 @@ int comm_get_connection_count(const COMM_HANDLE *handle, dstring *err_msg)
 
    ret = cl_raw_list_lock(handle->connection_list);
    if (ret != CL_RETVAL_OK) {
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
       DPRINTF(("cl_raw_list_lock() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
       ret_val = -COMM_CANT_LOCK_CONNECTION_LIST;
@@ -1068,7 +1068,7 @@ int comm_get_connection_count(const COMM_HANDLE *handle, dstring *err_msg)
       }
       ret = cl_raw_list_unlock(handle->connection_list);
       if (ret != CL_RETVAL_OK) {
-         sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+         sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
          DPRINTF(("cl_raw_list_unlock() failed: %s (%d)\n",
                   sge_dstring_get_string(err_msg), ret));
          ret_val = -COMM_CANT_UNLOCK_CONNECTION_LIST;
@@ -1121,7 +1121,7 @@ int comm_trigger(COMM_HANDLE *handle, int synchron, dstring *err_msg)
 
    ret = cl_commlib_trigger(handle, synchron);
    if (ret != CL_RETVAL_OK) {
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
       DPRINTF(("cl_commlib_trigger() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
       ret_val = COMM_CANT_TRIGGER;
@@ -1220,7 +1220,7 @@ unsigned long comm_write_message(COMM_HANDLE *handle,
    if (ret == CL_RETVAL_OK) {
       nwritten = size;
    } else {
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
       DPRINTF(("cl_commlib_send_message() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
    }
@@ -1278,7 +1278,7 @@ int comm_flush_write_messages(COMM_HANDLE *handle, dstring *err_msg)
       if (ret != CL_RETVAL_OK && 
           ret != CL_RETVAL_SELECT_TIMEOUT &&
           ret != CL_RETVAL_SELECT_INTERRUPT) {
-         sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+         sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
          retries = ret;  
          break;   
       }
@@ -1368,25 +1368,25 @@ int comm_recv_message(COMM_HANDLE *handle, bool b_synchron,
    if (ret != CL_RETVAL_OK) {
       switch (ret) {
          case CL_RETVAL_NO_SELECT_DESCRIPTORS:
-            sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+            sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
             DPRINTF(("cl_commlib_receive_message() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
             ret_val = COMM_NO_SELECT_DESCRIPTORS;
          break;
          case CL_RETVAL_CONNECTION_NOT_FOUND:
-            sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+            sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
             DPRINTF(("cl_commlib_receive_message() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
             ret_val = COMM_CONNECTION_NOT_FOUND;
          break;
          case CL_RETVAL_SYNC_RECEIVE_TIMEOUT:
-            sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+            sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
             DPRINTF(("cl_commlib_receive_message() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
             ret_val = COMM_SYNC_RECEIVE_TIMEOUT;
          break;
          case CL_RETVAL_NO_MESSAGE:
-            sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+            sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
             DPRINTF(("cl_commlib_receive_message() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
             ret_val = COMM_NO_MESSAGE_AVAILABLE;
@@ -1492,7 +1492,7 @@ int comm_free_message(recv_message_t *recv_mess, dstring *err_msg)
    if (recv_mess != NULL && recv_mess->cl_message != NULL) {
       ret = cl_com_free_message(&(recv_mess->cl_message));
       if (ret != CL_RETVAL_OK) {
-         sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+         sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
          DPRINTF(("cl_com_free_message() failed: %s (%d)\n",
                   sge_dstring_get_string(err_msg), ret));
          ret_val = COMM_CANT_FREE_MESSAGE;
@@ -1550,7 +1550,7 @@ int check_client_alive(COMM_HANDLE *handle,
    ret = cl_commlib_get_endpoint_status(handle, hostname, 
                                         (char*)component_name, 1, &status);
    if (ret != CL_RETVAL_OK) {
-      sge_dstring_sprintf(err_msg, cl_get_error_text(ret));
+      sge_dstring_sprintf(err_msg, "%s", cl_get_error_text(ret));
       DPRINTF(("cl_commlib_get_endpoint() failed: %s (%d)\n",
                sge_dstring_get_string(err_msg), ret));
       ret_val = COMM_CANT_GET_CLIENT_STATUS;

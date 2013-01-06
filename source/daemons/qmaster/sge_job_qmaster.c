@@ -717,7 +717,7 @@ u_long32 step
    } else if (user_list_flag) {
       dstring user_list_string = DSTRING_INIT;
       
-      sge_dstring_sprintf(&user_list_string, "");
+      sge_dstring_sprintf(&user_list_string, "%s", "");
 
       if (lGetNumberOfElem(user_list) > 0) {
          lListElem *user;

@@ -2164,7 +2164,7 @@ int japi_synchronize(const char *job_ids[], signed long timeout, bool dispose, d
    DENTER(TOP_LAYER, "japi_synchronize");
    
    if (timeout < DRMAA_TIMEOUT_WAIT_FOREVER) {
-      sge_dstring_sprintf (diag, MSG_JAPI_NEGATIVE_TIMEOUT);
+      sge_dstring_sprintf (diag, "%s", MSG_JAPI_NEGATIVE_TIMEOUT);
       
       DRETURN(DRMAA_ERRNO_INVALID_ARGUMENT);
    }
@@ -2524,7 +2524,7 @@ int japi_wait(const char *job_id, dstring *waited_job, int *stat,
    DENTER(TOP_LAYER, "japi_wait");
 
    if (timeout < DRMAA_TIMEOUT_WAIT_FOREVER) {
-      sge_dstring_sprintf (diag, MSG_JAPI_NEGATIVE_TIMEOUT);
+      sge_dstring_sprintf (diag, "%s", MSG_JAPI_NEGATIVE_TIMEOUT);
 
       DRETURN(DRMAA_ERRNO_INVALID_ARGUMENT);
    }

@@ -616,7 +616,8 @@ printf("<-data.load_formula: '%s'\n", data.load_formula ? data.load_formula : "-
             lFreeList(&range_list);
          }
          if (alp) {
-            qmonMessageShow(sconf_job_range, True, (StringConst)lGetString(lFirst(alp), AN_text));
+            qmonMessageShow(sconf_job_range, True, "%s",
+                            (StringConst)lGetString(lFirst(alp), AN_text));
             lFreeList(&alp);
             goto error_exit;
          }

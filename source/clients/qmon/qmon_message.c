@@ -87,7 +87,7 @@ void qmonMessageShow(Widget w, Boolean msg_box, StringConst fmt, ...)
          }
 
          if (msg_box) {
-            XmtDisplayWarningMsg(w, "XmtMessageBox", buf, "Warning", NULL);
+            XmtDisplayWarningMsg(w, "XmtMessageBox", "%s", "Warning", NULL, buf);
             XSync(XtDisplay(w), 0);
             XmUpdateDisplay(w);
          }

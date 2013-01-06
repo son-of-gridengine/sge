@@ -340,7 +340,7 @@ print_nodes(dstring *out, const lListElem *node, const lListElem *parent,
    for_each(child, children) {
       /* we want to name the Root node simply /, instead of /Root */
       if (parent == NULL) {
-         sge_dstring_sprintf(&node_name_dstring, "");
+         sge_dstring_sprintf(&node_name_dstring, "%s", "");
       } else {
          sge_dstring_sprintf(&node_name_dstring, "%s/%s", parent_node_names, lGetString(node, STN_name));
       }

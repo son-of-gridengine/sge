@@ -1991,7 +1991,7 @@ const char *job_get_id_string(u_long32 job_id, u_long32 ja_task_id,
    DENTER(TOP_LAYER, "job_get_id_string");
 
    if(job_id == 0) {
-      sge_dstring_sprintf(buffer, "");
+      sge_dstring_sprintf(buffer, "%s", "");
    } else {
       if(ja_task_id == 0) {
          sge_dstring_sprintf(buffer, MSG_JOB_JOB_ID_U, job_id);

@@ -452,7 +452,7 @@ void shepherd_error(int do_exit, const char *format, ...)
 
 void shepherd_error_ptr(const char *text)
 {
-   shepherd_error(1, text);
+   shepherd_error(1, "%s", text);
 }
 
 /****** shepherd_write_exit_status ********************************************
