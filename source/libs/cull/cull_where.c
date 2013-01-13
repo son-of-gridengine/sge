@@ -914,6 +914,7 @@ static lCondition *_negfactor(lDescr *dp, cull_parse_state *state, WhereArgList 
 
       if (scan(NULL, state) != KET) {
          LERROR(LESYNTAX);
+         lFreeWhere(&cp);
          DRETURN(NULL);
       }
       eat_token(state);

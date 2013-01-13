@@ -365,7 +365,7 @@ lCopySwitchPack(const lListElem *sep, lListElem *dep, int src_idx, int dst_idx,
 
    DENTER(CULL_LAYER, "lCopySwitchPack");
 
-   if ((!dep && !pb) || !sep) {
+   if (!dep || !sep) {
       DRETURN(-1);
    }
 

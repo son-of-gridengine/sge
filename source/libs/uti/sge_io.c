@@ -603,6 +603,7 @@ char *sge_file2string(const char *fname, int *len)
    DEXIT;
    return str;
 FCLOSE_ERROR:
+   sge_free(&str);
    DEXIT;
    return NULL;
 }
