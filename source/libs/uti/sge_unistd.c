@@ -566,42 +566,6 @@ int sge_is_file(const char *name)
 {
    return (sge_get_file_type(name) == FILE_TYPE_FILE);
 }                         
-
-/****** uti/unistd/sge_sysconf() **********************************************
-*  NAME
-*     sge_sysconf() -- Replacement for sysconf 
-*
-*  SYNOPSIS
-*     u_long32 sge_sysconf(sge_sysconf_t id)
-*
-*  FUNCTION
-*     Replacement for sysconf  
-*
-*  INPUTS
-*     sge_sysconf_t id - value 
-*
-*  RESULT
-*     u_long32 - meaning depends on 'id' 
-*
-*  SEE ALSO
-*     uti/unistd/sge_sysconf_t
-******************************************************************************/
-u_long32 sge_sysconf(sge_sysconf_t id) 
-{
-   u_long32 ret = 0;
- 
-   DENTER(BASIS_LAYER, "sge_sysconf");
-   switch (id) {
-      case SGE_SYSCONF_NGROUPS_MAX:
-         ret = sysconf(_SC_NGROUPS_MAX);
-      break;
-      default:
-         CRITICAL((SGE_EVENT, MSG_SYSCONF_UNABLETORETRIEVE_I, (int) id));
-      break;
-   }
-   DEXIT;
-   return ret;
-}      
  
 #ifdef TEST
 int main(int argc, char **argv)

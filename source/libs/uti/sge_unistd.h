@@ -139,26 +139,4 @@ int sge_is_executable(const char *name);
 
 void sge_sleep(int sec, int usec);
 
-/****** uti/unistd/sge_sysconf_t **********************************************
-*  NAME
-*     sge_sysconf_t -- Constants for sge_sysconf() 
-*
-*  SYNOPSIS
-*     typedef enum {
-*        SGE_SYSCONF_NGROUPS_MAX
-*     } sge_sysconf_t;  
-*
-*  FUNCTION
-*     SGE_SYSCONF_NGROUPS_MAX - Maximum number of additional group ids
-*                               which are allowed per user  
-*
-*  SEE ALSO
-*     uti/unistd/sge_sysconf()
-******************************************************************************/
-typedef enum {
-   SGE_SYSCONF_NGROUPS_MAX
-} sge_sysconf_t;
- 
-u_long32 sge_sysconf(sge_sysconf_t id); 
-
 #endif /* __SGE_UNISTD_H */

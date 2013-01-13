@@ -1221,7 +1221,7 @@ int sge_add_group(gid_t add_grp_id, char *err_str, size_t lstr, bool skip_silent
       return 0;
    }
 
-   max_groups = sge_sysconf(SGE_SYSCONF_NGROUPS_MAX);
+   max_groups = sysconf(_SC_NGROUPS_MAX);
    if (max_groups <= 0) {
       if(err_str != NULL) {
          snprintf(err_str, lstr, MSG_SYSTEM_ADDGROUPIDFORSGEFAILED_UUS,
