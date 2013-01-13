@@ -542,7 +542,7 @@ void opt_list_append_opts_from_script_path(u_long32 prog_number,
          }
          
          strcat (scriptpath, scriptfile);
-      } else {
+      } else if (scriptfile) {
          scriptpath = strdup (scriptfile);
       }
    }

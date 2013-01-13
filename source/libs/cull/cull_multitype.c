@@ -2491,7 +2491,7 @@ int lSetPosObject(lListElem *ep, int pos, lListElem *value)
 {
    DENTER(CULL_BASIS_LAYER, "lSetPosObject");
 
-   if (!ep) {
+   if (!ep || !value) {
       LERROR(LEELEMNULL);
       DEXIT;
       return -1;
@@ -2509,7 +2509,7 @@ int lSetPosObject(lListElem *ep, int pos, lListElem *value)
       return -1;
    }
    
-   if(value != NULL && value->status != FREE_ELEM && value->status != TRANS_BOUND_ELEM) {
+   if (value->status != FREE_ELEM && value->status != TRANS_BOUND_ELEM) {
       LERROR(LEBOUNDELEM);
       DEXIT;
       return -1;
@@ -2784,7 +2784,7 @@ int lSetObject(lListElem *ep, int name, lListElem *value)
 
    DENTER(CULL_BASIS_LAYER, "lSetObject");
 
-   if (!ep) {
+   if (!ep || !value) {
       LERROR(LEELEMNULL);
       DEXIT;
       return -1;
@@ -2804,7 +2804,7 @@ int lSetObject(lListElem *ep, int name, lListElem *value)
       return -1;
    }
 
-   if(value != NULL && value->status != FREE_ELEM && value->status != TRANS_BOUND_ELEM) {
+   if (value->status != FREE_ELEM && value->status != TRANS_BOUND_ELEM) {
       LERROR(LEBOUNDELEM);
       DEXIT;
       return -1;

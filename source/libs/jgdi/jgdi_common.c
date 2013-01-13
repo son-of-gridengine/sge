@@ -2862,7 +2862,7 @@ void throw_error(JNIEnv *env, jgdi_result_t result, const char* message, ...) {
       dstring ds = DSTRING_INIT;
       (*env)->ExceptionClear(env);
       exc = (*env)->NewGlobalRef(env, exc);
-      printf("Warning: can not throw a new exception: previous exception %s not cleared\n", exc_name);
+      printf("Warning: can not throw a new exception: previous exception not cleared\n");
       print_exception(env, exc, &ds);
       printf("%s\n", sge_dstring_get_string(&ds));
       sge_dstring_free(&ds);
