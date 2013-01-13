@@ -79,6 +79,7 @@
       rmon_menter (SGE_FUNC, NULL);                                          \
    }        
 
+/* fixme: these give "end of loop not reached" warnings with Solaris compiler  */
 #define DRETURN(ret)                            \
   do {                                          \
     DEXIT;                                      \
@@ -91,7 +92,11 @@
       return ret;                                                       \
    } while (0)
 
-#define DRETURN_VOID DRETURN()
+#define DRETURN_VOID                            \
+  do {                                          \
+    DEXIT;                                      \
+    return;                                     \
+  } while (0)
 
 #define DEXIT                                                           \
    if (rmon_condition(xaybzc, TRACE)) {                                 \

@@ -361,11 +361,7 @@ bool lListElem_clear_changed_info(lListElem *lp);
 /* #define for_each(ep,lp) for (ep=lFirst(lp);ep;ep=lNext(ep)) */
 /* #define for_each_rev(ep,lp) for (ep=lLast(lp);ep;ep=lPrev(ep)) */
 
-#ifndef __cplusplus
 #define for_each(ep,lp) for (ep = ((lp) ? (lp)->first : (lListElem *) NULL); ep; ep = ep->next)
-#else
-#define for_each_cpp(ep,lp) for (ep = ((lp) ? (lp)->first : (lListElem *) NULL); ep; ep = ep->next)
-#endif
 #define for_each_rev(ep,lp) for (ep = ((lp) ? (lp)->last : (lListElem *) NULL); ep; ep = ep->prev)
 
 #define for_each_where(ep,lp,cp) \
