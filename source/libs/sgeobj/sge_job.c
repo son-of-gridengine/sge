@@ -2135,7 +2135,7 @@ void job_get_state_string(char *str, u_long32 op)
    }
 
    if (VALID(JTRANSFERING, op)) {
-      str[count++] = TRANSISTING_SYM;
+      str[count++] = TRANSITING_SYM;
    }
 
    if (VALID(JWAITING, op)) {

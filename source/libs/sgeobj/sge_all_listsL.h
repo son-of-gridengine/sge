@@ -175,13 +175,6 @@
 #include "sgeobj/sge_var_VA_L.h"
 #include "sgeobj/sge_procL.h"
 
-#ifdef  __cplusplus
-extern "C" {
-#endif
-
-#ifdef  __cplusplus
-}
-#endif
 #if defined(__SGE_GDI_LIBRARY_HOME_OBJECT_FILE__)
 #ifdef  __cplusplus
 extern "C" {

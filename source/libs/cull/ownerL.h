@@ -57,4 +57,7 @@ NAMEEND
 
 #define OwnerS sizeof(OwnerN)/sizeof(char*)
 
+#ifdef  __cplusplus
+}
+#endif
 #endif /* __OWNERL_H */
