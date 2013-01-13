@@ -199,7 +199,7 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
       return;
    }
 
-   max_groups = sge_sysconf(SGE_SYSCONF_NGROUPS_MAX);
+   max_groups = sysconf(_SC_NGROUPS_MAX);
    if (max_groups <= 0)
       if (shepherd_trace) {
          shepherd_trace(MSG_SGE_NGROUPS_MAXOSRECONFIGURATIONNECESSARY);
@@ -898,7 +898,7 @@ init_procfs(void)
    }
 #endif
 #if defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
-   max_groups = sge_sysconf(SGE_SYSCONF_NGROUPS_MAX);
+   max_groups = sysconf(_SC_NGROUPS_MAX);
    if (max_groups <= 0) {
       ERROR((SGE_EVENT, SFNMAX, MSG_SGE_NGROUPS_MAXOSRECONFIGURATIONNECESSARY));
       DRETURN_VOID;
