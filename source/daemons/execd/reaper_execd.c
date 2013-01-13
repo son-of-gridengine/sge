@@ -409,7 +409,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    SGE_STRUCT_STAT statbuf;
    char error[10000];
    FILE *fp;
-   u_long32 job_id, job_pid, ckpt_arena, general_failure = 0, ja_task_id;
+   u_long32 job_id, job_pid = 0, ckpt_arena, general_failure = 0, ja_task_id;
    const char *pe_task_id = NULL;
    lListElem *du;
 
@@ -677,8 +677,6 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
                    job_get_id_string(job_id, ja_task_id, pe_task_id, &id_dstring)));
          }
       }
-   } else {
-      job_pid = 0;
    }
 
    lSetUlong(jr, JR_job_pid, job_pid);

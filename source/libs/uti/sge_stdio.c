@@ -270,7 +270,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
          close(pipefds[i][1]);
       }
 #if defined(SOLARIS)
-      if (pid < -1 && err_str) {
+      if (pid < -1) {
           ERROR((SGE_EVENT, MSG_SMF_FORK_FAILED_SS, "sge_peopen()", err_str));
       }
 #endif
@@ -570,7 +570,7 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
          close(pipefds[i][1]);
       }
 #if defined(SOLARIS)
-      if (pid < -1 && err_str) {
+      if (pid < -1) {
           ERROR((SGE_EVENT, MSG_SMF_FORK_FAILED_SS, "sge_peopen()", err_str));
       }
 #endif

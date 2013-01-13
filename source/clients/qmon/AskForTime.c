@@ -883,7 +883,7 @@ String mem
    else { 
       mem_val = strtod(mem, &dptr);
       
-      while (dptr && isspace(*dptr))
+      while (isspace(*dptr))
          dptr++;
 
       switch (*dptr) {

@@ -547,7 +547,7 @@ object_get_name_prefix(const lDescr *descr, dstring *buffer)
       const char *name = lNm2Str(nm);
 
       if (name != NULL) {
-         char *underscore = strchr(name, '_');
+         const char *underscore = strchr(name, '_');
 
          if (underscore != NULL) {
             sge_dstring_sprintf(buffer, "%.*s",

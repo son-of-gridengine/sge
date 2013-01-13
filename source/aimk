@@ -458,29 +458,12 @@ endsw
 # X specific stuff (Xmt, Xbae ...)
 #
 # This stuff is for building the Xmt library
-# If possible (i.e. imake is installed correctly)
-# use the Imakefile (change Xmt.tmpl)
 #
 set XINCD                = "-I../3rdparty/qmon/Xbae -I../3rdparty/qmon/iconlist -I../3rdparty/qmon/ltree -I../3rdparty/qmon/outline -I../3rdparty/qmon/rowcol -I../3rdparty/qmon/spinbox -I../clients/qmon -I../3rdparty/qmon/tab"
 if ( $?MY_XINCD ) then
    set XINCD             = "-I${MY_XINCD} ${XINCD}"
 endif
-set XMTINCD  = "-DHAVE_MEMMOVE -DXMT_HAS_STRERROR -I../3rdparty/qmon/Xmt310"
-set XmtFileRootDir       = ""
-set XmtFileSearchPath    = ""
-# set   REPLAYXT_SUPPORT = 0
-#
-# The following DEFINES are necessary in special cases
-# for more information see Xmt.tmpl
-# -DNO_EDITRES       if libXmu is not available (HP)
-# -DXMSTRING_TO_COMPOUND_TEXT_BUG  if tearoff menus dump core define this
-# -DBACKSPACEBUG     if BackSpace in a Cli widget dumps core define this
-# -DIBM_MANAGE_WORKAROUND     IBM/RS6000(AIX 3.2) if children of XmtLayout
-#                             widget show up in upper left corner
-# -DMISSING_METHOD_TYPES      for an old version of Motif 1.1
-#                             (XmMenuProc not in XmP.h == old)
-# -DXMTDEFAULTCONFIGDIR=\"$(XmtFileRootDir)\"   normally the home directory
-# -DXMTFILESEARCHPATH=\"$(XmtFileSearchPath)\"  normally the home directory
+set XMTINCD  = "-DXMT_HAS_STRERROR -I../3rdparty/qmon/Xmt310"
 
 unset nomk
 
@@ -1125,7 +1108,7 @@ case ALPHA5:
    set LFLAGS   = "-pthread $DEBUG_FLAG $LFLAGS"
    set XMTDEF   = ""
    set XINCD    = "$XMTINCD $XINCD"
-   set XCFLAGS  = "-w -DFUNCPROTO=3 -DDEC -DSMT $XMTDEF $XINCD"
+   set XCFLAGS  = "-w -DFUNCPROTO=3 -DSMT $XMTDEF $XINCD"
    set XLIBD    = ""
    set XLFLAGS  = "-taso $XLIBD"
    set XLIBS    = "-lXm -lXt -lXext -lX11 -lSM -lICE -lPW -ldnet_stub"
@@ -1580,8 +1563,10 @@ case WIN32_X86:
    set ARFLAGS = "rcv"
 
    # Default build targets for WIN32_X86 for which we have seperate make files
+   if ("$SGE_DEPEND" != 1) then
    set MAKEWINGRIDLIB   = 1
    set MAKEWINGRIDAPP   = 1
+   endif
    set QMON             = 0
    set COMPILE_DC       = 1
    set AUTHLIBS         = ""

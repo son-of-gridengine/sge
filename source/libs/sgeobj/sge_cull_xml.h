@@ -62,4 +62,7 @@ lListElem *xml_append_Attr_S(lList *attributeList, const char *name, const char 
 lListElem *xml_append_Attr_I(lList *attributeList, const char *name, int value);
 bool escape_string(const char *string, dstring *target);
 
+#ifdef  __cplusplus
+}
+#endif
 #endif /* #ifndef __CULL_XML_H */

@@ -65,15 +65,15 @@
 #define DISABLED_ON_CALENDAR_SYM           'D'  /* NOT PART OF P1003.15D12! */
 #define ENABLED_SYM                        'e'
 #define HELD_SYM                           'h'
-#define MIGRATING_SYM                      'm'  /* NOT PART OF P1003.15D12! */
+#define MIGRATING_SYM                      'm'  /* NOT PART OF P1003.15D12! */ /* unused */
 #define QUEUED_SYM                         'q'
 #define RESTARTING_SYM                     'R'  /* NOT PART OF P1003.15D12! */
 #define RUNNING_SYM                        'r'
 #define SUSPENDED_SYM                      's'  /* NOT PART OF P1003.15D12! */
 #define SUSPENDED_ON_SUBORDINATE_SYM       'S'
 #define SUSPENDED_ON_THRESHOLD_SYM         'T' /* NOT PART OF P1003.15D12! */
-#define TRANSISTING_SYM                    't'
-#define UNKNOWN_SYM                        'u'
+#define TRANSITING_SYM                     't'
+#define UNKNOWN_SYM                        'u' /* unused */
 #define WAITING_SYM                        'w'
 #define EXITING_SYM                        'x'  /* NOT P1003.15D12 compliant! 'e' */
 #define ERROR_SYM                          'E'
