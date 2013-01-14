@@ -1470,9 +1470,9 @@ static void showjob(sge_rusage_type *dusage, char **category) {
    printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUNIVCSW,     dusage->ru_nivcsw);     /* involuntary */
 
    printf("%-13.12s%ss\n",   MSG_HISTORY_SHOWJOB_CPU, print_double_to_string(dusage->cpu, &string, "%-13.3f"));
-   printf("%-13.12s%sBs\n",   MSG_HISTORY_SHOWJOB_MEM,
+   printf("%-13.12s%sGBs\n",   MSG_HISTORY_SHOWJOB_MEM,
           double_print_memory_to_string(dusage->mem, &string));
-   printf("%-13.12s%sB\n",   MSG_HISTORY_SHOWJOB_IO,
+   printf("%-13.12s%sGB\n",   MSG_HISTORY_SHOWJOB_IO,
           double_print_memory_to_string(dusage->io, &string));
    printf("%-13.12s%ss\n", MSG_HISTORY_SHOWJOB_IOW,
           print_double_to_string(dusage->iow, &string, "%-18.3f"));
