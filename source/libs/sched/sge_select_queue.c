@@ -892,7 +892,7 @@ parallel_maximize_slots_pe(sge_assignment_t *best, int *available_slots)
       /* If, say, max_pe_slots == 0 (to disable the PE), limiting
          max_slots above gets us here with max_slots < min_slots and a
          spurious error message every time.  */
-      if (max_pe_slots < min_slots)
+      if (max_pe_slots >= min_slots)
          ERROR((SGE_EVENT, "invalid pe job range setting "sge_u32"-"sge_u32
                 " for job "sge_u32"\n", min_slots, max_slots, best->job_id));
       DRETURN(DISPATCH_NEVER_CAT);
