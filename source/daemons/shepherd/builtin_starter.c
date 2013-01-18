@@ -341,7 +341,8 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
          sge_switch2admin_user();
          shepherd_error(1, "setlogin(%s) failed: %s", target_user, strerror(errno));
       }
-      sge_switch2admin_user();
+      if (sge_switch2admin_user())
+         shepherd_error(1, "switch2admin_user failed: %s", strerror(errno));
    }
 #endif
 
