@@ -829,9 +829,10 @@ int main(int argc, char **argv)
    if (sge_set_admin_username(admin_user, err_str, sizeof(err_str))) {
       shepherd_error(1, "%s", err_str);
    }
-
+   errno = 0;
    if (sge_switch2admin_user()) {
-      shepherd_error(1, "can't switch to admin user: sge_switch2admin_user() failed");
+      shepherd_error(1, "can't switch to admin user: sge_switch2admin_user() failed: %s",
+                     strerror(errno));
    }
 
    /* finalize initialization of shepherd_trace - give the trace file

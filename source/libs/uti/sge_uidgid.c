@@ -1042,6 +1042,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
  
 #if !defined(INTERIX)
    if (!intermediate_user) {
+      errno = 0;
       /*
        *  It should not be necessary to set min_gid/min_uid to 0
        *  for being able to run prolog/epilog/pe_start/pe_stop
@@ -1053,13 +1054,14 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
          return 1;
       }
       if (sge_setgid(pw->pw_gid)) {
-         snprintf(err_str, lstr, MSG_SYSTEM_SETGIDFAILED_U,
-                  sge_u32c(pw->pw_gid) );
+         snprintf(err_str, lstr, MSG_SYSTEM_SETGIDFAILED_US,
+                  sge_u32c(pw->pw_gid), strerror(errno));
          return 1;
       }
    } else {
       if (setegid(pw->pw_gid)) {
-         snprintf(err_str, lstr, MSG_SYSTEM_SETEGIDFAILED_U , sge_u32c(pw->pw_gid));
+         snprintf(err_str, lstr, MSG_SYSTEM_SETEGIDFAILED_US,
+                  sge_u32c(pw->pw_gid), strerror(errno));
          return 1;
       }
    }
@@ -1149,27 +1151,33 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
       else
 #endif
       {
+         errno = 0;
          if (use_qsub_gid) {
             if (sge_setgid(pw->pw_gid)) {
-               snprintf(err_str, lstr, MSG_SYSTEM_SETGIDFAILED_U, sge_u32c(pw->pw_gid));
+               snprintf(err_str, lstr, MSG_SYSTEM_SETGIDFAILED_US,
+                        sge_u32c(pw->pw_gid), strerror(errno));
                return 1;
             }
          }
          if (sge_setuid(pw->pw_uid)) {
-            snprintf(err_str, lstr, MSG_SYSTEM_SETUIDFAILED_U , sge_u32c(pw->pw_uid));
+            snprintf(err_str, lstr, MSG_SYSTEM_SETUIDFAILED_US,
+                     sge_u32c(pw->pw_uid), strerror(errno));
             return 1;
          }
       }
    } else {
+      errno = 0;
       if (use_qsub_gid) {
          if (sge_setgid(pw->pw_gid)) {
-            snprintf(err_str, lstr, MSG_SYSTEM_SETGIDFAILED_U , sge_u32c(pw->pw_gid));
+            snprintf(err_str, lstr, MSG_SYSTEM_SETGIDFAILED_US,
+                     sge_u32c(pw->pw_gid), strerror(errno));
             return 1;
          }
       }
- 
+
       if (sge_seteuid(pw->pw_uid)) {
-         snprintf(err_str, lstr, MSG_SYSTEM_SETEUIDFAILED_U , sge_u32c(pw->pw_uid));
+         snprintf(err_str, lstr, MSG_SYSTEM_SETEUIDFAILED_US,
+                  sge_u32c(pw->pw_uid), strerror(errno));
          return 1;
       }
    }
