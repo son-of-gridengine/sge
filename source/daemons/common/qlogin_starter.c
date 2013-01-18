@@ -454,13 +454,13 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
 #endif
 
    len = sizeof(serv_addr);
-
+   errno = 0;
    /* must be root because we must access /dev/something */
-   if( sge_setgid(SGE_SUPERUSER_GID) ||
+   if (sge_setgid(SGE_SUPERUSER_GID) ||
        sge_setuid(SGE_SUPERUSER_UID) ||
        sge_setegid(SGE_SUPERUSER_GID) ||
        sge_seteuid(SGE_SUPERUSER_UID)) {
-      shepherd_trace("cannot change uid/gid\n");
+      shepherd_trace("cannot change uid/gid: %s\n", strerror(errno));
       return 4;
    }
    shepherd_trace("uid = "uid_t_fmt", euid = "uid_t_fmt", gid = "gid_t_fmt 
