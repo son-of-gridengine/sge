@@ -1532,9 +1532,9 @@ case LINUX*:
 
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
 
-      set XINCD    = "$XMTINCD $XINCD"
-      set XCFLAGS  = "-DNeedFunctionPrototypes -Wno-error $XMTDEF $XINCD"
-      set XLIBS    = "-lXt -lXext -lX11 -lXm"
+   set XINCD    = "$XMTINCD $XINCD"
+   set XCFLAGS  = "-Wno-strict-prototypes -Wno-error $XMTDEF $XINCD"
+   set XLIBS    = "-lXm -lXpm -lXt -lXext -lX11 -lSM -lICE"
    set JAVA_ARCH = "linux"
 
    # due to -rpath relative_path the LD_LIBRARY_PATH not needed anymore
