@@ -581,24 +581,35 @@ the checkpointing environment (see
 .M checkpoint 5 )
 referenced by the \fBqsub\ \-ckpt\fP switch.
 Possible values for \fIoccasion_specifier\fP are
-.sp 1
-.nf
-.ta \w'\fIinterval\fP  'u
-\fBn\fP	no checkpoint is performed.
-\fBs\fP	checkpoint when batch server is shut down.
-\fBm\fP	checkpoint at minimum CPU interval.
-\fBx\fP	checkpoint when job gets suspended.
-\fIinterval\fP	checkpoint in the specified time interval.
-.fi
-.sp 1
+.RS
+.TP
+.B n
+No checkpoint is performed;
+.TP
+.B s
+Checkpoint when batch server is shut down;
+.TP
+.B m
+Checkpoint at minimum CPU interval;
+.TP
+.B x
+Checkpoint when job gets suspended;
+.TP
+.B r
+Reschedule when execution host goes into the "unknown" state;
+.TP
+.I interval
+Checkpoint in the specified interval (a
+.B time_specifier
+per
+.M sge_types 5 ).
+.RE
+.IP
 The minimum CPU interval is defined in the queue configuration (see
 .M queue_conf 5
-for details).
-\fIinterval\fP has to be specified in the format hh:mm:ss.
-The maximum of <interval> and the queue's minimum CPU
-interval is used if <interval> is specified. This is done to ensure
-that a machine is not overloaded by checkpoints being generated too
-frequently.
+for details).  If \fIinterval\fP is specified, the maximum of that and
+the queue's minimum CPU interval is used (to ensure that a machine is
+not overloaded by checkpoints being generated too frequently).
 .sp 1
 The value specified with this option or the corresponding value specified in
 \fIqmon\fP will be passed to defined JSV instances.
@@ -608,7 +619,6 @@ The character sequence specified will be available as parameter with the name
 the last setting of \fBc_interval\fP will be overwritten, and vice versa.
 (See \fB\-jsv\fP option below or find more information concerning JSV in
 .M jsv 1 .)
-
 .\"
 .IP "\fB\-ckpt\fP \fIckpt_name\fP"
 Available for \fIqsub\fP and \fIqalter\fP only.
