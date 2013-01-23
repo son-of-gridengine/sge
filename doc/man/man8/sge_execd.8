@@ -110,6 +110,10 @@ list exists, the reported load value is not used.
 The third part is the measured load value.
 .IP "\(bu" 3n
 A load value report ends with a line with only the word "end".
+.PP
+NB. If the runtime of the language in which the sensor is written
+buffers the output (e.g. Perl), ensure it is flushed on each
+iteration.
 .\" 
 .SH "ENVIRONMENT VARIABLES"
 .\" 
