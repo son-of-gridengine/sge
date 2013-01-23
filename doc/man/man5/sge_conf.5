@@ -28,6 +28,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .\"
 .de URL
 \\$2 \(laURL: \\$1 \(ra\\$3
@@ -147,7 +150,7 @@ may be overwritten by the execution host local configuration.
 .SS "\fBxterm\fP"
 .B xterm
 is the absolute pathname to the X Window System terminal emulator,
-.M xterm 1 .
+.MO xterm 1 .
 .PP
 Changing \fBxterm\fP will take immediate effect.
 .PP
@@ -309,17 +312,9 @@ path names for commands if inheriting the user's environment.
 The global configuration entry for this value
 may be overwritten by the execution host local configuration.
 .PP
-Exit codes for the prolog attribute can be interpreted based on the 
-following exit values:
-.RS
-0: Success 
-.br
-99: Reschedule job 
-.br
-100: Put job in error state 
-.br
-Anything else: Put queue in error state
-.RE
+See
+.M xxqs_name_sxx_shepherd 8
+for the significance of exit codes returned by the submitted job.
 .\"
 .\"
 .SS "\fBepilog\fP"
@@ -366,17 +361,10 @@ is written in shell script.
 The global configuration entry for this value
 may be overwritten by the execution host local configuration.
 .PP
-Exit codes for the epilog attribute can be interpreted based on the 
-following exit values:
-.RS
-0: Success 
-.br
-99: Reschedule job 
-.br
-100: Put job in error state 
-.br
-Anything else: Put queue in error state
-.RE
+.PP
+See
+.M xxqs_name_sxx_shepherd 8
+for the significance of exit codes returned by the submitted job.
 .\"
 .\"
 .SS "\fBshell_start_mode\fP"
@@ -434,7 +422,7 @@ Thus setting \fBshell_start_mode\fP to \fIscript_from_stdin\fP also
 implies \fIposix_compliant\fP behavior. \fBNote\fP, however, that
 feeding scripts into the STDIN stream of a command interpreter may
 cause trouble if commands like
-.M rsh 1
+.MO rsh 1
 are invoked inside a job script as they also process the STDIN
 stream of the command interpreter. These problems can usually be
 resolved by redirecting the STDIN channel of those commands to come
@@ -452,9 +440,9 @@ overwritten by the execution host local configuration.
 .\"
 .SS "\fBlogin_shells\fP"
 UNIX command interpreters like the Bourne-Shell (see
-.M sh 1 )
+.MO sh 1 )
 or the C-Shell (see
-.M csh 1 )
+.MO csh 1 )
 can be used by xxQS_NAMExx to start job scripts. The command interpreters
 can either be started as login-shells (i.e. all system and user default
 resource files like .login or .profile will be executed when the
@@ -478,7 +466,7 @@ overwritten by the execution host local configuration.
 .SS "\fBmin_uid\fP"
 \fBmin_uid\fP places a lower bound on user IDs that may use the cluster. Users
 whose user ID (as returned by
-.M getpwnam 3 )
+.MO getpwnam 3 )
 is less than \fBmin_uid\fP will not be allowed to run jobs on the cluster.
 .PP
 Changes to \fBmin_uid\fP will take immediate effect.
@@ -491,7 +479,7 @@ overwritten by the execution host local configuration.
 .SS "\fBmin_gid\fP"
 This parameter sets the lower bound on group IDs that may use the cluster.
 Users whose default group ID (as returned by
-.M getpwnam 3 )
+.MO getpwnam 3 )
 is less than \fBmin_gid\fP will not be allowed to run jobs on the cluster.
 .PP
 Changes to \fBmin_gid\fP will take immediate effect.
@@ -991,9 +979,16 @@ may be overwritten by the execution host local configuration.
 .\"
 .SS "\fBgid_range\fP"
 The \fBgid_range\fP
-is a comma-separated list of range expressions of the form n\-m (n as
-well as m are integer numbers greater than 99), where m is an
-abbreviation for m\-m. These numbers are used in
+is a comma-separated list of range expressions of the form
+\fIm\fP\fB\-\fP\fIn\fP, where
+.I m
+and
+.I n
+are integer numbers greater than 99, and
+.I m
+is an abbreviation for
+\fIm\fP\fB\-\fP\fIm\fP.
+These numbers are used in
 .M xxqs_name_sxx_execd 8
 to identify processes belonging to the same job.
 .PP
@@ -1331,7 +1326,7 @@ The maximum/minimum priority which xxQS_NAMExx will assign to a job.
 Typically this is a negative/positive value in the range of \-20
 (maximum) to 19 (minimum) for systems which allow setting of priorities
 with the
-.M nice 2
+.MO nice 2
 system call. Other systems may provide different ranges.
 .br
 The default priority range (which varies from system to system) is installed
@@ -1350,7 +1345,7 @@ This parameter allows you to change the notification signal for
 the signal SIGKILL (see the \fI\-notify\fP option of
 .M qsub 1 ).
 The parameter either accepts signal names (use the \fI\-l\fP option of
-.M kill 1 )
+.MO kill 1 )
 or the special value \fInone\fP. If set to \fInone\fP,
 no notification signal will be sent. If it is set to \fITERM\fP, for
 instance, or another
@@ -1361,7 +1356,7 @@ With this parameter it is possible to modify the notification signal
 for the signal SIGSTOP (see the \fI\-notify\fP parameter of
 .M qsub 1 ).
 The parameter either accepts signal names (use the \fI\-l\fP option of
-.M kill 1 )
+.MO kill 1 )
 or the special value \fInone\fP. If set to \fInone\fP,
 no notification signal will be sent. If it is set to \fITSTP\fP, for
 instance, or another
@@ -1405,7 +1400,7 @@ are provided with xxQS_NAMExx (see
 .PP
 .IP "\fIS_DESCRIPTORS\fP, \fIH_DESCRIPTORS\fP, \fIS_MAXPROC\fP, \fIH_MAXPROC\fP, \fIS_MEMORYLOCKED\fP, \fIH_MEMORYLOCKED\fP, \fIS_LOCKS\fP, \fIH_LOCKS\fP"
 Specifies soft and hard resource limits as implemented by the
-.M setrlimit 2
+.MO setrlimit 2
 system call. See that manual page on your system for more information. These
 parameters complete the list of limits set by the RESOURCE LIMITS parameter
 of the queue configuration as described in
@@ -1510,7 +1505,7 @@ Turn off storing and forwarding of credentials when the GSSAPI
 security feature is enabled globally.
 .IP \fIUSE_SYSLOG\fP
 Write messages to the system logger (see
-.M syslog 3 )
+.MO syslog 3 )
 rather than into the spool directory.
 .IP \fIUSE_QIDLE\fP
 Automatically start any executable named
@@ -1639,7 +1634,7 @@ This value is a global configuration parameter only. It cannot be
 overwritten by the execution host local configuration.
 .IP \fIUSE_SYSLOG\fP
 Write messages to the system logger (see
-.M syslog 3 )
+.MO syslog 3 )
 rather than into the spool directory.
 .\"
 .\"
@@ -1786,9 +1781,9 @@ environment before starting the methods other than as the job owner,
 but this may not be foolproof on arbitrary systems with obscure
 variables.  The environment can be safely controlled by running the
 methods under a statically-linked version of
-.M env 1 ,
+.MO env 1 ,
 such as typically available using
-.M busybox 1 ,
+.MO busybox 1 ,
 for example.  Use
 .IP
 .BR "/bin/busybox env \-u " ...
@@ -1834,13 +1829,13 @@ may need to be recreated (as
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
-.M csh 1 ,
+.MO csh 1 ,
 .M qconf 1 ,
 .M qsub 1 ,
 .M jsv 1 ,
-.M rsh 1 ,
-.M sh 1 ,
-.M getpwnam 3 ,
+.MO rsh 1 ,
+.MO sh 1 ,
+.MO getpwnam 3 ,
 .M drmaa_attributes 3 ,
 .M queue_conf 5 ,
 .M sched_conf 5 ,
@@ -1848,7 +1843,7 @@ may need to be recreated (as
 .M xxqs_name_sxx_execd 8 ,
 .M xxqs_name_sxx_qmaster 8 ,
 .M xxqs_name_sxx_shepherd 8 ,
-.M cron 8 ,
+.MO cron 8 ,
 .M remote_startup 5
 .\" .M remote_startup 5 ,
 .\" .I xxQS_NAMExx Installation and Administration Guide.
