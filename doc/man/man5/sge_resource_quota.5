@@ -165,10 +165,10 @@ a sum of weighted complex values, that is:
 .sp 1
 The weighting factors (w1, ...) are positive integers or floating point numbers
 in double precision. The complex values (complex1, ...)
-must be INT or DOUBLE, as specified by the complex's type in the
-complex list (see
+must be of numerical type (INT, DOUBLE, MEMORY, or TIME), as specified
+by the complex's type in the complex list (see
 .M complex 5 )
-and defined either on global, or queue, or host level to resolve the value.
+and defined either on global, queue, or host level to resolve the value.
 .br
 .B Note:
 Dynamic limits can only be configured for a host-specific rule, and
@@ -188,8 +188,10 @@ limit users {a, b} ... to ...
 .RE
 is equivalent to
 .RS
+.nf
 limit users a ... to ...
 limit users b ... to ...
+.fi
 .RE
 where the text represented by the ellipses in each position is carried
 over to the expansion, and could be expanded itself.  '{*}' represents

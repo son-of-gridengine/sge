@@ -224,6 +224,10 @@ on jobs submitted by another user.  Regular users can only use
 .I qresub
 on their own jobs.
 .PP
+See
+.M xxqs_name_sxx_shepherd 8
+for the significance of exit codes returned by the submitted job.
+.PP
 For \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, and \fIqlogin\fP
 the administrator and the user may define
 default request files (see
@@ -1526,6 +1530,40 @@ when the long form \fByes\fP was specified during submission.
 (See \fB\-jsv\fP option above or find more information concerning JSV in
 .M jsv 1 .)
 .\"
+.IP "\fB\-r y\fP[\fBes\fP]|\fBn\fP[\fBo\fP]"
+Available for \fIqsub\fP and \fIqalter\fP only.
+.sp 1
+Specifies whether a job can be rerun or not.
+If the value of \fB\-r\fP is 'yes', the job will be rerun if it gets aborted
+without leaving a consistent exit state.
+(This is typically the case if the node on which the job is running
+crashes).
+If \fB\-r\fP is 'no' (the default), the job will not be rerun under
+such circumstances.  It will still be rerun if it finishes with exit
+code 99 unless
+.B FORBID_RESCHEDULE
+is set in
+.B qmaster_params
+in
+.M sge_conf 5 .
+.sp 1
+Interactive jobs submitted with
+.IR qsh ,
+.IR qrsh ,
+or
+.I qlogin
+are not rerunnable.
+.sp 1
+.I Qalter
+allows changing this option even while the job executes.
+.sp 1
+The value specified with this option or the corresponding value specified in
+\fIqmon\fP will only be passed to defined JSV instances if the value is \fIyes\fP.
+The name of the parameter will be \fBr\fP. The value will be \fBy\fP also
+when the long form \fByes\fP was specified during submission.
+(See \fB\-jsv\fP option above or find more information concerning JSV in
+.M jsv 1 .)
+.\"
 .IP "\fB\-sc\fP \fIvariable\fP[\fB=\fP\fIvalue\fP]\fB,\fP..."
 Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
 \fIqalter\fP only.
@@ -2358,6 +2396,7 @@ The next example is a more complex xxQS_NAMExx script.
 .M xxqs_name_sxx_conf 5 ,
 .M xxqs_name_sxx_request 5 ,
 .M xxqs_name_sxx_pe 5 ,
+.M xxqs_name_sxx_shepherd 8 ,
 .M complex 5 ,
 .M xxqs_name_sxx_types 5 .
 .\"
