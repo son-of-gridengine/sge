@@ -285,7 +285,7 @@
 #define MSG_GDI_ARGUMENTSYNTAX_QA_BINDING_STRATEGY_STR "str                     striding:<amount>:<stepsize>[:<socket>,<core>]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_COMPLEX_LIST         "complex_list            complex[,complex,...]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_CONTEXT_LIST         "context_list            variable[=value][,variable[=value],...]"
-#define MSG_GDI_ARGUMENTSYNTAX_OA_CKPT_SEL             "ckpt_selector           `n' `s' `m' `x' <interval> "
+#define MSG_GDI_ARGUMENTSYNTAX_OA_CKPT_SEL             "ckpt_selector           `n' `s' `m' `x' `r' <interval>"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_DATE_TIME            "date_time               [[CC]YY]MMDDhhmm[.SS]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_DESTIN_ID_LIST       "destin_id_list          queue[,queue,...]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_HOLD_LIST            "hold_list               `n' `u' `s' `o' `U' `S' `O'"
