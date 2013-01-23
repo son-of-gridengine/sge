@@ -3736,6 +3736,9 @@ job_get_ckpt_attr(int op, dstring *string)
    if (VALID(NO_CHECKPOINT, op)) {
       sge_dstring_append_char(string, NO_CHECKPOINT_SYM);
    }
+   if (VALID(CHECKPOINT_AT_AUTO_RES, op)) {
+      sge_dstring_append_char(string, CHECKPOINT_AT_AUTO_RES_SYM);
+   }
    DRETURN(success);
 }
 
