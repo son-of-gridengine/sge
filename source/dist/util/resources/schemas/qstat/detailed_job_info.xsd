@@ -87,6 +87,13 @@ ___INFO__MARK_END__-->
                         <xs:element name="JB_deadline" type="xs:dateTime"/>
                         <xs:element name="JB_execution_time" type="xs:unsignedInt"/>
                         <xs:element name="JB_checkpoint_name" type="xs:string"/>
+                        <!-- checkpoint_attr is (common/symbols.h) bit-or of:
+                          CHECKPOINT_AT_MINIMUM_INTERVAL 0x01
+                          CHECKPOINT_AT_SHUTDOWN         0x02
+                          CHECKPOINT_SUSPEND             0x04
+                          NO_CHECKPOINT                  0x08
+                          CHECKPOINT_AT_AUTO_RES         0x10
+                         -->
                         <xs:element name="JB_checkpoint_attr" type="xs:unsignedInt"/>
                         <xs:element name="JB_checkpoint_interval" type="xs:unsignedInt"/>
                         <xs:element name="JB_directive_prefix" type="xs:string"/>
