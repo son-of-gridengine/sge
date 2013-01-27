@@ -1568,9 +1568,10 @@ wrtmessage(const char *p1, const char *p2, const char *p3, const char *p4)
 #if defined(MOZ_MEMORY) && !defined(MOZ_MEMORY_WINDOWS)
 #define	_write	write
 #endif
-	_write(STDERR_FILENO, p1, (unsigned int) strlen(p1));
-	_write(STDERR_FILENO, p2, (unsigned int) strlen(p2));
-	_write(STDERR_FILENO, p3, (unsigned int) strlen(p3));
+    int result =
+	_write(STDERR_FILENO, p1, (unsigned int) strlen(p1)) ||
+	_write(STDERR_FILENO, p2, (unsigned int) strlen(p2)) ||
+	_write(STDERR_FILENO, p3, (unsigned int) strlen(p3)) ||
 	_write(STDERR_FILENO, p4, (unsigned int) strlen(p4));
 }
 
