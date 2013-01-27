@@ -1555,7 +1555,7 @@ case LINUX*:
 
    if ( $MAKEJEMALLOCLIB == 1 ) then
       set LIBRARY_LIBS = "$LIBS"
-      set JEMALLOC_CFLAGS  = "-DMOZ_MEMORY_LINUX"
+      set JEMALLOC_CFLAGS  = "-DMOZ_MEMORY_LINUX -Wno-all"
       set LIBS = "-ljemalloc $LIBS"
    endif
 
