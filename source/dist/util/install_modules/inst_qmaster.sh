@@ -195,7 +195,7 @@ GetQmasterSpoolDir()
                 "the configuration and the state of the queueing system.\n\n"
 
       if [ $euid = 0 ]; then
-         if [ $ADMINUSER = default ]; then
+         if [ $ADMINUSER = root ]; then
             $INFOTEXT "User >root< on this host must have read/write access to the qmaster\n" \
                       "spool directory.\n"
          else
@@ -316,7 +316,7 @@ SetPermissions()
 
    if [ $ret = 0 ]; then
 
-      if [ $ADMINUSER = default ]; then
+      if [ $ADMINUSER = root ]; then
          fileowner=root
       else
          fileowner=$ADMINUSER
@@ -692,11 +692,7 @@ PrintBootstrap()
 {
    $ECHO "# Version: $SGE_VERSION"
    $ECHO "#"
-   if [ $ADMINUSER != default ]; then
-      $ECHO "admin_user              $ADMINUSER"
-   else
-      $ECHO "admin_user              none"
-   fi
+   $ECHO "admin_user              $ADMINUSER"
    $ECHO "default_domain          $CFG_DEFAULT_DOMAIN"
    $ECHO "ignore_fqdn             $IGNORE_FQDN_DEFAULT"
    $ECHO "spooling_method         $SPOOLING_METHOD"
@@ -887,7 +883,7 @@ GetConfiguration()
       $INFOTEXT "\nPlease give the basic configuration parameters of your Grid Engine\n" \
                 "installation:\n\n   <execd_spool_dir>\n\n"
 
-      if [ $ADMINUSER != default ]; then
+      if [ $ADMINUSER != root ]; then
             $INFOTEXT "The pathname of the spool directory of the execution hosts. User >%s<\n" \
                       "must have the right to create this directory and to write into it.\n" "$ADMINUSER"
       elif [ $euid = 0 ]; then

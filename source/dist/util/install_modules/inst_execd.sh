@@ -802,7 +802,7 @@ CheckWinAdminUser()
    if [ -f "$SGE_ROOT/$SGE_CELL/common/bootstrap" ]; then
       win_admin_user=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep admin_user | awk '{ print $2 }'`
       if [ "$win_admin_user" = "default" -o "$win_admin_user" = "root" -o "$win_admin_user" = "none" ]; then
-         ADMINUSER=default
+         ADMINUSER=root
       fi
    else
       $INFOTEXT "bootstrap file could not be found. Please check your installation! Exiting now ..."
