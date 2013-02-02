@@ -71,7 +71,7 @@ BasicSettings()
     export $shlib_path_name
     ;;
   esac
-  ADMINUSER=default
+  ADMINUSER=root
   MYUID=`$SGE_UTILBIN/uidgid -uid`
   MYGID=`$SGE_UTILBIN/uidgid -gid`
   DIRPERM=755
@@ -196,7 +196,7 @@ Makedir()
        $INFOTEXT "creating directory: %s" "$dir"
        if [ "`$SGE_UTILBIN/filestat -owner $tmp_dir 2> /dev/null`" != "$ADMINUSER" ]; then
           Execute $MKDIR -p $dir
-          if [ "$ADMINUSER" = "default" ]; then
+          if [ "$ADMINUSER" = root ]; then
              Execute $CHOWN -R root $chown_dir
           else
                        group=`$SGE_UTILBIN/checkuser -gid $ADMINUSER`
@@ -237,12 +237,12 @@ Removedir()
 
 #-------------------------------------------------------------------------
 # Execute command as user $ADMINUSER and exit if exit status != 0
-# if ADMINUSER = default then execute command unchanged
+# if ADMINUSER = root then execute command unchanged
 #
 # uses binary "adminrun" from SGE distribution
 #
 # USES: variables "$verbose"    (if set to "true" print arguments)
-#                  $ADMINUSER   (if set to "default" do not use "adminrun)
+#                  $ADMINUSER   (if set to "root" do not use "adminrun)
 #                 "$SGE_UTILBIN"  (path to the binary in utilbin)
 #
 ExecuteAsAdmin()
@@ -251,7 +251,7 @@ ExecuteAsAdmin()
       $ECHO $*
    fi
 
-   if [ "$ADMINUSER" = default ]; then
+   if [ "$ADMINUSER" = root ]; then
       $*
    else
       if [ -f $SGE_UTILBIN/adminrun ]; then
@@ -287,12 +287,12 @@ ExecuteAsAdmin()
 
 #-------------------------------------------------------------------------
 # Execute command as user $ADMINUSER and exit if exit status != 0
-# if ADMINUSER = default then execute command unchanged
+# if ADMINUSER = root then execute command unchanged
 #
 # uses binary "adminrun" form SGE distribution
 #
 # USES: variables "$verbose"    (if set to "true" print arguments)
-#                  $ADMINUSER   (if set to "default" do not use "adminrun)
+#                  $ADMINUSER   (if set to "root" do not use "adminrun)
 #                 "$SGE_UTILBIN"  (path to the binary in utilbin)
 #
 # ATTENTION: This function is a special function only for upgrades. Do not
@@ -303,7 +303,7 @@ ExecuteAsAdminForUpgrade()
       $ECHO $*
    fi
 
-   if [ "$ADMINUSER" = default ]; then
+   if [ "$ADMINUSER" = root ]; then
       $*
    else
       cmd=$1
@@ -1417,7 +1417,6 @@ CheckWhoInstallsSGE()
                   "a limited functionality of Grid Engine.\n"
 
       ADMINUSER=`whoami`
-      #ADMINUSER="none"
       $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> if this is OK or stop the installation with Ctrl-C >> "
       $CLEAR
       return 0
@@ -1505,9 +1504,6 @@ CheckWhoInstallsSGE()
                $INFOTEXT "\nInstalling Grid Engine as admin user >%s<\n" $INP
                $INFOTEXT -log "Installing Grid Engine as user >%s<" $INP
                ADMINUSER=$INP
-               if [ $ADMINUSER = root ]; then
-                  ADMINUSER=default
-               fi
                $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to continue >> "
                $CLEAR
                done=true
@@ -1517,7 +1513,7 @@ CheckWhoInstallsSGE()
    else
       $INFOTEXT "\nInstalling Grid Engine as user >root<\n"
       $INFOTEXT -log "Installing Grid Engine as user >root<"
-      ADMINUSER=default
+      ADMINUSER=root
       $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to continue >> "
       $CLEAR
    fi
@@ -1623,7 +1619,7 @@ ProcessSGERoot()
       # Need to check for correct SGE_ROOT directory in case of qmaster install
       if [ "$QMASTER" = "install" ]; then
          # create a file in SGE_ROOT
-         if [ "$ADMINUSER" != default ]; then
+         if [ "$ADMINUSER" != root ]; then
             if $SGE_UTILBIN/adminrun $ADMINUSER $TOUCH "$SGE_ROOT_VAL"/tst$$ 2> /dev/null > /dev/null; then
                :
             else
@@ -1675,7 +1671,7 @@ ProcessSGERoot()
          check_done=true
       fi
       if [ "$AUTO" = "true" -a "$check_done" = "false" ]; then
-         if [ "$ADMINUSER" != default ]; then
+         if [ "$ADMINUSER" != root ]; then
             output_username=$ADMINUSER
          else
             output_username="root"
@@ -2334,7 +2330,7 @@ CreateSGEStartUpScripts()
 SetupDefaultUsers() {
    euid=$1
 
-   if [  $euid = 0 -a "$ADMINUSER" != default -a $QMASTER = "install" ]; then
+   if [  $euid = 0 -a "$ADMINUSER" != root -a $QMASTER = "install" ]; then
       AddDefaultManager root $ADMINUSER
       AddDefaultOperator $ADMINUSER
    elif [  $euid != 0 ]; then
@@ -3675,7 +3671,7 @@ RestoreCheckBootStrapFile()
       master_spool=`cat $BACKUP_DIR/bootstrap | grep "qmaster_spool_dir" | awk '{ print $2 }'`
       ADMINUSER=`cat $BACKUP_DIR/bootstrap | grep "admin_user" | awk '{ print $2 }'`
       if [ "$ADMINUSER" = "none" ]; then
-         ADMINUSER="default"
+         ADMINUSER="root"
       fi
 
       MASTER_PORT=`cat $BACKUP_DIR/sgemaster | grep "SGE_QMASTER_PORT=" | head -1 | awk '{ print $1 }' | cut -d"=" -f2 | cut -d";" -f1`
@@ -4017,9 +4013,9 @@ GetAdminUser()
    euid=`$SGE_UTILBIN/uidgid -euid`
 
    TMP_USER=`echo "$ADMINUSER" |tr "[A-Z]" "[a-z]"`
-   if [ -z "$TMP_USER" -o "$TMP_USER" = "none" ]; then
+   if [ -z "$TMP_USER" -o "$TMP_USER" = "none" -o "$TMP_USER" = root ]; then
       if [ $euid = 0 ]; then
-         ADMINUSER=default
+         ADMINUSER=root
       else
          ADMINUSER=`whoami`
       fi
