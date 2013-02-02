@@ -121,20 +121,16 @@ const char *sge_get_root_dir(int do_exit, char *buffer, size_t size, int do_erro
    /*
     * Check the env variables
     */
-   if (sge_root) {
-      s = sge_root;
+   if (sge_root && strlen(sge_root) > 0) {
+      s = strdup(sge_root);
    } else {
       goto error;
-   } 
-   if (!s || strlen(s)==0) { 
-      goto error;
-   } else {
-      /*
-       * Get rid of trailing slash
-       */ 
-      if (s[strlen(s)-1] == '/') { 
-         s[strlen(s)-1] = '\0';
-      }
+   }
+   /*
+    * Get rid of trailing slash
+    */
+   if (s[strlen(s)-1] == '/') {
+      s[strlen(s)-1] = '\0';
    }
    DRETURN_(s);
 
@@ -249,7 +245,7 @@ const char *sge_get_default_cell(void)
     * Check the env variables
     */
    if (sge_cell) {
-      s = sge_cell;
+      s = strdup(sge_cell);
    } else {
       s = NULL;
    } 
