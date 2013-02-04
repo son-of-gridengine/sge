@@ -878,7 +878,8 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
        * We don't have to change any file ownerships there. */
       if (getuid() == SGE_SUPERUSER_UID) {
          /* root */
-         strcpy(g_job_owner, job_owner);
+         if (g_job_owner != job_owner)
+            strcpy(g_job_owner, job_owner);
          if (sge_user2uid(job_owner, &jobuser_id, &jobuser_gid, 1) == 0) {
             /* Now try to give the file to the job user. root (and later
              * the admin user) will still be able to write to it through
