@@ -493,6 +493,7 @@ ErrUsage()
              "       -post_upd|-start-all|-rccreate|[-host <hostname>] [-rsh] \n" \
              "       [-auto <filename>] [-nr] [-winupdate] [-winsvc] [-uwinsvc] [-csp] \n" \
              "       [-jmx] [-add-jmx] [-oldijs] [-afs] [-noremote] [-nosmf] [-nost]\n" \
+             "       [-nobincheck]\n" \
              "   -m         install qmaster host\n" \
              "   -um        uninstall qmaster host\n" \
              "   -x         install execution host\n" \
@@ -530,6 +531,7 @@ ErrUsage()
              "   -afs       install system with AFS functionality\n" \
              "   -noremote  suppress remote installation during autoinstall\n" \
              "   -nosmf     disable SMF for Solaris 10+ machines (RC scripts are used)\n" \
+             "   -nobincheck don't check that binaries are present\n" \
              "   -help      show this help text\n\n" \
              "   Examples:\n" \
              "   inst_sge -m -x   or   inst_sge -m -jmx -x\n" \
@@ -4012,7 +4014,9 @@ GetAdminUser()
 
 PreInstallCheck()
 {
-   CheckBinaries
+   if [ "$SGE_CHECK_BINARIES" != false ]; then
+       CheckBinaries
+   fi
 }
 
 RemoveHostFromList()
