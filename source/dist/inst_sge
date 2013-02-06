@@ -127,8 +127,6 @@ qmaster_service="false"
 
 BasicSettings
 SetUpInfoText
-PreInstallCheck
-
 
 ARGC=$#
 
@@ -333,6 +331,9 @@ while [ $ARGC != 0 ]; do
      . ./util/install_modules/inst_qmaster.sh
      . ./util/upgrade_modules/inst_upgrade.sh
      ;;
+   -nobincheck)
+     SGE_CHECK_BINARIES=false
+     ;;
    -help)
      ErrUsage
      ;;
@@ -384,6 +385,8 @@ done
 if [ $AUTO = "false" -a $QMASTER = "undef" -a $EXECD = "install" -a $SHADOW = "install" ]; then
    ErrUsage
 fi
+
+PreInstallCheck
 
 #checking the autoinstall configuration file at this point of installation,
 #because the commandline switches are completely parsed and we know the selected options.
