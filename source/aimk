@@ -1502,7 +1502,7 @@ case LINUX*:
 #       set CFLAGS = "$CFLAGS -Wno-strict-aliasing -U_FORTIFY_SOURCE"
 #    endif
 
-   set CFLAGS = "$OFLAG -Wall -Wstrict-prototypes -DUSE_POLL -DLINUX -D$BUILDARCH -D$COMPILE_ARCH -D_GNU_SOURCE -DGETHOSTBYNAME_R6 -DGETHOSTBYADDR_R8 $DEBUG_FLAG $CFLAGS"
+   set CFLAGS = "$OFLAG -Wstrict-prototypes -DUSE_POLL -DLINUX -D$BUILDARCH -D$COMPILE_ARCH -D_GNU_SOURCE -DGETHOSTBYNAME_R6 -DGETHOSTBYADDR_R8 $DEBUG_FLAG $CFLAGS"
 
    if ("$ADOC" == 1) then
       set CFLAGS = "$CFLAGS -Wno-error"
@@ -1555,7 +1555,7 @@ case LINUX*:
 
    if ( $MAKEJEMALLOCLIB == 1 ) then
       set LIBRARY_LIBS = "$LIBS"
-      set JEMALLOC_CFLAGS  = "-DMOZ_MEMORY_LINUX -Wno-all"
+      set JEMALLOC_CFLAGS  = "-DMOZ_MEMORY_LINUX"
       set LIBS = "-ljemalloc $LIBS"
    endif
 
