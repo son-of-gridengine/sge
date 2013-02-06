@@ -132,7 +132,7 @@ setup_lists(sge_gdi_ctx_class_t *ctx, lList **sharetree, lList **users, lList **
    /* if any of the above operations failed, exit */
    if (error) {
       lFreeList(&malp);
-      exit(3);
+      SGE_EXIT((void **)&ctx, 3);
    }
 
    /* extract the sharetree lists */
@@ -145,7 +145,7 @@ setup_lists(sge_gdi_ctx_class_t *ctx, lList **sharetree, lList **users, lList **
          fprintf(stderr, "%s\n", MSG_SGESHAREMON_NOSHARETREE);
          lFreeList(sharetree);
          lFreeList(&malp);
-         exit(2);
+         SGE_EXIT((void **)&ctx, 2);
       }
    }
 
@@ -173,7 +173,7 @@ setup_lists(sge_gdi_ctx_class_t *ctx, lList **sharetree, lList **users, lList **
    /* if any of the above operations failed, exit */
    if (error) {
       free_lists(sharetree, users, projects, usersets, config);
-      exit(3);
+      SGE_EXIT((void **)&ctx, 3);
    }
 
    return 0;
@@ -215,7 +215,7 @@ open_output(const char *file_name, const char *mode)
       if (file == NULL) {
          fprintf(stderr, MSG_FILE_COULDNOTOPENXFORY_SS , file_name, mode);
          fprintf(stderr, "\n");
-         exit(1);
+         SGE_EXIT(NULL, 1);
       }
    }
 
