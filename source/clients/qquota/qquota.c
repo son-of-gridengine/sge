@@ -255,7 +255,7 @@ int main(int argc, char **argv)
          SGE_EXIT((void**)&ctx, 1);
       }
    }
-   if (sge_parse_cmdline_qquota(argv, &pcmdline, &alp) == false) {
+   if (sge_parse_cmdline_qquota(++argv, &pcmdline, &alp) == false) {
       answer_list_output(&alp);
       lFreeList(&pcmdline);
       sge_prof_cleanup();
@@ -462,7 +462,7 @@ static bool sge_parse_cmdline_qquota(char **argv, lList **ppcmdline, lList **alp
       DRETURN(false);
    }
 
-   rp = ++argv;
+   rp = argv;
    while(*(sp=rp)) {
       /* -help */
       if ((rp = parse_noopt(sp, "-help", NULL, ppcmdline, alpp)) != sp)
