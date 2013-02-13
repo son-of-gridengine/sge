@@ -1,5 +1,5 @@
 Notable changes in Son of Grid Engine
--------------------------------------
+=====================================
 
 For earlier changes (comprising Sun Grid Engine), see Changelog in the
 source distribution, and the bug lists at
@@ -12,6 +12,61 @@ https://arc.liv.ac.uk/trac/SGE/ticket/<n>.  For historical reasons,
 changes due to Univa/Sun are tagged as "[U]", or "[(U)]" if partially
 due to them or appearing first in this version.
 
+
+Version 8.1.3
+-------------
+
+* Bug fixes
+
+  * Man and other doc fixes [including #354, #1285, #1436, #1444]
+  * Use correct schema with qstat -xml
+  * Correct qstat -pri -xml output [#359]
+  * Correct more bad XML [#314]
+  * Fixes for building on Solaris and Interix
+  * Minor fixes [#350, #351, #369, #593, #794, #1413, #1436]
+  * Assorted code improvements from better checking, particularly format
+    errors in diagnostic output
+  * Avoid qmaster crash with old client [#1441]
+  * Report dynamic limits correctly in qquota
+  * Fix JRE path on some GNU/Linux architectures
+  * Avoid possible crashes sending mail [#1443]
+  * Correct fix for "invalid pe job range" [#1402]
+  * Print "r" checkpoint flag in qstat [#1445]
+  * Pass TERM to jobs from submission environment, not execd's
+  * Fix idle-nodes script
+  * Fix sge_qquota parsing [#486]
+
+* Enhancements
+
+  * Document Interix building explicitly
+  * qstat reports array task maximum concurrency [#1338]
+  * qstatus removes [] suffix for non-array jobs if -t was requested
+  * Read /etc/default/{sgeexecd,sgemaster} to allow customizing rc scripts
+  * Location of daemon pid files can be specified with SGE_QMASTER_PIDFILE,
+    SGE_EXECD_PIDFILE
+  * Debian packaging (as an add-on, installing into /opt/sge)
+  * Expand $sge_root and $sge_cell in the definitions of prolog and
+    similar methods
+  * Check in init script that shepherd will load [#1412]
+  * Add lx-armhf architecture
+  * On Linux and NetBSD, report jobs' virtual memory usage as accurately
+    as possible [#62, #1301]
+  * Add -nobincheck installation option to avoid checking binaries [#45]
+  * Add some build hooks, useful for Debian particularly.
+
+* Potentially incompatible changes
+
+  * qacct prints units [#174] (might affect parsing the output)
+  * Correct spelling of "comunication_error" in qstat XML error output
+  * Fix problems submitting to ARs [#788] (printing times now doesn't use
+    a days field in qstat etc.)
+  * Java version >= 1.5 required
+  * Lower default MAX_DYN_EC somewhat to avoid warning on typical Linux
+    configurations
+
+* Other changes
+
+  * Don't install the ckpt directory (contents obsolete)
 
 Version 8.1.2
 -------------
@@ -65,7 +120,6 @@ Version 8.1.1
   * Fix suspension of parallel jobs [#577]
   * Improve portability of qstatus(1)
   * Fix signature of drmaa_run_bulk_jobs [#362]
-  * Treat -pty for qlogin/qrlogin as for qsh
   * Fix some cases with shell_start_mode=unix_behaviour
   * Use correct KRB5CCNAME when deleting Kerberos credentials [#64]
     (though GSS security is not currently useful)
