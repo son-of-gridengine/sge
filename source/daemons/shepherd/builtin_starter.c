@@ -357,7 +357,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    buffer = sge_malloc(size);
    pw = sge_getpwnam_r(target_user, &pw_struct, buffer, size);
    if (!pw) {
-      shepherd_error(1, "can't get password entry for user \"%s\"", target_user);
+      shepherd_error(1, "can't get passwd entry for user \"%s\"", target_user);
    }
 
    umask(022);			/* fixme */

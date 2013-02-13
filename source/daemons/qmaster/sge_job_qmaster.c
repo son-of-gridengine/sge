@@ -3290,11 +3290,11 @@ int verify_suitable_queues(lList **alpp, lListElem *jep, int *trigger, bool is_m
 
    /* can happen only from qalter -w ... */
    if (is_modify == true && job_count_pending_tasks(jep, false) == 0) {
-      /* since we can rule out a finished jobs it can be running only */
+      /* since we can rule out a finished job, it can be running or held only */
       answer_list_add(alpp, MSG_JOB_VERIFYRUNNING, STATUS_OK, ANSWER_QUALITY_INFO);
       DRETURN(0);
-   }  
- 
+   }
+
    {
       lListElem *cqueue;
       lList *talp = NULL;
