@@ -60,11 +60,11 @@ static void usage(const char *argv0)
    fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO1);
    fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO2);
    fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO3);
-   fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO4);
+/*    fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO4);
    fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO5);
    fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO6);
    fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO7);
-   fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO8);
+   fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO8); */
    fprintf(stderr, "%s\n", MSG_SPOOLINIT_COMMANDINTRO9);
 }
 
@@ -138,6 +138,7 @@ int main(int argc, char *argv[])
             cmd = SPM_init;
             /* check would fail, as database not yet exists */
             check_framework = false;
+         /*
          }  else if (strcmp(command, "history") == 0) {
             cmd = SPM_history;
          }  else if (strcmp(command, "backup") == 0) {
@@ -147,7 +148,7 @@ int main(int argc, char *argv[])
          }  else if (strcmp(command, "vacuum") == 0) {
             cmd = SPM_vacuum;
          }  else if (strcmp(command, "info") == 0) {
-            cmd = SPM_info;
+            cmd = SPM_info; */
          } else {
             usage(argv[0]);
             ret = EXIT_FAILURE;

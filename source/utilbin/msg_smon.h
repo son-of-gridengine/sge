@@ -46,7 +46,7 @@
 #define MSG_SGESHAREMON_n_OPT_USAGE             _MESSAGE(47240, _("use name=value format"))
 #define MSG_SGESHAREMON_o_OPT_USAGE             _MESSAGE(47241, _("output file"))
 #define MSG_SGESHAREMON_r_OPT_USAGE             _MESSAGE(47242, _("delimiter between collection records (default is <CR>)"))
-#define MSG_SGESHAREMON_s_OPT_USAGE             _MESSAGE(47243, _("format of displayed strings (default is %%s)"))
+#define MSG_SGESHAREMON_s_OPT_USAGE             _MESSAGE(47243, _("format of displayed strings (default is %s)"))
 #define MSG_SGESHAREMON_t_OPT_USAGE             _MESSAGE(47244, _("show formatted times"))
 #define MSG_SGESHAREMON_u_OPT_USAGE             _MESSAGE(47245, _("show decayed usage (since timestamp) in nodes"))
 #define MSG_SGESHAREMON_x_OPT_USAGE             _MESSAGE(47246, _("exclude non-leaf nodes"))

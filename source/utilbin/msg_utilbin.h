@@ -160,12 +160,15 @@
 #define MSG_SPOOLINIT_COMMANDINTRO0   _MESSAGE(57200, _("method shlib libargs command [args]"))
 #define MSG_SPOOLINIT_COMMANDINTRO1   _MESSAGE(57201, _("database maintenance"))
 #define MSG_SPOOLINIT_COMMANDINTRO2   _MESSAGE(57202, _("following are the valid commands"))
+#define MSG_SPOOLINIT_COMMANDINTRO3   _MESSAGE(57203, _("init              initialize the database"))
+#if 0
 #define MSG_SPOOLINIT_COMMANDINTRO3   _MESSAGE(57203, _("init [history]    initialize the database [with history enabled]"))
 #define MSG_SPOOLINIT_COMMANDINTRO4   _MESSAGE(57204, _("history on|off    switch spooling with history on or off"))
 #define MSG_SPOOLINIT_COMMANDINTRO5   _MESSAGE(57205, _("backup path       backup the database to path"))
 #define MSG_SPOOLINIT_COMMANDINTRO6   _MESSAGE(57206, _("purge days        remove historical data older than days"))
 #define MSG_SPOOLINIT_COMMANDINTRO7   _MESSAGE(57207, _("vacuum            compress database, update statistics"))
 #define MSG_SPOOLINIT_COMMANDINTRO8   _MESSAGE(57208, _("info              output information about the database"))
+#endif
 #define MSG_SPOOLINIT_COMMANDINTRO9   _MESSAGE(57209, _("method            output the compiled in spooling method"))
 
 /*

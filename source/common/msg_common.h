@@ -852,7 +852,7 @@
 #define MSG_GDI_UTEXT_v_OPT_VARIABLE_LIST                _MESSAGE(23459, _("export these environment variables"))
 
 #define MSG_GDI_USAGE_verify_OPT                         "[-verify]"
-#define MSG_GDI_UTEXT_verify_OPT                         _MESSAGE(23460, _("do not submit just verify"))
+#define MSG_GDI_UTEXT_verify_OPT                         _MESSAGE(23460, _("do not submit, just verify"))
 
 #define MSG_GDI_USAGE_V_OPT                              "[-V]"
 #define MSG_GDI_UTEXT_V_OPT                              _MESSAGE(23461, _("export all environment variables"))
@@ -933,7 +933,7 @@
 #define MSG_GDI_USAGE_TASK_OPR                           "job_task_list"
 #define MSG_GDI_USAGE_SCRIPT_OPR                         "[{command|-} [command_args]]"
 #define MSG_GDI_USAGE_SCRIPT_OPR_ARGS                    "[-- script_args]"
-#define MSG_GDI_UTEXT_JOB_ID_OPR                         _MESSAGE(23485, _("jobid's (and taskid's) of jobs to be altered"))
+#define MSG_GDI_UTEXT_JOB_ID_OPR                         _MESSAGE(23485, _("jobids (and taskids) of jobs to be altered"))
 #define MSG_GDI_UTEXT_SCRIPT_OPR_ARGS                    _MESSAGE(23486, _("arguments to be used"))
 #define MSG_GDI_UTEXT_ATTACH__u_OPT_USERLISTORUALL       _MESSAGE(23487, _("(not allowed in combination with job_task_list)"))
 
