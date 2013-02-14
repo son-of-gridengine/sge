@@ -1185,7 +1185,7 @@ sge_select_queue(lList *requested_attr, lListElem *queue, lListElem *host,
             DPRINTF(("ok"));
          } else {
             DPRINTF(("denied because queue \"%s\" is not contained in the hard "
-                     "queue list (-q) that was requested by job %d\n",
+                     "queue list (-q) that was requested by job "sge_u32"\n",
                      qname, lGetUlong(job, JB_job_number)));
             assignment_release(&a);
             DRETURN(false);
@@ -1324,7 +1324,8 @@ rc_time_by_slots(const sge_assignment_t *a, lList *requested, lList *load_attr, 
 
       if (ret == DISPATCH_OK && *start_time == DISPATCH_TIME_QUEUE_END) {
          DPRINTF(("%s: \"slot\" request delays start time from "sge_U32CFormat
-           " to "sge_U32CFormat"\n", object_name, latest_time, MAX(latest_time, tmp_start)));
+                  " to "sge_U32CFormat"\n", object_name, sge_u32c(latest_time),
+                  sge_u32c(MAX(latest_time, tmp_start))));
          latest_time = MAX(latest_time, tmp_start);
       }
 
@@ -1380,8 +1381,10 @@ rc_time_by_slots(const sge_assignment_t *a, lList *requested, lList *load_attr, 
                   }
 
                   if (*start_time == DISPATCH_TIME_QUEUE_END) {
-                     DPRINTF(("%s: default request \"%s\" delays start time from "sge_U32CFormat 
-                           " to "sge_U32CFormat"\n", object_name, name, latest_time, MAX(latest_time, tmp_start)));
+                     DPRINTF(("%s: default request \"%s\" delays start time from "
+                              sge_U32CFormat" to "sge_U32CFormat"\n",
+                              object_name, name, sge_u32c(latest_time),
+                              sge_u32c(MAX(latest_time, tmp_start))));
                      latest_time = MAX(latest_time, tmp_start);
                   }
                }
@@ -1405,8 +1408,9 @@ rc_time_by_slots(const sge_assignment_t *a, lList *requested, lList *load_attr, 
          case DISPATCH_OK : /* a match was found */
                if (*start_time == DISPATCH_TIME_QUEUE_END) {
                   DPRINTF(("%s: explicit request \"%s\" delays start time from "sge_U32CFormat 
-                           "to "sge_U32CFormat"\n", object_name, attr_name, latest_time, 
-                           MAX(latest_time, tmp_start)));
+                           "to "sge_U32CFormat"\n", object_name, attr_name,
+                           sge_u32c(latest_time),
+                           sge_u32c(MAX(latest_time, tmp_start))));
                   latest_time = MAX(latest_time, tmp_start);
                }
                if (lGetUlong(attr, CE_tagged) < tag && tag != RQS_TAG) {
@@ -3049,7 +3053,7 @@ dispatch_t cqueue_match_static(const char *cqname, sge_assignment_t *a)
 
          if (gep == NULL) {
 
-            DPRINTF(("Cluster Queue \"%s\" was not reserved by advance reservation %d\n", cqname, ar_id));
+            DPRINTF(("Cluster Queue \"%s\" was not reserved by advance reservation "sge_u32"\n", cqname, ar_id));
             schedd_mes_add(a->monitor_alpp, a->monitor_next_run, a->job_id,
                            SCHEDD_INFO_QINOTARRESERVED_SI, cqname, ar_id);
             DRETURN(DISPATCH_NEVER_CAT);
@@ -3828,7 +3832,7 @@ parallel_tag_queues_suitable4job(sge_assignment_t *a, category_use_t *use_catego
                   continue;
                }
                get_soft_violations(a, hep, qep);
-               DPRINTF(("EVALUATE: %s soft violations %d\n", lGetString(qep, QU_full_name), lGetUlong(qep, QU_soft_violation)));
+               DPRINTF(("EVALUATE: %s soft violations "sge_u32"\n", lGetString(qep, QU_full_name), lGetUlong(qep, QU_soft_violation)));
             }
             if (sconf_get_queue_sort_method() == QSM_LOAD) {
                lPSortList(a->queue_list, "%I- %I+ %I+ %I+", QU_tag, QU_soft_violation, QU_host_seq_no, QU_seq_no);
@@ -3853,7 +3857,7 @@ parallel_tag_queues_suitable4job(sge_assignment_t *a, category_use_t *use_catego
          }
 
          for_each (qep, a->queue_list) {
-            DPRINTF(("AFTER SORT: %s soft violations %d\n", lGetString(qep, QU_full_name), lGetUlong(qep, QU_soft_violation)));
+            DPRINTF(("AFTER SORT: %s soft violations "sge_u32"\n", lGetString(qep, QU_full_name), lGetUlong(qep, QU_soft_violation)));
             if (lGetUlong(qep, QU_tag) == 0) {
                continue;
             }
@@ -4911,7 +4915,7 @@ static int sequential_update_host_order(lList *host_list, lList *queues)
 
       /* detect whether host_seqno has changed since last dispatch operation */
       if (host_seqno != lGetUlong(hep, EH_seq_no)) {
-         DPRINTF(("HOST SORT ORDER CHANGED FOR HOST %s FROM %d to %d\n", 
+         DPRINTF(("HOST SORT ORDER CHANGED FOR HOST %s FROM "sge_u32" to %d\n", 
                   eh_name, lGetUlong(hep, EH_seq_no), host_seqno));
          host_order_changed = true;
          lSetUlong(hep, EH_seq_no, host_seqno);
@@ -5765,8 +5769,10 @@ ri_time_by_slots(const sge_assignment_t *a, lListElem *rep, lList *load_attr, lL
 
       util = utilization_max(actual_el, ready_time, a->duration, false);
 
-      DPRINTF(("\t\t%s: time_by_slots: %s total = %f util = %f from "sge_U32CFormat" plus "sge_U32CFormat" seconds\n", 
-               object_name, attrname, total, util, ready_time, a->duration));
+      DPRINTF(("\t\t%s: time_by_slots: %s total = %f util = %f from "
+               sge_U32CFormat" plus "sge_U32CFormat" seconds\n",
+               object_name, attrname, total, util, sge_u32c(ready_time),
+               sge_u32c(a->duration)));
 
       /* ensure resource is sufficient from now until finish */
       if (request * slots > total - util) {
@@ -6023,9 +6029,11 @@ ri_slots_by_time(const sge_assignment_t *a, int *slots, int *slots_qend,
          }
       }
 
-      DPRINTF(("\t\t%s: ri_slots_by_time: %s=%f has %d (%d) slots at time "sge_U32CFormat"%s (avail: %f total: %f)\n", 
-            object_name, lGetString(uep, RUE_name), request_val, *slots, *slots_qend, start,
-              !a->is_reservation?" (= now)":"", total - used, total));
+      DPRINTF(("\t\t%s: ri_slots_by_time: %s=%f has %d (%d) slots at time "
+               sge_U32CFormat"%s (avail: %f total: %f)\n", 
+               object_name, lGetString(uep, RUE_name), request_val, *slots,
+               *slots_qend, sge_u32c(start),
+               !a->is_reservation?" (= now)":"", total - used, total));
    }
 
    DRETURN(ret);

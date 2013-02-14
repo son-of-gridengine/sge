@@ -1166,7 +1166,7 @@ add_calendar_to_schedule(lList *queue_list, u_long32 now)
          
          lListElem *queue_state = NULL;     
 
-         DPRINTF(("queue: %s time %d\n", lGetString(queue, QU_full_name), from));
+         DPRINTF(("queue: %s time "sge_u32"\n", lGetString(queue, QU_full_name), from));
 
          if (slot_uti_list == NULL) {
             slot_uti_list = lCreateList("slot_uti", RDE_Type);
@@ -1234,7 +1234,7 @@ set_utilization(lList *uti_list, u_long32 from, u_long32 till, double uti)
          till = DISPATCH_TIME_QUEUE_END;
       }
 
-      DPRINTF(("queue cal. schedule entry time %d till %d util: %f\n", from, till, uti));
+      DPRINTF(("queue cal. schedule entry time "sge_u32" till "sge_u32" util: %f\n", from, till, uti));
 
       uti_elem_next = lFirst(uti_list);
      

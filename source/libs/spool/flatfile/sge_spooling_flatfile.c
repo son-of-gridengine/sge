@@ -1082,7 +1082,7 @@ spool_classic_default_write_func(lList **answer_list,
             
             job_parse_key(dup, &job_id, &ja_task_id, &pe_task_id, &only_job);
 
-            DPRINTF(("spooling job %d.%d %s\n", job_id, ja_task_id, 
+            DPRINTF(("spooling job "sge_u32"."sge_u32" %s\n", job_id, ja_task_id, 
                      pe_task_id != NULL ? pe_task_id : "<null>"));
 
             if (object_type == SGE_TYPE_JOB) {
@@ -1273,7 +1273,7 @@ spool_classic_default_delete_func(lList **answer_list,
             
             job_parse_key(dup, &job_id, &ja_task_id, &pe_task_id, &only_job);
    
-            DPRINTF(("spooling job %d.%d %s\n", job_id, ja_task_id, 
+            DPRINTF(("spooling job "sge_u32"."sge_u32" %s\n", job_id, ja_task_id, 
                      pe_task_id != NULL ? pe_task_id : "<null>"));
             if (job_remove_spool_file(job_id, ja_task_id, pe_task_id, 
                                       SPOOL_DEFAULT) != 0) {

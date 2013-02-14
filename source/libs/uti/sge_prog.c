@@ -911,12 +911,12 @@ static void sge_prog_state_dprintf(sge_prog_state_class_t *thiz)
 
    DENTER(TOP_LAYER, "sge_prog_state_dprintf");
 
-   DPRINTF(("who                      >%d<\n", ps->who));
+   DPRINTF(("who                      >"sge_u32"<\n", ps->who));
    DPRINTF(("sge_formal_prog_name     >%s<\n", ps->sge_formal_prog_name));
    DPRINTF(("qualified_hostname       >%s<\n", ps->qualified_hostname));
    DPRINTF(("unqualified_hostname     >%s<\n", ps->unqualified_hostname));
-   DPRINTF(("uid                      >%d<\n", (int) ps->uid));
-   DPRINTF(("gid                      >%d<\n", (int) ps->gid));
+   DPRINTF(("uid                      >"sge_u32"<\n", ps->uid));
+   DPRINTF(("gid                      >"sge_u32"<\n", ps->gid));
    DPRINTF(("daemonized               >%d<\n", ps->daemonized));
    DPRINTF(("user_name                >%s<\n", ps->user_name));
    DPRINTF(("default_cell             >%s<\n", ps->default_cell));

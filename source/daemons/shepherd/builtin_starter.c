@@ -480,7 +480,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
        * additional group id here, because there is no custom rshd that will
        * do this for us.
        */
-      shepherd_trace("setting additional gid=%d", add_grp_id);
+      shepherd_trace("setting additional gid="gid_t_fmt, add_grp_id);
       ret = sge_set_uid_gid_addgrp(target_user, intermediate_user,
                                    min_gid, min_uid, add_grp_id, err_str,
                                    sizeof(err_str), use_qsub_gid, gid, skip_silently);
@@ -894,7 +894,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       }
    }
    shepherd_trace("now running with uid="uid_t_fmt", euid="uid_t_fmt, 
-                  (int)getuid(), (int)geteuid());
+                  getuid(), geteuid());
 
    /*
    ** if we dont check if the script_file exists, then in case of

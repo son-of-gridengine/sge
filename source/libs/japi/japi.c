@@ -3133,7 +3133,8 @@ japi_sge_state_to_drmaa_state(lListElem *job, bool is_array_task, u_long32 jobid
       u_long32 ja_task_hold = lGetUlong(ja_task, JAT_hold);
 
       DPRINTF (("Job " sge_u32 "." sge_u32 " status=%x state=%x hold=%x\n", jobid,
-                taskid, ja_task_status, ja_task_state, ja_task_hold));
+                taskid, (unsigned int) ja_task_status,
+                (unsigned int) ja_task_state, (unsigned int) ja_task_hold));
       
       /* ERROR */
       if (ja_task_state & JERROR) { 
@@ -4196,7 +4197,7 @@ static void *japi_implementation_thread(void * a_user_data_pointer)
             intkey = lGetUlong(event, ET_intkey);
             intkey2 = lGetUlong(event, ET_intkey2);
 
-            DPRINTF(("\tEvent: %s intkey %d intkey2 %d\n", event_text(event, &buffer_wrapper), intkey, intkey2));
+            DPRINTF(("\tEvent: %s intkey "sge_u32" intkey2 "sge_u32"\n", event_text(event, &buffer_wrapper), intkey, intkey2));
 
             /* maintain library session data */ 
             if (type == sgeE_JOB_LIST) {
@@ -4268,15 +4269,15 @@ static void *japi_implementation_thread(void * a_user_data_pointer)
                wait_status = lGetUlong(jr, JR_wait_status);
                err_str = lGetString(jr, JR_err_str);
                if (SGE_GET_NEVERRAN(wait_status)) { 
-                  DPRINTF(("JOB_FINISH: %d.%d job never ran: %s\n", 
+                  DPRINTF(("JOB_FINISH: "sge_u32"."sge_u32" job never ran: %s\n",
                            intkey, intkey2, err_str));
                } else {
                   if (SGE_GET_WEXITED(wait_status)) {
-                     DPRINTF(("JOB_FINISH: %d.%d exited with exit status %d\n", 
+                     DPRINTF(("JOB_FINISH: "sge_u32"."sge_u32" exited with exit status "sge_u32"\n",
                               intkey, intkey2, SGE_GET_WEXITSTATUS(wait_status)));
                   }
                   if (SGE_GET_WSIGNALED(wait_status)) {
-                     DPRINTF(("JOB_FINISH: %d.%d died through signal %s%s\n", 
+                     DPRINTF(("JOB_FINISH: "sge_u32"."sge_u32" died through signal %s%s\n",
                               intkey, intkey2, sge_sig2str(SGE_GET_WSIGNAL(wait_status)),
                               SGE_GET_WCOREDUMP(wait_status)?"(core dumped)":""));
                   }

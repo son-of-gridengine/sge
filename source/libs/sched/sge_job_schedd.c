@@ -1040,7 +1040,7 @@ void job_lists_print(lList **job_list[])
             ids += job_get_enrolled_ja_tasks(job);
             ids += job_get_not_enrolled_ja_tasks(job);
          }
-         DPRINTF(("job_list[%s] CONTAINES "sge_u32" JOB(S) ("sge_u32" TASK(S))\n",
+         DPRINTF(("job_list[%s] CONTAINS %d JOB(S) ("sge_u32" TASK(S))\n",
             get_name_of_split_value(i),
             lGetNumberOfElem(*(job_list[i])), ids));
       }

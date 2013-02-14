@@ -179,8 +179,8 @@ static void sge_env_state_dprintf(sge_env_state_class_t *thiz)
 
    DPRINTF(("sge_root            >%s<\n", es->sge_root ? es->sge_root : "NA"));
    DPRINTF(("sge_cell            >%s<\n", es->sge_cell ? es->sge_cell : "NA"));
-   DPRINTF(("sge_qmaster_port    >%d<\n", es->sge_qmaster_port));
-   DPRINTF(("sge_execd_port      >%d<\n", es->sge_execd_port));
+   DPRINTF(("sge_qmaster_port    >%d<\n", (int)es->sge_qmaster_port));
+   DPRINTF(("sge_execd_port      >%d<\n", (int)es->sge_execd_port));
    DPRINTF(("from_services       >%s<\n", es->from_services ? "true" : "false"));
    DPRINTF(("qmaster_internal    >%s<\n", es->qmaster_internal ? "true" : "false"));
 
