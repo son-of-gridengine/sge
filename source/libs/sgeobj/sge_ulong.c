@@ -33,7 +33,7 @@
 /* Fixme:  This doesn't work for a non-gcc compiler (e.g. clang) on a
    glibc system as fabs doesn't get defined with any features as far
    as I can tell.  */
-#ifndef __sun__     /* else get compaints about non-C99 compilation */
+#if !defined __sun__ && !defined __sun /* else complaints about non-C99 compilation */
 #define _XOPEN_SOURCE 600       /* for fabs */
 #endif
 #include <math.h>
