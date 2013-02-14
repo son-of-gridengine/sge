@@ -923,8 +923,21 @@ static int psRetrieveOSJobData(void) {
 
    get_arsess_list(&arsess_list);
 
-#elif defined(ALPHA) || defined(LINUX) || defined(SOLARIS)
+#elif defined(LINUX)
    pt_dispatch_procs_to_jobs(&job_list, time_stamp, last_time);
+#elif defined(ALPHA) || defined(SOLARIS)
+   {
+
+      /* There is no way to retrieve a pid list containing all processes 
+         of a session id. So we have to iterate through the whole process 
+         table to decide whether a process is needed for a job or not. */
+      pt_open();
+
+      while (!pt_dispatch_proc_to_job(&job_list, time_stamp, last_time))
+         ; 
+      last_time = time_stamp;
+      pt_close();
+   }
 #elif defined(AIX)
    {
       #define SIZE 16
