@@ -363,7 +363,7 @@ int main(int argc, char **argv)
                qacct_usage(&ctx, stderr);
             }
             options.begin_time = (time_t)tmp_begin_time;
-            DPRINTF(("begin is: %ld\n", options.begin_time));
+            DPRINTF(("begin is: %ld\n", (long) options.begin_time));
             beginflag = 1; 
          } else {
             qacct_usage(&ctx, stderr);
@@ -383,7 +383,7 @@ int main(int argc, char **argv)
                qacct_usage(&ctx, stderr);
             }
             options.end_time = (time_t)tmp_end_time;
-            DPRINTF(("end is: %ld\n", options.end_time));
+            DPRINTF(("end is: %ld\n", (long) options.end_time));
             endflag = 1; 
          } else {
             qacct_usage(&ctx, stderr);
@@ -400,7 +400,7 @@ int main(int argc, char **argv)
                */
                qacct_usage(&ctx, stderr);
             }
-            DPRINTF(("days is: %d\n", days));
+            DPRINTF(("days is: %d\n", (int) days));
             daysflag = 1; 
          } else {
             qacct_usage(&ctx, stderr);

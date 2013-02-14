@@ -384,8 +384,8 @@ sge_timer_main(void *arg)
 
          if ((Event_Control.next < te->when) || (Event_Control.delete == true))
          {
-            DPRINTF(("%s: event list changed - next:"sge_u32" --> start over\n",
-                     SGE_FUNC, (uint32_t) Event_Control.next));
+            DPRINTF(("%s: event list changed - next: %lu --> start over\n",
+                     SGE_FUNC, (unsigned long) Event_Control.next));
 
             sge_mutex_unlock("event_control_mutex", SGE_FUNC, __LINE__, &Event_Control.mutex);
 

@@ -2579,10 +2579,10 @@ int fd_std_err             /* fd of stderr. -1 if not set */
                shepherd_trace(errormsg);
             }
             shepherd_trace("retrieved remote usage: %ld %ld %ld %ld %d",
-                           rusage_hp10.ru_stime.tv_sec,
-                           rusage_hp10.ru_stime.tv_usec,
-                           rusage_hp10.ru_utime.tv_sec,
-                           rusage_hp10.ru_utime.tv_usec,
+                           (long) rusage_hp10.ru_stime.tv_sec,
+                           (long) rusage_hp10.ru_stime.tv_usec,
+                           (long) rusage_hp10.ru_utime.tv_sec,
+                           (long) rusage_hp10.ru_utime.tv_usec,
                            status);
          }
       } else 

@@ -181,7 +181,7 @@ sge_test_main(void *arg)
          if (answer_list_has_error(&answer_list)) {
             lWriteListTo(answer_list, stderr);
          } else {
-            DPRINTF(("got data list with "sge_U32CFormat" and answer list with "sge_U32CFormat" elements.\n", 
+            DPRINTF(("got data list with %d and answer list with %d elements.\n",
                      lGetNumberOfElem(data_list), lGetNumberOfElem(answer_list)));
          }
 

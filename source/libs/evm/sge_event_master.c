@@ -814,8 +814,9 @@ sge_event_master_process_mod_event_client(lListElem *request, monitoring_t *moni
    }
    /* busy_handling changed */
    if (busy_handling != lGetUlong(event_client, EV_busy_handling)) {
-      DPRINTF(("EVM: event client %s changes to "sge_U32CFormat"\n", 
-         lGetString(event_client, EV_name), lGetUlong(event_client, EV_busy_handling)));
+      DPRINTF(("EVM: event client %s changes to "sge_u32"\n",
+               lGetString(event_client, EV_name),
+               lGetUlong(event_client, EV_busy_handling)));
       lSetUlong(event_client, EV_busy_handling, busy_handling);
    }
 
@@ -1637,7 +1638,7 @@ static void sge_event_master_process_send(lListElem *request, monitoring_t *moni
          event = lFirst(event_list);
       } /* while */
    } else {
-      DPRINTF(("Processing event for client %d.\n", ec_id));
+      DPRINTF(("Processing event for client "sge_u32".\n", ec_id));
 
       sge_mutex_lock("event_master_mutex", SGE_FUNC, __LINE__, &Event_Master_Control.mutex);
 
@@ -2160,7 +2161,7 @@ void sge_event_master_send_events(sge_gdi_ctx_class_t *ctx, lListElem *report, l
          dstring buffer_wrapper;
          char buffer[256];
 
-         DPRINTF(("EVC timeout (%d s) (part 1/2)\n", timeout));
+         DPRINTF(("EVC timeout ("sge_u32" s) (part 1/2)\n", timeout));
          WARNING((SGE_EVENT, MSG_COM_ACKTIMEOUT4EV_ISIS, (int) timeout, commproc, (int) commid, host));
 
          /* yes, we have to remove this client after sending the sgeE_ACK_TIMEOUT event */
@@ -2186,7 +2187,7 @@ void sge_event_master_send_events(sge_gdi_ctx_class_t *ctx, lListElem *report, l
 
          /* We log the new added sgeE_ACK_TIMEOUT event */
          sge_dstring_init(&buffer_wrapper, buffer, sizeof(buffer));
-         DPRINTF(("%d %s\n", ec_id, event_text(new_event, &buffer_wrapper)));
+         DPRINTF((sge_u32" %s\n", ec_id, event_text(new_event, &buffer_wrapper)));
 
          /* Set next send time to now, we want to deliver it */
          lSetUlong(event_client, EV_next_send_time, (lUlong) now);
@@ -2243,7 +2244,7 @@ void sge_event_master_send_events(sge_gdi_ctx_class_t *ctx, lListElem *report, l
        * sgeE_ACK_TIMEOUT event was delivered.
        */
       if (do_remove == true) {
-         DPRINTF(("REMOVE EVC because of timeout (%d s) (part 2/2)\n", timeout));
+         DPRINTF(("REMOVE EVC because of timeout ("sge_u32" s) (part 2/2)\n", timeout));
          ERROR((SGE_EVENT, MSG_COM_ACKTIMEOUT4EV_SIS, commproc, (int) commid, host));
          remove_event_client(&event_client, ec_id, false);
       }
@@ -2273,7 +2274,7 @@ static void flush_events(lListElem *event_client, int interval)
       set_flush();
    }
 
-   DPRINTF(("%s: %s %d\tNOW: %d NEXT FLUSH: %d (%s,%s,%d)\n",
+   DPRINTF(("%s: %s "sge_u32"\tNOW: %d NEXT FLUSH: "sge_u32" (%s,%s,"sge_u32")\n",
             SGE_FUNC,
             ((lGetString(event_client, EV_name) != NULL) ? lGetString(event_client, EV_name) : "<null>"),
             lGetUlong(event_client, EV_id),
@@ -2748,7 +2749,7 @@ static void add_list_event_direct(lListElem *event_client, lListElem *event,
    /* chain in new event */
    lAppendElem(lp, ep);
 
-   DPRINTF(("%d %s\n", lGetUlong(event_client, EV_id),
+   DPRINTF((sge_u32" %s\n", lGetUlong(event_client, EV_id),
             event_text(ep, &buffer_wrapper)));
 
    /* check if event clients wants flushing */
@@ -3450,7 +3451,7 @@ void sge_event_master_process_requests(monitoring_t *monitor)
       lListElem *request = NULL;
 
       while ((request = lFirst(requests)) != NULL) {
-         DPRINTF(("processing event master request: %d\n", lGetUlong(request, EVR_operation)));
+         DPRINTF(("processing event master request: "sge_u32"\n", lGetUlong(request, EVR_operation)));
          switch (lGetUlong(request, EVR_operation)) {
             case EVR_ADD_EVC:
                sge_event_master_process_add_event_client(request, monitor);

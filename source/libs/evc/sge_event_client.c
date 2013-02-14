@@ -1249,7 +1249,7 @@ static bool ec2_set_busy_handling(sge_evc_class_t *thiz, ev_busy_handling handli
    if (sge_evc->ec == NULL) {
       ERROR((SGE_EVENT, SFNMAX, MSG_EVENT_UNINITIALIZED_EC));
    } else {
-      DPRINTF(("EVC: change event client to "sge_U32CFormat"\n", (u_long32)handling));
+      DPRINTF(("EVC: change event client to "sge_U32CFormat"\n", sge_u32c(handling)));
 
       ret = (lGetUlong(sge_evc->ec, EV_busy_handling) != handling) ? true : false;
 
@@ -1315,7 +1315,7 @@ static bool ec2_deregister_local(sge_evc_class_t *thiz)
       u_long32 id = sge_evc->ec_reg_id;
       ec_control_t *evco = NULL;
 
-      DPRINTF(("ec2_deregister_local sge_evc->ec_reg_id %d\n", sge_evc->ec_reg_id));
+      DPRINTF(("ec2_deregister_local sge_evc->ec_reg_id "sge_u32"\n", sge_evc->ec_reg_id));
 
       /*
       ** signal thread when in ec2_get_local
@@ -1559,7 +1559,7 @@ static bool ec2_register(sge_evc_class_t *thiz, bool exit_on_qmaster_down, lList
 
          if (new_id != 0) {
             lSetUlong(sge_evc->ec, EV_id, new_id);
-            DPRINTF(("REGISTERED with id "sge_U32CFormat"\n", new_id));
+            DPRINTF(("REGISTERED with id "sge_U32CFormat"\n", sge_u32c(new_id)));
             lSetBool(sge_evc->ec, EV_changed, false);
             sge_evc->need_register = false;
             
@@ -2928,7 +2928,7 @@ static bool ec2_get(sge_evc_class_t *thiz, lList **event_list, bool exit_on_qmas
             answer_list_output(&alp);
             WARNING((SGE_EVENT, SFNMAX, MSG_COMMD_FAILEDTOSENDACKEVENTDELIVERY));
          } else {
-            DPRINTF(("Sent ack for all events lower or equal %d\n", (sge_evc->next_event - 1)));
+            DPRINTF(("Sent ack for all events lower or equal "sge_u32"\n", (sge_evc->next_event - 1)));
          }
       }
    }

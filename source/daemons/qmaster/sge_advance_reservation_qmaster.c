@@ -1819,8 +1819,8 @@ bool sge_ar_remove_all_jobs(sge_gdi_ctx_class_t *ctx, u_long32 ar_id, int forced
          continue;
       }
 
-      DPRINTF(("removing job %d\n", lGetUlong(jep, JB_job_number)));
-      DPRINTF((" ----> task_start = %d, task_end = %d\n", start, end));
+      DPRINTF(("removing job "sge_u32"\n", lGetUlong(jep, JB_job_number)));
+      DPRINTF((" ----> task_start = "sge_u32", task_end = "sge_u32"\n", start, end));
 
       for (task_number = start; 
            task_number <= end; 
@@ -1830,7 +1830,7 @@ bool sge_ar_remove_all_jobs(sge_gdi_ctx_class_t *ctx, u_long32 ar_id, int forced
 
             if (job_is_enrolled(jep, task_number)) {
                /* delete all enrolled pending tasks */
-               DPRINTF(("removing enrolled task %d.%d\n", lGetUlong(jep, JB_job_number), task_number));
+               DPRINTF(("removing enrolled task "sge_u32"."sge_u32"\n", lGetUlong(jep, JB_job_number), task_number));
                tmp_task = lGetSubUlong(jep, JAT_task_number, task_number, JB_ja_tasks); 
 
                /* 
@@ -1852,7 +1852,7 @@ bool sge_ar_remove_all_jobs(sge_gdi_ctx_class_t *ctx, u_long32 ar_id, int forced
                }
             } else {
                /* delete all unenrolled running tasks */
-               DPRINTF(("removing unenrolled task %d.%d\n", lGetUlong(jep, JB_job_number), task_number));
+               DPRINTF(("removing unenrolled task "sge_u32"."sge_u32"\n", lGetUlong(jep, JB_job_number), task_number));
                tmp_task = job_get_ja_task_template_pending(jep, task_number);
 
                sge_commit_job(ctx, jep, tmp_task, NULL, COMMIT_ST_FINISHED_FAILED,

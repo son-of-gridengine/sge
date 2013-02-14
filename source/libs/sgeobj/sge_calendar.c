@@ -377,9 +377,9 @@ static int state_at(time_t now, const lList *ycal, const lList *wcal, time_t *ne
       *next_event = temp_next_event;
    }   
   
-   DPRINTF(("got state %d from %s calendar. Now: "sge_u32" Next event: "sge_u32"\n", 
-            state, (w_is_active==-1)?"year":"week", (uint32_t) now,
-            (uint32_t) (next_event?*next_event:0)));
+   DPRINTF(("got state %d from %s calendar. Now: %lu Next event: %lu\n", 
+            state, (w_is_active==-1)?"year":"week", (unsigned long) now,
+            (unsigned long) (next_event?*next_event:0)));
 
    lFreeElem(&tm);
 
@@ -542,7 +542,7 @@ static u_long32 is_year_entry_active(lListElem *tm, lListElem *year_entry, time_
    if ((in_yday_range=in_range_list(tm, lGetList(year_entry, CA_yday_range_list), tm_yday_cmp)) 
      && (in_daytime_range=in_range_list(tm, lGetList(year_entry, CA_daytime_range_list), tm_daytime_cmp))) {
       DPRINTF(("in_range_list(yday) = %d in_range_list(daytime) = %d state = %d\n", 
-            in_yday_range, in_daytime_range, lGetUlong(year_entry, CA_state))); 
+            in_yday_range, in_daytime_range, (int) lGetUlong(year_entry, CA_state)));
       state = lGetUlong(year_entry, CA_state);
    } else {
       DPRINTF(("in_range_list(yday) = %d in_range_list(daytime) = %d\n", in_yday_range, in_daytime_range)); 
@@ -1601,30 +1601,30 @@ static void split_daytime_range(lList *dtrl, lListElem *tmr) {
          t3=lFirst(lGetList(tmr2, TMR_begin));
          t4=lFirst(lGetList(tmr2, TMR_end));
 
-         DPRINTF(("splitted %d:%d:%d-%d:%d:%d into %d:%d:%d-%d:%d:%d and %d:%d:%d-%d:%d:%d\n",
-            lGetUlong(t1, TM_hour),
-            lGetUlong(t1, TM_min),
-            lGetUlong(t1, TM_sec),
+         DPRINTF(("split %d:%d:%d-%d:%d:%d into %d:%d:%d-%d:%d:%d and %d:%d:%d-%d:%d:%d\n",
+            (int)lGetUlong(t1, TM_hour),
+            (int)lGetUlong(t1, TM_min),
+            (int)lGetUlong(t1, TM_sec),
 
-            lGetUlong(t4, TM_hour),
-            lGetUlong(t4, TM_min),
-            lGetUlong(t4, TM_sec),
+            (int)lGetUlong(t4, TM_hour),
+            (int)lGetUlong(t4, TM_min),
+            (int)lGetUlong(t4, TM_sec),
 
-            lGetUlong(t1, TM_hour),
-            lGetUlong(t1, TM_min),
-            lGetUlong(t1, TM_sec),
+            (int)lGetUlong(t1, TM_hour),
+            (int)lGetUlong(t1, TM_min),
+            (int)lGetUlong(t1, TM_sec),
 
-            lGetUlong(t2, TM_hour),
-            lGetUlong(t2, TM_min),
-            lGetUlong(t2, TM_sec),
+            (int)lGetUlong(t2, TM_hour),
+            (int)lGetUlong(t2, TM_min),
+            (int)lGetUlong(t2, TM_sec),
 
-            lGetUlong(t3, TM_hour),
-            lGetUlong(t3, TM_min),
-            lGetUlong(t3, TM_sec),
+            (int)lGetUlong(t3, TM_hour),
+            (int)lGetUlong(t3, TM_min),
+            (int)lGetUlong(t3, TM_sec),
 
-            lGetUlong(t4, TM_hour),
-            lGetUlong(t4, TM_min),
-            lGetUlong(t4, TM_sec)));
+            (int)lGetUlong(t4, TM_hour),
+            (int)lGetUlong(t4, TM_min),
+            (int)lGetUlong(t4, TM_sec)));
       }
    }
 

@@ -310,7 +310,7 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
             DRETURN(-2);
          }
 
-         DPRINTF(("ORDER: start %d slots of job \"%d\" on"
+         DPRINTF(("ORDER: start "sge_u32" slots of job \""sge_u32"\" on"
                   " queue \"%s\" v%d with "sge_U32CFormat" initial tickets\n",
                q_slots, job_number, q_name, (int)q_version, sge_u32c((u_long32)lGetDouble(ep, OR_ticket))));
 
@@ -341,7 +341,7 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
             master_qep = qep;
          }
 
-         DPRINTF(("Queue version: %d\n", q_version));
+         DPRINTF(("Queue version: "sge_u32"\n", q_version));
 
          /* ensure that the jobs owner has access to this queue */
          if (!sge_has_access_(lGetString(jep, JB_owner), lGetString(jep, JB_group),

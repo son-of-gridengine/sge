@@ -114,8 +114,8 @@ void calendar_event_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, monito
 {
    DENTER(TOP_LAYER, "calendar_event_handler");
 
-   DPRINTF(("%s: time:"sge_u32" when:"sge_u32"\n", SGE_FUNC,
-            (uint32_t) time(NULL), (uint32_t) te_get_when(anEvent)));
+   DPRINTF(("%s: time:%lu when:%lu\n", SGE_FUNC,
+            (unsigned long) time(NULL), (unsigned long) te_get_when(anEvent)));
 
    DEXIT;
    return;
@@ -125,8 +125,8 @@ void signal_resend_event_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, m
 {
    DENTER(TOP_LAYER, "signal_resend_event_handler");
 
-   DPRINTF(("%s: time:"sge_u32" when:"sge_u32"\n", SGE_FUNC,
-            (uint32_t) time(NULL), (uint32_t) te_get_when(anEvent)));
+   DPRINTF(("%s: time:%lu when:%lu\n", SGE_FUNC,
+            (unsigned long) time(NULL), (unsigned long) te_get_when(anEvent)));
 
    DEXIT;
    return;
@@ -136,8 +136,8 @@ void job_resend_event_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, moni
 {
    DENTER(TOP_LAYER, "job_resend_event_handler");
 
-   DPRINTF(("%s: time:"sge_u32" when:"sge_u32"\n", SGE_FUNC,
-            (uint32_t) time(NULL), (uint32_t) te_get_when(anEvent)));
+   DPRINTF(("%s: time:%lu when:%lu\n", SGE_FUNC,
+            (unsigned long) time(NULL), (unsigned long) te_get_when(anEvent)));
 
    DEXIT;
    return;
