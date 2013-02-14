@@ -908,7 +908,7 @@ lListElem *pe_task
    {
       int ptf_error;
 
-      DPRINTF(("Register job with AddGrpId at "pid_t_fmt" PTF\n", addgrpid));
+      DPRINTF(("Register job with AddGrpId at "gid_t_fmt" PTF\n", addgrpid));
       if ((ptf_error = ptf_job_started(addgrpid, pe_task_id, job, ja_task_id))) {
          ERROR((SGE_EVENT, MSG_JOB_NOREGISTERPTF_SS, 
                 job_get_id_string(job_id, ja_task_id, pe_task_id, &id_dstring), 

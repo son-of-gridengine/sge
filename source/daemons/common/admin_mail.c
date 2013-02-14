@@ -181,14 +181,14 @@ void job_related_adminmail(u_long32 progid, lListElem *jr, int is_array, const c
          ** a state might have more than one bit set
          */
          if ((admail_states[failed] & BIT_ADM_NEVER)) {
-            DPRINTF(("NEVER SENDING ADMIN MAIL for state %d\n", failed));
+            DPRINTF(("NEVER SENDING ADMIN MAIL for state "sge_u32"\n", failed));
             sge_free(&administrator_mail);
             DEXIT;
             return;
          }
          if ((admail_states[failed] & BIT_ADM_NEW_CONF)) {
             if (admail_times[failed]) {
-               DPRINTF(("NOT SENDING ADMIN MAIL AGAIN for state %d, again on conf\n", failed));
+               DPRINTF(("NOT SENDING ADMIN MAIL AGAIN for state "sge_u32", again on conf\n", failed));
                sge_free(&administrator_mail);
                DEXIT;
                return;
@@ -196,7 +196,7 @@ void job_related_adminmail(u_long32 progid, lListElem *jr, int is_array, const c
          }
          if ((admail_states[failed] & BIT_ADM_QCHANGE)) {
             if (admail_times[failed]) {
-               DPRINTF(("NOT SENDING ADMIN MAIL AGAIN for state %d, again on qchange\n", failed));
+               DPRINTF(("NOT SENDING ADMIN MAIL AGAIN for state "sge_u32", again on qchange\n", failed));
                sge_free(&administrator_mail);
                DEXIT;
                return;
@@ -204,7 +204,7 @@ void job_related_adminmail(u_long32 progid, lListElem *jr, int is_array, const c
          }
          if ((admail_states[failed] & BIT_ADM_HOUR)) {
             if ((now - admail_times[failed] < 3600))
-               DPRINTF(("NOT SENDING ADMIN MAIL AGAIN for state %d, again next hour\n", failed));
+               DPRINTF(("NOT SENDING ADMIN MAIL AGAIN for state "sge_u32", again next hour\n", failed));
                sge_free(&administrator_mail);
                DEXIT;
                return;

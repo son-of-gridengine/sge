@@ -310,7 +310,7 @@ main(argc, argv)
 #if !defined(DARWIN) && !defined(INTERIX)
          sprintf(Buffer, "/%d", ospeed);
 #else         
-         sprintf(Buffer, "/%ld", ospeed);
+         sprintf(Buffer, "/%ld", (long) ospeed);
 #endif
          strncpy(term + len, Buffer, len2 + 1);
 	   }

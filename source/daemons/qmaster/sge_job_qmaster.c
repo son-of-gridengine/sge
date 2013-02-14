@@ -3929,11 +3929,11 @@ static int sge_delete_all_tasks_of_job(sge_gdi_ctx_class_t *ctx, lList **alpp, c
          *alltasks = 1;
       }
       
-      DPRINTF(("Request: alltasks = %d, start = %d, end = %d, step = %d\n", 
+      DPRINTF(("Request: alltasks = %d, start = "sge_u32", end = "sge_u32", step = "sge_u32"\n",
                *alltasks, *r_start, *r_end, *step));
-      DPRINTF(("unenrolled ----> start = %d, end = %d, step = %d\n", 
+      DPRINTF(("unenrolled ----> start = "sge_u32", end = "sge_u32", step = "sge_u32"\n",
                unenrolled_start, unenrolled_end, *step));
-      DPRINTF(("enrolled   ----> start = %d, end = %d, step = %d\n", 
+      DPRINTF(("enrolled   ----> start = "sge_u32", end = "sge_u32", step = "sge_u32"\n",
                enrolled_start, enrolled_end, *step));
 
       showmessage = 0;

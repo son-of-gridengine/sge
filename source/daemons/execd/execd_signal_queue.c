@@ -284,10 +284,10 @@ int sge_execd_deliver_signal(u_long32 sig, lListElem *jep, lListElem *jatep)
          && (lGetUlong(jep, JB_checkpoint_attr) & CHECKPOINT_SUSPEND))
          && !queue_already_suspended) {
       lListElem *petep;
-      DPRINTF(("signaling each pe task with signal %d\n", sig));
+      DPRINTF(("signaling each pe task with signal %d\n", (int) sig));
       /* signal each pe task */
       for_each (petep, lGetList(jatep, JAT_task_list)) {
-         DPRINTF(("signaling pe task pid=%d\n", lGetUlong(petep, PET_pid)));
+         DPRINTF(("signaling pe task pid="sge_u32"\n", lGetUlong(petep, PET_pid)));
          if (sge_kill((int)lGetUlong(petep, PET_pid), sig, 
                       lGetUlong(jep, JB_job_number), lGetUlong(jatep, JAT_task_number), 
                       lGetString(petep, PET_id)) == -2) {
@@ -296,7 +296,7 @@ int sge_execd_deliver_signal(u_long32 sig, lListElem *jep, lListElem *jatep)
       }
    }
 
-   DPRINTF(("lGetUlong(jatep, JAT_status) = %d, JSLAVE = %d\n",
+   DPRINTF(("lGetUlong(jatep, JAT_status) = "sge_u32", JSLAVE = %d\n",
             lGetUlong(jatep, JAT_status), JSLAVE));
 
    if (lGetUlong(jatep, JAT_status) != JSLAVE) {

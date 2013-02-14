@@ -234,7 +234,7 @@ order_remove_order_and_immediate( lListElem *job, lListElem *ja_task, order_t *o
    DENTER(TOP_LAYER, "order_remove_order_and_immediate");
    
    if (ep != NULL) {
-      DPRINTF (("Removing job start order for job task %u.%u\n",
+      DPRINTF (("Removing job start order for job task "sge_u32"."sge_u32"\n",
                 lGetUlong(job, JB_job_number),
                 lGetUlong(ja_task, JAT_task_number)));
       lRemoveElem(orderList, &ep);

@@ -536,7 +536,7 @@ static lList *job_get_queue_with_task_about_to_exit(lListElem *jep,
             if (SGE_STAT(sge_dstring_get_string(&shepherd_about_to_exit), &stat_buffer) == 0) {
                lList *jat_gdil = job_set_queue_info_in_task(qualified_hostname, 
                                        lGetString(pe_task_queue, JG_qname), petep);
-               DPRINTF(("task %s of job %d.%d already exited, using its slot for new task\n", 
+               DPRINTF(("task %s of job "sge_u32"."sge_u32" already exited, using its slot for new task\n",
                         petaskid, jobid, jataskid));
                sge_dstring_free(&shepherd_about_to_exit);         
                DRETURN(jat_gdil); 

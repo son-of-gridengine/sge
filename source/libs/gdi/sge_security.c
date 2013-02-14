@@ -1323,7 +1323,7 @@ sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
    }
 #endif  /* defined(INTERIX) */
   
-   DPRINTF(("sge_set_auth_info: username(uid) = %s(%d), groupname = %s(%d)\n",
+   DPRINTF(("sge_set_auth_info: username(uid) = %s("uid_t_fmt"), groupname = %s("gid_t_fmt")\n",
             username, uid, groupname, gid));
 
    snprintf(buffer, sizeof(buffer), uid_t_fmt" "gid_t_fmt" %s %s", uid, gid, username, groupname);

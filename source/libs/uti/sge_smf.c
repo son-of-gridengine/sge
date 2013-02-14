@@ -852,7 +852,7 @@ static int contracts_post_fork(int ctfd, int pid, char *err_str, int err_length)
    }
    if (shared_contract_func__ct_ctl_abandon(cfd)) {
       snprintf(err_str, err_length, MSG_SMF_CONTRACT_ABANDON_FAILED_US,
-               cfd, strerror(errno));
+               sge_u32c(cfd), strerror(errno));
       (void) close(cfd);
       return -2;
    }
@@ -987,7 +987,8 @@ void sge_smf_temporary_disable_instance(void)
     }
     if (ret != 0 ) {
         ERROR((SGE_EVENT, MSG_SMF_DISABLE_FAILED_SSUU,
-               FMRI,shared_scf_func__scf_strerror(shared_scf_func__scf_error()), geteuid(), getuid()));
+               FMRI,shared_scf_func__scf_strerror(shared_scf_func__scf_error()),
+               sge_u32c(geteuid()), sge_u32c(getuid())));
         DRETURN_VOID;
     }
     DPRINTF(("Service %s temporary disabled.\n", FMRI));

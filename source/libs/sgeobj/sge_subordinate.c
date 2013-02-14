@@ -100,7 +100,7 @@ tst_sos(int used, int total, lListElem *so)
       ret = (bool)(used >= total);
    } else {
       /* used slots greater or equal threshold */
-      DPRINTF(("TSTSOS: "sge_u32" slots used (limit "sge_u32") -> %ssuspended\n",
+      DPRINTF(("TSTSOS: %d slots used (limit "sge_u32") -> %ssuspended\n",
             used, threshold, ((u_long32)(used) >= threshold)?"":"not "));
       ret = (bool)((u_long32)used >= threshold);
    }
@@ -192,27 +192,27 @@ so_list_add(lList **this_list, lList **answer_list, const char *so_name,
          u_long32 current_action    = lGetUlong(elem, SO_action);
 
          if (threshold != 0 && threshold < current_threshold) {
-            DPRINTF(("Replacing entry with higher threshold: %d => %d\n",
+            DPRINTF(("Replacing entry with higher threshold: "sge_u32" => "sge_u32"\n",
                      current_threshold, threshold));
             lSetUlong(elem, SO_threshold, threshold);
          }
          if (slots_sum != 0 && slots_sum < current_slots_sum) {
-            DPRINTF(("Replacing entry with higher slots_sum: %d => %d\n",
+            DPRINTF(("Replacing entry with higher slots_sum: "sge_u32" => "sge_u32" \n",
                      current_slots_sum, slots_sum));
             lSetUlong(elem, SO_slots_sum, slots_sum);
          }
          if (seq_no != 0 && seq_no > current_seq_no) {
-            DPRINTF(("Replacing entry with lower seq_no: %d => %d\n",
+            DPRINTF(("Replacing entry with lower seq_no: "sge_u32" => "sge_u32"\n",
                      current_seq_no, seq_no));
             lSetUlong(elem, SO_seq_no, seq_no);
          }
          if (action != current_action) {
-            DPRINTF(("Replacing entry with different action: %d => %d\n",
+            DPRINTF(("Replacing entry with different action: "sge_u32" => "sge_u32"\n",
                      current_action, action));
             lSetUlong(elem, SO_action, action);
          }
       } else {
-         DPRINTF (("Adding new entry with threshold: %d, slots_sum: %d, seq_no: %d\n",
+         DPRINTF (("Adding new entry with threshold: "sge_u32", slots_sum: "sge_u32", seq_no: "sge_u32"\n",
                   threshold, slots_sum, seq_no));
          elem = lAddElemStr(this_list, SO_name, so_name, SO_Type);
          lSetUlong(elem, SO_threshold, threshold);

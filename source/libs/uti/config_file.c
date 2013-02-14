@@ -448,7 +448,8 @@ char **allowed
          }
 
          if (name_len>(sizeof(name)-1)) {
-            snprintf(err_str, sizeof(err_str), MSG_CONF_REFVAR_S, sp, sizeof(name)-1);
+            snprintf(err_str, sizeof(err_str), MSG_CONF_REFVAR_S, sp,
+                     (int) sizeof(name)-1);
             if (config_errfunc)
                config_errfunc(err_str);
             return 1;
@@ -548,7 +549,7 @@ bool parse_time_param(const char *input, const char *variable, u_long32 *value)
             }
          }
 
-         DPRINTF(("%s = "sge_u32"\n", variable, (uint32_t) *value));
+         DPRINTF(("%s = "sge_U32CFormat"\n", variable, sge_u32c(*value)));
       }
    }
 
