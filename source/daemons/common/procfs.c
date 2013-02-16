@@ -649,6 +649,25 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
    if (fd >= 0) close(fd);
    DRETURN(0);
 }
+
+/* There is no way to retrieve a pid list containing all processes of
+   a session id.  So, in the absence of cpusets, we have to iterate
+   through the whole process table to decide whether a process is
+   needed for a job or not.  Otherwise we can get the relevant
+   processes from the cpusets.  */
+void
+pt_dispatch_procs_to_jobs(lnk_link_t *job_list, int time_stamp, time_t last_time)
+{
+   /* fixme: use fopen_cgroup_procs_dir */
+   pt_open();
+   while ((dent = readdir(cwd)))
+      pt_dispatch_proc_to_job(dent->d_name, job_list, time_stamp, last_time);
+   last_time = time_stamp;
+#if LINUX
+   clean_procList();
+#endif
+   pt_close();
+}
 #endif  /* LINUX || ALPHA || SOLARIS */
 
 #ifdef LINUX
@@ -851,23 +870,6 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
            *vmsize = vvmsize;
    }
    DRETURN(true);
-}
-
-/* There is no way to retrieve a pid list containing all processes of
-   a session id.  So, in the absence of cpusets, we have to iterate
-   through the whole process table to decide whether a process is
-   needed for a job or not.  Otherwise we can get the relevant
-   processes from the cpusets.  */
-void
-pt_dispatch_procs_to_jobs(lnk_link_t *job_list, int time_stamp, time_t last_time)
-{
-   /* fixme: use fopen_cgroup_procs_dir */
-   pt_open();
-   while ((dent = readdir(cwd)))
-      pt_dispatch_proc_to_job(dent->d_name, job_list, time_stamp, last_time);
-   last_time = time_stamp;
-   clean_procList();
-   pt_close();
 }
 #endif  /* LINUX */
 
