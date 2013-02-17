@@ -3148,7 +3148,7 @@ static pid_t start_token_cmd(int wait_for_finish, const char *cmd,
       if (!wait_for_finish && (getenv("SGE_DEBUG_LEVEL"))) {
          putenv("SGE_DEBUG_LEVEL=0 0 0 0 0 0 0 0");
       }   
-      execle(cmd, cmd, arg1, arg2, arg3, NULL, sge_get_environment ());
+      execle(cmd, cmd, arg1, arg2, arg3, (char *) NULL, sge_get_environment ());
       exit(1);
    } else if (wait_for_finish) {
         ret = do_wait(pid);

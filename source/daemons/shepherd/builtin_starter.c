@@ -1953,7 +1953,7 @@ static void start_qlogin_job(const char *shell_path)
    close_fds_from(3);
   
    shepherd_trace("execle(%s, %s, NULL, env)", shell_path, minusname);
-   execle(shell_path, minusname, NULL, my_env);
+   execle(shell_path, minusname, (char *) NULL, my_env);
 }
 
 /****** builtin_starter/start_qrsh_job() ***************************************

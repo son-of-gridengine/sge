@@ -229,11 +229,11 @@ static void sge_send_mail(u_long32 progid, const char *mailer_in,
 
       if (mailer_has_subj_line) {
          DPRINTF(("%s mail -s %s %s", mailer, subj, user_str));  
-         execl(mailer, "mail", "-s", subj, user_str, NULL);
+         execl(mailer, "mail", "-s", subj, user_str, (char *) NULL);
       }
       else {
          DPRINTF(("%s mail %s", mailer, user_str));  
-         execl(mailer, "mail", user_str, NULL);
+         execl(mailer, "mail", user_str, (char *) NULL);
       }
       CRITICAL((SGE_EVENT, MSG_MAIL_NOEXEC_SS, mailer, strerror(errno)));
       exit(1);
