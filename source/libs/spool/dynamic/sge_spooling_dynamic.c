@@ -81,17 +81,8 @@ spool_dynamic_create_context(lList **answer_list, const char *method,
    /* build the full name of the shared lib - append architecture dependent
     * shlib postfix 
     */
-   shlib_fullname = sge_dstring_sprintf(&shlib_dstring, "%s.%s", shlib_name, 
-#if defined(HP11) || defined(HP1164)
-                                        "sl"
-#elif defined(DARWIN)
-                                        "dylib"
-#elif __CYGWIN__
-                                        "dll"
-#else
-                                        "so"
-#endif
-                                       );
+   shlib_fullname = sge_dstring_sprintf(&shlib_dstring, SGE_LD_PATH"%s%s",
+                                        shlib_name, sge_shlib_ext());
 
 #if defined(HP1164)   
    /* need to switch to start user for HP */
