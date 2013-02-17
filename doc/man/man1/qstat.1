@@ -268,18 +268,18 @@ output without \fB\-s\fP
 at all. To show recently finished ("zombie") jobs (according to the
 .M sge_conf 5
 .B finished_jobs
-parameter, use \fB\-s z\fP.
+parameter) use \fB\-s z\fP.
 To display jobs in user/operator/system/array-dependency hold,
 use
 .B \-s
 .BR hu / ho / hs / hd .
 The \fB\-s ha\fP option shows jobs which were submitted with the 
 \fBqsub \-a\fP command.
-\Fbqstat \-s hj\fP
+\fBqstat \-s hj\fP
 displays all jobs which are not eligible for execution unless the job
 has entries in the job dependency list.
-\Fbqstat \-s h\fP is an abbreviation for \Fbqstat \-s huhohshdhjha\fP,
-and \fBqstat \-s a\fP is an abbreviation for \fBqstat\-s psr\fP
+\fBqstat \-s h\fP is an abbreviation for \fBqstat \-s huhohshdhjha\fP,
+and \fBqstat \-s a\fP is an abbreviation for \fBqstat \-s psr\fP
 (see \fB\-a\fP, \fB\-hold_jid\fP 
 and \fB\-hold_jid_ad\fP options to
 .M qsub 1 ).
@@ -419,9 +419,8 @@ was exceeded (see
 .M queue_conf 5 )
 and that the job has been suspended as a consequence. The state R(estarted)
 indicates that the job was restarted. This can be caused by a job migration or
-because of one of the reasons described in the -r section of the
-.M qsub 1
-command. 
+for one of the reasons described in the \fB\-r\fP section of
+.M qsub 1 .
 .sp 1
 The states w(aiting) and h(old) only appear for pending jobs. The h(old)
 state indicates that a job currently is not eligible for execution due to
@@ -430,8 +429,8 @@ a hold state assigned to it via
 .M qalter 1
 or the
 .M qsub 1
-\fB\-h\fP option or that the job is waiting for completion of the jobs
-to which job dependencies have been assigned to the job via the
+\fB\-h\fP option, or that the job is waiting for completion of the jobs
+for which job dependencies have been assigned to it job via the
 \fB\-hold_jid\fP or \fB\-hold_jid_ad\fP options of
 .M qsub 1
 or
@@ -572,10 +571,10 @@ queue's default settings are used for the ambiguous attribute.
 If an o(rphaned) state is displayed for a queue instance, it
 indicates that the queue instance is no longer demanded by the current
 cluster queue's configuration or the host group configuration.
-The queue instance is kept because jobs which not yet finished
-jobs are still associated with it, and it will vanish from qstat output
+The queue instance is kept because jobs which have not yet finished
+are still associated with it, and it will vanish from qstat output
 when these jobs have finished. To quicken vanishing of an orphaned
-queue instance associated job(s) can be deleted using 
+queue instance, associated job(s) can be deleted using
 .M qdel 1 .
 A queue instance in the orphaned state can be revived by changing
 the cluster queue configuration to cover that queue
@@ -658,9 +657,7 @@ the job name,
 .IP "\(bu" 3n
 the job owner name,
 .IP "\(bu" 3n
-the status of the job \- one of t(ransfering),
-r(unning), R(estarted), s(uspended), S(uspended) or T(hreshold) (see the
-\fBReduced Format\fP section for detailed information),
+the status of the job; see the \fBReduced Format\fP section for information,
 .IP "\(bu" 3n
 the submission or start time and date of the job.
 .IP "\(bu" 3n
@@ -760,12 +757,14 @@ to display the current department definitions).
 .\"
 .IP "\fBcpu\fP"
 The current accumulated CPU usage of the job in seconds.
+See
+.M accounting 5
+concerning this and the next two items.
 .\"
 .IP "\fBmem\fP"
 The current accumulated memory usage of the job in Gbytes seconds.
 .\"
 .IP "\fBio\fP"
-.\" fixme:  exactly what is this, at least under Linux?
 The current accumulated IO usage of the job.
 .\"
 .IP "\fBtckts\fP"
@@ -906,6 +905,7 @@ when displaying/selecting load values.
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
+.M accounting 5 ,
 .M load_parameters 5 ,
 .M qalter 1 ,
 .M qconf 1 ,
@@ -916,6 +916,7 @@ when displaying/selecting load values.
 .M queue_conf 5 ,
 .M xxqs_name_sxx_execd 8 ,
 .M xxqs_name_sxx_qmaster 8 ,
+.M xxqs_name_sxx_status 5 .
 .M xxqs_name_sxx_shepherd 8 .
 .\"
 .\"

@@ -1426,7 +1426,9 @@ of a job may establish.
 .br
 All of these values can be specified using the multiplier letters k, K, m, M, g and G; see
 .M xxqs_name_sxx_types 1
-for details.
+for details.  Limits can be specified as "infinity" to remove limits
+(if possible), per
+.MO setrlimit 2 .
 .\"
 .\"
 .IP "\fIINHERIT_ENV\fP"
