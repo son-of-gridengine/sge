@@ -401,7 +401,8 @@ the name of the job.
 the user name of the job owner.
 .IP "\(bu" 3n
 the status of the job \- one of d(eletion), E(rror), h(old), r(unning),
-R(estarted), s(uspended), S(uspended), t(ransfering), T(hreshold) or w(aiting).
+R(estarted), s(uspended), S(uspended), t(ransfering), T(hreshold),
+w(aiting), or z(ombie).
 .sp 1
 The state d(eletion) indicates that a 
 .M qdel 1 
@@ -435,6 +436,10 @@ to which job dependencies have been assigned to the job via the
 .M qsub 1
 or
 .M qalter 1 .
+.sp 1
+The state z(ombie) appears for finished jobs when the
+.B \-s z
+option is used.
 .sp 1
 The state E(rror) appears for pending jobs that couldn't be started due to 
 job properties. The reason for the job error is shown by the 
