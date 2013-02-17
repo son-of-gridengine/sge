@@ -29,6 +29,7 @@
  * 
  ************************************************************************/
 /* Portions of this code are Copyright (c) 2011 Univa Corporation. */
+/* Copyright 2012, Dave Love, University of Liverpool */
 /*___INFO__MARK_END__*/
 #if !defined(COMPILE_DC)
 
@@ -84,10 +85,12 @@ int verydummyprocfs;
 
 #include "procfs.h"
 
+#if defined LINUX || defined ALPHA || defined SOLARIS
 #ifdef MONITOR_PDC
 static bool monitor_pdc = true;
 #else
 static bool monitor_pdc = false;
+#endif
 #endif
 
 #ifdef LINUX
@@ -99,6 +102,7 @@ static bool linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
 #endif
 
 /*-----------------------------------------------------------------------*/
+static gid_t *list = 0;
 #if defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
 
 #define PROC_DIR "/proc"
@@ -106,7 +110,6 @@ static bool linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
 static DIR *cwd;
 static struct dirent *dent;
 static u_long32 max_groups;
-static gid_t *list = 0;
 
 /* search in job list for the pid
    return the proc element */
