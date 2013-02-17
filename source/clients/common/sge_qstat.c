@@ -2006,6 +2006,9 @@ static int sge_handle_job(lListElem *job, lListElem *jatep, lListElem *qep, lLis
    }
 
    job_get_state_string(summary.state, jstate);
+   if (summary.is_zombie)
+      strncpy(summary.state, "z", 2);
+
    if (sge_time) {
       summary.submit_time = (time_t)lGetUlong(job, JB_submission_time);
       summary.start_time = (time_t)lGetUlong(jatep, JAT_start_time);
