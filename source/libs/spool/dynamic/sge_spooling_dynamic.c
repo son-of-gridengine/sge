@@ -47,6 +47,10 @@
 
 static const char *spooling_method = "dynamic";
 
+#ifndef SGE_LD_PATH
+#define SGE_LD_PATH
+#endif
+
 #ifdef SPOOLING_dynamic
 const char *get_spooling_method(void)
 #else
@@ -77,8 +81,17 @@ spool_dynamic_create_context(lList **answer_list, const char *method,
    /* build the full name of the shared lib - append architecture dependent
     * shlib postfix 
     */
-   shlib_fullname = sge_dstring_sprintf(&shlib_dstring, "%s%s", shlib_name,
-                                        sge_shlib_ext());
+   shlib_fullname = sge_dstring_sprintf(&shlib_dstring, "%s.%s", shlib_name, 
+#if defined(HP11) || defined(HP1164)
+                                        "sl"
+#elif defined(DARWIN)
+                                        "dylib"
+#elif __CYGWIN__
+                                        "dll"
+#else
+                                        "so"
+#endif
+                                       );
 
 #if defined(HP1164)   
    /* need to switch to start user for HP */
