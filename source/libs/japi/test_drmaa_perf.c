@@ -42,6 +42,7 @@
 
 #include "uti/sge_uidgid.h"
 #include "drmaa.h"
+#include "basis_types.h"
 
 /* program defaults */
 int njobs    = 100;
