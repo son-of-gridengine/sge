@@ -1905,12 +1905,12 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       DPRINTF(("CHILD - About to exec shepherd wrapper job ->%s< under queue -<%s<\n", 
               lGetString(jep, JB_job_name), 
               lGetString(master_q, QU_full_name)));
-      execlp(shepherd_cmd, ps_name, NULL);
+      execlp(shepherd_cmd, ps_name, (char *) NULL);
    } else if (mconf_get_do_credentials() && feature_is_enabled(FEATURE_DCE_SECURITY)) {
       DPRINTF(("CHILD - About to exec DCE shepherd wrapper job ->%s< under queue -<%s<\n", 
               lGetString(jep, JB_job_name), 
               lGetString(master_q, QU_full_name)));
-      execlp(dce_wrapper_cmd, ps_name, NULL);
+      execlp(dce_wrapper_cmd, ps_name, (char *) NULL);
    } else if (!feature_is_enabled(FEATURE_AFS_SECURITY) || !pag_cmd ||
             !strlen(pag_cmd) || !strcasecmp(pag_cmd, "none")) {
       DPRINTF(("CHILD - About to exec ->%s< under queue -<%s<\n",
@@ -1918,9 +1918,9 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
               lGetString(master_q, QU_full_name)));
 
       if (ISTRACE)
-         execlp(shepherd_path, ps_name, NULL);
+         execlp(shepherd_path, ps_name, (char *) NULL);
       else
-        execlp(shepherd_path, ps_name, "-bg", NULL);
+        execlp(shepherd_path, ps_name, "-bg", (char *) NULL);
    } else {
       char commandline[2048];
 
@@ -1931,7 +1931,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       else
          snprintf(commandline, sizeof(commandline), "exec %s -bg", shepherd_path);
 
-      execlp(pag_cmd, pag_cmd, "-c", commandline, NULL);
+      execlp(pag_cmd, pag_cmd, "-c", commandline, (char *) NULL);
    }
    sge_free(&pag_cmd);
    sge_free(&shepherd_cmd);

@@ -2040,7 +2040,7 @@ int main(int argc, char **argv)
             exit(1);
          }
 #endif
-         execl(jobname, jobname, NULL);
+         execl(jobname, jobname, (char *) NULL);
          perror("exec");
          exit(1);
       } else {
