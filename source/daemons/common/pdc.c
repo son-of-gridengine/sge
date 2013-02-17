@@ -2183,8 +2183,6 @@ main(int argc, char **argv)
    char sgeview_window_title[256] = ""; 
    int arg;
    JobID_t osjobid;
-   extern int optind;
-   extern char *optarg;
    int verbose = 1;
    int showproc = 0;
    int interval = 2;
