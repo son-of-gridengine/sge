@@ -256,7 +256,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
          }
       }
  
-      execlp(shell, arg0, "-c", command, NULL);
+      execlp(shell, arg0, "-c", command, (char *) NULL);
  
       if (write(2, could_not, sizeof(could_not)) != sizeof(could_not)) {
          /* nothing we can do here - we are anyway about to exit */
@@ -561,7 +561,7 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
             putenv(*env);
          }
       }
-      execlp(shell, arg0, "-c", command, NULL);
+      execlp(shell, arg0, "-c", command, (char *) NULL);
    }
  
    if (pid < 0) {
