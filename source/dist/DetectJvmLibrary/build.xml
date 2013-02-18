@@ -52,7 +52,7 @@ ___INFO__MARK_END__-->
 
     <target name="compile" depends="clean" if="isJavaBuildHost">
         <mkdir dir="build/classes"/>
-        <javac srcdir="src" destdir="build/classes" source="${default.sge.javac.source}" target="${default.sge.javac.target}"/>
+        <javac includeantruntime="true" srcdir="src" destdir="build/classes" source="${default.sge.javac.source}" target="${default.sge.javac.target}"/>
     </target>
 
     <target name="run">

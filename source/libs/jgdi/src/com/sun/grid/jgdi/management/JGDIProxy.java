@@ -156,7 +156,7 @@ public class JGDIProxy implements InvocationHandler, NotificationListener {
     /**
      * Set up the ssl context
      * @param serverHostname the server hostname
-     * @paarm serverPort the server port
+     * @param serverPort the server port
      * @param caTop  ca top directory if the Grid Engine CA ($SGE_ROOT/$SGE_CELL/common/sgeCA
      * @param ks     keystore of the user
      * @param pw     password for the keystore
@@ -168,7 +168,7 @@ public class JGDIProxy implements InvocationHandler, NotificationListener {
     /**
      * Set up the ssl context
      * @param serverHostname the server hostname
-     * @paarm serverPort the server port
+     * @param serverPort the server port
      * @param caTop  ca top directory if the Grid Engine CA ($SGE_ROOT/$SGE_CELL/common/sgeCA
      * @param ks     keystore file of the user
      * @param pw     password for the keystore
@@ -180,7 +180,7 @@ public class JGDIProxy implements InvocationHandler, NotificationListener {
     /**
      * Reset the SSL setup.
      * @param serverHostname the server hostname
-     * @paarm serverPort the server port
+     * @param serverPort the server port
      * @param caTop the ca top directory of the cluster
      */
     public static void resetSSL(String serverHostname, int serverPort, File caTop) {

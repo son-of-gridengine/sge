@@ -751,7 +751,7 @@ public class Util implements Config{
 
     /**
      * Removes the domain from a FQDN host
-     * @param hostName The fully qualified domain name
+     * @param fQDomainName The fully qualified domain name
      * @return The domain name if exists, otherwise an empty String
      */
     public static String getDomainName(String fQDomainName) {
@@ -808,7 +808,6 @@ public class Util implements Config{
     /**
      * Returns with the file system type of the given directory. If the directory does not exist first creates it
      * then after the check deletes it immediately.
-     * @param variables The install data variables
      * @param dir The directory path to be checked
      * @return The FS type of the given directory if the check was successful, otherwise empty string.
      */
@@ -848,7 +847,7 @@ public class Util implements Config{
 
     /**
      * Returns the group id of the user.
-     * @param user The user name
+     * @param userToCheck The user name
      * @return The group id of the user if the process was successful, otherwise empty string.
      */
     public static String[] getUserGroups(String host, String shell, String userToCheck) {

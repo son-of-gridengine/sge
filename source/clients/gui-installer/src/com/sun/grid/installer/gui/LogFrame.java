@@ -47,8 +47,6 @@ public class LogFrame extends JFrame {
 
     /**
      * Constructor
-     * @param title The title of the frame
-     * @param image
      */
     public LogFrame(InstallerFrame parent, String title) {
         super(title);
@@ -77,7 +75,7 @@ public class LogFrame extends JFrame {
 
     /**
      * Sets the content of the text area.
-     * @param logFilePath Path to the log file whose content has to be shown
+     * @param log Path to the log file whose content has to be shown
      */
     public void setLogContent(String log) {
         textArea.setText(log);

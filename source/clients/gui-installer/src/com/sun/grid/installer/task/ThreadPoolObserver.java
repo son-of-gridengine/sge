@@ -55,7 +55,6 @@ public class ThreadPoolObserver {
 
     /**
      * Constructor
-     * @param threadPoolExecutor The {@link ThreadPoolExecutor} to be observed
      */
     public ThreadPoolObserver() {
         init();
@@ -71,7 +70,7 @@ public class ThreadPoolObserver {
 
     /**
      * Constructor
-     * @param threadPoolExecutor The array of {@link ThreadPoolExecutor}s to be observed
+     * @param threadPoolExecutors The array of {@link ThreadPoolExecutor}s to be observed
      */
     public ThreadPoolObserver(ThreadPoolExecutor[] threadPoolExecutors) {
         this.threadPoolExecutors = threadPoolExecutors;
@@ -137,7 +136,7 @@ public class ThreadPoolObserver {
 
     /**
      * Sets the overall sum of tasks. In case of this value has been set the
-     * {@link ThreadPoolObserver#getLastRunTaskCount() returns with this value
+     * {@link ThreadPoolObserver#getLastRunTaskCount()} returns with this value
      * instead of the one counted from the current thread pools.
      * @param taskCount Sets the overall sum of tasks.
      */

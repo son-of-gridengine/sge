@@ -37,7 +37,7 @@ import com.izforge.izpack.util.Debug;
 /**
  * Extends the File class to provide attributes as owner, permission and group.
  *
- * @see FileHandler.getFileProps()
+ * @see FileHandler#getFileProps()
  */
 public class ExtendedFile extends File {
 	public static final String PERM_USER_READ     = "^.r........*";
