@@ -103,27 +103,15 @@ ___INFO__MARK_END__-->
             <isset property="env.AIMK_COPYRIGHT_DIR"/>
         </condition>
 
-        <condition property="legal" value="COPYRIGHT">
-            <equals arg1="${env.AIMK_COPYRIGHT}" arg2="sun" trim="true"/>
-        </condition>
         <condition property="legal" value="COPYRIGHT LICENSE">
             <equals arg1="${env.AIMK_COPYRIGHT}" arg2="courtesy" trim="true"/>
         </condition>
         <property name="legal" value="NA"/>
         
-        <condition property="sge.license" value="${legal.dir}/License/LICENSE.txt">
-            <equals arg1="${env.AIMK_COPYRIGHT}" arg2="sun" trim="true"/>
-        </condition>
-        <condition property="sun.copyright" value="true">
-            <equals arg1="${env.AIMK_COPYRIGHT}" arg2="sun" trim="true"/>
-        </condition>
         <condition property="sge.license" value="${legal.dir}/LICENSE">
             <equals arg1="${env.AIMK_COPYRIGHT}" arg2="courtesy" trim="true"/>
         </condition>
         <!-- Set the product name correctly -->
-        <condition property="product.name" value="Sun Grid Engine">
-            <equals arg1="${env.AIMK_COPYRIGHT}" arg2="sun" trim="true"/>
-        </condition>
         <condition property="product.name" value="Grid Engine">
             <not>
                 <isset property="product.name"/>
@@ -137,22 +125,6 @@ ___INFO__MARK_END__-->
         <copy tofile="${build.dir}/jar/${final.sge.license}">
             <fileset file="${sge.license}"/>
         </copy>        
-    </target>
-
-    <target depends="prepare-license" name="prepare-legal" if="sun.copyright">
-        <!-- Replace SISSL licence with Sun license -->
-        <exec executable="sh" failonerror="true">
-            <arg value="${build.dir}/../nbproject/replace_license.sh"/>
-            <arg value="${build.dir}/jar/res/CustomLangpack.xml_eng"/>
-        </exec>
-        <exec executable="sh" failonerror="true">
-            <arg value="${build.dir}/../nbproject/replace_license.sh"/>
-            <arg value="${build.dir}/jar/res/customicons.xml"/>
-        </exec>
-        <exec executable="sh" failonerror="true">
-            <arg value="${build.dir}/../nbproject/replace_license.sh"/>
-            <arg value="${build.dir}/jar/res/userInputSpec.xml"/>
-        </exec>
     </target>
 
     <target name="-post-jar" description="Build installer">
@@ -303,7 +275,6 @@ ___INFO__MARK_END__-->
         <delete dir="${build.dir}/jar"/>
         <unjar src="${dist.jar}" dest="${build.dir}/jar"/>
         <delete file="${dist.jar}"/>
-        <antcall target="prepare-legal"/>
 
         <!-- Add/Replace icons + include the group-layout -->
         <zip compress="${jar.compress}" destfile="${dist.jar}" update="false" description="Repack final jar">
