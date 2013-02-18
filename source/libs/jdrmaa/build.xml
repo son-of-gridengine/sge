@@ -92,8 +92,9 @@ ___INFO__MARK_END__-->
       <javac debug="true"
              deprecation="true"
              destdir="${classes.dir}"
-             source="1.4"
-             target="1.4">
+             includeantruntime="true"
+             source="${javac.source}"
+             target="${javac.target}">
          <src path="${src.dir.src}"/>
          <include name="org/ggf/drmaa/*.java"/>
          <include name="com/sun/grid/drmaa/*.java"/>
@@ -108,8 +109,9 @@ ___INFO__MARK_END__-->
              deprecation="true"
              destdir="${classes.dir.test}"
              classpath="${classes.dir}:${libs.junit.classpath}"
-             source="1.4"
-             target="1.4">
+             includeantruntime="true"
+             source="${javac.source}"
+             target="${javac.target}">
          <src path="${src.dir.test}"/>
          <include name="org/ggf/drmaa/*.java"/>
          <include name="com/sun/grid/*.java"/>

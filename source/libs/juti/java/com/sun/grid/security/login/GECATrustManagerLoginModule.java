@@ -230,8 +230,8 @@ public class GECATrustManagerLoginModule implements LoginModule {
      * of the subject of the x509 certicate chain to the current subject.
      *
      * @return <code>true</code> if <code>X500Principal</code> has been added to the subject
-     * @todo use <code>com.sun.grid.ca.GridCAX500Name to parse the commonn name of the certificate
      */
+    /* @todo use <code>com.sun.grid.ca.GridCAX500Name to parse the common name of the certificate  */
     public boolean commit() {
         log.entering("GECATrustManagerLoginModule", "commit");
 

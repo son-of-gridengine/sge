@@ -202,6 +202,7 @@ ___INFO__MARK_END__-->
                deprecation="${javac.deprecated}"
                destdir="${classes.dir}"
                includes="com/sun/grid/jgdi/jni/JGDIImpl.java, com/sun/grid/jgdi/jni/JGDIBase.java, com/sun/grid/jgdi/jni/EventClientImpl.java"
+               includeantruntime="true"
                target="${jgdi.javac.target}"
                source="${jgdi.javac.source}">
             <src refid="jgdi.srcpath"/>
@@ -213,6 +214,7 @@ ___INFO__MARK_END__-->
                deprecation="${javac.deprecated}"  
                destdir="${classes.dir}"
                target="${jgdi.javac.target}"
+               includeantruntime="true"
                source="${jgdi.javac.source}">
             <src refid="jgdi.srcpath"/>
             <classpath refid="compile.classpath"/>

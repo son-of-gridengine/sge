@@ -141,8 +141,8 @@ public class QueueInfoImpl implements QueueInfo, Serializable {
     }
 
     /**
-     *  Set the number of used queue slots
-     *  @param slotsUsed of used queue slots
+     *  Set the number of reserved queue slots
+     *  @param slotsReserved of used queue slots
      */
     public void setReservedSlots(int slotsReserved) {
         this.slotsReserved = slotsReserved;
