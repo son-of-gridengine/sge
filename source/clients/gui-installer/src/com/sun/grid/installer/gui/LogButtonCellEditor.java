@@ -53,7 +53,6 @@ public class LogButtonCellEditor extends DefaultCellEditor {
     /**
      * Constructor
      * @param pressedText Text to show when the cell has been pressed
-     * @param logFrameImage Image for log frame
      */
     public LogButtonCellEditor(String pressedText) {
         super(new JCheckBox());
@@ -107,7 +106,6 @@ public class LogButtonCellEditor extends DefaultCellEditor {
     /**
      * Returns with the single instance of the Log window
      * @param title The title of the Log window
-     * @param image The image for the Log window
      * @return the single instance of the Log window
      */
     public static LogFrame getLogFrame(InstallerFrame parent, String title) {
