@@ -36,7 +36,7 @@ xargs chmod +x <<EOF
 ./dist/util/arch
 ./dist/util/setfileperm.sh
 ./dist/util/arch_variables
-./dist/util/resources/scripts/setup-cgroups-etc
+./dist/util/resources/drmaa4ruby/samples/test_all.sh
 ./3rdparty/qmake/config/install-sh
 ./3rdparty/qmake/config/mkinstalldirs
 ./3rdparty/qmake/configure
@@ -48,7 +48,6 @@ xargs chmod +x <<EOF
 ./3rdparty/qtcsh/config.guess
 ./clients/qmon/util/ad2c
 ./clients/qmon/util/create_de.sh
-./clients/qmon/util/MBE.perl
 ./clients/qmon/util/develToCVS
 ./clients/qmon/util/checkres
 ./clients/qmon/util/xmt_headers
@@ -66,4 +65,6 @@ xargs chmod +x <<EOF
 ./libs/jgdi/run_util.sh
 ./libs/jgdi/jgdievc
 ./aimk
+./debian/rules
+./debian/linux32-wrapper
 EOF
