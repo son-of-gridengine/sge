@@ -879,6 +879,8 @@ if [ $instcommon = true ]; then
 
       # Ruby DRMAA binding.  Fixme:  Is this the best place for it?
       Execute cp -r dist/util/resources/drmaa4ruby $DEST_SGE_ROOT/util/resources
+      Execute chmod 755 $DEST_SGE_ROOT/util/resources/drmaa4ruby/samples/flow/samples/do_*
+      Execute chmod 755 $DEST_SGE_ROOT/util/resources/drmaa4ruby/samples/test_all.sh
 
       # User-level scripts
       if [ $userscripts = true ]; then
@@ -923,6 +925,7 @@ if [ $instcommon = true ]; then
                         $DEST_SGE_ROOT/util/resources/jsv/jsv.tcl \
                         $DEST_SGE_ROOT/util/resources/jsv/jsv_reject_all.sh \
                         $DEST_SGE_ROOT/util/resources/wrappers/* \
+                        $DEST_SGE_ROOT/util/resources/scripts/* \
                         $DEST_SGE_ROOT/util/upgrade_modules/*.sh \
                         $DEST_SGE_ROOT/inst*
 
@@ -936,7 +939,8 @@ if [ $instcommon = true ]; then
                         $DEST_SGE_ROOT/util/resources/centry/* \
                         $DEST_SGE_ROOT/util/resources/pe/* \
                         $DEST_SGE_ROOT/util/resources/schemas/*/* \
-                        $DEST_SGE_ROOT/util/resources/usersets/*
+                        $DEST_SGE_ROOT/util/resources/usersets/* \
+                        $DEST_SGE_ROOT/util/resources/jsv/jsv_include* \
    fi
    
    if [ $instexamples = true ]; then
