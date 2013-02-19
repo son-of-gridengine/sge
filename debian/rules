@@ -35,8 +35,8 @@ override_dh_auto_install:
 	SGE_ROOT=${CURDIR}/debian/tmp$(SGE_ROOT) \
 	  scripts/distinst -local -allall -noexit $(source/dist/util/arch)
 	cd debian/tmp/$(SGE_ROOT) && \
-	rm -rf hadoop dtrace start_gui_installer doc/arc_depend* && \
-	rm -rf util/gui-installer util/sgeSMF && \
+	rm -rf hadoop dtrace start_gui_installer doc/arc_depend* \
+	  util/gui-installer util/sgeSMF && \
 	rm -f util/resources/scripts/qsched-1.0/COPYING && \
 	rm -f util/resources/scripts/README* && \
 	rm -f util/resources/loadsensors/interix-loadsensor.sh
