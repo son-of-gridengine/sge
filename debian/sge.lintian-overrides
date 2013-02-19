@@ -1,0 +1,3 @@
+dir-or-file-in-opt *
+postinst-has-useless-call-to-ldconfig
+postrm-has-useless-call-to-ldconfig

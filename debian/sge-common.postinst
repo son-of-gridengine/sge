@@ -5,6 +5,8 @@
 
 set -e
 
+#DEBHELPER#
+
 user=sgeadmin
 
 case "$1" in
