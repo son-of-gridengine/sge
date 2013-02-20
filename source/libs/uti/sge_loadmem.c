@@ -619,6 +619,7 @@ int sge_loadmem(sge_mem_info_t *mem_info)
 
 #if defined(NETBSD)
 
+#define _KMEMUSER                                                              
 #include <sys/param.h>
 #include <sys/sysctl.h>
 
