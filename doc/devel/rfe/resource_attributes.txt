@@ -1,3 +1,5 @@
+[See also IZ615]
+
                      Complex Attribute Specification
                         
                             Stephan Grell

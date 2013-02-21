@@ -7,15 +7,15 @@ Content
  1) Overview and files referenced in this document
  2) Prerequisites
  3) Building the dependency tool 'sge_depend'
- 4) Building the Berkeley DB database
- 5) Creating dependencies
- 6) Compiling Grid Engine
- 7) Creating man pages and qmon help file
- 8) Installing Grid Engine
-    8.1) Creating a local distribution
-    8.2) Creating a distribution repository
- 9) Creating a distribution from a distribution repository
-10) Installing Grid Engine
+ 4) Creating dependencies
+ 5) Compiling Grid Engine
+ 6) Creating man pages and qmon help file
+ 7) Staging for Installation
+    7.1) Creating a local distribution
+    7.2) Creating a distribution repository
+ 8) Creating a distribution from a distribution repository
+ 9) Installing Grid Engine
+10) Quickstart summary
 11) Copyright
 
 
@@ -26,6 +26,11 @@ Content
    install and start Grid Engine. It is highly recommend to read this file
    and the files referenced here, if you are going to compile and run Grid
    Engine the first time.
+
+   Unfortunately, the build system is home-grown and awkward to use.
+   On a Debian- or Red Hat-derived GNU/Linux system, it is recommended
+   to build dpkg or rpm packages if suitable binary ones aren't
+   available, or you don't want to trust them.  See README.packages.
 
    Files and URLs referenced in this document
    -------------------------------------------
@@ -71,7 +76,7 @@ Content
         libhwloc-dev on Debian).  You need at least version 1.1, but
         should probably use the most recent version.  Otherwise build
         with aimk -no-hwloc.
-      - To make the basic Java targets, as well as a Java 1.6 JDK
+      - To make the basic Java targets, as well as a Java 1.6 or 1.7 JDK
         (e.g. openjdk) you will need: ant, ant-nodeps (Red Hat)/ant-optional
         (Debian), javacc and junit packages.  The GUI installer requires
         IzPack (http://izpack.org) and swing-layout
@@ -106,19 +111,22 @@ Content
    The result is a tar file (or virtually any other OS specific distribution
    format) which can be used to install Grid Engine on a cluster of machines.
 
-   The MS Windows support needs the "interix" Unix-like environment,
-   which seems to go by different names according to the version of
-   Windows <http://www.suacommunity.com/SUA.aspx>.  It also needs the
-   MS Visual Studio compiler (possibly the gratis Visual Studio
-   Express) with the compiler executable cl.exe on the path.
+   The non-Cygwin MS Windows build (currently required for execution
+   hosts) needs the "interix" Unix-like environment, which seems to go
+   by different names according to the version of Windows.  See
+   README.windows for more information.
 
    See the file 'dist/README.arch' in this directory for more information
    how the architecture is determined and how it is used in the process of
    compiling and installing Grid engine.
 
+   See README.platforms for some information on platform support.
+
    The following commands assume that your current working directory is
 
       sge/source
+
+   See 10) for quick installation instructions.
 
    [The next two steps may be replaced by
 
@@ -315,8 +323,23 @@ Content
    "inst_sge" (or a wrapper) on your master host and on all execution hosts
    for a first time configuration and startup of your Grid engine daemons.
 
+10) Quickstart installation
+---------------------------
 
-10) Copyright
+   With the build dependencies in place, the following procedure will
+   build and install on the local system on a supported platform under
+   a Bourne-like shell:
+
+   sh scripts/bootstrap.sh
+   ./aimk -system-libs # maybe add -pam for PAM, and -no-herd to avoid Hadoop
+   ./aimk -man
+   SGE_ROOT=/opt/sge
+   export SGE_ROOT
+   scripts/distinst -local -allall -noexit # asks for confirmation
+   cd SGE_ROOT
+   ./inst_sge -m -x -csp  # or run ./start_gui_installer
+
+11) Copyright
 -------------
 
    The Contents of this file are made available subject to the terms of
