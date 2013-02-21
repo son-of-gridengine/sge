@@ -5,11 +5,12 @@ Maintainer: Dave Love <sge-bugs@liv.ac.uk>
 Build-Depends: debhelper (>= 7.0.50), tcsh | c-shell, libdb-dev, libssl-dev,
  libncurses5-dev, libpam0g-dev, libxt-dev, lesstif2-dev,
  libxmu-dev, default-jdk, ant, ant-optional, junit, javacc,
- libhwloc-dev (>= 1.1), libpam0g-dev, man-db, hardening-wrapper
+ libhwloc-dev (>= 1.1), libpam0g-dev, man-db
 # add quilt if we acquire patches
 Standards-Version: 3.9.1
 Homepage: http://arc.liv.ac.uk/SGE
 Vcs-darcs: http://arc.liv.ac.uk/repos/darcs/sge/
+Vcs-Browser: https://arc.liv.ac.uk/trac/SGE/browser/sge
 
 Package: sge
 Architecture: any
