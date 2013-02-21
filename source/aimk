@@ -1210,7 +1210,7 @@ case DARWIN_PPC:
    set XINCD    = "$XMTINCD $XINCD -I/usr/X11R6/include"
    set XCFLAGS  = "-DNeedFunctionPrototypes -DNeedVarargsPrototypes -Wno-error $XMTDEF $XINCD"
    set XLIBD    = "-L$MOTIFHOME/lib -L/usr/X11R6/lib"
-   set XLIBS    = "-lXm -lXpm -lXt -lXext -lX11 -lSM -lICE"
+   set XLIBS    = "-lXm -lXt -lXext -lX11 -lSM -lICE"
    if ("$ADOC" == 1) then
       set CFLAGS = "$CFLAGS -Wno-error"
    endif
@@ -1271,7 +1271,7 @@ case FREEBSD_*:
    set XCFLAGS  = "-Wno-strict-prototypes -Wno-error $XMTDEF $XINCD"
    set XLIBD    = "-L/usr/X11R6/lib"
    set XLFLAGS  = "$XLIBD"
-   set XLIBS    = " -Xlinker -lXm -Xlinker -Bdynamic -lXpm -lXt -lXext -lX11 -lSM -lICE -lXp"
+   set XLIBS    = " -Xlinker -lXm -Xlinker -Bdynamic -lXt -lXext -lX11 -lSM -lICE -lXp"
    set JAVA_ARCH = "linux"
    breaksw 
 
@@ -1303,7 +1303,7 @@ case NETBSD_*:
    set XCFLAGS  = "-Wno-strict-prototypes -Wno-error $XMTDEF $XINCD"
    set XLIBD    = "-L/usr/X11R6/lib -R/usr/X11R6/lib -L/usr/pkg/lib -R /usr/pkg/lib"
    set XLFLAGS  = "$XLIBD"
-   set XLIBS    = " -lXm -lXpm -lXt -lXext -lX11 -lSM -lICE -lXp"
+   set XLIBS    = " -lXm -lXt -lXext -lX11 -lSM -lICE -lXp"
    set JAVA_ARCH = "netbsd"
    breaksw
 
@@ -1541,7 +1541,8 @@ case LINUX*:
 
    set XINCD    = "$XMTINCD $XINCD"
    set XCFLAGS  = "-Wno-strict-prototypes -Wno-error $XMTDEF $XINCD"
-   set XLIBS    = "-lXm -lXpm -lXt -lXext -lX11 -lSM -lICE"
+   # fixme: -lSMm -lICE seem necessary with openmotif, but not lesstif
+   set XLIBS    = "-lXm -lXt -lXext -lX11 -lSM -lICE"
    set JAVA_ARCH = "linux"
 
    # due to -rpath relative_path the LD_LIBRARY_PATH not needed anymore
@@ -1672,7 +1673,7 @@ case WIN32_X86:
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
    set XINCD        = "$XMTINCD $XINCD -I/usr/X11R6/include -I/usr/local/include/bind"
    set XCFLAGS      = "-Wno-strict-prototypes -Wno-error $XMTDEF $XINCD"
-   set XLIBS        = "-lXm -lXpm -lXt -lXext -lXmu -lX11 -lSM -lICE -lXp"
+   set XLIBS        = "-lXm -lXt -lXext -lXmu -lX11 -lSM -lICE -lXp"
 
    if ( $DEBUGGED == 1 ) then
       set WINCFLAGS = "/Od /D "WIN32" /D "_DEBUG" /MTd /Zi $WINCFLAGS"
@@ -1741,7 +1742,7 @@ case CYGWIN_X86:
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
    set XINCD    = "$XMTINCD $XINCD -I/usr/X11R6/include"
    set XCFLAGS  = "-Wno-strict-prototypes -Wno-error $XMTDEF $XINCD"
-   set XLIBS    = "-lXm -lXpm -lXt -lXext -lXmu -lX11 -lSM -lICE"
+   set XLIBS    = "-lXm -lXt -lXext -lXmu -lX11 -lSM -lICE"
    set RUNPATH       = -Wl,-rpath,'\$$ORIGIN'/../../lib/$buildarch
    set LFLAGS        = "$LFLAGS $RUNPATH"
    set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared $RUNPATH"
