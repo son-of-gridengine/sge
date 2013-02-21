@@ -6,4 +6,4 @@ See source/README.BUILD for information on building and
 http://docs.oracle.com/cd/E24901_01/index.htm for
 installation (if you think the copyright statement allows you to read
 it); the GUI installer may or may not be available, depending on the
-platform and packaging.
+platform and packaging.  See also other source/README.* files.
