@@ -1,3 +1,10 @@
+# Doesn't work with newer lintian, sigh.
 dir-or-file-in-opt *
+
+# Due to placement of shared libs.
 postinst-has-useless-call-to-ldconfig
 postrm-has-useless-call-to-ldconfig
+
+spelling-error-in-binary * nam name
+spelling-error-in-binary * cancelation cancellation
+spelling-error-in-binary * transfering transferring

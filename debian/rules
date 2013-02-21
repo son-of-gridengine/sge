@@ -7,7 +7,7 @@
 #export DH_VERBOSE=1
 export DEB_BUILD_HARDENING=1
 # for qmon, sigh
-export DEB_BUILD_HARDENING_FORMAT=
+export DEB_BUILD_HARDENING_FORMAT=0
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 NOOPT=-no-opt
@@ -24,7 +24,8 @@ override_dh_auto_build: build-stamp
 build-stamp:
 	cd source && \
 	sh scripts/bootstrap.sh && \
-	./aimk -no-remote -debug $(NOOPT) $(PARALLEL) && \
+	SGE_INPUT_CFLAGS="$$CFLAGS $$CPPFLAGS" SGE_INPUT_LDFLAGS="$$LDFLAGS" \
+	  ./aimk -no-remote -debug $(NOOPT) $(PARALLEL) && \
 	./aimk -man && ant drmaa.javadoc juti.javadoc jgdi.javadoc jjsv.javadoc
 	touch build-stamp
 
