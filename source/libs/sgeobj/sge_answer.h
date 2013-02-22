@@ -32,6 +32,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+#include "sge.h"
 #include "sgeobj/sge_answer_AN_L.h"
 
 typedef enum {
@@ -102,7 +103,8 @@ void answer_to_dstring(const lListElem *answer, dstring *diag);
 void answer_list_to_dstring(const lList *alp, dstring *diag);
 
 bool answer_list_add_sprintf(lList **answer_list, u_long32 status, 
-                             answer_quality_t quality, const char *fmt, ...);
+                             answer_quality_t quality, const char *fmt, ...)
+  __attribute__ ((format (printf, 4, 5)));
 
 bool answer_list_has_quality(lList **answer_list, 
                              answer_quality_t quality);

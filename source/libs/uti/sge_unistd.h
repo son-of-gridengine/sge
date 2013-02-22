@@ -121,7 +121,7 @@ void sge_exit(void **ctx_ref, int i) __attribute__ ((noreturn));
 
 int sge_chdir_exit(const char *path, int exit_on_error);  
 
-int sge_chdir(const char *dir);
+int sge_chdir(const char *dir) __attribute__ ((warn_unused_result));
 
 int sge_mkdir(const char *path, int fmode, bool exit_on_error, bool may_not_exist);    
 int sge_mkdir2(const char *base_dir, const char *name, int fmode, bool exit_on_error);    

@@ -36,6 +36,7 @@
 extern "C" {
 #endif
 
+#include "sge.h"
 #include "sge_dstring.h"
 
 struct saved_vars_s {
@@ -51,24 +52,25 @@ char *sge_delim_str(char *str, char **delim_pos, const char *delim);
 
 char *sge_dirname(const char *name, int delim);
 
-char *sge_strdup(char *old, const char *src);
+char *sge_strdup(char *old, const char *src) __attribute__ ((malloc));
 
-int sge_strlen(const char *str);
+/* fixme:  make inline? */
+int sge_strlen(const char *str) __attribute__ ((__pure__));
 
 char *sge_strtok(const char *str, const char *delimitor);
 
-bool sge_is_pattern(const char *p);
+bool sge_is_pattern(const char *p) __attribute__ ((__pure__));
 
-bool sge_is_expression(const char *p);
+bool sge_is_expression(const char *p) __attribute__ ((__pure__));
 
 char *sge_strtok_r(const char *str, const char *delimitor, 
                    struct saved_vars_s **last);
 
 void sge_free_saved_vars(struct saved_vars_s *last);
 
-int sge_strnullcasecmp(const char *a, const char *b);
+int sge_strnullcasecmp(const char *a, const char *b) __attribute__ ((__pure__));
 
-int sge_strnullcmp(const char *a, const char *b);
+int sge_strnullcmp(const char *a, const char *b) __attribute__ ((__pure__));
 
 int sge_patternnullcmp(const char *str, const char *pattern); 
 
@@ -82,7 +84,7 @@ void sge_strtoupper(char *buffer, int max_len);
 
 void sge_strtolower(char *buffer, int max_len);
 
-int sge_strisint(const char *str);
+int sge_strisint(const char *str) __attribute__ ((__pure__));
 
 char **sge_stradup(char **cpp, int n);
 
@@ -107,7 +109,7 @@ char **string_list(char *str, char *delis, char **pstr);
 
 const char *sge_strerror(int errnum, dstring *buffer);
 
-bool sge_str_is_number(const char *string);
+bool sge_str_is_number(const char *string) __attribute__ ((__pure__));
 
 const char *sge_replace_substring(const char *input, const char *old, const char *new);
 

@@ -86,15 +86,16 @@ const char* sge_dstring_sprintf_append(dstring *sb, const char *fmt, ...) __attr
 void sge_dstring_clear(dstring *sb);
 void sge_dstring_free(dstring *sb);
 
-const char *sge_dstring_get_string(const dstring *string);
+/* fixme: make inline?  */
+const char *sge_dstring_get_string(const dstring *string) __attribute__ ((__pure__));
 
 const char* sge_dstring_copy_string(dstring *sb, const char* str);
 
 const char* sge_dstring_copy_dstring(dstring *sb1, const dstring *sb2);
 
-size_t sge_dstring_strlen(const dstring *string);
+size_t sge_dstring_strlen(const dstring *string) __attribute__ ((__pure__));
 
-size_t sge_dstring_remaining(const dstring *string);
+size_t sge_dstring_remaining(const dstring *string) __attribute__ ((__pure__));
 
 const char *sge_dstring_ulong_to_binstring(dstring *sb, u_long32 number);
 
@@ -103,4 +104,3 @@ bool sge_dstring_split(dstring *string, char character, dstring *before, dstring
 void sge_dstring_strip_white_space_at_eol(dstring *string);
 
 #endif /* __SGE_STRING_APPEND_H */
-
