@@ -235,7 +235,8 @@ lList *alp = NULL;
    if (*rp == NULL) {
       /* no command line argument: print help on error */
       qmod_usage(stderr, NULL);
-      answer_list_add_sprintf(&alp, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR, MSG_PARSE_NOOPTIONARGUMENT);
+      answer_list_add_sprintf(&alp, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR,
+                              "%s", MSG_PARSE_NOOPTIONARGUMENT);
    }
 
    while(*(sp=rp)) {
@@ -477,7 +478,7 @@ static lList *sge_parse_qmod(lList **ppcmdline, lList **ppreflist, u_long32 *pfo
          qmod_usage(stderr, NULL);
       }
       answer_list_add_sprintf(&alp, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR,
-                              MSG_PARSE_TOOMANYOPTIONS);
+                              "%s", MSG_PARSE_TOOMANYOPTIONS);
    }
 
    DRETURN(alp);

@@ -496,7 +496,7 @@ path_verify(const char *path, lList **answer_list, const char *name, bool absolu
 
    if (path == NULL || *path == '\0') {
       answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                              MSG_PATH_ALIAS_INVALID_PATH);
+                              "%s", MSG_PATH_ALIAS_INVALID_PATH);
       ret = false;
    }
 

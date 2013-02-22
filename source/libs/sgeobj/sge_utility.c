@@ -311,14 +311,14 @@ bool verify_host_name(lList **answer_list, const char *host_name)
 
    if (host_name == NULL || *host_name == '\0') {
       answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                              MSG_HOSTNAME_NOT_EMPTY);
+                              "%s", MSG_HOSTNAME_NOT_EMPTY);
       ret = false;
    }
 
    if (ret) {
       if (strlen(host_name) > CL_MAXHOSTNAMELEN_LENGTH) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_HOSTNAME_NOT_EMPTY);
+                                 "%s", MSG_HOSTNAME_NOT_EMPTY);
       }
    }
 

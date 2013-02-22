@@ -156,20 +156,20 @@ bool ar_validate(lListElem *ar, lList **alpp, bool in_master, bool is_spool)
 
    if ((end_time - start_time) != duration) {
       answer_list_add_sprintf(alpp, STATUS_EEXIST, ANSWER_QUALITY_ERROR,
-                              MSG_AR_START_END_DURATION_INVALID);
+                              "%s", MSG_AR_START_END_DURATION_INVALID);
       goto ERROR;
    }
 
    if (start_time > end_time) {
       answer_list_add_sprintf(alpp, STATUS_EEXIST, ANSWER_QUALITY_ERROR,
-                              MSG_AR_START_LATER_THAN_END);
+                              "%s", MSG_AR_START_LATER_THAN_END);
       goto ERROR;
    }
    
    if (!is_spool) {
       if (start_time < now) {
          answer_list_add_sprintf(alpp, STATUS_EEXIST, ANSWER_QUALITY_ERROR,
-                                 MSG_AR_START_IN_PAST);
+                                 "%s", MSG_AR_START_IN_PAST);
          goto ERROR;
       }
    }

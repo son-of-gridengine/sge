@@ -860,7 +860,7 @@ job_verify_execd_job(const lListElem *job, lList **answer_list, const char *qual
 
       if (ja_tasks == NULL || lGetNumberOfElem(ja_tasks) != 1) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                           MSG_JOB_INVALIDJATASK_REQUEST);
+                                 "%s", MSG_JOB_INVALIDJATASK_REQUEST);
          ret = false;
       }
 

@@ -3620,7 +3620,7 @@ void sge_job_spool(sge_gdi_ctx_class_t *ctx) {
          if (!dbret) {
             answer_list_add_sprintf(&answer_list, STATUS_EUNKNOWN, 
                                     ANSWER_QUALITY_ERROR, 
-                                    MSG_PERSISTENCE_OPENTRANSACTION_FAILED);
+                                    "%s", MSG_PERSISTENCE_OPENTRANSACTION_FAILED);
          } else { 
             /* store job script*/
             if (lGetString(jep, JB_exec_file) != NULL && job_spooling) {

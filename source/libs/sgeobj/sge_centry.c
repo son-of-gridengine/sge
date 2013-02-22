@@ -1345,7 +1345,7 @@ centry_list_is_correct(lList *this_list, lList **answer_list)
 
          if (strchr(value, (int)'@')) {
             answer_list_add_sprintf(answer_list, STATUS_EEXIST,
-                                    ANSWER_QUALITY_ERROR,
+                                    ANSWER_QUALITY_ERROR, "%s",
                                     MSG_CENTRY_QINOTALLOWED);
             ret = false;
          } 

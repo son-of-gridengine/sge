@@ -1222,7 +1222,8 @@ static bool ar_reserve_queues(lList **alpp, lListElem *ar)
 
       if (result == DISPATCH_OK) {
          if (!a.pe) {
-            answer_list_add_sprintf(alpp, STATUS_OK, ANSWER_QUALITY_INFO, MSG_JOB_VERIFYFOUNDQ); 
+            answer_list_add_sprintf(alpp, STATUS_OK, ANSWER_QUALITY_INFO,
+                                    "%s", MSG_JOB_VERIFYFOUNDQ);
          } else {
             answer_list_add_sprintf(alpp, STATUS_OK, ANSWER_QUALITY_INFO, MSG_JOB_VERIFYFOUNDSLOTS_I, a.slots);
          }

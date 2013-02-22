@@ -682,7 +682,8 @@ sge_evc_class_create(sge_gdi_ctx_class_t *sge_gdi_ctx, ev_registration_id reg_id
    DENTER(EVC_LAYER, "sge_evc_class_create");
 
    if (!ret) {
-      answer_list_add_sprintf(alpp, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+      answer_list_add_sprintf(alpp, STATUS_EMALLOC, ANSWER_QUALITY_ERROR,
+                              "%s", MSG_MEMORY_MALLOCFAILED);
       DRETURN(NULL);
    }
 
@@ -743,7 +744,8 @@ sge_evc_class_create(sge_gdi_ctx_class_t *sge_gdi_ctx, ev_registration_id reg_id
 
    sge_evc = (sge_evc_t*)sge_malloc(sizeof(sge_evc_t));
    if (!sge_evc) {
-      answer_list_add_sprintf(alpp, STATUS_EMALLOC, ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+      answer_list_add_sprintf(alpp, STATUS_EMALLOC, ANSWER_QUALITY_ERROR,
+                              "%s", MSG_MEMORY_MALLOCFAILED);
       sge_evc_class_destroy(&ret);
       DRETURN(NULL);
    }
@@ -3163,7 +3165,8 @@ sge_gdi2_evc_setup(sge_evc_class_t **evc_ref, sge_gdi_ctx_class_t *sge_gdi_ctx,
    DENTER(EVC_LAYER, "sge_gdi2_evc_setup");
 
    if (evc_ref == NULL) {
-      answer_list_add_sprintf(alpp, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR, MSG_NULLPOINTER);
+      answer_list_add_sprintf(alpp, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR,
+                              "%s", MSG_NULLPOINTER);
       DRETURN(false);
    }
    

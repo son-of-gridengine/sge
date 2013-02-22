@@ -835,12 +835,12 @@ static int jgdi_qstat_job_additional_info(job_handler_t *handler, job_additional
         ret = JobInfoImpl_setMasterQueue(ctx->jni_env, ctx->job, value, alpp);
         break;
       }
-      case FULL_JOB_NAME: { /* Ingore it */
+      case FULL_JOB_NAME: { /* Ignore it */
         break;
       }
       default: {
          answer_list_add_sprintf(alpp, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR,
-                                 "Unkown additional job info %s", name);
+                                 "Unknown additional job info %s", name);
          ret = JGDI_ILLEGAL_STATE;
       }
    }
@@ -1648,6 +1648,3 @@ error:
    jgdi_destroy_rmon_ctx(&rmon_ctx);
    DRETURN_VOID;
 }
-
-
-

@@ -3095,7 +3095,7 @@ job_verify(const lListElem *job, lList **answer_list, bool do_cull_verify)
    if (ret && do_cull_verify) {
       if (!object_verify_cull(job, JB_Type)) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_OBJECT_STRUCTURE_ERROR);
+                                 "%s", MSG_OBJECT_STRUCTURE_ERROR);
          ret = false;
       }
    }
@@ -3110,7 +3110,7 @@ job_verify(const lListElem *job, lList **answer_list, bool do_cull_verify)
          }
       } else {
          answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR,
-                                 MSG_JOB_NOJOBNAME);
+                                 "%s", MSG_JOB_NOJOBNAME);
          ret = false;
       }
    }
@@ -3290,7 +3290,7 @@ job_verify_submitted_job(const lListElem *job, lList **answer_list)
          /* TODO: define a max script size */
          if (strlen(name) != lGetUlong(job, JB_script_size)) {
             answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                    MSG_JOB_SCRIPTLENGTHDOESNOTMATCH);
+                                    "%s", MSG_JOB_SCRIPTLENGTHDOESNOTMATCH);
             ret = false;            
          }
       }
@@ -3336,7 +3336,7 @@ job_verify_submitted_job(const lListElem *job, lList **answer_list)
       u_long32 priority = lGetUlong(job, JB_priority);
       if (priority < 1 || priority > 2 * BASE_PRIORITY) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_PARSE_INVALIDPRIORITYMUSTBEINNEG1023TO1024);
+                                 "%s", MSG_PARSE_INVALIDPRIORITYMUSTBEINNEG1023TO1024);
          ret = false;
       }
    }

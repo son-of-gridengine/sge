@@ -361,14 +361,16 @@ bool rqs_verify_attributes(lListElem *rqs, lList **answer_list, bool in_master)
 
    /* every rule set needs a RQS_name */
    if (lGetString(rqs, RQS_name) == NULL) {
-      answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, MSG_RESOURCEQUOTA_NONAME);
+      answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
+                              "%s", MSG_RESOURCEQUOTA_NONAME);
       ret = false;
    }
 
    /* every rule set needs at least one rule */
    rules = lGetList(rqs, RQS_rule);
    if (ret && (rules == NULL || lGetNumberOfElem(rules) < 1)) {
-      answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, MSG_RESOURCEQUOTA_NORULES);
+      answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
+                              "%s", MSG_RESOURCEQUOTA_NORULES);
       ret = false;
    }
   
@@ -443,7 +445,8 @@ bool rqs_verify_attributes(lListElem *rqs, lList **answer_list, bool in_master)
             lSetString(limit, RQRL_name, lGetString(centry, CE_name));
 
             if (strval == NULL) {
-               answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, MSG_RESOURCEQUOTA_NORULES);
+               answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
+                                       "%s", MSG_RESOURCEQUOTA_NORULES);
                ret = false;
                break;
             }
@@ -460,7 +463,8 @@ bool rqs_verify_attributes(lListElem *rqs, lList **answer_list, bool in_master)
                   lSetUlong(limit, RQRL_type, lGetUlong(centry, CE_valtype));
                   lSetBool(limit, RQRL_dynamic, true);
                } else {
-                  answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, MSG_RESOURCEQUOTA_DYNAMICLIMITNOTSUPPORTED);
+                  answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
+                                          "%s", MSG_RESOURCEQUOTA_DYNAMICLIMITNOTSUPPORTED);
                   ret = false;
                   break;
                }  
