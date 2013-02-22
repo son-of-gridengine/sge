@@ -125,7 +125,7 @@ sge_worker_initialize(sge_gdi_ctx_class_t *ctx)
    DPRINTF(("job/ar counter have been initialized\n"));
 
    reporting_initialize(NULL);
-   DPRINTF(("accounting and reporting modlue has been initialized\n"));
+   DPRINTF(("accounting and reporting module has been initialized\n"));
 
    INFO((SGE_EVENT, MSG_QMASTER_THREADCOUNT_US, 
          sge_u32c(max_initial_worker_threads), threadnames[WORKER_THREAD]));
@@ -202,14 +202,14 @@ sge_worker_terminate(sge_gdi_ctx_class_t *ctx)
    if (do_final_spooling == true) {
       sge_store_job_number(ctx, NULL, NULL);
       sge_store_ar_id(ctx, NULL, NULL);
-      DPRINTF(("job/ar counter were made persistant\n"));
+      DPRINTF(("job/ar counter made persistent\n"));
       sge_job_spool(ctx);     /* store qmaster jobs to database */
       sge_userprj_spool(ctx); /* spool the latest usage */
       DPRINTF(("final job and user/project spooling has been triggered\n"));
    }
 
    sge_shutdown_persistence(NULL);
-   DPRINTF(("persistance module has been shutdown\n"));
+   DPRINTF(("persistence module has been shutdown\n"));
 
    DRETURN_VOID;
 }
