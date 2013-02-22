@@ -643,7 +643,7 @@ hgroup_spool(sge_gdi_ctx_class_t *ctx, lList **answer_list, lListElem *this_elem
    if (!dbret) {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                               ANSWER_QUALITY_ERROR, 
-                              MSG_PERSISTENCE_OPENTRANSACTION_FAILED);
+                              "%s", MSG_PERSISTENCE_OPENTRANSACTION_FAILED);
       tmp_ret = false;
    }
   
@@ -701,7 +701,7 @@ hgroup_spool(sge_gdi_ctx_class_t *ctx, lList **answer_list, lListElem *this_elem
    if (!dbret) {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                               ANSWER_QUALITY_ERROR, 
-                              MSG_PERSISTENCE_CLOSINGTRANSACTION_FAILED);
+                              "%s", MSG_PERSISTENCE_CLOSINGTRANSACTION_FAILED);
       tmp_ret = false;
    }
  

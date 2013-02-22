@@ -610,7 +610,7 @@ ja_task_verify_granted_destin_identifier_list(const lList *gdil, lList **answer_
 
    if (gdil == NULL) {
       answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                              MSG_INVALID_GDIL);
+                              "%s", MSG_INVALID_GDIL);
       ret = false;
    }
 

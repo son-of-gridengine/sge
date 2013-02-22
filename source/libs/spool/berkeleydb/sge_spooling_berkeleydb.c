@@ -512,7 +512,7 @@ spool_berkeleydb_transaction_func(lList **answer_list, const lListElem *rule,
          default:
             answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                     ANSWER_QUALITY_ERROR, 
-                                    MSG_BERKELEY_TRANSACTIONEINVAL);
+                                    "%s", MSG_BERKELEY_TRANSACTIONEINVAL);
             ret = false;
             break;
       }

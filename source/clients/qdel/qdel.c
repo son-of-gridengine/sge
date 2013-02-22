@@ -335,7 +335,7 @@ lList **alpp
          sp++;
          if (*sp == NULL) {
              answer_list_add_sprintf(alpp, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR,
-                                     MSG_PARSE_TOPTIONMUSTHAVEALISTOFTASKIDRANGES);
+                                     "%s", MSG_PARSE_TOPTIONMUSTHAVEALISTOFTASKIDRANGES);
              goto error;
          }
 

@@ -98,7 +98,7 @@ char *qmonReadText(const char *filename, lList **alpp)
    */
    if ((text = XtMalloc((unsigned)(statb.st_size + 1))) == NULL) {
       answer_list_add_sprintf(alpp, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                              MSG_MEMORY_MALLOCFAILED);
+                              "%s", MSG_MEMORY_MALLOCFAILED);
       FCLOSE(fp);
       DRETURN(NULL);
    }

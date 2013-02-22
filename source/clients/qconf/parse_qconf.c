@@ -7092,7 +7092,8 @@ static int qconf_modify_attribute(sge_gdi_ctx_class_t *ctx,
          dstring write_attr_tmp_file_error = DSTRING_INIT;
          filename = write_attr_tmp_file(name, value, sge_dstring_get_string(&delim), &write_attr_tmp_file_error);
          if (filename == NULL && sge_dstring_get_string(&write_attr_tmp_file_error) != NULL) {
-            answer_list_add_sprintf(alpp, STATUS_EDISK, ANSWER_QUALITY_ERROR, sge_dstring_get_string(&write_attr_tmp_file_error));
+            answer_list_add_sprintf(alpp, STATUS_EDISK, ANSWER_QUALITY_ERROR,
+                                    "%s", sge_dstring_get_string(&write_attr_tmp_file_error));
          } else {
             *epp = spool_flatfile_read_object(alpp, info_entry->cull_descriptor, NULL,
                                       info_entry->fields, fields, true, info_entry->instr,

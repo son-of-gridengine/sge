@@ -125,7 +125,7 @@ spool_classic_create_context(lList **answer_list, const char *args)
    if (args == NULL) {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                               ANSWER_QUALITY_ERROR, 
-                              MSG_SPOOL_INCORRECTPATHSFORCOMMONANDSPOOLDIR);
+                              "%s", MSG_SPOOL_INCORRECTPATHSFORCOMMONANDSPOOLDIR);
    } else {
       char *common_dir, *spool_dir;
       struct saved_vars_s *strtok_context = NULL;
@@ -137,7 +137,7 @@ spool_classic_create_context(lList **answer_list, const char *args)
          *common_dir != '/' || *spool_dir != '/') {
          answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                  ANSWER_QUALITY_ERROR, 
-                                 MSG_SPOOL_INCORRECTPATHSFORCOMMONANDSPOOLDIR);
+                                 "%s", MSG_SPOOL_INCORRECTPATHSFORCOMMONANDSPOOLDIR);
       } else {   
          sge_object_type i;
          flatfile_info *field_info;
@@ -1246,7 +1246,7 @@ spool_classic_default_delete_func(lList **answer_list,
          if(sge_hostcmp(key, "global") == 0) {
             answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                     ANSWER_QUALITY_ERROR, 
-                                    MSG_SPOOL_GLOBALCONFIGNOTDELETED);
+                                    "%s", MSG_SPOOL_GLOBALCONFIGNOTDELETED);
             ret = false;
          } else {
             dstring dir_name_dstring = DSTRING_INIT;
@@ -1315,7 +1315,7 @@ spool_classic_default_delete_func(lList **answer_list,
       case SGE_TYPE_SCHEDD_CONF:
          answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                  ANSWER_QUALITY_ERROR, 
-                                 MSG_SPOOL_SCHEDDCONFIGNOTDELETED);
+                                 "%s", MSG_SPOOL_SCHEDDCONFIGNOTDELETED);
          ret = false;
          break;
       case SGE_TYPE_SUBMITHOST:

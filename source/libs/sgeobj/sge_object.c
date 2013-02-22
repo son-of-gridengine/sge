@@ -3131,7 +3131,7 @@ bool object_unpack_elem_verify(lList **answer_list, sge_pack_buffer *pb, lListEl
       if (!object_verify_cull(*epp, descr)) {
          lFreeElem(epp);
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_OBJECT_STRUCTURE_ERROR);
+                                 "%s", MSG_OBJECT_STRUCTURE_ERROR);
          ret = false;
       }
    }

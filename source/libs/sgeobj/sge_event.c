@@ -457,7 +457,7 @@ static bool event_client_verify_subscription(const lListElem *event_client, lLis
       u_long32 id = lGetUlong(ep, EVS_id);
       if (id <= sgeE_ALL_EVENTS || id >= sgeE_EVENTSIZE) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_EVENT_INVALIDEVENT);
+                                 "%s", MSG_EVENT_INVALIDEVENT);
          ret = false;
          break;
       }
@@ -537,7 +537,7 @@ event_client_verify(const lListElem *event_client, lList **answer_list, bool add
    if (ret) {
       if (!object_verify_cull(event_client, EV_Type)) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_OBJECT_STRUCTURE_ERROR);
+                                 "%s", MSG_OBJECT_STRUCTURE_ERROR);
          DTRACE;
          ret = false;
       }
@@ -558,7 +558,7 @@ event_client_verify(const lListElem *event_client, lList **answer_list, bool add
             answer_list, str, MAX_VERIFY_STRING,
             lNm2Str(EV_name), KEY_TABLE) != STATUS_OK) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_EVENT_INVALIDNAME);
+                                 "%s", MSG_EVENT_INVALIDNAME);
          DTRACE;
          ret = false;
          DPRINTF(("EV name false\n"));
@@ -576,7 +576,7 @@ event_client_verify(const lListElem *event_client, lList **answer_list, bool add
       u_long32 id = lGetUlong(event_client, EV_id);
       if (add && id >= EV_ID_FIRST_DYNAMIC) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_EVENT_INVALIDID);
+                                 "%s", MSG_EVENT_INVALIDID);
          DTRACE;
          ret = false;
          DPRINTF(("EV_id false: "sge_u32"\n", id));
@@ -617,7 +617,7 @@ event_client_verify(const lListElem *event_client, lList **answer_list, bool add
    if (ret) {
       if (lGetUlong(event_client, EV_flush_delay) > d_time) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_EVENT_FLUSHDELAYCANNOTBEGTDTIME);
+                                 "%s", MSG_EVENT_FLUSHDELAYCANNOTBEGTDTIME);
          ret = false;
 /* printf("EV_flush_delay false\n");          */
       }
@@ -639,7 +639,7 @@ if (ret == false) {
       if (busy != EV_BUSY_NO_HANDLING && busy != EV_BUSY_UNTIL_ACK &&
           busy != EV_BUSY_UNTIL_RELEASED) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_EVENT_INVALIDBUSYHANDLING);
+                                 "%s", MSG_EVENT_INVALIDBUSYHANDLING);
          ret = false;
 /* printf("EV_busy_handling false\n");          */
       }
@@ -653,7 +653,7 @@ if (ret == false) {
          answer_list, session, MAX_VERIFY_STRING,
          "session key", KEY_TABLE) != STATUS_OK) {
             answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                    MSG_EVENT_INVALIDSESSIONKEY);
+                                    "%s", MSG_EVENT_INVALIDSESSIONKEY);
             ret = false;
 /* printf("EV_session false\n");          */
          }
@@ -664,7 +664,7 @@ if (ret == false) {
    if (ret) {
       if (lGetRef(event_client, EV_update_function) != NULL) {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_EVENT_INVALIDUPDATEFUNCTION);
+                                 "%s", MSG_EVENT_INVALIDUPDATEFUNCTION);
          ret = false;
 /* printf("EV_update_function false\n");          */
       }
