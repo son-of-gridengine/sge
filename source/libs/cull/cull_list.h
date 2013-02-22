@@ -284,6 +284,9 @@ struct _lDescr {
 };
 
 /* LIST SPECIFIC FUNCTIONS */
+/* fixme:  inline some of this? */
+/* Note most of these can't be declared pure because they do i/o
+   (DENTER); perhaps they shouldn't.  */
 const char *lGetListName(const lList *lp);
 const lDescr *lGetListDescr(const lList *lp);
 int lGetNumberOfElem(const lList *lp);
@@ -353,8 +356,8 @@ lListElem *lFindLast(const lList *lp, const lCondition *cp);
 #define mt_do_hashing(mt) (((mt) & CULL_HASH) ? true : false)
 #define mt_is_unique(mt) (((mt) & CULL_UNIQUE) ? true : false)
 
-bool lListElem_is_pos_changed(const lListElem *ep, int pos);
-bool lListElem_is_changed(const lListElem *ep);
+bool lListElem_is_pos_changed(const lListElem *ep, int pos) __attribute__ ((__pure__));
+bool lListElem_is_changed(const lListElem *ep) __attribute__ ((__pure__));
 bool lList_clear_changed_info(lList *lp);
 bool lListElem_clear_changed_info(lListElem *lp);
 

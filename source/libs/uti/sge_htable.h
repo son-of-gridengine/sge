@@ -56,25 +56,26 @@ void sge_htable_for_each(htable ht, sge_htable_for_each_proc proc);
 
 const char *sge_htable_statistics(htable ht, dstring *buffer);
 
-const void *dup_func_u_long32(const void *key);
-const void *dup_func_u_long64(const void *key);
-const void *dup_func_string(const void *key);
-const void *dup_func_long(const void *key);
-const void *dup_func_pointer(const void *key);
+const void *dup_func_u_long32(const void *key) __attribute__ ((malloc));
+const void *dup_func_u_long64(const void *key) __attribute__ ((malloc));
+const void *dup_func_string(const void *key) __attribute__ ((malloc));
+const void *dup_func_long(const void *key) __attribute__ ((malloc));
+const void *dup_func_pointer(const void *key) __attribute__ ((malloc));
 
-int hash_func_u_long32(const void *key);
-int hash_func_u_long64(const void *key);
-int hash_func_string(const void *key);
-int hash_func_long(const void *key);
-int hash_func_pointer(const void *key);
+/* fixme:  candidates for inline?  */
+int hash_func_u_long32(const void *key) __attribute__ ((__pure__));
+int hash_func_u_long64(const void *key) __attribute__ ((__pure__));
+int hash_func_string(const void *key) __attribute__ ((__pure__));
+int hash_func_long(const void *key) __attribute__ ((__pure__));
+int hash_func_pointer(const void *key) __attribute__ ((__pure__));
 
+/* fixme:  candidates for inline?  */
+int hash_compare_u_long32(const void *a, const void *b) __attribute__ ((__pure__));
+int hash_compare_u_long64(const void *a, const void *b) __attribute__ ((__pure__));
+int hash_compare_string(const void *a, const void *b) __attribute__ ((__pure__));
+int hash_compare_long(const void *a, const void *b) __attribute__ ((__pure__));
+int hash_compare_pointer(const void *a, const void *b) __attribute__ ((__pure__));
 
-int hash_compare_u_long32(const void *a, const void *b);
-int hash_compare_u_long64(const void *a, const void *b);
-int hash_compare_string(const void *a, const void *b);
-int hash_compare_long(const void *a, const void *b);
-int hash_compare_pointer(const void *a, const void *b);
-
-int hash_compute_size(int number_of_elem);
+int hash_compute_size(int number_of_elem) __attribute__ ((__pure__));
 
 #endif /* __SGE_HASH_H */

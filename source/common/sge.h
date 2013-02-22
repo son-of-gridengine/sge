@@ -209,7 +209,10 @@
 
 /* Possibly supported by other compilers too.  */
 #ifndef __attribute__
-# if __GNUC__ < 2 || (__GNUC__ == 2 && __GNUC_MINOR__ < 5) || __STRICT_ANSI__
+/* According to glibc ansidecl.h, this gives us at least attributes
+   format (on pointer), unused, noreturn, malloc, pure.  Check before
+   adding others.  */
+# if (__GNUC__ * 1000 + __GNUC_MINOR__ < 3001) || __STRICT_ANSI__
 #  define __attribute__(x)
 # endif
 #endif

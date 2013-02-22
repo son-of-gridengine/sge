@@ -34,6 +34,7 @@
 
 #include <stdio.h>
 
+#include "sge.h"
 #include "basis_types.h"
 
 /****** uti/bitfield/BIT_MANIPULATION_MAKROS() ********************************
@@ -72,6 +73,7 @@ typedef struct {
    } bf;
 } bitfield;
 
+/* fixme:  should any of this be inline?  */
 bitfield *
 sge_bitfield_new(unsigned int size);
 
@@ -94,7 +96,7 @@ bool
 sge_bitfield_set(bitfield *bf, unsigned int bit);
 
 bool 
-sge_bitfield_get(const bitfield *bf, unsigned int bit);
+sge_bitfield_get(const bitfield *bf, unsigned int bit) __attribute__ ((__pure__));
 
 bool 
 sge_bitfield_clear(bitfield *bf, unsigned int bit);
@@ -103,7 +105,7 @@ bool
 sge_bitfield_reset(bitfield *source);
 
 bool 
-sge_bitfield_changed(const bitfield *source);
+sge_bitfield_changed(const bitfield *source) __attribute__ ((__pure__));
 
 void 
 sge_bitfield_print(const bitfield *bf, FILE *fd); 
