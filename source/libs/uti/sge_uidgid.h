@@ -59,9 +59,14 @@ const char* sge_get_file_passwd(void);
 
 int  sge_set_admin_username(const char *username, char *err_str, size_t lstr);
 bool sge_is_admin_user(const char *username);
-const char *get_admin_user_name(void); 
+const char *get_admin_user_name(void);
+#if WARN_UNUSED_RESULT
+int sge_switch2admin_user(void) __attribute__ ((__warn_unused_result__));
+int sge_switch2start_user(void) __attribute__ ((__warn_unused_result__));
+#else
 int sge_switch2admin_user(void);
 int sge_switch2start_user(void);
+#endif
 bool sge_has_admin_user(void);
 int sge_run_as_user(void);
 int sge_user2uid(const char *user, uid_t *puid, gid_t *pgid, int retries);  
