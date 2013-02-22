@@ -159,7 +159,7 @@ static void usage(void) {
    fprintf(stderr, "\"system\"\n");
    fprintf(stderr, "\n");
 #ifndef JUTI_NO_PAM
-   fprintf(stderr, "Params for PAM authentification\n");
+   fprintf(stderr, "Params for PAM authentication\n");
    fprintf(stderr, "  -s <servicename>   name of the pam service\n");
 #endif
    fprintf(stderr, "\n");

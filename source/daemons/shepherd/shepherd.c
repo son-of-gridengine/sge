@@ -924,7 +924,7 @@ int main(int argc, char **argv)
          }
 
          shepherd_trace("%s", err_str);
-         shepherd_trace("sucessfully set AFS token");
+         shepherd_trace("successfully set AFS token");
 
          memset(tokenbuf, 0, strlen(tokenbuf));
          sge_free(&tokenbuf);
@@ -1644,8 +1644,8 @@ dstring       *err_msg       /* OUT: error message - if any */
    int     remote_port  = 0;
    int     exit_status  = -1;
 
-   /* close childs end of the pipe */
-   shepherd_trace("parent: closing childs end of the pipe");
+   /* close child's end of the pipe */
+   shepherd_trace("parent: closing child's end of the pipe");
 
    /* read destination host and port from config */
    ret = get_remote_host_and_port_from_config(&remote_host, &remote_port, err_msg);
@@ -2060,12 +2060,12 @@ static void shepconf_deliver_signal_or_method(int sig, int pid, pid_t *ctrl_pid)
     *    c) Default signal 
     */
    if (shepconf_has_userdef_signal(method_name, &new_sig)) {
-      shepherd_trace("kill(%d, %s) -> overriddes kill(%d, %s)",
+      shepherd_trace("kill(%d, %s) -> overrides kill(%d, %s)",
                      -pid, sge_sys_sig2str(new_sig),
                      -pid, sge_sys_sig2str(sig));
       shepherd_signal_job(-pid, new_sig);
    } else if (shepconf_has_userdef_method(method_name, &method)) {
-      shepherd_trace("%s -> overriddes kill(%d, %s)",
+      shepherd_trace("%s -> overrides kill(%d, %s)",
                      sge_dstring_get_string(&method), -pid,
                      sge_sys_sig2str(sig));
       if (*ctrl_pid == -999) {
@@ -2598,7 +2598,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
       if (npid == -1) {
          shepherd_trace("wait3 returned -1");
          if (errno == ECHILD) {
-            shepherd_trace("all childs have exited, quit wait3() loop.");
+            shepherd_trace("all children have exited, quit wait3() loop.");
             break;
          }
       } else if (npid != 0){
@@ -2738,7 +2738,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
 
          /* If an error occured we have to terminate the job. */
          if (stop_job == 1) {
-            shepherd_trace("An error occured while executing the job. Job will be terminated.");
+            shepherd_trace("An error occurred while executing the job. Job will be terminated.");
             shepherd_signal_job(-pid, SIGTERM);
             /* Reset fd_pty_master as we do not have to poll again. */
             fd_pty_master = -1;
