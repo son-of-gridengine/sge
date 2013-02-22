@@ -779,7 +779,7 @@ var_list_verify(const lList *lp, lList **answer_list)
       const char *variable = lGetString(ep, VA_variable);
       if (variable == NULL || variable[0] == '\0') {
          answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR, 
-                                 MSG_OBJECT_VARIABLENAME_NOT_EMPTY);
+                                 "%s", MSG_OBJECT_VARIABLENAME_NOT_EMPTY);
          ret = false;
          break;
       }

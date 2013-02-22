@@ -632,7 +632,7 @@ spool_berkeleydb_start_transaction(lList **answer_list, bdb_info info)
       if (txn != NULL) {
          answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                  ANSWER_QUALITY_ERROR, 
-                                 MSG_BERKELEY_TXNALREADYOPEN);
+                                 "%s", MSG_BERKELEY_TXNALREADYOPEN);
          ret = false;
       } else {
          int dbret;
@@ -698,7 +698,7 @@ spool_berkeleydb_end_transaction(lList **answer_list, bdb_info info,
       if (txn == NULL) {
          answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                  ANSWER_QUALITY_ERROR, 
-                                 MSG_BERKELEY_TXNNOTOPEN);
+                                 "%s", MSG_BERKELEY_TXNNOTOPEN);
          ret = false;
       } else {
          if (commit) {
@@ -710,7 +710,7 @@ spool_berkeleydb_end_transaction(lList **answer_list, bdb_info info,
             DEBUG((SGE_EVENT, "ABORT transaction"));
             answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                     ANSWER_QUALITY_WARNING, 
-                                    MSG_BERKELEY_ABORTINGTRANSACTION);
+                                    "%s", MSG_BERKELEY_ABORTINGTRANSACTION);
             PROF_START_MEASUREMENT(SGE_PROF_SPOOLINGIO);
             dbret = txn->abort(txn);
             PROF_STOP_MEASUREMENT(SGE_PROF_SPOOLINGIO);
@@ -1615,7 +1615,7 @@ spool_berkeleydb_handle_bdb_error(lList **answer_list, bdb_info info,
    } else if (bdb_errno == DB_RUNRECOVERY) {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                               ANSWER_QUALITY_ERROR, 
-                              MSG_BERKELEY_RUNRECOVERY);
+                              "%s", MSG_BERKELEY_RUNRECOVERY);
 
       spool_berkeleydb_error_close(info);
    }

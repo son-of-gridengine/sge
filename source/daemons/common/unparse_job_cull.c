@@ -175,7 +175,7 @@ lList *cull_unparse_job_parameter(sge_gdi_ctx_class_t *ctx, lList **pcmdline, lL
       if (ret) {
          DPRINTF(("Error %d formatting jid_request_list as -hold_jid\n", ret));
          answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_LIST_ERRORFORMATINGJIDPREDECESSORLISTASHOLDJID);
+                                 "%s", MSG_LIST_ERRORFORMATINGJIDPREDECESSORLISTASHOLDJID);
          return answer;
       }
       ep_opt = sge_add_arg(pcmdline, hold_jid_OPT, lListT, "-hold_jid", str);
@@ -193,7 +193,7 @@ lList *cull_unparse_job_parameter(sge_gdi_ctx_class_t *ctx, lList **pcmdline, lL
       if (ret) {
          DPRINTF(("Error %d formatting ja_ad_request_list as -hold_jid_ad\n", ret));
          answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_LIST_ERRORFORMATINGJIDPREDECESSORLISTASHOLDJIDAD);
+                                 "%s", MSG_LIST_ERRORFORMATINGJIDPREDECESSORLISTASHOLDJIDAD);
          return answer;
       }
       ep_opt = sge_add_arg(pcmdline, hold_jid_ad_OPT, lListT, "-hold_jid_ad", str);
@@ -229,7 +229,7 @@ lList *cull_unparse_job_parameter(sge_gdi_ctx_class_t *ctx, lList **pcmdline, lL
       if (ret) {
          DPRINTF(("Error %d formatting job_identifier_list as -jid\n", ret));
          answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_LIST_ERRORFORMATINGJOBIDENTIFIERLISTASJID);
+                                 "%s", MSG_LIST_ERRORFORMATINGJOBIDENTIFIERLISTASJID);
          DRETURN(answer);
       }
       ep_opt = sge_add_arg(pcmdline, jid_OPT, lListT, "-jid", str);
@@ -276,7 +276,7 @@ lList *cull_unparse_job_parameter(sge_gdi_ctx_class_t *ctx, lList **pcmdline, lL
       if (!cp) {
          DPRINTF(("Error unparsing mail options\n"));
          answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_PARSE_ERRORUNPARSINGMAILOPTIONS);
+                                 "%s", MSG_PARSE_ERRORUNPARSINGMAILOPTIONS);
          return answer;
       }
       ep_opt = sge_add_arg(pcmdline, m_OPT, lIntT, "-m", cp);
@@ -316,7 +316,7 @@ lList *cull_unparse_job_parameter(sge_gdi_ctx_class_t *ctx, lList **pcmdline, lL
          if (ret) {
             DPRINTF(("Error %d formatting mail list as -M\n", ret));
             answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                    MSG_LIST_ERRORFORMATTINGMAILLISTASM);
+                                    "%s", MSG_LIST_ERRORFORMATTINGMAILLISTASM);
             return answer;
          }
          ep_opt = sge_add_arg(pcmdline, M_OPT, lListT, "-M", str);
@@ -361,13 +361,13 @@ lList *cull_unparse_job_parameter(sge_gdi_ctx_class_t *ctx, lList **pcmdline, lL
       prty = ul - BASE_PRIORITY;
       if (prty > 1024) {
          answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_PROC_INVALIDPROIRITYMUSTBELESSTHAN1025);
+                                 "%s", MSG_PROC_INVALIDPROIRITYMUSTBELESSTHAN1025);
          DEXIT;
          return answer;
       }
       if (prty < -1023) {
          answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_PROC_INVALIDPRIORITYMUSTBEGREATERTHANMINUS1024);
+                                 "%s", MSG_PROC_INVALIDPRIORITYMUSTBEGREATERTHANMINUS1024);
          DEXIT;
          return answer;
       }
@@ -401,7 +401,7 @@ lList *cull_unparse_job_parameter(sge_gdi_ctx_class_t *ctx, lList **pcmdline, lL
       if (ret) {
          DPRINTF(("Error %d formatting hard_queue_list as -q\n", ret));
          answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_LIST_ERRORFORMATINGHARDQUEUELISTASQ);
+                                 "%s", MSG_LIST_ERRORFORMATINGHARDQUEUELISTASQ);
          return answer;
       }
       ep_opt = sge_add_arg(pcmdline, q_OPT, lListT, "-q", str);
@@ -418,7 +418,7 @@ lList *cull_unparse_job_parameter(sge_gdi_ctx_class_t *ctx, lList **pcmdline, lL
       if (ret) {
          DPRINTF(("Error %d formatting soft_queue_list as -q\n", ret));
          answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_LIST_ERRORFORMATINGSOFTQUEUELISTASQ);
+                                 "%s", MSG_LIST_ERRORFORMATINGSOFTQUEUELISTASQ);
          return answer;
       }
       ep_opt = sge_add_arg(pcmdline, q_OPT, lListT, "-q", str);
@@ -486,7 +486,7 @@ lList *cull_unparse_job_parameter(sge_gdi_ctx_class_t *ctx, lList **pcmdline, lL
       if (ret) {
          DPRINTF(("Error %d formatting environment list as -v\n", ret));
          answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_LIST_ERRORFORMATINGENVIRONMENTLISTASV);
+                                 "%s", MSG_LIST_ERRORFORMATINGENVIRONMENTLISTASV);
          return answer;
       }
       ep_opt = sge_add_arg(pcmdline, v_OPT, lListT, "-v", str);
@@ -525,7 +525,7 @@ lList *cull_unparse_job_parameter(sge_gdi_ctx_class_t *ctx, lList **pcmdline, lL
       if (ret) {
          DPRINTF(("Error %d formatting job arguments\n", ret));
          answer_list_add_sprintf(&answer, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_LIST_ERRORFORMATINGJOBARGUMENTS);
+                                 "%s", MSG_LIST_ERRORFORMATINGJOBARGUMENTS);
          return answer;
       }
       ep_opt = sge_add_arg(pcmdline, 0, lListT, STR_PSEUDO_JOBARG, str);
@@ -695,7 +695,7 @@ static int sge_unparse_resource_list(lListElem *job, int nm, lList **pcmdline, l
       if (ret) {
          DPRINTF(("Error %d formatting hard_resource_list as -l\n", ret));
          answer_list_add_sprintf(alpp, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_LIST_ERRORFORMATINGHARDRESOURCELISTASL);
+                                 "%s", MSG_LIST_ERRORFORMATINGHARDRESOURCELISTASL);
          return ret;
       }
       if (*str && (str[strlen(str) - 1] == '\n')) {
@@ -737,7 +737,7 @@ lList **alpp
       if (!(lp = lGetList(job, JB_pe_range))) {
          DPRINTF(("Job has parallel environment with no ranges\n"));
          answer_list_add_sprintf(alpp, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_JOB_JOBHASPEWITHNORANGES);
+                                 "%s", MSG_JOB_JOBHASPEWITHNORANGES);
          sge_dstring_free(&string_buffer);
          DEXIT;
          return -1;
@@ -753,7 +753,7 @@ lList **alpp
       if (ret) {
          DPRINTF(("Error %d formatting ranges in -pe\n", ret));
          answer_list_add_sprintf(alpp, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_LIST_ERRORFORMATINGRANGESINPE);
+                                 "%s", MSG_LIST_ERRORFORMATINGRANGESINPE);
          sge_dstring_free(&string_buffer);
          DEXIT;
          return ret;
@@ -786,7 +786,7 @@ static int sge_unparse_path_list(lListElem *job, int nm, char *option, lList **p
       if (ret) {
          DPRINTF(("Error %d formatting path_list\n", ret));
          answer_list_add_sprintf(alpp, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
-                                 MSG_LIST_ERRORFORMATINGPATHLIST);
+                                 "%s", MSG_LIST_ERRORFORMATINGPATHLIST);
          return ret;
       }
       ep_opt = sge_add_arg(pcmdline, e_OPT, lListT, option, str);

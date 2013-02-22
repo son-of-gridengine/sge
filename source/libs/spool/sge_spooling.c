@@ -92,7 +92,8 @@ spool_create_context(lList **answer_list, const char *name)
 
    if (name == NULL) {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
-                              ANSWER_QUALITY_ERROR, MSG_SPOOL_CONTEXTNEEDSNAME);
+                              ANSWER_QUALITY_ERROR,
+                              "%s", MSG_SPOOL_CONTEXTNEEDSNAME);
    } else {
       ep = lCreateElem(SPC_Type);
       lSetString(ep, SPC_name, name);

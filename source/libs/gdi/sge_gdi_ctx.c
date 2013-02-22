@@ -370,7 +370,7 @@ sge_gdi_ctx_class_create(int prog_number, const char *component_name,
 
    if (!ret) {
       answer_list_add_sprintf(alpp, STATUS_EMALLOC, 
-                              ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+                              ANSWER_QUALITY_ERROR, "%s", MSG_MEMORY_MALLOCFAILED);
       DRETURN(NULL);
    }
 
@@ -454,7 +454,7 @@ sge_gdi_ctx_class_create(int prog_number, const char *component_name,
 
    if (!ret->sge_gdi_ctx_handle) {
       answer_list_add_sprintf(alpp, STATUS_EMALLOC, 
-                              ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+                              ANSWER_QUALITY_ERROR, "%s", MSG_MEMORY_MALLOCFAILED);
       sge_gdi_ctx_class_destroy(&ret);
       DRETURN(NULL);
    }
@@ -466,7 +466,7 @@ sge_gdi_ctx_class_create(int prog_number, const char *component_name,
    gdi_ctx->eh = sge_error_class_create();
    if (!gdi_ctx->eh) {
       answer_list_add_sprintf(alpp, STATUS_EMALLOC, 
-                              ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+                              ANSWER_QUALITY_ERROR, "%s", MSG_MEMORY_MALLOCFAILED);
       DRETURN(NULL);
    }
 
@@ -1919,7 +1919,8 @@ sge_setup2(sge_gdi_ctx_class_t **context, u_long32 progid, u_long32 thread_id,
    DENTER(TOP_LAYER, "sge_setup2");
 
    if (context == NULL) {
-      answer_list_add_sprintf(alpp, STATUS_ESEMANTIC, ANSWER_QUALITY_CRITICAL, MSG_GDI_CONTEXT_NULL);
+      answer_list_add_sprintf(alpp, STATUS_ESEMANTIC, ANSWER_QUALITY_CRITICAL,
+                              "%s", MSG_GDI_CONTEXT_NULL);
       DRETURN(AE_ERROR);
    }
 
@@ -1930,7 +1931,7 @@ sge_setup2(sge_gdi_ctx_class_t **context, u_long32 progid, u_long32 thread_id,
    sge_root = getenv("SGE_ROOT");
    if (sge_root == NULL) {
       answer_list_add_sprintf(alpp, STATUS_ESEMANTIC, 
-                              ANSWER_QUALITY_CRITICAL, MSG_SGEROOTNOTSET);
+                              ANSWER_QUALITY_CRITICAL, "%s", MSG_SGEROOTNOTSET);
       DRETURN(AE_ERROR);
    }
    sge_cell = getenv("SGE_CELL")?getenv("SGE_CELL"):DEFAULT_CELL;
@@ -2014,7 +2015,7 @@ int sge_gdi2_setup(sge_gdi_ctx_class_t **context_ref, u_long32 progid, u_long32 
          SGE_ADD_MSG_ID(sprintf(SGE_EVENT, SFNMAX, MSG_GDI_GDI_ALREADY_SETUP));
       } else {
          answer_list_add_sprintf(alpp, STATUS_EEXIST, ANSWER_QUALITY_WARNING,
-                                 MSG_GDI_GDI_ALREADY_SETUP);
+                                 "%s", MSG_GDI_GDI_ALREADY_SETUP);
       }
       DRETURN(AE_ALREADY_SETUP);
    }

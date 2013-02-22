@@ -328,7 +328,8 @@ sge_gdi_task_create(sge_gdi_packet_class_t * packet, lList **answer_list,
       }
    } else {
       answer_list_add_sprintf(answer_list, STATUS_EMALLOC,
-                              ANSWER_QUALITY_ERROR, MSG_MEMORY_MALLOCFAILED);
+                              ANSWER_QUALITY_ERROR,
+                              "%s", MSG_MEMORY_MALLOCFAILED);
    }
    DRETURN(task);
 }
@@ -469,11 +470,11 @@ sge_gdi_packet_create_base(lList **answer_list)
       } else {
          answer_list_add_sprintf(answer_list, STATUS_EMALLOC,
                                  ANSWER_QUALITY_ERROR,
-                                 MSG_MEMORY_MALLOCFAILED);
+                                 "%s", MSG_MEMORY_MALLOCFAILED);
       }
    } else {
       answer_list_add_sprintf(answer_list, STATUS_EMALLOC,
-                              ANSWER_QUALITY_ERROR, MSG_SGETEXT_NOMEM);
+                              ANSWER_QUALITY_ERROR, "%s", MSG_SGETEXT_NOMEM);
    }
    DRETURN(ret);
 }

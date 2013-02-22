@@ -260,12 +260,12 @@ jsv_send_data(lListElem *jsv, lList **answer_list, const char *buffer, size_t si
       fflush(lGetRef(jsv, JSV_in));
       if (lret != size) {
          answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR,
-                                 MSG_JSV_SEND_S);
+                                 "%s", MSG_JSV_SEND);
          ret = false;
       }
    } else {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR,
-                              MSG_JSV_SEND_READY_S);
+                              "%s", MSG_JSV_SEND_READY);
       ret = false;
    } 
    DRETURN(ret);
@@ -327,7 +327,7 @@ jsv_start(lListElem *jsv, lList **answer_list)
             ret = false;
          } else if (pid == -2) {
             answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR,
-                                    MSG_JSV_STARTPERMISSION);
+                                    "%s", MSG_JSV_STARTPERMISSION);
             ret = false;
          } else {
             jsv_set_pid(jsv, pid);
@@ -502,7 +502,7 @@ bool jsv_url_parse(dstring *jsv_url, lList **answer_list, dstring *type,
 
          if (in_client && u != NULL) {
             answer_list_add_sprintf(answer_list, STATUS_EEXIST, 
-                                    ANSWER_QUALITY_ERROR, MSG_JSV_USER_S);
+                                    ANSWER_QUALITY_ERROR, "%s", MSG_JSV_USER);
          } else {
             if (p != NULL) {
                if ((sge_is_file(p) && sge_is_executable(p)) || strcasecmp("none", p) == 0) {

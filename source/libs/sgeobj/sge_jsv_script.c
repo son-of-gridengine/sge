@@ -792,7 +792,8 @@ jsv_handle_param_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answe
             ret &= job_init_binding_elem(new_job);
             if (!ret) {
                answer_list_add_sprintf(&local_answer_list, STATUS_ESYNTAX, 
-                                       ANSWER_QUALITY_ERROR, MSG_JSV_MEMBINDING);
+                                       ANSWER_QUALITY_ERROR,
+                                       "%s", MSG_JSV_MEMBINDING);
                ret = false;
             }
             binding_list = lGetList(new_job, JB_binding);
@@ -1250,11 +1251,11 @@ jsv_handle_result_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answ
       } else if (strcmp(state, "REJECT") == 0) {
          DPRINTF(("Job is rejected\n"));
          if (message != NULL) {
-            answer_list_add_sprintf(answer_list, STATUS_DENIED, 
-                                    ANSWER_QUALITY_ERROR, message);
+            answer_list_add_sprintf(answer_list, STATUS_DENIED,
+                                    ANSWER_QUALITY_ERROR, "%s", message);
          } else {
             answer_list_add_sprintf(answer_list, STATUS_DENIED, 
-                                    ANSWER_QUALITY_ERROR, MSG_JSV_REJECTED);
+                                    ANSWER_QUALITY_ERROR, "%s", MSG_JSV_REJECTED);
          }
          lSetBool(jsv, JSV_accept, false);
          lSetBool(jsv, JSV_done, true);
@@ -1262,10 +1263,10 @@ jsv_handle_result_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answ
          DPRINTF(("Job is rejected temporarily\n"));
          if (message != NULL) {
             answer_list_add_sprintf(answer_list, STATUS_DENIED, 
-                                    ANSWER_QUALITY_ERROR, message);
+                                    ANSWER_QUALITY_ERROR, "%s", message);
          } else {
             answer_list_add_sprintf(answer_list, STATUS_DENIED, 
-                                    ANSWER_QUALITY_ERROR, MSG_JSV_TMPREJECT);
+                                    ANSWER_QUALITY_ERROR, "%s", MSG_JSV_TMPREJECT);
          }
          lSetBool(jsv, JSV_accept, false);
          lSetBool(jsv, JSV_done, true);
@@ -2525,7 +2526,8 @@ jsv_do_communication(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_li
        */
       while (fscanf(lGetRef(jsv, JSV_err), "%[^\n]\n", input) == 1) {
          ERROR((SGE_EVENT, MSG_JSV_LOGMSG_S, input));
-         answer_list_add_sprintf(answer_list, STATUS_DENIED, ANSWER_QUALITY_ERROR, SGE_EVENT);
+         answer_list_add_sprintf(answer_list, STATUS_DENIED,
+                                 ANSWER_QUALITY_ERROR, "%s", SGE_EVENT);
          ret = false; 
       }
    }
@@ -2662,7 +2664,8 @@ jsv_do_communication(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_li
              */
             while (fscanf(err_stream, "%[^\n]\n", input) == 1) {
                ERROR((SGE_EVENT, MSG_JSV_LOGMSG_S, input));  
-               answer_list_add_sprintf(answer_list, STATUS_DENIED, ANSWER_QUALITY_ERROR, SGE_EVENT);
+               answer_list_add_sprintf(answer_list, STATUS_DENIED,
+                                       ANSWER_QUALITY_ERROR, "%s", SGE_EVENT);
                ret = false;
             }
             if (!ret && lGetBool(jsv, JSV_done) == false) {

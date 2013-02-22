@@ -807,7 +807,8 @@ spool_flatfile_write_list(lList **answer_list,
 
    if (data == NULL || data_len == 0) {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
-                              ANSWER_QUALITY_ERROR, MSG_FLATFILE_NODATATOSPOOL);
+                              ANSWER_QUALITY_ERROR,
+                              "%s", MSG_FLATFILE_NODATATOSPOOL);
       sge_dstring_free(&char_buffer);
       if(my_fields != NULL) {
          my_fields = spool_free_spooling_fields(my_fields);
@@ -946,7 +947,8 @@ spool_flatfile_write_object(lList **answer_list, const lListElem *object,
 
    if (data_len == 0) {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
-                              ANSWER_QUALITY_ERROR, MSG_FLATFILE_NODATATOSPOOL);
+                              ANSWER_QUALITY_ERROR,
+                              "%s", MSG_FLATFILE_NODATATOSPOOL);
       sge_dstring_free(&char_buffer);
       if (my_fields != NULL) {
          my_fields = spool_free_spooling_fields(my_fields);
@@ -1028,7 +1030,7 @@ spool_flatfile_open_file(lList **answer_list,
          if (filepath_in == NULL || filepath_in[0] == '\0') {
             answer_list_add_sprintf(answer_list, STATUS_ESEMANTIC, 
                                     ANSWER_QUALITY_ERROR, 
-                                    MSG_INVALIDFILENAMENULLOREMPTY);
+                                    "%s", MSG_INVALIDFILENAMENULLOREMPTY);
             DRETURN(fd);
          }
    
@@ -1560,7 +1562,7 @@ spool_flatfile_read_object(lList **answer_list, const lDescr *descr,
       spool_scanner_shutdown();
       answer_list_add_sprintf(answer_list, STATUS_EDISK,
                               ANSWER_QUALITY_ERROR, 
-                              MSG_SGETEXT_NOMEM);
+                              "%s", MSG_SGETEXT_NOMEM);
       if (file_opened) {
          FCLOSE(file);
       }
@@ -1706,7 +1708,7 @@ FF_DEBUG("eof detected");
          if (*object == NULL) {
             answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                     ANSWER_QUALITY_ERROR, 
-                                    MSG_ERRORCREATINGOBJECT);
+                                    "%s", MSG_ERRORCREATINGOBJECT);
             stop = true;
             continue;
          }
@@ -2186,7 +2188,7 @@ spool_flatfile_read_list(lList **answer_list, const lDescr *descr,
 
       answer_list_add_sprintf(answer_list, STATUS_EDISK,
                               ANSWER_QUALITY_ERROR, 
-                              MSG_SGETEXT_NOMEM);
+                              "%s", MSG_SGETEXT_NOMEM);
 
       if (file_opened) {
          FCLOSE(file);
@@ -2253,7 +2255,7 @@ _spool_flatfile_read_list(lList **answer_list, const lDescr *descr,
    if (list == NULL) {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN,
                               ANSWER_QUALITY_ERROR,
-                              MSG_ERRORCREATINGLIST);
+                              "%s", MSG_ERRORCREATINGLIST);
       DEXIT;
       return NULL;
    }

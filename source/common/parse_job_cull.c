@@ -363,7 +363,7 @@ lList *cull_parse_job_parameter(u_long32 uid, const char *username, const char *
    if ((ep = lGetElemStr(cmdline, SPA_switch, "-help"))) {
       lRemoveElem(cmdline, &ep);
       answer_list_add_sprintf(&answer, STATUS_ENOIMP, ANSWER_QUALITY_ERROR,
-                              MSG_ANSWER_HELPNOTALLOWEDINCONTEXT);
+                              "%s", MSG_ANSWER_HELPNOTALLOWEDINCONTEXT);
       DRETURN(answer);
    }
 
