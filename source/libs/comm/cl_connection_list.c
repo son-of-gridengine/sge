@@ -221,7 +221,7 @@ int cl_connection_list_remove_connection(cl_raw_list_t* list_p, cl_com_connectio
       }
    } else {
       /* Search without having hash table */
-      CL_LOG(CL_LOG_INFO,"no hash table available, searching sequencial");
+      CL_LOG(CL_LOG_INFO,"no hash table available, searching sequentially");
       elem = cl_connection_list_get_first_elem(list_p);
       while ( elem != NULL) {
          if (elem->connection == connection) {
@@ -480,7 +480,7 @@ int cl_connection_list_destroy_connections_to_close(cl_com_handle_t* handle) {
          cl_raw_list_lock(connection->send_message_list);
          while((message_list_elem = cl_message_list_get_first_elem(connection->send_message_list)) != NULL) {
             message = message_list_elem->message;
-            CL_LOG(CL_LOG_ERROR,"deleting unsend message for connection");
+            CL_LOG(CL_LOG_ERROR,"deleting unsent message for connection");
             cl_raw_list_remove_elem( connection->send_message_list,  message_list_elem->raw_elem);
             sge_free(&message_list_elem);
             cl_com_free_message(&message);

@@ -1853,7 +1853,7 @@ compute_soft_violations(const sge_assignment_t *a, lListElem *queue, int violati
    }
 
    if (queue) {
-      DPRINTF(("queue %s does not fulfill soft %d requests (first: %s)\n", 
+      DPRINTF(("queue %s does not fulfil soft %d requests (first: %s)\n",
          queue_name, soft_violation, reason_buf));
 
       /* 
@@ -3071,7 +3071,7 @@ dispatch_t cqueue_match_static(const char *cqname, sge_assignment_t *a)
       dstring unsatisfied = DSTRING_INIT;
       if (request_cq_rejected(hard_resource_list, cq, a->centry_list, 
                      (!a->pe_name || a->slots == 1)?true:false, &unsatisfied)) {
-         DPRINTF(("Cluster Queue \"%s\" can not fulfill resource request (-l %s) that "
+         DPRINTF(("Cluster Queue \"%s\" can not fulfil resource request (-l %s) that "
                "was requested by job %d\n", cqname, sge_dstring_get_string(&unsatisfied), (int)a->job_id));
          schedd_mes_add(a->monitor_alpp, a->monitor_next_run, a->job_id,
                         SCHEDD_INFO_CANNOTRUNINQUEUE_SSS,
@@ -5085,7 +5085,7 @@ parallel_queue_slots(sge_assignment_t *a, lListElem *qep, int *slots, int *slots
          ar_queue_config_attr = lGetList(ar_queue, QU_consumable_config_list);
          ar_queue_actual_attr = lGetList(ar_queue, QU_resource_utilization);
 
-         DPRINTF(("verifing AR queue\n"));
+         DPRINTF(("verifying AR queue\n"));
          lSetUlong(ar_queue, QU_tagged4schedule, lGetUlong(qep, QU_tagged4schedule));
          result = parallel_rc_slots_by_time(a, hard_requests, &qslots, &qslots_qend, 
                ar_queue_config_attr, ar_queue_actual_attr, NULL, true, ar_queue, 
@@ -5094,7 +5094,7 @@ parallel_queue_slots(sge_assignment_t *a, lListElem *qep, int *slots, int *slots
       } else {
          if (a->is_advance_reservation 
             || (((a->pi)?a->pi->par_rqs++:0), result = parallel_rqs_slots_by_time(a, &lslots, &lslots_qend, qep)) == DISPATCH_OK) {
-            DPRINTF(("verifing normal queue\n"));
+            DPRINTF(("verifying normal queue\n"));
 
             if (a->pi)
                a->pi->par_qdyn++;
