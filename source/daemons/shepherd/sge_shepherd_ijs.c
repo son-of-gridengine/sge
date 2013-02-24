@@ -1080,7 +1080,6 @@ int close_parent_loop(int exit_status)
 
    sge_free(&g_hostname);
    sge_dstring_free(&err_msg);
-   shepherd_trace("parent: leaving closinge_parent_loop()");
+   shepherd_trace("parent: leaving close_parent_loop()");
    return 0;
 }
-
