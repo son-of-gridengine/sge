@@ -289,7 +289,7 @@ void shepherd_error_chown(const char* job_owner)
 *     ...: The parameters to the format string. See printf(3c).
 *
 *  RESULT
-*     int - 0 if successful, 1 if an error occured.
+*     int - 0 if successful, 1 if an error occurred.
 *******************************************************************************/
 int shepherd_trace(const char *format, ...)
 {
@@ -354,14 +354,14 @@ int shepherd_trace(const char *format, ...)
 
 /****** shepherd_error ********************************************************
 *  NAME
-*     shepherd_error() -- Write a line to the error file and exit program.
+*     shepherd_error() -- Write a line to the error file and optionally exit program.
 *
 *  SYNOPSIS
 *     void shepherd_error(bool do_exit, const char *format, ...)
 *
 *  FUNCTION
 *     Writes a line to the error file, preceding it with a
-*     date, time, uid and pid stamp, and exits the program. stops execution.
+*     date, time, uid and pid stamp, and optionally exits the program.
 *
 *  INPUTS
 *     do_exit: If true, this function calls exit(2).
@@ -885,7 +885,7 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
             /* Now try to give the file to the job user. root (and later
              * the admin user) will still be able to write to it through
              * the open file descriptor.
-             * We must do this as root, because only root has the permissons
+             * We must do this as root, because only root has the permissions
              * to change the ownership of a file.
              */
             old_euid = geteuid();
@@ -961,4 +961,3 @@ static bool nfs_mounted(const char *path)
 #endif
    return ret;
 }
-

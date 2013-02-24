@@ -59,13 +59,13 @@ static lEnumeration *subscope_lWhat(cull_parse_state* state, va_list *app);
 
 /****** cull/what/nm_set() ****************************************************
 *  NAME
-*     nm_set() -- Build a int vector 
+*     nm_set() -- Build an int vector
 *
 *  SYNOPSIS
 *     void nm_set(int job_field[], int nm) 
 *
 *  FUNCTION
-*     Build a int vector like it is used by lIntVector2What() 
+*     Build an int vector as used by lIntVector2What()
 *
 *  INPUTS
 *     int job_field[] - int vector 
@@ -314,7 +314,7 @@ lEnumeration *_lWhat(const char *fmt, const lDescr *dp,
 
 /****** cull/what/lWhat() *****************************************************
 *  NAME
-*     lWhat() -- Create a ne enumeration 
+*     lWhat() -- Create a new enumeration
 *
 *  SYNOPSIS
 *     lEnumeration *lWhat(const char *fmt, ...) 
@@ -336,7 +336,7 @@ lEnumeration *_lWhat(const char *fmt, const lDescr *dp,
 *                          3) "%T(%I%I)"
 *                          4) "%T(%I%I->%T(%I%I))"
 *
-*     ...             - varibale list of arguments
+*     ...             - variable list of arguments
 *              
 *                       varargs corresponding to examples above:
 *                          1) JB_Type
@@ -350,8 +350,8 @@ lEnumeration *_lWhat(const char *fmt, const lDescr *dp,
 *     lEnumeration* - new enumeration
 *
 *  NOTES
-*     "%I" is equivalent with "%I->%T(ALL)" 
-*     "" is NOT equivalent with "%I->%T(NONE)"
+*     "%I" is equivalent to "%I->%T(ALL)"
+*     "" is NOT equivalent to "%I->%T(NONE)"
 *******************************************************************************/
 lEnumeration *lWhat(const char *fmt, ...)
 {

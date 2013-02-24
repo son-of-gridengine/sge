@@ -215,15 +215,15 @@ char *sge_dirname(const char *name, int delim)
 *     sge_strtok() -- Replacement for strtok() 
 *
 *  SYNOPSIS
-*     char* sge_strtok(const char *str, const char *delimitor) 
+*     char* sge_strtok(const char *str, const char *delimiter)
 *
 *  FUNCTION
-*     Replacement for strtok(). If no delimitor is given 
+*     Replacement for strtok(). If no delimiter is given
 *     isspace() is used.
 *
 *  INPUTS
 *     const char *str       - string which should be tokenized 
-*     const char *delimitor - delimitor string 
+*     const char *delimiter - delimiter string
 *
 *  RESULT
 *     char* - first/next token of str.
@@ -265,7 +265,7 @@ char *sge_strtok(const char *str, const char *delimitor)
       saved_cp = static_cp;
    }
 
-   /* seek first character which is no '\0' and no delimitor */
+   /* seek first character which is not '\0' and not delimiter */
    done = false;
    while (!done) {
 
@@ -283,7 +283,7 @@ char *sge_strtok(const char *str, const char *delimitor)
       saved_cp++;
    }
 
-   /* seek end of string given by '\0' or delimitor */
+   /* seek end of string given by '\0' or delimiter */
    cp = saved_cp;
    done = false;
    while (!done) {
@@ -293,7 +293,7 @@ char *sge_strtok(const char *str, const char *delimitor)
          DRETURN(saved_cp);
       }
 
-      /* test if we found a delimitor */
+      /* test if we found a delimiter */
       if (IS_DELIMITOR((int) cp[0], delimitor)) {
          cp[0] = '\0';
          cp++;
@@ -413,7 +413,7 @@ size_t sge_strlcpy(char *dst, const char *src, size_t dstsize) {
 *     sge_strtok_r() -- Reentrant version of strtok()
 *
 *  SYNOPSIS
-*     char* sge_strtok_r(const char *str, const char *delimitor, 
+*     char* sge_strtok_r(const char *str, const char *delimiter,
 *                        struct saved_vars_s **context) 
 *
 *  FUNCTION
@@ -425,7 +425,7 @@ size_t sge_strlcpy(char *dst, const char *src, size_t dstsize) {
 *
 *  INPUTS
 *     const char *str               - str which should be tokenized 
-*     const char *delimitor         - delimitor string 
+*     const char *delimiter         - delimiter string
 *     struct saved_vars_s **context - context
 *
 *  RESULT
@@ -469,7 +469,7 @@ char *sge_strtok_r(const char *str, const char *delimitor,
       saved_cp = saved->static_cp;
    }
 
-   /* seek first character which is no '\0' and no delimitor */
+   /* seek first character which is no '\0' and no delimiter */
    done = false;
    while (!done) {
 
@@ -487,7 +487,7 @@ char *sge_strtok_r(const char *str, const char *delimitor,
       saved_cp++;
    }
 
-   /* seek end of string given by '\0' or delimitor */
+   /* seek end of string given by '\0' or delimiter */
    cp = saved_cp;
    done = false;
    while (!done) {
@@ -497,7 +497,7 @@ char *sge_strtok_r(const char *str, const char *delimitor,
          DRETURN(saved_cp);
       }
 
-      /* test if we found a delimitor */
+      /* test if we found a delimiter */
       if (IS_DELIMITOR((int) cp[0], delimitor)) {
          cp[0] = '\0';
          cp++;

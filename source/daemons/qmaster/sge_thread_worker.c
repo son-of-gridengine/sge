@@ -168,7 +168,7 @@ sge_worker_terminate(sge_gdi_ctx_class_t *ctx)
    }
 
    /*
-    * Shutdown/delete the therads and wait for termination
+    * Shutdown/delete the threads and wait for termination
     */
    {
       cl_thread_settings_t *thread = NULL;
@@ -194,7 +194,7 @@ sge_worker_terminate(sge_gdi_ctx_class_t *ctx)
    /*
     * final spooling is only done if the shutdown of the current instance
     * of this master process is not triggered due to the fact that
-    * shadowd started another instance which is currently running ...
+    * shadowed started another instance which is currently running ...
     *
     * ... in that case we would overwrite data which might have already
     * changed in the second instance of the master
@@ -269,7 +269,7 @@ sge_worker_main(void *arg)
 
          if (packet->is_gdi_request == true) {
             /*
-             * test if a write lock is neccessary
+             * test if a write lock is necessary
              */
             task = packet->first_task;
             while (task != NULL) {
@@ -390,4 +390,3 @@ sge_worker_main(void *arg)
 
    DRETURN(NULL);
 }
-

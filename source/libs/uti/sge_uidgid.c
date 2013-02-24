@@ -140,7 +140,7 @@ void uidgid_mt_init(void)
 *                                     is superuser (root/Administrator)
 *
 *  SYNOPSIS
-*     int sge_is_start_user_superuser(void)
+*     bool sge_is_start_user_superuser(void)
 *
 *  FUNCTION
 *     Check the real user id to determine if it is the superuser. If so, return
@@ -409,7 +409,7 @@ exit:
 *
 *  FUNCTION
 *     Set euid/egid to the uid/gid of that user which started the
-*     application which calles this function. If our euid/egid is
+*     application which calls this function. If our euid/egid is
 *     already the start uid/gid don't do anything. If the admin user
 *     was not set with sge_set_admin_username() the function will
 *     not return.
@@ -672,7 +672,7 @@ int sge_group2gid(const char *gname, gid_t *gidp, int retries)
 *  INPUTS
 *     uid_t uid   - user id 
 *     char *dst   - buffer for the username 
-*     size_t sz   - buffersize 
+*     size_t sz   - buffer size
 *     int retries - number of retries 
 *
 *  NOTES
@@ -740,7 +740,7 @@ int sge_uid2user(uid_t uid, char *dst, size_t sz, int retries)
 *  INPUTS
 *     uid_t gid   - group id 
 *     char *dst   - buffer for the group name 
-*     size_t sz   - buffersize 
+*     size_t sz   - buffer size
 *     int retries - number of retries 
 *
 *  NOTES
@@ -1074,7 +1074,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
       an even better question would be why vendors
       can't get their act together on what is returned,
       at least get it right in the man pages!
-      on error heres what I get:
+      on error here's what I get:
       (subject to change with OS releases)
       OS      return       errno
       AIX     1            1
@@ -1194,7 +1194,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
 *
 *  FUNCTION
 *     Add a gid to the list of additional group ids. If 'add_grp_id' 
-*     is 0 don't add value to group id list (but return sucessfully).
+*     is 0 don't add value to group id list (but return successfully).
 *     If an error occurs, a descriptive string will be written to 
 *     err_str.
 *
@@ -1350,7 +1350,7 @@ struct passwd *sge_getpwnam_r(const char *name, struct passwd *pw,
 
 /****** uti/uidgid/sge_getgrgid_r() ********************************************
 *  NAME
-*     sge_getgrgid_r() -- Return group informations for a given group ID.
+*     sge_getgrgid_r() -- Return group information for a given group ID.
 *
 *  SYNOPSIS
 *     struct group* sge_getgrgid_r(gid_t gid, struct group *pg,
@@ -1369,7 +1369,7 @@ struct passwd *sge_getpwnam_r(const char *name, struct passwd *pw,
 *     int retries       - number of retries to connect to NIS
 *
 *  RESULT
-*     struct group*  - Pointer to entry matching group informations upon success,
+*     struct group*  - Pointer to entry matching group information upon success,
 *                      NULL otherwise.
 *
 *  NOTES
@@ -1416,7 +1416,7 @@ struct group *sge_getgrgid_r(gid_t gid, struct group *pg,
 *     bool sge_is_user_superuser(const char *name); 
 *
 *  FUNCTION
-*     Checks platform indepently if the provided user is the superuser.  
+*     Checks platform independently if the provided user is the superuser.
 *
 *  INPUTS
 *     const char *name - name of the user to check
@@ -1714,7 +1714,7 @@ static void uidgid_once_init(void)
 *     Free thread local storage.
 *
 *  INPUTS
-*     void* theState - Pointer to memroy which should be freed.
+*     void* theState - Pointer to memory which should be freed.
 *
 *  RESULT
 *     static void - none
@@ -1780,10 +1780,10 @@ sge_get_file_passwd(void)
 *  FUNCTION
 *     This function counts the lines in the sgepasswd file, it also checks
 *     that each line is not too long.  If any line has
-*     more than MAX_LINE_LENGTH characters the funtion returns error state -1
+*     more than MAX_LINE_LENGTH characters the function returns error state -1
 *
 *  INPUTS
-*     const char *filename - name of the file on which the fuction is run
+*     const char *filename - name of the file on which the function is run
 *
 *  RESULT
 *     int - returns number of lines in sgepasswd file if function has run
@@ -1881,7 +1881,7 @@ get_file_line_size(FILE *fp)
 *                            const char *filename)
 *
 *  FUNCTION
-*     This function reads usernames and enrypted passwords from sgepasswd file
+*     This function reads usernames and encrypted passwords from sgepasswd file
 *     and saves them in arrays that are part if function output, if the file
 *     could not be opened for reading or the file contains corrupted line,
 *     (too long line, line that doesn't contain username and password),
@@ -2143,7 +2143,7 @@ copypwd(struct passwd *tpwd, struct passwd *pwd, char *buffer, size_t bufsize)
       return ERANGE;
    }
 
-   /* strcopys safe because of bufsize check */
+   /* strcopy safe because of bufsize check */
    strcpy(pwd->pw_name, tpwd->pw_name);     /* RATS: ignore */
    strcpy(pwd->pw_passwd, tpwd->pw_passwd); /* RATS: ignore */
    pwd->pw_uid= tpwd->pw_uid;

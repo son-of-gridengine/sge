@@ -46,7 +46,8 @@ extern "C" {
  * exec host
  */
 enum {
-   EH_name = EH_LOWERBOUND,  /* directly user controlled - spooled */
+   EH_name = EH_LOWERBOUND,  /* host where queue instance resides  */
+                             /* directly user controlled - spooled */
    EH_scaling_list,          /* HS_Type - directly user controlled exec
                               * host only Used to scale host load values.
                               * Contains pairs of load value names and

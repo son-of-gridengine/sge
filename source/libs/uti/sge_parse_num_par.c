@@ -356,7 +356,7 @@ static double get_multiplier(sge_rlim_t *rlimp, char **dptr,
  *    Numeric attribute values may look like -l <attr>=<num><m>,...
  *    with <num> being a decimal (both integer and fixed float),
  *    hex and octal constant. <m> is a multiplier (see get_multiplier
- *    above).
+ *    above).  hh:mm:ss time values are accepted and returned as seconds.
  *
  * !new feature!
  *    

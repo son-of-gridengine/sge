@@ -79,6 +79,7 @@ ___INFO__MARK_END__-->
 
 	<xs:complexType name="queue_info_t">
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <!-- Queue-List looks like a mistake, but too late to change -->
 			<xs:element name="Queue-List" type="queue_list_t" minOccurs="0"/>
 			<xs:element name="job_list" type="job_list_t" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>

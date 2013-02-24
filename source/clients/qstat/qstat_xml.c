@@ -974,6 +974,7 @@ static int qstat_xml_queue_finished(qstat_handler_t* handler, const char* qname,
       queue_list = lGetList(ctx->queue_list_elem, XMLE_List);
       if (queue_list == NULL) {
          DPRINTF(("Had empty queue list, create new one\n"));
+         /* It is actually defined as "Queue-List" in the schema.  */
          queue_list = lCreateList("Queue-List", XMLE_Type);
          lSetList(ctx->queue_list_elem, XMLE_List, queue_list);
       }

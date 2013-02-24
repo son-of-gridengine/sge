@@ -58,7 +58,7 @@ extern "C" {
 *  FUNCTION
 *     CULL element holding values which define a id range
 *     (e.g. 1-9:2 => 1, 3, 5, 7, 9). 
-*     Lists of this CULL element are hold within a CULL job element
+*     Lists of this CULL element are held within a CULL job element
 *     (JB_Type) to hold job array task ids.
 *     Several functions may be used to access/modify/delete range 
 *     elements and range lists. You may find them in the 'SEE ALSO' 
@@ -66,7 +66,7 @@ extern "C" {
 *     because they assure and require a defined structure of 
 *     elements and lists.
 *     
-*     Range elements and lists stored in other CULL elements fullfill
+*     Range elements and lists stored in other CULL elements fulfil
 *     following conditions:
 *
 *        - min <= max
