@@ -186,9 +186,9 @@ BackupSgeCell()
    if [ -f $SGE_ROOT/$SGE_CELL/common/sge_qquota ]; then
       cp $SGE_ROOT/$SGE_CELL/common/sge_qquota "${DEST_DIR}/cell"
    fi
-   #sge_qstat
-   if [ -f $SGE_ROOT/$SGE_CELL/common/sge_qstat ]; then
-      cp $SGE_ROOT/$SGE_CELL/common/sge_qstat "${DEST_DIR}/cell"
+   #sge_qrstat
+   if [ -f $SGE_ROOT/$SGE_CELL/common/sge_qrstat ]; then
+      cp $SGE_ROOT/$SGE_CELL/common/sge_qrstat "${DEST_DIR}/cell"
    fi
    
    #shadow_masters
@@ -203,12 +203,16 @@ BackupSgeCell()
    if [ -r "$SGE_ROOT/$SGE_CELL/common/dbwriter.conf" ]; then
       cp "$SGE_ROOT/$SGE_CELL/common/dbwriter.conf" "${DEST_DIR}/cell"
    fi
-	
    #Save JMX settings if present
    if [ -d "$SGE_ROOT/$SGE_CELL/common/jmx" ]; then
       cp -r "$SGE_ROOT/$SGE_CELL/common/jmx" "${DEST_DIR}/cell/jmx"
    fi
-   
+   # Hadoop settings, if present
+   if [ -d "$SGE_ROOT/$SGE_CELL/common/hadoop" ]; then
+      cp -r "$SGE_ROOT/$SGE_CELL/common/hadoop" "${DEST_DIR}/cell/hadoop"
+   fi
+   # Fixme: should (any of) the CA be copied?
+
    #Save cluster's windows host info
    res=`$QHOST -l "arch=win*" 2>/dev/null`
    if [ -n "$res" ]; then     # has windows hosts
