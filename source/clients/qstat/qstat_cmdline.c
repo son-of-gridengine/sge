@@ -266,13 +266,13 @@ qstat_usage(int qselect_mode, FILE *fp, char *what)
       if (!qselect_mode) 
          fprintf(fp, "        [-F [resource_attributes]]        %s\n",MSG_QSTAT_USAGE_FULLOUTPUTANDSHOWRESOURCESOFQUEUES);
       if (!qselect_mode) {
-         fprintf(fp, "        [-g {c}]                          %s\n",MSG_QSTAT_USAGE_DISPLAYCQUEUESUMMARY);
-         fprintf(fp, "        [-g {d}]                          %s\n",MSG_QSTAT_USAGE_DISPLAYALLJOBARRAYTASKS);
-         fprintf(fp, "        [-g {t}]                          %s\n",MSG_QSTAT_USAGE_DISPLAYALLPARALLELJOBTASKS);
+         fprintf(fp, "        [-g c]                            %s\n",MSG_QSTAT_USAGE_DISPLAYCQUEUESUMMARY);
+         fprintf(fp, "        [-g d]                            %s\n",MSG_QSTAT_USAGE_DISPLAYALLJOBARRAYTASKS);
+         fprintf(fp, "        [-g t]                            %s\n",MSG_QSTAT_USAGE_DISPLAYALLPARALLELJOBTASKS);
       }
       fprintf(fp, "        [-help]                           %s\n",MSG_COMMON_help_OPT_USAGE);
       if (!qselect_mode)
-         fprintf(fp, "        [-j job_identifier_list ]         %s\n",MSG_QSTAT_USAGE_SHOWSCHEDULERJOBINFO);
+         fprintf(fp, "        [-j [job_identifier_list]]        %s\n",MSG_QSTAT_USAGE_SHOWSCHEDULERJOBINFO);
       fprintf(fp, "        [-l resource_list]                %s\n",MSG_QSTAT_USAGE_REQUESTTHEGIVENRESOURCES);
       if (!qselect_mode) 
          fprintf(fp, "        [-ne]                             %s\n",MSG_QSTAT_USAGE_HIDEEMPTYQUEUES);

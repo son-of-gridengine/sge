@@ -169,7 +169,7 @@ sge_jvm_terminate(sge_gdi_ctx_class_t *ctx, lList **answer_list)
    } else {
       sge_mutex_unlock("master jvm struct", SGE_FUNC, __LINE__, &(Master_Jvm.mutex));
 
-      ERROR((SGE_EVENT, MSG_THREAD_XNOTRUNNING_S, threadnames[JVM_THREAD]));
+      WARNING((SGE_EVENT, MSG_THREAD_XNOTRUNNING_S, threadnames[JVM_THREAD]));
       answer_list_add(answer_list, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
    }
 
