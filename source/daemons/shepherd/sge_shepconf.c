@@ -49,14 +49,14 @@
 *
 *  FUNCTION
 *     Try to find the variable "method_name" in config-file. 
-*     Return true and set "method" if it is an absolute path
+*     Return true and set "method" if it is an absolute path;
 *     otherwise return false.
 *      
 *
 *  INPUTS
 *     char *method_name - "starter_method", "suspend_method", 
 *                         "resume_method" or "terminate_method"
-*     dstring *method   - Absolut filename of the method 
+*     dstring *method   - Absolute filename of the method
 *
 *  RESULT
 *     int - true or false 

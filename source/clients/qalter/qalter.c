@@ -735,7 +735,7 @@ static lList *qalter_parse_job_parameter(u_long32 me_who, lList *cmdline, lList 
    
    lFreeWhat(&what);
 
-   /* if user uses -u or -uall flag and does not enter jids
+   /* if user uses -u flag and does not enter jids
       we will add a dummy job to send other parameters to qmaster */
    if (users_flag && !lGetList(job, JB_job_identifier_list)){   
       lList *jid_list = NULL;

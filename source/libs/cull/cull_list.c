@@ -627,13 +627,13 @@ const lDescr *lGetElemDescr(const lListElem *ep)
 
 /****** cull/list/lWriteElem() ************************************************
 *  NAME
-*     lWriteElem() -- Write a element to monitoring level CULL_LAYER 
+*     lWriteElem() -- Write a element to stderr
 *
 *  SYNOPSIS
 *     void lWriteElem(const lListElem *ep) 
 *
 *  FUNCTION
-*     Write a element to monitoring level CULL_LAYER a info message 
+*     Write a element to stderr
 *
 *  INPUTS
 *     const lListElem *ep - element 
@@ -787,13 +787,13 @@ DTRACE;
 
 /****** cull/list/lWriteList() ************************************************
 *  NAME
-*     lWriteList() -- Write a list to monitoring level CULL_LAYER 
+*     lWriteList() -- Write a list to stderr
 *
 *  SYNOPSIS
 *     void lWriteList(const lList *lp) 
 *
 *  FUNCTION
-*     Write a list to monitoring level CULL_LAYER as info message. 
+*     Write a list to stderr
 *
 *  INPUTS
 *     const lList *lp - list 

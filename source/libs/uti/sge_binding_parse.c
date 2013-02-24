@@ -79,33 +79,6 @@ binding_type_to_string(binding_type_t type, dstring *string) {
    return ret;
 }
 
-/****** sge_binding_hlp/binding_striding_parse_step_size() *************************
-*  NAME
-*     binding_striding_parse_step_size() -- Parses the step size out of the "striding" query. 
-*
-*  SYNOPSIS
-*     int binding_striding_parse_step_size(const char* parameter) 
-*
-*  FUNCTION
-*     Parses the step size for the core binding strategy "striding" out of the 
-*     query.
-* 
-*     The query string is expected to have following syntax: 
-*    
-*           "striding:<amount>:<stepsize>[:<socket>,<core>]"
-*
-*  INPUTS
-*     const char* parameter - Points to the string with the query. 
-*
-*  RESULT
-*     int - Returns the step size or -1 when it could not been parsed. 
-*
-*  NOTES
-*     MT-NOTE: binding_striding_parse_step_size() is NOT MT safe 
-*
-*  SEE ALSO
-*     ???/???
-*******************************************************************************/
 bool binding_explicit_extract_sockets_cores(const char* parameter,
    int** list_of_sockets, int* samount, int** list_of_cores, int* camount)
 {

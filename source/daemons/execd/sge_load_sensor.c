@@ -152,7 +152,7 @@ static void sge_ls_set_pid(lListElem *this_ls, pid_t pid)
 *     static int sge_ls_status(lListElem *this_ls)
 *
 *  FUNCTION
-*     The functions detects the status of a londsensor
+*     This function detects the status of a loadsensor
 *     and returns the corresponding integer value. 
 *     Following values are possible:
 *
@@ -206,7 +206,7 @@ static int sge_ls_status(lListElem *this_ls)
 *     'this_ls' before this function will be called. 
 *
 *     The process environment of the loadsensor will contain
-*     the HOST variable. This variable containes the hostname
+*     the HOST variable. This variable contains the hostname
 *     of the execution daemon which calls this function.
 *
 *     If 'this_ls' correlates to the 'qidle'-loadsensor then 
@@ -219,7 +219,7 @@ static int sge_ls_status(lListElem *this_ls)
 *  RESULT
 *     An additional loadsensor process will be started. 
 *     [this_ls] - the CULL element will be modified
-*        LS_pid containes the pid of the ls process 
+*        LS_pid contains the pid of the ls process
 *        LS_in, LS_out, LS_err are the FILE-streams for the
 *        communication with the ls-process     
 *        returns LS_OK
@@ -637,7 +637,7 @@ void sge_ls_gnu_ls(int gnu_ls)
 *     'ls_list' (LS_Type) will be added and the process 
 *     will be started. 
 *
-*     Loadsensors wich are contained in the global list
+*     Loadsensors which are contained in the global list
 *     but not in 'scriptfiles' will be stopped and 
 *     removed.
 *
@@ -804,7 +804,7 @@ void trigger_ls_restart(void)
 *
 *  RESULT
 *     0 - pid was not a loadsensor
-*     1 - we triggerd the restart because pid was a loadsensor
+*     1 - we triggered the restart because pid was a loadsensor
 ******************************************************************************/
 int sge_ls_stop_if_pid(pid_t pid)
 {
@@ -824,7 +824,7 @@ int sge_ls_stop_if_pid(pid_t pid)
 
 /****** execd/loadsensor/sge_ls_get() *****************************************
 *  NAME
-*     sge_ls_get -- reqeust a load report 
+*     sge_ls_get -- request a load report
 *
 *  SYNOPSIS
 *     int sge_ls_get(lList **lpp)

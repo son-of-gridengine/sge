@@ -629,6 +629,7 @@ void sge_security_exit(int i)
 *     Tries to get credential for a security system (DCE or KERBEROS) and
 *     sets the resulting information in the job structure.
 *     If an error occurs the return value is unequal 0
+*     Called by submitting client
 *
 *  INPUTS
 *     job - the job structure
@@ -731,12 +732,13 @@ int set_sec_cred(const char *sge_root, const char *mastername, lListElem *job, l
 *     cache_sec_cred() -- ??? 
 *
 *  SYNOPSIS
-*     bool cache_sec_cred(lListElem *jep, const char *rhost) 
+*     bool cache_sec_cred(const char* sge_root, lListElem *jep, const char *rhost)
 *
 *  FUNCTION
-*     ??? 
+*     Called by qmaster when sending out jobs
 *
 *  INPUTS
+*     const char* sge_root
 *     lListElem *jep    - ??? 
 *     const char *rhost - ??? 
 *
@@ -1355,11 +1357,11 @@ sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
 *  FUNCTION
 *     Decrypts and parses the "auth_info" substring part of "packet" and
 *     writes that information into the variables "uid", "gid", "user" and
-*     "group". If the buffer sizes of "user" and/or "group" are to small
+*     "group". If the buffer sizes of "user" and/or "group" are too small
 *     than the strings will be truncated. Corresponding buffer sizes have 
-*     to be provided by "user_len" and "group_len".o
+*     to be provided by "user_len" and "group_len".
 *
-*     If "authinfo" does not contain unsefull information than
+*     If "authinfo" does not contain useful information, then
 *     the function will return with a value of "false" and answer_list 
 *     will be filled. 
 *

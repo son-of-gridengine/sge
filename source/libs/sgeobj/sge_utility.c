@@ -63,14 +63,14 @@
 *     str_length, const char *name, int table) 
 *
 *  FUNCTION
-*     Verifies object names. The follwing verification tables are 
+*     Verifies object names. The following verification tables are
 *     used
 *
 *        QSUB_TABLE    job account strings 
 *           (see qsub(1) -A for characters not allowed)
 *        QSUB_TABLE    job name
 *           (see qsub(1) -N for characters not allowed)
-*        KEY_TABLE     parallel environemnt names
+*        KEY_TABLE     parallel environment names
 *           (see sge_pe(5))
 *        KEY_TABLE     calendar names 
 *           (see calendar_conf(5))
