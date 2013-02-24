@@ -418,7 +418,7 @@ static int do_prolog(int timeout, int ckpt_type)
 
       if (n_exit_status<(i=count_exit_status())) {
          shepherd_trace("exit states increased from %d to %d", n_exit_status, i);
-         /* in this case the child didnt get to the exec call or it failed */
+         /* in this case the child didn't get to the exec call or it failed */
          shepherd_trace("failed starting prolog");
          return SSTATE_BEFORE_PROLOG;
       }
@@ -472,7 +472,7 @@ static int do_epilog(int timeout, int ckpt_type)
          shepherd_trace("exit states increased from %d to %d", 
                                 n_exit_status, i);
          /*
-         ** in this case the child didnt get to the exec call or it failed
+         ** in this case the child didn't get to the exec call or it failed
          ** the status that waitpid and finally start_child returns is
          ** reserved for the exit status of the job
          */
@@ -527,7 +527,7 @@ static int do_pe_start(int timeout, int ckpt_type, pid_t *pe_pid)
       if (n_exit_status<(i=count_exit_status())) {
          shepherd_trace("exit states increased from %d to %d", n_exit_status, i);
          /*
-         ** in this case the child didnt get to the exec call or it failed
+         ** in this case the child didn't get to the exec call or it failed
          ** the status that waitpid and finally start_child returns is
          ** reserved for the exit status of the job
          */
@@ -591,7 +591,7 @@ static int do_pe_stop(int timeout, int ckpt_type, pid_t *pe_pid)
       if (n_exit_status<(i=count_exit_status())) {
          shepherd_trace("exit states increased from %d to %d", n_exit_status, i);
          /*
-         ** in this case the child didnt get to the exec call or it failed
+         ** in this case the child didn't get to the exec call or it failed
          ** the status that waitpid and finally start_child returns is
          ** reserved for the exit status of the job
          */
@@ -640,10 +640,10 @@ static int do_pe_stop(int timeout, int ckpt_type, pid_t *pe_pid)
 
  Strategy: Do all communication with the execd per filesystem. This gives
            us a chance to see what's happening from outside. This decouples
-           shepherdd from the execd. In filesystems we trust, in communication
+           shepherd from the execd. In filesystems we trust, in communication
            we do not.
 
- Each shepherdd has its own directory. The caller has to cd to this directory
+ Each Shepherd has its own directory. The caller has to cd to this directory
  before starting sge_shepherd.
 
  Input to the shepherd:
@@ -671,7 +671,7 @@ static int do_pe_stop(int timeout, int ckpt_type, pid_t *pe_pid)
  breakdown should cause this.
 
  If the "exit_status" file exists the shepherd has terminated normally.
- If exit_status==0 everything is fine. If exit_status!=0 a problem occured.
+ If exit_status==0 everything is fine. If exit_status!=0 a problem occurred.
  The error file should give hints about what happened.
  exit_status values: see shepherd_states header file
 
@@ -757,7 +757,7 @@ int main(int argc, char **argv)
    if ((ret=read_config("config"))) {
 
       /* if we can't read the config file, try to switch to admin user
-       * that our error/trace message can be succesfully logged
+       * that our error/trace message can be successfully logged
        * this is done in case where our getuid() is root and our
        * geteuid() is a normal user id
        */
@@ -897,7 +897,7 @@ int main(int argc, char **argv)
 
    /*
     * this blocks sge_shepherd until the first time the token is
-    * sucessfully set, then we start the sge_coshepherd in background
+    * successfully set, then we start the sge_coshepherd in background
     */
    if ((cp = search_conf_val("use_afs")) && atoi(cp) > 0) {
       char *coshepherd = search_conf_val("coshepherd");
@@ -1437,7 +1437,7 @@ static int start_child(const char *childname, /* prolog, job, epilog */
    */
    if (!SGE_STAT("exit_status", &buf) && buf.st_size) {
       /*
-      ** in this case the child didnt get to the exec call or it failed
+      ** in this case the child didn't get to the exec call or it failed
       ** the status that waitpid and finally start_child returns is
       ** reserved for the exit status of the job
       */
@@ -2041,7 +2041,7 @@ void shepherd_deliver_signal(int sig, int pid, int *postponed_signal,
 *    (terminate_method, resume_method or suspend_method) 
 *
 *  INPUTS
-*     int pid               - the signal which sould be delivered
+*     int pid               - the signal which should be delivered
 *     int pid               - pid of the job
 *     pid_t *ctrl_pid       - pid of applications which might be started 
 *
@@ -2087,7 +2087,7 @@ static void shepconf_deliver_signal_or_method(int sig, int pid, pid_t *ctrl_pid)
 
 /*--------------------------------------------------------------------
  * set_shepherd_signal_mask
- * set signal mask that shpher can handle signals from execd
+ * set signal mask that shepherd can handle signals from execd
  *--------------------------------------------------------------------*/
 static void set_shepherd_signal_mask(void)   
 {
@@ -2120,7 +2120,7 @@ static void set_shepherd_signal_mask(void)
    sigact.sa_handler = signal_handler;
    sigact.sa_mask = mask;
 
-   /* SA_INTERRUPT is at least needed on SUN4 to interupt waitxx() 
+   /* SA_INTERRUPT is at least needed on SUN4 to interrupt waitxx()
     * when a signal arrives 
     */
 
@@ -2219,7 +2219,7 @@ static int check_ckpttype(void)
       if ((atoi(ckpt_restarted) > 1) && !(ckpt_type & CKPT_APPLICATION))
          ckpt_type |= CKPT_REST_KERNEL;
          
-      /* special hack to avoid restart from restart command if resart = "none" */
+      /* special hack to avoid restart from restart command if restart = "none" */
       if ((ckpt_type & CKPT_REST_KERNEL) && !strcasecmp(ckpt_rest_command, "none"))
          ckpt_type &= ~CKPT_REST_KERNEL;    
 
@@ -2399,7 +2399,7 @@ static void handle_signals_and_methods(
             *inArena = 1;
          }                     
       }
-      /* A migration request occured and we just did a regular checkpoint */
+      /* A migration request occurred and we just did a regular checkpoint */
       if (*kill_job_after_checkpoint) {
           shepherd_trace("killing job after regular checkpoint due to migration request");
           shepherd_signal_job(-pid, SIGKILL);   
@@ -2412,7 +2412,7 @@ static void handle_signals_and_methods(
       /*
        * If the migrate command exited but the job did 
        * not stop (due to error in the migrate script) we have
-       * to reset internat state. As result further migrate
+       * to reset internal state. As result further migrate
        * commands will be executed (qmod -f -s).
        */
       *inCkpt = 0;
@@ -2456,7 +2456,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
    int ckpt_cmd_pid, migr_cmd_pid;
    int rest_ckpt_interval;
    int inArena, inCkpt, kill_job_after_checkpoint, job_pid;
-   int postponed_signal = 0; /* used for implementing SIGSTOP/SIGKILL notifiy mechanism */
+   int postponed_signal = 0; /* used for implementing SIGSTOP/SIGKILL notify mechanism */
    pid_t ctrl_pid[3];
    int wait_options = 0;
    char* stdout_path = NULL;
@@ -2611,7 +2611,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
       /* qsub -pty handling */
       if (fd_pty_master != -1) {
          int ret;
-         int stop_job = 0;    /* This flag will be set if an error occured */
+         int stop_job = 0;    /* This flag will be set if an error occurred */
          int stop_poll = 1;   /* This flag will be reset if polling is still necessary */
 
          /* look for data to write */
@@ -2736,7 +2736,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
             }
          }
 
-         /* If an error occured we have to terminate the job. */
+         /* If an error occurred we have to terminate the job. */
          if (stop_job == 1) {
             shepherd_trace("An error occurred while executing the job. Job will be terminated.");
             shepherd_signal_job(-pid, SIGTERM);
@@ -2792,7 +2792,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
 
 /*-------------------------------------------------------------------------
  * set_ckpt_params
- * may not called befor "job_pid" is known and set in the configuration
+ * may not called before "job_pid" is known and set in the configuration
  * don't do anything for non ckpt jobs except setting ckpt_interval = 0
  *-------------------------------------------------------------------------*/
 static void set_ckpt_params(int ckpt_type, char *ckpt_command, int ckpt_len,

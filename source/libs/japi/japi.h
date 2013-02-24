@@ -135,7 +135,9 @@ int japi_was_init_called(dstring* diag);
 /*
  * Submit a job with attributes defined in the job template 'jt'.
  * The job identifier 'job_id' is a printable, NULL terminated string,
- * identical to that returned by the underlying DRM system.
+ * identical to that returned by the underlying DRM system.  If
+ * use_euid_egid is true, submit with the current effective uid/gid,
+ * not the real ones.
  */
 int japi_run_job(dstring *jobid, lListElem **sge_job_template, bool use_euid_egid, dstring *diag);
 

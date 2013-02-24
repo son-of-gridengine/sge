@@ -70,7 +70,7 @@ extern int h_errno;
 extern void trace(char *);
 
 
-/* MT-NOTE: hostlist used only in qmaster, commd and some utilities */
+/* MT-NOTE: hostlist used only in qmaster and some utilities */
 static host *hostlist = NULL;
 
 /* MT-NOTE: localhost used only in commd */
@@ -383,11 +383,12 @@ const char *name
 *     sge_gethostbyname() -- gethostbyname() wrapper
 *
 *  SYNOPSIS
-*     struct hostent *sge_gethostbyname(const char *name)
+*     struct hostent *sge_gethostbyname(const char *name, int *system_error_retval)
 *
 *  FUNCTION
-*     Wrapps gethostbyname() function calls, measures time spent 
+*     Wraps gethostbyname() function calls, measures time spent
 *     in gethostbyname() and logs when very much time has passed.
+*     On error, return error code in *system_error_retval if that is non-null.
 *
 *     return value must be released by function caller (don't forget the 
 *     char* array lists inside of struct hostent)
@@ -662,11 +663,12 @@ struct hostent *sge_copy_hostent(struct hostent *orig)
 *     sge_gethostbyaddr() -- gethostbyaddr() wrapper
 *
 *  SYNOPSIS
-*     struct hostent *sge_gethostbyaddr(const struct in_addr *addr)
+*     struct hostent *sge_gethostbyaddr(const struct in_addr *addr, int* system_error_retval)
 *
 *  FUNCTION
-*     Wrapps gethostbyaddr() function calls, measures time spent 
+*     Wraps gethostbyaddr() function calls, measures time spent
 *     in gethostbyaddr() and logs when very much time has passed.
+*     On error, return error code in *system_error_retval if that is non-null.
 *
 *     return value must be released by function caller (don't forget the 
 *     char** array lists inside of struct hostent)
@@ -812,7 +814,7 @@ struct hostent *sge_gethostbyaddr(const struct in_addr *addr, int* system_error_
 
 #ifdef GETHOSTBYADDR_M
 #define SGE_GETHOSTBYADDR_FOUND
-   /* This is for everone else. */
+   /* This is for everyone else. */
    DPRINTF (("Getting host by addr - Mutex guarded\n"));
    
    sge_mutex_lock("hostbyaddr", SGE_FUNC, __LINE__, &hostbyaddr_mutex);
@@ -1204,14 +1206,14 @@ void sge_hostcpy(char *dst, const char *raw)
    if ((default_domain = bootstrap_get_default_domain()) != NULL && 
               SGE_STRCASECMP(default_domain, "none") != 0) {
  
-      /* exotic: honor FQDN but use default_domain */
+      /* exotic: honour FQDN but use default_domain */
       if (!strchr(raw, '.')) {
          snprintf(dst, CL_MAXHOSTLEN, "%s.%s", raw, default_domain);
       } else {
          sge_strlcpy(dst, raw, CL_MAXHOSTLEN);
       }
    } else {
-      /* hardcore: honor FQDN, don't use default_domain */
+      /* hardcore: honour FQDN, don't use default_domain */
  
       sge_strlcpy(dst, raw, CL_MAXHOSTLEN);
    }

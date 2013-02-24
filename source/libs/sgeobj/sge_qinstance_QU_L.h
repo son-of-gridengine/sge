@@ -43,10 +43,10 @@ extern "C" {
 /* *INDENT-OFF* */
 
 enum {
-   QU_qhostname = QU_LOWERBOUND,
-   QU_qname,
-   QU_full_name,
-   QU_tag,
+   QU_qhostname = QU_LOWERBOUND, /* host where the queue instance resides */
+   QU_qname,                     /* cluster queue the queue instance belongs to */
+   QU_full_name,                 /* name of the queue instance, e.g. "all.q@powermachine" */
+   QU_tag,                       /* tag used by scheduling code */
    QU_available_at, /* scheduling code only */
 
    QU_seq_no,
@@ -101,7 +101,7 @@ enum {
    QU_projects,
    QU_xprojects,
 
-   QU_consumable_config_list,
+   QU_consumable_config_list,   /* sublist with entry for each resource specified with "complex_values" */
    QU_load_thresholds,
    QU_suspend_thresholds,
 
@@ -123,7 +123,7 @@ enum {
    QU_pending_job_cnt,
    QU_soft_violation,
    QU_host_seq_no,
-   QU_resource_utilization,
+   QU_resource_utilization,     /* sublist with resource utilization entry for each consumable */
    QU_message_list,
    QU_gdi_do_later,
 

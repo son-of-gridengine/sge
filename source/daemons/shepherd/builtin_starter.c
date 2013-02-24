@@ -106,7 +106,7 @@ static void close_fds_from(int first) {
 
    shepherd_trace("closing all filedescriptors");
    shepherd_trace("further messages are in \"error\" and \"trace\"");
-   fflush(stdin);
+   fflush(stdin);               /* effect not defined in POSIX */
    fflush(stdout);
    fflush(stderr);
    /* Close all file descriptors except the ones used by tracing
@@ -1512,7 +1512,7 @@ int use_starter_method /* If this flag is set the shell path contains the
             start_qrsh_job();
          }
       }
-   } else { /* batch job */
+   } else { /* batch job or other command */
       char *filename = NULL;
 
       if( use_starter_method ) {
@@ -1595,7 +1595,7 @@ int use_starter_method /* If this flag is set the shell path contains the
                      failure = SSTATE_HELPER_SERVICE_BEFORE_JOB;
                      break;
 
-                  // unexpected job stati - set host to error
+                  // unexpected job state - set host to error
                   case js_Invalid:
                   case js_Received:
                   case js_ToBeStarted:

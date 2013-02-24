@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+# Use bash rather than sh because it can largely avoid external commands,
+# and so is faster.
 #
 #___INFO__MARK_BEGIN__
 ##########################################################################

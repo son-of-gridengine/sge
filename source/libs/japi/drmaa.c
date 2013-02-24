@@ -252,12 +252,6 @@ static const char *drmaa_supported_vector[] = {
 *     const char *contact                    - contact string
 *     char *error_diagnosis                  - diagnosis buffer
 *     size_t error_diag_len                  - diagnosis buffer length
-*     env var SGE_SESSION_KEY - dirty input/output interface to parametrize
-*                    without actually changing DRMAA library link interface. 
-*                    The string passed before drmaa_init() will be used as session
-*                    key for restarting the former Grid Engine JAPI session. After
-*                    drmaa_init() this env var contains the session key that is used
-*                    with this Grid Engine JAPI session.
 *                    
 *  RESULT
 *     int - DRMAA_ERRNO_SUCCESS on success otherwise 
@@ -394,11 +388,6 @@ static int drmaa_parse_contact_string(const char *contact, char **session)
 *  INPUTS
 *     char *error_diagnosis   - diagnosis buffer
 *     size_t error_diag_len   - diagnosis buffer length
-*     env var SGE_KEEP_SESSION 
-*                             - dirty input interface to make sessions restartable 
-*                               without actually changing DRMAA library link interface.
-*                               If set the session is not cleaned up (default), otherwise 
-*                               it is closed.
 *     
 *  RESULT
 *     int - DRMAA_ERRNO_SUCCESS on success, otherwise DRMAA_ERRNO_DRMS_EXIT_ERROR 

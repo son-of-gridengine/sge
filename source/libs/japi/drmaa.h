@@ -727,7 +727,13 @@ int drmaa_get_contact(char *contact, size_t contact_len,
  * OUT major - major version number (non-negative integer)
  * OUT minor - minor version number (non-negative integer)
  * SHALL return the major and minor version numbers of the DRMAA library;
- * for DRMAA 1.0, 'major' is 1 and 'minor' is 0. 
+ * for DRMAA 1.0, 'major' is 1 and 'minor' is 0.
+ * Return codes:
+ * DRMAA_ERRNO_SUCCESS -- success.
+ * DRMAA_ERRNO_INTERNAL_ERROR -- unexpected or internal error.
+ * DRMAA_ERRNO_INVALID_ARGUMENT -- an argument value is invalid.
+ * DRMAA_ERRNO_NO_MEMORY -- not enough free memory to perform the operation.
+ * DRMAA_ERRNO_NO_ACTIVE_SESSION -- no active session.
  */
 int drmaa_version(unsigned int *major, unsigned int *minor, 
          char *error_diagnosis, size_t error_diag_len);
