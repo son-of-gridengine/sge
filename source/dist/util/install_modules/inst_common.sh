@@ -2792,13 +2792,21 @@ CheckRunningDaemon()
 #
 BackupConfig()
 {
+   # NB RestoreConfig must be consistent with these lists
    DATE=`date '+%Y-%m-%d_%H_%M_%S'`
-   BUP_BDB_COMMON_FILE_LIST_TMP="accounting bootstrap qtask settings.sh st.enabled act_qmaster sgemaster host_aliases settings.csh sgeexecd sgebdb shadow_masters cluster_name"
-   BUP_BDB_COMMON_DIR_LIST_TMP="sgeCA"
-   BUP_BDB_SPOOL_FILE_LIST_TMP="jobseqnum"
-   BUP_CLASSIC_COMMON_FILE_LIST_TMP="configuration sched_configuration accounting bootstrap qtask settings.sh st.enabled act_qmaster sgemaster host_aliases settings.csh sgeexecd shadow_masters cluster_name"
-   BUP_CLASSIC_DIR_LIST_TMP="sgeCA local_conf"
-   BUP_CLASSIC_SPOOL_FILE_LIST_TMP="jobseqnum advance_reservations admin_hosts calendars centry ckpt cqueues exec_hosts hostgroups resource_quotas managers operators pe projects qinstances schedd submit_hosts usermapping users usersets zombies"
+   BUP_BDB_COMMON_FILE_LIST_TMP="accounting bootstrap qtask settings.sh \
+act_qmaster sgemaster host_aliases settings.csh sgeexecd shadow_masters \
+cluster_name sge_aliases sge_request sge_qstat sge_qrstat sge_ar_request \
+sge_qquota reporting dbwriter.conf"
+   BUP_BDB_COMMON_DIR_LIST_TMP="sgeCA hadoop jmx"
+   BUP_BDB_SPOOL_FILE_LIST_TMP="jobseqnum arseqnum"
+   BUP_CLASSIC_COMMON_FILE_LIST_TMP="$BUP_BDB_COMMON_FILE_LIST_TMP \
+configuration sched_configuration"
+   BUP_CLASSIC_DIR_LIST_TMP="$BUP_BDB_COMMON_DIR_LIST_TMP local_conf"
+   BUP_CLASSIC_SPOOL_FILE_LIST_TMP="$BUP_BDB_SPOOL_FILE_LIST_TMP \
+advance_reservations admin_hosts calendars centry ckpt cqueues exec_hosts \
+hostgroups resource_quotas managers operators pe projects qinstances \
+submit_hosts usermapping users usersets zombies"
    BUP_COMMON_FILE_LIST=""
    BUP_SPOOL_FILE_LIST=""
    BUP_SPOOL_DIR_LIST=""
@@ -2843,7 +2851,10 @@ BackupConfig()
    CreateTarArchive
 
    $INFOTEXT -n "\n... backup completed"
-   $INFOTEXT -n "\nAll information is saved in \n[%s]\n\n" $backup_dir
+   $INFOTEXT -n "\nAll information is saved in \n[%s]"  $backup_dir
+   [ -d /var/lib/sgeCA ] &&
+     $INFOTEXT -n "\nexcept for private key data (in /var/lib/sgeCA)"
+   $INFOTEXT -n "\n\n"
 
    if [ "$AUTO" = "true" ]; then
       MoveLog
@@ -2860,12 +2871,21 @@ BackupConfig()
 RestoreConfig()
 {
    DATE=`date '+%H_%M_%S'`
-   BUP_COMMON_FILE_LIST="accounting bootstrap qtask settings.sh act_qmaster sgemaster host_aliases settings.csh sgeexecd sgebdb shadow_masters st.enabled cluster_name"
-   BUP_COMMON_DIR_LIST="sgeCA"
-   BUP_SPOOL_FILE_LIST="jobseqnum"
-   BUP_CLASSIC_COMMON_FILE_LIST="configuration sched_configuration accounting bootstrap qtask settings.sh act_qmaster sgemaster host_aliases settings.csh sgeexecd shadow_masters st.enabled cluster_name"
-   BUP_CLASSIC_DIR_LIST="sgeCA local_conf"
-   BUP_CLASSIC_SPOOL_FILE_LIST="jobseqnum admin_hosts advance_reservations calendars centry ckpt cqueues exec_hosts hostgroups managers operators pe projects qinstances resource_quotas schedd submit_hosts usermapping users usersets zombies"
+   # Lists must be consistent with BackupConfig
+   BUP_COMMON_FILE_LIST="accounting bootstrap qtask settings.sh \
+act_qmaster sgemaster host_aliases settings.csh sgeexecd shadow_masters \
+cluster_name sge_aliases sge_request sge_qstat sge_qrstat sge_ar_request \
+sge_qquota reporting dbwriter.conf"
+
+   BUP_COMMON_DIR_LIST="sgeCA hadoop jmx"
+   BUP_SPOOL_FILE_LIST="jobseqnum arseqnum"
+   BUP_CLASSIC_COMMON_FILE_LIST="configuration sched_configuration \
+$BUP_COMMON_FILE_LIST"
+   BUP_CLASSIC_DIR_LIST="$BUP_COMMON_DIR_LIST local_conf"
+   BUP_CLASSIC_SPOOL_FILE_LIST="jobseqnum arseqnum admin_hosts \
+advance_reservations calendars centry ckpt cqueues exec_hosts hostgroups \
+managers operators pe projects qinstances resource_quotas submit_hosts \
+usermapping users usersets zombies"
 
    MKDIR="mkdir -p"
    CP="cp -f"
