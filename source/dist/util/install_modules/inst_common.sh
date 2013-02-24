@@ -2832,10 +2832,10 @@ submit_hosts usermapping users usersets zombies"
    SetBackupDir
 
 
-   $INFOTEXT  -auto $AUTO -ask "y" "n" -def "y" -n "\nIf you are using different tar versions (gnu tar/ Solaris tar), this option\n" \
-                                                     "can make some trouble. In some cases the tar packages may be corrupt.\n" \
+   $INFOTEXT  -auto $AUTO -ask "y" "n" -def "y" -n "\nIf you are using different tar versions (GNU tar/ Solaris tar), this option\n" \
+                                                     "can cause some trouble. In some cases the tar packages may be corrupt.\n" \
                                                      "Using the same tar binary for packing and unpacking works without problems!\n\n" \
-                                                     "Shall the backup function create a compressed tar package with your files? (y/n) [y] >>"
+                                                     "Should the backup function create a compressed tar package with your files? (y/n) [y] >>"
 
    if [ $? = 0 -a $AUTO != "true" ]; then
       TAR=true
@@ -3750,7 +3750,7 @@ CopyCA()
                 "files to each %s host. This can be done by script!\n" $out_text
       $INFOTEXT "To use this functionality, it is recommended, that user root\n" \
                 "may do rsh/ssh to the %s host, without being asked for a password!\n" $out_text
-      $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n "Should the script try to copy the cert files, for you, to each\n" \
+      $INFOTEXT -auto $AUTO -ask "y" "n" -def "y" -n "Should the script try to copy the certificate files to each\n" \
       "<%s> host? (y/n) [y] >>" $out_text
    fi
    ret=$?

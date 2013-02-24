@@ -659,7 +659,7 @@ bool escape_string(const char *string, dstring *target){
    DENTER(CULL_LAYER, "escape_string");
    
    if (target == NULL) {
-      DPRINTF(("no target string in excape_string()\n"));
+      DPRINTF(("no target string in escape_string()\n"));
       DEXIT;
       abort();
    } 

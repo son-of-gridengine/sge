@@ -87,7 +87,7 @@ static char*  cl_description[] = {
           /* 11 */               "message content dump (xml/bin/cull)",
           /* 12 */               "additional information",
           /* 13 */               "commlib linger time",
-          /* 14 */               "nr. of connections"
+          /* 14 */               "number of connections"
 };
 
 static char* cl_names[] = {
@@ -902,9 +902,11 @@ static void usage(int ret)
   fprintf(out, "   -dump      : dump communication traffic (see \"communication traffic output options\" for additional information)\n");
   fprintf(out, "                   (provides the same output like -dump_tag MSG)\n");
   fprintf(out, "   -dump_tag  : dump communication traffic (see \"communication traffic output options\" for additional information)\n");
+#if unimplemented
   fprintf(out, "                   tag=ALL <debug level> - show all\n");
   fprintf(out, "                   tag=APP <debug level> - show application messages\n");
-  fprintf(out, "                   tag=MSG               - show commlib protocol messages\n");
+#endif
+  fprintf(out, "                   tag=MSG               - show protocol messages like -dump\n");
   fprintf(out, "                   <debug level>         - ERROR, WARNING, INFO, DEBUG or DPRINTF\n");
   fprintf(out, "   -nonewline : dump output will not have a linebreak within a message\n");
   fprintf(out, "   -help      : show this info\n");
@@ -1336,7 +1338,7 @@ int main(int argc, char *argv[]) {
                   printf("run time [s]:             "sge_U32CFormat"\n", sge_u32c(status->runtime) );
                   printf("messages in read buffer:  "sge_U32CFormat"\n", sge_u32c(status->application_messages_brm) );
                   printf("messages in write buffer: "sge_U32CFormat"\n", sge_u32c(status->application_messages_bwm) );
-                  printf("nr. of connected clients: "sge_U32CFormat"\n", sge_u32c(status->application_connections_noc) );
+                  printf("no. of connected clients: "sge_U32CFormat"\n", sge_u32c(status->application_connections_noc) );
                   printf("status:                   "sge_U32CFormat"\n", sge_u32c(status->application_status) );
                   printf("info:                     %s\n",           status->info );
                   printf("\n");
