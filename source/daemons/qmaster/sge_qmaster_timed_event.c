@@ -1011,7 +1011,7 @@ void te_scan_table_and_deliver(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, mon
 
    DENTER(EVENT_LAYER, "te_scan_table_and_deliver");
 
-   DPRINTF(("%s: event (t:%d w:%u m:%d s:%s)\n",
+   DPRINTF(("%s: event (t:%d w:"sge_u32" m:"sge_u32" s:%s)\n",
             EVENT_FRMT(anEvent)));
 
    sge_mutex_lock("handler_table_mutex", SGE_FUNC, __LINE__, &Handler_Tbl.mutex);
@@ -1038,7 +1038,8 @@ void te_scan_table_and_deliver(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, mon
    {
       anEvent->when = time(NULL) + anEvent->interval;
 
-      DPRINTF(("%s: reccuring event (t:%d w:%u m:%u s:%s)\n", EVENT_FRMT(anEvent)));
+      DPRINTF(("%s: reccuring event (t:%d w:"sge_u32" m:"sge_u32" s:%s)\n",
+               EVENT_FRMT(anEvent)));
 
       te_add_event(anEvent);
    }
