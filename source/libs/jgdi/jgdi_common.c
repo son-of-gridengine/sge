@@ -2738,7 +2738,8 @@ jmethodID get_static_methodid(JNIEnv *env, jclass cls, const char* methodName,
       
       answer_list_add_sprintf(alpp, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR,
                               "static method %s(%s) not found in class %s", 
-                              signature, class_name ? class_name : "NA");      
+                              signature, class_name ? class_name : "NA",
+                              class_name ? class_name : "unknown");
                               
       if (class_name) {
          (*env)->ReleaseStringUTFChars(env, class_name_str, class_name);
@@ -2772,7 +2773,8 @@ jfieldID get_static_fieldid(JNIEnv *env, jclass cls, const char* fieldName,
       
       answer_list_add_sprintf(alpp, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR,
                               "static field %s(%s) not found in class %s", 
-                              signature, class_name ? class_name : "NA");
+                              signature, class_name ? class_name : "NA",
+                              class_name ? class_name : "unknown");
                
       if (class_name) {
          (*env)->ReleaseStringUTFChars(env, class_name_str, class_name);
