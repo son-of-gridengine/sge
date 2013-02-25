@@ -840,7 +840,7 @@ static int jgdi_qstat_job_additional_info(job_handler_t *handler, job_additional
       }
       default: {
          answer_list_add_sprintf(alpp, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR,
-                                 "Unknown additional job info %s", name);
+                                 "Unknown additional job info %d", name);
          ret = JGDI_ILLEGAL_STATE;
       }
    }
