@@ -120,6 +120,8 @@ static void examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, ch
 static void update_used_cores(const char* path_to_config, lListElem** jr);
 
 static void clean_up_binding(char* binding);
+
+static void reaper_sendmail(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jr);
 /* TODO: global c file with #define JAPI_SINGLE_SESSION_KEY "JAPI_SSK" */
 static const char *JAPI_SINGLE_SESSION_KEY = "JAPI_SSK";
 
@@ -714,7 +716,6 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
       host or queue error detection must be improved
    */
       general_failure = GFSTATE_HOST;
-      lSetUlong(jr, JR_general_failure, general_failure);
       job_related_adminmail(EXECD, jr, is_array, job_owner);
       break;
    case SSTATE_PROCSET_NOTSET:
@@ -724,7 +725,6 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    case SSTATE_PESTART_FAILED:
    case SSTATE_EPILOG_FAILED:
       general_failure = GFSTATE_QUEUE;
-      lSetUlong(jr, JR_general_failure, general_failure);
       job_related_adminmail(EXECD, jr, is_array, job_owner);
       break;
    case SSTATE_ADD_GRP_SET_ERROR:
@@ -765,7 +765,6 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
          }
 
          general_failure = job_caused_failure ? GFSTATE_JOB : GFSTATE_QUEUE;
-         lSetUlong(jr, JR_general_failure, general_failure);
          job_related_adminmail(EXECD, jr, is_array, job_owner);
       }
       break;
@@ -781,7 +780,6 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    case SSTATE_PASSWD_WRONG:
    case SSTATE_HELPER_SERVICE_BEFORE_JOB:
       general_failure = GFSTATE_JOB;
-      lSetUlong(jr, JR_general_failure, general_failure);
       job_related_adminmail(EXECD, jr, is_array, job_owner);
       break;
    /*
@@ -796,7 +794,6 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    case SSTATE_BEFORE_EPILOG:
    case SSTATE_PROCSET_NOTFREED:
       general_failure = GFSTATE_NO_HALT;
-      lSetUlong(jr, JR_general_failure, general_failure);
       job_related_adminmail(EXECD, jr, is_array, job_owner);
       break;
    /*
@@ -813,7 +810,6 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
       ** test for admin mail here
       */
       general_failure = GFSTATE_NO_HALT;
-      lSetUlong(jr, JR_general_failure, general_failure);
       job_related_adminmail(EXECD, jr, is_array, job_owner);
       break;
    default: 
@@ -1106,23 +1102,17 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
  The master should not give us jobs in the future and the administrator
  should be informed about the problem (e.g. we cant write to a filesystem).
  **************************************************************************/
-lListElem *execd_job_start_failure(
-lListElem *jep,
-lListElem *jatep,
-lListElem *petep,
-const char *error_string,
-int general 
-) {
+lListElem *execd_job_start_failure(lListElem *jep, lListElem *jatep,
+                                   lListElem *petep, const char *error_string,
+                                   int general)
+{
    return execd_job_failure(jep, jatep, petep, error_string, general, SSTATE_FAILURE_BEFORE_JOB);
 }
 
-lListElem *execd_job_run_failure(
-lListElem *jep,
-lListElem *jatep,
-lListElem *petep,
-const char *error_string,
-int general 
-) {
+lListElem *execd_job_run_failure(lListElem *jep, lListElem *jatep,
+                                 lListElem *petep, const char *error_string,
+                                 int general)
+{
    return execd_job_failure(jep, jatep, petep, error_string, general, SSTATE_FAILURE_AFTER_JOB);
 }
 
@@ -1867,11 +1857,8 @@ u_long32 *valuep
 
 
 /* send mail to users if requested */
-void reaper_sendmail(
-sge_gdi_ctx_class_t *ctx,
-lListElem *jep,
-lListElem *jr 
-) {
+static void reaper_sendmail(sge_gdi_ctx_class_t *ctx, lListElem *jep,
+                            lListElem *jr) {
    lList *mail_users; 
    u_long32 mail_options; 
    char sge_mail_subj[1024];

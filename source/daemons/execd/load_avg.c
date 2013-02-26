@@ -107,7 +107,7 @@ report_source execd_report_sources[] = {
 };
 
 lUlong sge_execd_report_seqno = 0;
-u_long32 qmrestart_time = 0;
+static u_long32 qmrestart_time = 0;
 static bool delay_job_reports = false;
 static bool send_all = true;
 static lListElem *last_lr = NULL;
@@ -895,7 +895,7 @@ void update_job_usage(const char* qualified_hostname)
             /* should not happen in theory */
             ERROR((SGE_EVENT, "removing unreferenced job "sge_u32"."sge_u32" without job report from ptf",job_id ,ja_task_id ));
 #ifdef COMPILE_DC
-            ptf_unregister_registered_job(job_id ,ja_task_id);
+            ptf_unregister_registered_job(job_id, ja_task_id);
 #endif
             continue;
          }

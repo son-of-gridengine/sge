@@ -73,9 +73,6 @@ extern void trace(char *);
 /* MT-NOTE: hostlist used only in qmaster and some utilities */
 static host *hostlist = NULL;
 
-/* MT-NOTE: localhost used only in commd */
-static host *localhost = NULL;
-
 static pthread_mutex_t get_qmaster_port_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t get_execd_port_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -311,21 +308,6 @@ static pthread_mutex_t hostbyname_mutex = PTHREAD_MUTEX_INITIALIZER;
 /* guards access to the non-MT-safe gethostbyaddr system call */
 static pthread_mutex_t hostbyaddr_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
-
-
-/****** uti/hostname/uti_state_get_localhost() *************************************
-*  NAME
-*     uti_state_get_localhost() - read access to uti lib global variables
-*
-*  FUNCTION
-*     Provides access to either global variable or per thread global variable.
-*
-*******************************************************************************/
-host *uti_state_get_localhost(void)
-{
-   /* so far called only by commd */ 
-   return localhost;
-}
 
 #define MAX_RESOLVER_BLOCKING 15
 
@@ -1000,6 +982,7 @@ host *sge_host_search(const char *name, char *addr)
    return NULL;
 }
 
+#if unused
 /****** uti/hostname/sge_host_print() *****************************************
 *  NAME
 *     sge_host_print() -- Print host entry info file 
@@ -1068,7 +1051,7 @@ void sge_host_list_print(FILE *fp)
          fprintf(fp, "\n");
    }
 }
-
+#endif
 
 
 void sge_free_hostent( struct hostent** he_to_del ) {

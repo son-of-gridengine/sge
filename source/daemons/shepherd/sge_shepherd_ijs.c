@@ -972,11 +972,11 @@ parent_loop(int job_pid, const char *childname, int timeout, ckpt_info_t *p_ckpt
 
 
 #if 0
-{
-struct timeb ts;
-ftime(&ts);
-shepherd_trace("+++++ timestamp: %d.%03d ++++", (int)ts.time, (int)ts.millitm);
-}
+   {
+     struct timeb ts;
+     ftime(&ts);
+     shepherd_trace("+++++ timestamp: %d.%03d ++++", (int)ts.time, (int)ts.millitm);
+   }
 #endif
 
    /* From here on, only the main thread is running */

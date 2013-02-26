@@ -303,7 +303,6 @@ set USE_INSURE       = 0
 set DEBUGGED         = 0
 set COMPILE_DC       = 0
 set CC               = cc
-set CXX              = CC
 set CFLAGS           = "-D$TARGET_BITS $INP_CFLAGS -DSGE_PQS_API"
 set CORE_INCLUDE     = "-I../common -I../libs -I../libs/uti -I../libs/juti -I../libs/gdi -I../libs/japi -I../libs/sgeobj -I../libs/cull -I../libs/comm -I../libs/comm/lists -I../libs/sched -I../libs/evc -I../libs/evm -I../libs/mir -I../daemons/common -I../daemons/qmaster -I../daemons/execd -I../clients/common -I."
 set DEBUG_FLAG       = ""
@@ -436,11 +435,11 @@ set LOADCHECK_OBJ = loadcheck.o
 set JUTI_OBJ      = 
 
 # Compile with gettext and libintl - we have platform dependent defaults
+# Fixme: arguably no point until we have message catalogues fixed; will result
+# in localized system error messages with unlocalized SGE ones.
 switch ($BUILDARCH) 
    case LINUXAMD64:
      set MAKEJEMALLOCLIB  = 1
-     set WITH_GETTEXT = 1
-     breaksw
    case LINUX*:
      set WITH_GETTEXT = 1
      breaksw
@@ -490,7 +489,6 @@ while ($#argv >= 1 && $?found)
       breaksw
    case "-cc"
       set CC       = cc
-      set CXX      = CC
       breaksw
    case "-cov":
       set COVED      = 1
@@ -541,7 +539,6 @@ while ($#argv >= 1 && $?found)
    breaksw
    case "-gcc"
       set CC       = gcc
-      set CXX      = g++
       breaksw
    case "-gettext"
       set BUILDGETTEXT = 1
@@ -1004,9 +1001,9 @@ if ( $JAVA > 0 || $BUILDJAVADOC == 1 || $JNI == 1 ) then
       echo "Please set JAVA_HOME or use '-no-java -no-jni'"
       exit 1
    endif
-   if ( ${JAVA_HOME} == "/usr" ) then
+   if ( "${JAVA_HOME}" == "/usr" ) then
       echo 'Warning:'
-      echo 'Setting $JAVA_HOME to "/usr" causes problems on some systems, '
+      echo 'Setting JAVA_HOME to "/usr" causes problems on some systems, '
       echo 'because the associated include path will be "/usr/include", '
       echo 'which is a reserved system include path.'
       echo
@@ -1040,7 +1037,6 @@ case AIX51:
       set SHAREDLD = "gcc"
    else
       set CC       = xlc_r
-      set CXX      = xlC_r
       set LIBS = "$LIBS -lc"
       if ( $DEBUGGED == 1 ) then
          set DEBUG_FLAG = "$DEBUG_FLAG -qinitauto=01 -qro -qroconst"
@@ -1083,7 +1079,6 @@ case ALPHA5:
       set OFLAG = ""
    endif
 
-   set CXX = "cxx"
    set DLLIB = ""
 
    # gprof option is superset of debug option
@@ -1132,7 +1127,6 @@ case DARWIN_PPC:
    endif
 
    set CC = "gcc"
-   set CXX = "g++"
 
    if ( $DEBUGGED == 1) then
       set DEBUG_FLAG = "-g -DSGE_LOCK_DEBUG"
@@ -1236,7 +1230,6 @@ case FREEBSD_*:
    endif
    set ARFLAGS  = rcv
    set CC       = gcc
-   set CXX      = g++
    set DLLIB	 = ""
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
    set PTHRDSFLAGS = "-D_REENTRANT -D__USE_REENTRANT"
@@ -1266,7 +1259,6 @@ case NETBSD_*:
    set OFLAG = "-O"
    set ARFLAGS  = rcv
    set CC       = gcc
-   set CXX      = g++
    set DLLIB    = ""
    set PTHRDSFLAGS = "-D_REENTRANT -D__USE_REENTRANT"
    # If replacing NETBSD with __NetBSD__ note it's also used by openbsd in
@@ -1362,7 +1354,6 @@ case HP1164:
             set OFLAG = "+O2"
          endif
       endif
-      set CXX = "aCC"
       # Extended ANSI mode. Same as -Aa -D_HPUX_SOURCE +e.
       set CFLAGS = "-Ae $CFLAGS"
 
@@ -1443,9 +1434,6 @@ case LINUX*:
    else
       set OFLAG = ""
    endif
-
-   set CC  = gcc
-   set CXX = g++
 
    if ($BUILDARCH == LINUXPPC) then
       set CFLAGS = "-m32 $CFLAGS" # fixme: why?
@@ -1596,7 +1584,6 @@ case WIN32_X86:
 
    if ($CC == gcc) then
       set CC  = gcc
-      set CXX = gcc
       set CFLAGS = "$DEBUG_FLAG $CFLAGS"
       set CFLAGS = "-DGETHOSTBYADDR_M -D_ALL_SOURCE -D_REENTRANT $CFLAGS"
       set INTERIX6 = 0
@@ -1623,7 +1610,6 @@ case WIN32_X86:
       #set LFLAGS = "-Wl,-EL,-b=pe-i1386 $LFLAGS"
    else
       set CC  = cc
-      set CXX = cc
       set CFLAGS = "-X /Wall -X /WX $OFLAG -DINTERIX -D$COMPILE_ARCH -DUSE_SGE_UNSETENV $CFLAGS"
       set CFLAGS = "$DEBUG_FLAG $CFLAGS"
    endif
@@ -1706,7 +1692,6 @@ case CYGWIN_X86:
    endif
    set COMPILE_DC = 1
    set CC  = gcc
-   set CXX = g++
    if ($DEBUGGED == 1) then
       set DEBUG_FLAG = "-g $INSURE_FLAG -DSGE_LOCK_DEBUG"
    endif
@@ -2171,10 +2156,8 @@ endif
 set GSHARED_CFLAGS = "$SHARED_CFLAGS"
 set GSHARED_LFLAGS = "$SHARED_LFLAGS"
 
-# change CC / CXX for insure
 if ($USE_INSURE == 1) then
    set CC  = "insure $CC"
-   set CXX = "insure $CXX"
 endif
 
 if ("$LIBRARY_LIBS" == "") then

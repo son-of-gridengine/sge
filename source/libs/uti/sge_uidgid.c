@@ -487,6 +487,7 @@ exit:
    return ret;
 } /* sge_switch2start_user() */ 
 
+#if unused
 /****** uti/uidgid/sge_run_as_user() ******************************************
 *  NAME
 *     sge_run_as_user() -- Set euid to uid
@@ -526,6 +527,7 @@ int sge_run_as_user(void)
    DEXIT;
    return ret;
 } /* sge_run_as_user() */
+#endif
 
 /****** uti/uidgid/sge_user2uid() *********************************************
 *  NAME
@@ -2006,7 +2008,7 @@ FCLOSE_ERROR:
 
 /* Not MT-Safe */
 int
-password_find_entry(char *users[], char *encryped_pwds[], const char *user)
+password_find_entry(char *users[], char *encrypted_pwds[], const char *user)
 {
    int ret = -1;
    size_t i = 0;

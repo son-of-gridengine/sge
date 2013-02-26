@@ -1,3 +1,5 @@
+#ifndef __UTIL_H
+#define __UTIL_H
 bool is_dir(const char *dir);
 char *replace_char(char *str, size_t n, char c1, char c2);
 char * dev_file2string(const char* file, char *buffer, size_t *lbuffer);
@@ -9,3 +11,4 @@ bool file_exists(const char *file);
 char *strsignal(int sig);
 #endif
 bool copy_linewise(const char *src, const char *dst);
+#endif

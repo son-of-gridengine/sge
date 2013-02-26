@@ -68,7 +68,9 @@ int sge_switch2admin_user(void);
 int sge_switch2start_user(void);
 #endif
 bool sge_has_admin_user(void);
+#if unused
 int sge_run_as_user(void);
+#endif
 int sge_user2uid(const char *user, uid_t *puid, gid_t *pgid, int retries);  
 int sge_group2gid(const char *gname, gid_t *gidp, int retries);
 int sge_uid2user(uid_t uid, char *dst, size_t sz, int retries); 

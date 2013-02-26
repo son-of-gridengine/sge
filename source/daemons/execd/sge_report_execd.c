@@ -62,9 +62,6 @@ static char* report_types[] = {
 #endif
 
 
-extern lUlong sge_execd_report_seqno;
-
-
 /*-------------------------------------------------------------------------*/
 int sge_send_all_reports(sge_gdi_ctx_class_t *ctx, u_long32 now, int which,
                          report_source *report_sources)
