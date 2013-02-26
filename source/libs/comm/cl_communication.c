@@ -1763,7 +1763,7 @@ int cl_com_gethostname(char **unique_hostname, struct in_addr *copy_addr, struct
    char localhostname[CL_MAXHOSTNAMELEN_LENGTH + 1];
    
    errno = 0;
-   if (gethostname(localhostname,CL_MAXHOSTNAMELEN_LENGTH) != 0) {
+   if (gethostname(localhostname, sizeof localhostname) != 0) {
       if (system_error_value != NULL) {
          *system_error_value = errno;
       }

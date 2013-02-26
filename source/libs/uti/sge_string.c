@@ -1224,6 +1224,7 @@ char **sge_stracasecmp(const char *cp, char **cpp)
    return NULL;
 }   
 
+#if unused
 void
 stra_printf(char *stra[])
 {
@@ -1234,6 +1235,7 @@ stra_printf(char *stra[])
       i++;
    }
 }
+#endif
 
 /****** uti/string/stra_from_str() ********************************************
 *  NAME

@@ -47,9 +47,7 @@ pid_t coshepherd_pid = -999;
 ** DESCRIPTION
 **   string description of execution exit states
 */
-char *get_sstate_description(
-int sstate 
-) {
+char *get_sstate_description(int sstate) {
    int i;
    static struct _state_message {
       char *message;
@@ -99,10 +97,10 @@ int sstate
    };
 
    for (i=0; i<sizeof(state_message)/sizeof(struct _state_message); i++) {
-      if (state_message[i].state == sstate) 
+      if (state_message[i].state == sstate)
          return state_message[i].message;
-   }   
-   
+   }
+
    return "invalid execution state";
 }
 
