@@ -957,7 +957,7 @@ sge_jvm_main(void *arg)
    time_t next_prof_output = 0;
    monitoring_t monitor;
    sge_gdi_ctx_class_t *ctx = NULL;
-   bool jvm_started = false;
+   volatile bool jvm_started = false;
    bool do_endlessly = true;
 
    DENTER(TOP_LAYER, "sge_jvm_main");

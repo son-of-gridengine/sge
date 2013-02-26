@@ -109,43 +109,13 @@ typedef gid_t addgrpid_t;
 #    define PTF_OS_MIN_PRIORITY   (TS_PRIO_MIN)
 #    define PTF_OS_MAX_PRIORITY   (TS_PRIO_MAX)
 #    define PTF_BACKGROUND_NICE_VALUE 20
-#  elif defined(SOLARIS)
+#  elif defined(SOLARIS) || defined(ALPHA) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD)
 #    define ENFORCE_PRI_RANGE     1
 #    define PTF_MIN_PRIORITY      20
 #    define PTF_MAX_PRIORITY     -10
 #    define PTF_OS_MIN_PRIORITY   20
 #    define PTF_OS_MAX_PRIORITY  -20
-#  elif defined(ALPHA)
-#    define ENFORCE_PRI_RANGE     1
-#    define PTF_MIN_PRIORITY      20
-#    define PTF_MAX_PRIORITY     -10
-#    define PTF_OS_MIN_PRIORITY   20
-#    define PTF_OS_MAX_PRIORITY  -20
-#  elif defined(LINUX)
-#    define ENFORCE_PRI_RANGE     1
-#    define PTF_MIN_PRIORITY      20
-#    define PTF_MAX_PRIORITY      0
-#    define PTF_OS_MIN_PRIORITY   20
-#    define PTF_OS_MAX_PRIORITY  -20
-#  elif defined(DARWIN)
-#    define ENFORCE_PRI_RANGE     1
-#    define PTF_MIN_PRIORITY      20
-#    define PTF_MAX_PRIORITY     -10
-#    define PTF_OS_MIN_PRIORITY   20
-#    define PTF_OS_MAX_PRIORITY  -20
-#  elif defined(FREEBSD) || defined(NETBSD)
-#    define ENFORCE_PRI_RANGE     1
-#    define PTF_MIN_PRIORITY      20
-#    define PTF_MAX_PRIORITY     -10
-#    define PTF_OS_MIN_PRIORITY   20
-#    define PTF_OS_MAX_PRIORITY  -20
-#  elif defined(INTERIX)
-#    define ENFORCE_PRI_RANGE     1
-#    define PTF_MIN_PRIORITY      20
-#    define PTF_MAX_PRIORITY      0
-#    define PTF_OS_MIN_PRIORITY   20
-#    define PTF_OS_MAX_PRIORITY  -20
-#  elif defined(AIX)
+#  elif defined(LINUX) || defined(INTERIX) || defined(AIX)
 #    define ENFORCE_PRI_RANGE     1
 #    define PTF_MIN_PRIORITY      20
 #    define PTF_MAX_PRIORITY      0

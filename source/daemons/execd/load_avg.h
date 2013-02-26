@@ -36,6 +36,7 @@
 #include "sgeobj/sge_binding.h"
 
 extern report_source execd_report_sources[];
+extern lUlong sge_execd_report_seqno;
 
 lList *sge_build_load_report(const char* qualified_hostname, const char* binary_path);
 

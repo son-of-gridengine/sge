@@ -34,6 +34,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <errno.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_dstring.h"
@@ -55,6 +56,7 @@
 #include "sched/sge_sharetree_printing.h"
 
 #include "msg_smon.h"
+#include "msg_common.h"
 
 static int
 free_lists(lList **sharetree, lList **users, lList **projects, lList **usersets, lList **config)
@@ -211,9 +213,10 @@ open_output(const char *file_name, const char *mode)
    FILE *file = stdout;
    
    if (file_name != NULL) {
+      errno = 0;
       file = fopen(file_name, mode);
       if (file == NULL) {
-         fprintf(stderr, MSG_FILE_COULDNOTOPENXFORY_SS , file_name, mode);
+         fprintf(stderr, MSG_FILE_NOOPEN_SS, file_name, strerror(errno));
          fprintf(stderr, "\n");
          SGE_EXIT(NULL, 1);
       }
@@ -377,8 +380,12 @@ main(int argc, char **argv)
       }
 
       outfile = open_output(ofile, output_mode);
-      fwrite(sge_dstring_get_string(&output_dstring), 
-             sge_dstring_strlen(&output_dstring), 1, outfile);
+      if (fwrite(sge_dstring_get_string(&output_dstring), 
+                 1, sge_dstring_strlen(&output_dstring), outfile) !=
+          sge_dstring_strlen(&output_dstring)) {
+         fprintf(stderr, "%s\n", MSG_WRITE_FAILED);
+         SGE_EXIT(NULL, 1);
+      }
       outfile = close_output(outfile);
 
       free_lists(&sharetree, &users, &projects, &usersets, &config);

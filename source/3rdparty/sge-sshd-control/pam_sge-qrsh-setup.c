@@ -42,8 +42,8 @@
 #include <string.h>
 #include <stdarg.h>
 
-int getpppid(void);
-void pam_sge_log(int priority, const char *, ...);
+static int getpppid(void);
+static void pam_sge_log(int priority, const char *, ...);
 
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,
 	int flags, int argc, const char **argv)
@@ -152,7 +152,7 @@ PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh,
 	return PAM_SUCCESS;
 }
 
-int getpppid()
+static int getpppid()
 {
 	FILE *pipe;
 	char buffer[MAX_STRLEN];
@@ -171,7 +171,7 @@ int getpppid()
 	return proc_ppid;
 }
 
-void pam_sge_log(int priority, const char *msg, ...)
+static void pam_sge_log(int priority, const char *msg, ...)
 {
 	char buf[512];
 	va_list plist;
@@ -182,4 +182,3 @@ void pam_sge_log(int priority, const char *msg, ...)
 	syslog(priority, "%s", buf);
 	closelog();
 }
-

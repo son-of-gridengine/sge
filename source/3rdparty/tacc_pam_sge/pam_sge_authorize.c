@@ -52,9 +52,7 @@
 
 #include "sgeobj/sge_all_listsL.h"
 #include "sge_bootstrap.h"
-#include "cull_multitype.h"
 #include "cull_file.h"
-#include "uti/sge_profiling.h"
 #include "uti/sge_spool.h"
 
 /* --- authentication management functions --- */
@@ -149,8 +147,6 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
   char host_file[256]="";
 
   bootstrap_mt_init();
-  /* hopefully I can get rid of this */ 
-  sge_prof_set_enabled(false);
   
   /* Grab the user & host  */
   retval = pam_get_user(pamh,&user,NULL);

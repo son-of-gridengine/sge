@@ -1032,7 +1032,7 @@ FCLOSE_ERROR:
 *  NOTES
 *      MT-NOTE: setup_environment() is not MT safe
 *******************************************************************************/
-static void setup_environment()
+static void setup_environment(void)
 {
    /* Bugfix: Issuezilla 1300
     * Because this fix could break pre-existing installations, it was made
@@ -1072,7 +1072,7 @@ static void setup_environment()
 *  NOTES
 *      MT-NOTE: sge_get_environment() is not MT safe
 *******************************************************************************/
-char** sge_get_environment()
+char** sge_get_environment(void)
 {
    /* Bugfix: Issuezilla 1300
     * Because this fix could break pre-existing installations, it was made

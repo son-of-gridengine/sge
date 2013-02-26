@@ -254,7 +254,7 @@ DOC_PACKAGE=""
 COMMON_DOCS="doc/*.txt doc/*.asc doc/javadocs doc/LICENCES doc/NEWS"
 # This used to include catman, but that's probably not very useful now,
 # as all the relevant systems should have a man formatter.
-COMMON_PACKAGE="ckpt dtrace examples/jobs \
+COMMON_PACKAGE="dtrace examples/jobs \
                 examples/drmaa hadoop include inst_sge install_qmaster \
                 install_execd start_gui_installer \
 	    man mpi pvm qmon util lib/JSV.jar lib/drmaa.jar lib/herd.jar lib/juti.jar lib/jgdi.jar"

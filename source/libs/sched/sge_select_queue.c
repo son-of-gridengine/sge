@@ -6889,7 +6889,7 @@ sge_call_pe_qsort(sge_assignment_t *a, const char *qsort_args)
 
    if ((lib_name = sge_strtok_r(qsort_args_buf, " ", &cntx)) &&
        (fn_name = sge_strtok_r(NULL, " ", &cntx)) &&
-       (pqs_qsort = sge_dlib(pe_name, lib_name, fn_name, NULL))) {
+       (pqs_qsort = (pqs_qsort_t) sge_dlib(pe_name, lib_name, fn_name, NULL))) {
 
       pqs_params_t pqs_params;
       pqs_queue_t *qp;
