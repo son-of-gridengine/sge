@@ -41,7 +41,7 @@
 %global _hardened_build 1
 
 Name:    gridengine
-Version: 8.1.3
+Version: 8.1.4pre
 Release: 1%{?dist}
 Summary: Grid Engine - Distributed Resource Manager
 
