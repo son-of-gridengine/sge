@@ -581,6 +581,20 @@ void cull_show_job(lListElem *job, int flags, bool show_binding)
       }
    }
 
+   if (lGetPosViaElem(job, JB_type, SGE_NO_ABORT)>=0) {
+       u_long32 jb_now = lGetUlong(job, JB_type);
+       int printed = 0;
+
+       printf("job_type:                   ");
+       if (JOB_TYPE_IS_BINARY(jb_now))
+          printf("%sbinary", printed++ ? "," : "");
+       if (JOB_TYPE_IS_NO_SHELL(jb_now))
+          printf("%snoshell", printed++ ? "," : "");
+       if (JOB_TYPE_IS_IMMEDIATE(jb_now))
+          printf("%simmediate", printed++ ? "," : "");
+       printf("%s\n", printed ? "" : "NONE");
+   }
+
    if (lGetPosViaElem(job, JB_ja_tasks, SGE_NO_ABORT) >= 0) {
       lListElem *uep, *jatep, *pe_task_ep;
 
