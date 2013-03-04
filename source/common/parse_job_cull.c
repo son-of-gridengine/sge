@@ -149,6 +149,50 @@ lList *cull_parse_job_parameter(u_long32 uid, const char *username, const char *
    lSetUlong(*pjob, JB_jobshare, 0);
 
    /*
+   ** -clear option is special, is sensitive to order
+   ** kills all options that come before
+   ** there might be more than one -clear
+   */
+   while ((ep = lGetElemStr(cmdline, SPA_switch, "-clear"))) {
+      lListElem *ep_run;
+      const char *cp_switch;
+
+      for (ep_run = lFirst(cmdline); ep_run;) {
+         /*
+         ** remove -clear itsself
+         */
+         if (ep_run == ep) {
+            lRemoveElem(cmdline, &ep_run);
+            break;
+         }
+         /*
+         ** lNext can never be NULL here, because the -clear
+         ** element is the last one to delete
+         ** in general, these two lines wont work!
+         */
+         ep_run = lNext(ep_run);
+
+         /*
+         ** remove switch only if it is not a pseudo-arg
+         */
+         cp_switch = lGetString(lPrev(ep_run), SPA_switch);
+         if (cp_switch && (*cp_switch == '-')) {
+            lListElem *prev = lPrev(ep_run);
+            lRemoveElem(cmdline, &prev);
+         }
+      }
+
+   }
+
+   /*
+   ** general remark: There is a while loop looping through the option
+   **                 list. So inside the while loop there must be made
+   **                 a decision if a second occurence of an option has
+   **                 to be handled as error, should be warned, overwritten
+   **                 or simply ignored.
+   */
+
+   /*
     * -b
     */
    while ((ep = lGetElemStr(cmdline, SPA_switch, "-b"))) {
@@ -227,50 +271,6 @@ lList *cull_parse_job_parameter(u_long32 uid, const char *username, const char *
       lSetUlong(*pjob, JB_ja_task_concurrency, lGetUlong(ep, SPA_argval_lUlongT));
       lRemoveElem(cmdline, &ep);
    }
-
-   /*
-   ** -clear option is special, is sensitive to order
-   ** kills all options that come before
-   ** there might be more than one -clear
-   */
-   while ((ep = lGetElemStr(cmdline, SPA_switch, "-clear"))) {
-      lListElem *ep_run;
-      const char *cp_switch;
-
-      for (ep_run = lFirst(cmdline); ep_run;) {
-         /*
-         ** remove -clear itsself
-         */
-         if (ep_run == ep) {
-            lRemoveElem(cmdline, &ep_run);
-            break;
-         }
-         /*
-         ** lNext can never be NULL here, because the -clear
-         ** element is the last one to delete
-         ** in general, these two lines wont work!
-         */
-         ep_run = lNext(ep_run);
-         
-         /*
-         ** remove switch only if it is not a pseudo-arg
-         */
-         cp_switch = lGetString(lPrev(ep_run), SPA_switch);
-         if (cp_switch && (*cp_switch == '-')) {
-            lListElem *prev = lPrev(ep_run); 
-            lRemoveElem(cmdline, &prev);
-         }
-      }
-
-   }
-
-   /*
-   ** general remark: There is a while loop looping through the option
-   **                 list. So inside the while loop there must be made
-   **                 a decision if a second occurence of an option has
-   **                 to be handled as error, should be warned, overwritten
-   **                 or simply ignored.
-   */ 
 
    while ((ep = lGetElemStr(cmdline, SPA_switch, "-a"))) {
       lSetUlong(*pjob, JB_execution_time, lGetUlong(ep, SPA_argval_lUlongT));
