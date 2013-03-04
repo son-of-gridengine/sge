@@ -164,15 +164,11 @@ lList *cull_parse_job_parameter(u_long32 uid, const char *username, const char *
       lSetUlong(*pjob, JB_type, jb_now);
       lRemoveElem(cmdline, &ep);
    }
-   
-   /* 
-    * -binding : when using "-binding linear" overwrite previous 
-    *      DG:TODO      but not in with "-binding one_per_socket x" 
-    *      DG:TODO      or "-binding striding offset x"
-    *  binding n offset <- how should the error handling be done?
+
+   /*
+    * -binding
     */
-   ep = lGetElemStr(cmdline, SPA_switch, "-binding");
-   if (ep != NULL) {
+   while ((ep = lGetElemStr(cmdline, SPA_switch, "-binding"))) {
       lList *binding_list = lGetList(ep, SPA_argval_lListT);
       lList *new_binding_list = lCopyList("binding",  binding_list);
       
@@ -200,21 +196,24 @@ lList *cull_parse_job_parameter(u_long32 uid, const char *username, const char *
    /*
     * -t
     */
-   ep = lGetElemStr(cmdline, SPA_switch, "-t");
-   if (ep != NULL) {
-      lList *range_list = lGetList(ep, SPA_argval_lListT);
-      lList *new_range_list = lCopyList("task_id_range",  range_list);
+   {
+      bool minust = false;
+      while ((ep = lGetElemStr(cmdline, SPA_switch, "-t"))) {
+         lList *range_list = lGetList(ep, SPA_argval_lListT);
+         lList *new_range_list = lCopyList("task_id_range",  range_list);
 
-      lSetList(*pjob, JB_ja_structure, new_range_list);
-      lRemoveElem(cmdline, &ep);
-   
-      {
-         u_long32 job_type = lGetUlong(*pjob, JB_type);
-         JOB_TYPE_SET_ARRAY(job_type);
-         lSetUlong(*pjob, JB_type, job_type);
+         lSetList(*pjob, JB_ja_structure, new_range_list);
+         lRemoveElem(cmdline, &ep);
+         {
+            u_long32 job_type = lGetUlong(*pjob, JB_type);
+            JOB_TYPE_SET_ARRAY(job_type);
+            lSetUlong(*pjob, JB_type, job_type);
+         }
+         minust = true;
       }
-   } else {
-      job_set_submit_task_ids(*pjob, 1, 1, 1);
+      if (!minust) {
+         job_set_submit_task_ids(*pjob, 1, 1, 1);
+      }
    }
    job_initialize_id_lists(*pjob, &answer);
    if (answer != NULL) {
