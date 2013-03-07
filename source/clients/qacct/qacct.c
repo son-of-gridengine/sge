@@ -148,8 +148,6 @@ static int sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *optio
 */
 static FILE *fp = NULL;
 
-int main(int argc, char *argv[]);
-
 /*
 ** NAME
 **   main

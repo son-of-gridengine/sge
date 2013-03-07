@@ -88,7 +88,6 @@
 
 #define SHADOWD_PID_FILE          "shadowd_%s.pid"
 
-int main(int argc, char **argv);
 static void shadowd_exit_func(void **ctx_ref, int i);
 static int check_if_valid_shadow(char *binpath, 
                                  char *oldqmaster, 
