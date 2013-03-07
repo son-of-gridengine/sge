@@ -42,6 +42,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>  
 #include <sys/ioctl.h>
+#include <locale.h>
 
 #if defined(DARWIN) || defined(INTERIX)
 #  include <termios.h>
@@ -2019,6 +2020,10 @@ int sge_gdi2_setup(sge_gdi_ctx_class_t **context_ref, u_long32 progid, u_long32 
       }
       DRETURN(AE_ALREADY_SETUP);
    }
+   /* Ensure we get consisent floating point handling in case of
+      operation across en-like and fr-like locales (which have
+      different decimal points).  */
+   setlocale(LC_NUMERIC, "C");
    ret = sge_setup2(context_ref, progid, thread_id, alpp, false); 
    if (ret != AE_OK) {
       DRETURN(ret);
