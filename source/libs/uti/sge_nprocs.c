@@ -63,7 +63,6 @@
 
 #ifdef NPROCS_TEST
 #   include <stdio.h>
-void main(int, char**);
 #endif
 
 #ifndef NPROCS_TEST

@@ -70,8 +70,6 @@ static bool answer_list_has_exit_code_error(lList **answer_list);
 
 extern char **environ;
 
-int main(int argc, char *argv[]);
-
 
 int main(
 int argc,
