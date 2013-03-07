@@ -66,8 +66,6 @@ static bool sge_parse_qdel(lList **ppcmdline, lList **ppreflist, u_long32 *pforc
 
 extern char **environ;
 
-int main(int argc, char *argv[]);
-
 /************************************************************************/
 int main(int argc, char **argv) {
    /* lListElem *rep, *nxt_rep, *jep, *aep, *jrep, *idep; */

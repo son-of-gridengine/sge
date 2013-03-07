@@ -369,8 +369,6 @@ static int xml_report_job_finished(qhost_report_handler_t* handler, const char *
 }
 
                                       
-int main(int argc, char **argv);
-
 /************************************************************************/
 int main(int argc, char **argv)
 {

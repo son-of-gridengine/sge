@@ -76,8 +76,6 @@ static void *sig_thread(void *dummy);
 static int report_exit_status(int stat, const char *jobid);
 static void error_handler(const char *message);
 
-int main(int argc, char **argv);
-
 /************************************************************************/
 int 
 main(int argc, char **argv) 

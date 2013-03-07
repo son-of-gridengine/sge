@@ -79,7 +79,6 @@ sge_gdi_ctx_class_t *ctx = NULL;
    extern void _XEditResCheckMessages();
 #endif
 
-int main(int argc, char **argv);
 static void qmonUsage(Widget w);
 
 XtSignalId sigint_id = 0;
