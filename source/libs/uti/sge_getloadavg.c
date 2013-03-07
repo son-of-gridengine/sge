@@ -140,10 +140,6 @@ static long percentages(int cnt, double *out, long *new, long *old, long *diffs)
 
 #if defined(ALPHA4) || defined(ALPHA5) || defined(HPUX) || defined(IRIX) || defined(__linux__) || defined(DARWIN) || defined(HAS_AIX5_PERFLIB) || defined(__CYGWIN__)
 
-#ifndef DARWIN
-static int get_load_avg(double loadv[], int nelem);    
-#endif
-
 static double get_cpu_load(void);    
 
 #endif
@@ -908,8 +904,9 @@ static int get_load_avg(double loadv[], int nelem)
    return 0;
 }
 
-#elif defined(__linux__) || defined(__CYGWIN__)
-/* fixme:  I always see 0 0 0 in /proc/loadavg under Cygwin/Windows 7 */
+#elif (!defined(__GLIBC__) && defined(__linux__)) || defined(__CYGWIN__)
+/* Currently always see 0 0 0 in /proc/loadavg under Cygwin.  Seems to
+   be a fundamental Cygwin problem.  */
 static int get_load_avg(
 double loadv[],
 int nelem 
@@ -927,9 +924,12 @@ int nelem
    if (count <= 0) {
       return -1;
    }
-   setlocale (LC_NUMERIC, "C");
-   count = sscanf(buffer, "%lf %lf %lf", &(loadv[0]), &loadv[1], &loadv[2]);
-   setlocale (LC_NUMERIC, "");
+   {
+      char *l = setlocale (LC_NUMERIC, NULL);
+      setlocale (LC_NUMERIC, "C");
+      count = sscanf(buffer, "%lf %lf %lf", &(loadv[0]), &loadv[1], &loadv[2]);
+      setlocale (LC_NUMERIC, l);
+   }
    if (count < 1) {
       return -1;
    }
@@ -956,8 +956,9 @@ int sge_getloadavg(double loadavg[], int nelem)
 {
    int   elem = 0;   
 
-#if defined(SOLARIS) || defined(FREEBSD) || defined(NETBSD) || defined(DARWIN)
+#if defined(SOLARIS) || defined(FREEBSD) || defined(NETBSD) || defined(DARWIN) || defined(__GLIBC__)
    elem = getloadavg(loadavg, nelem); /* <== library function */
+   /* __linux__ here would imply without glibc */
 #elif defined(ALPHA5) || defined(IRIX) || defined(HPUX) || defined(__linux__) || defined(HAS_AIX5_PERFLIB) || defined(__CYGWIN__)
    elem = get_load_avg(loadavg, nelem); 
 #else

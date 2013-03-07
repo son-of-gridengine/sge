@@ -491,6 +491,7 @@ int sge_loadmem(sge_mem_info_t *mem_info)
             continue; \
          }
 
+         char *l = setlocale (LC_NUMERIC, NULL);
          setlocale (LC_NUMERIC, "C");
          READ_VALUE(KEY_MEMTOTAL,  mem_info->mem_total);
          READ_VALUE(KEY_MEMFREE,   mem_info->mem_free);
@@ -498,7 +499,7 @@ int sge_loadmem(sge_mem_info_t *mem_info)
          READ_VALUE(KEY_SWAPFREE,  mem_info->swap_free);
          READ_VALUE(KEY_BUFFERS,   buffers);
          READ_VALUE(KEY_CACHED,    cached);
-         setlocale (LC_NUMERIC, "");
+         setlocale (LC_NUMERIC, l);
 
       }
       FCLOSE(fp);
