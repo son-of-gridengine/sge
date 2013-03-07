@@ -35,7 +35,6 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <locale.h>
 
 #include "comm/cl_commlib.h"
 
@@ -121,13 +120,11 @@ schedd_serf_record_func(u_long32 job_id, u_long32 ja_taskid, const char *state,
    }
 
    /* a new record */
-   setlocale (LC_NUMERIC, "C");
    fprintf(fp, sge_U32CFormat":"sge_U32CFormat":%s:"sge_U32CFormat":"
            sge_U32CFormat":%c:%s:%s:%f\n", sge_u32c(job_id),
            sge_u32c(ja_taskid), state, sge_u32c(start_time),
            sge_u32c(end_time - start_time),
            level_char, object_name, name, utilization);
-   setlocale (LC_NUMERIC, "");
    FCLOSE(fp);
 
    DRETURN_VOID;
@@ -922,13 +919,11 @@ sge_scheduler_main(void *arg)
             prof_total = prof_get_measurement_wallclock(SGE_PROF_CUSTOM6, true, NULL);
 
             if (prof_is_active(SGE_PROF_CUSTOM6)) {
-               setlocale (LC_NUMERIC, "C");
                PROFILING((SGE_EVENT, "PROF: schedd run took: %.3f s (init: %.3f s, copy: %.3f s, "
                           "run:%.3f, free: %.3f s, jobs: %d, categories: %d/%d)",
                            prof_total, prof_init, prof_copy, prof_run, prof_free,
                            lGetNumberOfElem(*object_type_get_master_list(SGE_TYPE_JOB)), sge_category_count(),
                            sge_cs_category_count() ));
-               setlocale (LC_NUMERIC, "");
             }
             if (getenv("SGE_ND") != NULL) {
                printf("--------------STOP-SCHEDULER-RUN-------------\n");

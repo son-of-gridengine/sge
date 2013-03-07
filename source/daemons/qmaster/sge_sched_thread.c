@@ -31,7 +31,6 @@
 /*___INFO__MARK_END__*/
 #include <string.h>
 #include <pthread.h>
-#include <locale.h>
 
 #ifdef SOLARISAMD64
 #  include <sys/stream.h>
@@ -298,10 +297,8 @@ int scheduler_method(sge_evc_class_t *evc, lList **answer_list, scheduler_all_da
 
    if (prof_is_active(SGE_PROF_SCHEDLIB4)) {
       prof_stop_measurement(SGE_PROF_SCHEDLIB4, NULL);
-      setlocale (LC_NUMERIC, "C");
       PROFILING((SGE_EVENT, "PROF: create pending job orders: %.3f s",
                prof_get_measurement_utime(SGE_PROF_SCHEDLIB4,false, NULL)));
-      setlocale (LC_NUMERIC, "");
    }
 
    sge_schedd_send_orders(evc->get_gdi_ctx(evc), &orders, &(orders.configOrderList), answer_list, "D: config orders");
@@ -315,7 +312,6 @@ int scheduler_method(sge_evc_class_t *evc, lList **answer_list, scheduler_all_da
    if(prof_is_active(SGE_PROF_CUSTOM0)) {
       prof_stop_measurement(SGE_PROF_CUSTOM0, NULL);
 
-      setlocale (LC_NUMERIC, "C");
       PROFILING((SGE_EVENT, "PROF: scheduled in %.3f (u %.3f + s %.3f = %.3f): %d sequential, %d parallel, %d orders, %d H, %d Q, %d QA, %d J(qw), %d J(r), %d J(s), %d J(h), %d J(e), %d J(x), %d J(all), %d C, %d ACL, %d PE, %d U, %d D, %d PRJ, %d ST, %d CKPT, %d RU, %d gMes, %d jMes, %d/%d pre-send, %d/%d/%d pe-alg\n",
          prof_get_measurement_wallclock(SGE_PROF_CUSTOM0, true, NULL),
          prof_get_measurement_utime(SGE_PROF_CUSTOM0, true, NULL),
@@ -352,7 +348,6 @@ int scheduler_method(sge_evc_class_t *evc, lList **answer_list, scheduler_all_da
          sconf_get_pe_alg_value(SCHEDD_PE_BINARY),
          sconf_get_pe_alg_value(SCHEDD_PE_HIGH_FIRST)
       ));
-      setlocale (LC_NUMERIC, "");
    }
 
    PROF_START_MEASUREMENT(SGE_PROF_CUSTOM5);
@@ -368,12 +363,10 @@ int scheduler_method(sge_evc_class_t *evc, lList **answer_list, scheduler_all_da
    if (prof_is_active(SGE_PROF_CUSTOM5)) {
       prof_stop_measurement(SGE_PROF_CUSTOM5, NULL);
 
-      setlocale (LC_NUMERIC, "C");
       PROFILING((SGE_EVENT, "PROF: send orders and cleanup took: %.3f (u %.3f,s %.3f) s",
          prof_get_measurement_wallclock(SGE_PROF_CUSTOM5, true, NULL),
          prof_get_measurement_utime(SGE_PROF_CUSTOM5, true, NULL),
          prof_get_measurement_stime(SGE_PROF_CUSTOM5, true, NULL) ));
-      setlocale (LC_NUMERIC, "");
    }
 
    DRETURN(0);
@@ -599,10 +592,8 @@ static int dispatch_jobs(sge_evc_class_t *evc, scheduler_all_data_t *lists, orde
       if (prof_is_active(SGE_PROF_CUSTOM1)) {
          prof_stop_measurement(SGE_PROF_CUSTOM1, NULL);
 
-         setlocale (LC_NUMERIC, "C");
          PROFILING((SGE_EVENT, "PROF: job-order calculation took %.3f s",
                prof_get_measurement_wallclock(SGE_PROF_CUSTOM1, true, NULL)));
-         setlocale (LC_NUMERIC, "");
       }
 
       if (ret != 0) {
@@ -650,10 +641,8 @@ static int dispatch_jobs(sge_evc_class_t *evc, scheduler_all_data_t *lists, orde
    if (prof_is_active(SGE_PROF_CUSTOM3)) {
       prof_stop_measurement(SGE_PROF_CUSTOM3, NULL);
 
-      setlocale (LC_NUMERIC, "C");
       PROFILING((SGE_EVENT, "PROF: job sorting took %.3f s",
             prof_get_measurement_wallclock(SGE_PROF_CUSTOM3, false, NULL)));
-      setlocale (LC_NUMERIC, "");
    }
 
    /*---------------------------------------------------------------------
@@ -959,7 +948,6 @@ static int dispatch_jobs(sge_evc_class_t *evc, scheduler_all_data_t *lists, orde
    if (prof_is_active(SGE_PROF_CUSTOM4)) {
       static bool first_time = true;
       prof_stop_measurement(SGE_PROF_CUSTOM4, NULL);
-      setlocale (LC_NUMERIC, "C");
       PROFILING((SGE_EVENT, "PROF: job dispatching took %.3f s (%d fast, %d fast_soft, %d pe, %d pe_soft, %d res)",
                  prof_get_measurement_wallclock(SGE_PROF_CUSTOM4, false, NULL),
                  fast_runs,
@@ -983,7 +971,6 @@ static int dispatch_jobs(sge_evc_class_t *evc, scheduler_all_data_t *lists, orde
       PROFILING((SGE_EVENT, "PROF: sequential matching %12d %12d %12d %12d %12d %12d %12d",
          pi.seq_global, pi.seq_rqs, pi.seq_cqstat, pi.seq_hstat, 
          pi.seq_qstat, pi.seq_hdyn, pi.seq_qdyn));
-      setlocale (LC_NUMERIC, "");
    }
 
    lFreeList(&user_list);

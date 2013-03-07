@@ -38,7 +38,6 @@
 #include <ctype.h>
 #include <errno.h>
 #include <stdarg.h>
-#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_dstring.h"
@@ -103,9 +102,7 @@ void xml_addAttributeD(lListElem *xml_elem, const char *name, double value){
    dstring string;
 
    sge_dstring_init(&string, buffer, 20);
-   setlocale (LC_NUMERIC, "C");
    xml_addAttribute(xml_elem, name, sge_dstring_sprintf(&string, "%f", value));
-   setlocale (LC_NUMERIC, "");
 }
 
 void xml_addAttribute(lListElem *xml_elem, const char *name, const char *value){
@@ -482,22 +479,18 @@ static void lWriteElemXML_(const lListElem *ep, int nesting_level, FILE *fp, int
                }
                break;
             case lFloatT:
-              setlocale (LC_NUMERIC, "C");
                if (!fp) {
                   DPRINTF(("%f", lGetPosFloat(ep, i)));
                } else {
                   fprintf(fp, "%f", lGetPosFloat(ep, i));
                }
-               setlocale (LC_NUMERIC, "");
                break;
             case lDoubleT:
-              setlocale (LC_NUMERIC, "C");
                if (!fp) {
                   DPRINTF(("%f", lGetPosDouble(ep, i)));
                } else {
                   fprintf(fp, "%f", lGetPosDouble(ep, i));
                }
-               setlocale (LC_NUMERIC, "");
                break;
             case lLongT:
                if (!fp) {
@@ -541,20 +534,17 @@ static void lWriteElemXML_(const lListElem *ep, int nesting_level, FILE *fp, int
 
 lListElem *xml_append_Attr_D(lList *attributeList, const char *name, double value) {
    char buffer[20];
-   setlocale (LC_NUMERIC, "C");
+   /* fixme: worry about locale */
    snprintf(buffer, sizeof(buffer),"%.5f",value);
-   setlocale (LC_NUMERIC, "");
    return append_Attr_S(attributeList, name, buffer);
 }
 
 lListElem *xml_append_Attr_D8(lList *attributeList, const char *name, double value) {
    char buffer[20];
-   setlocale (LC_NUMERIC, "C");
    if (value > 99999999)
       snprintf(buffer, sizeof(buffer), "%.3g", value);
    else
       sprintf(buffer,"%.0f", value);
-   setlocale (LC_NUMERIC, "");
    return append_Attr_S(attributeList, name, buffer);
 }
 

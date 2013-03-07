@@ -32,7 +32,6 @@
 
 #include <string.h>
 #include <pthread.h>
-#include <locale.h>
 
 #include "cull/cull.h"
 
@@ -2990,14 +2989,12 @@ bool sconf_validate_config_(lList **answer_list)
          s0 = s; 
          for(s1=sge_strtok_r(s0, ":", &sv1); s1 != NULL;
              s1=sge_strtok_r(NULL, ":", &sv1)) {
-            setlocale (LC_NUMERIC, "C");
             if (((s2=sge_strtok_r(s1, "=", &sv2)) != NULL) &&
                 ((s3=sge_strtok_r(NULL, "=", &sv2)) != NULL) &&
                 (sscanf(s3, "%lf", &value) == 1)) {
                ep = lAddElemStr(&halflife_decay_list, UA_name, s2, UA_Type);
                lSetDouble(ep, UA_value, value);
             }
-            setlocale (LC_NUMERIC, "");
             sge_free(&sv2);
          }
          sge_free(&sv1);

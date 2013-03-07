@@ -69,7 +69,6 @@ int cl_util_get_int_number_length(int id) {
 #undef __CL_FUNCTION__
 #endif
 #define __CL_FUNCTION__ "cl_util_get_double_number_length()"
-/* Looking at the couple of this, it shouldn't reset the locale.  */
 int cl_util_get_double_number_length(double id) {
    char help[512];
 #if defined(_WIN32)

@@ -40,7 +40,6 @@
 #include <limits.h>
 #include <ctype.h>
 #include <fnmatch.h>
-#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
@@ -2631,7 +2630,6 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
                value_list = lGetList(elem, EH_scaling_list);
                value_elem = lFirst(value_list);
 
-               setlocale (LC_NUMERIC, "C");
                while (value_elem != NULL) {
                   sge_dstring_sprintf_append(&value, "%s=%.10g", lGetString(value_elem, HS_name), lGetDouble(value_elem, HS_value));
                   value_elem = lNext(value_elem);
@@ -2639,7 +2637,6 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
                      sge_dstring_append(&value, ",");
                   }
                }
-               setlocale (LC_NUMERIC, "");
                value_string = sge_dstring_get_string(&value);
                if (value_string == NULL) {
                   sge_dstring_copy_string(&value, "NONE");
