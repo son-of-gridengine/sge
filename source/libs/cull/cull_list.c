@@ -37,7 +37,6 @@
 #include <ctype.h>
 #include <errno.h>
 #include <stdarg.h>
-#include <locale.h>
 
 /* do not compile in monitoring code */
 #ifndef NO_SGE_COMPILE_DEBUG
@@ -751,14 +750,10 @@ static void lWriteElem_(const lListElem *ep, dstring *buffer, int nesting_level)
          break;
       case lFloatT:
 DTRACE;
-         setlocale (LC_NUMERIC, "C");
          sge_dstring_sprintf_append(buffer, "%s%-20.20s (Float)   %c = %f\n", space, name, changed ? '*' : ' ', lGetPosFloat(ep, i));
-         setlocale (LC_NUMERIC, "");
          break;
       case lDoubleT:
-         setlocale (LC_NUMERIC, "C");
          sge_dstring_sprintf_append(buffer, "%s%-20.20s (Double)  %c = %f\n", space, name, changed ? '*' : ' ', lGetPosDouble(ep, i));
-         setlocale (LC_NUMERIC, "");
          break;
       case lLongT:
 DTRACE;

@@ -42,7 +42,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <locale.h>
 
 #ifdef USE_POLL
  #include <sys/poll.h>
@@ -252,7 +251,6 @@ int cl_com_add_debug_message(cl_com_connection_t* connection, const char* messag
 
    gettimeofday(&now,NULL);
    time_now = now.tv_sec + (now.tv_usec / 1000000.0);
-   setlocale (LC_NUMERIC, "C");
    if (ms->message_send_time.tv_sec != 0) {
       outgoing = true;
       /* set message_time to message creation time */
@@ -275,7 +273,6 @@ int cl_com_add_debug_message(cl_com_connection_t* connection, const char* messag
          snprintf(commlib_time,256,"%.6s", "-.-");
       }
    }
-   setlocale (LC_NUMERIC, "");
    if (outgoing == true) {
       direction = "->";
    }

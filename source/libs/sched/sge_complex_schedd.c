@@ -33,7 +33,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fnmatch.h>
-#include <locale.h>
 
 #ifdef WIN32NATIVE
    #include "win32nativetypes.h"
@@ -299,9 +298,7 @@ lListElem* get_attribute(const char *attrname, lList *config_attr, lList *actual
                         dval -= load_correction;
                      }
 
-                     setlocale (LC_NUMERIC, "C");
                      sprintf(sval, "%8.3f", dval);
-                     setlocale (LC_NUMERIC, "");
                      DPRINTF(("%s: uc: %f c(%f): %f\n", attrname, old_dval, lc_factor, dval));
                      dom_type = DOMINANT_TYPE_CLOAD;
                   }

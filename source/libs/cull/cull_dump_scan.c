@@ -34,7 +34,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <locale.h>
 
 /* do not compile in monitoring code */
 #ifndef NO_SGE_COMPILE_DEBUG
@@ -301,7 +300,6 @@ int lDumpElemFp(FILE *fp, const lListElem *ep, int indent)
       return -1;
    }
 
-   setlocale (LC_NUMERIC, "C");
    ret = fprintf(fp, "%s{ \n", space);
    for (i = 0, ret = 0; ep->descr[i].nm != NoName && ret != EOF; i++) {
       char *tok = NULL;
@@ -387,7 +385,6 @@ int lDumpElemFp(FILE *fp, const lListElem *ep, int indent)
          break;
       }
    }
-   setlocale (LC_NUMERIC, "");
    sge_dstring_free(&dstr);
 
    ret = fprintf(fp, "%s}\n", space);
@@ -1293,14 +1290,11 @@ static int fGetFloat(FILE *fp, lFloat *flp)
       return -1;
    }
 
-   setlocale (LC_NUMERIC, "C");
    if (sscanf(s, "%f", flp) != 1) {
       LERROR(LESSCANF);
-      setlocale (LC_NUMERIC, "");
       DEXIT;
       return -1;
    }
-   setlocale (LC_NUMERIC, "");
 
    DEXIT;
    return 0;
@@ -1324,14 +1318,11 @@ static int fGetDouble(FILE *fp, lDouble *dp)
       return -1;
    }
 
-   setlocale (LC_NUMERIC, "C");
    if (sscanf(s, "%lf", dp) != 1) {
       LERROR(LESSCANF);
-      setlocale (LC_NUMERIC, "");
       DEXIT;
       return -1;
    }
-   setlocale (LC_NUMERIC, "");
 
    DEXIT;
    return 0;

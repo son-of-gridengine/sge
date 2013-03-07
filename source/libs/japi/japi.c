@@ -39,7 +39,6 @@
 #include <signal.h>
 #include <pthread.h>
 #include <pwd.h>
-#include <locale.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_profiling.h"
@@ -2643,10 +2642,9 @@ int japi_wait(const char *job_id, dstring *waited_job, int *stat,
                sep = lCreateElem (ST_Type);
                lAppendElem (slp, sep);
 
-               setlocale (LC_NUMERIC, "C");
+               /* fixme: worry about locale */
                snprintf (buffer, sizeof(buffer), "%s=%.4f",
                          lGetString (uep, UA_name), lGetDouble (uep, UA_value));
-               setlocale (LC_NUMERIC, "");
                lSetString (sep, ST_name, buffer);
             }
 
