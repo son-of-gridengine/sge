@@ -952,7 +952,8 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
 *     written out by the execd and stores each entry in the environment.
 *
 *  INPUTS
-*     bool user_env - True means set variables from the user's environment
+*     bool user_env - True means set variables from the user's environment,
+*                     false means just include the SGE_... variables
 *
 *  RESULTS
 *     int - error code: 0: good, 1: bad
@@ -981,8 +982,6 @@ int sge_set_environment(bool user_env)
    }
 #endif
 
-   if (!user_env) return 0;
-
    if (!(fp = fopen(filename, "r"))) {
       shepherd_error(1, "can't open environment file: %s", strerror(errno));
    }
@@ -1000,7 +999,8 @@ int sge_set_environment(bool user_env)
          shepherd_error(1, "error reading environment file: line=%d, contents:%s",
                         line, buf);
       }
-
+      if (!user_env && strncmp(name, "SGE_", 4) != 0)
+         continue;
       value = strtok(NULL, "\n");
       if (value == NULL) {
          value = "";
