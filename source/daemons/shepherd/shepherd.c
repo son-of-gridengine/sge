@@ -2963,12 +2963,21 @@ static int start_async_command(const char *descr, char *cmd)
       if (tmp_str && strcmp(tmp_str, "yes")) {
          skip_silently = true;
       }
-      if (sge_set_uid_gid_addgrp(get_conf_val("job_owner"), NULL, 0, 0, 0, 
-                                 err_str, sizeof(err_str), use_qsub_gid,
-                                 gid, skip_silently) > 0) {
-         shepherd_trace("%s", err_str);
-         exit(1);
-      }   
+      {
+         int min_gid = atoi(get_conf_val("min_gid"));
+         int min_uid = atoi(get_conf_val("min_uid"));
+         gid_t add_grp_id = 0;
+         char *cp = search_conf_val("add_grp_id");
+
+         if (cp) add_grp_id = atol(cp);
+         if (sge_set_uid_gid_addgrp(get_conf_val("job_owner"), NULL,
+                                    min_gid, min_uid, add_grp_id,
+                                    err_str, sizeof(err_str), use_qsub_gid,
+                                    gid, skip_silently) > 0) {
+            shepherd_trace("%s", err_str);
+            exit(1);
+         }
+      }
 
       sge_close_all_fds(NULL, 0);
 
