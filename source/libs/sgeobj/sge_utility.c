@@ -88,6 +88,7 @@
 *           (see user(5))
 *        KEY_TABLE     hostgroup names
 *           (see hostgroup(5))
+*        WC_TABLE      wc_pe_names (see sge_types(5))
 *
 *        KEY_TABLE     event client name (internal purposes only)
 *        KEY_TABLE     JAPI session key (internal purposes only)
@@ -190,17 +191,15 @@ an_status_t verify_str_key(
       mid_strings[2][6] = MSG_GDI_KEYSTR_QUOTE;
       mid_strings[2][7] = MSG_GDI_KEYSTR_DBLQUOTE;
       mid_strings[2][8] = MSG_GDI_KEYSTR_BACKSLASH;
-      mid_strings[2][9] = MSG_GDI_KEYSTR_BRACKETS;
-      mid_strings[2][10] = MSG_GDI_KEYSTR_BRACKETS;
-      mid_strings[2][11] = MSG_GDI_KEYSTR_BRACES;
-      mid_strings[2][12] = MSG_GDI_KEYSTR_BRACES;
-      mid_strings[2][13] = MSG_GDI_KEYSTR_PIPE;
-      mid_strings[2][14] = MSG_GDI_KEYSTR_PARENTHESIS;
-      mid_strings[2][15] = MSG_GDI_KEYSTR_PARENTHESIS;
-      mid_strings[2][16] = MSG_GDI_KEYSTR_AT;
-      mid_strings[2][17] = MSG_GDI_KEYSTR_PERCENT;
-      mid_strings[2][18] = MSG_GDI_KEYSTR_COMMA;
-      mid_strings[2][19] = NULL;
+      mid_strings[2][9] = MSG_GDI_KEYSTR_BRACES;
+      mid_strings[2][10] = MSG_GDI_KEYSTR_BRACES;
+      mid_strings[2][11] = MSG_GDI_KEYSTR_PIPE;
+      mid_strings[2][12] = MSG_GDI_KEYSTR_PARENTHESIS;
+      mid_strings[2][13] = MSG_GDI_KEYSTR_PARENTHESIS;
+      mid_strings[2][14] = MSG_GDI_KEYSTR_AT;
+      mid_strings[2][15] = MSG_GDI_KEYSTR_PERCENT;
+      mid_strings[2][16] = MSG_GDI_KEYSTR_COMMA;
+      mid_strings[2][17] = NULL;
 
       keyword_strings[0] = MSG_GDI_KEYSTR_KEYWORD;
       keyword_strings[1] = MSG_GDI_KEYSTR_KEYWORD;
