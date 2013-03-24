@@ -197,6 +197,7 @@ static char h_memorylocked[100];
 static char s_locks[100];
 static char h_locks[100];
 static bool use_cgroups = false;
+static bool use_smaps = true;
 
 /* 
  * reporting params 
@@ -875,6 +876,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       log_consumables = false;
       enable_addgrp_kill = false;
       use_cgroups = false;
+      use_smaps = true;
       strcpy(s_descriptors, "UNDEFINED");
       strcpy(h_descriptors, "UNDEFINED");
       strcpy(s_maxproc, "UNDEFINED");
@@ -1027,6 +1029,8 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
             continue;
          } 
          if (parse_bool_param(s, "USE_CGROUPS", &use_cgroups)) {
+            continue;
+         if (parse_bool_param(s, "USE_SMAPS", &use_smaps))
             continue;
          }
       }
@@ -2626,6 +2630,16 @@ bool mconf_get_use_cgroups(void) {
 
    ret = use_cgroups;
 
+   SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_READ);
+   DRETURN(ret);
+}
+
+bool mconf_get_use_smaps(void) {
+   bool ret;
+
+   DENTER(BASIS_LAYER, "mconf_get_use_smaps");
+   SGE_LOCK(LOCK_MASTER_CONF, LOCK_READ);
+   ret = use_smaps;
    SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_READ);
    DRETURN(ret);
 }

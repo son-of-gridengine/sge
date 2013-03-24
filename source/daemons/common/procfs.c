@@ -66,6 +66,7 @@ int verydummyprocfs;
 
 #if defined(LINUX)
 #include "sgeobj/sge_proc.h"
+#include "sgeobj/sge_conf.h"
 #endif
 
 #include "uti/sge_rmon.h"
@@ -82,7 +83,7 @@ int verydummyprocfs;
 #include "exec_ifm.h"
 #include "pdc.h"
 #include "msg_sge.h"
-
+#include "msg_daemons_common.h"
 #include "procfs.h"
 
 #if defined LINUX || defined ALPHA || defined SOLARIS
@@ -824,7 +825,7 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
 
          errno = 0;
          /* Ideally, use PSS for best accuracy.  */
-         if (pss_in_smaps()) {
+         if (pss_in_smaps() && mconf_get_use_smaps()) {
             snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
             if ((fp = fopen(procnam, "r"))) {
                while (fgets(buffer, sizeof buffer, fp))
@@ -855,8 +856,8 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
             else if (monitor_pdc)
                INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
                      strerror(errno)));
-         } else if (swap_in_smaps()) {
-            /* Last resort is to examine all the maps in smaps.  */
+         } else if (swap_in_smaps() && mconf_get_use_smaps()) {
+            /* Last resort is to examine all the maps in smaps for RSS.  */
             snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
             if ((fp = fopen(procnam, "r"))) {
                while (fgets(buffer, sizeof buffer, fp))
@@ -886,6 +887,14 @@ init_procfs(void)
    (void) pss_in_smaps();
    (void) swap_in_smaps();
    (void) swap_in_status();
+   if (!mconf_get_use_smaps()) {
+      INFO ((SGE_EVENT, SFNMAX, MSG_NO_SMAPS));
+      if (!swap_in_status())
+         INFO ((SGE_EVENT, SFNMAX, MSG_NO_SWAP));
+   } else {
+      if (!swap_in_smaps() && !swap_in_status())
+         INFO ((SGE_EVENT, SFNMAX, MSG_NO_SWAP));
+   }
 #endif
 #if defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
    max_groups = sysconf(_SC_NGROUPS_MAX);
