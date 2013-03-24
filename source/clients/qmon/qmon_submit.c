@@ -34,7 +34,7 @@
 #include <unistd.h> 
 #include <sys/types.h>
 #include <fcntl.h>
-
+#include <errno.h>
 
 #include <Xm/Xm.h>
 #include <Xm/List.h>
@@ -2560,13 +2560,15 @@ StringConst sge_o_home
       DPRINTF(("getcwd failed\n"));
       cwd_str[0] = '\0';
    }
-   if (!chdir(sge_o_home)) {
+   if (!sge_chdir(sge_o_home)) {
       if (!getcwd(cwd_str2, sizeof(cwd_str2))) {
          DPRINTF(("getcwd failed\n"));
          cwd_str[0] = '\0';
       }
-      /* fixme: check return */
-      chdir(cwd_str);
+      errno = 0;
+      if (sge_chdir(cwd_str))
+         /* fixme: should this do something better? */
+         DPRINTF((MSG_FILE_CHDIR_SS, cwd_str, strerror(errno)));
       if (!strncmp(cwd_str2, cwd_str, strlen(cwd_str2))) {
          sprintf(cwd_str3, "%s%s", sge_o_home, 
                   (char *) cwd_str + strlen(cwd_str2));

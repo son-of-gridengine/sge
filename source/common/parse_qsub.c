@@ -2191,7 +2191,7 @@ char *reroot_path(lListElem* pjob, const char *path, lList **alpp) {
    home = job_get_env_string(pjob, VAR_PREFIX "O_HOME");
    sge_strlcpy(tmp_str, path, sizeof(tmp_str));
 
-   if (chdir(home) == 0) {
+   if (sge_chdir(home) == 0) {
       /* If chdir() succeeds... */
       if (getcwd(tmp_str2, sizeof(tmp_str2)) == NULL) {
          /* If getcwd() fails... */
@@ -2200,7 +2200,7 @@ char *reroot_path(lListElem* pjob, const char *path, lList **alpp) {
          DRETURN(NULL);
       }
 
-      if (chdir(tmp_str) == 0) {
+      if (sge_chdir(tmp_str) == 0) {
          if (strncmp(tmp_str2, tmp_str, strlen(tmp_str2)) == 0) {
             /* If they are equal, build a new CWD using the value of the HOME
              * as the root instead of whatever that directory is called by
