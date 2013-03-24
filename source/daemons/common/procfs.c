@@ -819,9 +819,8 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
       }
       /* Get more accurate memory consumption than VMsize if possible.  */
       {
-         unsigned long vvmsize = 0, value = 0;
+         unsigned long vvmsize = 0;
          FILE *fp;
-         char key[21]; /* Size must match width in sscanf */
 
          errno = 0;
          /* Ideally, use PSS for best accuracy.  */
@@ -829,27 +828,29 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
             snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
             if ((fp = fopen(procnam, "r"))) {
                while (fgets(buffer, sizeof buffer, fp))
-                  if (sscanf(buffer, "%20s %lu", key, &value) == 2)
-                     if (strcmp(key, "Swap:") == 0
-                         || (strcmp(key, "Pss:") == 0))
-                        vvmsize += value * 1024;
+                  /* This is faster than using sscanf, which is
+                     important for big smaps.  */
+                  if (strncmp(buffer, "Swap:", 5) == 0)
+                     vvmsize += atoi(buffer + 5) * 1024;
+                  else if (strncmp(buffer, "Pss:", 4) == 0)
+                     vvmsize += atoi(buffer + 4) * 1024;
                fclose(fp);
             } else if (monitor_pdc)
                INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
                      strerror(errno)));
          } else if (swap_in_status()) {
-            /* Slightly quicker if we have it -- maybe not worth bothering.  */
+            /* Faster than parsing smaps, if we have it.  */
             snprintf(procnam, sizeof procnam, PROC_DIR "/%s/status", proc);
             if ((fp = fopen(procnam, "r"))) {
                bool gotone = false;
                while (fgets(buffer, sizeof buffer, fp)) {
-                  if (sscanf(buffer, "%20s %lu", key, &value) == 2)
-                     if (strncmp(key, "VmRSS:", 6) == 0
-                         || strncmp(key, "VmSwap:", 7) == 0) {
-                        vvmsize += value * 1024;
-                        if (gotone) break;
-                        gotone = true;
-                     }
+                  if (strncmp(buffer, "VmRSS:", 6) == 0)
+                     vvmsize += atoi(buffer + 6) * 1024;
+                  else if (strncmp(buffer, "VmSwap:", 7) == 0)
+                     vvmsize += atoi(buffer + 7) * 1024;
+                  else continue;
+                  if (gotone) break;
+                  gotone = true;
                }
                fclose(fp);
             }
@@ -861,10 +862,10 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
             snprintf(procnam, sizeof procnam, PROC_DIR "/%s/smaps", proc);
             if ((fp = fopen(procnam, "r"))) {
                while (fgets(buffer, sizeof buffer, fp))
-                  if (sscanf(buffer, "%20s %lu", key, &value) == 2)
-                     if (strcmp(key, "Swap:") == 0
-                         || (strcmp(key, "Rss:") == 0))
-                        vvmsize += value * 1024;
+                  if (strncmp(buffer, "Swap:", 5) == 0)
+                     vvmsize += atoi(buffer + 5) * 1024;
+                  else if (strncmp(buffer, "Rss:", 4) == 0)
+                     vvmsize += atoi(buffer + 4) * 1024;
                fclose(fp);
             } else if (monitor_pdc)
                INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
