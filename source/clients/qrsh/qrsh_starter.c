@@ -358,7 +358,7 @@ static int changeDirectory(void)
    }
 
    /* change to dir cwd */
-   if(chdir(cwd) == -1) {
+   if (sge_chdir(cwd) == -1) {
       fprintf(stderr, MSG_QRSH_STARTER_CANNOTCHANGEDIR_SS, cwd, strerror(errno));
       fprintf(stderr, "\n");
       return 0;
