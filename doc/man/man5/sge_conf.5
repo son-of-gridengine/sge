@@ -1531,6 +1531,18 @@ filesystems (created by
 Makes ENABLE_ADDGRP_KILL irrelevant.
 This option is experimental, and at least the default is likely to
 change in future.  Default is no.
+.IP \fIUSE_SMAPS\fP
+[Linux only.]  Read processes'
+.I smaps
+file in the
+.MO proc 5
+filesystem to obtain PSS usage for most accurate memory accounting, or
+to obtain the swap usage on older systems which don't report PSS.
+That can be slow, increasing the load from execd, so it can be
+disabled.  Without
+.IR smaps ,
+usage is reported as RSS+swap, instead of PSS+swap, or simply as the
+VMsize if the swap value isn't available.  Default is yes.
 .PP
 Changing \fBexecd_params\fP will take effect after it is propagated to the
 execution daemons. The propagation is done in one load report interval.
