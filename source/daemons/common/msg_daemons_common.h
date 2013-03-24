@@ -209,5 +209,9 @@
 #define MSG_HEART_READ_TIMEOUT_S            _MESSAGE(27099, _("got timeout error while read data from heartbeat file "SFQ))
 #define MSG_HEART_CANT_SIGNAL               _MESSAGE(27100, _("can't send signal to signal thread"))
 
+/* procfs.c */
+#define MSG_NO_SMAPS                        _MESSAGE(27102, _("memory accounting inaccurate with USE_SMAPS=no"))
+#define MSG_NO_SWAP                         _MESSAGE(27103, _("memory accounting can't include swap: using (unrealistic) VMsize"))
+
 #endif /* MSG_DAEMONS_COMMON_H */
 
