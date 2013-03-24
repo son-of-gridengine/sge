@@ -340,7 +340,7 @@ static lList *qalter_parse_job_parameter(u_long32 me_who, lList *cmdline, lList 
             DRETURN(answer);
          }
 
-         if (sge_o_home && chdir(sge_o_home) == 0) {
+         if (sge_o_home && sge_chdir(sge_o_home) == 0) {
             if (getcwd(tmp_str2, sizeof(tmp_str2)) == NULL) {
                answer_list_add(&answer, MSG_ANSWER_GETCWDFAILED,
                                STATUS_EDISK, ANSWER_QUALITY_ERROR);
@@ -348,7 +348,7 @@ static lList *qalter_parse_job_parameter(u_long32 me_who, lList *cmdline, lList 
                DRETURN(answer);
             }
 
-            if (chdir(tmp_str) != 0) {
+            if (sge_chdir(tmp_str) != 0) {
                dstring ds = DSTRING_INIT;
                answer_list_add_sprintf(&answer, STATUS_EDISK, ANSWER_QUALITY_ERROR,
                                        MSG_FILE_CHDIR_SS, tmp_str, sge_strerror(errno, &ds));

@@ -1788,7 +1788,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
 
    /* Change to jobs directory. Father changes back to cwd. We do this to
       ensure chdir() works before forking. */
-   if (chdir(active_dir_buffer)) {
+   if (sge_chdir(active_dir_buffer)) {
       snprintf(err_str, err_length, MSG_FILE_CHDIR_SS, active_dir_buffer, strerror(errno));
       DEXIT;
       return -2;

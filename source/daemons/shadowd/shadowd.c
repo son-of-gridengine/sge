@@ -280,7 +280,7 @@ char shadow_err_file[SGE_PATH_MAX];
       SGE_EXIT((void**)&ctx, 1);
    }
 
-   if (chdir(ctx->get_qmaster_spool_dir(ctx))) {
+   if (sge_chdir(ctx->get_qmaster_spool_dir(ctx))) {
       CRITICAL((SGE_EVENT, MSG_SHADOWD_CANTCHANGETOQMASTERSPOOLDIRX_S, ctx->get_qmaster_spool_dir(ctx)));
       SGE_EXIT((void**)&ctx, 1);
    }
