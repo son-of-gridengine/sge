@@ -7,7 +7,6 @@
 xargs chmod +x <<EOF
 ./scripts/bootstrap.sh
 ./scripts/intl_test.csh
-./scripts/msgmbe.csh
 ./scripts/infotext_check_script_syntax.tcl
 ./scripts/mk_dist
 ./scripts/zerodepend
@@ -44,7 +43,6 @@ xargs chmod +x <<EOF
 ./3rdparty/qtcsh/install-sh
 ./3rdparty/qtcsh/configure
 ./3rdparty/qtcsh/config.sub
-./3rdparty/qtcsh/sge_configure.csh
 ./3rdparty/qtcsh/config.guess
 ./clients/qmon/util/ad2c
 ./clients/qmon/util/create_de.sh
@@ -65,6 +63,5 @@ xargs chmod +x <<EOF
 ./libs/jgdi/run_util.sh
 ./libs/jgdi/jgdievc
 ./aimk
-./debian/rules
-./debian/linux32-wrapper
+../debian/rules
 EOF
