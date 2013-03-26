@@ -301,6 +301,10 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
        !strcmp(childname, "epilog")) {
       /* syntax is [<user>@]<path> <arguments> */
       target_user = parse_script_params(&script_file);
+      min_uid = min_gid = 0;
+   } else {
+      min_gid = atoi(get_conf_val("min_gid"));
+      min_uid = atoi(get_conf_val("min_uid"));
    }
 
    if (!target_user)
@@ -441,9 +445,6 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       shepherd_trace("childname: %s", childname);
    }
 #endif
-
-   min_gid = atoi(get_conf_val("min_gid"));
-   min_uid = atoi(get_conf_val("min_uid"));
 
    /** 
     ** Set uid and gid and
