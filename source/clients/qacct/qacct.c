@@ -1458,16 +1458,16 @@ static void showjob(sge_rusage_type *dusage, char **category) {
           double_print_memory_to_string(dusage->ru_idrss, &string)); /* integral unshared data "  */
    printf("%-13.12s%sB\n",MSG_HISTORY_SHOWJOB_RUISRSS,
           double_print_memory_to_string(dusage->ru_isrss, &string)); /* integral unshared stack "  */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUMINFLT,     dusage->ru_minflt);     /* page reclaims */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUMAJFLT,     dusage->ru_majflt);     /* page faults */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUNSWAP,      dusage->ru_nswap);      /* swaps */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUINBLOCK,    dusage->ru_inblock);    /* block input operations */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUOUBLOCK,    dusage->ru_oublock);    /* block output operations */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUMSGSND,     dusage->ru_msgsnd);     /* messages sent */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUMSGRCV,     dusage->ru_msgrcv);     /* messages received */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUNSIGNALS,   dusage->ru_nsignals);   /* signals received */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUNVCSW,      dusage->ru_nvcsw);      /* voluntary context switches */
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_RUNIVCSW,     dusage->ru_nivcsw);     /* involuntary */
+   printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUMINFLT,     dusage->ru_minflt);     /* page reclaims */
+   printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUMAJFLT,     dusage->ru_majflt);     /* page faults */
+   printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUNSWAP,      dusage->ru_nswap);      /* swaps */
+   printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUINBLOCK,    dusage->ru_inblock);    /* block input operations */
+   printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUOUBLOCK,    dusage->ru_oublock);    /* block output operations */
+   printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUMSGSND,     dusage->ru_msgsnd);     /* messages sent */
+   printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUMSGRCV,     dusage->ru_msgrcv);     /* messages received */
+   printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUNSIGNALS,   dusage->ru_nsignals);   /* signals received */
+   printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUNVCSW,      dusage->ru_nvcsw);      /* voluntary context switches */
+   printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUNIVCSW,     dusage->ru_nivcsw);     /* involuntary */
 
    printf("%-13.12s%ss\n",   MSG_HISTORY_SHOWJOB_CPU, print_double_to_string(dusage->cpu, &string, "%-13.3f"));
    printf("%-13.12s%sGBs\n",   MSG_HISTORY_SHOWJOB_MEM,

@@ -61,13 +61,13 @@
 /* max. vmem */
 #define USAGE_ATTR_MAXVMEM "maxvmem"
 
-u_long32
-usage_list_get_ulong_usage(const lList *usage_list, const char *name, u_long32 def);
+u_long64
+usage_list_get_ulong_usage(const lList *usage_list, const char *name, u_long64 def);
 double
 usage_list_get_double_usage(const lList *usage_list, const char *name, double def);
 
 void
-usage_list_set_ulong_usage(lList *usage_list, const char *name, u_long32 value);
+usage_list_set_ulong_usage(lList *usage_list, const char *name, u_long64 value);
 void
 usage_list_set_double_usage(lList *usage_list, const char *name, double value);
 
