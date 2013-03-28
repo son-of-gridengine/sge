@@ -144,20 +144,20 @@ shepherd_write_usage_file(u_long32 wait_status, int exit_status,
 
       FPRINTF((fp, "ru_utime=%f\n", (double)rusage->ru_utime.tv_sec + (double)rusage->ru_utime.tv_usec / 1000000.0));
       FPRINTF((fp, "ru_stime=%f\n", (double)rusage->ru_stime.tv_sec + (double)rusage->ru_stime.tv_usec / 1000000.0));
-      FPRINTF((fp, "ru_maxrss=%ld\n", rusage->ru_maxrss));
-      FPRINTF((fp, "ru_ixrss=%ld\n", rusage->ru_ixrss));
-      FPRINTF((fp, "ru_idrss=%ld\n", rusage->ru_idrss));
-      FPRINTF((fp, "ru_isrss=%ld\n", rusage->ru_isrss));
-      FPRINTF((fp, "ru_minflt=%ld\n", rusage->ru_minflt));
-      FPRINTF((fp, "ru_majflt=%ld\n", rusage->ru_majflt));
-      FPRINTF((fp, "ru_nswap=%ld\n", rusage->ru_nswap));
-      FPRINTF((fp, "ru_inblock=%ld\n", rusage->ru_inblock));
-      FPRINTF((fp, "ru_oublock=%ld\n", rusage->ru_oublock));
-      FPRINTF((fp, "ru_msgsnd=%ld\n", rusage->ru_msgsnd));
-      FPRINTF((fp, "ru_msgrcv=%ld\n", rusage->ru_msgrcv));
-      FPRINTF((fp, "ru_nsignals=%ld\n", rusage->ru_nsignals));
-      FPRINTF((fp, "ru_nvcsw=%ld\n", rusage->ru_nvcsw));
-      FPRINTF((fp, "ru_nivcsw=%ld\n", rusage->ru_nivcsw));
+      FPRINTF((fp, "ru_maxrss="sge_u64"\n", rusage->ru_maxrss));
+      FPRINTF((fp, "ru_ixrss="sge_u64"\n", rusage->ru_ixrss));
+      FPRINTF((fp, "ru_idrss="sge_u64"\n", rusage->ru_idrss));
+      FPRINTF((fp, "ru_isrss="sge_u64"\n", rusage->ru_isrss));
+      FPRINTF((fp, "ru_minflt="sge_u64"\n", rusage->ru_minflt));
+      FPRINTF((fp, "ru_majflt="sge_u64"\n", rusage->ru_majflt));
+      FPRINTF((fp, "ru_nswap="sge_u64"\n", rusage->ru_nswap));
+      FPRINTF((fp, "ru_inblock="sge_u64"\n", rusage->ru_inblock));
+      FPRINTF((fp, "ru_oublock="sge_u64"\n", rusage->ru_oublock));
+      FPRINTF((fp, "ru_msgsnd="sge_u64"\n", rusage->ru_msgsnd));
+      FPRINTF((fp, "ru_msgrcv="sge_u64"\n", rusage->ru_msgrcv));
+      FPRINTF((fp, "ru_nsignals="sge_u64"\n", rusage->ru_nsignals));
+      FPRINTF((fp, "ru_nvcsw="sge_u64"\n", rusage->ru_nvcsw));
+      FPRINTF((fp, "ru_nivcsw="sge_u64"\n", rusage->ru_nivcsw));
 
       FCLOSE(fp);
 

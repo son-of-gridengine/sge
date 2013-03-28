@@ -71,21 +71,21 @@ struct drusage {
    double   ru_wallclock;
    double   ru_utime;      /* user time used */
    double   ru_stime;      /* system time used */
-   u_long32 ru_maxrss;
-   u_long32 ru_ixrss;      /* integral shared text size */
-   u_long32 ru_ismrss;     /* integral shared memory size*/
-   u_long32 ru_idrss;      /* integral unshared data " */
-   u_long32 ru_isrss;      /* integral unshared stack " */
-   u_long32 ru_minflt;     /* page reclaims */
-   u_long32 ru_majflt;     /* page faults */
-   u_long32 ru_nswap;      /* swaps */
-   u_long32 ru_inblock;    /* block input operations */
-   u_long32 ru_oublock;    /* block output operations */
-   u_long32 ru_msgsnd;     /* messages sent */
-   u_long32 ru_msgrcv;     /* messages received */
-   u_long32 ru_nsignals;   /* signals received */
-   u_long32 ru_nvcsw;      /* voluntary context switches */
-   u_long32 ru_nivcsw;     /* involuntary " */
+   u_long64 ru_maxrss;
+   u_long64 ru_ixrss;      /* integral shared text size */
+   u_long64 ru_ismrss;     /* integral shared memory size*/
+   u_long64 ru_idrss;      /* integral unshared data " */
+   u_long64 ru_isrss;      /* integral unshared stack " */
+   u_long64 ru_minflt;     /* page reclaims */
+   u_long64 ru_majflt;     /* page faults */
+   u_long64 ru_nswap;      /* swaps */
+   u_long64 ru_inblock;    /* block input operations */
+   u_long64 ru_oublock;    /* block output operations */
+   u_long64 ru_msgsnd;     /* messages sent */
+   u_long64 ru_msgrcv;     /* messages received */
+   u_long64 ru_nsignals;   /* signals received */
+   u_long64 ru_nvcsw;      /* voluntary context switches */
+   u_long64 ru_nivcsw;     /* involuntary " */
    u_long32 pid;
    char     *granted_pe;
    u_long32 slots;

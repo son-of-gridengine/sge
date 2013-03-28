@@ -55,8 +55,8 @@
 #define ARCH_COLUMN ""
 
 #define ACTFILE_FPRINTF_FORMAT \
-"%s%c%s%c%s%c%s%c%s%c"sge_u32"%c%s%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c" \
-sge_u32"%c%f%c%f%c%f%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c%f%c" \
+"%s%c%s%c%s%c%s%c%s%c"sge_u32"%c%s%c"sge_u64"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c" \
+sge_u64"%c%f%c%f%c%f%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c%f%c" \
 sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c%s%c%s%c%s%c%d%c"sge_u32"%c%f%c%f%c%f%c%s%c%f%c%s%c%f%c"sge_u32"%c"sge_u32"" \
 ARCH_COLUMN \
 "\n"

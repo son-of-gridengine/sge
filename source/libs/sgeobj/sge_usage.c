@@ -42,34 +42,34 @@
 *     usage_list_get_ulong_usage() -- return ulong usage value
 *
 *  SYNOPSIS
-*     u_long32 
+*     u_long64
 *     usage_list_get_ulong_usage(const lList *usage_list, const char *name, 
-*                                u_long32 def) 
+*                                u_long64 def)
 *
 *  FUNCTION
-*     Searches a usage object with the given name in the given usage 
+*     Searches for a usage object with the given name in the given usage
 *     list. If such an element is found, returns the value of the 
-*     usage object as u_long32 value.
+*     usage object as u_long64 value.
 *     If no such element is found, return the given default value.
 *
 *  INPUTS
 *     const lList *usage_list - the usage list
 *     const char *name        - name of the element to search
-*     u_long32 def            - default value
+*     u_long64 def            - default value
 *
 *  RESULT
-*     u_long32 - value of found object or default
+*     u_long64 - value of found object or default
 *
 *  SEE ALSO
 *     gdi/usage/usage_list_get_double_usage()
 *******************************************************************************/
-u_long32
+u_long64
 usage_list_get_ulong_usage(const lList *usage_list, const char *name,
-                           u_long32 def)
+                           u_long64 def)
 {
    lListElem *ep = lGetElemStr(usage_list, UA_name, name);
    if (ep != NULL) {
-      return (u_long32)lGetDouble(ep, UA_value);
+      return (u_long64)lGetDouble(ep, UA_value);
    } else {
       return def;
    }
@@ -120,7 +120,7 @@ usage_list_get_double_usage(const lList *usage_list, const char *name,
 *  SYNOPSIS
 *     void
 *     usage_list_set_ulong_usage(lList *usage_list, const char *name, 
-*                                u_long32 value) 
+*                                u_long64 value)
 *
 *  FUNCTION
 *     Updates the value of a usage record. If no usage record exists with the
@@ -129,7 +129,7 @@ usage_list_get_double_usage(const lList *usage_list, const char *name,
 *  INPUTS
 *     lList *usage_list - list containing the usage record to update
 *     const char *name  - name of the usage record to update
-*     u_long32 value    - the new value
+*     u_long64 value    - the new value
 *
 *  NOTES
 *     MT-NOTE: usage_list_set_ulong_usage() is MT safe 
@@ -140,7 +140,7 @@ usage_list_get_double_usage(const lList *usage_list, const char *name,
 *     sgeobj/usage/usage_list_get_double_usage()
 *******************************************************************************/
 void
-usage_list_set_ulong_usage(lList *usage_list, const char *name, u_long32 value)
+usage_list_set_ulong_usage(lList *usage_list, const char *name, u_long64 value)
 {
    usage_list_set_double_usage(usage_list, name, value);
 }
