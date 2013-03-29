@@ -424,7 +424,8 @@ void shepherd_error(int do_exit, const char *format, ...)
       sh_str2file(header_str, NULL, shepherd_exit_status_fp);
    }
 
-   if (coshepherd_pid > 0 && sge_switch2start_user()) {
+   if (coshepherd_pid > 0) {
+      sge_switch2start_user();
       kill(coshepherd_pid, SIGTERM);
       sge_switch2admin_user();
    }
