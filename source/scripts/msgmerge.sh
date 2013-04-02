@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/sh
 #___INFO__MARK_BEGIN__
 ##########################################################################
 #
@@ -31,22 +31,23 @@
 ##########################################################################
 #___INFO__MARK_END__
 
-set cmd = $1 
-setenv ARCH `./aimk -no-mk`
-set MSGMERGE = msgmerge
-set MSGFMT = msgfmt
-set MSGUNIQ = msguniq
-#set MSGFMT = /usr/bin/msgfmt
-#set MSGFMT = /home/codine/gettext/${ARCH}/bin/msgfmt
-#set MSGFMT = /usr/bin/msgfmt
-set LOCALEDIR = "./dist/locale"
-#set LANGUAGES = "de en en_FW.MBE en_FW.ASCII"
-#set LANGUAGES = "de en fr ja zh"
-set LANGUAGES = ""
-set MSGPO = "gridengine.po"
-set MSGMO = "gridengine.mo"
-set MSGPOT = "gridengine.pot"
-set MSGPOTNOTUNIQ = "gridenginenotuniq.pot"
+cmd=$1
+ARCH=`./aimk -no-mk`
+export ARCH
+MSGMERGE=msgmerge
+MSGFMT=msgfmt
+MSGUNIQ=msguniq
+#MSGFMT=/usr/bin/msgfmt
+#MSGFMT=/home/codine/gettext/${ARCH}/bin/msgfmt
+#MSGFMT=/usr/bin/msgfmt
+LOCALEDIR="./dist/locale"
+#LANGUAGES="de en"
+#LANGUAGES="de en fr ja zh"
+LANGUAGES=""
+MSGPO="gridengine.po"
+MSGMO="gridengine.mo"
+MSGPOT="gridengine.pot"
+MSGPOTNOTUNIQ="gridenginenotuniq.pot"
 
 # uniq the pot file
 sed 's/charset=CHARSET/charset=ascii/' ${LOCALEDIR}/${MSGPOTNOTUNIQ} > /tmp/${MSGPOTNOTUNIQ}
@@ -54,21 +55,19 @@ $MSGUNIQ -o "${LOCALEDIR}/${MSGPOT}" "/tmp/${MSGPOTNOTUNIQ}"
 rm "/tmp/${MSGPOTNOTUNIQ}"
 
 
-if ( $cmd == "merge") then
-   foreach I ($LANGUAGES)
+if [ "$cmd" = "merge" ]; then
+   for I in $LANGUAGES; do
       echo "####################### Language: ${I} ###############################"
       echo "perform merge in ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO}"
-      if ( ! -d ${LOCALEDIR}/${I}/LC_MESSAGES ) then
-         mkdir -p ${LOCALEDIR}/${I}/LC_MESSAGES
-      endif
-      if ( -f ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO} ) then
+      mkdir -p ${LOCALEDIR}/${I}/LC_MESSAGES
+      if [ -f ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO} ]; then
          echo ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO} saved as ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO}.bak
          mv ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO} ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO}.bak
          $MSGMERGE -o "${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO}" "${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO}.bak" "${LOCALEDIR}/${MSGPOT}"
       else
-         cp ${LOCALEDIR}/${MSGPOT} ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO} 
-      endif
-   end
+         cp ${LOCALEDIR}/${MSGPOT} ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO}
+      fi
+   done
    echo ""
    echo "######################################################################"
    echo "#       W A R N I N G       W A R N I N G       W A R N I N G        #"
@@ -80,17 +79,17 @@ if ( $cmd == "merge") then
    echo "# comment. Thank you.                                                #"
    echo "######################################################################"
 else
-   if ( $ARCH == "SOLARIS" || $ARCH == "SOLARIS64" ) then
-      foreach I ($LANGUAGES)
-         if ( -f ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGMO} ) then
+   if [ "$ARCH" == "SOLARIS" || "$ARCH" == "SOLARIS64" ]; then
+      for I in $LANGUAGES; do
+         if [ -f ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGMO} ]; then
             echo ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGMO} saved as ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGMO}.bak
             mv ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGMO} ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGMO}.bak
-         endif
+         fi
          echo "producing binary MO File from ${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO}"
-         $MSGFMT -o "${LOCALEDIR}/${I}/LC_MESSAGES/${MSGMO}" "${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO}" 
-      end
+         $MSGFMT -o "${LOCALEDIR}/${I}/LC_MESSAGES/${MSGMO}" "${LOCALEDIR}/${I}/LC_MESSAGES/${MSGPO}"
+      done
    else
       echo "Message formatting must be done on Solaris"
       exit 1
-   endif   
-endif
+   fi
+fi
