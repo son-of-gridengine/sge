@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/sh
 #___INFO__MARK_BEGIN__
 ##########################################################################
 #
@@ -31,9 +31,9 @@
 ##########################################################################
 #___INFO__MARK_END__
 
-set exec = "qsub ${GRD_ROOT}/examples/jobs/sleeper.sh"
+exec="qsub ${SGE_ROOT}/examples/jobs/sleeper.sh"
 echo ${exec}
-set input = $<
+read input
 $exec
 $exec
 $exec
@@ -47,450 +47,450 @@ $exec
 echo "********************"
 
 echo "qconf -sc host:"
-set input = $<
+read input
 qconf -sc host
 echo "********************"
 
 echo "qconf -acal testcalendar"
-set input = $<
+read input
 qconf -acal testcalendar
 echo "********************"
 
 echo "qconf -scal testcalendar"
-set input = $<
+read input
 qconf -scal testcalendar
 echo "********************"
 
 echo "qconf -scall"
-set input = $<
+read input
 qconf -scall
 echo "********************"
 
 echo "qconf -ackpt testckpt"
-set input = $<
+read input
 qconf -ackpt testckpt
 echo "********************"
 
 echo "qconf -sckpt testckpt"
-set input = $<
+read input
 qconf -sckpt testckpt
 echo "********************"
 
 echo "qconf -sckptl"
-set input = $<
+read input
 qconf -sckptl
 echo "********************"
 
 echo "qconf -scl"
-set input = $<
+read input
 qconf -scl
 echo "********************"
 
 echo "qconf -sconf"
-set input = $<
+read input
 qconf -sconf 
 echo "********************"
 
 echo "qconf -sconfl"
-set input = $<
+read input
 qconf -sconfl
 echo "********************"
 
 echo "qconf -se dwain"
-set input = $<
+read input
 qconf -se dwain
 echo "********************"
 
 echo "qconf -sel"
-set input = $<
+read input
 qconf -sel
 echo "********************"
 
 echo "qconf -sep"
-set input = $<
+read input
 qconf -sep
 echo "********************"
 
 echo "qconf -sh"
-set input = $<
+read input
 qconf -sh
 echo "********************"
 
 echo "qconf -sm"
-set input = $<
+read input
 qconf -sm
 echo "********************"
 
 echo "qconf -so"
-set input = $<
+read input
 qconf -so
 echo "********************"
 
 echo "qconf -ap testparallel"
-set input = $<
+read input
 qconf -ap testparallel
 echo "********************"
 
 echo "qconf -sp testparallel"
-set input = $<
+read input
 qconf -sp testparallel
 echo "********************"
 
 echo "qconf -spl"
-set input = $<
+read input
 qconf -spl
 echo "********************"
 
 echo "qconf -sq DWAIN.q"
-set input = $<
+read input
 qconf -sq DWAIN.q
 echo "********************"
 
 echo "qconf -sql"
-set input = $<
+read input
 qconf -sql
 echo "********************"
 
 echo "qconf -ss"
-set input = $<
+read input
 qconf -ss
 echo "********************"
 
 echo "qconf -sss"
-set input = $<
+read input
 qconf -sss
 echo "********************"
 
 echo "qconf -ssconf"
-set input = $<
+read input
 qconf -ssconf
 echo "********************"
 
 echo "qconf -sstnode testnode"
-set input = $<
+read input
 qconf -sstnode testnode
 echo "********************"
 
 echo "qconf -sstree"
-set input = $<
+read input
 qconf -sstree
 echo "********************"
 
 echo "qconf -su defaultdepartment"
-set input = $<
+read input
 qconf -su defaultdepartment
 echo "********************"
 
 echo "qconf -aumap crei"
-set input = $<
+read input
 qconf -aumap crei
 echo "********************"
 
 echo "qconf -sumap crei"
-set input = $<
+read input
 qconf -sumap crei
 echo "********************"
 
 echo "qconf -sumapl"
-set input = $<
+read input
 qconf -sumapl
 echo "********************"
 
 echo "qconf -auser"
-set input = $<
+read input
 qconf -auser testuser
 echo "********************"
 
 echo "qconf -suser testuser"
-set input = $<
+read input
 qconf -suser testuser
 echo "********************"
 
 echo "qconf -aprj"
-set input = $<
+read input
 qconf -aprj testprj
 echo "********************"
 
 echo "qconf -sprj testprj"
-set input = $<
+read input
 qconf -sprj testprj
 echo "********************"
 
 echo "qconf -sul"
-set input = $<
+read input
 qconf -sul
 echo "********************"
 
 echo "qconf -suserl"
-set input = $<
+read input
 qconf -suserl
 echo "********************"
 
 
 
 
-set exec = "qacct -help"
+exec="qacct -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qacct"
+exec="qacct"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qacct -h bolek"
+exec="qacct -h bolek"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qacct -g codine"
+exec="qacct -g codine"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qacct -o crei"
+exec="qacct -o crei"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qalter -help"
+exec="qalter -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qconf -help"
+exec="qconf -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qdel -help"
+exec="qdel -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qdel -verify all"
+exec="qdel -verify all"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qdel -uall"
+exec="qdel -uall"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qsub ${GRD_ROOT}/examples/jobs/sleeper.sh"
+exec="qsub ${SGE_ROOT}/examples/jobs/sleeper.sh"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qdel -uall"
+exec="qdel -uall"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qhold -help"
+exec="qhold -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qhost -help"
+exec="qhost -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qhost"
+exec="qhost"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qhost -u crei"
+exec="qhost -u crei"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qlogin -help"
+exec="qlogin -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qlogin"
+exec="qlogin"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qmod -help"
+exec="qmod -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qmod -c BOLEK.q BALROG.q DWAIN.q FANGORN.q"
+exec="qmod -c BOLEK.q BALROG.q DWAIN.q FANGORN.q"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qmod -d BOLEK.q BALROG.q DWAIN.q FANGORN.q"
+exec="qmod -d BOLEK.q BALROG.q DWAIN.q FANGORN.q"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qmod -e BOLEK.q BALROG.q DWAIN.q FANGORN.q"
+exec="qmod -e BOLEK.q BALROG.q DWAIN.q FANGORN.q"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qmod -s BOLEK.q BALROG.q DWAIN.q FANGORN.q"
+exec="qmod -s BOLEK.q BALROG.q DWAIN.q FANGORN.q"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qmod -us BOLEK.q BALROG.q DWAIN.q FANGORN.q"
+exec="qmod -us BOLEK.q BALROG.q DWAIN.q FANGORN.q"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qmon -help"
+exec="qmon -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qmon &"
+exec="qmon &"
 echo ${exec}
-set input = $<
-$exec
-echo "********************"
-
-
-set exec = "qrexec -help"
-echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
 
-set exec = "qrls -help"
+exec="qrexec -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
 
-set exec = "qrsh -help"
+exec="qrls -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
 
-set exec = "qrsh"
+exec="qrsh -help"
 echo ${exec}
-set input = $<
-$exec
-echo "********************"
-
-set exec = "qmod -c BOLEK.q BALROG.q DWAIN.q FANGORN.q"
-echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
 
-
-set exec = "qselect -help"
+exec="qrsh"
 echo ${exec}
-set input = $<
+read input
+$exec
+echo "********************"
+
+exec="qmod -c BOLEK.q BALROG.q DWAIN.q FANGORN.q"
+echo ${exec}
+read input
 $exec
 echo "********************"
 
 
-set exec = "qselect -l arch=solaris64 "
+
+exec="qselect -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
 
-set exec = "qsh -help"
+exec="qselect -l arch=solaris64 "
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
 
-set exec = "qsh"
+exec="qsh -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
 
-set exec = "qstat -help"
+exec="qsh"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
 
-set exec = "qstat -f"
+exec="qstat -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
 
-set exec = "qstat -f -alarm -ext"
+exec="qstat -f"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
 
-set exec = "qmod -c BOLEK.q BALROG.q DWAIN.q FANGORN.q"
+exec="qstat -f -alarm -ext"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qsub -help"
+
+exec="qmod -c BOLEK.q BALROG.q DWAIN.q FANGORN.q"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qsub -t 10:100:10 ${GRD_ROOT}/examples/jobs/sleeper.sh"
+exec="qsub -help"
 echo ${exec}
-set input = $<
+read input
 $exec
 echo "********************"
 
-set exec = "qstat -f -alarm -ext"
+exec="qsub -t 10:100:10 ${SGE_ROOT}/examples/jobs/sleeper.sh"
 echo ${exec}
-set input = $<
+read input
+$exec
+echo "********************"
+
+exec="qstat -f -alarm -ext"
+echo ${exec}
+read input
 $exec
 echo "********************"
 

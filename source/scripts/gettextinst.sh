@@ -1,4 +1,4 @@
-#!/bin/csh
+#!/bin/sh
 #___INFO__MARK_BEGIN__
 ##########################################################################
 #
@@ -31,16 +31,16 @@
 ##########################################################################
 #___INFO__MARK_END__
 
-#INSTALLDIR=/home/codine/gettextlib/${ARCH}
+# This probably isn't worth keeping.
 
 echo ""
 echo "This will configure, compile and install the GNU gettext libary"
 
-set ARCHITECTURE=$1
-set INSTALLDIR=$2
-set GETTEXTDIR=$3
+ARCHITECTURE=$1
+INSTALLDIR=$2
+GETTEXTDIR=$3
 
-if ($ARCHITECTURE == "" || $INSTALLDIR == "" || $GETTEXTDIR == "") then
+if [ -z "$ARCHITECTURE" || -z "$INSTALLDIR" || -z "$GETTEXTDIR" ]; then
   echo "Error: wrong arguments "
   echo "Usage: ${0} <ARCH> <INSTALL_DIR> <SOURCE_DIR>"
   echo "       <ARCH>        : e.g. SOLARIS64 etc."
@@ -48,7 +48,7 @@ if ($ARCHITECTURE == "" || $INSTALLDIR == "" || $GETTEXTDIR == "") then
   echo "                       (e.g. /home/codine/gettext)"
   echo "       <SOURCE_DIR>  : path to the GNU gettext source code"
   exit -1
-endif
+fi
 
 echo ""
 echo "Following parameters are used:"
@@ -57,23 +57,17 @@ echo "INSTALLDIR   = ${INSTALLDIR}"
 echo "GETTEXTDIR   = ${GETTEXTDIR}"
 echo "please wait ..."
 
-
-#set INSTALLDIR=/home/codine/gettext
-#set GETTEXTDIR=/cod_home/crei/src/gettext/gettext-0.10.35
-#set ARCHTOOL=/cod_home/crei/src/c4/distrib/dist/util/arch
-
-
-if ( ${ARCHITECTURE} == "SOLARIS64" ) then
+if [ "${ARCHITECTURE}" = "SOLARIS64" ]; then
    echo ""
    echo "This is a SOLARIS64 system, we have to do something special ..."
-   setenv CFLAGS  "-fast -xarch=v9"
+   CFLAGS="-fast -xarch=v9"
    echo "-end of SOLARIS64 specific options-"
-endif
+fi
 
-pushd ${GETTEXTDIR}
+( cd ${GETTEXTDIR}
 
 
-if (-e Makefile) then
+if [ -f Makefile ]; then
   echo ""
   echo "Cleaning up binaries and object files ..."
   make clean 
@@ -81,7 +75,7 @@ if (-e Makefile) then
   echo ""
   echo "Cleaning up old configure files ..."
   make distclean
-endif
+fi
 
 echo ""
 echo "Perform configure (INSTALLDIR is ${INSTALLDIR}) ..."
@@ -96,33 +90,33 @@ echo "Perform self-tests"
 make check
 
 
-if !(-e ${INSTALLDIR}) then
+if [ ! -f ${INSTALLDIR} ]; then
   echo ""
   echo "Creating directory ${INSTALLDIR}, chmod to 774"
   mkdir ${INSTALLDIR}
   chmod 774 ${INSTALLDIR}
-endif
+fi
 
-set OLDFILE=`ls -la ${INSTALLDIR}/${ARCHITECTURE}/bin/gettext`
+OLDFILE=`ls -la ${INSTALLDIR}/${ARCHITECTURE}/bin/gettext`
 
 echo ""
 echo "Installing libary into ${INSTALLDIR}"
 make install
 
 
-popd
+)                               # cd
 
-set NEWFILE=`ls -la ${INSTALLDIR}/${ARCHITECTURE}/bin/gettext`
+NEWFILE=`ls -la ${INSTALLDIR}/${ARCHITECTURE}/bin/gettext`
 
 echo "Old gettext binary file: ${OLDFILE}"
 echo "New gettext binary file: ${NEWFILE}"
 
 
-if ("${OLDFILE}" == "${NEWFILE}") then
+if [ "${OLDFILE}" = "${NEWFILE}" ]; then
    echo ""
    echo "STATE: W A R N I N G : new gettext binary not installed for ${ARCHITECTURE}"
    exit -1
-endif
+fi
 
 echo ""
 echo "STATE: new gettext binary installed for ${ARCHITECTURE}"
