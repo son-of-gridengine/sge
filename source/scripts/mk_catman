@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/sh
 #
 # Creates packed catman files in directories CAT{1,...} from ASCII
 # manuals in directories ASCMAN{1,...}. The directories CAT{1,...}
@@ -41,71 +41,70 @@
 
 umask 022
 
-set MANBUILDDIR = $1/MANSBUILD_$2
+MANBUILDDIR=$1/MANSBUILD_$2
 
-if ( $#argv > 2 ) then
-   set MANBUILDDIR = $3
-endif
+if [ $# -gt 2 ]; then
+   MANBUILDDIR=$3
+fi
 
-#if ( `/sbin/uname` != IRIX && `/sbin/uname` != IRIX64 ) then
+#if [ `/sbin/uname` != IRIX -a `/sbin/uname` != IRIX64 ]; then
 #        echo "Error: need to be executed on an SGI - we need pack."
 #        exit 1
-#endif
-if ( ! -f `which pack`) then
+#fi
+if [ ! -f `which pack` ]; then
    echo "Error: the command 'pack' was not found!"
    exit 1
-endif
+fi
 
-echo Building catman pages in $MANBUILDDIR/ASCMAN/man
+echo "Building catman pages in $MANBUILDDIR/ASCMAN/man"
 
 # Build the list of the available sections
-set SECTION_LIST = ""
-foreach n ( 1 2 3 4 5 6 7 8 )
-   if ( -d $MANBUILDDIR/ASCMAN/man/man${n} ) then
-     if ( "$SECTION_LIST" == "" ) then
-        set SECTION_LIST = $n
+SECTION_LIST=""
+for n in 1 2 3 4 5 6 7 8; do
+   if [ -d $MANBUILDDIR/ASCMAN/man/man${n} ]; then
+     if [ "$SECTION_LIST" == "" ]; then
+        SECTION_LIST=$n
      else
-        set SECTION_LIST = "$SECTION_LIST $n"
-     endif
-   endif
-end
+        SECTION_LIST="$SECTION_LIST $n"
+     fi
+   fi
+done
 
-foreach n ( $SECTION_LIST )
-   mkdir -p $MANBUILDDIR/CAT/man${n} >& /dev/null
+for n in $SECTION_LIST; do
+   mkdir -p $MANBUILDDIR/CAT/man${n}
 
-   if ( ! -d $MANBUILDDIR/CAT/man${n} ) then
+   if [ ! -d $MANBUILDDIR/CAT/man${n} ]; then
       echo "Error: Couldnt create subdirectory CAT/man${n}."
       exit
-   endif
+   fi
 
-   echo copying and compressing section $n 
+   echo copying and compressing section $n
 	cd $MANBUILDDIR/ASCMAN/man/man${n}
-	foreach f ( * )
-		\cp $f $MANBUILDDIR/CAT/man${n}
-	end
+	for f in *; do
+		/bin/cp $f $MANBUILDDIR/CAT/man${n}
+	done
 	cd $MANBUILDDIR/CAT/man${n}
 
-	\rm -f *.z
+	rm -f *.z
 	pack -f *
-end
+done
 
-foreach n ( $SECTION_LIST )
-   if ( $n == 1 ) then
-      set category_dir = "u_man"
-   else if ($n == 3 ) then
-      set category_dir = "p_man"
+for n in $SECTION_LIST; do
+   if [ $n == 1 ]; then
+      category_dir="u_man"
+   else if [ $n == 3 ]; then
+      category_dir="p_man"
    else
-      set category_dir = "a_man"
-   endif
-   
-   mkdir -p $MANBUILDDIR/ASCMAN/catman/${category_dir}/cat${n} >& /dev/null
-   if ( ! -d $MANBUILDDIR/ASCMAN/catman/${category_dir}/cat${n} ) then 
+      category_dir="a_man"
+   fi
+
+   mkdir -p $MANBUILDDIR/ASCMAN/catman/${category_dir}/cat${n}
+   if [ ! -d $MANBUILDDIR/ASCMAN/catman/${category_dir}/cat${n} ]; then
      echo "Error: Couldn't create directories."
      exit 1
-   endif
-   rm -f $MANBUILDDIR/ASCMAN/catman/${category_dir}/cat${n}/* >& /dev/null
+   fi
+   rm -f $MANBUILDDIR/ASCMAN/catman/${category_dir}/cat${n}/*
    echo copying cat${n} ...
-   cp  $MANBUILDDIR/CAT/man${n}/* $MANBUILDDIR/ASCMAN/catman/${category_dir}/cat${n} >& /dev/null
-end
+   cp  $MANBUILDDIR/CAT/man${n}/* $MANBUILDDIR/ASCMAN/catman/${category_dir}/cat${n} 2> /dev/null
+done
 echo ... done
-
