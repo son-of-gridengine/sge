@@ -38,16 +38,16 @@ qhost \- show the status of xxQS_NAMExx hosts, queues, jobs
 .SH SYNTAX
 .B qhost
 .RB [ \-F
-.RI [ resource_name ,...]]
+.RI [ resource_name \fB,\fP...]]
 .RB [ \-help ]
 .RB [ \-h
-.RI host_list ]
+.IR host_list ]
 .RB [ \-j ]
 .RB [ \-l
-.IR resource = val ,...]
+.IR resource [\fB=\fP val ]\fB,\fP...]
 .RB [ \-ncb ]
 .RB [ \-u
-.IR user ,...]
+.IR user \fB,\fP...]
 .RB [ \-xml ]
 .\"
 .SH DESCRIPTION
@@ -65,7 +65,7 @@ information.
 .\"
 .SH OPTIONS
 .\"
-.IP "\fB\-F\fP [ \fBresource_name,...\fP ]"
+.IP "\fB\-F\fP [\fIresource_name\fP\fB,\fP...]"
 .I qhost
 will present a detailed listing of the current 
 resource availability per host with respect to all resources (if the option 
@@ -77,14 +77,14 @@ section \fBOUTPUT FORMATS\fP below for further detail.
 .IP "\fB\-help\fP"
 Prints a listing of all options.
 .\"
-.IP "\fB\-h host_list\fP"
+.IP "\fB\-h \fP\fIhost_list\fP"
 Prints a list of all hosts contained in host_list.
 .\"
 .IP "\fB\-j\fP"
 Prints all jobs running on the queues hosted by the shown hosts. This 
 switch calls \fB\-q\fP implicitly.
 .\"
-.IP "\fB\-l resource\fP[\fB=value\fP],..."
+.IP "\fB\-l \fP\fIresource\fP[\fB=\fP\fIvalue\fP]\fB,\fP..."
 Defines the resources to be granted by the hosts which should be 
 included in the host list output. Matching is performed on 
 hosts based on non-mutable resource availability information only. 
@@ -107,7 +107,7 @@ next major version.
 .IP "\fB\-q\fP"
 Show information about the queues instances hosted by the displayed hosts.
 .\"
-.IP "\fB\-u user,...\fP"
+.IP "\fB\-u \fP\fIuser\fP\fB,\fP..."
 Display information only on those jobs and queues
 being associated with the users from the given user list.
 .\"

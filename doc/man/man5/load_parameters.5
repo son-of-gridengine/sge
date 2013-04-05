@@ -27,6 +27,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH LOAD_PARAMETERS 5 "$Date: 2011-12-04 12:16:31 $" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
@@ -71,20 +74,20 @@ xxQS_NAMExx is built with the perfstat library (which is now the default):
 .B load_short
 The short time average OS run queue length. It is the
 first of the value triple reported by
-.M  uptime 1 .
+.MO  uptime 1 .
 Many implementations provide a 1 minute average
 with this value.
 .TP
 .B load_medium
 The medium time average OS run queue length. It is the
 second of the value triple reported by
-.M uptime1 .
+.MO uptime 1 .
 Many implementations provide a 5 minute average with this value.
 .TP
 .B load_long
 The long time average OS run queue length. It is the third of the
 value triple reported by
-.M uptime 1 .
+.MO uptime 1 .
 Many implementations provide a 10 or 15 minute average with this value.
 .TP
 .B load_avg
@@ -182,8 +185,11 @@ Number of cores reported for all sockets on a host (e.g. "SCCSCCSCCSCC" => m_cor
 Number of hardware threads reported for all cores on a host, which
 should be equal to num_proc (e.g. "SCTTCTTCTTCTT" => m_thread=8)
 .SS "Static Load Values"
-The "static" load values (which may be selected with "qhost -l" or
-"qselect -l") are:  arch, num_proc, mem_total, swap_total,
+The "static" load values (which may be selected with
+.B qhost \-l
+or
+.BR "qselect \-l" )
+are:  arch, num_proc, mem_total, swap_total,
 virtual_total, m_topology, m_socket, m_core, m_thread.
 .SH "SEE ALSO"
 .M complex 5 ,

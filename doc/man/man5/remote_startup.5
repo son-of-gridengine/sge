@@ -306,7 +306,7 @@ remain disabled.
 It is important to note that the communication method set up for one
 particular startup method must match at each end. This can either
 be achieved by using only a global configuration, or carefully setting up local configurations for the exechosts
-involved. Whether or not local configurations exist, which must be taken care of, can be checked with \fBqconf -sconfl\fR.
+involved. Whether or not local configurations exist, which must be taken care of, can be checked with \fBqconf \-sconfl\fR.
 .sp 1
 As a general rule, for setting up a communication method between a machine A (where the \fBcommand\fR is issued) and
 a machine B (where the \fBdaemon\fR is started) it must be guaranteed that the:
@@ -316,7 +316,7 @@ setup communication method for the \fBcommand\fR on machine A
 .br
 (either global configuration from
 .M xxqs_name_sxx_conf 5
-or local configuration \fBqconf -sconf \fR\fBA\fR of machine A)
+or local configuration \fBqconf \-sconf \fR\fBA\fR of machine A)
 .RE
 .sp 1
 matches
@@ -326,7 +326,7 @@ setup communication method for the \fBdaemon\fR for machine B
 .br
 (either global configuration from
 .M xxqs_name_sxx_conf 5
-or local configuration \fBqconf -sconf \fR\fBB\fR of machine B)
+or local configuration \fBqconf \-sconf \fR\fBB\fR of machine B)
 .RE
 .sp 1
 This way it is also possible to use different communication methods, depending whether a connection
@@ -380,7 +380,7 @@ necessary additional group ID to the started process to provide tight
 integration.  See also the
 .URL http://gridengine.org/assets/static/ws2007/K5SGE.pdf "workshop paper" .
 .TP
-.B Recompile xxQS_NAMExx with \fB./aimk -tight-ssh ...\fR
+.B Recompile xxQS_NAMExx with \fB./aimk \-tight\-ssh ...\fR
 The source of xxQS_NAMExx contains the necessary additions to compile a modified \fIsshd\fR, which will honor the
 additional group ID and attach it also to the started process. It's necessary to provide the source of \fIOpenSSH\fR
 in the directory \fI3rd_party\fR inside \fI$SGE_ROOT\fR having a plain name \[oq]openssh\[cq]. Inside this
@@ -451,15 +451,15 @@ the delegation of GSSAPI credentials to the compute nodes:
 .RS
 rsh_daemon     /opt/sge/util/rshdwrapper
 .br
-rsh_command    ssh -tt -o GSSAPIDelegateCredentials=no
+rsh_command    ssh \-tt \-o GSSAPIDelegateCredentials=no
 .br
 qlogin_daemon  /opt/sge/util/rshdwrapper
 .br
-qlogin_command ssh -tt -o GSSAPIDelegateCredentials=no
+qlogin_command ssh \-tt \-o GSSAPIDelegateCredentials=no
 .br
 rlogin_daemon  /opt/sge/util/rshdwrapper
 .br
-rlogin_command ssh -tt -o GSSAPIDelegateCredentials=no
+rlogin_command ssh \-tt \-o GSSAPIDelegateCredentials=no
 .RE
 .PP
 Old-style method, using telnet and rlogin:
@@ -469,13 +469,13 @@ qlogin_command /usr/bin/telnet
 .br
 qlogin_daemon  /usr/sbin/in.telnetd
 .br
-rlogin_command /opt/sge/utilbin/lx24-x86/rlogin
+rlogin_command /opt/sge/utilbin/lx24\-x86/rlogin
 .br
 rlogin_daemon  /usr/sbin/in.rlogind
 .br
-rsh_command    /opt/sge/utilbin/lx24-x86/rsh
+rsh_command    /opt/sge/utilbin/lx24\-x86/rsh
 .br
-rsh_daemon     /opt/sge/utilbin/lx24-x86/rshd -l
+rsh_daemon     /opt/sge/utilbin/lx24\-x86/rshd \-l
 .RE
 .\"
 .SH "SEE ALSO"

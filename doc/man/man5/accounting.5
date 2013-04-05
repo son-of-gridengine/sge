@@ -101,7 +101,9 @@ Indicates the problem which occurred in case a job could not be started on
 the execution host (e.g. because the owner of the job did not have a valid 
 account on that machine). If xxQS_NAMExx tries to start a job multiple times, 
 this may lead to multiple entries in the reporting file corresponding to
-the same job ID.
+the same job ID.  See
+.M sge_status 5
+for a list.
 .SS "\fB13. exit_status\fP"
 Exit status of the job script (or xxQS_NAMExx-specific status in case
 of certain error conditions).
@@ -251,6 +253,7 @@ an advance reservation; otherwise "\fB0\fP".
 .M queue_conf 5 ,
 .M sge_conf 5 ,
 .M sge_pe 5 ,
+.M sge_status 5 ,
 .M reporting 5 .
 .\"
 .SH "COPYRIGHT"

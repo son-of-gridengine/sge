@@ -206,9 +206,18 @@ The security mode defines the set of security features the installed cluster is 
 Possible security mode settings are "none", "afs", "dce", "kerberos",
 "csp" (no additional security, AFS, DCE/GSSAPI, Kerberos/GSSAPI, and
 X.509 certificate-based security).  The "dce" and "kerberos" methods
-are equivalent, calling the GSSAPI security modules in the same way,
-whether they were built for Kerberos/GSSAPI or DCE/GSSAPI.  Only the
-CSP method is currently properly functional and safe.
+are nearly equivalent, calling the GSSAPI security modules in the same way,
+whether they were built for Kerberos/GSSAPI or DCE/GSSAPI, except
+that "dce" runs the program
+.I $SGE_ROOT/utilbin/$ARCH/starter_cred
+as a wrapper for the shepherd unless
+.B NO_SECURITY
+is specified in
+.B execd_params
+in
+.M sge_conf 5 .
+Only the CSP method is currently properly functional and safe (from
+the point of view of not exposing credentials generally).
 .br
 .B NB.
 Do not use AFS security without some means of user

@@ -114,7 +114,7 @@ a "@" prefix is used.
 A host name is the official name of a host node. Host names with a domain 
 specification such as "gridmaster.sun.com" are called fully-qualified host names, 
 whereas host names like "gridmaster" are called short host names. Note that
-the install time parameters default_domain and ignore_fqdn (see
+the install time parameters \fBdefault_domain\fP and \fBignore_fqdn\fP (see
 .M bootstrap 5 )
 affect how xxQS_NAMExx deals with host names in general.
 .PP
@@ -244,8 +244,8 @@ where:
 .fi
 .PP
 .\"
-The expression itself should be put inside quotes ('"') to ensure that \" "
-clients receive the complete expression.
+If typed at a shell, the expression itself should be quoted to ensure
+that it is not expanded by the shell.
 .PP
 .\"
 .ta
@@ -265,7 +265,7 @@ When patterns are used the following definitions apply:
 .nf
 .ta \w'XXXXXXXX'u
 "*"	matches any character and any number of characters 
-	(between 0 and inv).
+	(between 0 and infinity).
 "?"	matches any character. It cannot be no character.
 "."	is the character ".". It has no other meaning.
 "\\"	escape character; "\\\\" = "\\", "\\*" = "*", "\\?" = "?".
@@ -274,12 +274,11 @@ When patterns are used the following definitions apply:
         Character ranges may be specified using the a\-z notation.
         The caret symbol (^) is \fBnot\fP interpreted as a logical
         not; it is interpreted literally.
-
-For more details please see 
-.MO fnmatch 5 .
-.\"
-
 .fi
+.PP
+For more details please see
+.MO fnmatch 5 ,
+.MO glob 7 .
 .PP
 The pattern itself should be put inside quotes ('"') to ensure that \" "
 clients receive the complete pattern.
@@ -499,10 +498,9 @@ wc_pe_name := pe_name | pattern
 Parallel programming environment (PE) to select for a submitted job or an AR. The
 range descriptor following the PE name specifies the number of
 parallel processes to be run. xxQS_NAMExx will allocate the
-appropriate resources, as available. The
+appropriate resources, as available.
 .M xxqs_name_sxx_pe 5
-manual page contains information about the definition of PEs
-and about how to obtain a list of currently valid PEs.
+contains information about the definition of PEs.
 .PP
 You can specify a PE name which uses wildcards.  Thus the request
 "mpi*" will match any parallel environment with a name starting with
@@ -577,4 +575,6 @@ but may not contain  "\\n", "\\t", "\\r", "/", ":", "@", "\\", "*",  or "?".
 .M qrsub 1
 .\"
 .SH COPYRIGHT
-Copyright: 2004-2007 by Sun Microsystems, Inc.
+See
+.M xxqs_name_sxx_intro 1
+for a full statement of rights and permissions.

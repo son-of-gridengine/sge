@@ -35,9 +35,14 @@ access_list \- xxQS_NAMExx access list file format
 .SH DESCRIPTION
 Access lists are used in xxQS_NAMExx to define access permissions of users
 to queues (see
-.M queue_conf 5 )
-or parallel environments (see
-.M xxqs_name_sxx_pe 5 ). 
+.M queue_conf 5 ),
+parallel environments (see
+.M xxqs_name_sxx_pe 5 ),
+execution hosts (see
+.M host_conf 5 ),
+or the whole cluster (
+see
+.M sge_conf 5 ).
 A list of currently configured 
 access lists can be displayed via the
 .M qconf 1

@@ -55,14 +55,12 @@ qping \- check application status of xxQS_NAMExx daemons.
 .I Qping
 is used to validate the runtime status of a xxQS_NAMExx service daemon. The current
 xxQS_NAMExx implementation allows one to query the xxQS_NAME_Sxx_QMASTER daemon and any
-running xxQS_NAME_Sxx_EXECD daemon. The qping command is used to send a SIM (Status
+running xxQS_NAME_Sxx_EXECD daemon. The command is used to send a SIM (Status
 Information Message) to the destination daemon. The communication layer of the 
 specified daemon will respond with a SIRM (Status Information Response Message) which
-contains status information about the consulted daemon.
-
-The qping \-dump and \-dump_tag options allow an administrator to observe the communication
-protocol data flow of a xxQS_NAMExx service daemon. The qping \-dump instruction must be started
-under the root account and on the host where the observed daemon is running.
+contains status information about that daemon.
+It also has options allow an administrator to observe the communication
+protocol data flow of a xxQS_NAMExx service daemon.
 .PP
 .\"
 .\"
@@ -100,7 +98,7 @@ layer wasn't able to send the messages yet. If this number grows too large, the
 communication layer isn't able to send them as fast as the application (daemon) wants
 the messages to be sent.
 
-\fInr. of connected clients:\fP
+\fInumber of connected clients:\fP
 This is the number of clients actually connected to this daemon, including the
 current qping connection.
 
@@ -307,7 +305,7 @@ data flow of a xxQS_NAMExx service daemon. The qping \-dump instruction must be 
 as root and on the host where the observed daemon is running.
 
 The output is written to stdout. The environment variable "SGE_QPING_OUTPUT_FORMAT"
-can be set to hide columns, set a default column width or to set a hostname output
+can be set to hide columns, set a default column width, or to set a hostname output
 format. The value of the environment variable can be set to any combination of
 the following specifiers separated by a space character:
 .in +3
@@ -321,13 +319,17 @@ the following specifiers separated by a space character:
 .fi
 .RE
 
-Run qping \-help to see which columns are available.
+Run
+.B qping \-help
+to see which columns are available.
 .in -3
 
 
-.SS "\fB\-dump_tag tag [param]\fP"
+.SS "\fB\-dump_tag\fP \fItag\fP \fR[\fP\fIparam\fP\fR]\fP"
 This option has the same meaning as \-dump, but can provide more information by
-specifying the debug level and message types qping should print:
+specifying the debug level and message types
+.I qping
+should print:
 .in +3
 .B \-dump_tag ALL
 .I debug level 
@@ -347,19 +349,21 @@ This option is not currently implemented.
 .in -3
 .in -3    
 .in +3
-\-dump_tag MSG
+.B \-dump_tag MSG
 .in +3
-This option has the same behavior as the \-dump option. 
+This option has the same behavior as the
+.B \-dump
+option. 
 .in -3
 .in -3    
 
-.SS "\fBhost\fP"
+.SS "\fIhost\fP"
 Host where daemon is running.
 
-.SS "\fBport\fP"
+.SS "\fIport\fP"
 Port which daemon has bound (used xxqs_name_sxx_qmaster/xxqs_name_sxx_execd port number).
 
-.SS "\fBname\fP"
+.SS "\fIname\fP"
 Name of communication endpoint ("qmaster" or "execd"). A communication endpoint is a 
 triplet of hostname/endpoint name/endpoint id (e.g. hostA/qmaster/1 or subhost/qstat/4).
 
@@ -387,7 +391,7 @@ start time:               08/20/2004 11:05:14 (1092992714)
 run time [s]:             365853
 messages in read buffer:  0
 messages in write buffer: 0
-nr. of connected clients: 4
+no. of connected clients: 4
 status:                   0
 info:                     ok
 .fi
@@ -401,7 +405,7 @@ start time:               08/20/2004 11:06:13 (1092992773)
 run time [s]:             365852
 messages in read buffer:  0
 messages in write buffer: 0
-nr. of connected clients: 2
+no. of connected clients: 2
 status:                   0
 info:                     ok
 .fi
@@ -421,6 +425,10 @@ files.
 .IP "\fBxxQS_NAME_Sxx_CELL\fP" 1.5i
 If set, specifies the default xxQS_NAMExx cell.
 .\"
+.IP \fBSGE_QPING_OUTPUT_FORMAT\fP 1.5i
+See
+.B \-dump
+option above.
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,

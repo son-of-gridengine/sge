@@ -2,7 +2,7 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004-2007 by Sun Microsystems, Inc.
-.\" Copyright (C) 2011, 2012  Dave Love, University of Liverpool
+.\" Copyright (C) 2011, 2012, 2013  Dave Love, University of Liverpool
 .\"
 .\"___INFO__MARK_END__
 .\"
@@ -145,10 +145,10 @@ parallel task is displayed rather than the jobs slot amount (see section
 Prints a listing of all options.
 .\"
 .IP "\fB\-j\fP [\fIjob_list\fP]"
-Prints various information either for all pending jobs, or the jobs
-contained in
-\fIjob_list\fP. The job_list can contain job_ids, job_names, or
-wildcard expression
+Prints various information either (without an argument) for all
+pending jobs, or the jobs contained in
+\fIjob_list\fP. The \fIjob_list\fP can contain job_ids, job_names, or
+wildcard expressions
 .M sge_types 5
 matching jobs.
 .sp
@@ -159,10 +159,10 @@ obstacles are shown, if 'schedd_job_info' in
 is configured accordingly.
 .sp
 For running jobs, the available information on resource utilization is
-shown for each task:
+shown for each task (see
+.M accounting 5 ):
 consumed cpu time in seconds, integral memory usage in Gbytes
-seconds, amount of data transferred in io operations in Gbytes (see
-.M accounting 5 ),
+seconds, amount of data transferred in io operations in Gbytes,
 current virtual
 memory utilization in Mbytes, and maximum virtual memory utilization in 
 Mbytes. This information is not available if resource utilization 
@@ -393,36 +393,49 @@ the job ID.
 the priority of the job determining its position in the pending jobs list.
 The priority value is determined 
 dynamically based on ticket and urgency policy set-up (see also
-.M sge_priority 5 
-).
+.M sge_priority 5 ).
 .IP "\(bu" 3n
 the name of the job.
 .IP "\(bu" 3n
 the user name of the job owner.
 .IP "\(bu" 3n
-the status of the job \- one of d(eletion), E(rror), h(old), r(unning),
-R(estarted), s(uspended), S(uspended), t(ransfering), T(hreshold),
-w(aiting), or z(ombie).
+the status of the job \- a combination of
+.BR d (eletion),
+.BR E (rror),
+.BR h (old),
+.BR q (ueued),
+.BR r (unning),
+.BR R (estarted),
+.BR s (uspended),
+.BR S(uspended),
+.BR t (ransfering),
+.BR T (hreshold),
+.BR w (aiting),
+Or
+.BR z (ombie).
 .sp 1
-The state d(eletion) indicates that a 
-.M qdel 1 
-has been used to initiate job deletion. 
-The states t(ransfering) and r(unning) indicate that a job is about to
-be executed or is already executing, whereas the states s(uspended),
-S(uspended) and T(hreshold) show that an already running jobs has been
-suspended. The s(uspended) state is caused by suspending the job via the
+The state \fBd\fP(eletion) indicates that
+.M qdel 1
+has been used to initiate job deletion.
+The states \fBt\fP(ransfering) and \fBr\fP(unning) indicate that a job is about to
+be executed or is already executing, whereas the states \fBs\fP(uspended),
+\fBS\fP(uspended) and \fBT\fP(hreshold) show that an already running jobs has been
+suspended. The \fBs\fP(uspended) state is caused by suspending the job via the
 .M qmod 1
-command, the S(uspended) state indicates that the queue containing the job
-is suspended and therefore the job is also suspended and the T(hreshold)
+command, the \fBS\fP(uspended) state indicates that the queue containing the job
+is suspended and therefore the job is also suspended and the \fBT\fP(hreshold)
 state shows that at least one suspend threshold of the corresponding queue
 was exceeded (see
-.M queue_conf 5 )
-and that the job has been suspended as a consequence. The state R(estarted)
+.M queue_conf 5 ),
+and that the job has been suspended as a consequence. The state \fBR\fP(estarted)
 indicates that the job was restarted. This can be caused by a job migration or
 for one of the reasons described in the \fB\-r\fP section of
 .M qsub 1 .
 .sp 1
-The states w(aiting) and h(old) only appear for pending jobs. The h(old)
+The states \fBq\fP(ueued)/\fBw\fP(aiting) and \fBh\fP(old) only appear for pending jobs.
+Pending, unheld jobs are displayed as
+.BR qw .
+The \fBh\fP(old)
 state indicates that a job currently is not eligible for execution due to
 a hold state assigned to it via
 .M qhold 1 ,
@@ -436,15 +449,16 @@ for which job dependencies have been assigned to it job via the
 or
 .M qalter 1 .
 .sp 1
-The state z(ombie) appears for finished jobs when the
-.B \-s z
+The state \fBz\fP(ombie) appears for finished jobs when the
+.B \-s\ z
 option is used.
 .sp 1
-The state E(rror) appears for pending jobs that couldn't be started due to 
-job properties. The reason for the job error is shown by the 
-.M qstat 1 
-\fB\-j job_list\fP
-option.
+The state \fBE\fP(rror) appears for pending jobs that couldn't be started due to
+job properties. The reason for the job error is shown by the
+\fB\-j\fP\ \fIjob_list\fP option.
+.sp 1
+See also
+.M sge_status 5 .
 .IP "\(bu" 3n
 the submission or start time and date of the job.
 .IP "\(bu" 3n
@@ -453,8 +467,8 @@ jobs only).
 .IP "\(bu" 3n
 the number of job slots or the function of parallel job tasks 
 if \fB\-g t\fP is specified.
-.sp 
-Without \fB\-g t\fP option the total number of slots occupied resp. requested by the job 
+.sp 1
+Without \fB\-g t\fP option the total number of slots occupied or requested by the job
 is displayed. For pending parallel jobs with a PE slot range request,
 the assumed future slot allocation is displayed.
 With \fB\-g t\fP option the function of the running jobs (MASTER or SLAVE \- the 
@@ -486,64 +500,99 @@ Following the header line a section for each queue separated
 by a horizontal line is provided. For each queue the information
 printed consists of
 .IP "\(bu" 3n
-the queue name,
+the queue name;
 .IP "\(bu" 3n
-the queue type \- one of B(atch), I(nteractive), C(heckpointing),
-P(arallel), or combinations thereof or N(one),
+the queue type \- one of
+.BR B (atch),
+.BR I (nteractive),
+.BR C (heckpointing),
+.BR P (arallel),
+combinations thereof, or
+.BR N (one)
+("Type" in the case of C and P,
+just means there is an entry in its ckpt_list or pe_list respectively;)
 .IP "\(bu" 3n
-the number of used and available job slots,
+the number of used and available job slots;
 .IP "\(bu" 3n
 the load average of the queue host or another load value \- see
-SGE_LOAD_AVG in the ENVIRONMENT VARIABLES section below,
+SGE_LOAD_AVG in the ENVIRONMENT VARIABLES section below;
 .IP "\(bu" 3n
-the architecture of the queue host and
+the architecture of the queue host;
 .IP "\(bu" 3n
 .\" also listed in qhost(1)
 the state of the queue \- one of
-u(nknown), a(larm), A(larm), C(alendar suspended), s(uspended),
-S(ubordinate), d(isabled), D(isabled), E(rror), (c)configuration
-ambiguous, o(rphaned), P(reempted), or some combinations thereof.
+.BR u (nknown),
+.BR a (larm),
+.BR A (larm),
+.BR C "(alendar suspended),"
+.BR s (uspended),
+.BR S (ubordinate),
+.BR d (isabled),
+.BR D (isabled),
+.BR E (rror),
+.BR c "(configuration ambiguous),"
+.BR o (rphaned),
+.BR P (reempted),
+or some combination thereof.
 .PP
-If the state is u(nknown), the corresponding
+If the state is
+.BR u ,
+the corresponding
 .M xxqs_name_sxx_execd 8
 cannot be contacted.
 .PP
-If the state is a(larm), at least on of the load thresholds defined in the
+If the state is
+.BR a (larm),
+at least one of the load thresholds defined in the
 \fIload_thresholds\fP list of the queue configuration (see
 .M queue_conf 5 )
 is 
 currently exceeded, which prevents scheduling further jobs to that
 queue.
-As opposed to this, the state A(larm) indicates that at least one of the
+The state
+.BR A (larm)
+indicates that at least one of the
 suspend thresholds of the queue (see
 .M queue_conf 5 )
 is currently exceeded. This will result in jobs running in that queue being
 successively suspended until no threshold is violated.
 .PP
-The states s(uspended) and d(isabled) can be assigned to queues and
-released via the
+The states
+.BR  s (uspended)
+And
+.BR d (isabled)
+can be assigned to queues and released via the
 .M qmod 1
 command. Suspending a queue will cause all jobs executing in that queue to
 be suspended.
 .PP
-The states D(isabled) and C(alendar suspended) indicate that the queue 
-has been disabled, or suspended automatically via the calendar facility of
-xxQS_NAMExx (see
+The states
+.BR D (isabled)
+And
+.BR C "(alendar suspended)"
+indicate that the queue
+has been disabled, or suspended automatically via the xxQS_NAMExx
+calendar facility (see
 .M calendar_conf 5 ),
-while the S(ubordinate) state
+while the
+.BR  S (ubordinate)
+state
 indicates that the queue has been suspended via subordination to another
 queue (see
 .M queue_conf 5
 for details). When suspending a queue 
 (regardless of the cause) all jobs executing in that queue are suspended 
 too.
-The state (o)rphaned
 .PP
-The state P(reempted) indicates that the queue has been disabled via
+The state
+.BR P (reempted)
+indicates that the queue has been disabled via
 slotwise subordination to another queue, preventing it getting jobs
 which would simply be suspended.
 .PP
-An E(rror) state is displayed for a queue for various reasons such as
+An
+.BR E (rror)
+state is displayed for a queue for various reasons such as
 failing to find executables or directories. Please check the
 error logfile of that
 .M xxqs_name_sxx_execd 8
@@ -552,14 +601,16 @@ queue afterwards via the \fB\-c\fP option of the
 .M qmod 1
 command manually.
 .PP
-If the c(onfiguration ambiguous) state is displayed for a queue
+If the
+.BR c (onfiguration ambiguous)
+state is displayed for a queue
 instance, the configuration specified for this
 queue instance in
 .M sge_conf 5
 is ambiguous. This state is cleared when
 the configuration becomes unambiguous again. This state prevents further jobs
 from being scheduled to that queue instance. Detailed reasons why
-a queue instance entered the c(onfiguration ambiguous) state can
+a queue instance entered the \fBc\fP state can
 be found in the
 .M sge_qmaster 8
 messages file and are shown by the
@@ -568,11 +619,13 @@ messages file and are shown by the
 switch. For queue instances in this state the cluster
 queue's default settings are used for the ambiguous attribute.
 .PP
-If an o(rphaned) state is displayed for a queue instance, it
+If an
+.BR o (rphaned)
+state is displayed for a queue instance, it
 indicates that the queue instance is no longer demanded by the current
-cluster queue's configuration or the host group configuration.
+cluster queue configuration or the host group configuration.
 The queue instance is kept because jobs which have not yet finished
-are still associated with it, and it will vanish from qstat output
+are still associated with it, and it will vanish from \fIqstat\fP output
 when these jobs have finished. To quicken vanishing of an orphaned
 queue instance, associated job(s) can be deleted using
 .M qdel 1 .
@@ -583,7 +636,7 @@ queue instance.
 .PP
 If the \fB\-F\fP option was used, resource availability information is printed 
 following the queue status line. For each resource (as selected in an option 
-argument to \fB\-F\fP or for all resources if the option argument was
+argument to \fB\-F\fP, or for all resources if the option argument was
 omitted) a single line is displayed with the following format:
 .IP "\(bu" 3n
 a one letter specifier indicating whether the current resource availability 
@@ -650,8 +703,7 @@ the job ID,
 the priority of the job determining its position in the pending jobs list.
 The priority value is determined 
 dynamically based on ticket and urgency policy set-up (see also
-.M sge_priority 5 
-).
+.M sge_priority 5 ).
 .IP "\(bu" 3n
 the job name,
 .IP "\(bu" 3n
@@ -662,12 +714,12 @@ the status of the job; see the \fBReduced Format\fP section for information,
 the submission or start time and date of the job.
 .IP "\(bu" 3n
 the number of job slots or the function of parallel job tasks 
-if \fB\-g t\fP is specified.
+if \fB\-g\ t\fP is specified.
 .sp 
 Without \fB\-g t\fP option the number of slots occupied per queue resp. requested by the job 
 is displayed. For pending parallel jobs with a PE slot range request,
 the assumed future slot allocation is displayed.
-With \fB\-g t\fP option the function of the running jobs (MASTER or SLAVE \- the 
+With \fB\-g\ t\fP option the function of the running jobs (MASTER or SLAVE \- the
 latter for parallel jobs only) is displayed.
 .PP
 If the \fB\-t\fP option is supplied, each job status line also contains
@@ -675,8 +727,16 @@ If the \fB\-t\fP option is supplied, each job status line also contains
 the task ID,
 .IP "\(bu" 3n
 the status of the task \- one of 
-r(unning), R(estarted), s(uspended), S(uspended), T(hreshold), w(aiting),
-h(old), or x(exited) (see the
+.BR r (unning),
+.BR R (estarted),
+.BR s (uspended),
+.BR S (uspended),
+.BR T (hreshold),
+.BR w (aiting),
+.BR h (old),
+or
+.RB (e) x (xited)
+(see the
 \fBReduced Format\fP section for detailed information),
 .IP "\(bu" 3n
 the cpu, memory, and I/O usage,
@@ -837,7 +897,7 @@ The job's \fB\-p\fP priority as specified by the user.
 .\"
 .SH "ENVIRONMENT VARIABLES"
 .\"
-.IP "\fBMORE_INFO\fP"
+.IP "\fBMORE_INFO\fP" 1.5i
 If defined, enable the debugging
 .B \-dj
 and
