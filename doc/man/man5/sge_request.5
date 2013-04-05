@@ -65,7 +65,7 @@ highest precedence and is followed by the user private and then the
 cluster global default request file.
 .PP
 \fBNote\fP, that the
-.I -clear
+.I \-clear
 option to
 .M qsub 1
 can be used to discard any previous settings at any
@@ -125,7 +125,7 @@ qsub test.sh
 would have precisely the same effect as if the job was submitted with:
 .PP
 .nf
-qsub -l arch=sun4,s_cpu=5:0:0 -r n test.sh
+qsub \-l arch=sun4,s_cpu=5:0:0 \-r n test.sh
 .fi
 .PP
 .\"

@@ -207,7 +207,7 @@ minimum number of machines.
 .PP
 The current version of the scheduler only understands the
 following allocation rules:
-.IP "\fB<int>\fP:" 1i
+.IP "\fIint\fP:" 1i
 An integer, fixing the number of processes per
 host. If it is 1, all processes have to reside
 on different hosts. If the special name
@@ -275,7 +275,8 @@ FALSE means the accounting information gets multiplied by number of slots + 1.
 .\"
 .\"
 .SS "\fBurgency_slots\fP"
-For pending jobs with a slot range PE request the number of slots
+For pending jobs with a slot range PE request with different minimum
+and maximum, the number of slots
 is not determined. This setting specifies the method to be used by
 xxQS_NAMExx to assess the number of slots such jobs might finally
 get.
@@ -289,7 +290,7 @@ and is displayed when
 is run without \fB\-g t\fP option.
 .PP
 The following methods are supported:
-.IP "\fB<int>\fP:" 1i
+.IP "\fIint\fP:" 1i
 The specified integer number is directly used as prospective slot amount.
 .IP "\fBmin\fP:" 1i
 The slot range minimum is used as prospective slot amount. If no
