@@ -128,7 +128,7 @@ under which this procedure is to be started; the default is root.
 The mailer must accept the following syntax:
 .PP
 .RS
-mailer -s <subject-of-mail-message> <recipient>
+mailer \-s <subject-of-mail-message> <recipient>
 .RE
 .PP
 Each
@@ -921,7 +921,7 @@ follows:
 --------------------------------
 #!/bin/sh
 # set_token_cmd
-forge -u $1 -t $2 | SetToken
+forge \-u $1 \-t $2 | SetToken
 --------------------------------
 .fi
 .RE
@@ -1134,7 +1134,7 @@ information can be accessed via by
 .M qping 1 .
 If monitoring is always enabled, the messages files can become quite large.
 This switch disables logging into the messages files, making
-.I qping -f
+.I qping \-f
 the only source of monitoring data.
 .PP
 Profiling provides the user with the possibility to get system measurements.
@@ -1242,7 +1242,18 @@ the pending job list. To achieve the old scheduling behaviour set the parameter
 \fIOLD_RESCHEDULE_BEHAVIOR_ARRAY_JOB\fP. Please note that this 
 parameter is deprecated, so it might be removed with the next minor release.
 .IP \fISIMULATE_EXECDS\fP
-Bypass execd communication in qmaster for (throughput tests).
+Bypass execd communication in qmaster for (e.g. for throughput tests
+with fake hosts).  "Unknown" queue states are suppressed, but
+.B load_thresholds=none
+must be used to avoid queues going into an alarm state.  Submitted
+jobs are dispatched, and act as if they are run for a time determined
+by the job's first argument, after 3s spent in the "transferring"
+state.  I.e. there's a simulated 10s runtime for a command such as
+.nf
+   qsub \-b y sleep 10
+.fi
+In this condition, job deletion works, but at least interactive jobs,
+tightly-integrated parallel ones, and job suspension don't.
 .IP \fINO_AUTHENTICATION\fP
 Don't do authentication when GSSAPI security is enabled.  This, and
 the following parameter, determine the GSS global configuration, which
@@ -1636,7 +1647,7 @@ Deprecated, may be removed in a future release.
 .br
 xxQS_NAMExx stores a certain number of \fIjust finished\fP jobs to provide
 post mortem status information via
-.IR "qstat -s z" .
+.IR "qstat \-s z" .
 The \fBfinished_jobs\fP parameter defines the
 number of finished ("zombie") jobs stored. If this maximum number is reached, the
 eldest finished job will be discarded for every new job added to the

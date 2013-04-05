@@ -48,21 +48,25 @@ that the operating system assigns to jobs.
 .SS "\fBJOBS DISPATCH PRIORITY\fP"
 .\"
 .\"
-A job's dispatch priority is affected by a number of factors:
+A job's dispatch priority (display in the "reduced" output format of
+.M qstat 1 ),
+is affected by a number of factors:
 .IP "\(bu" 3n
-the identity of the submitting user
+the identity of the submitting user;
 .IP "\(bu" 3n
 the project under which the job is submitted (or alternatively,
-the default project of the submitting user)
+the default project of the submitting user);
 .IP "\(bu" 3n
-any resources requested by the job
+any resources requested by the job;
 .IP "\(bu" 3n
-the job's submit time
+the job's submit time;
 .IP "\(bu" 3n
-the job's initiation deadline time (if specified)
+the job's initiation deadline time (if specified);
 .IP "\(bu" 3n
-the -p priority specified for the job (also known as the POSIX
-priority "pprio")
+the
+.B \-p
+priority specified for the job (also known as the POSIX
+priority "pprio").
 .\"
 .PP
 The effect of each of these is governed by the overall policy setup,
@@ -76,7 +80,8 @@ priorities ("tckts"/"urg"/"ppri") are normalized ("ntckts"/"nurg"/"npprior")
 before they are used to calculate job priorities ("prio"). 
 Normalization maps each raw urgency/ticket/priority  value into a range
 between 0 and 1.
-
+.PP
+.nf
    npprior = normalized(ppri)
    nurg    = normalized(urg)
    ntckts  = normalized(tckts)
@@ -84,7 +89,8 @@ between 0 and 1.
    prio    = weight_priority * npprio +
              weight_urgency  * nurg + 
              weight_ticket   * ntckts
-
+.fi
+.PP
 The higher a job's priority value, the earlier it gets dispatched.
 .\"
 .\"
@@ -92,17 +98,17 @@ The higher a job's priority value, the earlier it gets dispatched.
 .\" urgency policy
 The urgency policy defines an urgency value for each job. The 
 urgency value 
-
+.br
    urg     =  rrcontr + wtcontr + dlcontr
-
+.br
 consists of the resource requirement contribution ("rrcontr"), the waiting 
 time contribution ("wtcontr") and the deadline contribution ("dlcontr").
 .PP
 The resource requirement contribution is adding up all resource
 requirements of a job into a single numeric value.
-
+.br
    rrcontr = Sum over all(hrr)
-
+.br
 with an "hrr" for each hard resource request.
 Depending on the resource type, two different methods are used to 
 determine the value to be used for "hrr" here. For numeric type resource
@@ -110,46 +116,54 @@ requests, the "hrr" represents how much of a resource a job requests (on a
 per-slot basis for PE jobs) and how "important" this resource is
 considered in comparison to other resources. This is expressed by the
 formula:
-
+.br
    hrr      = rurg * assumed_slot_allocation * request
-
+.br
 where the resource's urgency value ("rurg") is as specified 
 under \fBurgency\fP in 
 .M complex 5 , 
-the job's assumed_slot_allocation represents the number of slots
+the job's "assumed_slot_allocation" represents the number of slots
 supposedly assigned to the job, and the per-slot request is that which was
-specified using the -l 
+specified using the
+.B \-l
 .M qsub 1
 option. For string type requests the formula is simply
-
+.br
    hrr      = rurg
-
+.br
 and directly assigns the resource urgency value
 as specified under \fBurgency\fP in 
 .M complex 5 . 
 .PP
 The waiting time contribution represents a weighted waiting time of the
 jobs
-
+.br
    wtcontr = waiting_time * weight_waiting_time
-
-with the waiting time in seconds and the \fBweight_waiting_time\fP value 
+.br
+with the waiting time in seconds and the "weight_waiting_time" value 
 as specified in 
 .M sched_conf 5 .
 .PP
 The deadline contribution has an increasing effect as jobs approach their
-deadline initiation time (see the -dl option in
+deadline initiation time (see the
+.B \-dl
+option in
 .M qsub 1 ).
 It is defined as the quotient of the \fBweight_deadline\fP 
 value from
 .M sched_conf 5
 and the (steadily decreasing) free time in seconds until deadline
 initiation time
-
+.br
    dlcontr = weight_deadline / free_time
-
+.br
 or is set to 0 for non-deadline jobs.  After the deadline passes,
-the value is static and equal to weight_deadline.
+the value is static and equal to
+.BR weight_deadline .
+The
+.M qstat 1
+.B \-urg
+option displays urgency information for jobs.
 .\"
 .\"
 .PP
@@ -158,20 +172,25 @@ The ticket policy unites functional, override and share tree
 policies in the ticket value ("tckts"), defined as the sum of the
 specific ticket values ("ftckt"/"otckt"/"stckt") for each sub-policy
 (functional, override, share):
-
+.br
     tckts = ftckt + otckt + stckt
-
+.PP
 The ticket policies provide a broad range of means for influencing
 both job dispatch and runtime priorities on a per job, per user, per
 project, and per department basis.
+The
+.M qstat 1
+.B \-ext
+option displays ticket information for jobs.
 .\" See the xxQS_NAMExx
 .\" Installation and Administration Guide for details.
 .\"
 .\"
 .SS "\fBJOB RUN-TIME PRIORITY\fP"
 The run-time priority can be dynamically adjusted 
-in order to meet the goals set with the ticket policy. Dynamic run-time
-priority adjustment can be turned off (default) globally using
+in order to meet the goals set with the ticket policy when execution
+hosts are over-subscribed. Dynamic run-time
+priority adjustment can be turned on globally using
 \fBreprioritize_interval\fP in
 .M sched_conf 5 .
 If no dynamic run-time priority adjustment is done 

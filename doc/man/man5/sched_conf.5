@@ -335,7 +335,11 @@ scheduler. The following values are recognized:
 If set, overrides the default of value 60 seconds.  This parameter is used by 
 the xxQS_NAMExx scheduler when planning resource utilization as the delta
 between net job runtimes and total time until resources become available 
-again. Net job runtime as specified with -l h_rt=...  or -l s_rt=... or 
+again. Net job runtime as specified with
+.BR "\-l h_rt=" ... 
+or
+.BR "\-l s_rt=" ...
+or
 \fBdefault_duration\fP always differs from total job runtime due to delays before
 and after actual job start and finish. Among the delays before job start is the time 
 until the end of a \fBschedule_interval\fP, the time it takes to deliver a job to 
