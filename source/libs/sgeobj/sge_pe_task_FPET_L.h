@@ -62,7 +62,7 @@ extern "C" {
 *
 *     SGE_LIST(PET_granted_destin_identifier_list)
 *        Granted destination identifier list. Will contain one
-*        entry specifying the queue the pe task runns in.
+*        entry specifying the queue the pe task runs in.
 *
 *     SGE_ULONG(PET_pid)
 *        Pid of a running pe task (process group id).

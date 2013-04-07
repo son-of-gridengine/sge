@@ -252,9 +252,9 @@ int rmon_condition(int layer, int class)
 *  NOTES
 *     MT-NOTE: rmon_debug_client_callback() is MT safe 
 *              (but is called from commlib thread, which means that no
-*               qmaster thread specifc setup is done), just use global
-*               thread locking methods which are initalized when called, or
-*               initalized at compile time)
+*               qmaster thread specific setup is done), just use global
+*               thread locking methods which are initialized when called, or
+*               initialized at compile time)
 *
 *******************************************************************************/
 void rmon_debug_client_callback(int dc_connected, int debug_level) {
@@ -423,7 +423,7 @@ void rmon_menter(const char *func, const char *thread_name)
 *  INPUTS
 *     const char *func - function name 
 *     const char *file - source file in which function is defined 
-*     int line         - number of invokation source line
+*     int line         - number of invocation source line
 *
 *  RESULT
 *     void - none
@@ -460,7 +460,7 @@ void rmon_mexit(const char *func, const char *file, int line, const char *thread
 *  INPUTS
 *     const char *func - function name 
 *     const char *file - source file in which function is defined 
-*     int line         - number of invokation source line
+*     int line         - number of invocation source line
 *
 *  RESULT
 *     void - none 
@@ -720,4 +720,3 @@ static int set_debug_target_from_env(void)
    free((char *)s);
    return 0;
 } /* set_debug_target_from_env() */
-

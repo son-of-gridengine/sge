@@ -1684,7 +1684,7 @@ lCondition **cpp
    return PACK_SUCCESS;
 }
 
-/****** cull_pack/setByteArray() ***********************************************
+/****** cull/pack/setByteArray() ***********************************************
 *  NAME
 *     setByteArray() -- takes a byte array, transformes it into ASCII and sets
 *                       it as a string into an element
@@ -1732,7 +1732,7 @@ void setByteArray(const char *byteArray, int size, lListElem *elem, int name){
    sge_free(&z_stream_str);    
 } 
 
-/****** cull_pack/getByteArray() ***********************************************
+/****** cull/pack/getByteArray() ***********************************************
 *  NAME
 *     getByteArray() -- transforms a string into a byte array. 
 *

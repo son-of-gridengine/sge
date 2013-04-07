@@ -920,9 +920,9 @@ void sge_zombie_job_cleanup_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent
 *     arrives from the execd mode is COMMIT_ST_ARRIVED. When the job failed
 *     or finished mode is COMMIT_ST_FINISHED_FAILED or 
 *     COMMIT_ST_FINISHED_FAILED_EE depending on product mode:
-* 
-*     A SGE job can be removed immediately when it is finished 
-*     (mode==COMMIT_ST_FINISHED_FAILED). A SGEEE job may not be deleted 
+*
+*     A job can be removed immediately when it is finished
+*     (mode==COMMIT_ST_FINISHED_FAILED). A job may not be deleted
 *     (mode==COMMIT_ST_FINISHED_FAILED_EE) before the scheduler has debited 
 *     the jobs resource consumption in the corresponding objects (project/user/..). 
 *     Only the job script may be deleted at this stage. When an order arrives at 

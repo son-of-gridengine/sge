@@ -65,25 +65,25 @@ enum {
 };
 
 LISTDEF(JR_Type)
-   SGE_ULONG(JR_job_number, CULL_HASH)   /* Job to report */
-   SGE_ULONG(JR_ja_task_number, CULL_DEFAULT)       /* JobArray task to report */
+   SGE_ULONG(JR_job_number, CULL_HASH)      /* Job to report */
+   SGE_ULONG(JR_ja_task_number, CULL_DEFAULT) /* JobArray task to report */
    SGE_STRING(JR_queue_name, CULL_DEFAULT)  /* Queue this job (tried to) run in */
    SGE_ULONG(JR_state, CULL_DEFAULT)        /* either JRUNNING or JEXITING, JRUNNING sent 
-                               * * as ack for jobdelivery and cyclic */
+                                               as ack for jobdelivery and cyclic */
    SGE_ULONG(JR_failed, CULL_DEFAULT)       /* FAILED_... */
-   SGE_ULONG(JR_general_failure, CULL_DEFAULT)      /* 1 -> general problem */
+   SGE_ULONG(JR_general_failure, CULL_DEFAULT) /* 1 -> general problem */
    SGE_STRING(JR_err_str, CULL_DEFAULT)     /* describes failure */
-   SGE_MAP(JR_usage, UA_Type, CULL_DEFAULT)         /* used resources UA_Type */
+   SGE_MAP(JR_usage, UA_Type, CULL_DEFAULT) /* used resources UA_Type */
    SGE_ULONG(JR_job_pid, CULL_DEFAULT)      /* pid of job script */
    SGE_ULONG(JR_ckpt_arena, CULL_DEFAULT)   /* if there is a checkpoint in the arena */
-   SGE_STRING(JR_pe_task_id_str, CULL_DEFAULT)
-   /* string describing task from sight of PE
-    * if this is non null this is a PE task */
+   SGE_STRING(JR_pe_task_id_str, CULL_DEFAULT) /* string describing
+                                                  task from view of PE.  If
+                                                  non-null this is a PE task */
    SGE_STRING(JR_osjobid, CULL_DEFAULT)     /* string containing osjobid for ckpt jobs */
    SGE_ULONG(JR_wait_status, CULL_DEFAULT)  /* japi_wait() 'status' information  */
    SGE_BOOL(JR_flush, CULL_DEFAULT)
    SGE_BOOL(JR_no_send, CULL_DEFAULT)       /* do not send this job report - used for pe tasks & accounting_summary */
-   SGE_BOOL(JR_delay_report, CULL_DEFAULT)       /* do not send this job report - used for qsub -sync/DRMAA jobs while a qmaster failover*/
+   SGE_BOOL(JR_delay_report, CULL_DEFAULT)  /* do not send this job report - used for qsub -sync/DRMAA jobs during a qmaster failover*/
 LISTEND
 
 NAMEDEF(JRN)

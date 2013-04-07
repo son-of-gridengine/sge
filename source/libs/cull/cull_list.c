@@ -2585,7 +2585,7 @@ lListElem_is_changed(const lListElem *ep)
    return sge_bitfield_changed(&(ep->changed));
 }
 
-/****** cull_list/lList_clear_changed_info() ***********************************
+/****** cull/list/lList_clear_changed_info() ***********************************
 *  NAME
 *     lList_clear_changed_info() -- clear changed info of a list
 *
@@ -2631,7 +2631,7 @@ lList_clear_changed_info(lList *lp)
    return ret;
 }
 
-/****** cull_list/lListElem_clear_changed_info() *******************************
+/****** cull/list/lListElem_clear_changed_info() *******************************
 *  NAME
 *     lListElem_clear_changed_info() -- clear changed info of an object
 *

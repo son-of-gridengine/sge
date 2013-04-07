@@ -52,7 +52,8 @@ enum {
    JG_qhostname,
    JG_slots,
    JG_queue,
-   JG_tag_slave_job,
+   JG_tag_slave_job, /* tag just used in qmaster for bookkeeping during job
+                        delivery, finish, and cleanup */
    JG_task_id_range,
    JG_ticket,
    JG_oticket,

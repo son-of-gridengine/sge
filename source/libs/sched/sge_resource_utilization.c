@@ -672,7 +672,7 @@ u_long32 utilization_below(const lListElem *cr, double max_util, const char *obj
 
 /****** sge_resource_utilization/add_job_utilization() *************************
 *  NAME
-*     add_job_utilization() -- Debit assignements' utilization to all schedules
+*     add_job_utilization() -- Debit assignments' utilization from all schedules
 *
 *  SYNOPSIS
 *     int add_job_utilization(const sge_assignment_t *a, const char *type) 
@@ -680,11 +680,11 @@ u_long32 utilization_below(const lListElem *cr, double max_util, const char *obj
 *  FUNCTION
 *     The resouce utilization of an assignment is debited into the schedules 
 *     of global, host and queue instance resource containers and limitation
-*     rule sets. For parallel jobs debitation is made also with the parallel
-*     environement schedule.
+*     rule sets. For parallel jobs debiting is made done from the parallel
+*     environment schedule.
 *
 *  INPUTS
-*     const sge_assignment_t *a - The assignement
+*     const sge_assignment_t *a - The assignment
 *     const char *type          - A string that is used to monitor assignment
 *                                 type
 *     bool for_job_scheduling   - utilize for job or for advance reservation
