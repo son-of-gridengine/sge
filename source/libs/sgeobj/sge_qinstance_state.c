@@ -137,6 +137,7 @@
 *         D := disabled due to calendar
 *         c := configuration ambiguous
 *         o := orphaned
+*         P := preempted
 *
 *******************************************************************************/
 

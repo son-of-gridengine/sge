@@ -962,8 +962,8 @@ centry_list_remove_duplicates(lList *this_list)
 *                                  lList *answer_list)
 *
 *  FUNCTION
-*     Checks weather the configuration within the new centry is okay or not. 
-*     A centry is valid, when it satisfies the following rules:   
+*     Checks whether the configuration within the new centry is okay or not.
+*     A centry is valid when it satisfies the following rules:
 *         name 	  : has to be unique
 *         Short cu  : has to be unique
 *         Type	     : every type from the list (string, host, cstring, int, 
@@ -980,10 +980,10 @@ centry_list_remove_duplicates(lList *this_list)
 *         Requestable	   : for all attribute
 *         default value 	: only for consumables
 *
-*     The type for build in attributes is not allowed to be changed!
+*     The type for built-in attributes is not allowed to be changed!
 *
-*     When no centy list is passed in, the check for uniqie name and 
-*     short cuts is skipt.
+*     When no centry list is passed in, the check for unique name and
+*     short cuts is skipped.
 *
 *  INPUTS
 *     lListElem *centry     - the centry list, which should be validated

@@ -165,8 +165,8 @@ enum {
    Msconf_OPT,   /* mofify SGE scheduler configuration from file*/
    aus_OPT,     /* SGE add user */
    Aus_OPT,     /* SGE add user from file */
-   mus_OPT,     /* SGE modify user */
-   Mus_OPT,     /* SGE modify user from file */
+   mus_OPT,     /* SGE modify user (qconf) or mail options (submit) */
+   Mus_OPT,     /* SGE modify user from file (qconf) or mail list (submit) */
    dus_OPT,     /* SGE delete user */
    sus_OPT,     /* SGE show user */
 

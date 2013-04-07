@@ -68,13 +68,13 @@
 
 /****** sge_advance_reservation/ar_list_locate() *******************************
 *  NAME
-*     ar_list_locate() -- locate a advance reservation by id
+*     ar_list_locate() -- locate an advance reservation by id
 *
 *  SYNOPSIS
 *     lListElem* ar_list_locate(lList *ar_list, u_long32 ar_id) 
 *
 *  FUNCTION
-*     This function returns a ar object with the selected id from the
+*     This function returns an AR object with the selected id from the
 *     given list.
 *
 *  INPUTS
@@ -82,7 +82,7 @@
 *     u_long32 ar_id - id of interest
 *
 *  RESULT
-*     lListElem* - if found the reference to the ar object, else NULL
+*     lListElem* - if found the reference to the AR object, else NULL
 *
 *  NOTES
 *     MT-NOTE: ar_list_locate() is MT safe 
@@ -100,16 +100,16 @@ lListElem *ar_list_locate(lList *ar_list, u_long32 ar_id)
 
 /****** sge_advance_reservation/ar_validate() **********************************
 *  NAME
-*     ar_validate() -- validate a advance reservation
+*     ar_validate() -- validate an advance reservation
 *
 *  SYNOPSIS
 *     bool ar_validate(lListElem *ar, lList **alpp, bool in_master)
 *
 *  FUNCTION
-*     Ensures a new ar has valid start and end times
+*     Ensures a new AR has valid start and end times
 *
 *  INPUTS
-*     lListElem *ar   - the ar to check
+*     lListElem *ar   - the AR to check
 *     lList **alpp    - answer list pointer
 *     bool in_master  - are we in qmaster?
 *     bool is_spool   - do we validate for spooling? 
@@ -408,14 +408,14 @@ ar_get_string_from_event(ar_state_event_t event)
 
 /****** libs/sgeobj/ar_state2dstring() ***************************************
 *  NAME
-*     ar_state2dstring() -- writes the ar state as letter combination
+*     ar_state2dstring() -- writes the AR state as letter combination
 *
 *  SYNOPSIS
 *     void ar_state2dstring(ar_state_t state, dstring *state_as_string) 
 *
 *  FUNCTION
-*     This function writes the given state of a advance reservation as
-*     letter into the given dstring. The letter will be appended at the and.
+*     This function writes the given state of an advance reservation as a
+*     letter into the given dstring. The letter will be appended.
 *
 *  INPUTS
 *     ar_state_t state         - ar state 

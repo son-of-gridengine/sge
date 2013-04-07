@@ -1802,7 +1802,7 @@ int lSetUlong(lListElem *ep, int name, lUlong value)
    return 0;
 }
 
-/****** cull_multitype/lAddUlong() *********************************************
+/****** cull/multitype/lAddUlong() *********************************************
 *  NAME
 *     lAddUlong() -- Adds a lUlong offset to the lUlong field
 *
@@ -1942,7 +1942,7 @@ int lSetUlong64(lListElem *ep, int name, lUlong64 value)
    return 0;
 }
 
-/****** cull_multitype/lAddUlong64() *******************************************
+/****** cull/multitype/lAddUlong64() *******************************************
 *  NAME
 *     lAddUlong64() -- Adds a lUlong64 offset to the lUlong64 field
 *
@@ -3112,7 +3112,7 @@ int lSetDouble(lListElem *ep, int name, lDouble value)
    return 0;
 }
 
-/****** cull_multitype/lAddDouble() ********************************************
+/****** cull/multitype/lAddDouble() ********************************************
 *  NAME
 *     lAddDouble() -- Adds a double offset to the double field
 *

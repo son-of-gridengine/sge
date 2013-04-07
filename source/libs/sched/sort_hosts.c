@@ -132,7 +132,7 @@ int sort_host_list(lList *hl, lList *centry_list)
       that hosts with incorrect load reporting are considered heavily
       loaded.
 
-   input paramters:
+   input parameters:
       load_list      : the host's load list  -> to be passed further
       scaling_list   : the host's load scaling list   -> to be passed
                        further
@@ -203,7 +203,7 @@ double scaled_mixed_load(const char* load_formula, lListElem *global,
          op_pos = (int) (op_ptr - load_ops);
 
          /* ------------------------------- */
-         /* look for a weightening factors  */
+         /* look for a weighting factor  */
          /* determine 2nd component's value */
          ptr++;
          if (!(val2 = strtod(ptr,&ptr2)) && ptr2 == ptr) {

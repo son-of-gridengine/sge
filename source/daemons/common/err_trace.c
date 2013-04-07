@@ -560,7 +560,7 @@ int is_shepherd_trace_fd(int fd)
 *
 *  FUNCTION
 *     Returns the number of lines in the exit_status file.
-*     Each pe_start, prolog, job, epilog and pe_stop write a line to the
+*     Each pe_start, prolog, job, epilog and pe_stop writes a line to the
 *     exit_status file.
 *     This function is used to detect where the shepherd fails.
 *

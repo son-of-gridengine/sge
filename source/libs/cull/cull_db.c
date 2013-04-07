@@ -858,7 +858,7 @@ lList *lSelectHashPack(const char *name, const lList *slp,
    return ret;
 }
 
-/****** cull_db/lSelectDPack() ************************************************
+/****** cull/db/lSelectDPack() ************************************************
 *  NAME
 *     lSelectDPack() --  Extracts some elements fulfilling a condition 
 *

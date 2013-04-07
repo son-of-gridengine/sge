@@ -5285,7 +5285,7 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
          continue;
       }
 
-      /* "-cq destin_id[,destin_id,...]" */
+      /* "-cq wc_queue_list" */
       if (strcmp("-cq", *spp) == 0) {
          spp = sge_parser_get_next(ctx, spp);
          lString2List(*spp, &lp, ID_Type, ID_str, ", ");
@@ -7010,9 +7010,9 @@ static int qconf_is_adminhost(sge_gdi_ctx_class_t *ctx, const char *host)
 *
 *  FUNCTION
 *     The function performs a SGE_GDI_MOD request to the qmaster.
-*     It will get all necessary infomation from commandline or
+*     It will get all necessary information from the command line or a
 *     file. 
-*     Depending on the parameters specified, the function will
+*     Depending on the parameters specified, the function may
 *     modify only parts of an object. It is possible to address
 *     only parts of a sublist of an object.
 *     
@@ -7021,15 +7021,15 @@ static int qconf_is_adminhost(sge_gdi_ctx_class_t *ctx, const char *host)
 *     alpp        - reference to an answer list where the master will
 *                 store necessary messages for the user 
 *
-*     from_file   - if set to 1 then the next commandline parameter 
+*     from_file   - if set to 1 then the next command line parameter
 *                   (stored in spp) will contain a filename. 
 *                   This file contains the 
 *                   attributes which should be modified 
 *
-*     spp         - pending list of commandline parameter
+*     spp         - pending list of command line parameter
 *
 *     epp         - this reference will contain the reduced
-*                   element which will be parsed from commandline or file
+*                   element which will be parsed from command line or file
 *                   after this function was called
 *
 *     sub_command - bitmask which will be added to the "command"

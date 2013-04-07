@@ -30,6 +30,8 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+/* fixme: doesn't build -- should it be fixed and kept? */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>

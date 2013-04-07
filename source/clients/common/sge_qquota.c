@@ -105,7 +105,7 @@ static bool qquota_print_out_filter(lListElem *filter, const char *name, const c
 *     lList *host_list                 - selected hosts
 *     lList *resource_match_list       - selected resources
 *     lList *user_list                 - selected users
-*     lList *pe_list                   - selecte pes
+*     lList *pe_list                   - selected pes
 *     lList *project_list              - selected projects
 *     lList *cqueue_list               - selected cluster queues
 *     lList **alpp                     - answer list
@@ -580,12 +580,12 @@ static char *qquota_get_next_filter(stringT filter, const char *cp)
 *     ??? 
 *
 *  INPUTS
-*     lListElem *rule                  - resouce quota rule (RQR_Type)
+*     lListElem *rule                  - resource quota rule (RQR_Type)
 *     dstring rule_name                - rule name (eg. ruleset1/rule1)
-*     const char *limit_name           - limiation name (eg. slots)
+*     const char *limit_name           - limitation name (eg. slots)
 *     const char *usage_value          - debited usage
 *     const char *limit_value          - configured limitation
-*     qquota_filter_t qfilter          - filter touple
+*     qquota_filter_t qfilter          - filter tuple
 *     lListElem *centry                - limitation centry element
 *     report_handler_t* report_handler - handler for xml output
 *     lList **alpp                     - answer list

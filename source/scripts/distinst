@@ -1203,7 +1203,6 @@ if [ $instcommon = true ]; then
    fi
 
    if [ $instdoc = true ]; then
-      # currently no docs in CVS repository
       echo Installing \"doc/\"
       Execute rm -rf $DEST_SGE_ROOT/doc
       MakeDir doc
