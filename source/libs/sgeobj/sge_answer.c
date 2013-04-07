@@ -52,12 +52,12 @@ static bool answer_log(lListElem *answer, bool show_info);
 
 /****** sgeobj/answer/-AnswerList *********************************************
 *  NAME
-*     AnswerList - Object used to return errors/warning/infos
+*     AnswerList - Object used to return errors/warning/info
 *
 *  FUNCTION
 *     Answer elements and lists are used to exchange information
 *     about the level of success of an operation between caller
-*     and callee. Especially in GDI answer element and lists are
+*     and callee. Especially in GDI answers, elements and lists are
 *     used to transfer error information from server components
 *     to clients.
 *
@@ -139,9 +139,9 @@ bool answer_has_quality(const lListElem *answer, answer_quality_t quality)
 *     int answer_is_recoverable(const lListElem *answer) 
 *
 *  FUNCTION
-*     This function return true (1) if "answer" is an error where the
+*     This function returns true (1) if "answer" is an error which the
 *     calling function application may recover from.
-*     Following error are handeled as nonrecoverable:
+*     The following errors are handled as nonrecoverable:
 *
 *        STATUS_NOQMASTER
 *        STATUS_NOCOMMD
@@ -736,9 +736,9 @@ int answer_list_print_err_warn(lList **answer_list,
 *                                                FILE *stream) 
 *
 *  FUNCTION
-*     Processes the answer list that results from a gdi request
+*     Processes the answer list that results from a GDI request
 *     (sge_gdi or sge_gdi_multi).
-*     Outputs and errors and warnings and returns the first error
+*     Outputs any errors and warnings and returns the first error
 *     or warning status code.
 *     The answer list is freed.
 *

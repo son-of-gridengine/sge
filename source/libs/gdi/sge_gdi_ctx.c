@@ -170,7 +170,7 @@ static void gdi_state_init(gdi_state_t* state) {
    state->request_id = 0;
 }
 
-/****** gid/gdi_setup/gdi_mt_init() ************************************************
+/****** gdi/ctx/gdi_mt_init() ************************************************
 *  NAME
 *     gdi_mt_init() -- Initialize GDI state for multi threading use.
 *
@@ -199,7 +199,7 @@ void gdi_mt_init(void)
    pthread_once(&gdi_once_control, gdi_once_init);
 }
 
-/****** libs/gdi/gdi_state_get_????() ************************************
+/****** gdi/ctx/gdi_state_get_????() ************************************
 *  NAME
 *     gdi_state_get_????() - read access to gdilib global variables
 *
@@ -2055,7 +2055,7 @@ static int reresolve_qualified_hostname(sge_gdi_ctx_class_t *thiz) {
    DRETURN(ret);
 }
 
-/****** uti/os/sge_daemonize_prepare() *****************************************
+/****** gdi/ctx/sge_daemonize_prepare() *****************************************
 *  NAME
 *     sge_daemonize_prepare() -- prepare daemonize of process
 *
@@ -2248,7 +2248,7 @@ bool sge_daemonize_prepare(sge_gdi_ctx_class_t *ctx) {
    DRETURN(true);
 }
 
-/****** uti/os/sge_daemonize_finalize() ****************************************
+/****** gdi/ctx/sge_daemonize_finalize() ****************************************
 *  NAME
 *     sge_daemonize_finalize() -- finalize daemonize process
 *
@@ -2326,7 +2326,7 @@ bool sge_daemonize_finalize(sge_gdi_ctx_class_t *ctx)
 
 
 
-/****** uti/os/sge_daemonize() ************************************************
+/****** gdi/ctx/sge_daemonize() ************************************************
 *  NAME
 *     sge_daemonize() -- Daemonize the current application
 *

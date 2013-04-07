@@ -58,7 +58,7 @@ static cull_state_t* cull_state_getspecific(pthread_key_t aKey);
 static void          cull_state_init(cull_state_t *theState);
 
 
-/****** cull_state/state/cull_state_get_????() ************************************
+/****** cull/state/cull_state_get_????() ************************************
 *  NAME
 *     cull_state_get_????() - read access to cull state.
 *
@@ -170,7 +170,7 @@ void cull_state_set_name_space(const lNameSpace  *ns)
    return;
 }
 
-/****** cull_state/cull_once_init() ********************************************
+/****** cull/state/cull_once_init() ********************************************
 *  NAME
 *     cull_once_init() -- One-time CULL initialization.
 *
@@ -198,7 +198,7 @@ static void cull_once_init(void)
    return;
 } /* cull_once_init() */
 
-/****** cull_state/cull_state_destroy() ****************************************
+/****** cull/state/cull_state_destroy() ****************************************
 *  NAME
 *     cull_state_destroy() -- Free thread local storage
 *
@@ -223,7 +223,7 @@ static void cull_state_destroy(void* theState)
    sge_free(&theState);
 }
 
-/****** cull_state/cull_state_getspecific() ************************************
+/****** cull/state/cull_state_getspecific() ************************************
 *  NAME
 *     cull_state_getspecific() -- Get thread local cull state 
 *
@@ -267,7 +267,7 @@ static cull_state_t* cull_state_getspecific(pthread_key_t aKey)
    return cull_state;
 } /* cull_state_getspecific() */
 
-/****** cull_state/cull_state_init() *******************************************
+/****** cull/state/cull_state_init() *******************************************
 *  NAME
 *     cull_state_init() -- Initialize CULL state.
 *

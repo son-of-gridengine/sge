@@ -54,7 +54,7 @@ const char* sge_get_schedd_text(int number);
 *     const char* sge_get_schedd_text(int nr) 
 *
 *  FUNCTION
-*    transformes a id into a info message
+*    transforms an id into an info message
 *
 *  INPUTS
 *     int nr - info id

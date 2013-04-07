@@ -87,7 +87,7 @@ enum {
 
 /* 
  * allowed values for target field of GDI request 
- * (see sge_gdi_packet_class_t and sge_gdi_task_class_t
+ * (see sge_gdi_packet_class_t and sge_gdi_task_class_t)
  */
 enum {
    SGE_AH_LIST = 1,
@@ -100,17 +100,17 @@ enum {
    SGE_ORDER_LIST,
    SGE_MASTER_EVENT,
    SGE_CONF_LIST,
-   SGE_UM_LIST,
-   SGE_UO_LIST,
+   SGE_UM_LIST,                 /* manager */
+   SGE_UO_LIST,                 /* operator */
    SGE_PE_LIST,
-   SGE_SC_LIST,          /* schedconf list */
-   SGE_UU_LIST,
-   SGE_US_LIST,
+   SGE_SC_LIST,                 /* schedconf list */
+   SGE_UU_LIST,                 /* user */
+   SGE_US_LIST,                 /* userset */
    SGE_PR_LIST,
-   SGE_STN_LIST,
+   SGE_STN_LIST,                /* share tree */
    SGE_CK_LIST,
    SGE_CAL_LIST,
-   SGE_SME_LIST,
+   SGE_SME_LIST,                /* scheduler message */
    SGE_ZOMBIE_LIST,
    SGE_USER_MAPPING_LIST,
    SGE_HGRP_LIST,

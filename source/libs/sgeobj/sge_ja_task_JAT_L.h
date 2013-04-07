@@ -166,7 +166,7 @@ extern "C" {
 *        Resulting wallclock_limit. If not requested the minimum by queue h_rt's.
 *
 *  FUNCTION
-*     JAT_Type elements make only sense in conjunction with JB_Type 
+*     JAT_Type elements make sense only in conjunction with JB_Type
 *     elements.  One element of each type is necessary to hold all 
 *     data for the execution of one job. One JB_Type element and 
 *     x JAT_Type elements are needed to execute an array job with 
@@ -180,7 +180,7 @@ extern "C" {
 *     'JB_ja_tasks' sublist of a 'JB_Type' element. This list will
 *     contain all belonging JAT_Type elements. 
 *
-*     The 'JAT_Type' CULL element containes all attributes in which 
+*     The 'JAT_Type' CULL element contains all attributes in which
 *     one array task may differ from another array task of the 
 *     same array job. The 'JB_Type' element defines all attributes
 *     wich are equivalent for all tasks of an array job.
@@ -190,7 +190,7 @@ extern "C" {
 *
 *     'JAT_Type' elements contain dynamic data which accrue during the
 *     execution of a job. Therefore it is not necessary to create
-*     these elements during the submition of a (array) job but
+*     these elements during the submission of a (array) job, but
 *     after the job has been dispatched.
 *        
 *  SEE ALSO 
