@@ -1,4 +1,4 @@
-/opt/sge/doc/LICENCE*
-/opt/sge/doc/NEWS
-/opt/sge/doc/README
-/opt/sge/doc/AUTHORS
+debian/tmp/opt/sge/doc/LICENCE*
+debian/tmp/opt/sge/doc/NEWS
+debian/tmp/opt/sge/doc/README
+debian/tmp/opt/sge/doc/AUTHORS
