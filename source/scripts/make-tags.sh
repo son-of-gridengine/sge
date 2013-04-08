@@ -6,5 +6,6 @@
 # (Can't assume we have -print0.)
 # Ignore the 3rparty stuff if run in source.
 rm -f TAGS
-find common clients daemons libs security -name \*.[ch] -o -name \*.java |
+find common clients daemons libs security utilbin -name \*.[ch] -o -name \*.java |
   xargs etags -a
+mkid -i C common clients daemons libs security utilbin
