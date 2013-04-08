@@ -470,7 +470,8 @@ whose user ID (as returned by
 is less than \fBmin_uid\fP will not be allowed to run jobs on the cluster.
 .PP
 Changes to \fBmin_uid\fP will take immediate effect.
-The default for \fBmin_uid\fP is 0.
+The default for \fBmin_uid\fP is 100 (to prevent unauthorized access
+by system accounts, root in particular, if CSP security is not in use).
 .PP
 This value is a global configuration parameter only. It cannot be
 overwritten by the execution host local configuration.
@@ -483,7 +484,7 @@ Users whose default group ID (as returned by
 is less than \fBmin_gid\fP will not be allowed to run jobs on the cluster.
 .PP
 Changes to \fBmin_gid\fP will take immediate effect.
-The default for \fBmin_gid\fP is 0.
+The default for \fBmin_gid\fP is 100.
 .PP
 This value is a global configuration parameter only. It cannot be
 overwritten by the execution host local configuration.
