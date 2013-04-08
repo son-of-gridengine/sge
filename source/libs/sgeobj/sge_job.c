@@ -1746,7 +1746,7 @@ void job_initialize_env(lListElem *job, lList **answer_list,
    {   
       int i = -1;
       const char* env_name[] = {"HOME", "LOGNAME", "PATH", 
-                                "SHELL", "TZ", "MAIL", "TERM", NULL};
+                                "SHELL", "TZ", "MAIL", NULL};
 
       while (env_name[++i] != NULL) {
          const char *env_value = sge_getenv(env_name[i]);
@@ -1756,6 +1756,14 @@ void job_initialize_env(lListElem *job, lList **answer_list,
          var_list_set_string(&env_list, sge_dstring_get_string(&buffer),
                              env_value);
       }
+      /* builtin starter looks for this, but probably best done only
+         when relevant */
+      if (lGetUlong(job, JB_pty) == 1) {
+         const char *term = sge_getenv("TERM");
+         if (term) var_list_set_string(&env_list, "TERM", term);
+      } else
+         /* If deleted, it's inherited from execd.  */
+         var_list_set_string(&env_list, "TERM", "");
    }
    {
      /* fixme: shouldn't come from environment; LOGNAME also maybe shouldn't */
