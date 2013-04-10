@@ -48,7 +48,7 @@ SGE_VERSION="8.1.4pre"
 #Reset PATH to a safe value
 #
 SAVED_PATH=$PATH
-PATH=/bin:/usr/bin:/usr/sbin:/usr/bsd:/usr/ucb
+PATH=/bin:/usr/bin:/usr/sbin:/usr/bsd:/usr/ucb:/sbin
 
 # Easy way to prevent clearing of screen
 #
