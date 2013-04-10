@@ -769,8 +769,13 @@ PrintConf()
    $ECHO "epilog                 none"
    $ECHO "shell_start_mode       posix_compliant"
    $ECHO "login_shells           sh,bash,ksh,csh,tcsh"
+   if [ "$CSP" = true ]; then
    $ECHO "min_uid                0"
    $ECHO "min_gid                0"
+   else                         # avoid worst of security issue
+   $ECHO "min_uid                100"
+   $ECHO "min_gid                100"
+   fi
    $ECHO "user_lists             none"
    $ECHO "xuser_lists            none"
    $ECHO "projects               none"
