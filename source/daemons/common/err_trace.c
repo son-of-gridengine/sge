@@ -61,6 +61,7 @@
 #include "uti/sge_uidgid.h"
 #include "uti/config_file.h"
 #include "uti/sge_string.h"
+#include "uti/sge_log.h"
 
 #include "basis_types.h"
 #include "err_trace.h"
@@ -844,21 +845,13 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
 
 static void shepherd_panic(const char *s)
 {
-   FILE *panic_fp;
-   char panic_file[255];
+   dstring ds;
+   char buffer[128];
 
-   sprintf(panic_file, "/tmp/shepherd."pid_t_fmt, getpid());
-   panic_fp = fopen(panic_file, "a");
-   if (panic_fp) {
-      dstring ds;
-      char buffer[128];
-
-      sge_dstring_init(&ds, buffer, sizeof(buffer));
-      fprintf(panic_fp, "%s ["uid_t_fmt":"uid_t_fmt" "pid_t_fmt"]: PANIC: %s\n",
-           sge_ctime(0, &ds), getuid(), geteuid(), getpid(), s);
-      FCLOSE(panic_fp);
-   }
-FCLOSE_ERROR:
+   sge_dstring_init(&ds, buffer, sizeof(buffer));
+   sge_dstring_sprintf_append(&ds, "%s ["uid_t_fmt":"uid_t_fmt" "pid_t_fmt"]: PANIC: %s\n",
+                              sge_ctime(0, &ds), getuid(), geteuid(), getpid(), s);
+   syslog(LOG_USER, "%s", sge_dstring_get_string(&ds));
    return;
 }
 
