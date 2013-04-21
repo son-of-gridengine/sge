@@ -1,6 +1,6 @@
 /* util.c -- extra utility functions
 
-   Copyright (C) 2012 Dave Love, University of Liverpool <d.love@liv.ac.uk>
+   Copyright (C) 2012, 2013 Dave Love, University of Liverpool
 
    This file is free software: you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public License
@@ -29,6 +29,7 @@
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
 #include "uti/sge_uidgid.h"
+#include "util.h"
 
 /* Is DIR and existing directory?  */
 bool
@@ -144,3 +145,82 @@ copy_linewise(const char *src, const char *dst)
   fclose(srcfp);
   return ok;
 }
+
+#if !HAVE_STRSIGNAL
+#include <signal.h>
+
+typedef struct pair {
+   int signal;
+   const char *description;
+} pair;
+
+/* Taken from header file (not copyrightable).
+   Non-conditionalized ones are in POSIX.  */
+static const pair sigtable[] = {
+   {SIGHUP, "Hangup"},
+   {SIGINT, "Interrupt"},
+   {SIGQUIT, "Quit"},
+   {SIGILL, "Illegal instruction"},
+   {SIGTRAP, "Trace/breakpoint trap"},
+   {SIGABRT, "Aborted"},
+   {SIGIOT, "IOT trap"},
+   {SIGBUS, "Bus error"},
+   {SIGFPE, "Floating point exception"},
+   {SIGKILL, "Killed"},
+   {SIGUSR1, "User defined signal 1"},
+   {SIGSEGV, "Segmentation violation"},
+   {SIGUSR2, "User defined signal 2"},
+   {SIGPIPE, "Broken pipe"},
+   {SIGALRM, "Alarm clock"},
+   {SIGTERM, "Terminated"},
+#ifdef SIGSTKFLT
+   {SIGSTKFLT, "Stack fault"},
+#endif
+   {SIGCHLD, "Child exited"},
+   {SIGCONT, "Continued"},
+   {SIGSTOP, "Stopped"},
+   {SIGTSTP, "Keyboard stop"},
+   {SIGTTIN, "Background process attempting read"},
+   {SIGTTOU, "Background process attempting write"},
+   {SIGURG, "Urgent condition on socket"},
+   {SIGXCPU, "CPU time limit exceeded"},
+   {SIGXFSZ, "File size limit exceeded"},
+#ifdef SIGVTALRM
+   {SIGVTALRM, "Virtual timer expired"},
+#endif
+   {SIGPROF, "Profiling timer expired"},
+#ifdef SIGWINCH
+   {SIGWINCH, "Window changed"},
+#endif
+#ifdef SIGPOLL
+   {SIGPOLL, "Pollable event occurred"},
+#endif
+#ifdef SIGIO
+   {SIGIO, "I/O possible"},
+#endif
+#ifdef SIGPWR
+   {SIGPWR, "Power failure"},
+#endif
+   {SIGSYS, "Bad system call"},
+#ifdef SIGEMT
+   {SIGEMT, "EMT trap"},
+#endif
+#ifdef SIGINFO
+   {SIGINFO, "Information request"},
+#endif
+#ifdef SIGLOST
+   {SIGLOST, "Resource lost"},
+#endif
+};
+
+static const int nsig = sizeof(sigtable)/sizeof(pair);
+
+const char *strsignal(int signo) {
+   int n = nsig;
+   while (n--) {
+      if (sigtable[n].signal == signo)
+	 return sigtable[n].description;
+   }
+   return "Unknown signal";
+}
+#endif
