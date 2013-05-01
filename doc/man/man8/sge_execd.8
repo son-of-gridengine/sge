@@ -46,8 +46,12 @@ controls the xxQS_NAMExx queues local to the machine on which
 .I xxqs_name_sxx_execd
 is running and executes/controls the jobs sent from
 .M xxqs_name_sxx_qmaster 8
-to be run on these queues.
-.br
+to be run on these queues via
+.M sge_shepherd 8
+or the
+.B shepherd_cmd
+of
+.M sge_conf 5 .
 .\"
 .\"
 .SH OPTIONS
