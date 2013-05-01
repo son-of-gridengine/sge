@@ -95,7 +95,7 @@ T}@@UNDETERMINED
 The following table lists the "failed" values reported by
 .M qacct 1
 (see 
-.M accounting ),
+.M accounting 5 ),
 their description reported by
 .IR qacct ,
 whether the resource usage accounting data are valid for the job
@@ -206,7 +206,7 @@ failed because of configured remote startup daemon
 T}
 37@qmaster enforced h_rt limit@Y@T{
 .na
-ran, but killed due to exceeding run time limit [gets masked by 100]
+ran, but killed due to exceeding run time limit
 T}
 38@adding supplementary group@N@T{
 .na
@@ -214,7 +214,8 @@ failed adding supplementary gid to job
 T}
 100@assumedly after job@Y@T{
 .na
-ran, but killed by a signal, task died, shepherd died (e.g. node crash), etc.
+ran, but killed by a signal (perhaps due to exceeding resources), task
+died, shepherd died (e.g. node crash), etc.
 T}
 .TE
 .SH "SEE ALSO"
