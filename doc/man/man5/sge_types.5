@@ -2,6 +2,7 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004-2007 by Sun Microsystems, Inc.
+.\" Copyright 2013 Dave Love, Liverpool University
 .\"
 .\"___INFO__MARK_END__
 .\"
@@ -235,12 +236,12 @@ where:
 .\"
 .nf
 .ta \w'XXXXXXXXXX'u
-"!"	not operator -- negate the following pattern or expression 
-"&"	and operator -- logically and with the following expression
-"|"	or operator -- logically or with the following expression
-"("	open bracket -- begin an inner expression.
-")"	close bracket -- end an inner expression. 
-"pattern"	see the \fIpattern\fP definition that follows
+"!"	not operator: negate the following pattern or expression
+"&"	and operator: logically and with the following expression
+"|"	or operator: logically or with the following expression
+"("	open bracket: begin an inner expression.
+")"	close bracket: end an inner expression.
+"pattern"	see the \fBpattern\fP definition that follows
 .fi
 .PP
 .\"
@@ -252,7 +253,7 @@ that it is not expanded by the shell.
 e.g.
 .RS
 .nf
-.ta \w'XXXXXXXXXXXXXXXXXX'u
+.ta \w'XXXXXXXXXXXXXXX'u
 "(lx*|sol*)&*64*" any string beginning with either "lx" or
                   "sol" and containing "64"
 "rh_3*&!rh_3.1"   any string beginning with "rh_3", except
@@ -272,7 +273,7 @@ When patterns are used the following definitions apply:
 "[...]"	specifies an array or a range of allowed 
 	characters for one character at a specific position.
         Character ranges may be specified using the a\-z notation.
-        The caret symbol (^) is \fBnot\fP interpreted as a logical
+        The caret symbol (\fB^\fP) is \fInot\fP interpreted as a logical
         not; it is interpreted literally.
 .fi
 .PP
@@ -286,14 +287,16 @@ clients receive the complete pattern.
 .SS "\fBrange\fP"
 The task range specifier has the form 
 .sp 1
-n[-m[:s]][,n[-m[:s]], ...] 
+.IR n [ \fB\-\fPm [ \fB:\fPs ]][ \fB,\fPn [ \fB\-\fPm [ \fB:\fPs ]] \fB,\fP ...]
 or 
-n[-m[:s]][ n[-m[:s]] ...] 
+.IR n [ \fB\-\fPm [ \fB:\fPs ]][\  n [ \fB\-\fPm [ \fB:\fPs ]] \  ...]
 .sp 1
-and thus consists of a comma or blank separated
-list of range specifiers n[-m[:s]]. The ranges are concatenated to the
+and thus consists of a comma- or blank-separated
+list of range specifiers
+.IR  n [ \fB\-\fPm [ \fB:\fPs ]].
+The ranges are concatenated to the
 complete task id range. Each range may be a single number, a simple
-range of the form n-m or a range with a step size.
+range of the form \fIn\fP\fB\-\fP\fIm\fP, or a range with a step size.
 .PP
 .SS "\fBwc_ar\fP"
 The wildcard advance reservation (AR) specification is a placeholder
@@ -350,10 +353,10 @@ wc_job := job-id | job-name | pattern
 .PP
 .SS "\fBwc_job_range\fP"
 The wildcard job range specification allows referencing specific array
-tasks for one or multiple jobs. The job is referenced via wc_job and in
+tasks for one or multiple jobs. The job is referenced via \fIwc_job\fP and in
 addition gets a range specifier for the array tasks.
 .sp 1
-wc_job_range := wc_job [ -t range]
+wc_job_range := wc_job [ \-t range]
 .PP
 .SS "\fBwc_job_list\fP"
 The wildcard job list specification allows referencing multiple jobs
@@ -366,7 +369,7 @@ The wildcard job range list (\fIwc_job_range_list\fP) is specified by
 one of the following forms:
 .sp 1
 .ta 0.5i
-    \fIwc_job[ -t range][{, }wc_job[ -t range]{, }...]\fP
+    \fIwc_job[ \-t range][{, }wc_job[ \-t range]{, }...]\fP
 .ta 0.0i
 .sp 1
 If present, the \fItask_range\fP restricts the effect of the \fIqmod\fP
@@ -444,10 +447,10 @@ e.g.
 .SS "\fBwc_queue\fP"
 \fIwc_queue\fP := \fIwc_cqueue\fP | \fIwc_qdomain\fP | \fIwc_qinstance\fP 
 .PP
-A wildcard queue expression (\fIwc_queue\fP) might either be a wildcard expression 
-cluster queue specification (\fIwc_cqueue\fP) or a wildcard expression queue domain
-specification (\fIwc_qdomain\fP) or a wildcard expression queue instance specification
-(\fIwc_qinstance\fP).
+A wildcard queue expression (\fIwc_queue\fP) might either be a
+wildcard expression, cluster queue specification (\fIwc_cqueue\fP), a
+wildcard expression queue domain specification (\fIwc_qdomain\fP), or
+a wildcard expression queue instance specification (\fIwc_qinstance\fP).
 .PP
 .nf
 .ta 
@@ -489,16 +492,25 @@ or a full project name.
 wc_project := project | pattern
 .PP
 .SS "\fBwc_pe_name\fP"
-A wildcard parallel environment name pattern is either a wildcard pe name specification
-or a full pe name.
+A wildcard parallel environment name pattern is either a wildcard PE name specification
+or a full PE name.
 .PP
 wc_pe_name := pe_name | pattern
 .PP
-.SS "\fBparallel_env\fP \fBn\fP[\fB-\fP[\fBm\fP]]|[\fB-\fP]\fBm\fP,...\fP"
-Parallel programming environment (PE) to select for a submitted job or an AR. The
-range descriptor following the PE name specifies the number of
-parallel processes to be run. xxQS_NAMExx will allocate the
-appropriate resources, as available.
+.SS "\fBparallel_env\fP"
+The
+.B parallel_env
+specification has the format
+.PP
+\fIwc_pe_name\fP \fIn\fP[\fB\-\fP[\fIm\fP]]|[\fB\-\fP]\fIm\fP,...
+.PP
+specifying a parallel programming environment (PE) to select for a
+submitted job or an AR. The
+range descriptor following the wildcard PE name specifies the number of
+slots to allocate, which is usually equivalent to the number of
+parallel processes to be run (for distributed memory jobs) or the
+number of threads (for shared memory jobs) as implied by the PE
+definition. xxQS_NAMExx will allocate the appropriate resources, as available.
 .M xxqs_name_sxx_pe 5
 contains information about the definition of PEs.
 .PP
@@ -509,9 +521,11 @@ names match a name string, when it is required to select one the one
 with the most available slots is chosen.
 .PP
 The range specification is a list of range expressions of the
-form "n-m", where n and m are positive, non-zero integers.  The form "n" is
-equivalent to "n-n".  The form "-m" is equivalent to "1-m".  The form "n-" is
-equivalent to "n-infinity".  The
+form "\fIn\fP\fB\-\fP\fIm\fP", where \fIn\fP and \fIm\fP are positive,
+non-zero integers.  The form "\fIn\fP" is equivalent to
+"\fIn\fP\fB\-\fP\fIn\fP".  The form "\fB\-\fP\fIm\fP" is equivalent to
+"\fB1\-\fP\fIm\fP".  The form "\fIn\fP\fB\-\fP" is equivalent to
+"\fIn\fP\fB\-\fPinfinity".  The
 range specification is processed as follows: The largest
 number of queues requested is checked first. If enough queues
 meeting the specified attribute list are available, all are
@@ -519,37 +533,29 @@ reserved. If not, the next smaller number of queues is checked,
 and so forth.
 .PP
 .SS "\fBdate_time\fP"
-The \fBdate_time\fP value must conform to [[CC]]YY]MMDDhhmm[.SS], where:
+The \fBdate_time\fP value must conform to
+.RI [[ CC ] YY ] MMDDhhmm [\fB.\fP SS ],
+where:
 .PP
 .nf
-.ta
-e.g.
 .RS
-.ta \w'XXXXXXXXXXXXX'u
-CC	denotes the century in 2 digits.
-YY	denotes the year in 2 digits.
-MM	denotes the month in 2 digits.
-DD	denotes the day in 2 digits.
-hh	denotes the hour in 2 digits.
-mm	denotes the minute in 2 digits.
-ss	denotes the seconds in 2 digits (default 00).
-.fi
-.SS "\fBtime\fP"
-The \fBtime\fP value must conform to hh:mm:ss, or seconds where:
-.PP
-.nf
-.ta
-e.g.
-.RS
-.ta \w'XXXXXXXXXXXXX'u
-hh denotes the hour in 2 digits.
-mm denotes the minute in 2 digits.
-ss denotes the seconds in 2 digits (default 00).
-seconds  is a number of seconds (used for duration values)
+.ta \w'XXXXXXXXXX'u
+\fICC\fP	denotes the century in 2 digits.
+\fIYY\fP	denotes the year in 2 digits.
+\fIMM\fP	denotes the month in 2 digits.
+\fIDD\fP	denotes the day in 2 digits.
+\fIhh\fP	denotes the hour in 2 digits.
+\fImm\fP	denotes the minute in 2 digits.
+\fIss\fP	denotes the seconds in 2 digits (default 00).
 .fi
 .sp 1
 If any of the optional date fields are omitted, the corresponding value of
-the current date is assumed. If CC is not specified, a YY of < 70 means 20YY.
+the current date is assumed. If
+.I CC
+is not specified, a
+.I YY
+of <70 means
+.RI 20 YY .
 .br
 Use of this option may cause unexpected results if the clocks of the
 hosts in the xxQS_NAMExx pool are out of sync. Also, the proper behavior of
@@ -561,6 +567,17 @@ for details), when the xxQS_NAMExx daemons
 and
 .M xxqs_name_sxx_execd 8
 are invoked.
+.SS "\fBtime\fP"
+The \fBtime\fP value must conform to \fIhh\fP\fB:\fP\fImm\fP\fB:\fP\fIss\fP, or \fIseconds\fP where:
+.PP
+.nf
+.RS
+.ta \w'XXXXXXXXXX'u
+\fIhh\fP	denotes the hour in 2 digits.
+\fImm\fP	denotes the minute in 2 digits.
+\fIss\fP	denotes the seconds in 2 digits (default 00).
+\fIseconds\fP	is a number of seconds (used for duration values)
+.fi
 .SS "\fBname\fP"
 The \fBname\fP
 may be any arbitrary alphanumeric ASCII string,

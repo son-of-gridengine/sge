@@ -52,6 +52,12 @@ options to
 or with the calendar configuration dialog of the graphical user interface
 .M qmon 1 .
 .PP
+Note that jobs may be dispatched incorrectly into calendar windows
+which are too short unless resource reservation is turned on by setting
+.B max_reservation
+in
+.M sched_conf 5 .
+.PP
 Note, xxQS_NAMExx allows backslashes (\\) to escape newline
 characters. The backslash and the newline are replaced with a
 space (" ") character before any interpretation.
@@ -207,7 +213,7 @@ causes the queue(s) be disabled 12.03.2004 from 00:00:00 \- 10:59:59 and
 .\"
 .SH EXAMPLES
 (The following examples are contained in the directory
-$xxQS_NAME_Sxx_ROOT/util/resources/calendars.)
+.IR $xxQS_NAME_Sxx_ROOT/util/resources/calendars .)
 .IP "\(bu" 3n
 Night, weekend and public holiday calendar:
 .sp 1
