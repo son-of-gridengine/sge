@@ -47,8 +47,8 @@ resource usage information (see
 .M getrusage 2 )
 after a job has finished. In addition, the
 .I xxqs_name_sxx_shepherd
-forwards signals to the job, such as the signals for suspension,
-enabling, termination and the xxQS_NAMExx checkpointing signal (see
+forwards signals to the job, such for suspension,
+enabling, termination, and the xxQS_NAMExx checkpointing signal (see
 .M xxqs_name_sxx_ckpt 1
 and
 .M queue_conf 5
@@ -78,7 +78,7 @@ after execution of the actual user job.
 After the job has finished and the epilog script is processed,
 .I xxqs_name_sxx_shepherd
 retrieves resource usage statistics about
-the job, places them in a job specific subdirectory of the
+the job, places them in a job-specific subdirectory of the
 .M xxqs_name_sxx_execd 8
 spool directory for reporting through
 .M xxqs_name_sxx_execd 8 ,
