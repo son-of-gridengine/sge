@@ -507,9 +507,10 @@ specification has the format
 specifying a parallel programming environment (PE) to select for a
 submitted job or an AR. The
 range descriptor following the wildcard PE name specifies the number of
-slots to allocate, which is usually equivalent to the number of
-parallel processes to be run (for distributed memory jobs) or the
-number of threads (for shared memory jobs) as implied by the PE
+slots to allocate, which is usually equivalent to the total number of
+parallel processes to be run (for simple distributed memory jobs) or the
+number of threads (for shared memory or mixed
+distributed/threaded jobs), as implied by the PE
 definition. xxQS_NAMExx will allocate the appropriate resources, as available.
 .M xxqs_name_sxx_pe 5
 contains information about the definition of PEs.

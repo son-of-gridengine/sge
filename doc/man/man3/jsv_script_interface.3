@@ -27,6 +27,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" external man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH JSV_SCRIPT_INTERFACE 3 2009-05-28 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
@@ -124,23 +127,34 @@ jsv_is_param, jsv_get_param, jsv_add_param, jsv_mod_param, jsv_del_param, jsv_su
 .\"
 .SH DESCRIPTION
 The functions documented here implement the server side of the JSV protocol as
-described in the man page
-.M jsv 1 .
-These script functions are available in Bourne shell, TCL or Perl scripts after 
+described in
+.M jsv 1
+(where "server" applies to both client- and server-side JSVs).
+These script functions are available in Bourne shell (preferably using
+.MO bash 1
+for greater efficiency), TCL, or Perl scripts after
 sourcing/including the files jsv_inlcude.sh, jsv_include.tcl or JSV.pm.
 The files and corresponding JSV script templates are located in the directory
-$SGE_ROOT/util/resources/jsv.  There is also a Java implementation,
-with Javadoc documentation in $SGE_ROOT/doc/javadocs/jjsv, and example
-files SimpleJsv.java and jjsv.sh the resources directory.
+.IR $SGE_ROOT/util/resources/jsv .
+There is also a Java implementation,
+with Javadoc documentation normally in
+.IR $SGE_ROOT/doc/javadocs/jjsv ,
+and example
+files
+.I SimpleJsv.java
+And
+.I jjsv.sh
+in
+.IR $SGE_ROOT/util/resources/jsv .
 .PP
 Note that Bourne shell server JSVs are discouraged because any
 problems with unintended expansion of job parameters represent a
 security hazard (with the qmaster running as the sgeadmin user).  Also
 they may be relatively slow, and constitute a bottleneck in
-high-throughput clusters.  Shell JSVs may be faster using
+high-throughput clusters.  However, shell JSVs may be faster using
 .M bash 1 ,
 even compared with a generally faster shell, since fewer external
-commands may be invoked.
+commands are invoked.
 .PP
 In the descriptions of routines here, a calling sequence like
 .RS
@@ -175,7 +189,7 @@ stream of the client or in the message file of the master process.
 .SS "jsv_is_param(\fIparam_name\fP)"
 This function returns whether or not a specific job parameter is
 available for the job which is currently being verified. Either the 
-string \fItrue\fP or \fIfalse\fP will be returned. The availability/absence 
+string \fBtrue\fP or \fBfalse\fP will be returned. The availability/absence
 of a job parameter does not mean that the corresponding command line 
 switch was used/not used. 
 .PP
@@ -353,7 +367,7 @@ for explanation of the following pseudo parameters:
 This function returns the value of a specific job parameter \fIparam_name\fP. 
 .PP
 This value is only available if the function \fBjsv_is_param\fP()
-returns \fItrue\fP. Otherwise an empty string is returned.
+returns \fBtrue\fP. Otherwise an empty string is returned.
 .PP
 Find a list of allowed parameter names in the section for the function \fBjsv_is_param\fP().
 .\"
@@ -365,10 +379,10 @@ job parameter will be deleted, similarly to the function \fBjsv_del_param\fP().
 As a result, the job parameter is not available, as if
 the corresponding command line switch was not specified during job submission.
 .PP
-For boolean parameters that only accept the values \fIyes\fP or \fIno\fP it is not
+For boolean parameters that only accept the values \fByes\fP or \fBno\fP it is not
 allowed to pass an empty string as \fIparam_value\fI.
 .PP
-Also for the parameters \fIc\fP and \fIm\fP it is not allowed to use empty strings. 
+Also for the parameters \fBc\fP and \fBm\fP it is not allowed to use empty strings.
 Details can be found in
 .M qsub 1 .
 .\"
@@ -381,9 +395,9 @@ Find a list of allowed parameter names in the section for the function \fBjsv_is
 Some job parameters are lists that can contain multiple variables 
 with an optional value. 
 .PP
-This function returns \fItrue\fP if a job's parameters contain the
+This function returns \fBtrue\fP if a job's parameters contain the
 list-valued \fIparam_name\fP, with \fIvariable_name\fP in the list;
-otherwise it returns \fIfalse\fP. \fIfalse\fP might also indicate that
+otherwise it returns \fBfalse\fP. \fBfalse\fP might also indicate that
 the parameter list itself is not available. Use the function \fBjsv_is_param\fP()
 to check if the parameter list is not available.
 .PP
@@ -451,17 +465,17 @@ variable names (\fIvariable_name \fP) in the section for the
 function \fBjsv_sub_is_param\fP().
 .\"
 .SS "jsv_is_env(\fIvariable_name\fP)"
-If the function returns \fItrue\fP, then the job environment variable with 
+If the function returns \fBtrue\fP, then the job environment variable with
 the name \fIvariable_name\fP exists in the job currently being verified, and
 \fBjsv_get_env\fP() can be used to retrieve the value of that variable.
-If the function returns \fIfalse\fP, then the job environment variable does not exist.
+If the function returns \fBfalse\fP, then the job environment variable does not exist.
 .\"
 .SS "jsv_get_env(\fIvariable_name\fP)"
 This function returns the value of a job environment variable
 \fIvariable_name\fP.
 .PP
 This variable has to be passed with the \fIqsub\fP command line switch 
-\fI-v\fP or \fI-V\fP, and passing of environment variable data to JSV
+\fB\-v\fP or \fB\-V\fP, and passing of environment variable data to JSV
 scripts has to be enabled. Environment variable data are passed when the 
 function \fBjsv_send_env\fP() is called in the callback function 
 \fBjsv_on_start\fP().
@@ -628,7 +642,7 @@ This function must be called for the functions \fBjsv_show_envs()\fP,
 \fBjsv_is_env\fP(), \fBjsv_get_env\fP(), \fBjsv_add_env\fP() and \fBjsv_mod_env\fP() to
 behave correctly. 
 .PP
-Job environments might become very big (10K and more). This
+Job environments might become very big (10kB and more). This
 will slow down the executing component (submit client or
 master daemon thread). For this reason, job environment information 
 is not passed to JSV scripts by default.
@@ -692,7 +706,8 @@ the verification process itself.
 .SS "jsv_on_verify()"
 This is a callback function that has to be defined by the creator of a JSV script.
 It is called for every job, and when it returns the job will either be accepted
-or rejected. Find implementation examples in the directory $SGE_ROOT/util/resources/jsv.
+or rejected. Find implementation examples in the directory
+.IR $SGE_ROOT/util/resources/jsv .
 .PP
 The logic of this function completely depends on its creator. The creator
 has only to take care that one of the functions \fBjsv_accept\fP(), \fBjsv_reject\fP(), 
@@ -730,12 +745,12 @@ Include files:
 .I $SGE_ROOT/util/resources/jsv/jsv_inlcude.sh
 .I $SGE_ROOT/util/resources/jsv/jsv_include.tcl
 .I $SGE_ROOT/util/resources/jsv/JSV.pm
-.I $SGE_ROOT/util/resources/jsv/Simplejsv.java
 Example files:
 .I $SGE_ROOT/util/resources/jsv/jsv.sh
 .I $SGE_ROOT/util/resources/jsv/jsv.tcl
 .I $SGE_ROOT/util/resources/jsv/jsv.pl
 .I $SGE_ROOT/util/resources/jsv/jjsv.sh
+.I $SGE_ROOT/util/resources/jsv/SimpleJsv.java
 .fi
 .\"
 .SH "SEE ALSO"
