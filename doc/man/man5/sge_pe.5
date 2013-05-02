@@ -33,6 +33,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" external man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH xxQS_NAME_Sxx_PE 5 2012-09-11 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
@@ -207,7 +210,7 @@ minimum number of machines.
 .PP
 The current version of the scheduler only understands the
 following allocation rules:
-.IP "\fIint\fP:" 1i
+.IP "\fIint\fP"
 An integer, fixing the number of processes per
 host. If it is 1, all processes have to reside
 on different hosts. If the special name
@@ -217,11 +220,11 @@ is used, the full range of processes as specified with the
 \fB\-pe\fP switch has to be allocated on a single host
 (no matter what value belonging to the range is finally
 chosen for the job to be allocated).
-.IP "\fB$fill_up\fP:" 1i
+.IP "\fB$fill_up\fP"
 Starting from the best suitable host/queue, all available slots are 
 allocated. Further hosts and queues are "filled up" as long as a job still 
 requires slots for parallel tasks.
-.IP "\fB$round_robin\fP:" 1i
+.IP "\fB$round_robin\fP"
 From all suitable hosts, a single slot is allocated until all tasks 
 requested by the parallel job are dispatched. If more tasks are requested 
 than suitable hosts are found, allocation starts again from the first host. 
@@ -237,10 +240,35 @@ via
 and
 .M xxqs_name_sxx_shepherd 8
 and thus has full control over all processes in a parallel
-application, which enables capabilities such as resource limitation
-and correct accounting ("tight integration"). To gain control over the
+application  ("tight integration").  This enables:
+.IP \(bu
+resource limits are enforced for all tasks, even on slave hosts;
+.IP \(bu
+resource consumption is properly accounted on all hosts;
+.IP \(bu
+proper control of tasks, with no need to write a customized terminate
+method to ensure that whole job is finished on
+.I qdel
+and that tasks are properly reaped in the case of abnormal job
+termination;
+.IP \(bu
+all tasks are started with the appropriate nice value which was
+configured as
+.B priority
+in the queue configuration;
+.IP \(bu
+propagation of the job environment to slave hosts, e.g. so that they
+write into the appropriate temporary directory specified by TMPDIR,
+which is properly clean up.
+To gain control over the
 slave tasks of a parallel application, a sophisticated PE interface is
-required, which works closely together with xxQS_NAMExx facilities.
+required, which works closely together with xxQS_NAMExx facilities,
+typically interpreting the xxQS_NAMExx hostfile and starting remote
+tasks with
+.M qrsh 1
+and its
+.B \-inherit
+option.
 See, for instance, the
 .B $SGE_ROOT/mpi
 directory and the
@@ -257,10 +285,15 @@ The
 parameter can be set to TRUE or FALSE. A value of 
 TRUE indicates that the xxQS_NAMExx job script already contains one of 
 the tasks of the parallel application
-(the number of slots reserved for the job is the number of slots requested with the \-pe switch).
+(and the number of slots reserved for the job is the number of slots
+requested with the \-pe switch).
 FALSE indicates that the
-job script (and its child processes) is not part of the parallel program
-(the number of slots reserved for the job is the number of slots requested with the \-pe switch + 1).
+job script (and its child processes) is not part of the parallel
+program (e.g. the job is using
+.MO mpirun 1 )
+and the number of slots reserved for the job in the master queue is
+increased by 1, as indicated by
+.IR qstat / qhost .
 .PP
 If wallclock accounting is used 
 (execd_params ACCT_RESERVED_USAGE and/or SHARETREE_RESERVED_USAGE set to TRUE)
@@ -271,12 +304,16 @@ is set to FALSE, the
 parameter influences the accounting for the job:
 A value of TRUE means that accounting for CPU and requested memory
 gets multiplied by the number of slots requested with the \-pe switch.
-FALSE means the accounting information gets multiplied by number of slots + 1.
+FALSE means the accounting information gets multiplied by number of
+slots + 1.  Otherwise, the only significant effect of the parameter is
+on the display of the job, but it can be used to indicate, say,
+.IR mpirun -type
+job startup.
 .\"
 .\"
 .SS "\fBurgency_slots\fP"
 For pending jobs with a slot range PE request with different minimum
-and maximum, the number of slots
+and maximum, the number of slots they will actually use
 is not determined. This setting specifies the method to be used by
 xxQS_NAMExx to assess the number of slots such jobs might finally
 get.
@@ -290,16 +327,16 @@ and is displayed when
 is run without \fB\-g t\fP option.
 .PP
 The following methods are supported:
-.IP "\fIint\fP:" 1i
+.IP "\fIint\fP"
 The specified integer number is directly used as prospective slot amount.
-.IP "\fBmin\fP:" 1i
+.IP "\fBmin\fP"
 The slot range minimum is used as prospective slot amount. If no
 lower bound is specified with the range, 1 is assumed.
-.IP "\fBmax\fP:" 1i
+.IP "\fBmax\fP"
 The slot range maximum is used as prospective slot amount.
 If no upper bound is specified with the range, the absolute maximum
 possible due to the PE's \fBslots\fP setting is assumed.
-.IP "\fBavg\fP:" 1i
+.IP "\fBavg\fP"
 The average of all numbers occurring within the job's PE range 
 request is assumed.
 .\"
@@ -332,7 +369,8 @@ and \fIaccounting_summary\fP enabled in the parallel environment,
 reserved usage will only be reported by the master task of the parallel job.
 No per-parallel task usage records will be sent from execd to qmaster, which
 can significantly reduce load on the qmaster when running large,
-tightly integrated parallel jobs.
+tightly integrated parallel jobs.  However, this removes the only
+post-hoc information about which hosts a job used.
 .SS "\fBqsort_args \fIlibrary qsort-function \fR[\fParg1 \fR...]\fP"
 Specifies a method for specifying the queues/hosts and order that
 should be used to schedule a parallel job.  For details, and the API,
@@ -383,6 +421,7 @@ described in the SECURITY section of
 .M qconf 1 ,
 .M qdel 1 ,
 .M qmod 1 ,
+.M qrsh 1 ,
 .M qsub 1 ,
 .M access_list 5 ,
 .M xxqs_name_sxx_conf 5 ,
