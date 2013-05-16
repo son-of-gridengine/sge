@@ -355,6 +355,13 @@ ResolveResult()
                ret=$?
                return $ret
             ;;
+            *'"qsort_args" is missing'*)
+               echo 'qsort_args   NONE' >> "$resFile"
+               LogIt "I" "qsort_args added, trying again"
+               LoadConfigFile "$resFile" "-Ap"
+               ret=$?
+               return $ret
+            ;;
             *'already exists')
                LogIt "I" "$obj already exists, trying to modify -Mp"
                LoadConfigFile "$resFile" "-Mp"
