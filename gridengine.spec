@@ -6,7 +6,7 @@
 # scripts, because it's difficult with anything other than a
 # default cell.
 
-# This was originally derived from the Fedora version, but probably
+# This was originally derived from the Fedora version, but
 # doesn't bear much resemblance to it now.
 
 # Fixmes:
@@ -20,7 +20,8 @@
 
 # Use "rpmbuild --without java" to omit all Java bits
 %bcond_without java
-# Use "rpmbuild --with-hadoop" to build Hadoop support (the herd library)
+
+# Use "rpmbuild --with hadoop" to build Hadoop support (the herd library)
 # against Cloudera RPMs.
 # Perhaps this should be herd, not hadoop?
 %bcond_with hadoop
@@ -47,7 +48,7 @@ Summary: Grid Engine - Distributed Resource Manager
 
 Group:   Applications/System
 # per 3rd_party_licscopyrights
-License: (SISSL and BSD and LGPLv3+ and MIT) and GPLv3+ and GFDLv3+ and others
+License: (SISSL and BSD and LGPLv3+ and MIT) and GPLv3+ and GFDL and others
 URL:     https://arc.liv.ac.uk/trac/SGE
 Source:  https://arc.liv.ac.uk/downloads/SGE/releases/%{version}/sge-%{version}.tar.gz
 Source1: IzPack-4.1.1-mod.tar.gz
@@ -57,11 +58,11 @@ Prefix: %{sge_home}
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-# opensuse needs at least: libdb-4_8-devel, libopenssl-devel, java-1_6_0-openjdk, libelf-devel
+# opensuse needs at least: libdb-4_8-devel, libopenssl-devel, java-1_6_0-openjdk
 
 BuildRequires: gcc, make, binutils
 BuildRequires: /bin/csh, openssl-devel, db4-devel, ncurses-devel, pam-devel
-BuildRequires: libXmu-devel, libXpm-devel, hwloc-devel >= 1.1, net-tools
+BuildRequires: libXmu-devel, hwloc-devel >= 1.1, net-tools
 # This used to test %{?rhel}, but that's not defined on RHEL 5, and
 # I don't know whether _host_vendor distinguishes Fedora and RHEL.
 %if 0%{?fedora}
@@ -71,11 +72,14 @@ BuildRequires: openmotif-devel
 %endif
 %if %{with java}
 BuildRequires: java-devel >= 1.6.0, javacc, ant-junit
+%if 0%{?rhel}
+BuildRequires: ant-nodeps
+%endif
 %if %{with hadoop}
 BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
-BuildRequires: elfutils-libelf-devel, net-tools, man
+BuildRequires: net-tools, man
 %if 0%{?fedora}
 BuildRequires: fedora-usermgmt-devel
 %endif
@@ -87,7 +91,7 @@ Requires: man
 
 %description
 Grid Engine (often known as SGE) is a distributed resource manager,
-typically deployed to manage batch jobs on comptational clusters (like
+typically deployed to manage batch jobs on computational clusters (like
 Torque/Maui), but also capable of managing interactive jobs and looser
 collections of resources, such as desktop PCs (like Condor).
 
@@ -103,16 +107,17 @@ https://arc.liv.ac.uk/trac/SGE
 %package devel
 Summary: Gridengine development files
 Group: Development/Libraries
-License: BSD and LGPLv3+ and MIT and SISSL
+License: SISSL
 Requires: %{name} = %{version}-%{release}
+BuildArch: noarch
 
 %description devel
 Grid Engine development headers and libraries.
 
 %package qmon
 Summary: Gridengine qmon monitor
-Group: Development/Libraries
-License: BSD and LGPLv3+ and MIT and SISSL
+Group: Applications/System
+License: BSD and LGPLv3+ and MIT and SISSL and others
 Requires: %{name} = %{version}-%{release}
 Requires: xorg-x11-fonts-ISO8859-1-100dpi xorg-x11-fonts-ISO8859-1-75dpi
 
@@ -121,8 +126,8 @@ The qmon graphical graphical interface to Grid Engine.
 
 %package execd
 Summary: Gridengine execd program
-Group: Development/Libraries
-License: BSD and LGPLv3+ and MIT and SISSL
+Group: Applications/System
+License: BSD and LGPLv3+ and MIT and SISSL and others
 Requires: %{name} = %{version}-%{release}
 Requires(postun): %{name} = %{version}-%{release}
 Requires(preun): %{name} = %{version}-%{release}
@@ -132,14 +137,10 @@ Programs needed to run a Grid Engine execution host.
 
 %package qmaster
 Summary: Gridengine qmaster programs
-Group: Development/Libraries
-License: BSD and LGPLv3+ and MIT and SISSL
+Group: Applications/System
+License: BSD and LGPLv3+ and MIT and SISSL and others
 Requires: %{name} = %{version}-%{release}
 Requires: db4-utils
-# Not automatically derived:
-%if %{with java}
-Requires: java >= 1.6.0
-%endif
 Requires(postun): %{name} = %{version}-%{release}
 Requires(preun): %{name} = %{version}-%{release}
 
@@ -150,20 +151,32 @@ Programs needed to run a Grid Engine master host.
 Summary: Ruby binding for DRMAA library
 Group: Development/Libraries
 License: SISSL
+BuildArch: noarch
 
 %description drmaa4ruby
-This binding is presuambly not Grid Engine-specific.
+This binding is presumably not Grid Engine-specific.
 
 %if %{with java}
 %if %{with hadoop}
 %package hadoop
 Summary: Grid Engine Hadoop integration
-Group: Development/Libraries
+Group: Applications/System
 License: SISSL
+BuildArch: noarch
 
 %description hadoop
 Support for Grid Engine Hadoop integration.
 %endif
+
+%package guiinst
+Summary: Grid Engine GUI installer
+Group: Applications/System
+License: SISSL and LGPLv3+ and Apache License and others
+Requires: java >= 1.6.0
+BuildArch: noarch
+
+%description guiinst
+Optional Java-based GUI installer for Grid Engine.
 %endif
 
 %prep
@@ -205,9 +218,7 @@ JAVA_BUILD_OPTIONS="-no-java -no-jni"
 JAVA_BUILD_OPTIONS="-no-herd"
 %endif
 %endif
-csh -f ./aimk -only-depend $JAVA_BUILD_OPTIONS
-scripts/zerodepend
-./aimk $JAVA_BUILD_OPTIONS depend
+sh scripts/bootstrap.sh $JAVA_BUILD_OPTIONS
 # -no-remote because we have ssh and PAM instead
 ./aimk -DLIBSSL_VER='\"'$ssl_ver'\"' -system-libs -pam -no-remote $parallel_flags $JAVA_BUILD_OPTIONS
 ./aimk -man $JAVA_BUILD_OPTIONS
@@ -269,9 +280,8 @@ else
 fi
 
 %files
-%defattr(-,root,root,-)
 # Ensure we can make sgeadmin-owned cell directory
-%attr(775,root,%{username}) %{sge_home}
+%attr(775,root,%{username}) %dir %{sge_home}
 %exclude %{sge_bin}/*/qmon
 %exclude %{sge_bin}/*/sge_coshepherd
 %exclude %{sge_bin}/*/sge_execd
@@ -280,7 +290,9 @@ fi
 %exclude %{sge_bin}/*/sge_shepherd
 %if %{with java}
 %exclude %{sge_docdir}/javadocs
+%exclude %{sge_home}/util/gui-installer
 %endif
+%exclude %{sge_home}/start_gui_installer
 %exclude %{sge_home}/examples/drmaa
 %exclude %{sge_mandir}/man1/qmon.1
 %exclude %{sge_mandir}/man8/sge_qmaster.8
@@ -306,7 +318,7 @@ fi
 %{sge_home}/mpi
 %{sge_home}/pvm
 %{sge_home}/util
-%config %{sge_home}/util/install_modules/inst_template.conf
+%config(noreplace) %{sge_home}/util/install_modules/inst_template.conf
 %{sge_home}/utilbin
 %attr(4755,root,root) %{sge_home}/utilbin/*/testsuidroot
 #%attr(4755,root,root) %{sge_home}/utilbin/*/authuser
@@ -316,10 +328,8 @@ fi
 %{sge_mandir}/man5/*.5
 %{sge_mandir}/man8/*.8
 %{sge_home}/examples
-%{sge_lib}/*/libdrmaa.so*
 
 %files devel
-%defattr(-,root,root,-)
 %{sge_include}
 %{sge_home}/pvm/src
 %{sge_mandir}/man3/*.3
@@ -329,13 +339,11 @@ fi
 %{sge_home}/examples/drmaa
 
 %files qmon
-%defattr(-,root,root,-)
 %{sge_bin}/*/qmon
 %{sge_home}/qmon
 %{sge_mandir}/man1/qmon.1
 
 %files execd
-%defattr(-,root,root,-)
 %{sge_bin}/*/sge_execd
 %{sge_bin}/*/sge_shepherd
 %{sge_bin}/*/sge_coshepherd
@@ -346,7 +354,6 @@ fi
 %{sge_lib}/*/pam*
 
 %files qmaster
-%defattr(-,root,root,-)
 %{sge_bin}/*/sge_qmaster
 %{sge_bin}/*/sge_shadowd
 %{sge_bin}/process-scheduler-log
@@ -357,17 +364,33 @@ fi
 %{sge_mandir}/man1/qsched.1
 
 %files drmaa4ruby
-%defattr(-,root,root,-)
 %{sge_home}/util/resources/drmaa4ruby
 
 %if %{with hadoop}
 %files hadoop
-%defattr(-,root,root,-)
 %{sge_home}/hadoop
 %{sge_home}/lib/herd.jar
 %endif
 
+%if %{with java}
+%files guiinst
+%{sge_home}/util/gui-installer
+%{sge_home}/start_gui_installer
+%endif
+
+
 %changelog
+* Fri May 17 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4pre-1
+- Drop libXpm-devel dependency
+- Use bootstrap.sh
+- Don't build-require elfutils-libelf-devel
+- Fix License and Group headers
+- Mark inst_template.conf as %conf(noreplace)
+- Use noarch appropriately
+- Don't require java for qmaster.  (Should fail obviously if jvm thread
+  configured.)
+- Make separate guiinst package.
+
 * Mon Dec 10 2012 Dave Love <d.love@liverpool.ac.uk> - 8.1.3pre-1
 - Depend on net-tools (for hostname, at least)
 - Define _hardened_build
