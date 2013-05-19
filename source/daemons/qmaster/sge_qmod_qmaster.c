@@ -103,7 +103,7 @@ static int sge_change_job_state(sge_gdi_ctx_class_t *ctx,
 
 static int qmod_queue_weakclean(sge_gdi_ctx_class_t *ctx,
                                 lListElem *qep, u_long32 force, lList **answer,
-                                char *user, char *host, int isoperator, int isowner,
+                                char *user, char *host, int isoperator,
                                 monitoring_t *monitor);
 
 static int qmod_queue_clean(sge_gdi_ctx_class_t *ctx,
@@ -474,7 +474,8 @@ sge_change_queue_state(sge_gdi_ctx_class_t *ctx,
          break;
 
       case QI_DO_RESCHEDULE:
-         result = qmod_queue_weakclean(ctx, qep, force, answer, user, host, isoperator, isowner, monitor);
+         result = qmod_queue_weakclean(ctx, qep, force, answer, user,
+                                       host, isoperator, monitor);
          break;
       default:
          INFO((SGE_EVENT, MSG_LOG_QUNKNOWNQMODCMD_U, sge_u32c(action)));
@@ -615,20 +616,13 @@ monitoring_t *monitor
 /****
  **** qmod_queue_weakclean (static)
  ****/
-static int qmod_queue_weakclean(
-sge_gdi_ctx_class_t *ctx,
-lListElem *qep,
-u_long32 force,
-lList **answer,
-char *user,
-char *host,
-int isoperator,
-int isowner,
-monitoring_t *monitor
-) {
+static int
+qmod_queue_weakclean(sge_gdi_ctx_class_t *ctx, lListElem *qep,
+                     u_long32 force, lList **answer, char *user,
+                     char *host, int isoperator, monitoring_t *monitor) {
    DENTER(TOP_LAYER, "qmod_queue_weakclean");
 
-   if (!isoperator && !isowner) {
+   if (!isoperator) {
       ERROR((SGE_EVENT, MSG_QUEUE_NORESCHEDULEQPERMS_SS, user,
          lGetString(qep, QU_full_name)));
       answer_list_add(answer, SGE_EVENT, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR);
