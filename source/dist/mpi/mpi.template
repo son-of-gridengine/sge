@@ -1,3 +1,5 @@
+# loose integration MPI PE (unlikely to be useful -- modern MPIs should
+# support tight integration)
 pe_name           mpi
 slots             <the_number_of_slots>
 user_lists        NONE
