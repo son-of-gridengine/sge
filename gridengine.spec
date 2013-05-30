@@ -80,9 +80,6 @@ BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
 BuildRequires: net-tools, man
-%if 0%{?fedora}
-BuildRequires: fedora-usermgmt-devel
-%endif
 Requires: binutils, ncurses, shadow-utils, net-tools
 # for makewhatis
 Requires: man
@@ -210,6 +207,7 @@ ssl_ver=$(objdump -p %{_libdir}/libssl.so | awk '/SONAME/ {print substr($2,10)}'
 # -O2/-O3 gives warnings about type puns.  It's not clear whether
 # they're serious, but -fno-strict-aliasing just in case.
 export SGE_INPUT_CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
+export SGE_INPUT_LDFLAGS="$LDFLAGS"
 [ -n "$RPM_BUILD_NCPUS" ] && parallel_flags="-parallel $RPM_BUILD_NCPUS"
 %if %{without java}
 JAVA_BUILD_OPTIONS="-no-java -no-jni"
@@ -380,6 +378,10 @@ fi
 
 
 %changelog
+* Thu May 30 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4
+- Pass $LDFLAGS to aimk (e.g. hardened build)
+- Remove fedora-usermgmt-devel BuildRequires
+
 * Fri May 17 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4pre-1
 - Drop libXpm-devel dependency
 - Use bootstrap.sh
