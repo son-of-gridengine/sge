@@ -78,7 +78,7 @@ int sge_set_uid_gid_addgrp(const char *user, const char *intermediate_user,
 struct passwd *sge_getpwnam_r(const char *name, struct passwd *pw, 
                               char *buffer, size_t bufsize);
 struct group *sge_getgrgid_r(gid_t gid, struct group *pg, 
-                             char *buffer, size_t bufsize, int retries);
+                             char **buffer, size_t bufsize, int retries);
 
 bool sge_is_user_superuser(const char *name); 
 
