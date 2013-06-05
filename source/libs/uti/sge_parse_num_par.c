@@ -286,6 +286,8 @@ static sge_rlim_t add_infinity(sge_rlim_t rlim, sge_rlim_t offset)
  *                M : Multiplier = 1024*1024
  *                g : Multiplier = 1000*1000*1000
  *                G : Multiplier = 1024*1024*1024
+ *                t : Multiplier = 1000*1000*1000*1000
+ *                T : Multiplier = 1024*1024*1024*1024
  *
  * NOTES
  *     MT-NOTE: get_multiplier() is MT safe
@@ -329,6 +331,16 @@ static double get_multiplier(sge_rlim_t *rlimp, char **dptr,
    case 'G':
       mul = 1024 * 1024 * 1024;
       *rlimp = mul_infinity(mul_infinity(1024, 1024), 1024);
+      (*dptr)++;
+      break;
+   case 't':
+      mul = 1000.0 * 1000 * 1000 * 1000;
+      *rlimp = mul_infinity(mul_infinity(mul_infinity(1000, 1000), 1000), 1000);
+      (*dptr)++;
+      break;
+   case 'T':
+      mul = 1024.0 * 1024 * 1024 * 1024;
+      *rlimp = mul_infinity(mul_infinity(mul_infinity(1024, 1024), 1024), 1024);
       (*dptr)++;
       break;
    case ',':                    /* no multiplier */

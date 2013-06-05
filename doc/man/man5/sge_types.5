@@ -155,13 +155,16 @@ The \fIpath\fP has always to be the absolute path to a binary or application.
 .\"
 .SS "\fBmemory_specifier\fP"
 Memory specifiers are positive decimal, hexadecimal or octal
-integer  constants  which  may  be  followed by a multiplier
-letter. Valid multiplier letters are k, K, m, M,  g  and  G,
-where  k  means  multiply  the  value by 1000, K multiply by
-1024, m multiply by 1000*1000, M multiply  by  1024*1024,  g
-multiply by 1000*1000*1000 and G multiply by 1024*1024*1024.
-If no multiplier is present, the value is  just  counted  in
+integer constants which may be followed by a multiplier
+letter. Valid multiplier letters are k, K, m, M, g, G, t, and T,
+where k means multiply the value by 1000, K multiply by
+1024, m multiply by 1000*1000, M multiply by 1024*1024, g
+multiply by 1000*1000*1000, G multiply by 1024*1024*1024, t multiply
+by 1000*1000*1000*1000, and T multiply by 1024*1024*1024*1024.
+If no multiplier is present, the value is just counted in
 bytes.
+Whether memory values above the 32-bit limit are representable
+on 32-bit systems, even for disk space, is system-dependent.
 .\"
 .SS "\fBpe_name\fP"
 A "pe_name" is the name of a xxQS_NAMExx parallel environment described in
