@@ -81,4 +81,6 @@ ulong_parse_task_concurrency(lList **alpp, int *valp, const char *task_concurren
 
 const char *
 double_print_memory_to_string(double value, dstring *string);
+
+int reformatDoubleValue(char *result, size_t lresult, const char *format, const char *oldmem);
 #endif /* __SGE_ULONG_H */

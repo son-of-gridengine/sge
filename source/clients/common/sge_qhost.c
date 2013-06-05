@@ -92,7 +92,6 @@ static int sge_print_queues(lList *ql, lListElem *hrl, lList *jl, lList *ul, lLi
 static int sge_print_resources(lList *ehl, lList *cl, lList *resl, lListElem *host, u_long32 show, qhost_report_handler_t *report_handler, lList **alpp);
 static int sge_print_host(sge_gdi_ctx_class_t *ctx, lListElem *hep, lList *centry_list, qhost_report_handler_t *report_handler, lList **alpp, u_long32 show);
 
-static int reformatDoubleValue(char *result, const char *format, const char *oldmem);
 static bool get_all_lists(sge_gdi_ctx_class_t *ctx, lList **answer_list, lList **ql, lList **jl, lList **cl, lList **ehl, lList **pel, lList *hl, lList *ul, u_long32 show);
 static void free_all_lists(lList **ql, lList **jl, lList **cl, lList **ehl, lList **pel);
 
@@ -392,7 +391,8 @@ sge_print_host(sge_gdi_ctx_class_t *gdi_ctx, lListElem *hep, lList *centry_list,
    */
    lep=get_attribute_by_name(NULL, hep, NULL, "load_avg", centry_list, DISPATCH_TIME_NOW, 0);
    if (lep) {
-      reformatDoubleValue(load_avg, "%.2f%c", sge_get_dominant_stringval(lep, &dominant, &rs));
+      reformatDoubleValue(load_avg, sizeof load_avg, "%.2f%c",
+                          sge_get_dominant_stringval(lep, &dominant, &rs));
       sge_dstring_clear(&rs);
       lFreeElem(&lep);
    } else {
@@ -404,7 +404,8 @@ sge_print_host(sge_gdi_ctx_class_t *gdi_ctx, lListElem *hep, lList *centry_list,
    */
    lep=get_attribute_by_name(NULL, hep, NULL, "mem_total", centry_list, DISPATCH_TIME_NOW, 0);
    if (lep) {
-      reformatDoubleValue(mem_total, "%.1f%c", sge_get_dominant_stringval(lep, &dominant, &rs));
+      reformatDoubleValue(mem_total, sizeof mem_total, "%.1f%c",
+                          sge_get_dominant_stringval(lep, &dominant, &rs));
       sge_dstring_clear(&rs);
       lFreeElem(&lep);
    } else {
@@ -416,7 +417,8 @@ sge_print_host(sge_gdi_ctx_class_t *gdi_ctx, lListElem *hep, lList *centry_list,
    */
    lep=get_attribute_by_name(NULL, hep, NULL, "mem_used", centry_list, DISPATCH_TIME_NOW, 0);
    if (lep) {
-      reformatDoubleValue(mem_used, "%.1f%c", sge_get_dominant_stringval(lep, &dominant, &rs));
+      reformatDoubleValue(mem_used, sizeof mem_used, "%.1f%c",
+                          sge_get_dominant_stringval(lep, &dominant, &rs));
       sge_dstring_clear(&rs);
       lFreeElem(&lep);
    } else {
@@ -428,7 +430,8 @@ sge_print_host(sge_gdi_ctx_class_t *gdi_ctx, lListElem *hep, lList *centry_list,
    */
    lep=get_attribute_by_name(NULL, hep, NULL, "swap_total", centry_list, DISPATCH_TIME_NOW, 0);
    if (lep) {
-      reformatDoubleValue(swap_total, "%.1f%c", sge_get_dominant_stringval(lep, &dominant, &rs));
+      reformatDoubleValue(swap_total, sizeof swap_total, "%.1f%c",
+                          sge_get_dominant_stringval(lep, &dominant, &rs));
       sge_dstring_clear(&rs);
       lFreeElem(&lep);
    } else {
@@ -440,7 +443,8 @@ sge_print_host(sge_gdi_ctx_class_t *gdi_ctx, lListElem *hep, lList *centry_list,
    */
    lep=get_attribute_by_name(NULL, hep, NULL, "swap_used", centry_list, DISPATCH_TIME_NOW, 0);
    if (lep) {
-      reformatDoubleValue(swap_used, "%.1f%c", sge_get_dominant_stringval(lep, &dominant, &rs));
+      reformatDoubleValue(swap_used, sizeof swap_used, "%.1f%c",
+                          sge_get_dominant_stringval(lep, &dominant, &rs));
       sge_dstring_clear(&rs);
       lFreeElem(&lep);
    } else {
@@ -822,40 +826,6 @@ lList **alpp
 }
 
 /*-------------------------------------------------------------------------*/
-
-static int reformatDoubleValue(char *result, const char *format, const char *oldmem)
-{
-   double dval;
-   int ret = 1;
-
-   DENTER(TOP_LAYER, "reformatDoubleValue");
-
-   if (parse_ulong_val(&dval, NULL, TYPE_MEM, oldmem, NULL, 0)) {
-      if (dval==DBL_MAX) {
-         strcpy(result, "infinity");
-      } else {
-         int c = '\0';
-
-         if (fabs(dval) >= 1024*1024*1024) {
-            dval /= 1024*1024*1024;
-            c = 'G';
-         } else if (fabs(dval) >= 1024*1024) {
-            dval /= 1024*1024;
-            c = 'M';
-         } else if (fabs(dval) >= 1024) {
-            dval /= 1024;
-            c = 'K';
-         }
-         sprintf(result, format, dval, c);
-      }
-   }
-   else {
-      strcpy(result, "?E"); 
-      ret = 0;
-   }
-
-   DRETURN(ret);
-}
 
 /****
  **** get_all_lists (static)
