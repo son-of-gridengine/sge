@@ -762,18 +762,16 @@ int sge_gid2group(gid_t gid, char *dst, size_t sz, int retries)
    last_groupname = uidgid_state_get_last_groupname();
 
    if (!last_groupname[0] || uidgid_state_get_last_gid() != gid) {
-      char *buf = NULL;
-      int size = 0;
-      
-      size = get_group_buffer_size();
-      buf = sge_malloc(size);
+      int size = get_group_buffer_size();
+      char *buf = sge_malloc(size);
+      char **pbuf = &buf;
 
-      gr = sge_getgrgid_r(gid, &grentry, buf, size, retries);
+      gr = sge_getgrgid_r(gid, &grentry, pbuf, size, retries);
       /* Bugfix: Issuezilla 1256
        * We need to handle the case when the OS is unable to resolve the GID to
        * a name. [DT] */
       if (gr == NULL) {
-         sge_free(&buf);
+         sge_free(pbuf);
          DEXIT;
          return 1;
       }
@@ -898,7 +896,7 @@ int get_pw_buffer_size(void)
 *
 *  FUNCTION
 *     Returns the buffer size required for functions like getgrnam_r.
-*     It can either be retrieved via sysconf, or a bit (20k) buffer
+*     It can either be retrieved via sysconf, or a big (20k) buffer
 *     size is taken.
 *
 *  RESULT
@@ -1354,7 +1352,7 @@ struct passwd *sge_getpwnam_r(const char *name, struct passwd *pw,
 *
 *  SYNOPSIS
 *     struct group* sge_getgrgid_r(gid_t gid, struct group *pg,
-*                                  char *buffer, size_t bufsize, int retires)
+*                                  char *buffer, size_t bufsize, int retries)
 *
 *  FUNCTION
 *     Search account database for a group. This function is just a wrapper for
@@ -1377,7 +1375,7 @@ struct passwd *sge_getpwnam_r(const char *name, struct passwd *pw,
 *
 *******************************************************************************/
 struct group *sge_getgrgid_r(gid_t gid, struct group *pg, 
-                             char *buffer, size_t bufsize, int retries)
+                             char **buffer, size_t bufsize, int retries)
 {
    struct group *res = NULL;
 
@@ -1385,15 +1383,15 @@ struct group *sge_getgrgid_r(gid_t gid, struct group *pg,
 
    while(retries-- && !res) {
 #if defined(INTERIX)
-      if (getgrgid_nomembers_r(gid, pg, buffer, bufsize, &res) != 0) 
+      if (getgrgid_nomembers_r(gid, pg, *buffer, bufsize, &res) != 0)
 #else
-      if (getgrgid_r(gid, pg, buffer, bufsize, &res) != 0) 
+      if (getgrgid_r(gid, pg, *buffer, bufsize, &res) != 0)
 #endif
       {
          if (errno == ERANGE) {
             retries++;
             bufsize += 1024;
-            buffer = sge_realloc(buffer, bufsize, 1); 
+            *buffer = sge_realloc(*buffer, bufsize, 1);
          }
          res = NULL;
       }
