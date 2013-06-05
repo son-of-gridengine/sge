@@ -120,10 +120,14 @@ bool double_print_memory_to_dstring(double value, dstring *string)
          const double kilo_byte = 1024;
          const double mega_byte = kilo_byte * 1024;
          const double giga_byte = mega_byte * 1024;
+         const double tera_byte = giga_byte * 1024;
          double absolute_value = fabs(value); 
          char unit = '\0';
 
-         if (absolute_value >= giga_byte) {
+         if (absolute_value >= tera_byte) {
+            value /= tera_byte;
+            unit = 'T';
+         } else if (absolute_value >= giga_byte) {
             value /= giga_byte;
             unit = 'G';
          } else if (absolute_value >= mega_byte) {
@@ -142,6 +146,43 @@ bool double_print_memory_to_dstring(double value, dstring *string)
    }
    DEXIT;
    return ret;
+}
+
+int reformatDoubleValue(char *result, size_t lresult, const char *format, const char *oldmem)
+{
+   double dval;
+   int ret = 1;
+
+   DENTER(TOP_LAYER, "reformatDoubleValue");
+
+   if (parse_ulong_val(&dval, NULL, TYPE_MEM, oldmem, NULL, 0)) {
+      if (dval==DBL_MAX) {
+         strcpy(result, "infinity");
+      } else {
+         int c = '\0';
+
+         if (fabs(dval) >= 1024.0*1024*1024*1024) {
+            dval /= 1024.0*1024*1024*1024;
+            c = 'T';
+         } else if (fabs(dval) >= 1024*1024*1024) {
+            dval /= 1024*1024*1024;
+            c = 'G';
+         } else if (fabs(dval) >= 1024*1024) {
+            dval /= 1024*1024;
+            c = 'M';
+         } else if (fabs(dval) >= 1024) {
+            dval /= 1024;
+            c = 'K';
+         }
+         snprintf(result, lresult, format, dval, c);
+      }
+   }
+   else {
+      strcpy(result, "?E");
+      ret = 0;
+   }
+
+   DRETURN(ret);
 }
 
 const char *double_print_memory_to_string(double value, dstring *string)

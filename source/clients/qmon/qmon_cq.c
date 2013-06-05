@@ -80,6 +80,7 @@
 #include "sgeobj/sge_qinstance_state.h"
 #include "sgeobj/sge_qinstance_type.h"
 #include "sgeobj/sge_centry.h"
+#include "sgeobj/sge_ulong.h"
 
 #include "gdi/sge_gdi_ctx.h"
 #include "gdi/sge_gdi.h"
@@ -2288,45 +2289,6 @@ static void qmonCQUpdateQIMatrix(void)
    DEXIT;
 }
 
-static int reformatDoubleValue(
-			       char *result,
-			       char *format,
-const char *oldmem
-			       ) {
-  char c;
-  double dval;
-  int ret = 1;
-
-  DENTER(TOP_LAYER, "reformatDoubleValue");
-
-  if (parse_ulong_val(&dval, NULL, TYPE_MEM, oldmem, NULL, 0)) {
-    if (dval==DBL_MAX) {
-      strcpy(result, "infinity");
-    } else {
-      c = '\0';
-
-      if (fabs(dval) >= 1024*1024*1024) {
-	dval /= 1024*1024*1024;
-	c = 'G';
-      } else if (fabs(dval) >= 1024*1024) {
-	dval /= 1024*1024;
-	c = 'M';
-      } else if (fabs(dval) >= 1024) {
-	dval /= 1024;
-	c = 'K';
-      }
-      sprintf(result, format, dval, c);
-    }
-  }
-  else {
-    strcpy(result, "?E");
-    ret = 0;
-  }
-  DEXIT;
-  return ret;
-}
-
-
 /*-------------------------------------------------------------------------*/
 static void qmonCQUpdateQhostMatrix(void)
 {
@@ -2435,7 +2397,8 @@ static void qmonCQUpdateQhostMatrix(void)
 
      lep=get_attribute_by_name(NULL, eh, NULL, LOAD_ATTR_LOAD_AVG, cl, DISPATCH_TIME_NOW, 0);
      if (lep) {
-       reformatDoubleValue(buffer, "%.2f%c", sge_get_dominant_stringval(lep, &dominant, &rs));
+       reformatDoubleValue(buffer, sizeof buffer, "%.2f%c",
+                           sge_get_dominant_stringval(lep, &dominant, &rs));
        sge_dstring_clear(&rs);
        lFreeElem(&lep);
      }
@@ -2459,7 +2422,8 @@ static void qmonCQUpdateQhostMatrix(void)
      for (i = 0; i < 6 ; i++) {
        lep=get_attribute_by_name(NULL, eh, NULL, fields[i], cl, DISPATCH_TIME_NOW, 0);
        if (lep) {
-          reformatDoubleValue(buffer, "%.1f%c", sge_get_dominant_stringval(lep, &dominant, &rs));
+          reformatDoubleValue(buffer, sizeof buffer, "%.1f%c",
+                              sge_get_dominant_stringval(lep, &dominant, &rs));
           sge_dstring_clear(&rs);
           lFreeElem(&lep);
        } else {
