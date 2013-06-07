@@ -351,7 +351,7 @@ if [ "$1" = "-m" -o "$1" = "-mt" -o "$1" = "-lib" ]; then
       ;;
    nbsd-*)
       PATH=$OLD_PATH
-      DEFAULTMANPATH=/usr/pkg/man:/usr/local/man:/usr/X11R6/man:/usr/share/man
+      DEFAULTMANPATH=/usr/pkg/man:/usr/local/man:/usr/X11R7/man:/usr/share/man
       PATH=$SAFE_PATH
       ;;
    obsd-*)
