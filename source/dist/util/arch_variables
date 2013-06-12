@@ -79,8 +79,10 @@ case $ARCH in
    LOADSENSOR_COMMAND=undef
    ;;
  lx*|ulx*)
-   AWK=/usr/bin/gawk
+   AWK=/usr/bin/awk
+   # fixme:  Is -e actually necessary?
    ECHO="/bin/echo -e"
+   unset POSIXLY_CORRECT        # so we can rely on echo -e
    if [ -x /usr/lib/lsb/install_initd ]; then
       # RedHat, CentOS etc.
       RC_FILE=lsb
@@ -255,6 +257,7 @@ obsd-*)
  cygwin-x86)
    AWK=/usr/bin/awk
    ECHO="/bin/echo -e"
+   unset POSIXLY_CORRECT        # so we can rely on echo -e
    RC_FILE=sysv_rc
    RC_DIR=rc3.d
    RC_PREFIX=/etc
