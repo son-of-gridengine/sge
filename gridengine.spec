@@ -80,7 +80,7 @@ BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
 BuildRequires: net-tools, man
-Requires: binutils, ncurses, shadow-utils, net-tools
+Requires: binutils, ncurses, shadow-utils, net-tools, /bin/awk
 # for makewhatis
 Requires: man
 # There's an implicit dependency on perl(XML::Simple), which is in
