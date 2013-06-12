@@ -42,7 +42,7 @@ Description: Grid Engine programs
 Package: sge-common
 Architecture: all
 Section: utils
-Depends: ${misc:Depends}, adduser, bsd-mailx | mailx, tcsh | c-shell
+Depends: ${misc:Depends}, adduser, bsd-mailx | mailx, tcsh | c-shell, awk | gawk | mawk
 Replaces: gridengine-common
 Description: Distributed resource management - common files
  Grid Engine is software that facilitates "distributed resource
