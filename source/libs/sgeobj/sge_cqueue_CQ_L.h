@@ -156,7 +156,7 @@ LISTDEF(CQ_Type)
    SGE_MAP_D(CQ_terminate_method, ASTR_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "NONE", "hostname", "terminateMethod")
    SGE_MAP_D(CQ_initial_state, ASTR_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "default", "hostname", "initialState")
 
-   SGE_MAPLIST_D(CQ_pe_list, ASTRLIST_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "make", "hostname", "pe")
+   SGE_MAPLIST_D(CQ_pe_list, ASTRLIST_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "make smp", "hostname", "pe")
    SGE_MAPLIST_D(CQ_ckpt_list, ASTRLIST_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "NONE", "hostname", "checkpoint")
 
    SGE_MAPLIST_D(CQ_owner_list, AUSRLIST_Type, CULL_SPOOL | CULL_JGDI_CONF, "@/", "NONE", "hostname", "owner")
