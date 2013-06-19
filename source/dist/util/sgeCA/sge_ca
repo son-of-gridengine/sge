@@ -93,10 +93,10 @@ ErrUsage()
    "   -renew_ca           extend the CA certificate\n" \
    "   -renew_sys          extend the daemon certificate\n" \
    "   -renew_sdm <g>      renew certificate of a SDM daemon with\n" \
-   "                       g=Common Name of the SDM daemon\n" \
+   "                       <g>=Common Name of the SDM daemon\n" \
    "   -days <days>        days of validity of the certificate/CRL\n" \
-   "   -sha1               use sha-1 instead of md5 as message digest\n" \
-   "   -encryptkey         use des to encrypt the generated key with a passphrase\n" \
+   "   -sha1               use SHA-1 instead of MD5 as message digest\n" \
+   "   -encryptkey         use DES to encrypt the generated key with a passphrase\n" \
    "   -outdir <dir>       write to directory <dir>\n" \
    "   -cahost <host>      define CA hostname (CA master host)\n" \
    "   -cadir <dir>        define CALOCALTOP and CATOP settings\n" \
@@ -304,7 +304,7 @@ RequestCert()
 #
 SignCert()
 {
-    $CA -config $SGE_ROOT/util/sgeCA/sge_ssl.cnf -policy policy_anything $DAYS $BATCHMODE -notext -out $outdir/$newcert -infiles $indir/$newreq
+    $CA -config "$SGE_ROOT/util/sgeCA/sge_ssl_template.cnf" $DAYS $BATCHMODE -notext -out $outdir/$newcert -infiles $indir/$newreq
     RET=$?
     if [ $RET = 0 ]; then
       $INFOTEXT "Signed certificate is in %s" $outdir/$newcert
@@ -519,7 +519,7 @@ MakeCAcert()
 
          dndone=false
          while [ $dndone = false ]; do
-            $INFOTEXT -n "Please enter your location, e.g city or buildingcode >> "
+            $INFOTEXT -n "Please enter your location, e.g city or building code >> "
             INP=`Enter ""`
             CA_L="$INP"
             if [ "$INP" != "" ]; then
@@ -675,7 +675,7 @@ MakeRandFile()
 {
 
    # OpenSSL uses /dev/urandom by default so if it's there, don't
-   # polute the PRNG with predictable data.
+   # pollute the PRNG with predictable data.
    rfile="/dev/urandom"
    if [ ! -r /dev/urandom ]; then
       if [ -r /dev/random ]; then 
