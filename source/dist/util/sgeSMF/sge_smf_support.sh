@@ -101,7 +101,7 @@ SMFusage()
    $INFOTEXT "Usage: sge_smf <command>"
    $INFOTEXT ""
    $INFOTEXT "Commands:"
-   $INFOTEXT "   register      qmaster|shadowd|execd|bdb|dbwriter [SGE_CLUSTER_NAME]"
+   $INFOTEXT "   register      qmaster|shadowd|execd|dbwriter [SGE_CLUSTER_NAME]"
    $INFOTEXT "                 ... register SGE as SMF service"
    $INFOTEXT "   unregister    qmaster|shadowd|execd|bdb|dbwriter [SGE_CLUSTER_NAME]"
    $INFOTEXT "                 ... unregister SGE SMF service"
@@ -224,24 +224,6 @@ SMFRegister()
 {  
    case "$1" in
    master | qmaster)
-      BDB_DEPENDENCY=""
-      if [ "$2" = "true" ]; then
-         ServiceAlreadyExists bdb
-         ret=$?
-         #Service exists and BDB server was chosen as spooling method
-         if [ "$SPOOLING_SERVER" = "`$SGE_UTILBIN/gethostname -aname`" ]; then
-            if [ $ret -eq 1 ]; then
-               BDB_DEPENDENCY="<dependency name='bdb' grouping='require_all' restart_on='none' type='service'><service_fmri value=\'svc:/application/sge/bdb:$SGE_CLUSTER_NAME\' /></dependency>"
-            else
-            #Error we expect BDB to be using SMF as well
-               $INFOTEXT "You chose to install qmaster with SMF and you use Berkley DB server, but bdb \n" \
-                         "SMF service was not found!\n" \
-                         "Either start qmaster installation with -nosmf, or reinstall Berkley DB server \n" \
-                         "to use SMF (do not use -nosmf flag)."
-               return 1
-            fi
-         fi
-      fi
       SMFCreateAndImportService "qmaster"
       ;;
    shadowd)
@@ -249,9 +231,6 @@ SMFRegister()
       ;;
    execd)
       SMFCreateAndImportService "execd"
-      ;;
-   bdb | berkeleydb)
-      SMFCreateAndImportService "bdb"
       ;;
    dbwriter)
       SMFCreateAndImportService "dbwriter"
@@ -273,7 +252,7 @@ SMFHaltAndDeleteService()
    ServiceAlreadyExists $1
    ret=$?
    if [ $ret -eq 0 ]; then
-      $INFOTEXT "Service %s does not exists!" $service_name
+      $INFOTEXT "Service %s does not exist!" $service_name
       $INFOTEXT "Check existing SGE services with svcs \"*sge*\""
       return 1
    fi
