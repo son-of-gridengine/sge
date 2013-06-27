@@ -205,7 +205,7 @@ enum {
    dul_OPT,      /* "-dul <user_set>," in qconf */
    display_OPT,  /* -display option for qsh */
    sss_OPT,      /* show scheduler state */
-   sick_OPT,     /* show deficient configurations */
+   sds_OPT,      /* show deficient configurations */
    ssconf_OPT,   /* show scheduler configuration */
 
    /* calendar management */
