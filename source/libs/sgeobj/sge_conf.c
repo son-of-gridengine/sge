@@ -197,7 +197,7 @@ static char h_memorylocked[100];
 static char s_locks[100];
 static char h_locks[100];
 static bool use_cgroups = false;
-static bool use_smaps = true;
+static bool use_smaps = false;
 
 /* 
  * reporting params 
@@ -876,7 +876,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       log_consumables = false;
       enable_addgrp_kill = false;
       use_cgroups = false;
-      use_smaps = true;
+      use_smaps = false;
       strcpy(s_descriptors, "UNDEFINED");
       strcpy(h_descriptors, "UNDEFINED");
       strcpy(s_maxproc, "UNDEFINED");
