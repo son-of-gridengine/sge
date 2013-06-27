@@ -1551,11 +1551,12 @@ file in the
 .MO proc 5
 filesystem to obtain PSS usage for most accurate memory accounting, or
 to obtain the swap usage on older systems which don't report PSS.
-That can be slow, increasing the load from execd, so it can be
-disabled.  Without
+That can be slow when processes have very many maps (observed with an
+FEM code), significantly increasing the load from execd, so the
+default is no.  Without
 .IR smaps ,
 usage is reported as RSS+swap, instead of PSS+swap, or simply as the
-VMsize if the swap value isn't available.  Default is yes.
+VMsize if the swap value isn't available.
 .PP
 Changing \fBexecd_params\fP will take effect after it is propagated to the
 execution daemons. The propagation is done in one load report interval.
