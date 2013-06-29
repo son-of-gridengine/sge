@@ -152,7 +152,6 @@ enum {
    Mq_OPT,
    aconf_OPT,
    nostart_commd_OPT,
-   sep_OPT,
    Aconf_OPT,
    Mconf_OPT,
    clear_OPT,

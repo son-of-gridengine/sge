@@ -1119,22 +1119,6 @@ Displays the xxQS_NAMExx execution host list.
 .IP "\fB\-secl\fP	\fI<show event clients>\fP"
 Displays the xxQS_NAMExx event client list.
 .\"
-.IP "\fB\-sep\fP	\fI<show licensed processors>\fP"
-.B Note:
-Deprecated, may be removed in future release.
-.sp
-Displays a list of virtual processors. This value is taken from the
-underlying OS and it depends on underlying hardware and operating system
-whether this value represents sockets, cores or supported threads.
-.sp
-If this option is used in combination with \fB\-cb\fP  parameter then two
-additional columns will be shown in the output for the number of sockets
-and number of cores. Currently xxQS_NAMExx will list these values only
-if the execution host is running under a version of Linux >= 2.6.16,
-or Solaris 10. Other operating systems or versions might
-be supported with the future update releases. In case these values won't
-be retrieved, a '0' character will be displayed.
-.\"
 .IP "\fB\-sh\fP	\fI<show administrative hosts>\fP"
 Displays the xxQS_NAMExx administrative host list.
 .\"
