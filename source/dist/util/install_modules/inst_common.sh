@@ -568,8 +568,10 @@ GetConfigFromFile()
 
   if [ $FILE != "undef" ]; then
      $INFOTEXT "Reading configuration from file %s" $FILE
-     IFS="
-" . $FILE
+     case $- in *e*) eset=y;; esac
+     set -e                     # make bad syntax obvious
+     . $FILE
+     [ "$eset" = y ] || set +e
   else
      $INFOTEXT "No config file. Please, start the installation with\n a valid configuration file"
   fi
