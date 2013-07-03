@@ -1073,8 +1073,8 @@
 #define MSG_GDI_USAGE_shgrp_resolved_OPT   "[-shgrp_resolved group]"
 #define MSG_GDI_UTEXT_shgrp_resolved_OPT   _MESSAGE(60611, _("show host group with resolved hostlist"))  
 
-#define MSG_GDI_USAGE_sick_OPT             "[-sds]"
-#define MSG_GDI_UTEXT_sick_OPT             _MESSAGE(60612, _("show detached settings"))
+#define MSG_GDI_USAGE_sds_OPT              "[-sds]"
+#define MSG_GDI_UTEXT_sds_OPT              _MESSAGE(60612, _("show detached settings"))
 #define MSG_WARN_CHANGENOTEFFECTEDUNTILRESTARTOFEXECHOSTS   _MESSAGE(60614, _("Change of "SFQ" will not be effective before sge_execd restart as described in sge_conf(5)"))
 
 #define MSG_OBJ_RQS                        _MESSAGE(60615, _("resource quota set"))
