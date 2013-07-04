@@ -150,15 +150,14 @@ int main(int argc,char *argv[]) {
 	  }
 
           printf("%s", MSG_SYSTEM_ALIASES);
-
 	  for (tp = he->h_aliases; *tp; tp++) {
-             printf("%s ", *tp);
+             printf(" %s", *tp);
           }
           printf("\n");
  
           printf("%s", MSG_SYSTEM_ADDRESSES);
           for (tp2 = he->h_addr_list; *tp2; tp2++) {
-             printf("%s ", inet_ntoa(* (struct in_addr *) *tp2));  /* inet_ntoa() is not MT save */
+             printf(" %s", inet_ntoa(* (struct in_addr *) *tp2));  /* inet_ntoa() is not MT safe */
           }
           printf("\n");
        } else {

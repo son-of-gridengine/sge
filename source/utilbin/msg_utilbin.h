@@ -76,8 +76,8 @@
 ** utilbin/gethostbyaddr.c
 */ 
 #define MSG_SYSTEM_HOSTNAMEIS_S              _MESSAGE(57020, _("Hostname: "SFN))
-#define MSG_SYSTEM_ALIASES                   _MESSAGE(57021, _("Aliases:  "))
-#define MSG_SYSTEM_ADDRESSES                 _MESSAGE(57022, _("Host Address(es): "))
+#define MSG_SYSTEM_ALIASES                   _MESSAGE(57021, _("Aliases:"))
+#define MSG_SYSTEM_ADDRESSES                 _MESSAGE(57022, _("Host Address(es):"))
 
 
 
