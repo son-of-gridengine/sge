@@ -32,13 +32,13 @@
 #___INFO__MARK_END__
 
 # The location of the Hadoop installation
-#HADOOP_HOME=/export/share/hadoop-0.20.1
-#export HADOOP_HOME
+HADOOP_HOME=/usr/lib/hadoop-0.20 # CDH3 distribution
+export HADOOP_HOME
 
 # The location of the Hadoop configuration directory
-#HADOOP_CONF_DIR=$HADOOP_HOME/conf
-#export HADOOP_CONF_DIR
+HADOOP_CONF_DIR=$HADOOP_HOME/conf
+export HADOOP_CONF_DIR
 
 # The location of the Java installation
-#JAVA_HOME=/usr/jdk/latest
-#export JAVA_HOME
+JAVA_HOME=/usr                  # typical GNU/Linux
+export JAVA_HOME
