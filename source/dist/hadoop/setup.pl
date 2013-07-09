@@ -50,12 +50,24 @@ while (@ARGV > 0) {
   } elsif ($arg eq "-x") {
     $no_unlink = 1;
   } else {
-    die "Unknown option: $arg\nUsage: setup [-u|-i] [-c] [-p] [-l] [-x]\n";
+    die "Unknown option: $arg\nUsage: setup [-u|-i] [-c] [-p] [-l] [-x]
+  -i   install
+  -u   uninstall
+  -c   (un)install complexes
+  -p   (un)install PE
+  -l   (un)install load sensor
+  -x   don't remove temporary files\n";
   }
 }
 
 if (!$do_install && !$do_uninstall) {
-  die "Usage: setup [-u|-i] [-c] [-p] [-l] [-x]\n";
+  die "Usage: setup [-u|-i] [-c] [-p] [-l] [-x]
+  -i   install
+  -u   uninstall
+  -c   (un)install complexes
+  -p   (un)install PE
+  -l   (un)install load sensor
+  -x   don't remove temporary files\n";
 } elsif (!$do_complexes && !$do_pe && !$do_load_sensor) {
   $do_complexes = $do_pe = $do_load_sensor = 1;
 }
@@ -147,6 +159,7 @@ control_slaves     TRUE
 job_is_first_task  FALSE
 urgency_slots      min
 accounting_summary TRUE
+qsort_args         NONE
 END
 
   close FILE;
