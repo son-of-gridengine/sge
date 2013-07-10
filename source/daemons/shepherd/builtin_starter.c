@@ -1945,6 +1945,7 @@ static void start_qlogin_job(const char *shell_path)
    /* This used to be set explicitly for a long list of targets, and
       default to /usr/bin, but there seems no reason to exclude /bin.  */
    my_env[i++] = strcat(path, "/bin:/usr/bin");
+   my_env[i] = NULL;
 
    sge_free(&buffer);
 
