@@ -1127,6 +1127,9 @@ if [ $instcommon = true ]; then
          echo "\"CLASSES/herd/herd.jar\" not found. Installation failed."
          exit 1
       fi
+
+      Execute cp dist/hadoop/README.txt $DEST_SGE_ROOT/doc/README.hadoop
+      Execute chmod 644 $DEST_SGE_ROOT/doc/README.hadoop
    fi
 
    if [ $instman = true ]; then
