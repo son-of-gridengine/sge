@@ -106,7 +106,9 @@ Summary: Gridengine development files
 Group: Development/Libraries
 License: SISSL
 Requires: %{name} = %{version}-%{release}
+%if 0%{?rhel} >= 6
 BuildArch: noarch
+%endif
 
 %description devel
 Grid Engine development headers and libraries.
@@ -148,7 +150,9 @@ Programs needed to run a Grid Engine master host.
 Summary: Ruby binding for DRMAA library
 Group: Development/Libraries
 License: SISSL
+%if 0%{?rhel} >= 6
 BuildArch: noarch
+%endif
 
 %description drmaa4ruby
 This binding is presumably not Grid Engine-specific.
@@ -159,7 +163,9 @@ This binding is presumably not Grid Engine-specific.
 Summary: Grid Engine Hadoop integration
 Group: Applications/System
 License: SISSL
+%if 0%{?rhel} >= 6
 BuildArch: noarch
+%endif
 
 %description hadoop
 Support for Grid Engine Hadoop integration.
@@ -170,7 +176,9 @@ Summary: Grid Engine GUI installer
 Group: Applications/System
 License: SISSL and LGPLv3+ and Apache License and others
 Requires: java >= 1.6.0
+%if 0%{?rhel} >= 6
 BuildArch: noarch
+%endif
 
 %description guiinst
 Optional Java-based GUI installer for Grid Engine.
@@ -378,6 +386,9 @@ fi
 
 
 %changelog
+* Thu Jul 11 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4
+- Don't use "BuildArch: noarch" on RHEL5 -- fails with un-packaged files errors
+
 * Thu May 30 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4
 - Pass $LDFLAGS to aimk (e.g. hardened build)
 - Remove fedora-usermgmt-devel BuildRequires
