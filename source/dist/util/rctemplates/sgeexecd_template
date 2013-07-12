@@ -356,8 +356,7 @@ DetectSMFService execd
 if [ $stop = true -o $softstop = true ]; then
    # Shutdown execution daemon
    if [ $execd = true ]; then
-      GetExecdSpoolDir
-      execd_spool_dir=$EXECD_SPOOL_DIR/$UQHOST
+      execd_spool_dir=$execd_run_dir
 
       usingSMF=false
       echo "   Shutting down Grid Engine execution daemon"
