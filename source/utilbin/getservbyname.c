@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
     usage();
  
  if (check_port) {
+    if (!argv[1+check_port]) usage();
     while (retry-- && !((se = getservbyport(htons(atoi(argv[1+check_port])), "tcp"))))
        ;
     if (!se) {
@@ -88,6 +89,7 @@ int main(int argc, char *argv[])
     }
  }
  else {
+    if (!argv[1+number_only]) usage();
     while (retry-- && !((se = getservbyname(argv[1+number_only], "tcp"))))
        ;
     if (!se) {
