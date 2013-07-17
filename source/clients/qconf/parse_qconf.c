@@ -4237,7 +4237,7 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
 /*-----------------------------------------------------------------------------*/
       /* "-secl" */
       if (strcmp("-secl", *spp) == 0) {
-         if (!show_eventclients(ctx))
+         if (show_eventclients(ctx))
             sge_parse_return = 1;
          spp++;
          continue;
@@ -4249,6 +4249,14 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
                "execution host")) { 
             sge_parse_return = 1; 
          }
+         spp++;
+         continue;
+      }
+/*----------------------------------------------------------------------------*/
+      /* "-sep" */
+      if (strcmp("-sep", *spp) == 0) {
+         if (!show_processors(ctx, has_binding_param))
+            sge_parse_return = 1;
          spp++;
          continue;
       }
