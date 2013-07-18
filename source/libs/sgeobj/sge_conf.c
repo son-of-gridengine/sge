@@ -1030,7 +1030,8 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
          } 
          if (parse_bool_param(s, "USE_CGROUPS", &use_cgroups)) {
             continue;
-         if (parse_bool_param(s, "USE_SMAPS", &use_smaps))
+         }
+         if (parse_bool_param(s, "USE_SMAPS", &use_smaps)) {
             continue;
          }
       }
