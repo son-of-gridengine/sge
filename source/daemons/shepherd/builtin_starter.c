@@ -1911,7 +1911,7 @@ static void start_qlogin_job(const char *shell_path)
    errno = 0;
    ret = getpwuid_r(getuid(), &pw_struct, buffer, size, &pw);
    if (pw == NULL || ret != 0) {
-      shepherd_error(1, "can't get password entry for user id %d, error: %s (%d)",
+      shepherd_error(1, "can't get passwd entry for user id %d, error: %s (%d)",
          (int)getuid(), strerror(errno), errno);
       /* shepherd_error(1,...) does an exit()! */
    }
