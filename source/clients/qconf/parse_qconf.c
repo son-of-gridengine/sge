@@ -4270,7 +4270,7 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
 /*----------------------------------------------------------------------------*/
       /* "-sep" */
       if (strcmp("-sep", *spp) == 0) {
-         if (!show_processors(ctx, has_binding_param))
+         if (show_processors(ctx, has_binding_param))
             sge_parse_return = 1;
          spp++;
          continue;
