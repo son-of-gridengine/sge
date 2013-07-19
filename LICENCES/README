@@ -26,13 +26,14 @@ like "Grid Engine" the source must be distributed, since Exhibit B
 isn't applicable.  See also the explanation in
 http://arc.liv.ac.uk/SGE/workshop22-24.04.02/GE-workshop-project_ff.pdf
 
-Other relevant licences included in this directory are: GNU General
-Public License (GPL-3), GNU Lesser General Public License (LGPL-3),
-GNU Free Documentation License (GFDL-3), the Berkeley Software
-Distribution license (BSD), an adaptation of the FreeBSD licence
-(FreeBSD), Apache License, and various specific licences for several
-components.  The different files apply to the components listed below.
-See the source files for detailed notices.
+Other relevant licences included in this directory are:  GNU General
+Public License version 2 (GPL-2) and an exception to it (Classpath),
+GNU General Public License (GPL-3), GNU Lesser General Public License
+(LGPL-3), GNU Free Documentation License (GFDL-3), the Berkeley
+Software Distribution license (BSD), an adaptation of the FreeBSD
+licence (FreeBSD), Apache License, and various specific licences for
+several components.  The different files apply to the components
+listed below.  See the source files for detailed notices.
 
 The hwloc, OpenSSL, and BerkeleyDB libraries are typically linked
 dynamically into SGE components, and it seems customary (e.g. in
@@ -46,7 +47,9 @@ for copyright purposes anyway.
 Apache-2: IzPack (GUI installer), jakarta-regexp (GUI installer binary),
           parts of DRMAA2 from Gridway
 BSD: rsh, rshd. rlogin, qtcsh
+Classpath: Exception to the GPL (ConnectorBootstrap.java)
 GFDL-1.3: Some documentation
+GPL-2: ConnectorBootstrap.java
 GPL-3:  qmake, adoc (not installed), several scripts [possibly using
         the "any later version" term]
 LGPL-3: ListTree (qmon), pam_sge-qrsh-setup, libuti2
