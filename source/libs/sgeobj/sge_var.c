@@ -371,7 +371,7 @@ void var_list_dump_to_file(const lList *varl, FILE *file)
       const char *env_value = lGetString(elem, VA_value);
       const char *new_env_value1, *new_env_value;
 
-      if (!strchr (env_value, '\\')) {
+      if (!strchr (env_value, '\\') && !strchr (env_value, '\n')) {
 	fprintf(file, "%s=%s\n", env_name, env_value);
 	continue;
       }
