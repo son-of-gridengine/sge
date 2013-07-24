@@ -831,9 +831,9 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
                   /* This is faster than using sscanf, which is
                      important for big smaps.  */
                   if (strncmp(buffer, "Swap:", 5) == 0)
-                     vvmsize += atoi(buffer + 5) * 1024;
+                     vvmsize += atol(buffer + 5) * 1024;
                   else if (strncmp(buffer, "Pss:", 4) == 0)
-                     vvmsize += atoi(buffer + 4) * 1024;
+                     vvmsize += atol(buffer + 4) * 1024;
                fclose(fp);
             } else if (monitor_pdc)
                INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
@@ -845,9 +845,9 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
                bool gotone = false;
                while (fgets(buffer, sizeof buffer, fp)) {
                   if (strncmp(buffer, "VmRSS:", 6) == 0)
-                     vvmsize += atoi(buffer + 6) * 1024;
+                     vvmsize += atol(buffer + 6) * 1024;
                   else if (strncmp(buffer, "VmSwap:", 7) == 0)
-                     vvmsize += atoi(buffer + 7) * 1024;
+                     vvmsize += atol(buffer + 7) * 1024;
                   else continue;
                   if (gotone) break;
                   gotone = true;
@@ -863,9 +863,9 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
             if ((fp = fopen(procnam, "r"))) {
                while (fgets(buffer, sizeof buffer, fp))
                   if (strncmp(buffer, "Swap:", 5) == 0)
-                     vvmsize += atoi(buffer + 5) * 1024;
+                     vvmsize += atol(buffer + 5) * 1024;
                   else if (strncmp(buffer, "Rss:", 4) == 0)
-                     vvmsize += atoi(buffer + 4) * 1024;
+                     vvmsize += atol(buffer + 4) * 1024;
                fclose(fp);
             } else if (monitor_pdc)
                INFO((SGE_EVENT, "could not read %s: %s\n", procnam,
