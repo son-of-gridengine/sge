@@ -728,6 +728,8 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    case SSTATE_PROLOG_FAILED:
    case SSTATE_BEFORE_PESTART:
    case SSTATE_PESTART_FAILED:
+   case SSTATE_PESTOP_FAILED:
+   case SSTATE_EPILOG_FAILED:
       general_failure = GFSTATE_QUEUE;
       job_related_adminmail(EXECD, jr, is_array, job_owner);
       break;
@@ -790,10 +792,10 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    ** if an error occurred after the job has been run
    ** it is not as serious
    */
+   /* fixme: Should this be changed?  It formerly included
+      SSTATE_PESTOP_FAILED, SSTATE_EPILOG_FAILED, contrary to the doc.  */
    case SSTATE_BEFORE_PESTOP:
-   case SSTATE_PESTOP_FAILED:
    case SSTATE_BEFORE_EPILOG:
-   case SSTATE_EPILOG_FAILED:
    case SSTATE_PROCSET_NOTFREED:
       general_failure = GFSTATE_NO_HALT;
       job_related_adminmail(EXECD, jr, is_array, job_owner);
