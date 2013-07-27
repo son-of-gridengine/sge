@@ -112,6 +112,7 @@
 #define GFSTATE_HOST              2
 #define GFSTATE_SYSTEM            3
 #define GFSTATE_JOB               4
+#define GFSTATE_QUEUE_NO_RERUN    5 /* queue in error but don't re-run job */
 
 char *get_sstate_description(int sstate);
 
