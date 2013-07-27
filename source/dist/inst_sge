@@ -61,6 +61,12 @@ ECHO=echo
 # Sourcing common function module
 #
 PWD=`pwd`
+if [ ! -f ./util/arch_variables ]; then
+  # Can't use infotext without support file
+  echo \
+    "Can't find support files: must be run in SGE root directory" >&2
+  exit 1
+fi
 . ./util/arch_variables
 . ./util/install_modules/inst_common.sh
 
@@ -149,6 +155,7 @@ while [ $ARGC != 0 ]; do
      ARGC=`expr $ARGC - 1`
      #Stdout2Log
      CheckPath
+     clear=:
      ;;
    -autogui)
       AUTO=true
@@ -335,7 +342,7 @@ while [ $ARGC != 0 ]; do
      SGE_CHECK_BINARIES=false
      ;;
    -help)
-     ErrUsage
+     ErrUsage 2>&1
      ;;
    *)
      option=$1
