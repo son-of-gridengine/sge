@@ -233,7 +233,7 @@ void sge_job_exit(sge_gdi_ctx_class_t *ctx, lListElem *jr, lListElem *jep, lList
        *                            or because it was a general error
        */
    else if (((failed && (failed <= SSTATE_BEFORE_JOB)) || 
-        general_failure)) {
+        (general_failure && general_failure != GFSTATE_QUEUE_NO_RERUN))) {
       /* JG: TODO: we need more information in the log message */
       reporting_create_job_log(NULL, timestamp, JL_RESTART, MSG_EXECD, 
                                hostname, jr, jep, jatep, NULL, 
