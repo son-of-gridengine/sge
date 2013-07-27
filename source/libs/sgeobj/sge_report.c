@@ -165,7 +165,7 @@ void job_report_init_from_job_with_usage(lListElem *job_report,
     * ... and now add the online usage plus some fileds which are needed for the accounting
     */
    lSetUlong(job_report, JR_wait_status, SGE_SET_WEXITSTATUS(SGE_WEXITED_BIT, 0));
-   lSetUlong(job_report, JR_failed, SSTATE_QMASTER_ENFORCED_LIMIT);
+   lSetUlong(job_report, JR_failed, 0);
 
    if (pe_task == NULL) {
       nm = JAT_scaled_usage_list;
