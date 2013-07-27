@@ -286,6 +286,8 @@ static void force_job_rlimit(const char* qualified_hostname)
                      cpu_exceeded ? cpu_val : vmem_val,
                      cpu_exceeded ? h_cpu : h_vmem));
             signal_job(jobid, jataskid, SGE_SIGKILL);
+            lSetUlong(get_job_report(jobid, jataskid, NULL),
+                      JR_failed, SSTATE_QMASTER_ENFORCED_LIMIT);
             continue;
          }
 
@@ -466,18 +468,21 @@ int do_ck_to_do(sge_gdi_ctx_class_t *ctx, bool is_qmaster_down) {
             if (now >= lGetUlong(jep, JB_hard_wallclock_gmt) ) {
                if (!(lGetUlong(jatep, JAT_pending_signal_delivery_time)) ||
                    (now > lGetUlong(jatep, JAT_pending_signal_delivery_time))) {
+                  lUlong job_id = lGetUlong(jep, JB_job_number);
+                  lUlong ja_task_id = lGetUlong(jatep, JAT_task_number);
+                  lListElem *jr = get_job_report(job_id, ja_task_id, NULL);
+
                   WARNING((SGE_EVENT, MSG_EXECD_EXCEEDHWALLCLOCK_UU,
-                       sge_u32c(lGetUlong(jep, JB_job_number)), sge_u32c(lGetUlong(jatep, JAT_task_number)))); 
+                           sge_u32c(job_id), sge_u32c(ja_task_id)));
                   if (sge_execd_ja_task_is_tightly_integrated(jatep)) {
                      sge_kill_petasks(jep, jatep);
                   }
                   if (lGetUlong(jatep, JAT_pid) != 0) {
-                     sge_kill(lGetUlong(jatep, JAT_pid), SGE_SIGKILL, 
-                              lGetUlong(jep, JB_job_number),
-                              lGetUlong(jatep, JAT_task_number),
-                              NULL);     
+                     sge_kill(lGetUlong(jatep, JAT_pid), SGE_SIGKILL, job_id,
+                              ja_task_id, NULL);
                   }
                   lSetUlong(jatep, JAT_pending_signal_delivery_time, now+90);
+                  lSetUlong(jr, JR_failed, SSTATE_QMASTER_ENFORCED_LIMIT);
                }    
                continue;
             }

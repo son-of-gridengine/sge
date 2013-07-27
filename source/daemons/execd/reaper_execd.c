@@ -624,7 +624,10 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
                  sge_sys_sig2str(signo), signo);
 
          DPRINTF(("%s\n", error));
-         failed = SSTATE_FAILURE_AFTER_JOB;
+         if (SSTATE_QMASTER_ENFORCED_LIMIT == lGetUlong(jr, JR_failed))
+            failed = SSTATE_QMASTER_ENFORCED_LIMIT;
+         else
+            failed = SSTATE_FAILURE_AFTER_JOB;
 
          if ((sge_signo=sge_map_signal(signo)) != -1)
             lSetDouble(du, UA_value, (double)sge_signo);
