@@ -66,7 +66,11 @@ BuildRequires: libXmu-devel, hwloc-devel >= 1.1, net-tools
 # This used to test %{?rhel}, but that's not defined on RHEL 5, and
 # I don't know whether _host_vendor distinguishes Fedora and RHEL.
 %if 0%{?fedora}
+%if %fedora > 17
+BuildRequires: motif-devel
+%else
 BuildRequires: lesstif-devel
+%endif
 %else
 BuildRequires: openmotif-devel
 %endif
@@ -273,9 +277,8 @@ the old Sun binaries.
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-%{_sbindir}/groupadd -r %username 2>/dev/null || :
 %{_sbindir}/useradd -d / -s /sbin/nologin \
-   -g %username -M -r -c 'Grid Engine admin' %username 2>/dev/null || :
+   -M -r -c 'Grid Engine admin' %username 2>/dev/null || :
 
 %post
 if [ -f /usr/sbin/mandb ]; then
