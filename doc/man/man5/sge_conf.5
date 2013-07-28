@@ -969,7 +969,9 @@ may be overwritten by the execution host local configuration.
 .SS "\fBshepherd_cmd\fP"
 .br
 Alternative path to the \fBshepherd_cmd\fP binary. Typically used to call
-the shepherd binary by a wrapper script or command.
+the shepherd binary by a wrapper script or command.  If used in
+production, this must take care to handle signals the way the shepherd
+would or, for instance, jobs will not be killed correctly.
 .PP
 Changing \fBshepherd_cmd\fP will take immediate effect. The default
 for \fBshepherd_cmd\fP is none.
