@@ -339,6 +339,10 @@ Content
    cd SGE_ROOT
    ./inst_sge -m -x -csp  # or run ./start_gui_installer
 
+   If you haven't built all the binaries (e.g. used aimk -only-core),
+   add the option -nobincheck to inst_sge to avoid a check for all the
+   possible binaries.
+
 11) Copyright
 -------------
 

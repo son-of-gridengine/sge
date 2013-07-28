@@ -44,8 +44,7 @@ distributing binaries statically linked against them.  Inline
 definitions included from the hwloc header files may be significant
 for copyright purposes anyway.
 
-Apache-2: IzPack (GUI installer), jakarta-regexp (GUI installer binary),
-          parts of DRMAA2 from Gridway
+Apache-2: IzPack (GUI installer), jakarta-regexp (GUI installer binary)
 BSD: rsh, rshd. rlogin, qtcsh
 Classpath: Exception to the GPL (ConnectorBootstrap.java)
 GFDL-1.3: Some documentation
