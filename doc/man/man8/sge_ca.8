@@ -59,8 +59,10 @@ Print out certificates, keys and certificate revocation lists in human readable 
 .IP "\fBsge_ca \-showCaTop \fP|\fB \-showCaLocalTop \fP[\fIcommand options\fP]"
 Echo the $CATOP or $CALOCALTOP directory. This command is usually run as root on the qmaster host after a CA infrastructure has been created. If "\fB\-cadir\fP", "\fB\-catop\fP" or "\fB\-calocaltop\fP" are set, the corresponding directories are printed.
 .IP "\fBsge_ca \-usercert\fP \fIuser file\fP |\fB \-user\fP \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP |\fB \-sdm_daemon\fP \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP [\fIcommand options\fP]"
-Create certificates and keys for a bunch of users contained in \fIuser file\fP, a single user, or SDM daemon \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP. (See
-.M hedeby_introduction 1 ).
+Create certificates and keys for a bunch of users contained in \fIuser
+file\fP, a single user, or SDM daemon  (see
+.M hedeby_introduction 1 )
+in the form \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP.
 .IP "\fBsge_ca \-pkcs12\fP \fIuser\fP |\fB \-sdm_pkcs12\fP \fIg\fP |\fB \-sys_pkcs12 \fP[\fIcommand options\fP]"
 Export the certificate and key for user \fIuser\fP or SDM daemon \fIg\fP in PKCS12 format and to export the xxQS_NAMExx daemon certificate and key in PKCS12 format.
 .IP "\fBsge_ca \-userks \fP|\fB \-ks\fP \fIuser\fP |\fB \-sysks \fP[\fIcommand options\fP]"
@@ -115,9 +117,11 @@ are not used, and the xxQS_NAMExx environment variables SGE_ROOT,
 SGE_CELL and SGE_QMASTER_PORT are set, the CA directories are created
 in the following locations:
 .I $SGE_ROOT/$SGE_CELL/common/sgeCA
-(can be overruled by \-catop \fIdir\fP or \-cadir \fIdir\fP)
+(can be overruled by \fB\-catop\fP \fIdir\fP or \fB\-cadir\fP \fIdir\fP)
 .br
-.I /var/lib/sgeCA/{port$SGE_QMASTER_PORT|sge_qmaster}/$SGE_CELL
+.I /var/lib/sgeCA/port$SGE_QMASTER_PORT/$SGE_CELL
+or
+.I /var/lib/sgeCA/sge_qmaster/$SGE_CELL
 (can be overruled by \fB\-calocaltop\fP \fIdir\fP or \fB\-cadir\fP \fIdir\fP).
 .br
 The following information must be delivered for the site:
@@ -220,19 +224,29 @@ Export certificate and key of SDM daemon with common name \fIg\fP in PKCS12 form
 .BR \-renew .
 .\"
 .IP "\fBsge_ca \-ks\fP \fIuser\fP [\fB\-ksout\fP \fIfile\fP] [\fB\-kspwf\fP \fIfile\fP] [\fB\-cadir\fP \fIdir\fP] [\fB\-catop\fP \fIdir\fP] [\fB\-calocaltop\fP \fIdir\fP] [\fB\-adminuser\fP \fIadmin\fP]"
-Create a keystore containing certificate and key of user \fIuser\fP in JKS format where \fIuser\fP is the Unix user name. This command is usually run as user root on the qmaster host. If \-kspwf \fIfile\fP is used the keystore and the corresponding key will be encrypted with the password in \fIfile\fP. The \-ksout \fIfile\fP option specifies the keystore file that is created. If the \-ksout \fIfile\fP option is missing the default location for the keystore is $CALOCALTOP/userkeys/\fIuser\fP/keystore. This command is usually invoked by sge_ca \-userks. A prerequisite is a valid JAVA_HOME environment variable setting. $CATOP and $CALOCALTOP may be overruled by \-cadir, \-catop and \-calocaltop.
+Create a keystore containing certificate and key of user \fIuser\fP in
+JKS format where \fIuser\fP is the Unix user name. This command is
+usually run as user root on the qmaster host. If \fB\-kspwf\fP
+\fIfile\fP is used the keystore and the corresponding key will be
+encrypted with the password in \fIfile\fP. The \fB\-ksout\fP
+\fIfile\fP option specifies the keystore file that is created. If the
+\fB\-ksout\fP \fIfile\fP option is missing the default location for
+the keystore is $CALOCALTOP/userkeys/\fIuser\fP/keystore. This command
+is usually invoked by \fBsge_ca \-userks\fP. A prerequisite is a valid
+JAVA_HOME environment variable setting. $CATOP and $CALOCALTOP may be
+overruled by \fB\-cadir\fP, \fB\-catop\fP and \fB\-calocaltop\fP.
 .\"
 .IP "\fBsge_ca \-userks\fP [\fB\-kspwf\fP \fIfile\fP] [\fB\-cadir\fP \fIdir\fP] [\fB\-catop\fP \fIdir\fP] [\fB\-calocaltop\fP \fIdir\fP] [\fB\-adminuser\fP \fIadmin\fP]"
 Generate a keystore in JKS format for all users having a key and certificate.
 This command is usually run as user root on the qmaster host.
-If \-kspwf \fIfile\fP is used the keystore and the corresponding key will be encrypted with the password in \fIfile\fP.
-The keystore files are created in $CALOCALTOP/userkeys/\fIuser\fP/keystore. This command is run after user certificates and keys have been created with sge_ca \-usercert \fIuserfile\fP or if any of the certificates have been renewed. $CATOP and $CALOCALTOP may be overruled by \-cadir, \-catop and \-calocaltop.
+If \fB\-kspwf\fP \fIfile\fP is used, the keystore and the corresponding key will be encrypted with the password in \fIfile\fP.
+The keystore files are created in $CALOCALTOP/userkeys/\fIuser\fP/keystore. This command is run after user certificates and keys have been created with \Bsge_ca \-usercert\fP \fIuserfile\fP or if any of the certificates have been renewed. $CATOP and $CALOCALTOP may be overruled by \fB\-cadir\fP, \fB\-catop\fP and \fB\-calocaltop\fP.
 .\"
 .IP "\fBsge_ca \-sysks\fP [\fB\-kspwf\fP \fIfile\fP] [\fB\-cadir\fP \fIdir\fP] [\fB\-catop\fP \fIdir\fP] [\fB\-calocaltop\fP \fIdir\fP] [\fB\-adminuser\fP \fIadmin\fP]"
 Generate a keystore containing the xxQS_NAMExx daemon certificate and key in JKS format.
 This command is usually run as user root on the qmaster host.
-If \-kspwf \fIfile\fP is used the keystore and the corresponding key will be encrypted with the password in \fIfile\fP.
-The keystore file is created in $CALOCALTOP/private/keystore. $CATOP and $CALOCALTOP may be overruled by \-cadir, \-catop and \-calocaltop.
+If \fB\-kspwf\fP \fIfile\fP is used the keystore and the corresponding key will be encrypted with the password in \fIfile\fP.
+The keystore file is created in $CALOCALTOP/private/keystore. $CATOP and $CALOCALTOP may be overruled by \fB\-cadir\fP, \fB\-catop\fP and \fB\-calocaltop\fP.
 .\"
 .IP "\fBsge_ca \-print\fP \fIcert\fP"
 Print a PEM-format certificate \fIcert\fP.
@@ -256,7 +270,7 @@ in \fIdir\fP if the option \fB\-outdir\fP \fIdir\fP has been specified. In addit
 number of days.
 .\"
 .IP "\fBsge_ca \-verify\fP \fIcert\fP [\fB\-cadir\fP \fIdir\fP] [\fB\-catop\fP \fIdir\fP] [\fB\-calocaltop\fP \fIdir\fP] [\fB\-adminuser\fP \fIadmin\fP]"
-Verify a certificate's validity where \fIcert\fP is the certificate in pem format. $CATOP and $CALOCALTOP can be overruled by \-cadir, \-catop and \-calocaltop.
+Verify a certificate's validity where \fIcert\fP is the certificate in pem format. $CATOP and $CALOCALTOP can be overruled by \fB\-cadir\fP, \fB\-catop\fP and \fB\-calocaltop\fP.
 .\"
 .IP "\fBsge_ca \-copy\fP [\fB\-cadir\fP \fIdir\fP] [\fB\-catop\fP \fIdir\fP] [\fB\-calocaltop\fP \fIdir\fP]"
 Run by a user to copy their certificate and key on the master host to
@@ -274,13 +288,17 @@ shared file system.
 Create a CA infrastructure in /tmp with a certificate validity of 31
 days using SHA-1 instead of MD5 as message digest. The keys are encrypted and a passphrase has to be entered during the creation of the different keys or during signing a certificate with the created CA key.
 .IP "# sge_ca \-usercert /tmp/myusers.txt \-cadir /tmp"
-/tmp/myusers.txt contains user1:My User:user1@myorg.org and user1 is a valid Unix user account. Create a key and certificate for user1.
+/tmp/myusers.txt contains
+.br
+user1:My User:user1@myorg.org
+.br
+and user1 is a valid Unix user account. Create a key and certificate for user1.
 .IP "# sge_ca \-userks \-cadir /tmp"
 Create a keystore for all users of the simple CA. The keystore is stored under /tmp/userkeys/\fIuser\fP/keystore.
 .IP "# sge_ca \-renew root \-cadir /tmp \-days \-1"
 Make the root certificate temporarily invalid.
 .IP "# sge_ca \-renew_ca \-days 365 \-cadir /tmp"
-Renew the CA certificate for 365 days
+Renew the CA certificate for 365 days.
 .SH "ENVIRONMENT VARIABLES"
 .\" 
 .IP "\fBSGE_ROOT\fP" 1.5i

@@ -190,6 +190,30 @@ of the master queue (the queue in which the startup and stop procedures
 are run).
 .IP "\fI$queue\fP"
 The cluster queue of the master queue instance.
+.IP \fI$sge_cell\fP
+The SGE_CELL environment variable (useful for locating files).
+.IP \fI$sge_root\fP
+The SGE_ROOT environment variable (useful for locating files).
+.IP \fI$stdin_path\fP
+The standard input path.
+.IP \fI$stderr_path\fP
+The standard error path.
+.IP \fI$stdout_path\fP
+The standard output path.
+.\" fixme: doc these
+.IP \fI$merge_stderr\fP
+.IP \fI$fs_stdin_host\fP
+.IP \fI$fs_stdin_path\fP
+.IP \fI$fs_stdin_tmp_path\fP
+.IP \fI$fs_stdin_file_staging\fP
+.IP \fI$fs_stdout_host\fP
+.IP \fI$fs_stdout_path\fP
+.IP \fI$fs_stdout_tmp_path\fP
+.IP \fI$fs_stdout_file_staging\fP
+.IP \fI$fs_stderr_host\fP
+.IP \fI$fs_stderr_path\fP
+.IP \fI$fs_stderr_tmp_path\fP
+.IP \fI$fs_stderr_file_staging\fP
 .PP
 The start and stop commands are run with the same environment setting
 as that of the job to be started afterwards (see

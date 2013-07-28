@@ -131,7 +131,13 @@ is assumed that the job itself ran successfully and only the clean up script fai
 Suspend, restart, terminate, clean, and migrate: Always successful.
 .br
 Checkpoint: Success, except for kernel checkpointing: checkpoint was not 
-successful, did not happen (but migration will happen by xxQS_NAMExx).
+successful, did not happen (but migration will happen).
+.PP
+For the meaning of the return codes of the shepherd itself (which are
+interpreted by
+.M qacct 1 )
+see
+.M xxqs_name_sxx_status 5 .
 .\"
 .\"
 .SH RESTRICTIONS
@@ -174,6 +180,14 @@ On Solaris,
 .M coreadm 1
 may be used to enable such dumps.
 .\"
+.IP \fBSGE_CGROUP_DIR\fP 1.5i
+If Linux cgroups handling is enabled, this variable names a directory
+under the cgroup mount point in which to create job-specific
+directories.  The default is
+\fBsge.\fP\fISGE_CELL\fP so, for instance, the cpuset cgroup for a job
+might be
+.BR /sys/fs/cgroup/cpuset/sge.default/123 .
+.\"
 .SH FILES
 \fBsgepasswd\fP contains a list of user names and their corresponding
 encrypted passwords. If available, the password file will be used by
@@ -192,6 +206,7 @@ manually.
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
 .M xxqs_name_sxx_conf 5 ,
+.M xxqs_name_sxx_status 5 ,
 .M remote_startup 5 ,
 .M sgepasswd 5 ,
 .M xxqs_name_sxx_execd 8 .
