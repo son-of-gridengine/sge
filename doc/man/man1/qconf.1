@@ -693,9 +693,9 @@ Find a description of \fIwc_queue_list\fP in
 Allows deleting specifications in a single
 configuration list attribute in multiple instances
 of an object with a single command. 
-Find more information concerning obj_spec and obj_instance
+Find more information concerning \fIobj_spec\fP and \fIobj_instance\fP
 in the description of 
-.B -aattr
+.BR \-aattr .
 .\"
 .IP "\fB\-dcal\fP \fIcalendar_name\fP,...	\fI<delete calendar>\fP"
 Deletes the specified calendar definition from xxQS_NAMExx. Requires 
@@ -841,7 +841,7 @@ multiple instances of an object with a single
 command. 
 Find more information concerning obj_spec and obj_instance
 in the description of
-.B -aattr
+.BR \-aattr .
 .\"
 .IP "\fB\-mc\fP	\fI<modify complex>\fP"
 The complex configuration (see
@@ -1039,17 +1039,18 @@ or "queue_domain".  The names of the attributes are described in
 .M queue_conf 5 .
 .br
 This operation only works on a single queue instance or domain.  It cannot be
-used on a cluster queue.  In the case where the \fBobj_spec\fP is
-"queue@@hostgroup", the attribute values defined in \fBattr_nm\fP which are
+used on a cluster queue.  In the case where the \fIobj_spec\fP is
+"queue@@hostgroup", the attribute values defined in \fIattr_nm\fP which are
 set for the indicated hostgroup are deleted, but not those which are set
-for the hosts contained by that hostgroup.  If the \fBattr_nm\fP
-is '*', all attribute values set for the given queue instance or domain
+for the hosts contained by that hostgroup.  If the \fIattr_nm\fP
+is '\fB*\fP', all attribute values set for the given queue instance or domain
 are deleted.
 .br
-The main difference between -dattr and -purge is that -dattr removes a
-value from a single list attribute, whereas -purge removes one or more
+The main difference between \fB\-dattr\fP and \fB\-purge\fP is that
+\fB\-dattr\fP removes a
+value from a single list attribute, whereas \fB\-purge\fP removes one or more
 overriding attribute settings from a cluster queue configuration.  With
--purge, the entire attribute is deleted for the given queue instance or
+\fB\-purge\fP, the entire attribute is deleted for the given queue instance or
 queue domain.
 .\"
 .IP "\fB\-rattr\fP \fIobj_spec\fP \fIattr_name\fP \fIval\fP \fIobj_instance\fP,..."
@@ -1060,18 +1061,18 @@ queue domain.
 Allows replacing a single configuration list
 attribute in multiple instances of an object with a
 single command. 
-Find more information concerning obj_spec and obj_instance
+Find more information concerning \fIobj_spec\fP and \fIobj_instance\fP
 in the description of
-.B -aattr .
+.BR \-aattr .
 .br
 Requires root or manager privilege. 
 .\"
 .IP "\fB\-rsstnode\fP \fInode_path\fP,...	\fI<show share tree node>\fP"
 Recursively shows the name and shares of the specified share tree node(s)
-and the names and shares of its child nodes. (see
-.M share_tree 5 ).
+and the names and shares of its child nodes (not showing leaves).  See
+.M share_tree 5 .)
 The \fInode_path\fP is a hierarchical path
-(\fB[/]\fInode_name\fP[[/.]\fInode_name\fP...])
+([\fB/\fP]\fInode_name\fP[{\fB/\fP|\fB.\fP}\fInode_name\fP...])
 specifying the location of a node in the share tree.
 .\"
 .IP "\fB\-sc\fP	\fI<show complexes>\fP"
@@ -1221,7 +1222,7 @@ Displays the current scheduler configuration in the format explained in
 Shows the name and shares of the specified share tree node(s) (see
 .M share_tree 5 ).
 The \fInode_path\fP is a hierarchical path
-(\fB[/]\fInode_name\fP[[/.]\fInode_name\fP...]\fP)
+([\fB/\fP]\fInode_name\fP[{\fB/\fP|\fB.\fP}\fInode_name\fP...])
 specifying the location of a node in the share tree.
 .\"
 .IP "\fB\-sstree\fP	\fI<show share tree>\fP"

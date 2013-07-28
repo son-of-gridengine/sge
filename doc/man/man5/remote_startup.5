@@ -123,30 +123,18 @@ This can also be used to set up secure communication using \fBSSH\fR
 In this case a small wrapper must be implemented,
 whose sole purpose is to swap the two given arguments and prepend
 .B \-p
-to the port argument:
+to the port argument.  A suitable one is installed as
+.IR $SGE_ROOT/util/resources/wrappers/qlogin_wrapper :
 .sp 1
 .RS
 .PD 0
 .TP 20
 .B qlogin_command
-\fIpath_to_qlogin_wrapper\fR
+/opt/sge/util/resources/wrappers/qlogin_wrapper
 .TP
 .B qlogin_daemon
 /usr/sbin/sshd \-i
 .PD
-.RE
-.sp 1
-and a \fIpath_to_qlogin_wrapper\fR script:
-.sp 1
-.T
-.RS
-#!/bin/sh
-.br
-HOST=$1
-.br
-PORT=$2
-.br
-exec /usr/bin/ssh \-X \-p $PORT $HOST
 .RE
 .PP
 .\"
@@ -201,8 +189,8 @@ must be defined in
 The value of \fI$SGE_ROOT\fR must be replaced by the root of the
 installation, and
 \fI$ARC\fR must be replaced by the particular platform architecture, as use of environment variables is
-not implemented for these entries. When the cluster is homogeneous, it can be set to e.g. \[oq]lx24-amd64\[cq] or
-\[oq]lx24-x86\[cq]. In a heterogeneous cluster local configurations need to be defined, where preferably the
+not implemented for these entries. When the cluster is homogeneous, it can be set to e.g. \[oq]lx-amd64\[cq] or
+\[oq]lx-x86\[cq]. In a heterogeneous cluster local configurations need to be defined, where preferably the
 minority of machines will get local configurations.
 .sp 1
 The defined \fBrlogin_command\fR will then be called with three
@@ -278,8 +266,8 @@ must be defined in
 The value of \fI$SGE_ROOT\fR must be replaced by the root of the
 installation, and
 \fI$ARC\fR must be replaced by the particular platform architecture, as use of environment variables is
-not implemented for these entries. When the cluster is homogeneous, it can be set to e.g. \[oq]lx24-amd64\[cq] or
-\[oq]lx24-x86\[cq]. In a heterogeneous cluster local configurations need to be defined, where preferably the
+not implemented for these entries. When the cluster is homogeneous, it can be set to e.g. \[oq]lx-amd64\[cq] or
+\[oq]lx-x86\[cq]. In a heterogeneous cluster local configurations need to be defined, where preferably the
 minority of machines will get local configurations.
 .sp 1
 The defined \fBrsh_command\fR will then be called with four additional
@@ -338,7 +326,7 @@ from A to B is invoked, or from B to A.
 For all three communication methods, a direct connection between the
 target and the source machine where the particular command was issued
 must exist. This can also be implemented using TCP/IP forwarding, but
-will usually fail if one machine is behind \fBNAT\fR which will mangle
+will usually fail if one machine is behind NAT which will mangle
 the machines' addresses.  The communication methods won't work with
 simple firewalling of the exec hosts since the methods use a random
 port.  It may be possible to set up application-specific firewalling,
@@ -469,14 +457,19 @@ qlogin_command /usr/bin/telnet
 .br
 qlogin_daemon  /usr/sbin/in.telnetd
 .br
-rlogin_command /opt/sge/utilbin/lx24\-x86/rlogin
+rlogin_command /opt/sge/utilbin/lx\-x86/rlogin
 .br
 rlogin_daemon  /usr/sbin/in.rlogind
 .br
-rsh_command    /opt/sge/utilbin/lx24\-x86/rsh
+rsh_command    /opt/sge/utilbin/lx\-x86/rsh
 .br
-rsh_daemon     /opt/sge/utilbin/lx24\-x86/rshd \-l
+rsh_daemon     /opt/sge/utilbin/lx\-x86/rshd \-l
 .RE
+.\"
+.SH FILES
+.TP
+.I $SGE_ROOT/util/resources/wrappers/qlogin_wrapper
+SSH-based wrapper for qlogin (see above)
 .\"
 .SH "SEE ALSO"
 .M qconf 1 ,
