@@ -96,7 +96,7 @@ The following table lists the "failed" values reported by
 .M qacct 1
 (see 
 .M accounting 5 ),
-their description reported by
+their description, also reported by
 .IR qacct ,
 whether the resource usage accounting data are valid for the job
 ("OK"), and an explanation.  The host's messages file or the shepherd
@@ -145,6 +145,23 @@ T}
 16@releasing processor set@Y@T{
 .na
 ran, but processor set could not be released
+T}
+17@through signal@Y@T{
+.na
+job killed by signal (possibly qdel)
+T}
+18@shepherd returned error@N@shepherd died
+19@before writing exit_status@N@T{
+.na
+shepherd didn't write reports correctly
+T}
+20@found unexpected error file@?@T{
+.na
+shepherd encountered a problem
+T}
+21@in recognizing job@N@T{
+.na
+qmaster asked about an unknown job (not in accounting?)
 T}
 24@T{
 .na
@@ -204,7 +221,10 @@ T}
 .na
 failed because of configured remote startup daemon
 T}
-37@qmaster enforced h_rt limit@Y@T{
+37@T{
+.na
+qmaster enforced h_rt, h_cpu, or h_vmem limit
+T}@Y@T{
 .na
 ran, but killed due to exceeding run time limit
 T}

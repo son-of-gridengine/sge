@@ -136,13 +136,13 @@ for greater efficiency), TCL, or Perl scripts after
 sourcing/including the files jsv_inlcude.sh, jsv_include.tcl or JSV.pm.
 The files and corresponding JSV script templates are located in the directory
 .IR $SGE_ROOT/util/resources/jsv .
-There is also a Java implementation,
+There is also a Java implementation which has a different structure,
 with Javadoc documentation normally in
 .IR $SGE_ROOT/doc/javadocs/jjsv ,
 and example
 files
 .I SimpleJsv.java
-And
+and
 .I jjsv.sh
 in
 .IR $SGE_ROOT/util/resources/jsv .
@@ -415,6 +415,7 @@ l l l.
 _
 ac @ job context variable name @ 
 hold_jid @ job identifier @ \-
+hold_jid_id @ array job identifier @ \-
 l_hard @ complex attribute name @ ?
 l_soft @ complex attribute name @ ?
 M @ mail address @ \-

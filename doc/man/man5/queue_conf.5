@@ -408,94 +408,17 @@ and can't be used for interactive jobs submitted by
 . M qsh 1 ,
 . M qlogin 1 .
 .SS "\fBprolog\fP"
-The executable path of a shell script that is started before execution
-of xxQS_NAMExx jobs with the same environment setting as that for the
-xxQS_NAMExx
-jobs to be started afterwards. An optional prefix "user@" specifies the 
-user under which this procedure is to be started.  In that case see
-the SECURITY section below concerning security issues running as a
-privileged user.  The procedure's standard
-output and error output stream are written to the same file used for
-the standard output and error output of the job.
-.PP
-This procedure is intended as a means
-for the xxQS_NAMExx administrator to automate the execution of general
-site-specific tasks, like the preparation of temporary file systems
-in the same context as the job.
-For a parallel job, only a single instance of the prolog is run on the
-master node.
 This queue configuration
 entry overwrites cluster global or execution host-specific
 .B prolog
 definitions (see
 .M xxqs_name_sxx_conf 5 ).
-.PP
-The default for \fBprolog\fP is the special value NONE, which prevents
-execution of a prologue script.
-The  special variables for constructing a command line are the same
-as in 
-.B prolog
-definitions of the cluster configuration (see
-.M xxqs_name_sxx_conf 5 ).
-.PP
-Exit codes for the prolog attribute can be interpreted based on the 
-following exit values:
-.RS
-0: Success 
-.br
-99: Reschedule job 
-.br
-100: Put job in error state 
-.br
-Anything else: Put queue in error state
-.RE
-.PP
-The normal xxQS_NAMExx-defined environment variables are exported to
-the prolog (see
-.M qsub 1 );
-thus, say, it could choose the appropriate method according to
-.BR $PE .
 .SS "\fBepilog\fP"
-The executable path of a shell script that is started after execution
-of xxQS_NAMExx jobs with the same environment setting as that for the
-xxQS_NAMExx
-job that has just completed. 
-An optional prefix "user@" specifies the user under which this procedure
-is to be started.  In that case see
-the SECURITY section below concerning security issues running as a
-privileged user.  The procedure's standard output and the error output
-stream are written to the same file used for the standard output 
-and error output of the job.
-.PP
-This procedure is intended as a means
-for the xxQS_NAMExx administrator to automate the execution of general
-site-specific tasks like the cleaning up of temporary file systems
-in the same context as the job.
-For a parallel job, only a single instance of the epilog is run on the
-master node.
 This queue configuration
-entry overwrites cluster global or execution host specific
+entry overwrites cluster global or execution host-specific
 .B epilog
 definitions (see
 .M xxqs_name_sxx_conf 5 ).
-.PP
-The default for \fBepilog\fP is the special value NONE, which prevents
-execution of an epilogue script.
-The special variables for composing a command line are the same as for
-.B prolog
-definitions of the cluster configuration (see
-.M xxqs_name_sxx_conf 5 ).
-.PP
-Exit codes for the epilog attribute are interpreted as follows:
-.RS
-0: Success 
-.br
-99: Reschedule job 
-.br
-100: Put job in error state 
-.br
-Anything else: Put queue in error state
-.RE
 .SS "\fBstarter_method\fP"
 The specified executable path will be used as a job starter
 facility responsible for starting batch jobs instead of the built-in
@@ -510,7 +433,6 @@ The following environment
 variables are used to pass information to the job starter
 concerning the shell environment which was configured or
 requested to start the job.
-
 .IP "\fISGE_STARTER_SHELL_PATH\fP"
 The name of the requested shell to start the job
 .IP "\fISGE_STARTER_SHELL_START_MODE\fP"
@@ -531,7 +453,9 @@ is best to do so in a non-macro expanded scripting language (or a
 compiled language, as appropriate).
 .PP
 The starter_method will not be invoked for qsh, qlogin, or qrsh acting as rlogin.
-
+.PP
+The same pseudo-variables can be expanded to compose the command as
+for the following methods.
 .SS "\fBsuspend_method\fP"
 .SS "\fBresume_method\fP"
 .SS "\fBterminate_method\fP"
@@ -569,6 +493,10 @@ The name of the job.
 The name of the queue.
 .IP "\fI$job_pid\fP"
 The pid of the job.
+.IP \fI$sge_cell\fP
+The SGE_CELL environment variable (useful for locating files).
+.IP \fI$sge_root\fP
+The SGE_ROOT environment variable (useful for locating files).
 .PP
 Note that a method is only executed on the master node of a parallel
 job, so it may be necessary to propagate the necessary action to slave

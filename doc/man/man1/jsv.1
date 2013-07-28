@@ -132,7 +132,7 @@ After a JSV script or binary is started it will get commands through its
 \fBstdin\fP stream, and it has to respond with certain commands on the \fBstdout\fP
 stream. Data sent via the \fBstderr\fP stream of a JSV instance is
 ignored. Each command which is sent to/by a JSV script has to be terminated
-by a new line character ('\fB\\n\fP'), whereas new line characters are not allowed
+by a newline character ('\fB\\n\fP'), whereas newline characters are not allowed
 in the whole command string itself.
 .PP
 In general, commands which are exchanged between a JSV and client/qmaster
@@ -197,7 +197,7 @@ all cases.
 E.g. the \fBqsub\fP \fB\-pe\fP parameters will by available as a set of parameters
 with the name \fBpe_name\fP, \fBpe_min\fP, \fBpe_max\fP and the switch combination
 \fB\-soft \-l\fP will be passed to JSV scripts as \fBl_soft\fP parameter. For
-details concerning this differences consult also the 
+details concerning these differences consult also the
 .M qsub 1 
 man page.
 .\"
@@ -238,7 +238,7 @@ JSVs all messages, independent of the \fBlog_level\fP, will be printed
 to the \fBstdout\fP stream of the submit client. If a server JSV
 receives a \fBlog_command\fP it will add the received message to the
 message file, respecting the specified \fBlog_level\fP. Please note that
-\fBmessage\fP might contain spaces, but no new line characters.
+\fBmessage\fP might contain spaces, but no newline characters.
 .\"
 .IP "\fBparam_command\fP (find definition above)"
 By sending \fBparam_commands\fP, a JSV script can change the job
