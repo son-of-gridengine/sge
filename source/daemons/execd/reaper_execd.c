@@ -624,10 +624,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
                  sge_sys_sig2str(signo), signo);
 
          DPRINTF(("%s\n", error));
-         if (SSTATE_QMASTER_ENFORCED_LIMIT == lGetUlong(jr, JR_failed))
-            failed = SSTATE_QMASTER_ENFORCED_LIMIT;
-         else
-            failed = SSTATE_FAILURE_AFTER_JOB;
+         failed = SSTATE_FAILURE_AFTER_JOB;
 
          if ((sge_signo=sge_map_signal(signo)) != -1)
             lSetDouble(du, UA_value, (double)sge_signo);
@@ -694,7 +691,8 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
       failed = SSTATE_AGAIN;
    
    /* failed */
-   lSetUlong(jr, JR_failed, failed);
+   if (SSTATE_QMASTER_ENFORCED_LIMIT != lGetUlong(jr, JR_failed))
+      lSetUlong(jr, JR_failed, failed);
    DPRINTF(("job report for job "SFN": failed = %ld\n", 
             job_get_id_string(job_id, ja_task_id, pe_task_id, &id_dstring), 
             (long) failed));
