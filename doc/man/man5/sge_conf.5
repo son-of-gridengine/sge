@@ -2,7 +2,7 @@
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004 by Sun Microsystems, Inc.
-.\" Copyright (C) 2011, 2012  Dave Love, University of Liverpool
+.\" Copyright (C) 2011, 2012, 2013  Dave Love, University of Liverpool
 .\"
 .\"___INFO__MARK_END__
 .\"
@@ -214,8 +214,8 @@ master node.
 Each
 .M xxqs_name_sxx_execd 8
 may use a private prolog.
-Correspondingly, the execution host local 
-configurations can be overwritten by the queue configuration (see
+Correspondingly, the global or execution host local 
+configuration can be overwritten by the queue configuration (see
 .M queue_conf 5 ).
 Changing \fBprolog\fP will take
 immediate effect.
@@ -225,7 +225,7 @@ execution of a prolog.
 .PP
 The following special
 variables, expanded at runtime, can be used (besides any other
-strings which have to be interpreted by the procedure) to constitute 
+strings which have to be interpreted by the procedure) to compose
 a command line:
 .IP "\fI$host\fP"
 The name of the host on which the prolog or epilog procedures are
@@ -314,7 +314,7 @@ may be overwritten by the execution host local configuration.
 .PP
 See
 .M xxqs_name_sxx_shepherd 8
-for the significance of exit codes returned by the submitted job.
+for the significance of exit codes returned by the prolog.
 .\"
 .\"
 .SS "\fBepilog\fP"
@@ -332,20 +332,23 @@ user under which this procedure is to be started.  In that case see
 the SECURITY section below concerning security issues running as a
 privileged user.
 The procedure's standard
-output and the error output stream are written to the same file used also for
+output and the error output stream are written to the same file used for
 the standard output and error output of each job.
+.PP
+The same special variables can be used to compose a command line as
+for the prolog.
 .PP
 This procedure is intended as a means
 for the xxQS_NAMExx administrator to automate the execution of general
 site-specific tasks, like the cleaning up of temporary file systems with the
 need for the same context information as the job.
-For a parallel job, only a single instance of the epilog is run on the
+For a parallel job, only a single instance of the epilog is run, on the
 master node.
 Each
 .M xxqs_name_sxx_execd 8
 may use a private epilog.
-Correspondingly, the execution host local 
-configurations is can be overwritten by the queue configuration (see
+Correspondingly, the global or execution host local
+configurations can be overwritten by the queue configuration (see
 .M queue_conf 5 ).
 Changing \fBepilog\fP will take
 immediate effect.
@@ -358,13 +361,9 @@ used to constitute a command line.
 The same considerations (above) apply as for a prolog when an epilog
 is written in shell script.
 .PP
-The global configuration entry for this value
-may be overwritten by the execution host local configuration.
-.PP
-.PP
 See
 .M xxqs_name_sxx_shepherd 8
-for the significance of exit codes returned by the submitted job.
+for the significance of exit codes returned by the epilog.
 .\"
 .\"
 .SS "\fBshell_start_mode\fP"
@@ -1332,7 +1331,7 @@ membership of the submit user should be reduced.
 This value should only be set for debugging purposes. If set to true, the
 execution daemon will not remove the spool directory maintained by
 .M xxqs_name_sxx_shepherd 8
-for a job.
+for a job, or cgroup directories if cgroups are in use under Linux.
 .PP
 .IP "\fIPTF_MIN_PRIORITY\fP, \fIPTF_MAX_PRIORITY\fP"
 The maximum/minimum priority which xxQS_NAMExx will assign to a job.
@@ -1537,9 +1536,9 @@ or
 in the source repository, but it may be better to check the
 the screensaver state.
 .IP \fIUSE_CGROUPS\fP
-Use cgroups/cpusets for resource management if the system supports
-them and the necessary directories exist under the relevant
-filesystems (created by
+[Linux only.]  Use cgroups/cpusets for resource management if the
+system supports them and the necessary directories exist in the
+relevant filesystems (possibly created by
 .IR util/resources/scripts/setup-cgroups-etc ).
 Makes ENABLE_ADDGRP_KILL irrelevant.
 This option is experimental, and at least the default is likely to

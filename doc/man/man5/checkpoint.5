@@ -111,20 +111,38 @@ initiate a checkpoint.  The following pseudo-variables are available to be
 substituted in the value:
 .\" fixme: explain them
 .IP \fB$host\fP
+The name of the host on which the command is executed.
 .IP \fB$ja_task_id\fP
-.IP \fB$job_owner\fP
-.IP \fB$job_id\fP
-.IP \fB$job_name\fP
+The array job task index (0 if not an array job).
+.IP "\fB$job_owner\fP"
+The user name of the job owner.
+.IP "\fB$job_id\fP"
+xxQS_NAMExx's unique job identification number.
+.IP "\fB$job_name\fP"
+The name of the job.
 .IP \fB$queue\fP
+The cluster queue name of the master queue instance, on which the
+command is started.
 .IP \fB$job_pid\fP
+The process id of the job/task to checkpoint.
 .IP \fB$ckpt_dir\fP
+See
+.B ckpt_dir
+below.
 .IP \fB$ckpt_signal\fP
+See
+.B ckpt_signal
+below.
+.IP \fB$sge_cell\fP
+The SGE_CELL environment variable (useful for locating files).
+.IP \fB$sge_root\fP
+The SGE_ROOT environment variable (useful for locating files).
 .SS "\fBmigr_command\fP"
 A command-line type command string to be executed by xxQS_NAMExx during a
 migration of a checkpointing job from one host to another.  The same
 pseudo-variables are available as for \fBckpt_command\fP.  Note that
 the command is expected to create a checkpoint itself \- the
-checkpointing command isn't called automatically on migration..
+checkpointing command isn't called automatically on migration.
 .SS "\fBrestart_command\fP"
 A command-line type command string to be executed by xxQS_NAMExx when restarting
 a previously checkpointed application.  The same
