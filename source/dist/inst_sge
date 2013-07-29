@@ -151,11 +151,15 @@ while [ $ARGC != 0 ]; do
         $INFOTEXT "Error: File %s does not exist!" "$FILE"
         ErrUsage        
      fi
+     if [ -z "`dirname '$FILE'`" ]; then
+        # else sourcing fails without . in PATH
+        FILE=./$FILE
+     fi
      shift
      ARGC=`expr $ARGC - 1`
      #Stdout2Log
      CheckPath
-     clear=:
+     CLEAR=:
      ;;
    -autogui)
       AUTO=true
