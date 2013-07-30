@@ -145,16 +145,13 @@ while [ $ARGC != 0 ]; do
    case $1 in
    -auto)
      AUTO="true"
-     FILE="$2"
      if [ ! -f "$2" ]; then
         AUTO="false"
-        $INFOTEXT "Error: File %s does not exist!" "$FILE"
+        $INFOTEXT "Error: File %s does not exist!" "$2"
         ErrUsage        
      fi
-     if [ -z "`dirname '$FILE'`" ]; then
-        # else sourcing fails without . in PATH
-        FILE=./$FILE
-     fi
+     # canonicalize so that ". $FILE" works without . in PATH, i.e. foo -> ./foo
+     FILE=`dirname "$2"`/`basename "$2"`
      shift
      ARGC=`expr $ARGC - 1`
      #Stdout2Log
