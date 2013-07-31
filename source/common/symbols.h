@@ -55,17 +55,11 @@
 #define USER_SYM                           'u'
 #define USER                               0x00000080
 
-/* EB: TODO: remove obsolete definitions */
-
 #define ALARM_SYM                          'a'
 #define SUSPEND_ALARM_SYM                  'A'
-#define SUSPEND_ON_COMP_SYM                'c'  /* NOT PART OF P1003.15D12! */
-#define SUSPENDED_ON_CALENDAR_SYM          'C'  /* NOT PART OF P1003.15D12! */
 #define DISABLED_SYM                       'd'
-#define DISABLED_ON_CALENDAR_SYM           'D'  /* NOT PART OF P1003.15D12! */
 #define ENABLED_SYM                        'e'
 #define HELD_SYM                           'h'
-#define MIGRATING_SYM                      'm'  /* NOT PART OF P1003.15D12! */ /* unused */
 #define QUEUED_SYM                         'q'
 #define RESTARTING_SYM                     'R'  /* NOT PART OF P1003.15D12! */
 #define RUNNING_SYM                        'r'
@@ -73,18 +67,9 @@
 #define SUSPENDED_ON_SUBORDINATE_SYM       'S'
 #define SUSPENDED_ON_THRESHOLD_SYM         'T' /* NOT PART OF P1003.15D12! */
 #define TRANSITING_SYM                     't'
-#define UNKNOWN_SYM                        'u' /* unused */
 #define WAITING_SYM                        'w'
 #define EXITING_SYM                        'x'  /* NOT P1003.15D12 compliant! 'e' */
 #define ERROR_SYM                          'E'
-
-/* Keep_list Constants */
-#define KEEP_NONE_SYM                      'n'
-#define KEEP_NONE                          0x00000000
-#define KEEP_STD_ERROR_SYM                 'e'
-#define KEEP_STD_ERROR                     0x00010000
-#define KEEP_STD_OUTPUT_SYM                'o'
-#define KEEP_STD_OUTPUT                    0x00020000
 
 /* Mail Option Constants */
 #define MAIL_AT_ABORT_SYM                  'a'

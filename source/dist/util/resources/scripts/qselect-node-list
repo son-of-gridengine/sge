@@ -17,5 +17,5 @@ esac
 
 qselect "$@" |
   sed -e 's/^[^@]*@//' -e 's/\..*//' |  # host short names
-  sort | uniq |                         # unique list
+  sort -u |                             # unique list
   tr '\n' ,                             # comma-separated (trailing comma OK)

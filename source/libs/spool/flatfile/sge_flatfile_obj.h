@@ -47,7 +47,9 @@ extern spooling_field HGRP_fields[];
 extern spooling_field US_fields[];
 extern spooling_field SC_fields[];
 extern spooling_field CQ_fields[];
+#ifndef __SGE_NO_USERMAPPING__
 extern spooling_field CU_fields[];
+#endif
 extern spooling_field SH_fields[];
 extern spooling_field AH_fields[];
 extern spooling_field AR_fields[];

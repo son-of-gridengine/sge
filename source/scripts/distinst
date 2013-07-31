@@ -889,6 +889,7 @@ if [ $instcommon = true ]; then
 	      Execute mv $DEST_SGE_ROOT/util/resources/scripts/$script $DEST_SGE_ROOT/bin/$script
 	      Execute chmod 755 $DEST_SGE_ROOT/bin/$script
 	  done
+          Execute chmod 664 $DEST_SGE_ROOT/bin/README.*
       fi
 
       Cleanup util

@@ -28,8 +28,8 @@
 #include "uti/sge_string.h"
 
 extern char **environ;
-static char **
 
+static char **
 newargs (const char *file, char *const argv[])
 {
    int i, na = 0;

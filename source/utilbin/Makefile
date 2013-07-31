@@ -82,7 +82,7 @@ include $(UTILBIN_DIR)/utilbin_dependencies
 # rules to build object codes and binaries
 ###############################################################################
 uidgid:		uidgid.o version.o $(UTILIB) $(WINGRIDLIB_DEP) 
-		$(CC) -o $@ $(LFLAGS) uidgid.o version.o -luti $(WINGRIDLIB) $(LIBS)
+		$(CC) -o $@ $(LFLAGS) uidgid.o version.o $(UTILIB) $(WINGRIDLIB) $(LIBS)
 
 uidgid.o:	$(UTILBIN_DIR)/uidgid.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/uidgid.c
@@ -125,7 +125,7 @@ getservbyname.o:	$(UTILBIN_DIR)/getservbyname.c
 
 #---------------------------------------------------------------------
 filestat:	filestat.o version.o $(WINGRIDLIB_DEP) $(UTILIB) $(COMMLISTSLIB)
-		$(CC) $(CFLAGS) -o $@ $(LFLAGS) filestat.o version.o -luti $(WINGRIDLIB) $(COMMLISTSLIB) $(LIBS)
+		$(CC) $(CFLAGS) -o $@ $(LFLAGS) filestat.o version.o $(UTILIB) $(WINGRIDLIB) $(COMMLISTSLIB) $(LIBS)
 
 filestat.o:	$(UTILBIN_DIR)/filestat.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/filestat.c
@@ -146,7 +146,7 @@ read_raw.o:		$(UTILBIN_DIR)/read_raw.c
 
 #---------------------------------------------------------------------
 echo_raw:		echo_raw.o version.o $(UTILIB) $(COMMLISTSLIB) 
-		$(CC) $(CFLAGS) -o $@ $(LFLAGS) echo_raw.o version.o -luti $(COMMLISTSLIB) $(LIBS)
+		$(CC) $(CFLAGS) -o $@ $(LFLAGS) echo_raw.o version.o $(UTILIB) $(COMMLISTSLIB) $(LIBS)
 
 echo_raw.o:		$(UTILBIN_DIR)/echo_raw.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/echo_raw.c
@@ -160,14 +160,14 @@ checkprog.o:	$(UTILBIN_DIR)/checkprog.c
 
 #---------------------------------------------------------------------
 checkuser:     checkuser.o version.o $(WINGRIDLIB_DEP) $(UTILIB) $(COMMLISTSLIB)
-		$(CC) $(CFLAGS) -o $@ $(LFLAGS) checkuser.o version.o -luti $(WINGRIDLIB) $(COMMLISTSLIB) $(LIBS)
+		$(CC) $(CFLAGS) -o $@ $(LFLAGS) checkuser.o version.o $(UTILIB) $(WINGRIDLIB) $(COMMLISTSLIB) $(LIBS)
 
 checkuser.o:      $(UTILBIN_DIR)/checkuser.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/checkuser.c
 
 #---------------------------------------------------------------------
 adminrun:   adminrun.o version.o $(WINGRIDLIB_DEP) $(UTILIB) $(COMMLISTSLIB) 
-		$(CC) -o $@ $(LFLAGS) adminrun.o version.o -luti $(WINGRIDLIB) $(COMMLISTSLIB) $(LIBS)
+		$(CC) -o $@ $(LFLAGS) adminrun.o version.o $(UTILIB) $(WINGRIDLIB) $(COMMLISTSLIB) $(LIBS)
 
 adminrun.o: $(UTILBIN_DIR)/adminrun.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/adminrun.c
@@ -203,20 +203,20 @@ loadcheck.obj: $(UTILBIN_DIR)/loadcheck.c
 
 #---------------------------------------------------------------------
 languagetest:   languagetest.o version.o  $(WINGRIDLIB_DEP) $(UTILIB) $(COMMLISTSLIB) 
-		$(CC) -o $@ $(LFLAGS) languagetest.o version.o -luti $(WINGRIDLIB) $(COMMLISTSLIB) $(LIBS)
+		$(CC) -o $@ $(LFLAGS) languagetest.o version.o $(UTILIB) $(WINGRIDLIB) $(COMMLISTSLIB) $(LIBS)
 
 languagetest.o: $(UTILBIN_DIR)/languagetest.c
 		$(CC) $(CFLAGS) $(GCC_NODUPLWARN) -c $(UTILBIN_DIR)/languagetest.c
 #---------------------------------------------------------------------
 infotext:   infotext.o  version.o $(WINGRIDLIB_DEP) $(UTILIB) $(COMMLISTSLIB) 
-		$(CC) -o $@ $(LFLAGS) infotext.o version.o -luti $(WINGRIDLIB) $(COMMLISTSLIB) $(LIBS)
+		$(CC) -o $@ $(LFLAGS) infotext.o version.o $(UTILIB) $(WINGRIDLIB) $(COMMLISTSLIB) $(LIBS)
 
 infotext.o: $(UTILBIN_DIR)/infotext.c
 		$(CC) $(CFLAGS) $(GCC_NODUPLWARN) -c $(UTILBIN_DIR)/infotext.c
 
 #---------------------------------------------------------------------
 fstype:   fstype.o  version.o $(WINGRIDLIB_DEP) $(COMMLISTSLIB) $(UTILIB) 
-		$(CC) -o $@ $(LFLAGS) fstype.o version.o $(WINGRIDLIB) $(FSTYPELIBS) -luti $(COMMLISTSLIB) $(LIBS)  
+		$(CC) -o $@ $(LFLAGS) fstype.o version.o $(WINGRIDLIB) $(FSTYPELIBS) $(UTILIB) $(COMMLISTSLIB) $(LIBS)
 
 fstype.o: $(UTILBIN_DIR)/fstype.c
 		$(CC) $(CFLAGS) $(MEMCFLAG) $(GCC_NODUPLWARN) -c $(UTILBIN_DIR)/fstype.c
@@ -228,15 +228,15 @@ spooldefaults.o: $(UTILBIN_DIR)/spooldefaults.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/spooldefaults.c
 
 #---------------------------------------------------------------------
-spoolinit:   spoolinit.o  version.o sge_mt_init.o $(SPOOLING_DEPS) $(SPOOLLIB) $(SCHEDLIB) $(EVCLIB) $(GDILIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(WINGRIDLIB_DEP) $(UTILIB) 
-		$(CC) -o $@ $(LFLAGS) spoolinit.o version.o sge_mt_init.o $(SPOOLING_LIBS) -lsched -levc -lgdi -lsgeobj -lsgeobjd -lcull -lcomm -lcommlists -luti $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB) $(SLIBS) $(LIBS)
+spoolinit:   spoolinit.o  version.o sge_mt_init.o $(SPOOLING_DEPS) $(SPOOLLIB) $(SCHEDLIB) $(EVCLIB) $(GDILIB) $(SGEOBJDLIB) $(SGEOBJLIB) $(COMMLIB) $(COMMLISTSLIB) $(CULLLIB) $(WINGRIDLIB_DEP) $(UTILIB) $(UTI2LIB) $(UTI2LIB)
+		$(CC) -o $@ $(LFLAGS) spoolinit.o version.o sge_mt_init.o $(SPOOLING_LIBS) $(SCHEDLIB) $(EVCLIB) $(GDILIB) $(SGEOBJDLIB) $(SGEOBJLIB) $(CULLLIB) $(COMMLIB) $(COMMLISTSLIB) $(UTILIB) $(UTI2LIB) $(WINGRIDLIB) $(SECLIB) $(KRBLIB) $(DLLIB) $(SLIBS) $(LIBS)
 
 spoolinit.o: $(UTILBIN_DIR)/spoolinit.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/spoolinit.c
 
 #---------------------------------------------------------------------
 testsuidroot:   testsuidroot.o version.o $(WINGRIDLIB_DEP)  $(UTILIB) $(COMMLISTSLIB)
-		$(CC) -o $@ $(LFLAGS) testsuidroot.o version.o -luti $(COMMLISTSLIB) $(WINGRIDLIB) $(LIBS)
+		$(CC) -o $@ $(LFLAGS) testsuidroot.o version.o $(UTILIB) $(COMMLISTSLIB) $(WINGRIDLIB) $(LIBS)
 
 testsuidroot.o: $(UTILBIN_DIR)/testsuidroot.c
 		$(CC) $(CFLAGS) -c $(UTILBIN_DIR)/testsuidroot.c

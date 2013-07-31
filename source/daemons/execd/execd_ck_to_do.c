@@ -112,8 +112,7 @@ extern volatile int jobs_to_start;
 extern lList *jr_list;
 
 #ifdef COMPILE_DC
-static void notify_ptf(void);
-static void notify_ptf()
+static void notify_ptf(void)
 {
    lListElem *jep, *tep;
    int write_job = -1;
@@ -378,7 +377,7 @@ int do_ck_to_do(sge_gdi_ctx_class_t *ctx, bool is_qmaster_down) {
    int return_value = 0;
    const char *qualified_hostname = ctx->get_qualified_hostname(ctx);
 
-   DENTER(TOP_LAYER, "execd_ck_to_do");
+   DENTER(TOP_LAYER, "do_ck_to_do");
 
    /*
     *  get current time (now)
