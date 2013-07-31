@@ -103,7 +103,6 @@
 #  include <termio.h>
 #endif
 
-#include "sge_ijs_threads.h"
 #include "sge_ijs_comm.h"
 #include "sge_shepherd_ijs.h"
 #include "shepherd.h"

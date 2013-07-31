@@ -940,13 +940,13 @@ int compare_complexes(int slots, lListElem *req_cplx, lListElem *src_cplx, char 
 
       offer = lGetString(src_cplx, CE_stringval);
       monitor_dominance(dom_str, lGetUlong(src_cplx, CE_dominant));
-#if 0
+#if DEBUGPRINT
       DPRINTF(("%s(\"%s\", \"%s\")\n", type==TYPE_STR?"strcmp":"strcasecmp",
             request, offer)); 
 #endif
       match = string_cmp(type, used_relop, request, offer);
       snprintf(availability_text, STR_LEN_AVAIL_TEXT, "%s:%s=%s", dom_str, name, offer);
-#if 0
+#if DEBUGPRINT
       DPRINTF(("-l %s=%s, Q: %s:%s%s%s, Comparison: %s\n",
             name, request, dom_str, name, map_op2str(relop),
             offer, match?"ok":"no match"));
@@ -960,7 +960,7 @@ int compare_complexes(int slots, lListElem *req_cplx, lListElem *src_cplx, char 
    case TYPE_DOUBLE:
       s=lGetString(req_cplx, CE_stringval); 
       if (!parse_ulong_val(&req_dl, NULL, type, s, NULL, 0)) {
-#if 0
+#if DEBUGPRINT
          DPRINTF(("%s is not of type %s\n", s, map_type2str(type)));
 #endif
          req_dl = 0;
@@ -994,7 +994,7 @@ int compare_complexes(int slots, lListElem *req_cplx, lListElem *src_cplx, char 
          case TYPE_BOO:
             sge_dstring_copy_string(&resource_string, (src_dl > 0)?"true":"false");
 /*            sprintf(availability_text1, "%s:%s=%s", dom_str, name, src_dl?"true":"false");*/
-#if 0
+#if DEBUGPRINT
             DPRINTF(("-l %s=%f, Q: %s:%s:%f, Comparison(1): %s\n",
                      name, req_all_slots, dom_str, map_op2str(used_relop),
                      src_dl, m1?"ok":"no match"));
@@ -1002,7 +1002,7 @@ int compare_complexes(int slots, lListElem *req_cplx, lListElem *src_cplx, char 
             break;
          case TYPE_MEM:
             double_print_memory_to_dstring(src_dl, &resource_string);
-#if 0
+#if DEBUGPRINT
             { 
                dstring request_string = DSTRING_INIT;
 
@@ -1018,7 +1018,7 @@ int compare_complexes(int slots, lListElem *req_cplx, lListElem *src_cplx, char 
             break;
          case TYPE_TIM:
             double_print_time_to_dstring(src_dl, &resource_string);
-#if 0            
+#if DEBUGPRINT
             {
                dstring request_string = DSTRING_INIT;
 
@@ -1054,7 +1054,7 @@ int compare_complexes(int slots, lListElem *req_cplx, lListElem *src_cplx, char 
          switch (type) {
          case TYPE_BOO:
             sge_dstring_copy_string(&resource_string, (src_dl > 0)?"true":"false");
-#if 0
+#if DEBUGPRINT
             DPRINTF(("-l %s=%f, Q: %s:%s%s%f, Comparison(2): %s\n",
                      name, req_dl?"true":"false", dom_str, name, 
                      map_op2str(used_relop),
@@ -1063,7 +1063,7 @@ int compare_complexes(int slots, lListElem *req_cplx, lListElem *src_cplx, char 
             break;
          case TYPE_MEM:
             double_print_memory_to_dstring(src_dl, &resource_string);
-#if 0            
+#if DEBUGPRINT
             {
                dstring request_string = DSTRING_INIT;
 
@@ -1079,7 +1079,7 @@ int compare_complexes(int slots, lListElem *req_cplx, lListElem *src_cplx, char 
             break;
          case TYPE_TIM:
             double_print_time_to_dstring(src_dl, &resource_string);
-#if 0            
+#if DEBUGPRINT
             {
                dstring request_string = DSTRING_INIT;
 

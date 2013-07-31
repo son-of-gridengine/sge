@@ -388,9 +388,9 @@ int path_alias_list_initialize(lList **path_alias_list,
 *  NOTES
 *     MT-NOTE: path_alias_list_get_path() is MT safe
 *******************************************************************************/
-int path_alias_list_get_path(const lList *path_aliases, lList **alpp,
-                             const char *inpath, const char *myhost,
-                             dstring *outpath)
+void path_alias_list_get_path(const lList *path_aliases, lList **alpp,
+                              const char *inpath, const char *myhost,
+                              dstring *outpath)
 {
    lListElem *pap;
    const char *origin;
@@ -454,8 +454,7 @@ int path_alias_list_get_path(const lList *path_aliases, lList **alpp,
 
    sge_dstring_free(&the_path);
 
-   DEXIT;
-   return 0;
+   DRETURN_VOID;
 
 }
 

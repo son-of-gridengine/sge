@@ -45,9 +45,9 @@ int path_alias_list_initialize(lList **path_alias_list,
                                const char *user,
                                const char *host);
 
-int path_alias_list_get_path(const lList *path_aliases, lList **alpp,
-                             const char *inpath, const char *myhost,
-                             dstring *outpath);
+void path_alias_list_get_path(const lList *path_aliases, lList **alpp,
+                              const char *inpath, const char *myhost,
+                              dstring *outpath);
 
 bool path_verify(const char *path, lList **answer_list, const char *name, bool absolute);
 bool path_list_verify(const lList *path_list, lList **answer_list, const char *name);

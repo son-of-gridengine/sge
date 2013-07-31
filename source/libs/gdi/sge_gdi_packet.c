@@ -38,10 +38,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef KERBEROS
-#include "krb_lib.h"
-#endif
-
 #include "basis_types.h"
 
 #include "comm/commlib.h"

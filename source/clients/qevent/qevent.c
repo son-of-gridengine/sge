@@ -486,7 +486,6 @@ int main(int argc, char *argv[])
    gdi_setup = sge_gdi2_setup(&ctx, QEVENT, MAIN_THREAD, &alp);
    if (gdi_setup != AE_OK) {
       answer_list_output(&alp);
-      sge_dstring_free(enabled_options.error_message);
       SGE_EXIT((void**)&ctx, 1);
    }
 

@@ -176,11 +176,6 @@ typedef struct cl_com_ssl_global_type {
 static pthread_mutex_t cl_com_ssl_global_config_mutex = PTHREAD_MUTEX_INITIALIZER;
 static cl_com_ssl_global_t* cl_com_ssl_global_config_object = NULL;
 
-/* here we load the SSL functions via dlopen */
-static pthread_mutex_t cl_com_ssl_crypto_handle_mutex = PTHREAD_MUTEX_INITIALIZER;
-static void* cl_com_ssl_crypto_handle = NULL;
-
-
 /* static function declarations */
 static cl_com_ssl_private_t* cl_com_ssl_get_private(cl_com_connection_t* connection);
 static int                   cl_com_ssl_free_com_private(cl_com_connection_t* connection);
@@ -1889,13 +1884,8 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
    int tmp_error = CL_RETVAL_OK;
    char tmp_buffer[256];
 
-
-   if (connection == NULL) { 
-      return  CL_RETVAL_PARAMS;
-   }
-
-   if (connection->remote   == NULL ||
-       connection->local    == NULL) {
+   if (connection == NULL || connection->remote == NULL ||
+       connection->local == NULL) {
       return CL_RETVAL_PARAMS;
    }
 
@@ -1914,13 +1904,12 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
       return CL_RETVAL_CONNECT_ERROR;   
    }
 
-   if ( connection->connection_sub_state == CL_COM_OPEN_INIT) {
+   if (connection->connection_sub_state == CL_COM_OPEN_INIT) {
       int ret;
       int on = 1;
       char* unique_host = NULL;
       struct timeval now;
       int res_port = IPPORT_RESERVED -1;
-
 
       CL_LOG(CL_LOG_DEBUG,"connection_sub_state is CL_COM_OPEN_INIT");
       private->sockfd = -1;
@@ -1951,10 +1940,10 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
             break;
          }
       }
-      
+
       if (private->sockfd < 3) {
          CL_LOG_INT(CL_LOG_WARNING, "The file descriptor is < 3. Will dup fd to be >= 3! fd value: ", private->sockfd);
-         ret = sge_dup_fd_above_stderr(&private->sockfd);
+         ret = sge_dup_fd_above_stderr(&(private->sockfd));
          if (ret != 0) {
             CL_LOG_INT(CL_LOG_ERROR, "can't dup socket fd to be >=3, errno = ", ret);
             shutdown(private->sockfd, 2);
@@ -1974,11 +1963,11 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
           private->sockfd = -1;
           cl_commlib_push_application_error(CL_LOG_ERROR, CL_RETVAL_REACHED_FILEDESCRIPTOR_LIMIT, MSG_CL_COMMLIB_COMPILE_SOURCE_WITH_LARGER_FD_SETSIZE);
           return CL_RETVAL_REACHED_FILEDESCRIPTOR_LIMIT;
-      } 
+      }
 #endif
 
       /* set local address reuse socket option */
-      if ( setsockopt(private->sockfd, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof(on)) != 0) {
+      if (setsockopt(private->sockfd, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof(on)) != 0) {
          CL_LOG(CL_LOG_ERROR,"could not set SO_REUSEADDR");
          private->sockfd = -1;
          cl_commlib_push_application_error(CL_LOG_ERROR, CL_RETVAL_SETSOCKOPT_ERROR, MSG_CL_TCP_FW_SETSOCKOPT_ERROR);
@@ -1986,13 +1975,12 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
       }
    
       /* this is a non blocking socket */
-      if ( fcntl(private->sockfd, F_SETFL, O_NONBLOCK) != 0) {
+      if (fcntl(private->sockfd, F_SETFL, O_NONBLOCK) != 0) {
          CL_LOG(CL_LOG_ERROR,"could not set O_NONBLOCK");
          private->sockfd = -1;
          cl_commlib_push_application_error(CL_LOG_ERROR, CL_RETVAL_FCNTL_ERROR, MSG_CL_TCP_FW_FCNTL_ERROR);
          return CL_RETVAL_FCNTL_ERROR;
       }
-
 
       /* set address  */
       memset((char *) &(private->client_addr), 0, sizeof(struct sockaddr_in));
@@ -2022,7 +2010,7 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
       connection->connection_sub_state = CL_COM_OPEN_CONNECT;
    }
    
-   if ( connection->connection_sub_state == CL_COM_OPEN_CONNECT) {
+   if (connection->connection_sub_state == CL_COM_OPEN_CONNECT) {
       int my_error;
       int i;
       bool connect_state = false;
@@ -2082,10 +2070,10 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
       }
    }
 
-   if ( connection->connection_sub_state == CL_COM_OPEN_CONNECT_IN_PROGRESS ) {
+   if (connection->connection_sub_state == CL_COM_OPEN_CONNECT_IN_PROGRESS) {
+
       struct timeval now;
       int socket_error = 0;
-
 #if defined(IRIX65) || defined(INTERIX) || defined(DARWIN6) || defined(ALPHA5) || defined(HPUX)
       int socklen = sizeof(socket_error);
 #else
@@ -2095,9 +2083,9 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
       CL_LOG(CL_LOG_DEBUG,"connection_sub_state is CL_COM_OPEN_CONNECT_IN_PROGRESS");
 
 #if defined(SOLARIS) && !defined(SOLARIS64)
-      getsockopt(private->sockfd,SOL_SOCKET, SO_ERROR, (void*)&socket_error, &socklen);
+      getsockopt(private->sockfd, SOL_SOCKET, SO_ERROR, (void*)&socket_error, &socklen);
 #else
-      getsockopt(private->sockfd,SOL_SOCKET, SO_ERROR, &socket_error, &socklen);
+      getsockopt(private->sockfd, SOL_SOCKET, SO_ERROR, &socket_error, &socklen);
 #endif
       if (socket_error == 0 || socket_error == EISCONN) {
          CL_LOG(CL_LOG_INFO,"connected");
@@ -2132,7 +2120,7 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
       }
    }
 
-   if ( connection->connection_sub_state == CL_COM_OPEN_CONNECTED) {
+   if (connection->connection_sub_state == CL_COM_OPEN_CONNECTED) {
       int on = 1; 
 
       CL_LOG(CL_LOG_DEBUG,"connection_sub_state is CL_COM_OPEN_CONNECTED");

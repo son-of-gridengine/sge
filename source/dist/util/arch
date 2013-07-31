@@ -207,12 +207,13 @@ Linux)
       lxmachine=$osmachine
    esac
 
+   # Fixme: Dispense with this stuff and just ignore ancient kernels.
    # It's most robust to use the glibc API, but this should work on
    # the supported patforms anyhow.  See section 4.9 in
    # http://sourceware.org/git/?p=glibc.git;a=blob_plain;f=FAQ;hb=HEAD
    if [ "$unsupported" != "UNSUPPORTED-" ]; then
       case $osrelease in
-      2.4.*|2.6.*|3.*)
+      2.4.*|2.6.*|[3-9].*)
          # verify the GNU C lib version
          # we expect libc version to be
          # >= 2.3 - this is our supported lx-* platform

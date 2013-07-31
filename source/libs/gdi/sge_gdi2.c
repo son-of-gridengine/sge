@@ -89,10 +89,6 @@
 #include "sge.h"
 #include "msg_common.h"
 
-#ifdef KERBEROS
-#  include "krb_lib.h"
-#endif
-
 static void 
 dump_send_info(const char* comp_host, const char* comp_name, int comp_id, 
                cl_xml_ack_type_t ack_type, unsigned long tag, unsigned long* mid);

@@ -48,9 +48,6 @@
 #include <stdlib.h>
 
 #include "sge.h"
-#ifdef KERBEROS
-#  include "krb_lib.h"
-#endif
 
 #include "basis_types.h"
 

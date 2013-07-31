@@ -486,6 +486,7 @@ spooling_field CQ_fields[] = {
    {  NoName,                    21, NULL,                 NULL,                NULL,                                   NULL,                      NULL}
 };
 
+#ifndef __SGE_NO_USERMAPPING__
 spooling_field CU_fields[] = {
    {  CU_name,           0, "cluster user",         NULL, NULL, NULL, NULL},
    {  CU_ruser_list,     0, "remote user",          ASTR_sub_fields, NULL, NULL, NULL},
@@ -496,6 +497,7 @@ spooling_field CU_fields[] = {
    {  CU_inter,          0, "inter",                AINTER_sub_fields, NULL, NULL, NULL},
    {  NoName,            0, NULL,                   NULL, NULL, NULL, NULL}
 };
+#endif
 
 spooling_field SH_fields[] = {
    {  SH_name,           21, "hostname",   NULL, NULL, NULL, NULL},
