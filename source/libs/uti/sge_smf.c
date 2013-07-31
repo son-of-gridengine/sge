@@ -1072,9 +1072,10 @@ char *sge_smf_get_instance_next_state()
 }
 
 #else
-void dummy(void)
+/* fixme: avoid linking this at all */
+/* something to avoid empty compilation unit */
+int sge_smf_used(void)
 {
-    /* Just a dummy function */
-    return;
+    return 0;
 }
 #endif

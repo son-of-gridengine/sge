@@ -230,7 +230,8 @@ int cl_com_tcp_open_connection(cl_com_connection_t* connection, int timeout) {
    
    int tmp_error = CL_RETVAL_OK;
 
-   if (connection == NULL || connection->remote == NULL || connection->local == NULL) {
+   if (connection == NULL || connection->remote == NULL ||
+       connection->local == NULL) {
       return CL_RETVAL_PARAMS;
    }
 
@@ -270,7 +271,6 @@ int cl_com_tcp_open_connection(cl_com_connection_t* connection, int timeout) {
             }
             break;
          }
-
          case CL_TCP_RESERVED_PORT: {
             /* create reserved port socket */
             if ((private->sockfd = rresvport(&res_port)) < 0) {
@@ -399,7 +399,7 @@ int cl_com_tcp_open_connection(cl_com_connection_t* connection, int timeout) {
                private->sockfd = -1;
                cl_commlib_push_application_error(CL_LOG_ERROR, CL_RETVAL_CONNECT_ERROR, strerror(my_error));
                return CL_RETVAL_CONNECT_ERROR;
-            } 
+            }
          }
       }
    }
@@ -416,7 +416,7 @@ int cl_com_tcp_open_connection(cl_com_connection_t* connection, int timeout) {
 
       CL_LOG(CL_LOG_DEBUG,"connection_sub_state is CL_COM_OPEN_CONNECT_IN_PROGRESS");
 
-#if defined(SOLARIS) && !defined(SOLARIS64) 
+#if defined(SOLARIS) && !defined(SOLARIS64)
       getsockopt(private->sockfd, SOL_SOCKET, SO_ERROR, (void*)&socket_error, &socklen);
 #else
       getsockopt(private->sockfd, SOL_SOCKET, SO_ERROR, &socket_error, &socklen);
@@ -461,13 +461,14 @@ int cl_com_tcp_open_connection(cl_com_connection_t* connection, int timeout) {
 
   
 #if defined(SOLARIS) && !defined(SOLARIS64)
-      if (setsockopt(private->sockfd, IPPROTO_TCP, TCP_NODELAY, (const char *) &on, sizeof(int)) != 0)
-#else
-      if (setsockopt(private->sockfd, IPPROTO_TCP, TCP_NODELAY, &on, sizeof(int))!= 0)
-#endif
-      {
+      if (setsockopt(private->sockfd, IPPROTO_TCP, TCP_NODELAY, (const char *) &on, sizeof(int)) != 0) {
          CL_LOG(CL_LOG_ERROR,"could not set TCP_NODELAY");
       }
+#else
+      if (setsockopt(private->sockfd, IPPROTO_TCP, TCP_NODELAY, &on, sizeof(int))!= 0) {
+         CL_LOG(CL_LOG_ERROR,"could not set TCP_NODELAY");
+      }
+#endif
       return CL_RETVAL_OK;
    }
 
