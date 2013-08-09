@@ -341,8 +341,50 @@ PrintX509()
    fi
 }
 
+RevokeX509()
+{
+   RANDFILE=$1; export RANDFILE
+   CERTFILE=$2
+   CRLFILE=$CATOP/ca-crl.pem
 
-#---------------------------------------------------------------------------
+
+   # revoke certificate
+   ExecuteAsAdmin $CA -config $CONFIG_DIR/sge_ssl_template.cnf -policy policy_anything \
+                      -batch $DAYS \
+                      -revoke $CERTFILE 
+
+   if [ $? != 0 ]; then
+      PrintError "Can't revoke %s." $CERTFILE
+      return 1
+   fi
+
+
+   # create the certificate revocation list
+   ExecuteAsAdmin $CA -config $CONFIG_DIR/sge_ssl_template.cnf -policy policy_anything \
+                      -batch $CRLDAYS \
+                      -gencrl -out ${CRLFILE}.tmp
+
+   if [ $? != 0 ]; then
+      PrintError "Can't generate revocation list %s.." $CRLFILE
+      return 1
+   fi
+
+
+   # move new certificate revocation list
+   ExecuteAsAdmin $MV ${CRLFILE}.tmp $CRLFILE
+   if [ $? != 0 ]; then
+      PrintError "Could not move file (%s -> %s)"  ${CRLFILE}.tmp $CRLFILE
+      return 1
+   fi
+   ExecuteAsAdmin $CHMOD 644 $CRLFILE
+   if [ $? != 0 ]; then
+      PrintError "chmod failed (%s)" $CRLFILE
+      return 1
+   fi
+}
+
+
+#--------------------------------------------------------------------------
 # CheckIfCaHost
 #    If our hostname given in $1 is the same as "CAHOST"
 #    echo "true" else echo "false"
@@ -1891,6 +1933,16 @@ while [ $ARGC != 0 ]; do
       shift
       ARGC=`expr $ARGC - 1`
       ;;
+   -revoke)
+      if [ $ARGC -lt 2 ]; then
+         PrintError "-revoke needs argument"
+         ErrUsage
+      fi
+      WHICH="revoke"
+      newcert=$2
+      shift
+      ARGC=`expr $ARGC - 1`
+      ;;
    -showCaTop)
       WHICH="showCaTop"
       ;;
@@ -2212,6 +2264,9 @@ verify)
     ;;
 print)
     PrintX509 cert $newcert
+    ;;
+revoke)
+    RevokeX509 $CALOCALTOP/private/rand.seed $newcert
     ;;
 printkey) 
     PrintX509 key $newcert
