@@ -51,10 +51,10 @@
 #define MSG_JOB_FINDJOB_U              _MESSAGE(33016, _("unable to find job "sge_U32CFormat" from the scheduler order package"))
 #define MSG_JOB_FINDJOBTASK_UU         _MESSAGE(33017, _("unable to find task "sge_U32CFormat" of job "sge_U32CFormat))
 
-#define MSG_ORD_OLDVERSION_UUU        _MESSAGE(33018, _("scheduler sent a order for a modified job "sge_U32CFormat"."sge_U32CFormat" (Version: "sge_U32CFormat))
+#define MSG_ORD_OLDVERSION_UUU        _MESSAGE(33018, _("scheduler sent an order for a modified job "sge_U32CFormat"."sge_U32CFormat" (Version: "sge_U32CFormat))
 #define MSG_ORD_TWICE_UU              _MESSAGE(33019, _("scheduler tries to schedule job "sge_U32CFormat"."sge_U32CFormat" twice"))
 
-#define MSG_OBJ_UNABLE2FINDPE_S       _MESSAGE(33021, _("unable to find pe "SFQ))
+#define MSG_OBJ_UNABLE2FINDPE_S       _MESSAGE(33021, _("unable to find PE "SFQ))
 #define MSG_OBJ_NOQNAME               _MESSAGE(33022, _("can't get q_name"))
 
 #define MSG_ORD_QVERSION_SUU          _MESSAGE(33023, _("scheduler sent an order for a changed queue "SFQ" (version: old "sge_U32CFormat" new "sge_U32CFormat))
@@ -79,7 +79,7 @@
 #define MSG_JOB_REMOVENOTIDLEIA_U     _MESSAGE(33040, _("scheduler tried to remove interactive job "sge_U32CFormat" but it is not in JIDLE state"))
 #define MSG_JOB_NOFREERESOURCEIA_UU   _MESSAGE(33041, _("no free resource for interactive job "sge_U32CFormat"."sge_U32CFormat" for user "SFQ))
 /* #define MSG_MAIL_CREDITLOWSUBJ_SUS    SFN": Credit low for job " sge_U32CFormat " ("SFN")" */
-#define MSG_JOB_ORDERDELINCOMPLETEJOB_UU  _MESSAGE(33042, _("scheduler tried to remove a incomplete job "sge_U32CFormat"."sge_U32CFormat))
+#define MSG_JOB_ORDERDELINCOMPLETEJOB_UU  _MESSAGE(33042, _("scheduler tried to remove an incomplete job "sge_U32CFormat"."sge_U32CFormat))
 #define MSG_JOB_SUSPOTNOTRUN_UU       _MESSAGE(33043, _("got ORT_suspend_on_threshold order for non running task "sge_U32CFormat"."sge_U32CFormat))
 #define MSG_JOB_UNSUSPOTNOTRUN_UU     _MESSAGE(33044, _("got ORT_unsuspend_on_threshold order for non running task "sge_U32CFormat"."sge_U32CFormat))
 #define MSG_JOB_UNSUSPOT_UUS          _MESSAGE(33045, _("unsuspending job "sge_U32CFormat"."sge_U32CFormat" according to suspend threshold of queue "SFQ))
@@ -124,7 +124,7 @@
 ** gdi_utility_qmaster.c 
 */
 #define MSG_GDI_SIG_DIGIT_SS         _MESSAGE(33071, _("denied: attribute "SFQ" contains invalid value "SFQ))
-#define MSG_GDI_APATH_S              _MESSAGE(33073, _("denied: path given for "SFQ" must start with an \"/\""))
+#define MSG_GDI_APATH_S              _MESSAGE(33073, _("denied: path given for "SFQ" must start with a \"/\""))
 #define MSG_GDI_VARS_SS              _MESSAGE(33074, _("parameter "SFQ": "SFN))
 #define MSG_GDI_VALUE_S              _MESSAGE(33075, _("denied: attribute "SFQ" contains invalid value (null)"))
 #define MSG_GDI_TYPE_MEM_SS          _MESSAGE(33076, _("value for attribute "SFN" "SFQ" is not a memory value"))
@@ -218,10 +218,10 @@
 */
 #define MSG_COM_SENDJOBTOHOST_US      _MESSAGE(33142, _("can't send job \"" sge_U32CFormat"\" to host "SFQ))
 #define MSG_COM_RESENDUNKNOWNJOB_UU   _MESSAGE(33143, _("cannot resend unknown job "sge_U32CFormat"."sge_U32CFormat))
-#define MSG_JOB_UNKNOWNGDIL4TJ_UU     _MESSAGE(33144, _("transferring job "sge_U32CFormat"."sge_U32CFormat" has an invalid gdi list --- deleting"))
-#define MSG_JOB_NOQUEUE4TJ_SUU        _MESSAGE(33145, _("queue "SFQ" in transiting job "sge_U32CFormat"."sge_U32CFormat" doesn't exist. deleting task"))
-#define MSG_JOB_NOHOST4TJ_SUU         _MESSAGE(33146, _("execution host "SFQ" for transferring job "sge_U32CFormat"."sge_U32CFormat" doesn't exist. deleting task"))
-#define MSG_JOB_NOPE4TJ_SUU           _MESSAGE(33147, _("parallel environment "SFQ" for transferring job "sge_U32CFormat"." sge_U32CFormat" doesn't exist. deleting job"))
+#define MSG_JOB_UNKNOWNGDIL4TJ_UU     _MESSAGE(33144, _("transferring job "sge_U32CFormat"."sge_U32CFormat" has an invalid GDI list --- deleting"))
+#define MSG_JOB_NOQUEUE4TJ_SUU        _MESSAGE(33145, _("queue "SFQ" in transiting job "sge_U32CFormat"."sge_U32CFormat" doesn't exist; deleting task"))
+#define MSG_JOB_NOHOST4TJ_SUU         _MESSAGE(33146, _("execution host "SFQ" for transferring job "sge_U32CFormat"."sge_U32CFormat" doesn't exist; deleting task"))
+#define MSG_JOB_NOPE4TJ_SUU           _MESSAGE(33147, _("parallel environment "SFQ" for transferring job "sge_U32CFormat"." sge_U32CFormat" doesn't exist; deleting job"))
 #define MSG_JOB_DELIVER2Q_UUS         _MESSAGE(33148, _("failed to deliver job "sge_U32CFormat"."sge_U32CFormat" to queue "SFQ))
 #define MSG_JOB_RESCHEDULE_UU         _MESSAGE(33159, _("rescheduling job "sge_U32CFormat"."sge_U32CFormat) ) 
 #define MSG_RU_CANCELED_S             _MESSAGE(33160, _("Due to a modification of the reschedule_unknown timeout rescheduling for host "SFN" was canceled."))
@@ -293,11 +293,11 @@
 */
 #define MSG_JOB_NORESUBPERMS_SSS      _MESSAGE(33202, _("job rejected: "SFN"@"SFN" is not allowed to resubmit jobs of user "SFN))
 #define MSG_JOB_NOPERMS_SS            _MESSAGE(33203, _("job rejected: "SFN"@"SFN" is not allowed to submit jobs"))
-#define MSG_JOB_MORETASKSTHAN_U       _MESSAGE(33204, _("job rejected: You try to submit a job with more than "sge_U32CFormat" tasks"))
+#define MSG_JOB_MORETASKSTHAN_U       _MESSAGE(33204, _("job rejected: you tried to submit a job with more than "sge_U32CFormat" tasks"))
 #define MSG_JOB_UID2LOW_II            _MESSAGE(33205, _("job rejected: your user id %d is lower than minimum user id %d of cluster configuration"))
 #define MSG_JOB_GID2LOW_II            _MESSAGE(33206, _("job rejected: your group id %d is lower than minimum group id %d of cluster configuration"))
-#define MSG_JOB_ALLOWEDJOBSPERUSER_UU  _MESSAGE(33207, _("job rejected: Only "sge_U32CFormat" jobs are allowed per user (current job count: "sge_U32CFormat")"))
-#define MSG_JOB_ALLOWEDJOBSPERCLUSTER _MESSAGE(33208, _("job rejected: Only "sge_U32CFormat" jobs are allowed per cluster"))
+#define MSG_JOB_ALLOWEDJOBSPERUSER_UU  _MESSAGE(33207, _("job rejected: only "sge_U32CFormat" jobs are allowed per user (current job count: "sge_U32CFormat")"))
+#define MSG_JOB_ALLOWEDJOBSPERCLUSTER _MESSAGE(33208, _("job rejected: only "sge_U32CFormat" jobs are allowed per cluster"))
 #define MSG_JOB_MQNONPE               _MESSAGE(33209, _("job rejected: specification of master queue is not allowed for non-parallel jobs"))
 #define MSG_JOB_NOSCRIPT              _MESSAGE(33211, _("job rejected: no script in your request"))
 #define MSG_JOB_PEUNKNOWN_S           _MESSAGE(33212, _("job rejected: the requested parallel environment "SFQ" does not exist"))
@@ -338,8 +338,8 @@
 #define MSG_MAIL_TASKKILLEDBODY_UUSSS _MESSAGE(33247, _("Job-array task "sge_U32CFormat"."sge_U32CFormat" ("SFN") was killed by "SFN"@"SFN))
 #define MSG_MAIL_JOBKILLEDBODY_USSS   _MESSAGE(33248, _("Job " sge_U32CFormat " ("SFN")  was killed by "SFN"@"SFN))
 #define MSG_MAIL_BECAUSE              _MESSAGE(33249, _("because "))
-#define MSG_JOB_FORCEDDELTASK_SUU     _MESSAGE(33250, _("warning: "SFN" forced the deletion of job-array task "sge_U32CFormat"."sge_U32CFormat))
-#define MSG_JOB_FORCEDDELJOB_SU       _MESSAGE(33251, _("warning: "SFN" forced the deletion of job "sge_U32CFormat))
+#define MSG_JOB_FORCEDDELTASK_SUU     _MESSAGE(33250, _(SFN" forced the deletion of job-array task "sge_U32CFormat"."sge_U32CFormat))
+#define MSG_JOB_FORCEDDELJOB_SU       _MESSAGE(33251, _(SFN" forced the deletion of job "sge_U32CFormat))
 #define MSG_COM_NOSYNCEXECD_SU        _MESSAGE(33252, _(SFN" unable to sync state with remote execd for the deletion of job \"" sge_U32CFormat "\""))
 #define MSG_JOB_REGDELTASK_SUU        _MESSAGE(33253, _(SFN" has registered the job-array task "sge_U32CFormat"."sge_U32CFormat" for deletion"))
 #define MSG_JOB_REGDELX_SSU           _MESSAGE(33254, _(SFN" has registered the "SFN" "sge_U32CFormat" for deletion"))
@@ -401,6 +401,7 @@
 #define MSG_JOB_MOD_MISSINGRUNNINGJOBCONSUMABLE_S     _MESSAGE(33308, _("denied: former resource request on consumable "SFQ" of running job missing in new resource request"))
 #define MSG_JOB_MOD_ADDEDRUNNINGJOBCONSUMABLE_S       _MESSAGE(33309, _("denied: resource request on consumable "SFQ" of running job was not contained in former resource request"))
 #define MSG_JOB_MOD_CHANGEDRUNNINGJOBCONSUMABLE_S     _MESSAGE(33310, _("denied: can't change consumable resource request "SFQ" of running job"))
+/* fixme: "jobnet"? */
 #define MSG_JOB_MOD_GOTOWNJOBIDINHOLDJIDOPTION_U      _MESSAGE(33311, _("denied: job \""sge_U32CFormat"\" may not be its own jobnet predecessor"))
 #define MSG_JOB_MOD_UNKOWNJOBTOWAITFOR_S              _MESSAGE(33312, _("denied: job "SFQ" not found"))
 #define MSG_JOB_MOD_CANONLYSPECIFYHOLDJIDADWITHADOPT _MESSAGE(33315, _("Can only specify \"-hold_jid_ad\" option with an array job (using \"-t\" option)"))
@@ -509,8 +510,8 @@
 /*
 ** sge_sharetree_qmaster.c
 */
-#define MSG_STREE_ADDSTREE_SSII       _MESSAGE(33474, _(SFN"@"SFN" has added sharetree with %d nodes and %d leafs"))
-#define MSG_STREE_MODSTREE_SSII       _MESSAGE(33475, _(SFN"@"SFN" has modified sharetree with %d nodes and %d leafs"))
+#define MSG_STREE_ADDSTREE_SSII       _MESSAGE(33474, _(SFN"@"SFN" has added sharetree with %d nodes and %d leaves"))
+#define MSG_STREE_MODSTREE_SSII       _MESSAGE(33475, _(SFN"@"SFN" has modified sharetree with %d nodes and %d leaves"))
 #define MSG_STREE_PRJINPTJSUBTREE_SS  _MESSAGE(33476, _("found project "SFQ" in project "SFQ" sub-tree of share tree"))
 #define MSG_STREE_PRJTWICE_S          _MESSAGE(33477, _("found project "SFQ" twice in share tree"))
 #define MSG_STREE_USERNONLEAF_S       _MESSAGE(33478, _("found user "SFQ" in share tree as a non-leaf node"))
@@ -673,8 +674,8 @@
 #define MSG_CQUEUE_NAMENOTGUILTY_S       _MESSAGE(33687, _("cluster queue name "SFQ" is not valid"))
 #define MSG_CQUEUE_NONAMECHANGE          _MESSAGE(33688, _("unable to change cluster queue name"))
 #define MSG_HGROUP_CYCLEINDEF_SS        _MESSAGE(33690, _("Hostgroup "SFQ" in specification of "SFQ" would create a cycle"))
-#define MSG_HGROUP_REFINHGOUP_SS        _MESSAGE(33691, _("denied: following hostgroups still reference "SFQ": "SFN))
-#define MSG_HGROUP_REFINCUSER_SS        _MESSAGE(33692, _("denied: following user mapping entries still reference "SFQ": "SFN))
+#define MSG_HGROUP_REFINHGOUP_SS        _MESSAGE(33691, _("denied: these hostgroups still reference "SFQ": "SFN))
+#define MSG_HGROUP_REFINCUSER_SS        _MESSAGE(33692, _("denied: these user mapping entries still reference "SFQ": "SFN))
 
 #define MSG_QINSTANCE_NOSSOS_S          _MESSAGE(33694, _("Subordinate suspension prevents unsuspension due to calendar for queue "SFQ))
 #define MSG_QINSTANCE_NOSADM_S          _MESSAGE(33695, _("Administrator suspension prevents unsuspension due to calendar for queue "SFQ))
@@ -690,14 +691,14 @@
 #define MSG_QINSTANCE_SLOTSRESERVED_USS  _MESSAGE(33727, _("denied: "sge_U32CFormat" slots are already reserved in "SFN"@"SFN" by an advance reservation"))
 
 #define MSG_ATTR_HASAMBVAL_SSS          _MESSAGE(33728, _("warning: "SFQ" has ambiguous value ("SFQ", "SFQ")"))
-#define MSG_CQUEUE_REFINHGOUP_SS        _MESSAGE(33729, _("denied: following cluster queues still reference "SFQ": "SFN))
+#define MSG_CQUEUE_REFINHGOUP_SS        _MESSAGE(33729, _("denied: these cluster queues still reference "SFQ": "SFN))
 #define MSG_LOG_DELETED               _MESSAGE(33800, _("job deleted"))
 #define MSG_LOG_SENT2EXECD            _MESSAGE(33801, _("sent to execd"))
 #define MSG_LOG_DELIVERED             _MESSAGE(33802, _("job received by execd"))
 #define MSG_LOG_EXITED                _MESSAGE(33803, _("job exited"))
-#define MSG_LOG_WAIT4SGEDEL           _MESSAGE(33804, _("job waits for schedd's deletion"))
-#define MSG_LOG_DELSGE                _MESSAGE(33805, _("job deleted by schedd"))
-#define MSG_LOG_DELIMMEDIATE          _MESSAGE(33806, _("immediate job deleted by schedd"))
+#define MSG_LOG_WAIT4SGEDEL           _MESSAGE(33804, _("job waits for scheduler's deletion"))
+#define MSG_LOG_DELSGE                _MESSAGE(33805, _("job deleted by scheduler"))
+#define MSG_LOG_DELIMMEDIATE          _MESSAGE(33806, _("immediate job deleted by scheduler"))
 #define MSG_LOG_DELFORCED             _MESSAGE(33807, _("job deleted by forced deletion request"))
 #define MSG_QMASTER_UNEXPECTED_SIGNAL_I    _MESSAGE(33810, _("received unexpected signal %d"))
 #define MSG_JOB_DEADLINETIME               _MESSAGE(33811, _("deadline time"))
@@ -803,7 +804,7 @@
 #define MSG_JOB_TERMJOBDUETOLIMIT_UU  _MESSAGE(33954, _("terminating job "sge_U32CFormat"."sge_U32CFormat" because runtime limit is reached"))
 #define MSG_JOB_ADDJOBTRIGGER_UUUU    _MESSAGE(33955, _("added trigger to terminate job "sge_U32CFormat"."sge_U32CFormat" when runtime limit is reached ("sge_U32CFormat" + "sge_U32CFormat")"))
 #define MSG_JOB_DELJOBTRIGGER_UU      _MESSAGE(33956, _("removing trigger to terminate job "sge_U32CFormat"."sge_U32CFormat))
-#define MSG_JOB_CHGFORCED_UU          _MESSAGE(33957, _("changed non-forced request to forced request for job "sge_U32CFormat"."sge_U32CFormat"because host can't be contacted"))
+#define MSG_JOB_CHGFORCED_UU          _MESSAGE(33957, _("changed non-forced request to forced request for job "sge_U32CFormat"."sge_U32CFormat" because host can't be contacted"))
 #define MSG_JOB_BINDING              _MESSAGE(33958, _("binding"))
 
 #define MSG_PARSE_LOOP_IN_SSOS_TREE_SS      _MESSAGE(33959, _("denied: adding "SFQ" to the subordinate_list of "SFQ" would create a loop in the slotwise preemption configuration!"))

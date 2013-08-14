@@ -135,7 +135,7 @@
 #define MSG_SCHEDD_INFO_CANNOTRUNINQUEUE              _MESSAGE(47104, _("Jobs can not run because the resource requirements can not be satisfied"))
 #define MSG_SCHEDD_INFO_NORESOURCESPE                 _MESSAGE(47105, _("Jobs can not run because resources requested are not available for parallel job"))
 #define MSG_SCHEDD_INFO_CANNOTRUNGLOBALLY             _MESSAGE(47106, _("Jobs can not run globally because the resource requirements can not be satisfied"))
-#define MSG_SCHEDD_INFO_NOFORCEDRES                   _MESSAGE(47107, _("Jobs can not run because they do not request 'forced' resource"))
+#define MSG_SCHEDD_INFO_NOFORCEDRES                   MSG_SCHEDD_INFO_NOTREQFORCEDRES
 #define MSG_SCHEDD_INFO_NOGLOBFORCEDRES               _MESSAGE(47108, _("Jobs can not run globally because they do not request 'forced' resource"))
 #define MSG_SCHEDD_INFO_CKPTNOTFOUND                  _MESSAGE(47109, _("Jobs can not run because requested ckpt object not found") )  
 #define MSG_SCHEDD_INFO_PESLOTSNOTINRANGE             _MESSAGE(47110, _("Jobs can not run because available slots combined under PE are not in range of job") ) 
@@ -171,7 +171,7 @@
 #define MSG_SCHEDD_INFO_JOB_CATEGORY_FILTER           _MESSAGE(47138, _("Job Filter: Jobs can not run because the resource requirements cannot be satisfied."))
 #define MSG_SCHEDD_INFO_CANNOTRUNINQUEUECAL           _MESSAGE(47139, _("Jobs cannot run because a calendar will disable a queue soon")) 
 #define MSG_SCHEDD_INFO_CANNOTRUNRQS_SSS              _MESSAGE(47140, _("Job cannot run in queue instance \""SFN"@"SFN"\" because it exceeds limit in rule "SFN))
-#define MSG_SCHEDD_INFO_CANNOTRUNRQS                  _MESSAGE(47141, _("Jobs cannot run because they exceeds limit in resource quota sets")) 
+#define MSG_SCHEDD_INFO_CANNOTRUNRQS                  _MESSAGE(47141, _("Jobs cannot run because they exceed limit(s) in resource quota sets"))
 #define MSG_SCHEDD_INFO_JOBDYNAMICALLIMIT_SS          _MESSAGE(47142, _("Job dropped because of invalid dynamical limit "SFN" in rule "SFN)) 
 #define MSG_SCHEDD_INFO_JOBDYNAMICALLIMIT             _MESSAGE(47143, _("Jobs dropped because of invalid dynamical limit")) 
 #define MSG_SCHEDD_INFO_CANNOTRUNRQSGLOBAL_SS         _MESSAGE(47144, _("cannot run because it exceeds limit "SFQ" in rule "SFQ))
