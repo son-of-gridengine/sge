@@ -249,7 +249,7 @@
 #define MSG_SMF_CONTRACT_ABANDON_FAILED_US     _MESSAGE(59149, _("can't abandon contract "sge_U32CFormat": "SFQ))
 #define MSG_SMF_LOAD_LIBSCF_FAILED_S           _MESSAGE(59150, _(SFQ" -> can't load libscf"))
 #define MSG_SMF_LOAD_LIB_FAILED                _MESSAGE(59151, _("can't load libcontract and libscf"))
-#define MSG_SMF_DISABLE_FAILED_SSUU            _MESSAGE(59152, _("could not temporary disable instance "SFQ" : "SFQ"   [euid="sge_U32CFormat", uid="sge_U32CFormat"]"))
+#define MSG_SMF_DISABLE_FAILED_SSUU            _MESSAGE(59152, _("could not temporarily disable instance "SFQ" : "SFQ"   [euid="sge_U32CFormat", uid="sge_U32CFormat"]"))
 #define MSG_SMF_FORK_FAILED_SS                 _MESSAGE(59153, _(SFQ" failed: "SFQ))
 #define MSG_POINTER_INVALIDSTRTOKCALL1         _MESSAGE(59154, _("Invalid sge_strtok_r call, last is NULL"))
 #define MSG_UTI_MEMPWNAM                       _MESSAGE(59155, _("Not enough memory for sge_getpwnam_r"))

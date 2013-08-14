@@ -1030,11 +1030,11 @@ void get_rid_of_job_due_to_qdel(sge_gdi_ctx_class_t *ctx,
          j = NULL;
 
          if (job_is_array(j)) {
-            ERROR((SGE_EVENT, MSG_JOB_FORCEDDELTASK_SUU,
-                   ruser, sge_u32c(job_number), sge_u32c(task_number)));
+            WARNING((SGE_EVENT, MSG_JOB_FORCEDDELTASK_SUU,
+                     ruser, sge_u32c(job_number), sge_u32c(task_number)));
          } else {
-            ERROR((SGE_EVENT, MSG_JOB_FORCEDDELJOB_SU,
-                   ruser, sge_u32c(job_number)));
+            WARNING((SGE_EVENT, MSG_JOB_FORCEDDELJOB_SU,
+                     ruser, sge_u32c(job_number)));
          }
          answer_list_add(answer_list, SGE_EVENT, STATUS_OK, 
                          ANSWER_QUALITY_INFO);
@@ -1051,11 +1051,11 @@ void get_rid_of_job_due_to_qdel(sge_gdi_ctx_class_t *ctx,
          lListElem *dummy_jr = lCreateElem(JR_Type);
 
          if (job_is_array(j)) {
-            ERROR((SGE_EVENT, MSG_JOB_FORCEDDELTASK_SUU,
-                   ruser, sge_u32c(job_number), sge_u32c(task_number)));
+            WARNING((SGE_EVENT, MSG_JOB_FORCEDDELTASK_SUU,
+                     ruser, sge_u32c(job_number), sge_u32c(task_number)));
          } else {
-            ERROR((SGE_EVENT, MSG_JOB_FORCEDDELJOB_SU,
-                   ruser, sge_u32c(job_number)));
+            WARNING((SGE_EVENT, MSG_JOB_FORCEDDELJOB_SU,
+                     ruser, sge_u32c(job_number)));
          }
 
          job_report_init_from_job_with_usage(dummy_jr, j, t, NULL, now);
