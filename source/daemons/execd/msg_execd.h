@@ -49,10 +49,10 @@
 /*
 ** setup_execd.c
 */
-#define MSG_JOB_XREGISTERINGJOBYATPTFDURINGSTARTUP_SU    _MESSAGE(29002, _(SFN" registering job \""sge_U32CFormat"\" at ptf during startup"))
+#define MSG_JOB_XREGISTERINGJOBYATPTFDURINGSTARTUP_SU    _MESSAGE(29002, _(SFN" registering job \""sge_U32CFormat"\" at PTF during startup"))
 #define MSG_FAILED    _MESSAGE(29003, _("failed"))
 #define MSG_DELAYED    _MESSAGE(29004, _("delayed"))
-#define MSG_JOB_XREGISTERINGJOBYTASKZATPTFDURINGSTARTUP_SUS    _MESSAGE(29005, _(SFN" registering job \""sge_U32CFormat"\" task "SFN" at ptf during startup"))
+#define MSG_JOB_XREGISTERINGJOBYTASKZATPTFDURINGSTARTUP_SUS    _MESSAGE(29005, _(SFN" registering job \""sge_U32CFormat"\" task "SFN" at PTF during startup"))
 #define MSG_ANSWER_KEEPINGCHANNELFDXOPEN_I    _MESSAGE(29006, _("keeping channel fd #%d open"))
 
 /*
@@ -68,7 +68,7 @@
 #define MSG_STATUS_LOADSENSOREXITEDWITHEXITSTATUS_I    _MESSAGE(29015, _("load sensor exited with exit status = %d"))
 #define MSG_STATUS_MAILERDIEDTHROUGHSIGNALXY_SI    _MESSAGE(29016, _("mailer died through signal "SFN" = %d"))
 #define MSG_STATUS_MAILEREXITEDWITHEXITSTATUS_I    _MESSAGE(29017, _("mailer exited with exit status = %d"))
-#define MSG_JOB_REAPINGJOBXPTFCOMPLAINSY_US    _MESSAGE(29018, _("reaping job \""sge_U32CFormat"\" ptf complains: "SFN))
+#define MSG_JOB_REAPINGJOBXPTFCOMPLAINSY_US    _MESSAGE(29018, _("reaping job \""sge_U32CFormat"\" PTF complains: "SFN))
 #define MSG_JOB_CLEANUPJOBCALLEDWITHINVALIDPARAMETERS    _MESSAGE(29019, _("clean_up_job() called with invalid parameters"))
 #define MSG_JOB_CANTFINDDIRXFORREAPINGJOBYZ_SS _MESSAGE(29020, _("can't find directory "SFN" for reaping job "SFN))
 #define MSG_JOB_CANTREADCONFIGFILEFORJOBXY_S    _MESSAGE(29021, _("can't read config file for job "SFN))
@@ -116,7 +116,7 @@
 #define MSG_SHEPHERD_EXECDWENTDOWNDURINGJOBSTART _MESSAGE(29062, _("execd went down during job start"))
 #define MSG_EXECD_ERRORREADINGPIDOFJOB_UU       _MESSAGE(29063, _("error reading pid for job "sge_U32CFormat"."sge_U32CFormat))
 #define MSG_JR_ERRSTR_EXECDDONTKNOWJOB _MESSAGE(29068, _("execd doesn't know this job"))
-#define MSG_EXECD_GOTACKFORPETASKBUTISNOTINSTATEEXITING_S _MESSAGE(29069, _("get exit ack for pe task "SFN" but task is not in state exiting"))
+#define MSG_EXECD_GOTACKFORPETASKBUTISNOTINSTATEEXITING_S _MESSAGE(29069, _("got exit ack for PE task "SFN" but task is not in state exiting"))
 
 
 /*
@@ -145,7 +145,7 @@
 ** load_avg.c
 */
 #define MSG_LOAD_NOMEMINDICES          _MESSAGE(29088, _("failed retrieving memory indices"))
-#define MSG_LOAD_NOPTFUSAGE_S          _MESSAGE(29089, _("ptf failed to determine job usage: "SFN))
+#define MSG_LOAD_NOPTFUSAGE_S          _MESSAGE(29089, _("PTF failed to determine job usage: "SFN))
 #define MSG_SGETEXT_NO_LOAD            _MESSAGE(29090, _("can't get load values"))
 
 
@@ -186,7 +186,7 @@
 #define MSG_EXECD_NOSHEPHERD_SSS      _MESSAGE(29108, _("unable to find shepherd executable neither in architecture directory "SFN" nor in "SFN": "SFN))
 #define MSG_EXECD_NOSHEPHERDWRAP_SS   _MESSAGE(29109, _("unable to find shepherd wrapper command "SFN": "SFN))
 #define MSG_DCE_NOSHEPHERDWRAP_SS     _MESSAGE(29110, _("unable to find DCE shepherd wrapper command "SFN": "SFN))
-#define MSG_EXECD_NOCOSHEPHERD_SSS    _MESSAGE(29111, _("unable to find coshepherd executable neither in architecture directory "SFN" nor in "SFN": "SFN))
+#define MSG_EXECD_NOCOSHEPHERD_SSS    _MESSAGE(29111, _("unable to find coshepherd executable, either in architecture directory "SFN" or in "SFN": "SFN))
 #define MSG_EXECD_AFSCONFINCOMPLETE   _MESSAGE(29112, _("incomplete AFS configuration - set_token_cmd and token_extend_time must be configured"))
 #define MSG_EXECD_NOCREATETOKENFILE_S _MESSAGE(29113, _("can't create token file: "SFN))
 #define MSG_EXECD_TOKENZERO           _MESSAGE(29114, _("AFS token does not exist or has zero length"))
@@ -230,13 +230,13 @@
 #define MSG_COM_UNPACKJOB             _MESSAGE(29135, _("unpacking job from job execution message"))
 #define MSG_JOB_MISSINGQINGDIL_SU     _MESSAGE(29138, _("missing queue "SFQ" found in gdil of job "sge_U32CFormat))
 #define MSG_EXECD_NOWRITESCRIPT_SIUS  _MESSAGE(29139, _("can't write script file "SFQ" wrote only %d of "sge_U32CFormat" bytes: "SFN))
-#define MSG_JOB_TASKWITHOUTJOB_U      _MESSAGE(29140, _("received task belongs to job "sge_U32CFormat" but this job is not here"))
-#define MSG_JOB_TASKNOTASKINJOB_UU    _MESSAGE(29141, _("received task belongs to job "sge_U32CFormat" but this job is here but the JobArray task "sge_U32CFormat" is not here"))
-#define MSG_JOB_TASKNOSUITABLEJOB_U   _MESSAGE(29142, _("received task belongs to job "sge_U32CFormat" but this job is not suited for starting tasks"))
+#define MSG_JOB_TASKWITHOUTJOB_U      _MESSAGE(29140, _("received task belongs to job "sge_U32CFormat" but that job is not here"))
+#define MSG_JOB_TASKNOTASKINJOB_UU    _MESSAGE(29141, _("received task belongs to job "sge_U32CFormat"; that job is here but the JobArray task "sge_U32CFormat" is not here"))
+#define MSG_JOB_TASKNOSUITABLEJOB_U   _MESSAGE(29142, _("received task belongs to job "sge_U32CFormat" but that job is not suited for starting tasks"))
 #define MSG_JOB_NOFREEQ_USSS          _MESSAGE(29145, _("no free queue for job "sge_U32CFormat" of user "SFN"@"SFN" (localhost = "SFN")"))
 #define MSG_JOB_INVALIDJATASK_REQUEST _MESSAGE(29146, _("invalid task list in job start request"))
 #define MSG_JOB_SAMEPATHSFORINPUTANDOUTPUT_SSS   _MESSAGE(29147, _("same paths given for stdin ("SFQ") and "SFN" ("SFQ")"))
-#define MSG_DENIED_PETASKREQUEST_WRONG_USER_SS   _MESSAGE(29148, _("denied request of user "SFQ" to start a pe task in job of user "SFQ))
+#define MSG_DENIED_PETASKREQUEST_WRONG_USER_SS   _MESSAGE(29148, _("denied request of user "SFQ" to start a PE task in job of user "SFQ))
 /*
 ** execd_kill_execd.c
 */
@@ -260,7 +260,7 @@
 #define MSG_LS_RESTARTLS_S            _MESSAGE(29163, _("restarting load sensor "SFN))
 /* #define MSG_LS_NORESTARTLS            _message(29164, _("load sensor not restarted because load sensor file was not modified")) __TS Removed automatically from testsuite!! TS__*/
 #define MSG_LS_NOMODTIME_SS           _MESSAGE(29165, _("can't get mod_time from load sensor file "SFN": "SFN))
-#define MSG_LS_FORMAT_ERROR_SS        _MESSAGE(29166, _("Format error of loadsensor "SFQ". Received: "SFQ))
+#define MSG_LS_FORMAT_ERROR_SS        _MESSAGE(29166, _("Format error from loadsensor "SFQ". Received: "SFQ))
 #define MSG_LS_USE_EXTERNAL_LS_S      _MESSAGE(29167, _("execd cannot retrieve load values on platform "SFQ" - please configure an external load sensor"))
 
 

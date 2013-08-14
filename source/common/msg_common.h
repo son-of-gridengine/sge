@@ -287,7 +287,7 @@
 #define MSG_GDI_ARGUMENTSYNTAX_OA_CONTEXT_LIST         "context_list            variable[=value][,variable[=value],...]"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_CKPT_SEL             "ckpt_selector           `n' `s' `m' `x' `r' <interval>"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_DATE_TIME            "date_time               [[CC]YY]MMDDhhmm[.SS]"
-#define MSG_GDI_ARGUMENTSYNTAX_OA_DESTIN_ID_LIST       "destin_id_list          queue[,queue,...]"
+#define MSG_GDI_ARGUMENTSYNTAX_OA_DESTIN_ID_LIST       MSG_GDI_ARGUMENTSYNTAX_OA_WC_QUEUE_LIST
 #define MSG_GDI_ARGUMENTSYNTAX_OA_HOLD_LIST            "hold_list               `n' `u' `s' `o' `U' `S' `O'"
 #define MSG_GDI_ARGUMENTSYNTAX_OA_HOLD_LIST_QHOLD      "hold_list               `u' `s' `o'" 
 #define MSG_GDI_ARGUMENTSYNTAX_OA_HOST_ID_LIST         "host_id_list            host[ host ...]"
@@ -451,7 +451,7 @@
 #define MSG_GDI_USAGE_cwd_OPT                            "[-cwd]"
 #define MSG_GDI_UTEXT_cwd_OPT                            _MESSAGE(23326, _("use current working directory"))
 
-#define MSG_GDI_USAGE_cq_OPT_DESTIN_ID_LIST              "[-cq destin_id_list]"
+#define MSG_GDI_USAGE_cq_OPT_DESTIN_ID_LIST              "[-cq wc_queue_list]"
 #define MSG_GDI_UTEXT_cq_OPT_DESTIN_ID_LIST              _MESSAGE(23327, _("clean queue"))
 
 #define MSG_GDI_USAGE_C_OPT_DIRECTIVE_PREFIX             "[-C directive_prefix]"
@@ -493,7 +493,7 @@
 #define MSG_GDI_USAGE_dp_OPT_PE_NAME                     "[-dp pe-name]"
 #define MSG_GDI_UTEXT_dp_OPT_PE_NAME                     _MESSAGE(23341, _("delete parallel environment"))
 
-#define MSG_GDI_USAGE_dq_OPT_DESTIN_ID_LIST              "[-dq destin_id_list]"
+#define MSG_GDI_USAGE_dq_OPT_DESTIN_ID_LIST              "[-dq wc_queue_list]"
 #define MSG_GDI_UTEXT_dq_OPT_DESTIN_ID_LIST              _MESSAGE(23342, _("delete queue"))
 
 #define MSG_GDI_USAGE_ds_OPT_HOST_LIST                   "[-ds host_list]"
@@ -749,7 +749,7 @@
 #define MSG_GDI_USAGE_spl_OPT                            "[-spl]"
 #define MSG_GDI_UTEXT_spl_OPT                            _MESSAGE(23425, _("show all parallel environments"))
 
-#define MSG_GDI_USAGE_sq_OPT_DESTIN_ID_LIST              "[-sq [destin_id_list]]"
+#define MSG_GDI_USAGE_sq_OPT_DESTIN_ID_LIST              "[-sq [wc_queue_list]]"
 #define MSG_GDI_UTEXT_sq_OPT_DESTIN_ID_LIST              _MESSAGE(23426, _("show the given queue"  ))
 
 #define MSG_GDI_USAGE_sql_OPT                            "[-sql]"
@@ -1106,7 +1106,7 @@
 #define MSG_GDI_USAGE_d_OPT_TIME           "[-d time]"
 #define MSG_GDI_UTEXT_d_OPT_TIME           _MESSAGE(60632, _("duration of time window"))
 
-#define MSG_SWITCH_USER_S                  _MESSAGE(60633, _("can't switch _user/group: "SFN))
+#define MSG_SWITCH_USER_S                  _MESSAGE(60633, _("can't switch user/group: "SFN))
 
 /*
  * Objects and components

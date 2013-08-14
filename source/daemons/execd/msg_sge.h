@@ -34,7 +34,7 @@
 
 #include "basis_types.h"
 
-#define MSG_SGE_USAGE         _MESSAGE(31025, _("usage: pdc [-snpgj] [-kK signo] [-iJPS secs] job_id [ ... ]\n\njob_id is the supplementary gid on Linux"))
+#define MSG_SGE_USAGE         _MESSAGE(31025, _("usage: pdc [-snpgj] [-kK signo] [-iJPS secs] job_id [ ... ]\n\njob_id is the supplementary gid on most systems"))
 #define MSG_SGE_s_OPT_USAGE   _MESSAGE(31026, _("show system data"  ))
 #define MSG_SGE_n_OPT_USAGE   _MESSAGE(31027, _("no output"  ))
 #define MSG_SGE_p_OPT_USAGE   _MESSAGE(31028, _("show process information"  ))
