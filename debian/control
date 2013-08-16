@@ -14,7 +14,8 @@ Vcs-Browser: https://arc.liv.ac.uk/trac/SGE/browser/sge
 
 Package: sge
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, sge-common
+# procps for /bin/ps, called in some places
+Depends: ${shlibs:Depends}, ${misc:Depends}, sge-common, procps
 Suggests: openssh-client
 Recommends: sge-doc
 Replaces: gridengine-client, gridengine-qmon, gridengine-master, gridengine-exec,
