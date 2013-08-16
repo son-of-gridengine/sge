@@ -134,6 +134,7 @@ License: BSD and LGPLv3+ and MIT and SISSL and others
 Requires: %{name} = %{version}-%{release}
 Requires(postun): %{name} = %{version}-%{release}
 Requires(preun): %{name} = %{version}-%{release}
+Requires: /bin/ps
 
 %description execd
 Programs needed to run a Grid Engine execution host.
@@ -146,6 +147,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: db4-utils
 Requires(postun): %{name} = %{version}-%{release}
 Requires(preun): %{name} = %{version}-%{release}
+Requires: /bin/ps
 
 %description qmaster
 Programs needed to run a Grid Engine master host.
@@ -389,6 +391,9 @@ fi
 
 
 %changelog
+* Fri Aug 16 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4
+- Require /bin/ps for execd, qmaster
+
 * Thu Jul 11 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4
 - Don't use "BuildArch: noarch" on RHEL5 -- fails with un-packaged files errors
 
