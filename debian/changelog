@@ -3,6 +3,7 @@ sge (8.1.4) unstable; urgency=low
   * Fix packaging on wheezy.
   * Drop explicit ant dependency.
   * Add motif alternative build dependency.
+  * Depend on procps.
 
  -- Dave Love <d.love@liv.ac.uk>  Sun, 28 Jul 2013 10:57:47 +0100
 
