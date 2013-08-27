@@ -22,6 +22,7 @@
         <javac debug="${javac.debug}" 
                deprecation="${javac.deprecated}"
                destdir="build/classes"
+               includeantruntime="true"
                target="${jgdi.javac.target}"
                source="${jgdi.javac.source}">
             <src path="src"/>
