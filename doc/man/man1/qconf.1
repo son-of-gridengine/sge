@@ -169,7 +169,7 @@ GE version 6.2u4 and below.
 Please note that this command-line switch will be removed from xxQS_NAMExx with
 the next major release.
 .\"
-.IP "\fB\-Dattr obj_spec fname obj_instance,...\fP"
+.IP "\fB\-Dattr\fP \fIobj_spec\fP \fIfname\fP \fIobj_instance\fP,..."
 .ta 2.3i
 	\fI<del. from object attribs>\fP
 .ta 3i
@@ -292,7 +292,7 @@ Refer to
 for details on the queue configuration format.
 Requires root or manager privilege.
 .\"
-.IP  "\fB\-Msconf\fP \fIfname\fP	\fI<modify scheduler configuration from fname>\fP"
+.IP "\fB\-Msconf\fP \fIfname\fP	\fI<modify scheduler configuration from fname>\fP"
 The current scheduler configuration (see
 .M sched_conf 5 )
 is overridden with the configuration specified in the file.
@@ -347,22 +347,22 @@ for the queue, for example).
 .br
 Requires root/manager privileges.
 .\"
-.IP "\fB\-aattr obj_spec attr_name val obj_instance,...\fP"
+.IP "\fB\-aattr\fP \fIobj_spec\fP \fIattr_name\fP \fIval\fP \fIobj_instance\fP,...\fP"
 .ta 2.3i
 	\fI<add to object attributes>\fP
 .ta 3i
 .br
 Allows adding specifications to a single
 configuration list attribute in multiple instances
-of an object with a single command. Currently
-supported objects are the queue, the host, the host group, 
-the parallel environment, the resource quota sets
-and the checkpointing interface configuration being specified as
+of an object with a single command.  Currently
+supported object types are queues, hosts, host groups,
+parallel environments, resource quota sets
+and checkpointing interface configurations, specified respectively as
 .BR queue ,
 .BR exechost ,
 .BR hostgroup ,
 .BR pe ,
-.BR rqs ,
+.BR resource_quota ,
 or
 .B ckpt
 in \fIobj_spec\fP. 

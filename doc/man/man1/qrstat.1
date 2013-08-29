@@ -60,8 +60,8 @@ the cluster global file.
 Command line can be used to override the flags contained in the files.
 .\"
 .SH OPTIONS
-.IP "\fB\-ar ar_id,...\fP"
-Prints various information about the ARs identified by given ar_id list.
+.IP "\fB\-ar\fP \fIar_id\fP,..."
+Prints various information about the ARs identified by the given \fIar_id\fP list.
 .\"
 .IP "\fB\-explain\fP"
 Displays the reason for the error state of an AR. Possible reasons 
@@ -72,14 +72,14 @@ The output format for the alarm reasons is one line per reason.
 .IP "\fB\-help\fP"
 Prints a listing of all options.
 .\"
-.IP "\fB\-u user,...\fP"
+.IP "\fB\-u\fP \fIuser\fP,..."
 Display information only for those ARs 
 created by the users from the given user list.
 .sp
 The string
 \fB\ $user\fP
-is a placeholder for the current username. An asterisk "*" can be used 
-as username wildcard to request that all users' ARs be displayed. The
+is a placeholder for the current username. An asterisk "\fB*\fB" can be used
+as a username wildcard to request that all users' ARs be displayed. The
 default value for this switch is "\fB-u $user\fP".
 .\"
 .IP "\fB\-xml\fP"
@@ -96,24 +96,25 @@ output formats need to be differentiated.
 Following the header line, a section for each AR
 is provided. The columns contain information for
 .IP "\(bu" 3n
-the AR id.
+the AR id;
 .IP "\(bu" 3n
-the name of the AR.
+the name of the AR;
 .IP "\(bu" 3n
-the current state of the AR. One of following states "wWrEd".
+the current state of the AR. One of the following letters with the
+given meaning:
 .sp 1
 .nf
 .ta \w'|b|  'u
-w \- waiting without error
-W \- warning (effective \- waiting with error)
-r \- running
-E \- error (effective \- running with error)
-d \- deleted 
+\fBw\fP \- waiting without error
+\fBW\fP \- warning (effective \- waiting with error)
+\fBr\fP \- running
+\fBE\fP \- error (effective \- running with error)
+\fBd\fP \- deleted
 .fi
 .IP "\(bu" 3n
-the start time of the AR.
+the start time of the AR;
 .IP "\(bu" 3n
-the end time of the AR.
+the end time of the AR;
 .IP "\(bu" 3n
 the duration of the AR.
 .SS "\fBDetailed Format (with \-ar)\fP"
