@@ -85,8 +85,9 @@ UTILIB_DRMAA_SRC = \
 
 UTILIB_SRC = sge_pty.c sge_loadmem.c sge_getloadavg.c sge_monitor.c $(UTILIB_DRMAA_SRC)
 
-UTILIB_DRMAA_OBJS = $(UTILIB_DRMAA_SRC:.c=.o)
-UTILIB_OBJS = $(UTILIB_SRC:.c=.o) 
+# Under interix with CSP, sge_uidgid needs functions from utilbin/sge_passwd.o
+UTILIB_DRMAA_OBJS = $(UTILIB_DRMAA_SRC:.c=.o) $(SGEPASSWDO)
+UTILIB_OBJS = $(UTILIB_SRC:.c=.o) $(SGEPASSWDO)
 
 UTILIB_ADD_OBJS = peopen_standalone.o pids_standalone.o
 
