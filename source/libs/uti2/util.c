@@ -163,7 +163,9 @@ static const pair sigtable[] = {
    {SIGILL, "Illegal instruction"},
    {SIGTRAP, "Trace/breakpoint trap"},
    {SIGABRT, "Aborted"},
+#ifdef SIGIOT                   /* not in Cygwin */
    {SIGIOT, "IOT trap"},
+#endif
    {SIGBUS, "Bus error"},
    {SIGFPE, "Floating point exception"},
    {SIGKILL, "Killed"},
@@ -215,11 +217,11 @@ static const pair sigtable[] = {
 
 static const int nsig = sizeof(sigtable)/sizeof(pair);
 
-const char *strsignal(int signo) {
+char *strsignal(int signo) {
    int n = nsig;
    while (n--) {
       if (sigtable[n].signal == signo)
-	 return sigtable[n].description;
+	 return (char *) sigtable[n].description;
    }
    return "Unknown signal";
 }
