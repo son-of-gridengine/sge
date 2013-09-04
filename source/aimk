@@ -31,7 +31,7 @@
 #  All Rights Reserved.
 #  
 #  Portions of this software are Copyright (c) 2011 Univa Corporation
-#  Copyright (C) David Love 2010, 2011, 2012, University of Liverpool
+#  Copyright (C) David Love 2010, 2011, 2012, 2013 University of Liverpool
 #
 ##########################################################################
 #___INFO__MARK_END__
@@ -70,6 +70,7 @@ set RM = "rm -f"
 set HWLOCLIB    = ""
 set GSSLIBS = ""
 set AR = ar
+set SGEPASSWDO = ""
 
 if ( -f dist/util/arch ) then
    set buildarch = `dist/util/arch`
@@ -1575,6 +1576,9 @@ case WIN32_X86:
    set WINGRIDLIB_DEP   = "libwingrid.a"
    set WINGRIDLIB_A     = "-lwingrid_static $SECLIBS_STATIC -ldl"
    set WINGRIDLIB_A_DEP = "libwingrid_static.a"
+   if ($SEC != 0) then
+      set SGEPASSWDO = sge_passwd.o
+   endif
 
    if ($OPTIMIZATION == 1) then
       set OFLAG = "-O3"
@@ -2513,6 +2517,7 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
          "JUTI_OBJ=$JUTI_OBJ" \
          "WINCC=$WINCC" "WINCFLAGS=$WINCFLAGS" "WINLFLAGS=$WINLFLAGS" \
          "WINLIBS=$WINLIBS" "LIBRARY_LIBS=$LIBRARY_LIBS" HWLOCLIB=$HWLOCLIB \
+         SGEPASSWDO=$SGEPASSWDO \
          $argv
    if ( $status != 0 ) then
       echo not done
