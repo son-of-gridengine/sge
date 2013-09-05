@@ -157,8 +157,10 @@ extern "C" {
 */
 #if defined(FREEBSD)
 #  define uid_t_fmt "%u"
-#elif defined __CYGWIN__
+/* fixme:  this was OK in an older Cygwin, but isn't in 32-bit 1.7.25
+#elif __CYGWIN__
 #  define uid_t_fmt "%lu"
+*/
 #else
 #  define uid_t_fmt pid_t_fmt
 #endif
