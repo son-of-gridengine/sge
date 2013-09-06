@@ -1987,11 +1987,11 @@ set LIBS_DIR = ${SDIR}
 if ( $JNI == 1 ) then
 
    if ( "${JAVA_HOME}/${JAVA_INCL}" != /usr/include ) then
-      set CORE_INCLUDE = "$CORE_INCLUDE -I${JAVA_HOME}/${JAVA_INCL}"
+      set CORE_INCLUDE = "$CORE_INCLUDE -I'${JAVA_HOME}/${JAVA_INCL}'"
    endif
 
    if ("$JAVA_ARCH" != "") then
-      set CORE_INCLUDE = "$CORE_INCLUDE -I${JAVA_HOME}/${JAVA_INCL}/${JAVA_ARCH}"
+      set CORE_INCLUDE = "$CORE_INCLUDE -I'${JAVA_HOME}/${JAVA_INCL}/${JAVA_ARCH}'"
       switch ($buildarch)
          case lx-x86:
          case ulx-x86:
