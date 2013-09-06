@@ -541,7 +541,7 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
 #  define limit_fmt "%ld%s"
 #elif defined(IRIX) || defined(HPUX) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(INTERIX)
 #  define limit_fmt "%lld%s"
-#elif (defined(__linux__) && defined(TARGET_32BIT))
+#elif __linux__ && !__LP64__
 #  define limit_fmt "%llu%s"
 #elif defined(ALPHA) || defined(SOLARIS) || defined(__linux__) || defined(__CYGWIN__)
 #  define limit_fmt "%lu%s"
