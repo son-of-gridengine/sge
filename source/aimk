@@ -1719,6 +1719,7 @@ case WIN32_X86:
    breaksw
 
 case CYGWIN_X86:
+case CYGWIN_X86_64:
    # fixme:  can any of this work?
    set MAKEWINGRIDLIB   = 0
    set MAKEWINGRIDAPP   = 0
