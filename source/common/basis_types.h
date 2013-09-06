@@ -79,7 +79,7 @@ typedef enum {
 #define NONE_STR  "NONE"
 #define NONE_LEN  4
 
-#if defined(FREEBSD) || defined(NETBSD) || defined(LINUXAMD64) || defined(LINUXIA64) || defined(LINUXS390X)
+#if defined(FREEBSD) || defined(NETBSD) || _LP64 || __LP64__
 #  define sge_U32CFormat "%u"  
 #  define sge_U32CLetter "u"
 #  define sge_u32c(x)  (unsigned int)(x)
@@ -95,12 +95,6 @@ typedef enum {
 #  define sge_x32c(x)  (unsigned long)(x)
 #endif
 
-
-#if defined(IRIX)
-#define sge_u64 "%lld"
-#define sge_u64c(x)  (unsigned long long)(x)
-#endif
-
 #include <limits.h>
 #if !(defined(WIN32NATIVE) || defined(WINDOWS))
 #   include <sys/param.h>
@@ -110,24 +104,18 @@ typedef enum {
 extern "C" {
 #endif
 
-#if defined(TARGET_64BIT)
+#if defined(TARGET_64BIT) || _LP64 || __LP64__
 #  define u_long32 u_int
-#elif defined(WIN32NATIVE)
-#  define u_long32 unsigned long
-#elif defined(FREEBSD) || defined(NETBSD)
-#  define u_long32 uint32_t
-#else
-#  define u_long32 u_long
-#endif
-
-#if defined(TARGET_64BIT)
 #  define u_long64 u_long
 #elif defined(WIN32NATIVE)
-#  define u_long64 unsigned long long
+#  define u_long32 unsigned long
+#  define u_long32 u_long
 #elif defined(FREEBSD) || defined(NETBSD)
+#  define u_long32 uint32_t
 #  define u_long64 uint64_t
 #else
 #  define u_long64 unsigned long long
+#  define u_long32 u_long
 #endif
 
 #define U_LONG32_MAX 4294967295UL
@@ -135,7 +123,7 @@ extern "C" {
 
 /* set sge_u32 and sge_x32 for 64 or 32 bit machines */
 /* sge_uu32 for strictly unsigned, not nice, but did I use %d for an unsigned? */
-#if defined(TARGET_64BIT) || defined(FREEBSD) || defined(NETBSD)
+#if defined TARGET_64BIT || defined FREEBSD || defined NETBSD || _LP64 || __LP64__
 #  define sge_u64    "%ld"
 #  define sge_u32    "%d"
 #  define sge_uu32   "%u"
