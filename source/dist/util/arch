@@ -326,7 +326,7 @@ Interix)
 CYGWIN*)
    case $osmachine in
    i*) ARCH=cygwin-x86 ;;
-   amd64) ARCH=cygwin-x86_64 ;; # autoconf, even if 64-bit doesn't exist yet
+   x86_64) ARCH=cygwin-x86_64 ;;
    *) ARCH=UNSUPPORTED-cygwin ;;
    esac
    ;;
