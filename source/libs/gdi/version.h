@@ -34,7 +34,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#if defined(TARGET_64BIT)
+#if defined(TARGET_64BIT) || _LP64 || __LP64__
    #define gdi_ulong32 int
 #else
    #define gdi_ulong32 unsigned long
