@@ -38,6 +38,7 @@ switch($buildarch)
    case "darwin":
    case "lx-alpha":
    case "win32-x86":
+   case cygwin-*:
       set argv = ( -no-jni -no-java $* )
       breaksw
    case "usol-sparc64"
