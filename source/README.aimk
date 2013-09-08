@@ -1,5 +1,5 @@
               README.aimk
-			     -----------
+              -----------
 
 Content
 -------
@@ -24,10 +24,10 @@ Content
    'aimk' stands for Architecture Independent MaKe. It is inspired by
    the 'aimk' script of PVM (Parallel Virtual Machine).
  
-   It is not, as the name indicates architecture independent at all. It is
-   highly dependent from the underlying operating system and calls the
+   It is not, as the name indicates, architecture independent at all. It is
+   highly dependent on the underlying operating system and calls the
    makefiles with the appropriate parameters (compiler flags etc.). This
-   scheme allows to keep the makefiles quite simple and makes it possible to
+   scheme allows keeping the makefiles quite simple and makes it possible to
    use plain 'make' on operating systems where the standard make utility
    does not offer a lot of sophisticated options which are available in
    modern make utilities.
@@ -49,14 +49,15 @@ Content
    uppercase string which is then used. See the file 'dist/README.arch' in
    this directory for details on architecture strings and how they are
    mapped.  If the current operating system is not supported yet (or not
-   anymore supported), aimk will print out an error message and exit.
+   supported anymore), aimk will print out an error message and exit.
 
    Unrecognized command line options, also beginning with a dash ('-') are
-   passed to make. This can cause unexpected error messages of 'make' if a
-   typo in the command line is passed to 'make'.
+   passed to make. This can cause unexpected error messages from 'make' if a
+   typo in the command line is passed to it.
 
-   'aimk' sources a script 'aimk.site'. This script contains paths and
-   variables to tools which you need to build special parts of Grid Engine. 
+   'aimk' sources scripts 'aimk.site' and 'aimk.private'.  This script
+   contains paths and variables to tools which you need to build
+   special parts of Grid Engine.
 
    
 3) The files 'aimk.site' and 'aimk.private'
@@ -144,12 +145,8 @@ Content
 
    Note that in order to compile the DRMAA Java language binding, ant 1.5 or
    better must be in the classpath, and JAVA_HOME must point to JDK 1.4 or
-   better.  Also note that as there is no JDK 1.4 or better available for AIX
-   4.3, the -no-jni (and -no-java) must always be used on AIX 4.3 platforms.
-
-   Also note that there does not appear to be a JDK 1.4 or better available for
-   AIX 4.3.  In order to compile on AIX 4.3, -no-jni (and -no-java) must be
-   used.
+   better.  For platforms without a suitable JDK, -no-jni (and
+   -no-java) must be used.
 
    4.4 'cc' or 'gcc'
    -----------------
@@ -160,7 +157,7 @@ Content
       -gcc
 
    override this default. Note, that this option often does not work since
-   it has not been tested and ported with gcc yet. The use of "gcc" on
+   a target has not been tested and ported with gcc yet. The use of "gcc" on
    operating systems where this compiler is not installed by default will
    usually require changes to aimk.
 
@@ -188,8 +185,7 @@ Content
 
       setenv SGE_INPUT_CFLAGS "-xyz -Dmydefine"
 
-   Note that there are no equivalent command line options or environment
-   variables for setting LFLAGS for the linker.
+   'SGE_INPUT_LDFLAGS' behaves similarly for setting LFLAGS for the linker.
 
 
    4.7 Creating man pages

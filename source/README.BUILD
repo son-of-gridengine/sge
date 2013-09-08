@@ -82,17 +82,17 @@ Content
         IzPack (http://izpack.org) and swing-layout
         (http://swing-layout.dev.java.net), also available.  Izpack
         4.1.1 is known to work, later versions may not, and  swing-layout
-        1.0.3 is known to work.  Copies available from
-        <http://arc.liv.ac.uk/downloads/SGE/support/>.  The herd
-        library requires a basic Hadoop distribution (the hadoop-0.20
-        GNU/Linux packages) of a suitable version
-        (e.g. http://archive.cloudera.com/cdh/3/).  The cdh3u3
-        (0.20.2+923.197) and cdh3u4 (0.20.2+923.256) versions are
-        known to work and cdh3u0 is known not to with this version of
-        SGE.  (There was an incompatible change in the Hadoop
-        distribution, and support for earlier versions can be found in
-        the repository for sge-8.0.0e and earlier.)  Properties for
-        ant are set in the top-level build.properties, and may be
+        1.0.3 is known to work.  Copies are available from
+        <http://arc.liv.ac.uk/downloads/SGE/support/> and included in
+        the source RPM.  The herd library requires a basic Hadoop
+        distribution (the hadoop-0.20 GNU/Linux packages) of a
+        suitable version (e.g. http://archive.cloudera.com/cdh/3/).
+        The cdh3u3 (0.20.2+923.197) and cdh3u4 (0.20.2+923.256)
+        versions are known to work and cdh3u0 is known not to with
+        this version of SGE.  (There was an incompatible change in the
+        Hadoop distribution, and support for earlier versions can be
+        found in the repository for sge-8.0.0e and earlier.)  Properties
+        for ant are set in the top-level build.properties, and may be
         overridden in build_private.properties.  Other properties you
         might need to set are typically found in
         nbproject/project.properties in each Java component directory.
@@ -104,12 +104,14 @@ Content
 
    If in doubt for other systems, consult and adapt the Red Hat recipe
    given by the %build section of gridengine.spec at the top level of
-   the source directory.  The necessary packages for a Cygwin build need
-   checking.
-
-   This document describes the process up to the creation of a distribution. 
-   The result is a tar file (or virtually any other OS specific distribution
-   format) which can be used to install Grid Engine on a cluster of machines.
+   the source directory.  The necessary non-default packages for a
+   Cygwin build need checking, but include at least: tcsh, make,
+   gcc-core, openssl-devel, crypt (or libcrypt-devel, depending on
+   version), libdb*-devel (may have a version like 4.5, or not),
+   libncurses-devel, libXm-devel, libXext-devel, libXmu-devel (the
+   last three for qmon); also build and install hwloc from
+   <http://www.open-mpi.org/software/hwloc/> or use aimk -no-hwloc
+   (see below) to avoid core binding support.
 
    The non-Cygwin MS Windows build (currently required for execution
    hosts) needs the "interix" Unix-like environment, which seems to go
@@ -224,8 +226,7 @@ Content
    By default the Grid Engine libraries are linked statically to the
    binaries. Shared libraries are also supported, but their installation is
    not yet supported. The DRMAA library is always created and installed as
-   a shared library. Some third party libraries (e.g. 'libXltree' used by
-   qmon) are created as shared libraries due to copyright requirements).
+   a shared library.
 
    See 'README.aimk' for more information on all compilation issues.
 
@@ -336,7 +337,7 @@ Content
    SGE_ROOT=/opt/sge
    export SGE_ROOT
    scripts/distinst -local -allall -noexit # asks for confirmation
-   cd SGE_ROOT
+   cd $SGE_ROOT
    ./inst_sge -m -x -csp  # or run ./start_gui_installer
 
    If you haven't built all the binaries (e.g. used aimk -only-core),
