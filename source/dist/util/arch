@@ -182,11 +182,15 @@ Linux)
    i*86)
       lxmachine=x86
       ;;
-   alpha | sparc | parisc | ia64 | ppc | ppc64 | mips64 | s390 | s390x | armhf)
+   alpha | sparc | parisc | ia64 | ppc | ppc64 | mips64 | s390 | s390x)
       lxmachine=$osmachine
       ;;
    arm*)
-      lxmachine=arm
+      if /usr/bin/cpp -dM </dev/null | grep -q __ARM_PCS_VFP; then
+          lxmachine=armhf       # what Debian calls it, at least (hard float)
+      else
+          lxmachine=arm
+      fi
       ;;
    sparc64)
       lxmachine=sparc
