@@ -2389,7 +2389,7 @@ const char *job_get_job_key(u_long32 job_id, dstring *buffer)
    const char *ret = NULL;
    DENTER(TOP_LAYER, "job_get_job_key");
    if (buffer != NULL) {
-      ret = sge_dstring_sprintf(buffer, "%d", job_id);
+      ret = sge_dstring_sprintf(buffer, sge_u32, job_id);
    }
 
    DRETURN(ret);
@@ -2430,12 +2430,12 @@ const char *job_get_key(u_long32 job_id, u_long32 ja_task_id,
    DENTER(TOP_LAYER, "job_get_key");
    if (buffer != NULL) {
       if (ja_task_id == 0) {
-         ret = sge_dstring_sprintf(buffer, "%d", job_id);
+         ret = sge_dstring_sprintf(buffer, sge_u32, job_id);
       } else if (pe_task_id != NULL) {
-         ret = sge_dstring_sprintf(buffer, "%d.%d %s",
+         ret = sge_dstring_sprintf(buffer, sge_u32"."sge_u32" %s",
                                    job_id, ja_task_id, pe_task_id);
       } else {
-         ret = sge_dstring_sprintf(buffer, "%d.%d",
+         ret = sge_dstring_sprintf(buffer, sge_u32"."sge_u32,
                                    job_id, ja_task_id);
       }
    }

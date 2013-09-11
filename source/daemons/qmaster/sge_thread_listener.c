@@ -86,7 +86,7 @@ sge_listener_initialize(sge_gdi_ctx_class_t *ctx)
    for (i = 0; i < max_initial_listener_threads; i++) {
       dstring thread_name = DSTRING_INIT;      
       
-      sge_dstring_sprintf(&thread_name, "%s%03d", threadnames[LISTENER_THREAD], i);
+      sge_dstring_sprintf(&thread_name, "%s%03"sge_U32CLetter, threadnames[LISTENER_THREAD], i);
       cl_thread_list_create_thread(Main_Control.listener_thread_pool, &dummy_thread_p,
                                    cl_com_get_log_list(), sge_dstring_get_string(&thread_name), i, 
                                    sge_listener_main, NULL, NULL, CL_TT_LISTENER); 
