@@ -734,6 +734,6 @@ pdtimet(clock_t eval, clock_t bval)
     val	= (eval	- bval)	* 100 /	clk_tck;
 #endif /* POSIX	*/
 
-    xprintf("%ld.%02ld", val / 100, val	- (val / 100 * 100));
+    xprintf("%ld.%02ld", (long)(val / 100), (long)(val - (val / 100 * 100)));
 }
 #endif /* BSDTIMES || _SEQUENT_	*/

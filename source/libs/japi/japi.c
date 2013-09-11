@@ -2672,10 +2672,10 @@ int japi_wait(const char *job_id, dstring *waited_job, int *stat,
    /* copy jobid of finished job into buffer provided by caller */
    if (wait_result==JAPI_WAIT_FINISHED && waited_job) {
       if (waited_is_task_array) {
-         sge_dstring_sprintf(waited_job, "%ld.%d", (long)waited_jobid,
+         sge_dstring_sprintf(waited_job, sge_u32"."sge_u32, waited_jobid,
                              waited_taskid);
       } else {
-         sge_dstring_sprintf(waited_job, "%ld", (long)waited_jobid);
+         sge_dstring_sprintf(waited_job, sge_u32, waited_jobid);
       }
    }
 

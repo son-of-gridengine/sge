@@ -243,7 +243,7 @@ jsv_handle_param_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answe
                job_set_no_shell(new_job, strcmp(value, "y") == 0 ? true : false);
             } else {
                answer_list_add_sprintf(&local_answer_list, STATUS_DENIED, ANSWER_QUALITY_ERROR,
-                                       MSG_JSV_PARSE_VAL_SS, param);
+                                       MSG_JSV_PARSE_VAL_SS, param, value);
                ret = false;
             }
          }
@@ -1272,7 +1272,7 @@ jsv_handle_result_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answ
          lSetBool(jsv, JSV_done, true);
       } else {
          answer_list_add_sprintf(answer_list, STATUS_DENIED, ANSWER_QUALITY_ERROR,
-                                 MSG_JSV_STATE_S, a);
+                                 MSG_JSV_STATE_S, sge_dstring_get_string(a));
          ret = false;
       }
    } else {
@@ -1386,7 +1386,7 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
       int i = 0;
 
       sge_dstring_clear(&buffer);
-      sge_dstring_sprintf(&buffer, "%s CMDARGS "sge_u32, prefix, lGetNumberOfElem(list));
+      sge_dstring_sprintf(&buffer, "%s CMDARGS %d", prefix, lGetNumberOfElem(list));
       jsv_send_command(jsv, answer_list, sge_dstring_get_string(&buffer));
 
       for_each(elem, list) {
