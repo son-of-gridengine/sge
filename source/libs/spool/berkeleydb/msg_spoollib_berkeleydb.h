@@ -36,7 +36,7 @@
  * libs/spool/sge_spooling_berkeleydb.c
  */
 
-#define MSG_BERKELEY_COULDNTCREATEDBHANDLE_IS _MESSAGE(70000, _("couldn't create berkeley db database handle: "SFN))
+#define MSG_BERKELEY_COULDNTCREATEDBHANDLE_IS _MESSAGE(70000, _("couldn't create berkeley db database handle %d: "SFN))
 #define MSG_BERKELEY_COULDNTOPENDB_SIS _MESSAGE(70001, _("couldn't open berkeley database "SFQ": (%d) "SFN))
 #define MSG_BERKELEY_COULDNTCLOSEDB_SIS _MESSAGE(70002, _("couldn't close berkeley database "SFQ": (%d) "SFN))
 #define MSG_BERKELEY_NOCONNECTIONOPEN_S _MESSAGE(70003, _("no connection open to berkeley database "SFQ))
@@ -45,7 +45,7 @@
 #define MSG_BERKELEY_PUTERROR_SIS _MESSAGE(70006, _("error writing object with key "SFQ" into berkeley database: (%d) "SFN))
 #define MSG_BERKELEY_QUERYERROR_SIS _MESSAGE(70007, _("error retrieving data ("SFQ") from berkeley database: (%d) "SFN))
 #define MSG_BERKELEY_DELETEERROR_SIS _MESSAGE(70008, _("error deleting record with key "SFQ" from berkeley database: (%d) "SFN))
-#define MSG_BERKELEY_NULLVALUEASKEY _MESSAGE(70010, _("null value given as object primary key"))
+#define MSG_BERKELEY_NULLVALUEASKEY_S _MESSAGE(70010, _("null value given as object primary key: "SFN))
 #define MSG_BERKELEY_TXNALREADYOPEN _MESSAGE(70017, _("cannot open new transaction: There is already one open"))
 #define MSG_BERKELEY_ERRORSTARTINGTRANSACTION_IS _MESSAGE(70018, _("error starting a transaction: (%d) "SFN))
 #define MSG_BERKELEY_TXNNOTOPEN _MESSAGE(70019, _("cannot close transaction: There is no open transaction"))
