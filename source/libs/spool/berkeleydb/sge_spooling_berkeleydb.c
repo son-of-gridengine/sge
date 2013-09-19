@@ -935,7 +935,7 @@ spool_berkeleydb_default_write_func(lList **answer_list,
    if (key == NULL) {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                               ANSWER_QUALITY_WARNING, 
-                              MSG_BERKELEY_NULLVALUEASKEY,
+                              MSG_BERKELEY_NULLVALUEASKEY_S,
                               lGetString(rule, SPR_url));
       ret = false;
    }
