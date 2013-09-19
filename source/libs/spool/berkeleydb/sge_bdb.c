@@ -853,7 +853,7 @@ spool_berkeleydb_read_list(lList **answer_list, bdb_info info,
                   answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                           ANSWER_QUALITY_ERROR, 
                                           MSG_BERKELEY_UNPACKINITERROR_SS,
-                                          key_dbt.data,
+                                          (char *)key_dbt.data,
                                           cull_pack_strerror(cull_ret));
                   ret = false;
                   done = true;
@@ -865,7 +865,7 @@ spool_berkeleydb_read_list(lList **answer_list, bdb_info info,
                   answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                           ANSWER_QUALITY_ERROR, 
                                           MSG_BERKELEY_UNPACKERROR_SS,
-                                          key_dbt.data,
+                                          (char *)key_dbt.data,
                                           cull_pack_strerror(cull_ret));
                   ret = false;
                   done = true;
@@ -1068,7 +1068,8 @@ spool_berkeleydb_write_pe_task(lList **answer_list, bdb_info info,
    sge_dstring_init(&dbkey_dstring, 
                     dbkey_buffer, sizeof(dbkey_buffer));
 
-   dbkey = sge_dstring_sprintf(&dbkey_dstring, "%s:%8d.%8d %s", 
+   dbkey = sge_dstring_sprintf(&dbkey_dstring,
+			       "%s:%8"sge_U32CLetter".%8"sge_U32CLetter" %s",
                                object_type_get_name(SGE_TYPE_PETASK),
                                job_id, ja_task_id, pe_task_id);
 
@@ -1092,7 +1093,7 @@ spool_berkeleydb_write_ja_task(lList **answer_list, bdb_info info,
    sge_dstring_init(&dbkey_dstring,
                     dbkey_buffer, sizeof(dbkey_buffer));
 
-   dbkey = sge_dstring_sprintf(&dbkey_dstring, "%s:%8d.%8d", 
+   dbkey = sge_dstring_sprintf(&dbkey_dstring, "%s:%8"sge_U32CLetter".%8"sge_U32CLetter,
                                object_type_get_name(SGE_TYPE_JATASK),
                                job_id, ja_task_id);
 
@@ -1118,9 +1119,8 @@ spool_berkeleydb_write_job(lList **answer_list, bdb_info info,
    sge_dstring_init(&dbkey_dstring,
                     dbkey_buffer, sizeof(dbkey_buffer));
 
-   dbkey = sge_dstring_sprintf(&dbkey_dstring, "%s:%8d", 
-                               object_type_get_name(SGE_TYPE_JOB), 
-                               job_id);
+   dbkey = sge_dstring_sprintf(&dbkey_dstring, "%s:%8"sge_U32CLetter,
+                               object_type_get_name(SGE_TYPE_JOB), job_id);
 
    lXchgList((lListElem *)object, JB_ja_tasks, &tmp_list);
    
@@ -1291,7 +1291,7 @@ spool_berkeleydb_delete_object(lList **answer_list, bdb_info info,
                      answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                              ANSWER_QUALITY_ERROR, 
                                              MSG_BERKELEY_DELETEERROR_SIS,
-                                             delete_dbt.data,
+                                             (char *)delete_dbt.data,
                                              delete_ret, db_strerror(delete_ret));
                      ret = false;
                      sge_free(&(delete_dbt.data));
@@ -1797,7 +1797,7 @@ spool_berkeleydb_read_object(lList **answer_list, bdb_info info,
             answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                     ANSWER_QUALITY_ERROR, 
                                     MSG_BERKELEY_UNPACKINITERROR_SS,
-                                    key_dbt.data,
+                                    (char *)key_dbt.data,
                                     cull_pack_strerror(cull_ret));
             ret = NULL;
          }
@@ -1809,7 +1809,7 @@ spool_berkeleydb_read_object(lList **answer_list, bdb_info info,
             answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                                     ANSWER_QUALITY_ERROR, 
                                     MSG_BERKELEY_UNPACKERROR_SS,
-                                    key_dbt.data,
+                                    (char *)key_dbt.data,
                                     cull_pack_strerror(cull_ret));
             ret = NULL;
          }

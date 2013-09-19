@@ -674,7 +674,7 @@ spool_berkeleydb_default_list_func(lList **answer_list,
 
                      key = sge_dstring_sprintf(&key_dstring, "%s:%8d.",
                                                ja_task_table,
-                                               job_id);
+                                               (int)job_id);
                      ret = spool_berkeleydb_read_list(answer_list, info,
                                                       BDB_JOB_DB,
                                                       &task_list, JAT_Type,
@@ -695,7 +695,8 @@ spool_berkeleydb_default_list_func(lList **answer_list,
                                                               JAT_task_number);
                               key = sge_dstring_sprintf(&key_dstring, "%s:%8d.%8d.",
                                                         pe_task_table,
-                                                        job_id, ja_task_id);
+                                                        (int)job_id,
+							(int)ja_task_id);
                               
                               ret = spool_berkeleydb_read_list(answer_list, 
                                                       info, BDB_JOB_DB,
@@ -1125,17 +1126,19 @@ spool_berkeleydb_default_delete_func(lList **answer_list,
                   job_parse_key(dup, &job_id, &ja_task_id, &pe_task_id, &only_job);
 
                   if (pe_task_id != NULL) {
-                     dbkey = sge_dstring_sprintf(&dbkey_dstring, "%8d.%8d %s",
+                     dbkey = sge_dstring_sprintf(&dbkey_dstring, "%8"sge_U32CLetter".%8"sge_U32CLetter" %s",
                                                  job_id, ja_task_id, pe_task_id);
                      ret = spool_berkeleydb_delete_pe_task(answer_list, info, 
                                                            dbkey, false);
                   } else if (ja_task_id != 0) {
-                     dbkey = sge_dstring_sprintf(&dbkey_dstring, "%8d.%8d",
+                     dbkey = sge_dstring_sprintf(&dbkey_dstring,
+						 "%8"sge_U32CLetter".%8"sge_U32CLetter,
                                                  job_id, ja_task_id);
                      ret = spool_berkeleydb_delete_ja_task(answer_list, info, 
                                                            dbkey, false);
                   } else {
-                     dbkey = sge_dstring_sprintf(&dbkey_dstring, "%8d",
+                     dbkey = sge_dstring_sprintf(&dbkey_dstring,
+						 "%8"sge_U32CLetter,
                                                  job_id);
                      ret = spool_berkeleydb_delete_job(answer_list, info, 
                                                        dbkey, false);
