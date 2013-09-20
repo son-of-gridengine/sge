@@ -34,6 +34,9 @@
 /*___INFO__MARK_END__*/
 
 #include <sys/types.h>
+#if __CYGWIN__
+#  include <cygwin/version.h>
+#endif
 
 #ifdef __SGE_COMPILE_WITH_GETTEXT__
 #  include <libintl.h>
@@ -145,10 +148,11 @@ extern "C" {
 */
 #if defined(FREEBSD)
 #  define uid_t_fmt "%u"
-/* fixme:  this was OK in an older Cygwin, but isn't in 32-bit 1.7.25
-#elif __CYGWIN__
+#elif __CYGWIN__ && \
+  (((CYGWIN_VERSION_DLL_MAJOR)*1000 + (CYGWIN_VERSION_DLL_MINOR)) < 1007022)
+  /* As far as I can tell, this is the version at which the definition
+     changed.  */
 #  define uid_t_fmt "%lu"
-*/
 #else
 #  define uid_t_fmt pid_t_fmt
 #endif
