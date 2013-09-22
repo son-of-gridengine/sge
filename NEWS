@@ -13,6 +13,18 @@ changes due to Univa/Sun are tagged as "[U]", or "[(U)]" if partially
 due to them or appearing first in this version.
 
 
+Version 8.1.5
+-------------
+
+* Bug fixes
+
+  * Fix strsignal-related build failure on MS Windows, at least
+  * Fix MS Windows build without -no-secure
+  * Fix qstat job summary messages [#1450]
+  * Fix format/type errors in some cases
+  * Fix detection of armhf
+  * Man and other doc fixes
+
 Version 8.1.4
 -------------
 
