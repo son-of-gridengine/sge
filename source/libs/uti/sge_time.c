@@ -30,6 +30,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+#define _POSIX_C_SOURCE 200112L /* try to avoid old nanosleep returning void */
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -478,16 +479,16 @@ u_long32 duration_add_offset(u_long32 duration, u_long32 offset)
 
 /****** uti/time/sge_usleep() ****************************************
 *  NAME
-*     sge_usleep() -- Mimiks a non-iterruptable usleep() 
+*     sge_usleep() -- Mimics a non-iterruptable usleep() 
 *
 *  SYNOPSIS
 *     void sge_usleep(int sleep_time) 
 *
 *  FUNCTION
-*     Mimiks a non-iterruptable usleep() to the caller.
+*     Mimics a non-iterruptable usleep() to the caller.
 *
 *  INPUTS
-*     int sleep_time - requested sleep time
+*     int sleep_time - requested sleep time in microseconds
 *
 *  RESULT
 *     n/a
@@ -497,22 +498,11 @@ u_long32 duration_add_offset(u_long32 duration, u_long32 offset)
 *******************************************************************************/
 void sge_usleep(int sleep_time)
 {
-   struct timeval wake_tv, sleep_tv, snooze_tv;
-   int time_to_sleep = sleep_time;
+   struct timespec req = {sleep_time / 1000000, 1000 * (sleep_time % 1000000)},
+      rem;
 
-   do {
-      gettimeofday(&sleep_tv, NULL);
-      usleep(time_to_sleep);
-      gettimeofday(&wake_tv, NULL);
-      if (wake_tv.tv_usec < sleep_tv.tv_usec) {
-         wake_tv.tv_sec--;
-	      wake_tv.tv_usec = wake_tv.tv_usec + 1000000;
-      }
-      snooze_tv.tv_sec = wake_tv.tv_sec - sleep_tv.tv_sec;
-      snooze_tv.tv_usec = wake_tv.tv_usec - sleep_tv.tv_usec;
-
-      time_to_sleep = time_to_sleep - (snooze_tv.tv_sec * 1000000 + snooze_tv.tv_usec);
-   } while (time_to_sleep > 0);
-
-   return;
+   while (nanosleep(&req, &rem)) {
+      req.tv_sec = rem.tv_sec;
+      req.tv_nsec = rem.tv_nsec;
+   }
 }

@@ -41,6 +41,7 @@
 #include "uti/sge_log.h"
 #include "uti/sge_unistd.h"
 #include "uti/sge_dstring.h"
+#include "uti/sge_time.h"
 
 #include "cull/cull.h"
 
@@ -94,7 +95,7 @@ static bool add_job(int job_id)
    answer_list_output(&answer_list);
 
    if (delay > 0) {
-      usleep(delay * 1000);
+      sge_usleep(delay * 1000);
    }
 
 #if LOCAL_TRANSACTION
@@ -131,7 +132,7 @@ static bool del_job(int job_id)
    lDelElemUlong(&master_job_list, JB_job_number, job_id);
 
    if (delay > 0) {
-      usleep(delay * 1000);
+      sge_usleep(delay * 1000);
    }
 
 #if LOCAL_TRANSACTION

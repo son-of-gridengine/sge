@@ -42,6 +42,7 @@
 #ifndef  TIOCGWINSZ
 #include <sys/ioctl.h>  /* 44BSD requires this too */
 #endif
+#include <time.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_arch.h"
@@ -49,6 +50,7 @@
 #include "uti/sge_string.h"
 #include "uti/sge_log.h"
 #include "uti/sge_mtutil.h"
+#include "uti/sge_time.h"
 
 #include "gdi/sge_security.h"
 #include "gdi/msg_gdilib.h"
@@ -870,9 +872,10 @@ int comm_wait_for_connection(COMM_HANDLE *handle,
           && endpoint_list != NULL
           && endpoint_list->elem_count == 0
           && waited_usec/1000000 < wait_secs) {
+      struct timespec req = {10000000, 0}, rem;
 
       cl_endpoint_list_cleanup(&endpoint_list);
-      usleep(10000);
+      nanosleep(&req, &rem);
       waited_usec += 10000;
       if (received_signal == SIGINT) {
          break;
@@ -978,9 +981,10 @@ int comm_wait_for_no_connection(COMM_HANDLE *handle, const char *component,
           && endpoint_list != NULL
           && endpoint_list->elem_count > 0
           && waited_usec/1000000 < wait_secs) {
+         struct timespec req = {10000000, 0}, rem;
          cl_endpoint_list_cleanup(&endpoint_list);
          endpoint_list = NULL;
-         usleep(10000);
+         nanosleep(&req, &rem);
          waited_usec += 10000;
          if (received_signal == SIGINT) {
             do_exit = true;
@@ -1287,9 +1291,9 @@ int comm_flush_write_messages(COMM_HANDLE *handle, dstring *err_msg)
        * We just tried to send the messages and it wasn't possible to send
        * all messages - give the network some time to recover.
        */
-      /* TODO (NEW): make this working correctly by calling check_client_alive */
+      /* TODO (NEW): make this work correctly by calling check_client_alive */
       if (elems > 0) {
-         usleep(10000);
+         sge_usleep(10000);
          retries--;
       }
    }
