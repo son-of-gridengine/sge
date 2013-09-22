@@ -90,11 +90,11 @@ static void *thread_function(void *anArg)
       if (thread_id == 0) {
          read_thread = false;
          SGE_LOCK(LOCK_GLOBAL, LOCK_WRITE);
-         usleep(1);
+         sge_usleep(1);
          SGE_UNLOCK(LOCK_GLOBAL, LOCK_WRITE);
       } else {
          SGE_LOCK(LOCK_GLOBAL, LOCK_READ);
-         usleep(1);
+         sge_usleep(1);
          SGE_UNLOCK(LOCK_GLOBAL, LOCK_READ);
       }
       count++;
