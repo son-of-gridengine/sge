@@ -50,6 +50,7 @@
 #include "uti/sge_log.h"
 #include "uti/sge_os.h"
 #include "uti/msg_utilib.h"
+#include "uti/sge_time.h"
 
 #include "basis_types.h"
 
@@ -636,6 +637,7 @@ int sge_peclose(pid_t pid, FILE *fp_in, FILE *fp_out, FILE *fp_err,
                 struct timeval *timeout)
 {
    int i, status;
+   long timeout_us = timeout->tv_sec * 1000000L + timeout->tv_usec;
  
    DENTER(TOP_LAYER, "sge_peclose");
  
@@ -650,13 +652,14 @@ int sge_peclose(pid_t pid, FILE *fp_in, FILE *fp_out, FILE *fp_err,
    }  
 
    do {
+      errno = 0;
       i = waitpid(pid, &status, timeout?WNOHANG:0);
       if (i==-1) {
          DEXIT;
          return -1;
       }
       if (i==0) { /* not yet exited */
-         if (timeout->tv_sec == 0) {
+         if (timeout_us <= 0) {
 #ifdef WIN32 /* kill not called */
             DPRINTF(("killing not yet implemented\n"));
             timeout = NULL;
@@ -667,9 +670,14 @@ int sge_peclose(pid_t pid, FILE *fp_in, FILE *fp_out, FILE *fp_err,
             kill(pid, SIGKILL);
 #endif /* WIN32 */
          } else {
-            DPRINTF(("%d seconds waiting for exit\n", (int) timeout->tv_sec));
-            sleep(1);
-            timeout->tv_sec -= 1;
+            /* Spin less for longer timeouts; for timeout > 1s, sleep
+               for 0.1s, n the loop, otherwise 1ms.  */
+            int sleep_for = (timeout_us > 1000000) ? 100000 : 1000;
+
+            DPRINTF(("%f seconds waiting for exit\n",
+                     timeout->tv_sec + timeout->tv_usec / 1e6));
+            timeout_us -= sleep_for;
+            sge_usleep(sleep_for);
          }
       }
    } while (i != pid);
