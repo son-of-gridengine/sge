@@ -36,6 +36,9 @@
 #include <fcntl.h>
 #include <errno.h>
 
+/* This is here to avoid problems on Cygwin with hwloc, as something below clashes with a declaration in w32api/rpc.h.  Fixme: fix this better.  */
+#include "sgeobj/sge_binding.h"
+
 #include <Xm/Xm.h>
 #include <Xm/List.h>
 #include <Xm/ToggleB.h>
@@ -84,7 +87,6 @@
 #include "sgeobj/sge_range.h"
 #include "sgeobj/sge_path_alias.h"
 #include "sgeobj/sge_answer.h"
-#include "sgeobj/sge_binding.h"
 #include "sgeobj/sge_ja_task.h"
 #include "sgeobj/sge_jsv.h"
 #include "sgeobj/sge_job.h"
