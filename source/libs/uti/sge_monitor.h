@@ -113,6 +113,7 @@ typedef enum {
 /**
  * qping thread error times in seconds
  **/
+#undef NO_ERROR /* defined on Cygwin by headers pulled in by hwloc.h */
 typedef enum {
    NO_ERROR    = 0,
    EMT_ERROR   = 600,

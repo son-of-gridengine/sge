@@ -41,6 +41,7 @@
 #include "uti/sge_binding_parse.h"
 
 #if HAVE_HWLOC
+#  define NOGDI /* else ERROR defined by wingdi.h pulled in on Cygwin */
 #  include <hwloc.h>
 extern
 hwloc_topology_t sge_hwloc_topology;
