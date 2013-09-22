@@ -387,7 +387,7 @@ jsv_add_env()
 {
    __jsv_name="jsv_env_$1"
    eval "$__jsv_name=$2"
-   jsv_send_command ENV ADD "$1" "$2"
+   _jsv_send_command ENV ADD "$1" "$2"
    unset __jsv_name
 }
 
@@ -434,7 +434,7 @@ jsv_mod_env()
 {
    __jsv_name="jsv_env_$1"
    eval "$__jsv_name=$2"
-   jsv_send_command ENV MOD "$1" "$2"
+   _jsv_send_command ENV MOD "$1" "$2"
    unset __jsv_name
 }
 
@@ -477,7 +477,7 @@ jsv_del_env()
    __jsv_isdef=`eval "echo $__jsv_command"`
    if [ "$__jsv_isdef" != "$__jsv_undef" ]; then
       eval "unset $__jsv_name" 
-      jsv_send_command ENV DEL "$1" 
+      _jsv_send_command ENV DEL "$1" 
    fi
    unset __jsv_name
    unset __jsv_command
@@ -671,7 +671,7 @@ jsv_set_param()
 {
    __jsv_name="jsv_param_$1"
    eval "$__jsv_name=$2"
-   jsv_send_command PARAM "$1" "$2"
+   _jsv_send_command PARAM "$1" "$2"
    unset __jsv_name
 }
 
@@ -705,7 +705,7 @@ jsv_del_param()
    __jsv_isdef=`eval "echo $__jsv_command"`
    if [ "$__jsv_isdef" != "$__jsv_undef" ]; then
       eval "unset \${$__jsv_name}" 
-      jsv_send_command PARAM "$1" ""
+      _jsv_send_command PARAM "$1" ""
    fi
    unset __jsv_name
    unset __jsv_command
@@ -735,6 +735,7 @@ jsv_del_param()
 #        -------------- -------------------------------------------
 #        ac             (combination of -ac, -sc, -dc)
 #        hold_jid
+#        hold_jid_ad
 #        l_hard         (-hard followed by -l)   
 #        l_soft         (-soft followed by -l)
 #        M
@@ -912,7 +913,7 @@ jsv_sub_del_param()
 
       # set local variable and send modification to client/master
       eval "$__jsv_name=\"\$__jsv_new_param\""
-      jsv_send_command PARAM $__jsv_param_name "$__jsv_new_param" 
+      _jsv_send_command PARAM $__jsv_param_name "$__jsv_new_param" 
    fi
    unset __jsv_new_param
    unset __jsv_list
@@ -1144,7 +1145,7 @@ jsv_sub_add_param()
 
    # set local variable and send modification to client/master
    eval "$__jsv_name=\"\$__jsv_new_param\""
-   jsv_send_command PARAM "$__jsv_param_name" "$__jsv_new_param"
+   _jsv_send_command PARAM "$__jsv_param_name" "$__jsv_new_param"
    unset __jsv_new_param
    unset __jsv_list
    unset __jsv_command
@@ -1193,7 +1194,7 @@ jsv_sub_add_param()
 ################################################################################
 jsv_send_env()
 {
-   jsv_send_command "SEND ENV"
+   _jsv_send_command "SEND ENV"
 }
 
 ###### jsv/jsv_accept() ########################################################
@@ -1231,10 +1232,10 @@ jsv_send_env()
 jsv_accept()
 {
    if [ "$__jsv_state" = "verifying" ]; then
-      jsv_send_command "RESULT STATE ACCEPT $*"
+      _jsv_send_command "RESULT STATE ACCEPT $*"
       __jsv_state="initialized"
    else
-      jsv_send_command "ERROR JSV script will send RESULT command but is in state $__jsv_state"
+      _jsv_send_command "ERROR JSV script will send RESULT command but is in state $__jsv_state"
    fi
 }
 
@@ -1278,10 +1279,10 @@ jsv_accept()
 jsv_correct()
 {
    if [ "$__jsv_state" = "verifying" ]; then
-      jsv_send_command "RESULT STATE CORRECT $*"
+      _jsv_send_command "RESULT STATE CORRECT $*"
       __jsv_state="initialized"
    else
-      jsv_send_command "ERROR JSV script will send RESULT command but is in state $__jsv_state"
+      _jsv_send_command "ERROR JSV script will send RESULT command but is in state $__jsv_state"
    fi
 }
 
@@ -1324,10 +1325,10 @@ jsv_correct()
 jsv_reject()
 {
    if [ "$__jsv_state" = "verifying" ]; then
-      jsv_send_command "RESULT STATE REJECT $*"
+      _jsv_send_command "RESULT STATE REJECT $*"
       __jsv_state="initialized"
    else
-      jsv_send_command "ERROR JSV script will send RESULT command but is in state $__jsv_state"
+      _jsv_send_command "ERROR JSV script will send RESULT command but is in state $__jsv_state"
    fi
 }
 
@@ -1370,10 +1371,10 @@ jsv_reject()
 jsv_reject_wait()
 {
    if [ "$__jsv_state" = "verifying" ]; then
-      jsv_send_command "RESULT STATE REJECT_WAIT $*"
+      _jsv_send_command "RESULT STATE REJECT_WAIT $*"
       __jsv_state="initialized"
    else
-      jsv_send_command "ERROR JSV script will send RESULT command but is in state $__jsv_state"
+      _jsv_send_command "ERROR JSV script will send RESULT command but is in state $__jsv_state"
    fi
 }
 
@@ -1405,7 +1406,7 @@ jsv_reject_wait()
 ################################################################################
 jsv_log_info() 
 {
-   jsv_send_command "LOG INFO $*"
+   _jsv_send_command "LOG INFO $*"
 }
 
 ###### jsv/jsv_log_warning() ###################################################
@@ -1436,7 +1437,7 @@ jsv_log_info()
 ################################################################################
 jsv_log_warning() 
 {
-   jsv_send_command "LOG WARNING $*"
+   _jsv_send_command "LOG WARNING $*"
 }
 
 ###### jsv/jsv_log_error() #####################################################
@@ -1467,24 +1468,24 @@ jsv_log_warning()
 ################################################################################
 jsv_log_error() 
 {
-   jsv_send_command "LOG ERROR $*"
+   _jsv_send_command "LOG ERROR $*"
 }
 
 
 # private function 
-jsv_handle_start_command()
+_jsv_handle_start_command()
 {
    if [ "$__jsv_state" = "initialized" ]; then
       jsv_on_start
-      jsv_send_command "STARTED"
+      _jsv_send_command "STARTED"
       __jsv_state="started"
    else
-      jsv_send_command "ERROR JSV script got START command but is in state $__jsv_state"
+      _jsv_send_command "ERROR JSV script got START command but is in state $__jsv_state"
    fi
 }
 
 # private function 
-jsv_handle_begin_command()
+_jsv_handle_begin_command()
 {
    if [ "$__jsv_state" = "started" ]; then
       __jsv_state="verifying"
@@ -1492,12 +1493,12 @@ jsv_handle_begin_command()
       jsv_clear_params
       jsv_clear_envs
    else
-      jsv_send_command "ERROR JSV script got BEGIN command but is in state $__jsv_state"
+      _jsv_send_command "ERROR JSV script got BEGIN command but is in state $__jsv_state"
    fi
 }
 
 # private function 
-jsv_handle_param_command()
+_jsv_handle_param_command()
 {
    if [ "$__jsv_state" = "started" ]; then
       __jsv_param="$1"
@@ -1507,12 +1508,12 @@ jsv_handle_param_command()
       unset __jsv_param
       unset __jsv_value
    else
-      jsv_send_command "ERROR JSV script got PARAM command but is in state $__jsv_state"
+      _jsv_send_command "ERROR JSV script got PARAM command but is in state $__jsv_state"
    fi
 }
 
 # private function 
-jsv_handle_env_command()
+_jsv_handle_env_command()
 {
    if [ "$__jsv_state" = "started" ]; then
       __jsv_action="$1"
@@ -1526,16 +1527,16 @@ jsv_handle_env_command()
       unset __jsv_name
       unset __jsv_data
    else
-      jsv_send_command "ERROR JSV script got ENV command but is in state $__jsv_state"
+      _jsv_send_command "ERROR JSV script got ENV command but is in state $__jsv_state"
    fi
 }
 
 # private function 
-jsv_send_command()
+_jsv_send_command()
 {
    echo "$@"
 
-   jsv_script_log "<<< $@"
+   _jsv_script_log "<<< $@"
 }
 
 # private function
@@ -1543,7 +1544,7 @@ jsv_send_command()
 # bash's built-in and GNU echo support -E to suppress escapes and -e
 # to interpret them.
 if [ "`echo -E '\n'`" = '\n' -a "`echo -e '\n'`" = '' ]; then
-jsv_echo_raw() {
+_jsv_echo_raw() {
     # Special case to avoid problems if passed -n as first arg
     if [ "x$1" = x-n ]; then
         "$SGE_ROOT/utilbin/$ARCH/echo_raw" "$@"
@@ -1554,7 +1555,7 @@ jsv_echo_raw() {
 }
 else
     # Can't rely on echo
-jsv_echo_raw() {
+_jsv_echo_raw() {
     "$SGE_ROOT/utilbin/$ARCH/echo_raw" "$@"
 }
 fi
@@ -1565,16 +1566,16 @@ fi
 # escaping, and read -r (raw mode) may not be available.  Therefore we
 # may have to use our own implementation.
 if [ -n "$BASH_VERSION" -o "$ARCH" = "darwin-x86" -o "$ARCH" = "darwin-x64" ]; then
-jsv_read_raw() {
+_jsv_read_raw() {
     read -r __jsv_input
 }
 else
-jsv_read_raw() {
+_jsv_read_raw() {
     __jsv_input=`"$SGE_ROOT/utilbin/$ARCH/read_raw"`
 }
 fi
 if [ -n "$BASH_VERSION" ]; then
-jsv_echo_raw() {
+_jsv_echo_raw() {
     if [ "x$1" = x-n ]; then
         "$SGE_ROOT/utilbin/$ARCH/echo_raw" "$@"
     else
@@ -1582,13 +1583,13 @@ jsv_echo_raw() {
     fi
 }
 else
-jsv_echo_raw() {
+_jsv_echo_raw() {
     "$SGE_ROOT/utilbin/$ARCH/echo_raw" "$@"
 }
 fi
 
 # private function
-jsv_script_log()
+_jsv_script_log()
 {
    if [ $__jsv_logging_enabled = true -o $jsv_logging_enabled = true ]; then
       echo "$@" >>$__jsv_logfile
@@ -1675,49 +1676,49 @@ jsv_script_log()
 ################################################################################
 jsv_main()
 {
-   jsv_script_log "$0 started on `date`"
-   jsv_script_log ""
-   jsv_script_log "This file contains logging output from an SGE JSV script. Lines beginning"
-   jsv_script_log "with >>> contain the data which was send by a command line client or"
-   jsv_script_log "sge_qmaster to the JSV script. Lines beginning with <<< contain data"
-   jsv_script_log "which is send for this JSV script to the client or sge_qmaster"
-   jsv_script_log ""
+   _jsv_script_log "$0 started on `date`"
+   _jsv_script_log ""
+   _jsv_script_log "This file contains logging output from an SGE JSV script. Lines beginning"
+   _jsv_script_log "with >>> contain the data which was send by a command line client or"
+   _jsv_script_log "sge_qmaster to the JSV script. Lines beginning with <<< contain data"
+   _jsv_script_log "which is send for this JSV script to the client or sge_qmaster"
+   _jsv_script_log ""
 
    while [ $__jsv_quit = false ]; do
-      jsv_read_raw
+      _jsv_read_raw
       __jsv_result=$?
 
       if [ $__jsv_result != 0 ]; then
          __jsv_quit=true
       else
          if [ "$__jsv_input" != "" ]; then
-            jsv_script_log ">>> $__jsv_input"
-            __jsv_first=`jsv_echo_raw $__jsv_input | cut -d' ' -f 1`
-            __jsv_second=`jsv_echo_raw $__jsv_input | cut -d' ' -f 2`
-            __jsv_remaining=`jsv_echo_raw $__jsv_input | cut -d' ' -f 3-`
+            _jsv_script_log ">>> $__jsv_input"
+            __jsv_first=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 1`
+            __jsv_second=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 2`
+            __jsv_remaining=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 3-`
             if [ "$__jsv_first" = "QUIT" ]; then
                __jsv_quit=true
             elif [ "$__jsv_first" = "PARAM" ]; then
-               jsv_handle_param_command "$__jsv_second" "$__jsv_remaining"
+               _jsv_handle_param_command "$__jsv_second" "$__jsv_remaining"
             elif [ "$__jsv_first" = "ENV" ]; then
-               __jsv_third=`jsv_echo_raw $__jsv_input | cut -d' ' -f 3`
-               __jsv_len=`jsv_echo_raw "$__jsv_first $__jsv_second $__jsv_third " | wc -c`
-               __jsv_data=`jsv_echo_raw $__jsv_input | cut -c ${__jsv_len}-`
-               jsv_handle_env_command "$__jsv_second" "$__jsv_third" "$__jsv_data"
+               __jsv_third=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 3`
+               __jsv_len=`_jsv_echo_raw "$__jsv_first $__jsv_second $__jsv_third " | wc -c`
+               __jsv_data=`_jsv_echo_raw $__jsv_input | cut -c ${__jsv_len}-`
+               _jsv_handle_env_command "$__jsv_second" "$__jsv_third" "$__jsv_data"
             elif [ "$__jsv_first" = "START" ]; then
-               jsv_handle_start_command 
+               _jsv_handle_start_command
             elif [ "$__jsv_first" = "BEGIN" ]; then
-               jsv_handle_begin_command 
+               _jsv_handle_begin_command
             elif [ "$__jsv_first" = "SHOW" ]; then
                jsv_show_params
                jsv_show_envs
             else
-               jsv_send_command "ERROR JSV script got unknown command \"$__jsv_first\""
+               _jsv_send_command "ERROR JSV script got unknown command \"$__jsv_first\""
             fi
          fi
       fi
       unset __jsv_result
    done
-   jsv_script_log "$0 is terminating on `date`"
+   _jsv_script_log "$0 is terminating on `date`"
 }
 

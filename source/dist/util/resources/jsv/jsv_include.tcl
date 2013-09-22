@@ -145,7 +145,7 @@ proc jsv_add_env {suffix value} {
 
    global $name
    set $name $value
-   jsv_send_command "ENV ADD $suffix $value"
+   _jsv_send_command "ENV ADD $suffix $value"
 }
 
 proc jsv_mod_env {suffix value} {
@@ -155,7 +155,7 @@ proc jsv_mod_env {suffix value} {
 
    global $name
    set $name $value
-   jsv_send_command "ENV MOD $suffix $value"
+   _jsv_send_command "ENV MOD $suffix $value"
 }
 
 proc jsv_del_env {suffix} {
@@ -166,7 +166,7 @@ proc jsv_del_env {suffix} {
    if {$exists == 1} {
       global $name
       unset $name 
-      jsv_send_command "ENV DEL $suffix"
+      _jsv_send_command "ENV DEL $suffix"
    }
 }
 
@@ -198,7 +198,7 @@ proc jsv_set_param {suffix value} {
    set name "jsv_param_$suffix"
    global $name
    set $name $value
-   jsv_send_command "PARAM $suffix $value"
+   _jsv_send_command "PARAM $suffix $value"
 }
 
 proc jsv_del_param {suffix} {
@@ -209,7 +209,7 @@ proc jsv_del_param {suffix} {
    if {$exists == 1} {
       global $name
       unset $name 
-      jsv_send_command "PARAM $suffix"
+      _jsv_send_command "PARAM $suffix"
    }
 }
 
@@ -314,7 +314,7 @@ proc jsv_sub_add_param {suffix sub_param {sub_value ""}} {
    
    # set the new value
    set $name $new_token_list
-   jsv_send_command "PARAM $suffix $new_token_list"
+   _jsv_send_command "PARAM $suffix $new_token_list"
 }
 
 proc jsv_sub_del_param {suffix sub_param} {
@@ -359,22 +359,22 @@ proc jsv_sub_del_param {suffix sub_param} {
    }
    # set the new value
    set $name $new_token_list
-   jsv_send_command "PARAM $suffix $new_token_list"
+   _jsv_send_command "PARAM $suffix $new_token_list"
 }
 
-proc jsv_handle_start_command {} {
+proc _jsv_handle_start_command {} {
    global state
 
    if {[string compare "initialized" $state] == 0} {
       jsv_on_start
-      jsv_send_command "STARTED"
+      _jsv_send_command "STARTED"
       set state "started"
    } else {
-      jsv_send_command "ERROR JSV script got START command but is in state $state"
+      _jsv_send_command "ERROR JSV script got START command but is in state $state"
    }
 }
 
-proc jsv_handle_begin_command {} {
+proc _jsv_handle_begin_command {} {
    global state
 
    if {[string compare "started" $state] == 0} {
@@ -383,11 +383,11 @@ proc jsv_handle_begin_command {} {
       jsv_clear_params
       jsv_clear_envs
    } else {
-      jsv_send_command "ERROR JSV script got BEGIN command but is in state $state"
+      _jsv_send_command "ERROR JSV script got BEGIN command but is in state $state"
    }
 }
 
-proc jsv_handle_param_command {param value} {
+proc _jsv_handle_param_command {param value} {
    global state
 
    if {[string compare "started" $state] == 0} {
@@ -396,11 +396,11 @@ proc jsv_handle_param_command {param value} {
       global $variable 
       set $variable $value
    } else {
-      jsv_send_command "ERROR JSV script got PARAM command but is in state $state"
+      _jsv_send_command "ERROR JSV script got PARAM command but is in state $state"
    }
 }
 
-proc jsv_handle_env_command {action param value_list} {
+proc _jsv_handle_env_command {action param value_list} {
    global jsv_all_envs
    global state
 
@@ -415,20 +415,20 @@ proc jsv_handle_env_command {action param value_list} {
          set $variable [join $value_list " "]
       } 
    } else {
-      jsv_send_command "ERROR JSV script got ENV command but is in state $state"
+      _jsv_send_command "ERROR JSV script got ENV command but is in state $state"
    }
 }
 
-proc jsv_send_command {args} {
+proc _jsv_send_command {args} {
    set command [lindex $args 0]
 
    puts $command
    flush stdout
-   jsv_script_log "<<< $command"
+   _jsv_script_log "<<< $command"
 }
 
 proc jsv_send_env {args} {
-   jsv_send_command "SEND ENV"
+   _jsv_send_command "SEND ENV"
 }
 
 proc jsv_accept {args} {
@@ -437,10 +437,10 @@ proc jsv_accept {args} {
    if {[string compare "verifying" $state] == 0} {
       set message [lindex $args 0]
 
-      jsv_send_command "RESULT STATE ACCEPT $message"
+      _jsv_send_command "RESULT STATE ACCEPT $message"
       set state "initialized"
    } else {
-      jsv_send_command "ERROR JSV script will send RESULT command but is in state $state"
+      _jsv_send_command "ERROR JSV script will send RESULT command but is in state $state"
    }
 }
 
@@ -450,10 +450,10 @@ proc jsv_correct {args} {
    if {[string compare "verifying" $state] == 0} {
       set message [lindex $args 0]
 
-      jsv_send_command "RESULT STATE CORRECT $message"
+      _jsv_send_command "RESULT STATE CORRECT $message"
       set state "initialized"
    } else {
-      jsv_send_command "ERROR JSV script will send RESULT command but is in state $state"
+      _jsv_send_command "ERROR JSV script will send RESULT command but is in state $state"
    }
 }
 
@@ -463,10 +463,10 @@ proc jsv_reject {args} {
    if {[string compare "verifying" $state] == 0} {
       set message [lindex $args 0]
 
-      jsv_send_command "RESULT STATE REJECT $message"
+      _jsv_send_command "RESULT STATE REJECT $message"
       set state "initialized"
    } else {
-      jsv_send_command "ERROR JSV script will send RESULT command but is in state $state"
+      _jsv_send_command "ERROR JSV script will send RESULT command but is in state $state"
    }
 }
 
@@ -476,14 +476,14 @@ proc jsv_reject_wait {args} {
    if {[string compare "verifying" $state] == 0} {
       set message [lindex $args 0]
 
-      jsv_send_command "RESULT STATE REJECT_WAIT $message"
+      _jsv_send_command "RESULT STATE REJECT_WAIT $message"
       set state "initialized"
    } else {
-      jsv_send_command "ERROR JSV script will send RESULT command but is in state $state"
+      _jsv_send_command "ERROR JSV script will send RESULT command but is in state $state"
    }
 }
 
-proc jsv_script_log {args} {
+proc _jsv_script_log {args} {
    global logging_enabled
    global logfile
 
@@ -496,15 +496,15 @@ proc jsv_script_log {args} {
 }
 
 proc jsv_log_info {args} {
-   jsv_send_command "LOG INFO $args"
+   _jsv_send_command "LOG INFO $args"
 }
 
 proc jsv_log_warning {args} {
-   jsv_send_command "LOG WARNING $args"
+   _jsv_send_command "LOG WARNING $args"
 }
 
 proc jsv_log_error {args} {
-   jsv_send_command "LOG ERROR $args"
+   _jsv_send_command "LOG ERROR $args"
 }
 
 proc jsv_main {} {
@@ -513,13 +513,13 @@ proc jsv_main {} {
    global argv0
 
    set date_time [clock format [clock seconds]]
-   jsv_script_log "$argv0 started on $date_time"
-   jsv_script_log ""
-   jsv_script_log "This file contains logging output from an SGE JSV script. Lines beginning"
-   jsv_script_log "with >>> contain the data which was send by a command line client or"
-   jsv_script_log "sge_qmaster to the JSV script. Lines beginning with <<< contain data"
-   jsv_script_log "which is send from this JSV script to the client or sge_qmaster"
-   jsv_script_log ""
+   _jsv_script_log "$argv0 started on $date_time"
+   _jsv_script_log ""
+   _jsv_script_log "This file contains logging output from an SGE JSV script. Lines beginning"
+   _jsv_script_log "with >>> contain the data which was send by a command line client or"
+   _jsv_script_log "sge_qmaster to the JSV script. Lines beginning with <<< contain data"
+   _jsv_script_log "which is send from this JSV script to the client or sge_qmaster"
+   _jsv_script_log ""
 
 
    # do as long as pipe is not closed and we get no quit command 
@@ -534,29 +534,29 @@ proc jsv_main {} {
          set second [lindex $arguments 1] 
          set remaining [lrange $arguments 2 [llength $arguments]]
    
-         jsv_script_log ">>> $input"
+         _jsv_script_log ">>> $input"
 
          if {[string compare "QUIT" "$first"] == 0} {
             set quit "true"
          } elseif {[string compare "PARAM" $first] == 0} {
-            jsv_handle_param_command "$second" "$remaining"
+            _jsv_handle_param_command "$second" "$remaining"
          } elseif {[string compare "ENV" $first] == 0} {
             set third [lindex $remaining 0]
             set remaining [lrange $remaining 1 [llength $remaining]]
-            jsv_handle_env_command "$second" "$third" "$remaining"
+            _jsv_handle_env_command "$second" "$third" "$remaining"
          } elseif {[string compare "START" $first] == 0} {
-            jsv_handle_start_command 
+            _jsv_handle_start_command
          } elseif {[string compare "BEGIN" $first] == 0} {
-            jsv_handle_begin_command 
+            _jsv_handle_begin_command
          } elseif {[string compare "SHOW" $first] == 0} {
             jsv_show_params
             jsv_show_envs
          } else {
-            jsv_send_command "ERROR JSV script got unknown command \"$first\""
+            _jsv_send_command "ERROR JSV script got unknown command \"$first\""
          }
       }
    }
 
    set date_time [clock format [clock seconds]]
-   jsv_script_log "$argv0 is terminating on $date_time"
+   _jsv_script_log "$argv0 is terminating on $date_time"
 }
