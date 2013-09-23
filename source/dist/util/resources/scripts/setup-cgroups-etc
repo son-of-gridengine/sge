@@ -38,7 +38,7 @@ if [ "$1" != stop ]; then
         mkdir -p $cpuset_mnt
         mount -t cpuset none $cpuset_mnt >/dev/null 2>&1
         mount | grep -q cpuset || rmdir $cpuset_mnt
-        if [ -d $sge_cpuset ]; then
+        if [ ! -d $sge_cpuset ]; then
             mkdir $sge_cpuset 2>/dev/null
             # These aren't inherited, and mems needs to be set to add
             # a task anywhere below.
