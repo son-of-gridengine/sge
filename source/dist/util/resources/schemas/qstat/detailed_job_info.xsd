@@ -115,7 +115,7 @@ ___INFO__MARK_END__-->
                         <xs:element name="JB_version" type="xs:unsignedInt"/>
                         <xs:element name="JB_ja_structure" type="JB_ja_structure_t"/>
                         <xs:element name="JB_type" type="xs:unsignedInt"/>
-                        <xs:element name="JB_binding" type="JB_binding_t"/>
+                        <xs:element name="JB_binding" type="JB_binding_t" minOccurs="0"/>
                         <xs:element name="JB_ja_task_concurrency" type="xs:unsignedInt"/>
 		</xs:sequence>
 	</xs:complexType>
