@@ -26,6 +26,7 @@
 #endif
 
 extern int foreground;
+bool  g_new_interactive_job_support = false; /* This is needed in err_trace.c */
 
 static char *s_qsub_gid = NULL;
 static char start_dir[MAXPATHLEN] = "";
