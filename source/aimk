@@ -2748,7 +2748,7 @@ if ( "$SGESSH" == 1) then
       ../configure --with-grd=${COMPILE_ARCH} --srcdir=.. \
          --with-cflags="${MEMCFLAG} ${NOERR_SSH} ${NOERR_PROTO} -DSGESSH_INTEGRATION" \
          --with-ldflags="${LFLAGS}" \
-         --with-libs="-L../../../${COMPILE_ARCH} -L../../../3rdparty/remote/${COMPILE_ARCH}/ -lsgeremote -luti -lcommlists -llck ${LIBS} ${SLIBS}" \
+         --with-libs="-L../../../${COMPILE_ARCH} -L../../../3rdparty/remote/${COMPILE_ARCH}/ -lsgeremote -luti -lcommlists ${LIBS} ${SLIBS}" \
          --with-ssl-dir=${OPENSSL_HOME}
    endif
 
