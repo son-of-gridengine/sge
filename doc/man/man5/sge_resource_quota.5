@@ -154,17 +154,17 @@ the complex attribute's type (see
 .M complex 5 ).
 .IP "dynamic limits"
 A dynamic limit is a simple algebraic expression used to derive the limit
-value. The formula can reference a complex attribute, whose
+value. The formula can reference complex attributes, whose
 value is used for the calculation of the resulting limit.
 The formula expression syntax is that of
 a sum of weighted complex values, that is:
 .sp 1
 .nf
-{w1|$complex1[*w1]}[{+|-}{w2|$complex2[*w2]}[{+|-}...]]
+{\fIw1\fP|\fB$\fP\fIcomplex1\fP[\fB*\fP\fIw1\fP]}[{\fB+\fP|\fB\-\fP}{\fIw2\fP|\fB$\fP\fIcomplex2\fP[\fB*\fP\fIw2\fP]}[{\fB+\fP|\fB\-\fP}...]]
 .fi
 .sp 1
-The weighting factors (w1, ...) are positive integers or floating point numbers
-in double precision. The complex values (complex1, ...)
+The weighting factors (\fIw1\fP, ...) are positive integers or floating point numbers
+in double precision. The complex values (\fIcomplex1\fP, ...)
 must be of numerical type (INT, DOUBLE, MEMORY, or TIME), as specified
 by the complex's type in the complex list (see
 .M complex 5 )
@@ -173,6 +173,9 @@ and defined either on global, queue, or host level to resolve the value.
 .B Note:
 Dynamic limits can only be configured for a host-specific rule, and
 must be defined for an expanded host list (or individual host).
+Also, if a load value corresponding to a complex used is not
+available, a large value is used for it to suggest an overloaded
+condition.
 .RE
 .PP
 A complex form of limit may be used:  "expanded" filters with the

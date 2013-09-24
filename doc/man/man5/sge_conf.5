@@ -1247,15 +1247,18 @@ parameter is deprecated, so it might be removed with the next minor release.
 Bypass execd communication in qmaster for (e.g. for throughput tests
 with fake hosts).  "Unknown" queue states are suppressed, but
 .B load_thresholds=none
-must be used to avoid queues going into an alarm state.  Submitted
+must be used to avoid queues going into an alarm state since load values
+are not simulated.  Submitted
 jobs are dispatched, and act as if they are run for a time determined
 by the job's first argument, after 3s spent in the "transferring"
-state.  I.e. there's a simulated 10s runtime for a command such as
+state.  I.e. there is a simulated 10s runtime for a command such as
 .nf
    qsub \-b y sleep 10
 .fi
 In this condition, job deletion works, but at least interactive jobs,
-tightly-integrated parallel ones, and job suspension don't.
+tightly-integrated parallel ones, and job suspension don't.  The
+execution hosts configured need not exist, but must have resolvable
+network names.
 .IP \fINO_AUTHENTICATION\fP
 Don't do authentication when GSSAPI security is enabled.  This, and
 the following parameter, determine the GSS global configuration, which
@@ -1592,11 +1595,11 @@ for further information about the format and contents of the reporting file.
 The contents of the reporting file are buffered in the
 xxQS_NAMExx qmaster and flushed at a fixed interval.
 This interval can be configured with the \fIflush_time\fP parameter.
-It is specified as a time value in the format HH:MM:SS.
-Sensible values range from a few seconds to one minute. Setting it too low may
+It is specified as a time value in the format HH:MM:SS or a number of seconds.
+Sensible values range from a few seconds to a minute. Setting it too low may
 slow down the qmaster. Setting it too high will make the qmaster consume large
 amounts of memory for buffering data.
-The reporting file is opened and closed for each flush.
+The reporting file is opened and closed for each flush.  Default 15s.
 .PP
 .IP "\fIaccounting_flush_time\fP"
 The contents of the accounting file are buffered in the
@@ -1605,8 +1608,8 @@ This interval can be configured with the \fIaccounting_flush_time\fP parameter.
 It is specified as a time value in the format HH:MM:SS.
 Sensible values range from a few seconds to one minute. Setting it too low may
 slow down the qmaster. Setting it too high will make the qmaster consume large
-amounts of memory for buffering data.  Setting it to 00:00:00 will disable
-accounting data buffering; as soon as data is generated, it will be written to
+amounts of memory for buffering data.  Setting it to 0 disables
+buffering; as soon as a record is generated, it will be written to
 the accounting file.  If this parameter is not set, the accounting data flush
 interval will default to the value of the \fIflush_time\fP parameter.
 The accounting file is opened and closed for each flush.
@@ -1620,7 +1623,8 @@ for more information about job logging.
 .IP "\fIsharelog\fP"
 The xxQS_NAMExx qmaster can dump information about sharetree configuration and use to the reporting file.
 The parameter \fIsharelog\fP sets an interval in which sharetree information will be dumped.
-It is set in the format HH:MM:SS. A value of 00:00:00 configures qmaster not to
+It is set in the format HH:MM:SS or a number of seconds. A value of 0
+(default) configures qmaster not to
 dump sharetree information. Intervals of several minutes up to hours are sensible values for this parameter.
 See 
 .M reporting 5 
