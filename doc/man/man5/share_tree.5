@@ -38,7 +38,9 @@ defines the long-term resource entitlements of users/projects and of a
 hierarchy of arbitrary groups thereof.
 Note that it is normally necessary to maintain users explicitly to use
 a share tree, rather than use automatic creation and (specifically)
-destruction; see
+destruction, or at least set
+.B auto_user_delete_time
+to 0; see
 .M user 5 .
 .PP
 The current share tree can be displayed via the
@@ -133,6 +135,7 @@ childnodes=NONE
 .M xxqs_name_sxx_intro 1 ,
 .M qconf 1 ,
 .M qmon 1 ,
+.M sge_share_mon ,
 .M project 5 ,
 .M user 5 .
 .\"

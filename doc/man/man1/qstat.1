@@ -92,9 +92,9 @@ The command line can be used to override the flags contained in the files.
 .\"
 .SH OPTIONS
 .IP "\fB\-explain a\fP|\fBA\fP|\fBc\fP|\fBE\fP"
-\[cq]c\[cq] displays the reason for the c(onfiguration ambiguous) state of a queue
-instance. 'a' shows the reason for the alarm state. Suspend alarm state
-reasons will be displayed by 'A'. 'E' displays the reason for a queue
+\[oq]\fBc\fP\[cq] displays the reason for the c(onfiguration ambiguous) state of a queue
+instance.  \[oq]\fBa\fP\[cq] shows the reason for the alarm state. Suspend alarm state
+reasons will be displayed by \[oq]\fBA\fP\[cq]. \[oq]\fBE\fP\[cq] displays the reason for a queue
 instance error state.
 .sp
 The output format for the alarm reasons is one line per reason, containing
@@ -154,7 +154,7 @@ matching jobs.
 .sp
 For jobs in E(rror) state the error reason is displayed. For jobs that
 could not be dispatched during in the last scheduling interval the 
-obstacles are shown, if 'schedd_job_info' in 
+obstacles are shown, if \fBschedd_job_info\fP in 
 .M sched_conf 5 
 is configured accordingly.
 .sp
@@ -325,7 +325,7 @@ in
 If the \fB\-xml\fP parameter is combined with \fB\-ncb\fP then the XML output does
 not contain tags with information about job to core binding.
 .\"
-.sp
+.PP
 The following two debugging options are available only when the
 environment variable
 .B MORE_INFO
@@ -339,7 +339,7 @@ internal state.
 .\" fixme: no-op?
 Displays the full
 .B global_queue_list
-Internal state.
+internal state.
 .\"
 .\"
 .SH "OUTPUT FORMATS"
@@ -410,7 +410,7 @@ the status of the job \- a combination of
 .BR t (ransfering),
 .BR T (hreshold),
 .BR w (aiting),
-Or
+or
 .BR z (ombie).
 .sp 1
 The state \fBd\fP(eletion) indicates that
@@ -641,26 +641,26 @@ omitted) a single line is displayed with the following format:
 a one letter specifier indicating whether the current resource availability 
 value was dominated by either
 .br
-`\fBg\fP' \- a cluster global,
+\[oq]\fBg\fP\[cq] \- a cluster global,
 .br
-`\fBh\fP' \- a host total or
+\[oq]\fBh\fP\[cq] \- a host total or
 .br
-`\fBq\fP' \- a queue related resource consumption.
+\[oq]\fBq\fP\[cq] \- a queue related resource consumption.
 .IP "\(bu" 3n
 a second one letter specifier indicating the source for the current resource 
 availability value, being one of
 .br
-`\fBl\fP' \- a load value reported for the
+\[oq]\fBl\fP\[cq] \- a load value reported for the
 resource,
 .br
-`\fBL\fP' \- a load value for the resource after administrator
+\[oq]\fBL\fP\[cq] \- a load value for the resource after administrator
 defined load scaling has been applied,
 .br
-`\fBc\fP' \- availability derived from
+\[oq]\fBc\fP\[cq] \- availability derived from
 the consumable resources facility (see
 .M complexes 5 ),
 .br
-`\fBf\fP' \- a fixed
+\[oq]\fBf\fP\[cq] \- a fixed
 availability definition derived from a non-consumable complex attribute or 
 a fixed resource limit.
 .IP "\(bu" 3n
@@ -687,7 +687,7 @@ violate load or suspend thresholds.
 .br
 The same format as with the \fB\-F\fP option is used with following extensions:
 .IP "\(bu" 3n
-the line starts with the keyword `alarm'
+the line starts with the keyword \[oq]alarm\[cq]
 .br
 .IP "\(bu" 3n
 appended to the resource value is the type and value of the appropriate threshold

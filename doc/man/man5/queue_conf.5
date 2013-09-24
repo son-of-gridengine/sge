@@ -441,6 +441,7 @@ The configured \fBshell_start_mode\fP
 Set to "true" if the shell is supposed to be used as a login shell
 (see \fBlogin_shells\fP in
 .M xxqs_name_sxx_conf 5 ).
+.PP
 Ignoring those, a trivial starter method could be
 .nf
     #!/bin/sh
@@ -449,7 +450,7 @@ Ignoring those, a trivial starter method could be
 .fi
 It is, at best, tricky to write a proper substitute for the builtin
 method as a shell script, taking account of the variables above.  It
-is best to do so in a non-macro expanded scripting language (or a
+is probably best to do so in a non-macro expanded scripting language (or a
 compiled language, as appropriate).
 .PP
 The starter_method will not be invoked for qsh, qlogin, or qrsh acting as rlogin.

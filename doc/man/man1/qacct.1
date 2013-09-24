@@ -95,8 +95,9 @@ Note that results including parallel jobs depend on the value of
 in the parallel environment definition (see
 .M sge_pe 5 ).
 If it is false, there is an accounting record for slave tasks as well
-as master tasks so that, for example, there is a contribution to
-wall-clock time from each task.
+as master tasks so that, for example, there is a contribution to CPU
+time from each task.  Note that the slot count reported for
+each task is the total for the job, not that allocated to the slave.
 .\"
 .\"
 .SH OPTIONS
