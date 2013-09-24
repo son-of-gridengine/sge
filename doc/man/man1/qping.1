@@ -429,6 +429,17 @@ If set, specifies the default xxQS_NAMExx cell.
 See
 .B \-dump
 option above.
+.PP
+The following apply when CSP security is used and can override the
+values deduced from the bootstrap file.
+.IP \fBSSL_CA_CERT_FILE\fP 1.5i
+CA certificate file
+.IP SSL_CERT_FILE 1.5i
+Certificates file
+.IP SSL_KEY_FILE 1.5i
+Key file
+.IP SSL_RAND_FILE 1.5i
+Random seed file
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,

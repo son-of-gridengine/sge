@@ -60,8 +60,7 @@ Print out certificates, keys and certificate revocation lists in human readable 
 Echo the $CATOP or $CALOCALTOP directory. This command is usually run as root on the qmaster host after a CA infrastructure has been created. If "\fB\-cadir\fP", "\fB\-catop\fP" or "\fB\-calocaltop\fP" are set, the corresponding directories are printed.
 .IP "\fBsge_ca \-usercert\fP \fIuser file\fP |\fB \-user\fP \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP |\fB \-sdm_daemon\fP \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP [\fIcommand options\fP]"
 Create certificates and keys for a bunch of users contained in \fIuser
-file\fP, a single user, or SDM daemon  (see
-.M hedeby_introduction 1 )
+file\fP, a single user, or SDM daemon
 in the form \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP.
 .IP "\fBsge_ca \-pkcs12\fP \fIuser\fP |\fB \-sdm_pkcs12\fP \fIg\fP |\fB \-sys_pkcs12 \fP[\fIcommand options\fP]"
 Export the certificate and key for user \fIuser\fP or SDM daemon \fIg\fP in PKCS12 format and to export the xxQS_NAMExx daemon certificate and key in PKCS12 format.

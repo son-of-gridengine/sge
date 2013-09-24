@@ -622,7 +622,7 @@ Adds the definition of a share tree to the system (see
 A template share tree is retrieved and an editor (either
 .MO vi 1
 or the editor indicated by $EDITOR) is invoked for modifying
-the share tree definition. Upon exiting the editor, the modified data
+the share tree definition. Upon exiting the editor, the modification
 is registered with
 .M xxqs_name_sxx_qmaster 8 .
 Requires root or manager privileges.
@@ -843,7 +843,7 @@ Requires root or manager privilege.
 Allows changing a single configuration attribute in
 multiple instances of an object with a single
 command. 
-Find more information concerning obj_spec and obj_instance
+Find more information concerning \fIobj_spec\fP and \fIobj_instance\fP
 in the description of
 .BR \-aattr .
 .\"
@@ -889,7 +889,7 @@ or the editor indicated by $EDITOR)
 and the changed configuration is registered with
 .M xxqs_name_sxx_qmaster 8
 upon exit of the editor.
-If the optional host argument is omitted or if the
+If the optional \fIhost\fP argument is omitted, or if the
 special host name \fBglobal\fP is specified, the
 global configuration is modified.
 The  format of the configuration is 
@@ -917,14 +917,14 @@ are retrieved and an editor (either
 .MO vi 1
 or the editor indicated by the EDITOR environment variable) is invoked
 for modifying the host group configuration. By closing the editor,
-the modified data is registered.
+the modification is registered.
 The format of the host group configuration is described in
 .M hostgroup 5 . 
 Requires root or manager privileges.
 .\"
 .IP "\fB\-mrqs\fP [\fIrqs_name\fP]	\fI<modify RQS configuration>\fP"
-Retrieves the resource quota set (RQS)configuration defined in rqs_name,
-or if rqs_name is not given, retrieves all resource quota sets,
+Retrieves the resource quota set (RQS)configuration defined in \fIrqs_name\fP,
+or if \fIrqs_name\fP is not given, retrieves all resource quota sets,
 executes an editor (either
 .MO vi 1
 or the editor indicated by the EDITOR environment variable)
@@ -954,7 +954,7 @@ Data for the specific project is retrieved (see
 and an editor (either
 .MO vi 1
 or the editor indicated by $EDITOR) is invoked for modifying the project
-definition. Upon exiting the editor, the modified data is registered.
+definition. Upon exiting the editor, the modification is registered.
 Requires root or manager privileges.
 .\"
 .IP "\fB\-mq\fP \fIqueuename\fP	\fI<modify queue configuration>\fP"
@@ -984,7 +984,7 @@ Requires root or manager privilege.
 .IP "\fB\-mstnode\fP \fInode_path\fP\fB=\fP\fIshares\fP,...	\fI<modify share tree node>\fP"
 Modifies the specified share tree node(s) in the share tree (see
 .M share_tree 5 ).
-The \fBnode_path\fP is a hierarchical path
+The \fInode_path\fP is a hierarchical path
 (\fP[fB/\fP]\fInode_name\fP[[\fB/.\fP]\fInode_name\fP...])
 specifying the location of an existing node in the share tree.
 The node is set to the number of specified \fIshares\fP.
@@ -997,7 +997,7 @@ The present share tree is retrieved and an editor (either
 .MO vi 1
 or the editor indicated by $EDITOR) is invoked 
 for modifying the share tree definition. Upon exiting the editor,
-the modified data is registered with
+the modification is registered with
 .M xxqs_name_sxx_qmaster 8 .
 Requires root or manager privileges.
 .\"
@@ -1020,7 +1020,7 @@ Requires root or manager privilege.
 .\" .MO vi 1
 .\" or the editor indicated by the EDITOR environment variable) is invoked
 .\" for modifying the user mapping configuration. By closing the editor,
-.\" the modified data is registered. Requires root or manager privileges.
+.\" the modification is registered. Requires root or manager privileges.
 .\" usermapping end
 .\"
 .IP "\fB\-muser\fP \fIuser\fP	\fI<modify user>\fP"
@@ -1030,7 +1030,7 @@ and an editor (either
 .MO vi 1
 or the editor indicated by the EDITOR environment variable) is invoked
 for modifying the user definition. Upon exiting the editor, the
-modified data is registered. Requires root or manager privileges.
+modification is registered. Requires root or manager privileges.
 .\"
 .IP "\fB\-purge\fP \fIqueue\fP \fIattr_nm\fP,... \fIobj_spec\fP"
 .ta 2.3i
@@ -1145,13 +1145,13 @@ Displays the xxQS_NAMExx administrative host list.
 .\"
 .IP "\fB\-shgrp\fP \fIgroup\fP		\fI<show host group configuration>\fP"
 Displays the host group entries for the group specified in
-.B group.
+.IR group .
 .IP "\fB\-shgrpl\fP		\fI<show host group lists>\fP"
 Displays a name list of all currently defined host groups
 which have a valid host group configuration.
 .\" 
 .IP "\fB\-shgrp_tree\fP \fIgroup\fP	\fI<show host group tree>\fP"
-Shows a tree like structure of host group.
+Shows a tree like structure of the host group.
 .\" 
 .IP "\fB\-shgrp_resolved\fP \fIgroup\fP	\fI<show host group hosts>\fP"
 Shows a list of all hosts which are part of the definition of
@@ -1160,12 +1160,12 @@ than also these groups are resolved and the hostnames are printed.
 .\" 
 .IP "\fB\-srqs\fP [\fIrqs_name_list\fP]	\fI<show RQS configuration>\fP"
 Show the definition of the
-.I resource quota sets
+resource quota sets
 (RQS) specified by the argument.
 .\"
 .IP "\fB\-srqsl\fP	\fI<show RQS\-list>\fP"
 Show a list of all currently defined
-\fIresource quota sets\fPs (RQSs).
+resource quota sets (RQSs).
 .\"
 .IP "\fB\-sm\fP	\fI<show managers>\fP"
 Displays the managers list.
@@ -1174,7 +1174,7 @@ Displays the managers list.
 Displays the operator list.
 .\"
 .IP "\fB\-sobjl\fP \fIobj_spec\fP \fIattr_name\fP \fIval\fP	\fI<show object list>\fP"
-Shows a list of all configuration objects for which val matches at least
+Shows a list of all configuration objects for which \fIval\fP matches at least
 one configuration value of the attributes whose name matches \fIattr_name\fP.
 .sp
 \fIobj_spec\fP can be "queue" or "queue_domain" or "queue_instance" or "exechost".
@@ -1189,7 +1189,7 @@ or
 .M host_conf 5 . 
 Also wildcards can be used to match multiple attributes.
 .sp
-Val can be an arbitrary string or a wildcard expression.
+\fIval\fP can be an arbitrary string or a wildcard expression.
 .\"
 .IP "\fB\-sp\fP \fIpe_name\fP	\fI<show PE configuration>\fP"
 Show the definition of the
@@ -1198,7 +1198,7 @@ Show the definition of the
 .\"
 .IP "\fB\-spl\fP	\fI<show PE\-list>\fP"
 Show a list of all currently defined
-\fIparallel environment\fPs (PEs).
+parallel environments (PEs).
 .\"
 .IP "\fB\-sprj\fP \fIproject\fP	\fI<show project>\fP"
 Shows the definition of the specified project (see
@@ -1258,7 +1258,7 @@ xxQS_NAMExx user access lists (ACLs).
 .\" Displays a name list of all currently defined cluster users
 .\" which have a guilty user mapping configuration.
 .\" usermapping end
-.IP "\fB\-suser\fP \fIuser,...\fP	\fI<show user>\fP"
+.IP "\fB\-suser\fP \fIuser\fP,...	\fI<show user>\fP"
 Shows the definition of the specified user(s) (see
 .M user 5 ).
 .\"

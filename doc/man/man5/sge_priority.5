@@ -193,7 +193,10 @@ The run-time priority can be dynamically adjusted
 in order to meet the goals set with the ticket policy when execution
 hosts are over-subscribed. Dynamic run-time
 priority adjustment can be turned on globally using
-\fBreprioritize_interval\fP in
+.B reprioritize
+in
+.M sge_conf 5
+and \fBreprioritize_interval\fP in
 .M sched_conf 5 .
 If no dynamic run-time priority adjustment is done 
 at a host level, the \fBpriority\fP specification in 
