@@ -50,8 +50,8 @@ messages:
 ###############################################################################
 # rules to build object codes and binaries
 ###############################################################################
-libsgeremote$(LIBEXT): $(RSHD_OBJS) $(RSHD_ADD_OBJS) $(RSHD_LIB_DEPENDS) sgessh.o
-		$(AR) $(ARFLAGS) libsgeremote$(LIBEXT) $(RSHD_OBJ) $(RSHD_ADD_OBJS) sgessh.o
+libsgeremote$(LIBEXT): $(RSHD_ADD_OBJS) $(RSHD_LIB_DEPENDS) sgessh.o
+		$(AR) $(ARFLAGS) libsgeremote$(LIBEXT) $(RSHD_ADD_OBJS) sgessh.o
 
 rlogin:   $(RLOGIN_OBJS)
 		$(CC) -o $@ $(LFLAGS) $(RLOGIN_OBJS) $(LIBS)
