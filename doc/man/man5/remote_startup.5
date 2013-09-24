@@ -394,7 +394,7 @@ in privsep_postauth():
 .br
 #ifdef SGESSH_INTEGRATION
 .br
-sgessh_do_setusercontext(aut hctxt->pw);
+sgessh_do_setusercontext(authctxt->pw);
 .br
 #else
 .br
