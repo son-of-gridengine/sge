@@ -637,7 +637,8 @@ int sge_peclose(pid_t pid, FILE *fp_in, FILE *fp_out, FILE *fp_err,
                 struct timeval *timeout)
 {
    int i, status;
-   long timeout_us = timeout->tv_sec * 1000000L + timeout->tv_usec;
+   long timeout_us = timeout ? (timeout->tv_sec * 1000000L + timeout->tv_usec)
+                             : 0;
  
    DENTER(TOP_LAYER, "sge_peclose");
  
@@ -656,7 +657,7 @@ int sge_peclose(pid_t pid, FILE *fp_in, FILE *fp_out, FILE *fp_err,
       i = waitpid(pid, &status, timeout?WNOHANG:0);
       if (i==-1) {
          DEXIT;
-         return -1;
+         return errno;
       }
       if (i==0) { /* not yet exited */
          if (timeout_us <= 0) {
