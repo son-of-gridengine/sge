@@ -178,6 +178,9 @@ endsw
 # Location of hwloc include and lib directories (if not on system path)
 set HWLOC_DIR = ""
 
+# Prefix for OpenSSH compilation, for tight integration
+set OPENSSH_PREFIX = "/usr/local"
+
 # This is appropriate for a Debian distribution (horrible csh quoting).
 # Well, it would be if I knew how to get the quoting right for different
 # csh implementations, sigh.
