@@ -2943,6 +2943,8 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
        (strcmp("-dattr", *spp) == 0) || (strcmp("-Dattr", *spp) == 0)) {   
      
 /* *INDENT-OFF* */ 
+      /* fixme: can conf, schedconf be added?  (no attribute_name to
+         match, and *params are space-separated) */
       static object_info_entry info_entry[] = {
          {SGE_CQ_LIST,         SGE_OBJ_CQUEUE,    CQ_Type,   SGE_ATTR_QNAME,     CQ_name,   NULL,     &qconf_sfi,        cqueue_xattr_pre_gdi},
          {SGE_EH_LIST,         SGE_OBJ_EXECHOST,  EH_Type,   SGE_ATTR_HOSTNAME,  EH_name,   NULL,     &qconf_sfi,        NULL},
@@ -2950,6 +2952,10 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
          {SGE_CK_LIST,         SGE_OBJ_CKPT,      CK_Type,   SGE_ATTR_CKPT_NAME, CK_name,   NULL,     &qconf_sfi,        NULL},
          {SGE_HGRP_LIST,       SGE_OBJ_HGROUP,    HGRP_Type, SGE_ATTR_HGRP_NAME, HGRP_name, NULL,     &qconf_sfi,        NULL},
          {SGE_RQS_LIST,        SGE_OBJ_RQS,       RQS_Type,  SGE_ATTR_RQS_NAME,  RQS_name, NULL,      &qconf_rqs_sfi,    rqs_xattr_pre_gdi},
+         {SGE_UU_LIST,         SGE_OBJ_USER,      UU_Type,   SGE_ATTR_USER_NAME, UU_name,  NULL,      &qconf_sfi,        NULL},
+         {SGE_PR_LIST,         SGE_OBJ_PROJECT,   PR_Type,   SGE_ATTR_PROJECT_NAME, PR_name, NULL,    &qconf_sfi,        NULL},
+         {SGE_CAL_LIST,        SGE_OBJ_CALENDAR,  CAL_Type,  SGE_ATTR_CALENDAR_NAME, CAL_name, NULL,  &qconf_sfi,        NULL},
+         {SGE_US_LIST,         SGE_OBJ_USERSET,   US_Type,   SGE_ATTR_USERSET_NAME, US_name, NULL,    &qconf_sfi,        NULL},
          {0,                   NULL,              0,         NULL,               0,         NULL,     NULL,        NULL}
       }; 
 /* *INDENT-ON* */
@@ -2963,11 +2969,15 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
       info_entry[0].fields = CQ_fields;
       /* These have to be freed later */
       info_entry[1].fields = sge_build_EH_field_list(false, false, false);
+      info_entry[6].fields = sge_build_UU_field_list(false);
+      info_entry[7].fields = sge_build_PR_field_list(false);
       /* These do not */
       info_entry[2].fields = PE_fields;
       info_entry[3].fields = CK_fields;
       info_entry[4].fields = HGRP_fields;
       info_entry[5].fields = RQS_fields;
+      info_entry[8].fields = CAL_fields;
+      info_entry[9].fields = US_fields;
       
       /* no adminhost/manager check needed here */
         
@@ -3004,6 +3014,8 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
       if (!info_entry[index].object_name) {
          fprintf(stderr, "Modification of object "SFQ" not supported\n", *spp);
          sge_free(&(info_entry[1].fields));
+         sge_free(&(info_entry[6].fields));
+         sge_free(&(info_entry[7].fields));
          DRETURN(1);
       } 
 
@@ -3036,6 +3048,8 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
       }
       
       sge_free(&(info_entry[1].fields));
+      sge_free(&(info_entry[6].fields));
+      sge_free(&(info_entry[7].fields));
       
       continue;
    }
