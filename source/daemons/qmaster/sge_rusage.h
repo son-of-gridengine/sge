@@ -96,6 +96,7 @@ struct drusage {
    double   mem;
    double   io;
    double   iow;
+   char     *pe_taskid;
    double   maxvmem;
    u_long32 ar;
    sge_all_rusage_type *arch_dep_usage;/* pointer to a structure with

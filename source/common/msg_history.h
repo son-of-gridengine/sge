@@ -78,6 +78,7 @@
 #define MSG_HISTORY_j_OPT_USAGE     _MESSAGE(25105, _("list all [matching] jobs"))
 #define MSG_HISTORY_t_OPT_USAGE     _MESSAGE(25106, _("list all [matching] tasks (requires -j option)"))
 #define MSG_HISTORY_ar_OPT_USAGE    _MESSAGE(25107, _("list [matching] advance reservations"))
+#define MSG_HISTORY_m_OPT_USAGE     _MESSAGE(25108, _("list only master tasks"))
 #define MSG_HISTORY_f_OPT_USAGE           _MESSAGE(25109, _("use alternate accounting file"))
 #define MSG_HISTORY_beginend_OPT_USAGE    _MESSAGE(25110, _("[[CC]YYMMDDhhmm[.SS]"))
 #define MSG_HISTORY_E_OPT_USAGE     _MESSAGE(25111, _("select job end time, not start"))
