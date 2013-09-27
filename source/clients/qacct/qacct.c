@@ -52,6 +52,8 @@
 #include "uti/sge_parse_num_par.h"
 #include "uti/sge_hostname.h"
 
+#include "uti2/util.h"
+
 #include "sgeobj/sge_schedd_conf.h"
 #include "sgeobj/sge_all_listsL.h"
 #include "sgeobj/sge_feature.h"
@@ -1443,7 +1445,10 @@ static void showjob(sge_rusage_type *dusage, char **category) {
    printf("%-13.12s%-20s\n",MSG_HISTORY_SHOWJOB_GRANTEDPE, dusage->granted_pe);
    printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_SLOTS, dusage->slots);
    printf("%-13.12s%-3"sge_fu32" %s %s\n",MSG_HISTORY_SHOWJOB_FAILED, dusage->failed, (dusage->failed ? ":" : ""), get_sstate_description(dusage->failed));
-   printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_EXITSTATUS, dusage->exit_status);
+   printf("%-13.12s%-20"sge_fu32,MSG_HISTORY_SHOWJOB_EXITSTATUS, dusage->exit_status);
+   if (dusage->exit_status > 127)
+      printf(" (%s)", strsignal(dusage->exit_status - 128));
+   printf("\n");
    printf("%-13.12s%.0fs\n",MSG_HISTORY_SHOWJOB_RUWALLCLOCK, dusage->ru_wallclock);
 
    printf("%-13.12s%.3fs\n",MSG_HISTORY_SHOWJOB_RUUTIME, dusage->ru_utime);    /* user time used */
