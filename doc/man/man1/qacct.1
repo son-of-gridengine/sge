@@ -52,6 +52,7 @@ qacct \- report and account for xxQS_NAMExx usage
 .RI [ job_id | job_name | pattern ]]
 .RB [ \-l
 .IR attr = val ,...]
+.RB [ \-m ]
 .RB [ \-o
 .RI [ Owner ]]
 .RB [ \-u
@@ -182,6 +183,13 @@ A resource requirement specification which must be met by the queues
 in which the jobs being accounted were executing. The resource request 
 is very similar to the one described in
 .M qsub 1 .
+.\"
+.IP \fB\-m\fP
+Ignore slave tasks of parallel jobs.  Only relevant when  when
+.B accounting_summary
+is false, and probably only useful with
+.B \-j
+to prune the output.
 .\"
 .IP "\fB\-o\fP [\fIOwner\fP] | \fB\-u\fP [\fIOwner\fP]"
 The name of the owner of the jobs for which accounting statistics

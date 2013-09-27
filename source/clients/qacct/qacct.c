@@ -129,6 +129,7 @@ typedef struct {
    time_t begin_time;
    time_t end_time;
    lList *queue_name_list;
+   int master_only;
 } sge_qacct_options;
 
 static void qacct_usage(sge_gdi_ctx_class_t **ctx, FILE *fp);
@@ -524,6 +525,12 @@ int main(int argc, char **argv)
       */
       else if (!strcmp("-E",argv[ii]))
          options.endflag = 1;
+      /*
+      ** -m
+      */
+      else if (!strcmp("-m", argv[ii]))
+         options.master_only = 1;
+
       else if (!strcmp("-help",argv[ii])) {
          qacct_usage(&ctx, stdout);
       } else {
@@ -1364,6 +1371,7 @@ static void qacct_usage(sge_gdi_ctx_class_t **ctx, FILE *fp)
    fprintf(fp, " [-help]                           %s\n", MSG_HISTORY_help_OPT_USAGE);
    fprintf(fp, " [-j [job_id|job_name|pattern]]    %s\n", MSG_HISTORY_j_OPT_USAGE);
    fprintf(fp, " [-l attr=val,...]                 %s\n", MSG_HISTORY_l_OPT_USAGE );
+   fprintf(fp, " [-m]                              %s\n", MSG_HISTORY_m_OPT_USAGE);
    fprintf(fp, " [-o [owner]]                      %s\n", MSG_HISTORY_o_OPT_USAGE);
    fprintf(fp, " [-u [owner]]                      %s\n", MSG_HISTORY_o_OPT_USAGE);
    fprintf(fp, " [-pe [pe_name]]                   %s\n", MSG_HISTORY_pe_OPT_USAGE );
@@ -2099,8 +2107,11 @@ sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *s
 #endif
    d->iow = ((pc=strtok(NULL, ":")))?atof(pc):0;
 
-   /* skip pe_taskid */
-   pc=strtok(NULL, ":");
+   if (!(d->pe_taskid=strtok(NULL, ":"))) {
+      DRETURN(-1);
+   } else if (options->master_only && (strcmp(d->pe_taskid, "NONE") != 0)) {
+      DRETURN(-2);
+   }
 
    d->maxvmem = ((pc=strtok(NULL, ":")))?atof(pc):0;
    d->ar = ((pc=strtok(NULL, ":")))?atol(pc):0;
