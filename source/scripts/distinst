@@ -936,7 +936,7 @@ if [ $instcommon = true ]; then
                         $DEST_SGE_ROOT/util/resources/ganglia-sge-jobs
 
       Execute chmod 644 $DEST_SGE_ROOT/util/install_modules/* \
-                        $DEST_SGE_ROOT/util/rctemplates/* \
+                        $DEST_SGE_ROOT/util/rctemplates/*_template \
                         $DEST_SGE_ROOT/util/sgeCA/*.cnf \
                         $DEST_SGE_ROOT/util/sgeSMF/*.xml \
                         $DEST_SGE_ROOT/util/sgeSMF/sge_smf_support.sh \
