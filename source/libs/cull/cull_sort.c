@@ -214,12 +214,10 @@ lSortOrder *lParseSortOrderVarArg(const lDescr *dp, const char *fmt,...)
 *
 *  INPUTS
 *     const lDescr *dp - descriptor 
-*     const char *fmt  - format string
-*                        %d - int
-*                        %s - char*
-*                        %u - ulong
-*                        +  - ascending
-*                        -  - descending 
+*     const char *fmt  - format string with syntax
+*                        %I{+|-} [%I{+|-}...]
+*                        where %I stands for the field and +/- stands for
+*                        ascending/descending sorting order
 *     va_list ap       - Attributes within descriptor 
 *
 *  RESULT

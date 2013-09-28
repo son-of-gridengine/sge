@@ -99,7 +99,7 @@ void nm_set(int job_field[], int nm)
 *     int lReduceDescr(lDescr **dst_dpp, lDescr *src_dp, lEnumeration *enp) 
 *
 *  FUNCTION
-*     Makes a new descriptor in 'dst_dpp' that containes only those 
+*     Makes a new descriptor in 'dst_dpp' that contains only those
 *     fields from 'src_dp' that are in 'enp'. 
 *
 *  INPUTS
@@ -314,37 +314,42 @@ lEnumeration *_lWhat(const char *fmt, const lDescr *dp,
 
 /****** cull/what/lWhat() *****************************************************
 *  NAME
-*     lWhat() -- Create a new enumeration
+*     lWhat() -- Create a new field enumeration structure
 *
 *  SYNOPSIS
 *     lEnumeration *lWhat(const char *fmt, ...) 
 *
 *  FUNCTION
-*     Create a new enumeration. fmt describes the format of the enumeration 
+*     Create a new enumeration described by 'fmt'
 *
 *  INPUTS
 *     const char *fmt - format string: 
 *
-*                          element := type "(" attribute_list ")" .
-*                          type := "%T" .
-*                          attribute_list := "ALL" | "NONE" | attributes .
-*                          attributes = { "%I" | "%I" "->" element } .
+*       Syntax:
+*         element := type "(" attribute_list ")" .
+*         type := "%T" .
+*         attribute_list := "ALL" | "NONE" | attributes ")" .
+*         attributes = { "%I" | "%I" "->" element } .
 *
-*                       examples:
-*                          1) "%T(NONE)"
-*                          2) "%T(ALL)"
-*                          3) "%T(%I%I)"
-*                          4) "%T(%I%I->%T(%I%I))"
+*       where:
+*         %T specifies the descriptor type attribute_list, ALL fields,
+*         no fields, or the fields described by attributes; "->" selects
+*         a sub-element
 *
-*     ...             - variable list of arguments
-*              
-*                       varargs corresponding to examples above:
-*                          1) JB_Type
-*                          2) JB_Type
-*                          3) JB_Type JB_job_numer JB_ja_tasks
-*                          4) JB_Type JB_job_numer JB_ja_tasks
-*                                JAT_Type JAT_task_number JAT_status
-*                       
+*     ...   - variable list of arguments corresponding to the % placeholders
+*
+*  EXAMPLES
+*      fmt:
+*         1) "%T(NONE)"
+*         2) "%T(ALL)"
+*         3) "%T(%I%I)"
+*         4) "%T(%I%I->%T(%I%I))"
+*      varargs corresponding to examples above:
+*         1) JB_Type
+*         2) JB_Type
+*         3) JB_Type, JB_job_number, JB_ja_tasks
+*         4) JB_Type, JB_job_number, JB_ja_tasks, JAT_Type, JAT_task_number,
+*            JAT_status
 *
 *  RESULT
 *     lEnumeration* - new enumeration
@@ -368,7 +373,7 @@ lEnumeration *lWhat(const char *fmt, ...)
 
    /* 
       initialize scan function, the actual token is scanned again 
-      in the subscope fuction. There we call eat_token to go ahead
+      in the subscope function. There we call eat_token to go ahead
     */
    memset(&state, 0, sizeof(state));
    scan(fmt, &state);
@@ -484,6 +489,7 @@ static lEnumeration *subscope_lWhat(cull_parse_state* state, va_list *app)
    }
 
    for (i = 0; i < next_id; i++) {  
+     /* fixme:  warning that ep[i].pos garbage or undefined */
       enumeration[i].pos = ep[i].pos;
       enumeration[i].nm = ep[i].nm;
       enumeration[i].mt = ep[i].mt;
@@ -548,7 +554,7 @@ lEnumeration *lWhatAll()
 *     void lFreeWhat(lEnumeration **ep) 
 *
 *  FUNCTION
-*     Frees a enumeration array 
+*     Frees an enumeration array ep. Does nothing if it is null.
 *
 *  INPUTS
 *     lEnumeration **ep - enumeration, will be set to NULL 
@@ -580,14 +586,15 @@ void lFreeWhat(lEnumeration **ep)
 *     int lCountWhat(const lEnumeration *enp, const lDescr *dp) 
 *
 *  FUNCTION
-*     Returns size of enumeration 
+*     Returns size (number of fields) of enumeration
 *
 *  INPUTS
 *     const lEnumeration *enp - enumeration 
 *     const lDescr *dp        - descriptor 
 *
 *  RESULT
-*     int - number of fields in enumeration 
+*     int - number of fields in enumeration, or -1 if one of the arguments
+*           is NULL
 ******************************************************************************/
 int lCountWhat(const lEnumeration *enp, const lDescr *dp) 
 {
@@ -717,14 +724,14 @@ int lMergeWhat(lEnumeration **what1, lEnumeration **what2)
        (*what1)[0].pos == WHAT_NONE ||
        (*what2)[0].pos == WHAT_ALL) {
       /*
-       * what1 is empty or what2 containes all attributes
+       * what1 is empty or what2 contains all attributes
        */
       lFreeWhat(what1);
       *what1 = *what2;
       *what2 = NULL;
    } else if ((*what1)[0].pos == WHAT_ALL) {
       /*
-       * what1 contailes already all elements
+       * what1 contains already all elements
        */
       lFreeWhat(what2);
    } else {
@@ -842,6 +849,3 @@ int lWhatSetSubWhat(lEnumeration *what1, int nm, lEnumeration **what2)
    }
    DRETURN(ret);
 }
-
-
-

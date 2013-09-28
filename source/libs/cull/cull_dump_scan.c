@@ -217,12 +217,12 @@ lDescr *lUndumpDescr(FILE *fp)
 *     int lDumpElem(const char *fname, const lListElem *ep, int indent) 
 *
 *  FUNCTION
-*     Dump a given element into a file 
+*     Dump a given element into a file in text format
 *
 *  INPUTS
 *     const char *fname   - filename 
 *     const lListElem *ep - element 
-*     int indent          - 
+*     int indent          - number of spaces to indent
 *
 *  RESULT
 *     int - error state
@@ -515,7 +515,7 @@ int lDumpList(FILE *fp, const lList *lp, int indent)
 }
 /****** cull/dump_scan/lUndumpElem() ******************************************
 *  NAME
-*     lUndumpElem() -- Read element from FILE stream 
+*     lUndumpElem() -- Read element from dump file
 *
 *  SYNOPSIS
 *     lListElem* lUndumpElem(FILE *fp, const lDescr *dp) 
@@ -528,7 +528,7 @@ int lDumpList(FILE *fp, const lList *lp, int indent)
 *     const lDescr *dp - descriptor 
 *
 *  RESULT
-*     lListElem* - Read element 
+*     lListElem* - Read element, or NULL if either arg is NULL
 ******************************************************************************/
 lListElem *lUndumpElem(const char *fname, const lDescr *dp) 
 {
