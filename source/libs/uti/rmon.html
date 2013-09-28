@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
@@ -16,10 +16,10 @@
 components in a debug trace mode. It is most often applied for
 monitoring the behavior of daemons. In this mode the daemon does not
 disconnect from the controlling terminal, but stays in foreground and
-prints <I>monitoring messages</I><SPAN STYLE="font-style: normal">.
+prints <I>monitoring messages</I>.
 Based on these messages, it is possible to trace into a distributed
 system like Grid Engine. Tracing into the system is important for
-many tasks:</SPAN></P>
+many tasks:</P>
 <UL>
 	<LI><P STYLE="font-style: normal">find the location/reason for a
 	daemon crash.</P>
@@ -91,12 +91,12 @@ DENTER/DEXIT</P>
 + CULL_LAYER + BASIS_LAYER + PACK_LAYER --&gt; usually not of any
 interest</P>
 <H2>Limitations of the Grid Engine Monitoring System</H2>
-<P><SPAN STYLE="font-style: normal">A common misunders</SPAN>tanding
+<P>A common misunderstanding
 of the Grid Engine monitoring mechanism is that it can be only as
 good as the debug information which the code is setup to produce. You
 might not be able to identify a problem with the software via debug
 traces because there is simply no message generated which would be
-related to the problem<SPAN STYLE="font-style: normal">. In many
+related to the problem. In many
 practical cases it can be necessary to enhance existing messages or
 to add new messages and then to re-build Grid Engine and run it in
 debug mode again. The monitoring system is a developer tool and thus
@@ -112,7 +112,7 @@ the component logs into pertinent log files. Likewise, if you find
 nothing and if you consider to make a corresponding change, the
 primary goal should be to provide such error information to the
 administrator or user via output and log files but not to the
-developer via monitoring messages.</SPAN></P>
+developer via monitoring messages.</P>
 <H2>Implementation Overview</H2>
 <P STYLE="font-style: normal"><FONT COLOR="#000000">For the librmon.a
 library only the files rmon_macros.c rmon_semaph.c and
