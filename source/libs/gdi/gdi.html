@@ -1,4 +1,4 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -19,15 +19,17 @@
 		A.sdfootnoteanc { font-size: 57% }
 	-->
 	</style>
+    <title>GDI</title>
 </head>
 <body>
 
 <div STYLE="margin-top: 0.17in; page-break-after: avoid">
 <h1>
-<font face="helvetica, sans-serif"><font size=+4>Gridengine Database Interface
-- GDI</font></font><a NAME="sdfootnote1anc" CLASS="sdfootnoteanc" HREF="#sdfootnote1sym" SDFIXED></a></h1>
+<font face="helvetica, sans-serif"><font size="+4">Gridengine Database Interface
+- GDI</font></font><a NAME="sdfootnote1anc" CLASS="sdfootnoteanc" HREF="#sdfootnote1sym"></a></h1>
 </div>
 
+    <strong>NB.  This refers to an obsolete version of GDI.  </strong>
 <h1>
 Introduction</h1>
 
@@ -52,8 +54,8 @@ internally via the Common Usabel List Library (<a href="../cull/cull.html">CULL<
 
 <div STYLE="margin-bottom: 0in">The GDI provides the means to exchange
 CULL-objects between different Grid Engine components running on different
-hosts. The GDI utilizes the Grid Engine <a href="../../daemons/commd/commd.html">communication
-system</a> for the network-wide date exchange.</div>
+hosts. The GDI utilizes the Grid Engine communication
+system for the network-wide date exchange.</div>
 
 <h1>
 Interface</h1>
@@ -85,7 +87,7 @@ sge_gdi_shutdown(). This function has to be called before exiting the program.
 It deregisters from the communication system.</div>
 
 <h1>
-<font size=+2>Modules</font></h1>
+<font size="+2">Modules</font></h1>
 Most files contained in source/libs/gdi contain CULL object definitions.
 By convention, each of those files has a capital L in front of the .h file
 suffix.

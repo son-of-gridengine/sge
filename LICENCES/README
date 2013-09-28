@@ -35,14 +35,14 @@ licence (FreeBSD), Apache License, and various specific licences for
 several components.  The different files apply to the components
 listed below.  See the source files for detailed notices.
 
-The hwloc, OpenSSL, and BerkeleyDB libraries are typically linked
+The OpenSSL and BerkeleyDB libraries are typically linked
 dynamically into SGE components, and it seems customary (e.g. in
 Debian, presumably following legal advice) not to list licences for
 such dependencies of a program.  Nevertheless, their licence
 information is provided to avoid doubt, and for convenience of anyone
-distributing binaries statically linked against them.  Inline
-definitions included from the hwloc header files may be significant
-for copyright purposes anyway.
+distributing binaries statically linked against them.  hwloc is the
+same at first sight, but inline definitions included from the header
+files may be significant for copyright purposes anyway.
 
 Apache-2: IzPack (GUI installer), jakarta-regexp (GUI installer binary),
           part of SGE_Helper_Service, parts of DRMAA2 from Gridway
@@ -59,7 +59,9 @@ LGPL-3: ListTree (qmon), pam_sge-qrsh-setup, libuti2
 IconList, Spinbox, Xmt, XBae, XmTab: widgets used by qmon
 NanoXML: (GUI installer binary)
 tango: qmon icons
-top, hwloc, OpenSSL, BerkeleyDB: gridengine core
+top: gridengine core
+OpenSSL, BerkeleyDB: optional external libraries; gridengine core
+hwloc: external library, but see note above; gridengine core
 FreeBSD: several scripts
 Cygwin:  binaries linked against the Cygwin library
 OGF:  Parts of DRMAA implementation
