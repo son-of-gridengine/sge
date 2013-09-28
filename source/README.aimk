@@ -187,6 +187,8 @@ Content
 
    'SGE_INPUT_LDFLAGS' behaves similarly for setting LFLAGS for the linker.
 
+   These can be used to define library and include paths.
+
 
    4.7 Creating man pages
    ----------------------
