@@ -129,13 +129,13 @@ static void lWriteElem_(const lListElem *lp, dstring *buffer, int nesting_level)
 *     lListElem* lCopyElem(const lListElem *ep) 
 *
 *  FUNCTION
-*     Copies a whole list element 
+*     Copies a list element with all its sub-lists and strings.
 *
 *  INPUTS
 *     const lListElem *ep - element 
 *
 *  RESULT
-*     lListElem* - copy of 'ep'
+*     lListElem* - pointer to copy of 'ep', or NULL on error
 ******************************************************************************/
 lListElem *lCopyElem(const lListElem *ep) {
    return lCopyElemHash(ep, true);
@@ -632,7 +632,7 @@ const lDescr *lGetElemDescr(const lListElem *ep)
 *     void lWriteElem(const lListElem *ep) 
 *
 *  FUNCTION
-*     Write a element to stderr
+*     Write a list element to stderr with all its sub-lists
 *
 *  INPUTS
 *     const lListElem *ep - element 
@@ -660,12 +660,11 @@ void lWriteElem(const lListElem *ep)
 *     void lWriteElemTo(const lListElem *ep, FILE *fp) 
 *
 *  FUNCTION
-*     Write a element to file stream 
+*     Write an element to a file with all its sub-lists
 *
 *  INPUTS
 *     const lListElem *ep - element 
 *     FILE *fp            - file stream 
-*     ???/???
 ******************************************************************************/
 void lWriteElemTo(const lListElem *ep, FILE *fp) 
 {
@@ -879,7 +878,8 @@ static void lWriteList_(const lList *lp, dstring *buffer, int nesting_level)
 *     lListElem* lCreateElem(const lDescr *dp) 
 *
 *  FUNCTION
-*     Create an element for a specific list 
+*     Create a new list element specified by the descriptor.
+*     All list element fields are set to zero.
 *
 *  INPUTS
 *     const lDescr *dp - descriptor 
@@ -958,7 +958,8 @@ lListElem *lCreateElem(const lDescr *dp)
 *     const lDescr *descr  - descriptor 
 *
 *  RESULT
-*     lList* - list pointer or NULL 
+*     lList* - list pointer, or NULL if one of the arguments is NULL,
+*              or if the descriptor contains no fields, or if an error occurs
 *******************************************************************************/
 lList *lCreateList(const char *listname, const lDescr *descr) 
 {
@@ -1099,7 +1100,8 @@ lList *lCreateElemList(const char *listname, const lDescr *descr, int nr_elem)
 *     void lFreeElem(lListElem **ep) 
 *
 *  FUNCTION
-*     Free a element including strings and sublists 
+*     Free an element ep allocated by lCreateElem, including strings
+*     and sublists.  Do nothing if ep is NULL.
 *
 *  INPUTS
 *     lListElem **ep - element, will be set to NULL 
@@ -1286,7 +1288,7 @@ lList *lAddSubList(lListElem *ep, int nm, lList *to_add)
 *     int lAddList(lList *lp0, lList **lp1) 
 *
 *  FUNCTION
-*     Concatenate two lists of equal type throwing away the second list 
+*     Concatenate two lists of the same type, destroying the second list
 *
 *  INPUTS
 *     lList *lp0 - first list 
@@ -1676,13 +1678,13 @@ int lInsertElem(lList *lp, lListElem *ep, lListElem *new)
 
 /****** cull/list/lAppendElem() ***********************************************
 *  NAME
-*     lAppendElem() -- Append element at the end of a list 
+*     lAppendElem() -- Append element to a list
 *
 *  SYNOPSIS
 *     int lAppendElem(lList *lp, lListElem *ep) 
 *
 *  FUNCTION
-*     Append element 'ep' at the end of list 'lp' 
+*     Append element 'ep' to list 'lp'
 *
 *  INPUTS
 *     lList *lp     - list 
@@ -1898,13 +1900,13 @@ lDechainList(lList *source, lList **target, lListElem *ep)
 
 /****** cull/list/lDechainElem() **********************************************
 *  NAME
-*     lDechainElem() -- Remove a element from a list 
+*     lDechainElem() -- Remove an element from a list
 *
 *  SYNOPSIS
 *     lListElem* lDechainElem(lList *lp, lListElem *ep) 
 *
 *  FUNCTION
-*     Remove element 'ep' from list 'lp'. 'ep' gets not deleted. 
+*     Remove element 'ep' from list 'lp'. 'ep' is not deleted.
 *
 *  INPUTS
 *     lList *lp     - list 
@@ -2107,7 +2109,7 @@ lListElem *lPrev(const lListElem *sep)
 
 /****** cull/list/lFindFirst() ************************************************
 *  NAME
-*     lFindFirst() -- Returns first element fulfilling condition 
+*     lFindFirst() -- Returns first element of a list fulfilling a condition
 *
 *  SYNOPSIS
 *     lListElem* lFindFirst(const lList *slp, const lCondition *cp) 
@@ -2143,13 +2145,13 @@ lListElem *lFindFirst(const lList *slp, const lCondition *cp)
 
 /****** cull/list/lFindLast() *************************************************
 *  NAME
-*     lFindLast() -- Returns last element fulfilling condition 
+*     lFindLast() -- Returns last element fulfilling a condition
 *
 *  SYNOPSIS
 *     lListElem* lFindLast(const lList *slp, const lCondition *cp) 
 *
 *  FUNCTION
-*     Retruns the last element fulfilling the condition 'cp' or NULL
+*     Returns the last element fulfilling the condition 'cp' or NULL
 *     if nothing is found. If the condition is NULL then the last
 *     element is delivered.
 *

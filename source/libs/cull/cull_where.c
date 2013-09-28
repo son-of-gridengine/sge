@@ -116,7 +116,7 @@ lCondition *lOrWhere(const lCondition *cp0, const lCondition *cp1)
 
 /****** cull/where/lAndWhere() ************************************************
 *  NAME
-*     lAndWhere() -- Cobines two conditions with an AND 
+*     lAndWhere() -- Combines two conditions with an AND
 *
 *  SYNOPSIS
 *     lCondition* lAndWhere(const lCondition *cp0, const lCondition *cp1) 
@@ -422,28 +422,108 @@ static void lWriteWhereTo_(const lCondition *cp, int depth, FILE *fp)
 
 /****** cull/where/lWhere() ***************************************************
 *  NAME
-*     lWhere() -- Creates a condition tree 
+*     lWhere() -- Creates a condition tree
 *
 *  SYNOPSIS
-*     lCondition* lWhere(const char *fmt, ...) 
+*     lCondition* lWhere(const char *fmt, ...)
 *
 *  FUNCTION
-*     Creates a condition tree. The condition is stated as a format 
+*     Creates a condition tree. The condition is stated as a format
 *     string and an associated list of additional parameters.
 *
 *  INPUTS
 *     const char *fmt - format string
-*                       %I                         - JB_job_number
-*                                                    (!= lList)
-*                       %T                         - JB_Type (Descriptor)
-*                       ==, <, >, <=, >=, !=, ==   - comp. operator
-*                       %s                         - string
-*                       %d                         - int
-*                       %u                         - ulong
-*     ...             - additional Arguments 
+*         Syntax:
+*          cond: type "(" negsimple [logop {negsimple | "%I" "->" cond } ] ")"
+*          type: "%T"
+*          negsimple: {simple | "!" "(" simple ")" }
+*          simple: "%I" relop valuetype [logop simple ...]
+*          logop: {"&&" | "||"}
+*          relop: { "<" | ">" | "==" | "!=" | "<=" | ">=" | "m=" |
+*                   "c=" | "p=" | "h=" }
+*          valuetype: { "%d" | "%s" | "%u" | "%f" | "%g" | "%o" | "%c" }
+*
+*         The logop operators mean:
+*          &&   logical and
+*          ||   logical or
+*          !    logical not
+*         The relop specifiers have the following meaning:
+*          <    comparison of numeric types as in the C language
+*          >
+*          <=
+*          >=
+*          ==
+*          !=
+*          ==   case sensitive comparison of strings
+*          c=   case insensitive comparison of strings
+*          m=   bitmask evaluation operator
+*          p=   pattern matching string comparison
+*          h=   host matching string comparison
+*
+*         For valuetype the specifiers represent in the order above:
+*          { int | string | unsigned long | float | double | long | char }
+*
+*     ...  - additional arguments corresponding to fmt placeholders
+*
+*  EXAMPLES
+*
+*    	where1 = lWhere("%T(%I==%s && %I->%T(%I<%d || %I>%u || %I m= %u ))",
+*    			type1, field1, "Hello", field2, subtype,
+*    			subfield1, 12, subfield2, 34,
+*    			bitmasksubfield, IDLE | RUNNING);
+*    	where2 = lWhere( "%T(!(%I==%s))", type1, field1, "Hello");
+*
+*    The condition 'where1' says:
+*
+*    field1 of list element with descriptor type1 must contain "Hello"
+*    AND the sub-list stored in field2 with descriptor subtype has a
+*    field subfield1 and subfield2 shall fulfil subfield1 < 12 OR
+*    subfield2 > 34 OR in the bitmasksubfield the bits for RUNNING and
+*    IDLE are set.  Bitmasks are stored in an unsigned long
+*    (ulong_32).
+*
+*    The condition 'where2' says:
+*
+*    NOT ( field1 == "Hello" ) for field1 of a list with descriptor type1.
+*
+*    _lWhere is equivalent to lWhere concerning the format string
+*    describing the condition.  The variable argument list of lWhere
+*    is replaced by an array of arguments delivering the required
+*    information.
+*
+*    The WhereArg struct is built as follows:
+*
+*    	struct _WhereArg {
+*    		lDescr      *descriptor;
+*    		int         field;
+*    		lMultitype  *value;
+*    	};
+*
+*    The translation of the varargs lWhere functionality to the
+*    WhereArgList mechanism is shown below:
+*
+*    	where = lWhere("%T( %I == %s && %I ->
+*    			%T ( %I < %d ) )",
+*    			QueueT, Q_hostname, "durin.q",
+*    			Q_ownerlist, OwnerT, O_ownerage, 22);
+*
+*    The corresponding WhereArgList is:
+*
+*    	WhereArg whereargs[20];
+*
+*    	whereargs[0].descriptor = QueueT;
+*    	whereargs[1].field      = Q_hostname;
+*    	whereargs[1].value.str  = "durin.q";
+*    	whereargs[2].field      = Q_ownerlist;
+*    	whereargs[2].descriptor = OwnerT;
+*    	whereargs[3].field      = O_ownerage;
+*    	whereargs[3].value.i    = 22;
+*
+*    	where = _lWhere("%T( %I == %s && %I -> %T ( %I < %d ) )",
+*    			whereargs);
 *
 *  RESULT
-*     lCondition* - new condition 
+*     lCondition* - new condition; NULL means all elements will match
 ******************************************************************************/
 lCondition *lWhere(const char *fmt,...)
 {
@@ -459,7 +539,7 @@ lCondition *lWhere(const char *fmt,...)
    }
    /* 
       initialize scan function, the actual token is scanned again
-      in the subscope fuction. There we call eat_token to go ahead
+      in the subscope function. There we call eat_token to go ahead
     */
    memset(&state, 0, sizeof(state));
    scan(fmt, &state);
@@ -1174,7 +1254,7 @@ void lFreeWhere(lCondition **cp)
 *
 *  RESULT
 *     int - result
-*         0 - flase
+*         0 - false
 *         1 - true 
 ******************************************************************************/
 int lCompare(const lListElem *ep, const lCondition *cp) 

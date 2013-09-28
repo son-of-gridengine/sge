@@ -309,7 +309,7 @@ lList *lJoinSublist(const char *name, int nm0, const lList *lp,
 *     int nm1                  - 
 *     const lList *lp1         - second list 
 *     const lCondition *cp1    - selects rows of second list 
-*     const lEnumeration *enp1 - selects column of seconf list 
+*     const lEnumeration *enp1 - selects column of second list
 *
 *  RESULT
 *     lList* - Joined list 
@@ -455,7 +455,7 @@ lList *lJoin(const char *name, int nm0, const lList *lp0,
 *                const lCondition *cp) 
 *
 *  FUNCTION
-*     Unchains the list elements from the list 'slp' NOT fullfilling
+*     Unchains the list elements from the list 'slp' NOT fulfilling
 *     the condition 'cp' and returns a list containing the 
 *     unchained elements in 'ulp' 
 *
@@ -481,7 +481,7 @@ int lSplit(lList **slp, lList **ulp, const char *ulp_name,
 
    /*
       iterate through the source list call lCompare and chain all elems
-      that don't fullfill the condition into a new list.
+      that don't fulfil the condition into a new list.
     */
    if (!slp) {
       DEXIT;
@@ -523,21 +523,27 @@ int lSplit(lList **slp, lList **ulp, const char *ulp_name,
 
 /****** cull/db/lSelectDestroy() **********************************************
 *  NAME
-*     lSelectDestroy() -- Removes the not needed list elements 
+*     lSelectDestroy() -- Removes list elements not fulfilling a condition
 *
 *  SYNOPSIS
 *     lList* lSelectDestroy(lList *slp, const lCondition *cp) 
 *
 *  FUNCTION
-*     Removes the not needed list elements from the list 'slp' NOT
-*     fulfilling the condition 'cp' 
+*     Removes elements from the list 'slp' NOT fulfilling the condition 'cp'.
 *
 *  INPUTS
 *     lList *slp           - source list pointer 
-*     const lCondition *cp - selects rows 
+*     const lCondition *cp - selects rows (returned by lWhere)
 *
 *  RESULT
-*     lList* - List with the remaining elements 
+*     lList* - List with the remaining elements, or NULL if none remain
+*
+*  NOTES
+*     The operation is destructive, so use lCopyList before lSelectDestroy
+*     if you want to use the list subsequently.
+*
+*  SEE ALSO
+*     cull/where/lWhere()
 ******************************************************************************/
 lList *lSelectDestroy(lList *slp, const lCondition *cp) 
 {
@@ -638,7 +644,7 @@ lSelectElemPack(const lListElem *slp, const lCondition *cp,
 *
 *  FUNCTION
 *     Creates a new list from the list 'slp' extracting the elements
-*     fulfilling the condition 'cp' or it packs those elemets into 'pb' if 
+*     fulfilling the condition 'cp' or it packs those elements into 'pb' if
 *     it is not NULL. 
 *
 *  INPUTS
@@ -707,10 +713,18 @@ lSelectElemDPack(const lListElem *slp, const lCondition *cp, const lDescr *dp,
 *     const char *name        - name for the new list 
 *     const lList *slp        - source list pointer 
 *     const lCondition *cp    - selects rows 
-*     const lEnumeration *enp - selects columns 
+*     const lEnumeration *enp - selects columns (fields)
 *
 *  RESULT
-*     lList* - list containing the extracted elements
+*     lList* - list containing the extracted elements, or NULL if none match
+*
+*  NOTES
+*     The condition and enumeration are constructed by lWhere and
+*     lWhat respectively.
+*
+*  SEE ALSO
+*     cull/where/lWhere()
+*     cull/where/lWhat()
 ******************************************************************************/
 lList *lSelect(const char *name, const lList *slp, const lCondition *cp,
                const lEnumeration *enp) {
@@ -1052,7 +1066,7 @@ int lPartialDescr(const lEnumeration *ep, const lDescr *sdp, lDescr *ddp,
 *                        const lEnumeration *ep1) 
 *
 *  FUNCTION
-*     Bilds from two given descriptors 'sdp0' and 'sdp1' a new
+*     Builds from two given descriptors 'sdp0' and 'sdp1' a new
 *     descriptor masked by the enumerations 'ep0' and 'ep1'. 
 *
 *  INPUTS
@@ -1158,19 +1172,19 @@ lDescr *lGetReducedDescr(const lDescr *type, const lEnumeration *what) {
 *
 *  SYNOPSIS
 *     int lString2List(const char *s, lList **lpp, const lDescr *dp, 
-*                      int nm, const char *delimitor); 
+*                      int nm, const char *delimiter);
 *
 *  FUNCTION
 *     Parses separated strings and adds them into the cull list *lpp
 *     The string is a unique key for the list and resides at field 'nm'
-*     If 'deleminator' is NULL than isspace() is used. 
+*     If 'delimiter' is NULL than isspace() is used.
 *
 *  INPUTS
 *     const char *s         - String to parse   
 *     lList **lpp           - reference to lList*      
 *     const lDescr *dp      - list Type     
 *     int nm                - list field       
-*     const char *delimitor - string delimitor        
+*     const char *delimiter - string delimiter
 *
 *  RESULT
 *     int - error state
@@ -1198,7 +1212,7 @@ int lString2List(const char *s, lList **lpp, const lDescr *dp, int nm,
          DPRINTF(("lString2List: got lStringT data type\n"));
          for (s = sge_strtok_r(s, dlmt, &context); s; s = sge_strtok_r(NULL, dlmt, &context)) {
             if (lGetElemStr(*lpp, nm, s)) {
-               /* silently ignore multiple occurencies */
+               /* silently ignore multiple occurrences */
                continue;
             }
             if (!lAddElemStr(lpp, nm, s, dp)) {
@@ -1214,7 +1228,7 @@ int lString2List(const char *s, lList **lpp, const lDescr *dp, int nm,
          DPRINTF(("lString2List: got lHostT data type\n"));
          for (s = sge_strtok_r(s, dlmt, &context); s; s = sge_strtok_r(NULL, dlmt, &context)) {
             if (lGetElemHost(*lpp, nm, s)) {
-               /* silently ignore multiple occurencies */
+               /* silently ignore multiple occurrences */
                continue;
             }
             if (!lAddElemHost(lpp, nm, s, dp)) {

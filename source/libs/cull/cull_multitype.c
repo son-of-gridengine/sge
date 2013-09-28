@@ -133,6 +133,7 @@ int unknownType(const char *str)
 *     int lGetPosViaElem(const lListElem *element, int name, int do_abort) 
 *
 *  FUNCTION
+
 *     Get Position of field 'name' within 'element' 
 *
 *  INPUTS
@@ -207,14 +208,17 @@ const char *lMt2Str(int mt)
 *     char* lNm2Str(int nm) 
 *
 *  FUNCTION
-*     returns the string representation of a name id
+*     Return the string representation of a name id
 *
 *  INPUTS
 *     int nm - name id (e.g. CONF_name)
 *
 *  RESULT
-*     char* - string representation of id
-*  
+*     char* - string representation of id if the NameSpace
+*             has been initialized with lInit().  Otherwise
+*             "Nameindex = n" is returned, where n is replaced by the
+*             field number.
+*
 *  NOTE
 *     JG: TODO: Implementation is not really efficient.
 *               Could be improved by using a hash table that will be 
@@ -401,7 +405,7 @@ int lCountDescr(const lDescr *dp)
 
 /****** cull/multitype/lCopyDescr() *******************************************
 *  NAME
-*     lCopyDescr() -- Copys a descriptor 
+*     lCopyDescr() -- Copies a descriptor
 *
 *  SYNOPSIS
 *     lDescr* lCopyDescr(const lDescr *dp) 
@@ -517,7 +521,7 @@ void lWriteDescrTo(const lDescr *dp, FILE *fp)
 *
 *  INPUTS
 *     const lDescr *dp - descriptor 
-*     int name         - namse 
+*     int name         - name
 *
 *  RESULT
 *     int - position or -1 if not found 
@@ -555,7 +559,7 @@ int _lGetPosInDescr(const lDescr *dp, int name)
 *
 *  INPUTS
 *     const lDescr *dp - descriptor 
-*     int name         - namse 
+*     int name         - name
 *
 *  RESULT
 *     int - position or -1 if not found 
@@ -664,7 +668,7 @@ char **lGetPosHostRef(const lListElem *ep, int pos)
    THIS IS NECESSARY, OTHERWISE IT WOULD BE DIFFICULT TO CASCADE
    THE GET FUNCTIONS
    SO HIGHER LEVEL FUNCTIONS OR THE USER SHOULD CHECK IF THE
-   ARGUMENTS ARE ALLRIGHT.
+   ARGUMENTS ARE ALRIGHT.
  */
 
 /****** cull/multitype/lGetPosInt() *******************************************
@@ -750,7 +754,7 @@ lUlong lGetPosUlong(const lListElem *ep, int pos)
 
    if (pos < 0) {
       /* someone has called lGetPosUlong() */
-      /* makro with an invalid nm        */
+      /* macro with an invalid nm        */
       CRITICAL((SGE_EVENT, SFNMAX, MSG_CULL_GETPOSULONG_GOTINVALIDPOSITION ));
       DEXIT;
       abort();
@@ -819,7 +823,7 @@ lUlong64 lGetPosUlong64(const lListElem *ep, int pos)
 
    if (pos < 0) {
       /* someone has called lGetPosUlong64() */
-      /* makro with an invalid nm        */
+      /* macro with an invalid nm        */
       CRITICAL((SGE_EVENT, SFNMAX, MSG_CULL_GETPOSULONG64_GOTINVALIDPOSITION ));
       DEXIT;
       abort();
@@ -888,7 +892,7 @@ const char *lGetPosString(const lListElem *ep, int pos)
 
    if (pos < 0) {
       /* someone has called lGetString() */
-      /* makro with an invalid nm        */
+      /* macro with an invalid nm        */
       DPRINTF(("!!!!!!!!!!!! lGetPosString() got an invalid pos !!!!!!!!!\n"));
       DEXIT;
       return NULL;
@@ -925,7 +929,7 @@ const char *lGetPosHost(const lListElem *ep, int pos)
 
    if (pos < 0) {
       /* someone has called lGetString() */
-      /* makro with an invalid nm        */
+      /* macro with an invalid nm        */
       DPRINTF(("!!!!!!!!!!!!!! lGetPosHost() got an invalid pos !!!!!!!!!\n"));
       DEXIT;
       return NULL;
@@ -1062,7 +1066,7 @@ lListElem *lGetPosObject(const lListElem *ep, int pos)
 
    if (pos < 0) {
       /* someone has called lGetPosUlong() */
-      /* makro with an invalid nm        */
+      /* macro with an invalid nm        */
       CRITICAL((SGE_EVENT, SFNMAX, MSG_CULL_GETPOSOBJECT_GOTANINVALIDPOS));
       DEXIT;
       abort();
@@ -1099,7 +1103,7 @@ lList *lGetPosList(const lListElem *ep, int pos)
 
    if (pos < 0) {
       /* someone has called lGetPosUlong() */
-      /* makro with an invalid nm        */
+      /* macro with an invalid nm        */
       CRITICAL((SGE_EVENT, SFNMAX, MSG_CULL_GETPOSLIST_GOTANINVALIDPOS));
       DEXIT;
       abort();
@@ -2218,7 +2222,7 @@ int lSetPosHost(lListElem *ep, int pos, const char *value)
    ** if both new and old are NULL, nothing changed,
    ** if one of them is NULL, it changed,
    ** else do a string compare (a hostcmp would be more accurate,
-   ** but most probably not neccessary and too expensive
+   ** but most probably not necessary and too expensive
    */
    str = ep->cont[pos].host;
    if(value == NULL && str == NULL) {
@@ -2422,7 +2426,7 @@ int lSetHost(lListElem *ep, int name, const char *value)
    ** if both new and old are NULL, nothing changed,
    ** if one of them is NULL, it changed,
    ** else do a string compare (a hostcmp would be more accurate,
-   ** but most probably not neccessary and too expensive
+   ** but most probably not necessary and too expensive
    */
    str = ep->cont[pos].host;
    if(value == NULL && str == NULL) {
@@ -2766,7 +2770,7 @@ int lSwapList(lListElem *to, int nm_to, lListElem *from, int nm_from)
 *     int lSetObject(lListElem *ep, int name, lList *value) 
 *
 *  FUNCTION
-*     Sets a list at the given field name id. List will not be copyed.
+*     Sets a list at the given field name id. List will not be copied.
 *
 *  INPUTS
 *     lListElem *ep - element 
@@ -4088,7 +4092,7 @@ lListElem *lGetSubStr(const lListElem *ep, int nm, const char *str, int snm)
 *     const char* str - value 
 *
 *  RESULT
-*     NULL when element was not found or if an error occured
+*     NULL when element was not found or if an error occurred
 *     otherwise pointer to element 
 ******************************************************************************/
 lListElem *lGetElemStr(const lList *lp, int nm, const char *str) 
@@ -4202,7 +4206,7 @@ lListElem *lGetElemStrFirst(const lList *lp, int nm, const char *str,
 *  FUNCTION
 *     Returns a element within list 'lp' where the attribute with
 *     field name id 'nm' is equivalent with 'str'. The function
-*     uses 'iterator' as input. 'iterator' containes context
+*     uses 'iterator' as input. 'iterator' contains context
 *     information which where fillen in in a previous call of
 *     lGetElemStrFirst().
 *
@@ -4290,7 +4294,7 @@ lListElem *lGetElemStrNext(const lList *lp, int nm, const char *str,
 *
 *  FUNCTION
 *     returns an element specified by a string field nm from the 
-*     list lp and uses a trailing '*' as a wilcard, e.g. 'OAport' 
+*     list lp and uses a trailing '*' as a wildcard, e.g. 'OAport'
 *     matches 'OA*' 
 *
 *  INPUTS
@@ -4541,7 +4545,7 @@ int lDelSubUlong(lListElem *ep, int nm, lUlong val, int snm)
 *
 *  RESULT
 *     1 element was found and removed 
-*     0 an error occured
+*     0 an error occurred
 ******************************************************************************/
 int lDelElemUlong(lList **lpp, int nm, lUlong val) 
 {
@@ -4630,7 +4634,7 @@ lListElem *lGetSubUlong(const lListElem *ep, int nm, lUlong val, int snm)
 *     lUlong val - unsigned long value 
 *
 *  RESULT
-*    NULL if element was not found or an error occured
+*    NULL if element was not found or an error occurred
 *    otherwise pointer to element 
 ******************************************************************************/
 lListElem *lGetElemUlong(const lList *lp, int nm, lUlong val) 
@@ -4966,7 +4970,7 @@ int lDelSubUlong64(lListElem *ep, int nm, lUlong64 val, int snm)
 *
 *  RESULT
 *     1 element was found and removed 
-*     0 an error occured
+*     0 an error occurred
 ******************************************************************************/
 int lDelElemUlong64(lList **lpp, int nm, lUlong64 val) 
 {
@@ -5055,7 +5059,7 @@ lListElem *lGetSubUlong64(const lListElem *ep, int nm, lUlong64 val, int snm)
 *     lUlong64 val - unsigned long value 
 *
 *  RESULT
-*    NULL if element was not found or an error occured
+*    NULL if element was not found or an error occurred
 *    otherwise pointer to element 
 ******************************************************************************/
 lListElem *lGetElemUlong64(const lList *lp, int nm, lUlong64 val) 
@@ -5289,7 +5293,7 @@ int lDelElemCaseStr(lList **lpp, int nm, const char *str)
       return 1; 
    }
 
-   /* seek elemtent */
+   /* seek element */
    ep = lGetElemCaseStr(*lpp, nm, str);
    if (ep) {
       lRemoveElem(*lpp, &ep);
@@ -5361,7 +5365,7 @@ lListElem *lGetSubCaseStr(const lListElem *ep, int nm, const char *str,
 *     const char* str - string 
 *
 *  RESULT
-*     NULL when element is not found or an error occured
+*     NULL when element is not found or an error occurred
 *     otherwise the pointer to an element 
 *
 ******************************************************************************/
@@ -5691,7 +5695,7 @@ int lDelElemHost(lList **lpp, int nm, const char *str)
       return 1;
    }
 
-   /* seek elemtent */
+   /* seek element */
    ep = lGetElemHost(*lpp, nm, str);
    if (ep) {
       lRemoveElem(*lpp, &ep);
@@ -5737,4 +5741,3 @@ int lGetPosName(const lDescr *dp, int pos) {
    return dp[pos].nm;
    
 }
-
