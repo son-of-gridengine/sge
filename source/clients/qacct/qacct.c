@@ -1497,6 +1497,12 @@ static void showjob(sge_rusage_type *dusage, char **category) {
    } else {
       printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_ARID, "undefined");
    }
+   if (dusage->ar_sub_time)
+      printf("%-13.12s%-20s",MSG_HISTORY_SHOWJOB_ARSUBTIME,
+             sge_ctime32(&dusage->ar_sub_time, &string));
+   else
+      printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_ARSUBTIME, "undefined");
+
    printf("%-13.12s%s\n", MSG_HISTORY_SHOWJOB_CATEGORY, *category);
    sge_dstring_free(&string);
 }
@@ -2118,6 +2124,7 @@ sge_read_rusage(FILE *f, sge_rusage_type *d, sge_qacct_options *options, char *s
    if ((options->ar_number > 0) && (options->ar_number != d->ar)) {
       DRETURN(-2);
    }
+   d->ar_sub_time = ((pc=strtok(NULL, ":")))?atol(pc):0;
 
    /* ... */ 
    options->jobfound=1;

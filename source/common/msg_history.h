@@ -129,5 +129,6 @@
 #define MSG_HISTORY_SHOWJOB_MAXVMEM           "maxvmem"
 #define MSG_HISTORY_SHOWJOB_ARID              "arid"
 #define MSG_HISTORY_SHOWJOB_CATEGORY          "category"
+#define MSG_HISTORY_SHOWJOB_ARSUBTIME         "ar_sub_time"
 
 #endif /* __MSG_HISTORY_H   */
