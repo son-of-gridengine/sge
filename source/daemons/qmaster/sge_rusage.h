@@ -99,6 +99,7 @@ struct drusage {
    char     *pe_taskid;
    double   maxvmem;
    u_long32 ar;
+   u_long32 ar_sub_time;
    sge_all_rusage_type *arch_dep_usage;/* pointer to a structure with
                                           architecture dependend usage
                                           information */
