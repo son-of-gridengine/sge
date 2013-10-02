@@ -872,7 +872,7 @@ int comm_wait_for_connection(COMM_HANDLE *handle,
           && endpoint_list != NULL
           && endpoint_list->elem_count == 0
           && waited_usec/1000000 < wait_secs) {
-      struct timespec req = {10000000, 0}, rem;
+      struct timespec req = {0, 10000000}, rem;
 
       cl_endpoint_list_cleanup(&endpoint_list);
       nanosleep(&req, &rem);
@@ -981,7 +981,7 @@ int comm_wait_for_no_connection(COMM_HANDLE *handle, const char *component,
           && endpoint_list != NULL
           && endpoint_list->elem_count > 0
           && waited_usec/1000000 < wait_secs) {
-         struct timespec req = {10000000, 0}, rem;
+         struct timespec req = {0, 10000000}, rem;
          cl_endpoint_list_cleanup(&endpoint_list);
          endpoint_list = NULL;
          nanosleep(&req, &rem);
