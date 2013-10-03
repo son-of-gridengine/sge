@@ -304,7 +304,7 @@ RequestCert()
 #
 SignCert()
 {
-    $CA -config "$SGE_ROOT/util/sgeCA/sge_ssl_template.cnf" $DAYS $BATCHMODE -notext -out $outdir/$newcert -infiles $indir/$newreq
+    $CA -config $SGE_ROOT/util/sgeCA/sge_ssl.cnf -policy policy_anything $DAYS $BATCHMODE -notext -out $outdir/$newcert -infiles $indir/$newreq
     RET=$?
     if [ $RET = 0 ]; then
       $INFOTEXT "Signed certificate is in %s" $outdir/$newcert
