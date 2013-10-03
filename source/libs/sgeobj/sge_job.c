@@ -1747,6 +1747,7 @@ void job_initialize_env(lListElem *job, lList **answer_list,
       int i = -1;
       const char* env_name[] = {"HOME", "LOGNAME", "PATH", 
                                 "SHELL", "TZ", "MAIL", NULL};
+      const char *name = lGetString(job, JB_job_name);
 
       while (env_name[++i] != NULL) {
          const char *env_value = sge_getenv(env_name[i]);
@@ -1758,7 +1759,8 @@ void job_initialize_env(lListElem *job, lList **answer_list,
       }
       /* builtin starter looks for this, but probably best done only
          when relevant */
-      if (lGetUlong(job, JB_pty) == 1) {
+      if (lGetUlong(job, JB_pty) == 1
+          || strcmp(name, "QLOGIN") || strcmp(name, "QRLOGIN")) {
          const char *term = sge_getenv("TERM");
          if (term) var_list_set_string(&env_list, "TERM", term);
       } else
