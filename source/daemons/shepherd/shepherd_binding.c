@@ -773,12 +773,15 @@ create_binding_env(hwloc_const_bitmap_t set)
    dstring sge_binding  = DSTRING_INIT;
    dstring proc         = DSTRING_INIT;
    unsigned i;
+   bool first           = true;
 
    hwloc_bitmap_foreach_begin(i, set)
-      if (0 == i)
+      if (first) {
+        first = false;
         sge_dstring_sprintf(&proc, "%d", i);
-      else
+      } else {
         sge_dstring_sprintf(&proc, " %d", i);
+      }
       sge_dstring_append_dstring(&sge_binding, &proc);
    hwloc_bitmap_foreach_end();
 
