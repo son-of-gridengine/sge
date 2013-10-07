@@ -57,7 +57,8 @@
 #    cat cut tr ls grep awk sed basename
 #
 # This script requires the script $SGE_ROOT/util/arch
-# Customization can be placed in /etc/default/sgemaster, which is sourced
+# Customization can be placed in /etc/default/sgeexecd or
+# /etc/sysconfig/sgeexecd (according to OS conventions), which is sourced
 # after other setup.
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
@@ -112,6 +113,7 @@ case $ARCH in
 esac
 
 [ -f /etc/default/sgeexecd ] && . /etc/default/sgeexecd
+[ -f /etc/sysconfig/sgeexecd ] && . /etc/sysconfig/sgeexecd
 
 #---------------------------------------------------------------------------
 # DetectSMFService - sets service to a mask matching the name
