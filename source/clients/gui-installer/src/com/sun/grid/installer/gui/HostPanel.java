@@ -688,8 +688,6 @@ public class HostPanel extends IzPanel implements Config,
         String spoolingDir = "";
         if (idata.getVariable(VAR_SPOOLING_METHOD).equals("berkeleydb")) {
             spoolingDir = idata.getVariable(VAR_DB_SPOOLING_DIR_BDB);
-        } else {
-            spoolingDir = idata.getVariable(VAR_DB_SPOOLING_DIR_BDBSERVER);
         }
         idata.setVariable(VAR_DB_SPOOLING_DIR, vs.substituteMultiple(spoolingDir, null));
 
@@ -1409,11 +1407,7 @@ public class HostPanel extends IzPanel implements Config,
         VariableSubstitutor vs = new VariableSubstitutor(idata.getVariables());
         String variable = "";
 
-        // cfg.spooling.method.berkeleydbserver
-        variable = idata.getVariable(VAR_SPOOLING_METHOD_BERKELEYDBSERVER);
-        if (variable.equals("none")) {
-            idata.setVariable(VAR_SPOOLING_METHOD_BERKELEYDBSERVER, "berkeleydb");
-        }
+        idata.setVariable(VAR_SPOOLING_METHOD_BERKELEYDBSERVER, "berkeleydb");
 
         // cfg.db.spooling.server
         idata.setVariable(VAR_DB_SPOOLING_SERVER, "none");
