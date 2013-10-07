@@ -119,7 +119,6 @@ public interface Config {
     public static final String VAR_SPOOLING_METHOD_BERKELEYDB = "add.spooling.method.berkeleydb";
     public static final String VAR_SGE_JMX = "add.sge.jmx";
     public static final String VAR_DB_SPOOLING_DIR_BDB = "add.db.spooling.dir.bdb";
-    public static final String VAR_DB_SPOOLING_DIR_BDBSERVER = "add.db.spooling.dir.bdbserver";
     public static final String VAR_DB_SPOOLING_DIR_BDB_DEF = "add.db.spooling.dir.bdb.def";
     public static final String VAR_JMX_SSL = "cfg.sge.jmx.ssl";
     public static final String VAR_JMX_SSL_CLIENT = "cfg.sge.jmx.ssl.client";
