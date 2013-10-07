@@ -62,7 +62,8 @@
 #    cat cut tr ls grep awk sed basename
 #
 # This script requires the script $SGE_ROOT/util/arch
-# Customization can be placed in /etc/default/sgemaster, which is sourced
+# Customization can be placed in /etc/default/sgemaster or
+# /etc/sysconfig/sgemaster (according to OS conventions) , which is sourced
 # after other setup.
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
@@ -120,6 +121,7 @@ if [ -f /lib/svc/share/smf_include.sh ]; then
 fi
 
 [ -f /etc/default/sgemaster ] && . /etc/default/sgemaster
+[ -f /etc/sysconfig/sgemaster ] && . /etc/sysconfig/sgemaster
 
 #---------------------------------------------------------------------------
 # Shutdown
