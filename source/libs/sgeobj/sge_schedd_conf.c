@@ -2726,6 +2726,10 @@ void sconf_print_config(void){
    dval = sconf_get_max_reservations();
    INFO((SGE_EVENT, MSG_ATTRIB_USINGXFORY_6FS,  dval, "max_reservation"));
 
+   /* --- SC_default_duration */
+   s = get_default_duration_str();
+   INFO((SGE_EVENT, MSG_ATTRIB_USINGXFORY_SS, s, "default_duration"));
+
    DRETURN_VOID;
 }
 
