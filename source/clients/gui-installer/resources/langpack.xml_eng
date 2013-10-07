@@ -374,7 +374,6 @@ ___INFO__MARK_END__-->
         The Berkeley DB spools into a local directory on this host (qmaster host).<br>
         This setup is faster, but you can't setup a shadow master host.<br><br>
         <b>Variable: </b><code>$SPOOLING_METHOD</code></html>" />
-        <str id="cfg.db.spooling.server.label.tooltip" txt="<html><b>Spooling server host</b><br><br>
         Host of the Berkeley DB spooling server.<br><br><b>
         Variable: </b><code>$DB_SPOOLING_SERVER</code></html>" />
         <str id="cfg.db.spooling.dir.label.tooltip" txt="<html><b>Database directory</b><br><br>
@@ -390,7 +389,6 @@ ___INFO__MARK_END__-->
         <str id="cfg.db.spooling.dir.notemptyvalidator" txt="Spooling db directory is mandatory!" />
         <str id="add.db.spooling.dir.bdb.filesystemtypevalidator" txt="NFS type spooling directory is not supported!" />
         <str id="cfg.db.spooling.dir.permissionvalidator" txt="No write permission on the spooling directory!" />
-        <str id="add.db.spooling.dir.bdbserver.filesystemtypevalidator" txt="Not NFS4 type spooling directory!" />
 
     <!-- CSP Panel -->
         <!-- Labels -->
