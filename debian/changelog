@@ -1,3 +1,9 @@
+sge (8.1.6) unstable; urgency=low
+
+  * New version.
+
+ -- Dave Love <d.love@liverpool.ac.uk>  Wed, 09 Oct 2013 19:32:13 +0100
+
 sge (8.1.5) unstable; urgency=low
 
   * New version (fixes armhf recognition).
