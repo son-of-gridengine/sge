@@ -734,11 +734,11 @@ static int startJob(char *command, char *wrapper, int noshell)
    int i;
    
    fflush(stdout) ; fflush(stderr);
-   printf("qrsh_starter: executing %s\n", cmd);
-   for(i = 1; args[i] != NULL; i++) {
-      printf("args[%d] = %s\n", i, args[i]);
+   printf("execvp(%s,", cmd);
+   for(i = 0; args[i] != NULL; i++) {
+      printf(" \"%s\"", args[i]);
    }
-   printf("\n");
+   printf(")\n");
    fflush(stdout) ; fflush(stderr); 
 } 
 #endif
