@@ -456,20 +456,29 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
       char buf[MAX_STRING_SIZE], cfile[SGE_PATH_MAX], *cmd;
       size_t l = sizeof buf;
 
-      if (!rogue)
-         WARNING((SGE_EVENT, "rogue process(es) found for task "
-		  sge_u32"."sge_u32, job, task));
-      rogue = true;
+      /* Terminate string and extract process name */
       replace_char(spid, strlen(spid), '\n', '\0');
       snprintf(cfile, sizeof cfile, "/proc/%s/cmdline", spid);
       errno = 0;
       cmd = dev_file2string(cfile, buf, &l);
-      if (l) INFO((SGE_EVENT, "rogue: "SFN2, replace_char(cmd, l, '\0', ' ')));
+
       /* Move the task away to avoid waiting for it to die.  */
       /* Fixme:  Keep the cpusetdir tasks open and just write to that.  */
       reparent_proc(spid, cgroup_dir(cg_cpuset));
-      pid = atoi(spid);
-      if (pid) kill(pid, SIGKILL);
+      pid_t rpid = atoi(spid);
+
+      /* Kill rogue process (unless it's the shepherd)        */
+      /* Shepherd needs to be killed exactly once, otherwise  */
+      /* sge_reap_children_execd is called multiple times     */
+      if (rpid && rpid != pid) {
+          if (!rogue)
+             WARNING((SGE_EVENT, "rogue process(es) found for task "
+    		  sge_u32"."sge_u32, job, task));
+          rogue = true;
+          if (l) INFO((SGE_EVENT, "rogue: "SFN2, replace_char(cmd, l, '\0', ' ')));
+
+          kill(rpid, SIGKILL);
+      }
    }
    fclose(fp);
    errno = 0;
