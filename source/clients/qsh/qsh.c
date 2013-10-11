@@ -1540,6 +1540,10 @@ int main(int argc, char **argv)
 
    /* parse -noshell */
    while ((ep = lGetElemStr(opts_cmdline, SPA_switch, "-noshell"))) {
+      u_long32 jb_type = lGetUlong(job, JB_type);
+
+      JOB_TYPE_SET_NO_SHELL(jb_type);
+      lSetUlong(job, JB_type, jb_type);
       lRemoveElem(opts_cmdline, &ep);
       noshell = 1;
    }
