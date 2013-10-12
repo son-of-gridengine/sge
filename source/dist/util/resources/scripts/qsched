@@ -34,8 +34,8 @@ my $retry_interval = 1;
 my $jids;
 my $old_seconds    = 1200;
 my $trim_string    = '\.example.com$';
-my @suffix_two     = ("", "K", "M", "G");
-my @suffix_ten     = ("", "k", "m", "g");
+my @suffix_two     = ("", "K", "M", "G", "T");
+my @suffix_ten     = ("", "k", "m", "g", "t");
 
 my %minimum_free;
 $minimum_free{"h_vmem"} = expand_suffix("1G");
