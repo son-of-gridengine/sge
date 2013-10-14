@@ -454,7 +454,7 @@ sub print_datetime {
 }
 
 sub queue_data {
-    my $xs = XML::Simple->new();
+    my $xs = XML::Simple->new(ForceArray => [ 'job_list' ]);
 
     # Obtain queue instance data
     my $fh = IO::File->new;
