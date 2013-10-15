@@ -274,7 +274,7 @@ main(int argc, char **argv)
    job_get_submit_task_ids(job, &start, &end, &step);
    num_tasks = (end - start) / step + 1;
 
-   if (num_tasks > 1) {
+   if (JOB_TYPE_IS_ARRAY(lGetUlong(job, JB_type))) {
       int error = japi_run_bulk_jobs(&jobids, &job, start, end, step, false, &diag);
       if (error != DRMAA_ERRNO_SUCCESS) {
          /* No active session here means that japi_enable_job_wait() was
