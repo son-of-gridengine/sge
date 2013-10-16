@@ -37,6 +37,10 @@
 me=`basename $0`
 # just_wrap=1
 
+echo=:
+# possible debugging:
+# echo=echo
+
 # remove path to wrapping rsh from path list
 if [ "x$TMPDIR" != "x" ]; then
    PATH=`echo $PATH|tr : "\012"|grep -v $TMPDIR| tr "\012" :`
@@ -119,14 +123,14 @@ fi
 
 if [ x$just_wrap = x ]; then 
    if [ $minus_n -eq 1 ]; then
-      echo $SGE_ROOT/bin/$ARC/qrsh -inherit -nostdin $rhost $cmd
+      $echo $SGE_ROOT/bin/$ARC/qrsh -inherit -nostdin $rhost $cmd
       exec $SGE_ROOT/bin/$ARC/qrsh -inherit -nostdin $rhost $cmd
    else
-      echo $SGE_ROOT/bin/$ARC/qrsh -inherit $rhost $cmd
+      $echo $SGE_ROOT/bin/$ARC/qrsh -inherit $rhost $cmd
       exec $SGE_ROOT/bin/$ARC/qrsh -inherit $rhost $cmd
    fi
 else
-   echo $me $rhost $*
+   $echo $me $rhost $*
    if [ $minus_n = 1 ]; then
       exec $me -n $rhost $cmd
    else
