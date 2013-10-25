@@ -24,6 +24,7 @@
  *   The Initial Developer of the Original Code is: Sun Microsystems, Inc.
  * 
  *   Copyright: 2001 by Sun Microsystems, Inc.
+ *   Copyright (C) 2013 Dave Love University of Liverpool
  * 
  *   All Rights Reserved.
  * 
@@ -47,6 +48,8 @@
 #include "sgeobj/sge_answer.h"
 #include "sgeobj/sge_utility.h"
 #include "sgeobj/msg_sgeobjlib.h"
+#include "uti/sge_string.h"
+#include "uti/sge_dstring.h"
 
 #include "sge.h"
 #include "basis_types.h"
@@ -184,18 +187,27 @@ lList **feature_get_master_featureset_list(void)
 int feature_initialize_from_string(const char *mode) 
 {
    feature_id_t id;
-   int ret;
+   int ret = 0;
+   char *tok;
+   struct saved_vars_s *context = NULL;
 
    DENTER(TOP_LAYER, "feature_initialize_from_string");
-   id = feature_get_featureset_id(mode);
 
-   if (id == FEATURE_UNINITIALIZED) {
-      ERROR((SGE_EVENT, MSG_GDI_INVALIDPRODUCTMODESTRING_S, mode));
-      ret = -3;
-   } else {
-      feature_activate(id);
-      ret = 0;
+   /* Allow a list of security settings.  Don't make it
+      space-separated, for the benefit of installer etc, which assume
+      one field for security parameter.  */
+   while ((tok = sge_strtok_r(mode, ",", &context))) {
+      mode = NULL;
+      id = feature_get_featureset_id(tok);
+      if (id == FEATURE_UNINITIALIZED) {
+         ERROR((SGE_EVENT, MSG_GDI_INVALIDPRODUCTMODESTRING_S, tok));
+         ret = -3;
+      } else {
+         feature_activate(id);
+         ret = 0;
+      }
    }
+   sge_free_saved_vars(context);
    DEXIT;
    return ret;
 }
@@ -236,17 +248,16 @@ void feature_initialize(void)
    }
 }
 
+/* fixme:  allow stacking security features */
 /****** sgeobj/feature/feature_activate() *************************************
 *  NAME
-*     feature_activate() -- switches the active featureset 
+*     feature_activate() -- set a feature active
 *
 *  SYNOPSIS
-*     void feature_activate(featureset_ id) 
+*     void feature_activate(featureset_id_t)
 *
 *  FUNCTION
-*     Marks the current active featureset within the 
-*     Master_FeatureSet_List as inactive and flags the featureset 
-*     given as parameter as active.
+*     Marks the feature with the given id active.
 *      
 *
 *  INPUTS
@@ -262,8 +273,7 @@ void feature_activate(feature_id_t id)
 {
    lList **feature_list_pp;
    lList *feature_list;
-   lListElem *active_set;
-   lListElem *inactive_set;
+   lListElem *to_set;
 
    DENTER(TOP_LAYER, "feature_activate");
 
@@ -276,58 +286,41 @@ void feature_activate(feature_id_t id)
       feature_list = *feature_list_pp;
    }
 
-   /* get the feature we want to activate */
-   inactive_set = lGetElemUlong(feature_list, FES_id, id);
-   /* get the feature that is currently activated */
-   active_set = lGetElemUlong(feature_list, FES_active, 1L);
-
-   /* if both exist, we have to deactivate the former active, activate the new active */
-   if (inactive_set && active_set) {
-      lSetUlong(active_set, FES_active, 0);
-      lSetUlong(inactive_set, FES_active, 1);
-
-      if (lGetUlong(active_set, FES_id) != id) {
-         WARNING((SGE_EVENT, MSG_GDI_SWITCHFROMTO_SS, 
-            feature_get_featureset_name((feature_id_t)lGetUlong(active_set, FES_id)),
-            feature_get_featureset_name(id)));
-      }
-   } else if (inactive_set) {
-      /* there was no active feature before */
-      lSetUlong(inactive_set, FES_active, 1);
-   }
+   if ((to_set = lGetElemUlong(feature_list, FES_id, id)))
+      lSetUlong(to_set, FES_active, 1);
 
    DEXIT;
 }
 
-/****** sgeobj/feature/feature_get_active_featureset_id() *********************
+/****** sgeobj/feature/feature_get_active_featureset() *********************
 *  NAME
-*     feature_get_active_featureset_id() -- current active featureset 
+*     feature_get_active_featureset() -- current active featureset
 *
 *  SYNOPSIS
-*     feature_id_t feature_get_active_featureset_id() 
+*     u_long32 feature_get_active_featureset()
 *
 *  FUNCTION
-*     return an id of the current active featureset 
+*     return bitwise or of the current active features
 *
 *  RESULT
-*     feature_id_t - (find the definition in the .h file)
+*     u_long32 - featureset
 *
 *  NOTES
-*     MT-NOTE: feature_get_active_featureset_id() is MT safe
+*     MT-NOTE: feature_get_active_featureset() is MT safe
 ******************************************************************************/
-feature_id_t feature_get_active_featureset_id(void) 
+u_long32 feature_get_active_featureset(void)
 {
    lListElem *feature;
-   feature_id_t ret = FEATURE_UNINITIALIZED;
+   u_long32 ret = FEATURE_UNINITIALIZED;
    lList **featurelist_pp = NULL;
 
-   DENTER(TOP_LAYER, "feature_get_active_featureset_id");
+   DENTER(TOP_LAYER, "feature_get_active_featureset");
 
    featurelist_pp = feature_get_master_featureset_list();
    if (featurelist_pp != NULL) {
       for_each(feature, *featurelist_pp) {
          if (lGetUlong(feature, FES_active)) {
-            ret = (feature_id_t)lGetUlong(feature, FES_id);
+            ret |= 1 << (lGetUlong(feature, FES_id) - 1);
             break;
          }
       }
@@ -403,7 +396,7 @@ static feature_id_t feature_get_featureset_id(const char *name)
       return ret;
    }
 
-   while (featureset_list[i].name && strcmp(featureset_list[i].name, name)) {
+   while (featureset_list[i].name && strcasecmp(featureset_list[i].name, name)) {
       i++;
    }
    if (featureset_list[i].name) {
@@ -435,18 +428,20 @@ static feature_id_t feature_get_featureset_id(const char *name)
 ******************************************************************************/
 bool feature_is_enabled(feature_id_t id) 
 {
-   lListElem *active_set;
-   bool ret = false;
+   lList **featurelist_pp = NULL;
+   lListElem *feature;
 
    DENTER(BASIS_LAYER, "feature_is_enabled");
-   active_set = lGetElemUlong(*feature_get_master_featureset_list(), FES_active, 1);
-   if (active_set) {
-      if ( lGetUlong(active_set, FES_id) == id ) {
-         ret = true;
+   featurelist_pp = feature_get_master_featureset_list();
+   if (featurelist_pp != NULL) {
+      for_each(feature, *featurelist_pp) {
+         if ((lGetUlong(feature, FES_id) == id)
+             && lGetUlong(feature, FES_active))
+            return true;
       }
    }
    DEXIT;
-   return ret;
+   return false;
 }  
  
 /****** sgeobj/feature/feature_get_product_name() *****************************
@@ -486,7 +481,7 @@ const char *feature_get_product_name(featureset_product_name_id_t style, dstring
    const char *ret = NULL;
    DENTER(TOP_LAYER, "feature_get_product_name");
 
-   if (feature_get_active_featureset_id() != FEATURE_UNINITIALIZED ) {
+   if (feature_get_active_featureset() != FEATURE_UNINITIALIZED ) {
       short_name = GE_SHORTNAME;
       long_name  = GE_LONGNAME;
    }
@@ -603,3 +598,18 @@ static void feature_state_init(struct feature_state_t* theState)
    memset(theState, 0, sizeof(struct feature_state_t));
 }
 
+const char *feature_get_featureset_names(dstring *buffer, u_long32 featureset)
+{
+   bool first = true;
+   int i = 1;
+
+   while (featureset_list[i].name) {
+      if (featureset & ((1 << featureset_list[i].id) - 1)) {
+         sge_dstring_sprintf_append(buffer, first ? "%s" : " %s",
+                                    featureset_list[i].name);
+         first = false;
+      }
+      i++;
+   }
+   return sge_dstring_get_string(buffer);
+}

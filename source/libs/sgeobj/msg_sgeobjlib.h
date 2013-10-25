@@ -36,6 +36,7 @@
 
 #define MSG_ANSWER_NOANSWERLIST     _MESSAGE(64000, _("no answer list - gdi request failed"))
 #define MSG_CKPTREFINJOB_SU         _MESSAGE(64001, _("Checkpointing object "SFQ" is still referenced in job " sge_U32CFormat"."))
+#define MSG_GDI_MODE_UNAVAILABLE_S  _MESSAGE(64004, _("Security mode "SFQ" not available"))
 #define MSG_GDI_INVALIDPRODUCTMODESTRING_S   _MESSAGE(64005, _("invalid security mode string "SFQ))
 #define MSG_GDI_SWITCHFROMTO_SS              _MESSAGE(64007, _("switching from "SFQ" to "SFQ" feature set"))
 #define MSG_HOSTREFINQUEUE_SS                _MESSAGE(64008, _("Host object "SFQ" is still referenced in cluster queue "SFQ"."))
