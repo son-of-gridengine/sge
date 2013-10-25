@@ -640,15 +640,14 @@ SetProductMode()
       CSP_PREFIX=""
    fi
 
-      if [ $AFS = "false" ]; then
-         if [ $CSP = "false" ]; then
-            PRODUCT_MODE="none"
-         else
-            PRODUCT_MODE="${CSP_PREFIX}"
-         fi
-      else
-         PRODUCT_MODE="${AFS_PREFIX}"
-      fi
+   for x in $CSP_PREFIX $AFS_PREFIX; do
+       if [ -z "$PRODUCT_MODE" ]; then
+           PRODUCT_MODE=$x
+       else
+           PRODUCT_MODE="$PRODUCT_MODE,$x"
+       fi
+   done
+   [ -n "$PRODUCT_MODE" ] || PRODUCT_MODE=none
 }
 
 

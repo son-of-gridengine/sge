@@ -75,9 +75,10 @@ void            feature_initialize(void);
 int             feature_initialize_from_string(const char *mode);
 void            feature_activate(feature_id_t id);
 const char*     feature_get_featureset_name(feature_id_t id);
-feature_id_t    feature_get_active_featureset_id(void);
+u_long32        feature_get_active_featureset(void);
 bool            feature_is_enabled(feature_id_t id);
 const char*     feature_get_product_name(featureset_product_name_id_t style, dstring *buffer);
+const char*     feature_get_featureset_names(dstring *buffer, u_long32 featureset);
  
 #ifdef  __cplusplus
 }
