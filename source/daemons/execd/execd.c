@@ -490,7 +490,7 @@ int sge_execd_register_at_qmaster(sge_gdi_ctx_class_t *ctx, bool is_restart) {
    if (master_host != NULL && ctx->is_alive(ctx) == CL_RETVAL_OK) {
       lList *hlp = lCreateList("exechost starting", EH_Type);
       lListElem *hep = lCreateElem(EH_Type);
-      lSetUlong(hep, EH_featureset_id, feature_get_active_featureset_id());
+      lSetUlong(hep, EH_featureset_id, feature_get_active_featureset());
       lAppendElem(hlp, hep);
 
       /* register at qmaster */
