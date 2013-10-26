@@ -1,373 +1,475 @@
-                        Grid Engine Build Page
-                        ----------------------
+//-*- asciidoc -*-
+= Building and Installing Grid Engine
+:toc:
 
-Content
--------
+== Overview
 
- 1) Overview and files referenced in this document
- 2) Prerequisites
- 3) Building the dependency tool 'sge_depend'
- 4) Creating dependencies
- 5) Compiling Grid Engine
- 6) Creating man pages and qmon help file
- 7) Staging for Installation
-    7.1) Creating a local distribution
-    7.2) Creating a distribution repository
- 8) Creating a distribution from a distribution repository
- 9) Installing Grid Engine
-10) Quickstart summary
-11) Copyright
+This document gives you a brief overview of how to compile and
+install Grid Engine.
 
+Unfortunately, the build system is home-grown and awkward to use.
+See `source/README.aimk` for information on this.
 
-1) Overview and files referenced in this document
--------------------------------------------------
+On a Debian- or Red Hat-derived GNU/Linux system, it is recommended
+to xref:packages[build dpkg or rpm packages] if suitable binary ones
+aren't already available to install, or you don't want to trust them.
 
-   This document gives you a brief overview about the steps how to compile,
-   install and start Grid Engine. It is highly recommend to read this file
-   and the files referenced here, if you are going to compile and run Grid
-   Engine the first time.
+The result of a normal build is a tar file which can be used for
+installation on a cluster of machines of the same type.
 
-   Unfortunately, the build system is home-grown and awkward to use.
-   On a Debian- or Red Hat-derived GNU/Linux system, it is recommended
-   to build dpkg or rpm packages if suitable binary ones aren't
-   available, or you don't want to trust them.  See README.packages.
+There is a short summary of the process (or recipe for direct local
+installation) in the <<quickstart,Quickstart>> section.
 
-   Files and URLs referenced in this document
-   -------------------------------------------
+== Platform Support
 
-   Description             File
-   ------------------------------------   
-   this file               README.BUILD    
-   build wrapper           README.aimk
-   architecture mapping    dist/README.arch
-   distribution install    scripts/README.distinst
-   tar.gz distribution     scripts/README.mk_dist
-    
+Please report portability problems, preferably with fixes, or success
+on platforms not listed here.  This is a summary of current knowledge
+of working platforms.
 
-2) Prerequisites
-----------------
+=== GNU/Linux
 
-   For up-to-date source, and possibly more information, please refer to
+<<packages,Source packaging>> is available for Debian (and derivatives) and RHEL
+but probably needs small adjustment for SuSE.  The included dpkg
+packaging is a much better bet than the current official Debian
+packaging (which is being worked on); it doesn't currently provide GUI
+installer or Hadoop support, unlike the RPM packaging.
 
-      https://arc.liv.ac.uk/trac/SGE
+* x86_64/amd64:  Widely used in production.  Should work at least on
+  any currently-supported distribution (e.g. Debian stable, RHEL 5 or
+  later).  Binary packages are available for RHEL 5 and 6, and Debian
+  Wheezy.
+* Other GNU/Linux architectures:  Debian packages are available for
+  armel; x86 is known to work; other architectures should work.  Build
+  problems are most likely to be due to naming conventions for
+  architectures (`uname -m`) and Java locations.
 
-   To compile and install Grid Engine, the following steps need to be
-   carried out:
+Some support libraries are available in
+<http://arc.liv.ac.uk/downloads/SGE/support/> in case they aren't
+available from your OS.
 
-      - Ensure you have a version of csh and the normal packages for
-        building C source
-      - To provide CSP security, install the openSSL library
-        <http://www.openssl.org/>, preferably as your OS's packaged
-        version (openssl-devel on Red Hat, libssl-dev on Debian).
-        Otherwise build with aimk -no-secure.
-      - To provide BDB spooling install the Berkeleydb library
-        <http://www.oracle.com/technetwork/database/berkeleydb/overview/>,
-        preferably as your OS's packaged version (db4-devel on Red Hat,
-        libdb-dev on Debian).  Otherwise build with aimk -spool-classic.
-      - You may also need development packages of ncurses and (on
-        GNU/Linux) pam.  For building the qmon GUI, you need
-        development packages of lesstif or openmotif (non-free
-        software), libXmu, and libXpm.
-      - On AIX, install perfstat (the bos.perf.libperfstat and
-        bos.perf.perfstat filesets)
-      - To provide core-binding support, you need hwloc
-        <http://www.open-mpi.org/projects/hwloc/>, preferably as your
-        OS's packaged version (hwloc-devel from EPEL on Red Hat,
-        libhwloc-dev on Debian).  You need at least version 1.1, but
-        should probably use the most recent version.  Otherwise build
-        with aimk -no-hwloc.
-      - To make the basic Java targets, as well as a Java 1.6 or 1.7 JDK
-        (e.g. openjdk) you will need: ant, ant-nodeps (Red Hat)/ant-optional
-        (Debian), javacc and junit packages.  The GUI installer requires
-        IzPack (http://izpack.org) and swing-layout
-        (http://swing-layout.dev.java.net), also available.  Izpack
-        4.1.1 is known to work, later versions may not, and  swing-layout
-        1.0.3 is known to work.  Copies are available from
-        <http://arc.liv.ac.uk/downloads/SGE/support/> and included in
-        the source RPM.  The herd library requires a basic Hadoop
-        distribution (the hadoop-0.20 GNU/Linux packages) of a
-        suitable version (e.g. http://archive.cloudera.com/cdh/3/).
-        The cdh3u3 (0.20.2+923.197) and cdh3u4 (0.20.2+923.256)
-        versions are known to work and cdh3u0 is known not to with
-        this version of SGE.  (There was an incompatible change in the
-        Hadoop distribution, and support for earlier versions can be
-        found in the repository for sge-8.0.0e and earlier.)  Properties
-        for ant are set in the top-level build.properties, and may be
-        overridden in build_private.properties.  Other properties you
-        might need to set are typically found in
-        nbproject/project.properties in each Java component directory.
-      - create dependency tool and dependencies with 'aimk'
-      - compile binaries with 'aimk'
-      - create a distribution repository with 'distinst'
-      - create a distribution from distribution repository with 'mk_dist'
-      - unpack and install distribution
+=== Solaris
 
-   If in doubt for other systems, consult and adapt the Red Hat recipe
-   given by the %build section of gridengine.spec at the top level of
-   the source directory.  The necessary non-default packages for a
-   Cygwin build need checking, but include at least: tcsh, make,
-   gcc-core, openssl-devel, crypt (or libcrypt-devel, depending on
-   version), libdb*-devel (may have a version like 4.5, or not),
-   libncurses-devel, libXm-devel, libXext-devel, libXmu-devel (the
-   last three for qmon); also build and install hwloc from
-   <http://www.open-mpi.org/software/hwloc/> or use aimk -no-hwloc
-   (see below) to avoid core binding support.
+Recent versions have built on Solaris 10 with GCC or the system
+compiler and should do so on Solaris 11.  Requires add-on library
+support for openssl, Berkeley DB, and hwloc, e.g. from
+<http://www.opencsw.org/>.  You need `/usr/ccs/bin` on your path.  You
+need to use GCC (`aimk -gcc`) to build against the CSW hwloc package.
 
-   The non-Cygwin MS Windows build (currently required for execution
-   hosts) needs the "interix" Unix-like environment, which seems to go
-   by different names according to the version of Windows.  See
-   README.windows for more information.
+=== MS Windows
 
-   See the file 'dist/README.arch' in this directory for more information
-   how the architecture is determined and how it is used in the process of
-   compiling and installing Grid engine.
+==== Interix/SUA/SFU
 
-   See README.platforms for some information on platform support.
+The <<windowsbuild,Windows build>> is supposed to work with Server
+2003 Release 2, Server 2008, Vista Enterprise, and Vista Ultimate
+using Subsystem for UNIX-based Applications; also for Server 2003, XP
+Professional with at least Service Pack 1, Windows 2000 Server with at
+least Service Pack 3, or Windows 2000 Professional with at least
+Service Pack 3 using Services for UNIX.  `qmaster`, `qmon`, DRMAA, and
+`qsh` are not supported.
 
-   The following commands assume that your current working directory is
+==== Cygwin
 
-      sge/source
+32-bit builds and clients work, but there may be problems with daemons
+(tested on Windows 7), apparently related to threading.  The native
+components as in the Interix build are currently not supported, and
+neither are.  64-bit builds.
 
-   See 10) for quick installation instructions.
+=== FreeBSD, NetBSD, DragonFly, OpenBSD
 
-   [The next two steps may be replaced by
+Recent NetBSD is known to work.  Support is present for FreeBSD and
+OpenBSD, with all known available patches imported.  Binding/topology
+support via hwloc may not work.
 
-      % sh scripts/bootstrap.sh
-   ]
+=== Darwin (Apple Mac OS X)
 
+Support is present for recent versions (10.4+?) on x86 and Power.
 
-3) Building the dependency tool 'sge_depend'
---------------------------------------------
+=== AIX
 
-   The Grid Engine project uses a tool 'sge_depend' to create header
-   dependencies. The header dependencies are only created for local header
-   files which are included with double quotes ("), e.g.:
+Support is present for version 5.1 and above.
 
-       #include "header.h"
+=== HP-UX
 
-   See source/3rdparty/sge_depend/sge_depend.html
-   for more information about 'sge_depend'.
+Support is present for version 11, 32- or 64-bit.
 
-   To build 'sge_depend' enter:
+=== Tru64
 
-      % csh -f ./aimk -only-depend
+Support is present for Tru64 5.  It is not known to be tested, and
+will probably be removed with final HP support for Tru64 ceased.
 
-   The result is the binary
+=== Irix
 
-      3rdparty/sge_depend/<ARCH>/sge_depend
+Support is present for Irix 6.5.  It is not known to be tested, and
+may be removed with final SGI support for Irix finishing, although
+the system has some interesting management features for which the
+support code may be kept as an example.
 
-   See the file 'README.aimk' for more information how 'aimk' works.
+=== Others
 
+Support for obsolete NEC SX, (`classic') Cray, and vestigial bits for
+other systems has been removed, but could conceivably be revived from
+the repository.  (SX had possibly-interesting resource management
+features like Irix.)
 
-4) Creating dependencies
-------------------------
+New ports require at least support in the       `arch`, `compilearch`,
+and `aimk` scripts, but may need other substantial changes, depending
+on how similar they are to an existing port.
 
-   The header dependency files are created in every source directory.
-   They are included by the makefiles and therefore they must exist. The
-   dependencies will be created for every .c Files in the source code
-   repository.
+See `source/dist/README.arch` for how the architecture is determined
+and used in the build and installation processes.
 
-   Create zero length dependency files with the command
+== Prerequisites
 
-      % scripts/zerodepend
+For up-to-date source, see <https://arc.liv.ac.uk/trac/SGE>, and for
+more information, see <http://arc.liv.ac.uk/SGE>.
 
-   Now create your dependencies:
+The following are requirements for building from source and installing
+the result.  If you are on a Debian- or Red Hat-ish system and aren't
+building packages for some reason, check +gridengine.spec+ and
++debian/control+ in the sources for the names of packages to satisfy
+build dependencies mentioned below.
 
-      % ./aimk depend
+* A version of `csh` (e.g. http://www.tcsh.org/Welcome[tcsh]) and the
+  normal packages for building C source on your system;
+* It is highly recommended to use CSP security or MUNGE authentication
+  <http://arc.liv.ac.uk/SGE/howto/sge-security.html>.  For CSP you
+  need the http://www.openssl.org/[openSSL library], preferably your OS's
+  packaged version; without it, build with `aimk -no-secure`.
+  To provide http://munge.googlecode.com/[MUNGE authentication],
+  install the library and daemon from OS packages or the MUNGE web
+  site.  It needs to   be version 5.9+ to get a compatible licence.
+  Use `aimk --with-munge`;
+* The http://www.canonware.com/jemalloc/[jemalloc library] can be
+  linked using `aimk -with-jemalloc` to improve qmaster performance if
+  that is a concern.
+* For BDB spooling in qmaster, the
+  http://www.oracle.com/technetwork/database/berkeleydb/overview/[Berkeleydb
+  library]; otherwise build with `aimk
+  -spool-classic`.  Note that the BDB server mode is no longer supported;
+* Possibly development packages of `ncurses` and (on
+  GNU/Linux) `pam`;
+* For the `qmon` GUI,
+  development packages of `lesstif` or `openmotif` (now free
+  software, and appearing in distributions), `libXmu`, and `libXpm`;
+* On AIX, `perfstat` (the `bos.perf.libperfstat` and
+  `bos.perf.perfstat` filesets);
+* For core binding support,
+  http://www.open-mpi.org/projects/hwloc/[hwloc], at least version
+  1.1, and possibly later for specific architecture support; otherwise
+  build with `aimk -no-hwloc`;
+* For the basic Java targets, as well as a Java 1.6 or 1.7 JDK
+  (e.g. OpenJDK) you will need `ant`, `ant-nodeps` (Red Hat) or
+  `ant-optional` (Debian), `javacc`, and `junit` packages.  The GUI
+  installer requires http://izpack.org[IzPack] and
+  http://swing-layout.dev.java.net[swing-layout].  Izpack 4.1.1 is
+  known to work, later versions may not; swing-layout 1.0.3 is known
+  to work.  Copies are available from
+  <http://arc.liv.ac.uk/downloads/SGE/support/> and are included in
+  the source RPM.
++
+The `herd` library
+requires a basic Hadoop distribution (hadoop-0.20 GNU/Linux
+packages) of a suitable version
+(e.g. <http://archive.cloudera.com/cdh/3/>).  The cdh3u3
+(0.20.2+923.197) and cdh3u4 (0.20.2+923.256) versions are known to
+work and cdh3u0 is known not to with this version of
+SGE.  (There was an incompatible change in the Hadoop distribution,
+and support for earlier versions can be found in the repository for
+sge-8.0.0e and earlier.)
++
+Properties for ant are set in the
+top-level `build.properties`, and may be overridden in
+`build_private.properties`.  Other properties you might need to set
+are typically found in `nbproject/project.properties` in each Java
+component directory;
 
-   Depending on actual compiler flags for a specific OS 'sge_depend' may
-   print out some warnings about unrecognized command line options. These
-   warnings can be ignored.
+* For requirements for the Interix MS Windows build, see <<windows
+  build,below>>;
 
-   The dependencies are not recreated automatically if your header
-   dependencies change. The dependencies need to be created only on one
-   platform. They are shared for all target architectures.
+* For the Cygwin MS Windows build, the packages required over the base
+  system are at least: tcsh, make, gcc-core, openssl-devel,
+  libdb*-devel (where * may be a version number or null), crypt (or
+  libcrypt-devel, depending on version), libncurses-devel,
+  libXm-devel, libXext-devel, libXmu-devel (the last three for qmon);
+  also build and install hwloc from
+  <http://www.open-mpi.org/software/hwloc/> or use `aimk -hwloc` (see
+  below) to avoid core binding support.
 
+If in doubt for other systems, maybe consult and adapt the Red Hat recipe
+given by the `%build` section of `gridengine.spec` at the top level of the
+source directory.
 
-5) Compiling Grid Engine
-------------------------
-  
-   By default the script aimk compiles 'everything'. This may cause problems
-   for certain modules, because one or more tools or libraries might not be
-   available (yet) on your system. Therefore aimk provides a couple of
-   useful switches to select only parts of Grid Engine for compilation:
+== Building
 
-   Enter
+The following commands assume that your current working directory is
+++sge++__version__++/source++ from unpacking the source distribution
+tarball, and that you are using a Bourne-like shell.
 
-      % ./aimk -help' 
+A summary of the build procedure is:
 
-   to see a list of all aimk options. Not all options actually may work,
-   esp. not in all combinations. Some options like the security related
-   options enable compilation of code which is under development and is
-   likely to be untested.
+* Build the dependency tool and create dependencies with `aimk`;
+
+* Compile with `aimk`;
+
+* Build a repository of the distribution with `distinst`;
+
+* Build a distribution tarball from the repository with `mk_dist`.
+
+=== Setup and make Dependencies
+
+Run
+
+  $ sh scripts/bootstrap.sh
+
+to fix file permissions, build the `sge_depend` tool for finding
+header dependencies for `make` (`aimk -only-depend`), create initial
+dependency files (`scripts/zerodepend`) run `sge_depend` (`aimk
+depend`), and run the autoconf `configure` scripts.
+
+See source/3rdparty/sge_depend/sge_depend.html for more information
+about `sge_depend`.
+Running it may give ignorable warnings.
+
+[NOTE]
+Dependencies are not recreated automatically if source files
+change, and are shared between targets in the build area.
+
+=== Compilation
+
+To compile, run
+
+  $ ./aimk
+
+This tries to build all the normal targets, some of which might be
+problematic for various reasons (e.g. Java).  Various `aimk` switches
+provide selective compilation; use `./aimk -help` for the options, not
+all of which may actually work, especially in combination.
 
    Useful aimk options:
 
-      -no-qmon          don't compile qmon
-      -no-qmake         don't compile qmake
-      -no-qtcsh         don't compile qtcsh
-      -no-remote        don't compile remote modules rsh, rshd, rlogin
+[horizontal]
+`-no-qmon`:: Don't build `qmon`;
+`-no-qmake`:: don't build `qmake`;
+`-no-qtcsh`:: don't build `qtcsh`;
+`-no-java -no-jni`:: avoid all Java-related stuff;
+`-no-remote`:: don't build `rsh` etc.
+(obsoleted by use of `ssh` and the SGE PAM module).
 
-   To compile the core system (daemons, command line clients, no interactive
-   commands (qsh only), no qmon) you'll enter:
+For the core system (daemons, command line clients, but not `qmon`) use
 
-      % ./aimk -only-core
+  $ ./aimk -only-core
 
-   When compilation begins a subdirectory named as an uppercase architecture
-   string will be created and the system is compiled.
+Building creates a sub-directory named with an uppercase architecture
+string (e.g. `LINUXAMD64`), into which binaries are written.  Similar
+directories are created in the `3rdparty` directory.  Java components
+are built into the `CLASSES` sub-directory.
 
-   At least on the supported and tested platforms, problems with compilation
-   most likely will be related to the required compiler (often the operating
-   system compiler is used and other compilers like gcc are not supported or
-   not well tested) or compiler version, partially to the default memory
-   model on your machine (32 or 64bit). Usually these problems can be solved
-   by tuning aimk.
+At least on the supported and tested platforms, problems with compilation
+most likely will be related to the required compiler (often the operating
+system compiler is used and other compilers like gcc are not supported or
+not well tested) or compiler version, partially to the default memory
+model on your machine (32 or 64bit). Usually these problems can be solved
+by tuning aimk.
 
-   By default the Grid Engine libraries are linked statically to the
-   binaries. Shared libraries are also supported, but their installation is
-   not yet supported. The DRMAA library is always created and installed as
-   a shared library.
+=== Man pages and qmon help file
 
-   See 'README.aimk' for more information on all compilation issues.
+To create man pages run
 
+  $ ./aimk -man
 
-6) Creating man pages and qmon help file
-----------------------------------------
+=== Build Staging
 
-   Man pages in nroff format are created with
+Use the script `scripts/distinst` to stage the binaries to a
+distribution directory from which a tarball or package may be created
+or (with the `-local` flag) install the binaries directly under
+`$SGE_ROOT`.  See `scripts/README.distinst` for details.
 
-      % ./aimk -man
+==== Direct Installation
 
-   To create man pages in the "catman" format (e.g. used on Irix systems)
-   after creating the nroff man pages enter
+It may be convenient to install directly from the build area.  To do
+so, create a directory for the installation (e.g. `/opt/sge`), set the
+environment variable `SGE_ROOT` to its name and export the variable.
+Then run
+....
+  $ echo y | scripts/distinst -local -noexit -allall <arch1> <arch2> ...
+....
+This probably needs to be done as root, at least if the setuid
+binaries are required.      `-noexit` avoids exiting if any part of
+the distribution hasn't been built, and `-allall` copies everything,
+including documentation and binaries for the built architectures
+`<arch1>` etc., to `$SGE_ROOT`.
 
-      % ./aimk -catman
+==== Distribution Staging
 
-   -catman is not normally necessary.
+To create a distribution tarball, the first step is to install the
+files into a `staging' directory with +distinst+, e.g.
+....
+  $ echo y | scripts/distinst -allall -basedir `pwd`/dist -vdir 8.1.4 -noexit -noopenssl -nobdb
+....
 
-7) Staging for Installation
----------------------------
+=== Creating Distribution Tarball
 
-   Once Grid Engine is compiled it can be prepared for installation by
-   staging it to an appropriate place. Two types are supported. The script
-   'scripts/distinst' is responsible for this purpose. It either copies the
-   files directly to a local installation in the directory in $SGE_ROOT or
-   it copies the files to a distribution directory where you can create
-   customized distributions, e.g. in tar format for further redistribution.
+The script `scripts/mk_dist` can be used to create distribution
+tarballs from the staging area.  See its `-help` option and
+scripts/README.mk_dist` for more information.  E.g.
 
-   See the file
+....
+$ scripts/mk_dist -basedir `pwd`/dist -vdir 8.1.4 -version 8.1.4 -bin
+$ scripts/mk_dist -basedir `pwd`/dist -vdir 8.1.4 -version 8.1.4 -common
+....
 
-       scripts/README.distinst
+== Set Up
 
-   for more details about options of the 'distinst' script.
+After installing the distribution into place you need to run the
+installation script `inst_sge` (or a wrapper) on your master host, and
+on all execution hosts which don't share the installation via a
+distributed file system.  This will configure and start up the
+daemons.  If the installation is shared with the execution hosts,
+using a shared, writable spool directory, it isn't necessary to do an
+explicit install on them.  Use `inst_sge` to install the execd on the
+master host and copy to or share with the hosts the `sgeexecd` init
+script.  Then start this after the qmaster has been configured with
+the relevant host names.
 
-   7.1) Creating a local distribution
-   ----------------------------------
+== Quickstart Installation[[quickstart]]
 
-      You can copy Grid Engine binaries and other parts of the distribution
-      directly to a local installation. The purpose of this shortcut is to
-      quickly install and run Grid Engine after compilation or other changes of
-      the distribution.
+With the build dependencies in place, the following procedure will
+build and install on the local system on a supported platform under
+a Bourne-like shell:
+....
+sh scripts/bootstrap.sh
+./aimk -system-libs # maybe add -pam for PAM, and -no-herd to avoid Hadoop
+./aimk -man
+SGE_ROOT=/opt/sge
+export SGE_ROOT
+scripts/distinst -local -allall -noexit # asks for confirmation
+cd $SGE_ROOT
+./inst_sge -m -x -csp  # or run ./start_gui_installer
+....
+If you haven't built all the binaries (e.g. used `aimk -only-core`),
+add the option `-nobincheck` to `inst_sge` to avoid a check for all
+the possible binaries.
 
-      Create your <sge_root> root directory and set the environment variable
-      $SGE_ROOT to <sge_root> and call
+== Building on MS Windows with SUA/SFU[[windows build]]
 
-         scripts/distinst -local -noexit -allall <arch1> <arch2> ...
+These are notes from building 8.1.3+ on 64-bit MS ``Windows 7
+Enterprise'' in the ``normal'' way with the ``SUA'' system.  The
+procedure will be different for installing the basic environment with
+the earlier ``SFU'' system in MS Windows XP.  +aimk+ may well need
+hacking for other versions, as well as +aimk.site+.
 
-      Since some of binaries need to be installed SUID-root you need to login
-      as user root to install a fully operable Grid Engine distribution. 
+The initial SUA installation is via:
+====
+Control panel -> Programs and Features -> Turn Windows features on
+and off -> Subsystem for UNIX-based applications
+====
 
-      The "-local" switch requires that the variable $SGE_ROOT is set, the
-      "-noexit" switch causes the script to print warnings instead of exiting
-      of some install targets (e.g. binaries or man pages) do not exist. The
-      "-allall" target copies all files including man pages and binaries of
-      the targets <arch1>, <arch2> to $SGE_ROOT.
+There is a parallel item to enable the NFS client, which you may want
+on execution hosts.
 
-   7.2) Creating a distribution repository
-   ---------------------------------------
+Then go to ``Download utilities ...'' from the SUA item in the ``All
+Programs'' menu and install it.  You need the GNU utilities
+and SDK components.    To build CSP support, you need openssl.  There isn't
+currently an official distribution for Interix, so either build it
+yourself, or use the somewhat old version from
+<http://arc.liv.ac.uk/downloads/SGE/support/>.  `aimk.site` expects it
+to be unpacked into `/usr/local/ssl`.
 
-      If you are planning to create a distribution which later should be
-      used to create further distributions (currently tar.gz is supported),
-      the files are first copied to a distribution repository. From that
-      distribution repository you later can create distributions. The base
-      directory for the distribution repository is defined in the 'distinst'
-      script and can be overridden with command line parameters.
-      
-      By default distinst in this mode will have a "strict" behavior. It
-      will exit, if one of the installation targets cannot be installed
-      successfully.  This is done to ensure that a distribution will only
-      contain a valid set of files.
+You also need the native compiler from Microsoft Visual C++.  (It may
+be possible to use the free MinGW compiler, but that has not been
+tried.)  You can
+use the gratis ``Express Edition'', which appears to be available from
+<https://www.microsoft.com/visualstudio/eng/products/visual-studio-express-products>.  The tested procedure here was with ``Visual Studio 9.0'' ``2008
+Express Edition''.  There's a crucial, obscure step necessary to be
+able to run the compiler;  without it, `cl.exe` won't run (or the
+Interix `/bin/ar`), and you won't see why not (a missing dll) unless you
+run the binary explicitly, i.e. not via the path.  Assuming the
+default location for the VC installation of that version, then the
+PATH environment variable must have the _two_ components:
 
+  PATH="/dev/fs/C/Program Files (x86)/Microsoft Visual Studio 9.0/VC/bin:/dev/fs/C/Program Files (x86)/Microsoft Visual Studio 9.0/Common7/IDE:$PATH"
 
-8) Creating a distribution from a distribution repository
----------------------------------------------------------
+The latter is where mspdb80.dll (in this version) resides.  These are
+set by default in aimk.site.  On a 32-bit system, remove ` (x86)` from
+the paths.
 
-   If you need to create a Grid Engine distribution for further
-   redistribution (like putting it on a FTP server), the script
+It's similarly non-obvious that `/bin/ar` won't work (at least in this
+64-bit version for 32-bit objects) without that path or by supplying
+option `-m x86`.
 
-      scripts/mk_dist
+The 32-bit OpenSSL library should be in `/usr/local/ssl/lib/x86`.  It
+is set up to link statically in the `aimk` files.  The hwloc library
+isn't currently available on Interix, so core binding and topology
+information isn't available.
 
-   carries out the necessary steps. You might want to copy the script to
-   the base directory of your distribution repository. 
+It isn't currently clear whether a 64-bit Interix version can be built.
 
-   See the file
+== Building Debian or Red Hat packages[[packages]]
 
-     scripts/README.mk_dist
+Packaging is available for building binary packages for Debian and
+derived distributions (like Ubuntu), and for Red Hat-derived
+distributions (RHEL, Fedora, CentOS, SL).  SuSE and other RPM-based
+distributions aren't currently support, but patches for the RPM spec
+file would be welcome.
 
-   how to create a Grid Engine distribution.
+The binary packages will install into `/opt/sge`, intended for shared
+installations, although they will also work with a local installation.
 
+=== dpkg
 
-9) Installing Grid Engine
--------------------------
+See <http://wiki.debian.org/BuildingAPackage> for general help on
+building Debian packages.  It is intended that the
+http://wiki.debian.org/Hardening#hardening-wrapper[hardening-wrapper]
+package is used, but it isn't required by the build dependencies.
 
-   After installing the distribution you need to run the installation script
-   "inst_sge" (or a wrapper) on your master host and on all execution hosts
-   for a first time configuration and startup of your Grid engine daemons.
+* Ensure the `dpkg-dev` package is installed
 
-10) Quickstart installation
----------------------------
+* Run
++
+....
+  $ tar fx sge-<version>.tar.gz; cd sge-<version>
+....
 
-   With the build dependencies in place, the following procedure will
-   build and install on the local system on a supported platform under
-   a Bourne-like shell:
+* Run
++
+....
+  $ dpkg-buildpackage -b
+....
+* If necessary, satisfy build dependencies:
++
+....
+  $ sudo apt-get install <missing packages>
+  $ dpkg-buildpackage -b
+....
++
+If you run lintian, e.g. via `debuild` instead of `dpkg-buildpackage`,
+recent versions will complain bitterly about use of `/opt`,
+unfortunately.
 
-   sh scripts/bootstrap.sh
-   ./aimk -system-libs # maybe add -pam for PAM, and -no-herd to avoid Hadoop
-   ./aimk -man
-   SGE_ROOT=/opt/sge
-   export SGE_ROOT
-   scripts/distinst -local -allall -noexit # asks for confirmation
-   cd $SGE_ROOT
-   ./inst_sge -m -x -csp  # or run ./start_gui_installer
+=== RPM
 
-   If you haven't built all the binaries (e.g. used aimk -only-core),
-   add the option -nobincheck to inst_sge to avoid a check for all the
-   possible binaries.
+* Ensure the `rpm-build` package is installed.  You may (RHEL5,
+  typically) or may not (RHEL6) need to be root to run `rpmbuild`.
 
-11) Copyright
--------------
+* Run
++
+....
+  $ rpmbuild --rebuild gridengine-<version>.src.rpm
+....
+* If necessary, satisfy build dependencies:
++
+....
+  $ sudo yum install <missing packages>
+  $ rpmbuild --rebuild gridengine-<version>.src.rpm
+....
+To build the Hadoop support after (installing the `hadoop-0.20`
+package from the http://archive.cloudera.com/redhat/cdh/3/[Cloudera
+CDH3 repository] add `--with hadoop` to the `rpmbuild` command, or to
+avoid the Java components, add `--without java`.
 
-   The Contents of this file are made available subject to the terms of
-   the Sun Industry Standards Source License Version 1.2
- 
-   Sun Microsystems Inc., March, 2001
+[float]
+{nbsp}
+------
+Copyright (C) 2013, Dave Love, University of Liverpool
 
-   Sun Industry Standards Source License Version 1.2  
-   =================================================
-   The contents of this file are subject to the Sun Industry Standards
-   Source License Version 1.2 (the "License"); You may not use this file
-   except in compliance with the License. You may obtain a copy of the
-   License at http://gridengine.sunsource.net/Gridengine_SISSL_license.html
- 
-   Software provided under this License is provided on an "AS IS" basis,
-   WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING,  
-   WITHOUT LIMITATION, WARRANTIES THAT THE SOFTWARE IS FREE OF DEFECTS,  
-   MERCHANTABLE, FIT FOR A PARTICULAR PURPOSE, OR NON-INFRINGING.
-   See the License for the specific provisions governing your rights and
-   obligations concerning the Software.
- 
-   The Initial Developer of the Original Code is: Sun Microsystems, Inc.
-
-   Copyright: 2001 by Sun Microsystems, Inc.
- 
-   All Rights Reserved.
+Licence http://arc.liv.ac.uk/repos/darcs/sge/LICENCES/GFDL-1.3[GFDL].
