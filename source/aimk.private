@@ -4,11 +4,6 @@
 
 # Default to not requiring the tricky Java bits and using system libs
 set argv = ( -no-gui-inst -no-herd $* )
-# Might as well do PAM on GNU/Linux
-switch ($BUILDARCH)
-   case LINUX*:
-      set argv = ( -pam $argv )
-endsw
 
-# This is appropriate for a Debian distribution:
-# set argv = ( -DDEFAULT_EDITOR="sensible-editor" $argv )
+# This is appropriate for a Debian distribution, but it loses with some csh:
+# set argv = ( -DDEFAULT_EDITOR='\"sensible-editor\"' $argv )
