@@ -36,7 +36,6 @@
 switch($buildarch)
    case "aix51":
    case "darwin":
-   case "lx-alpha":
    case "win32-x86":
    case cygwin-*:
       set argv = ( -no-jni -no-java $* )
@@ -44,31 +43,17 @@ switch($buildarch)
    case "usol-sparc64"
       set argv = ( -no-intl -no-java -no-jni $* )
       breaksw
+   case lx-*:
+      # Might as well do PAM on GNU/Linux
+      set argv = ( -pam $* )
+      breaksw
    default:
       set argv = ( $* )
       breaksw
 endsw
 
-#
-# TMPDIR the directory where gcc puts intermediate files. Points to a
-# local directory for faster compilation
-#
-setenv TMPDIR /tmp
-
-# 
-# OPENSSL_HOME the directory where the include and lib directory of openssl
-# is installed
-#
-set OPENSSL_HOME = /usr
-
-# 
-# BERKELEYDB_HOME the directory where the include and lib directory of
-# Berkeley DB is installed
-#
-set BERKELEYDB_HOME = /usr
-set BDB_INCLUDE_SUBDIR =
-set BDB_LIB_SUFFIX =
-set SSL_LIB_SUFFIX =
+# Link -lbdb${BDB_LIB_SUFFIX}, so set to, say, "5.1" to get the right version
+set BDB_LIB_SUFFIX = 
 
 # 
 # KRB_HOME the directory where the include and lib directory of kerberos is
@@ -171,9 +156,6 @@ switch($buildarch)
    default:
       breaksw
 endsw
-
-# Location of hwloc include and lib directories (if not on system path)
-set HWLOC_DIR = ""
 
 # Prefix for OpenSSH compilation, for tight integration
 set OPENSSH_PREFIX = "/usr/local"

@@ -377,9 +377,9 @@ set INTERACTTARGETS   = "qmake qtcsh"
 
 # SECURE
 set SEC               = 1
-set SECFLAGS          = "-DSECURE -I$OPENSSL_HOME/include"
+set SECFLAGS          = "-DSECURE"
 set SECLIB            = "-lssl -lcrypto"
-set KLFLAGS           = "-L$OPENSSL_HOME/lib${SSL_LIB_SUFFIX}"
+set KLFLAGS           = ""
 
 set CORELIB           = ""
 
@@ -1532,7 +1532,7 @@ case WIN32_X86:
    set LOADCHECK_OBJ    = loadcheck.obj
    set JUTI_OBJ         = juti.obj
    
-   set CORE_INCLUDE     = "$CORE_INCLUDE -I../libs/wingrid -I$OPENSSL_HOME/include"
+   set CORE_INCLUDE     = "$CORE_INCLUDE -I../libs/wingrid"
    # libwingrid.a needs libdl for dlopen() etc.
    set WINGRIDLIB       = "-lwingrid $SECLIB -ldl"
    set WINGRIDLIB_DEP   = "libwingrid.a"
@@ -1596,7 +1596,7 @@ case WIN32_X86:
       endif
    endif
 
-   set LFLAGS        = "$DEBUG_FLAG $LFLAGS -L$SOURCE/$COMPILE_ARCH -L$OPENSSL_HOME/lib${SSL_LIB_SUFFIX}"
+   set LFLAGS        = "$DEBUG_FLAG $LFLAGS -L$SOURCE/$COMPILE_ARCH"
 
    set SHAREDLD      = $CC
    set SHARED_LFLAGS = "-L. -shared"
@@ -1670,7 +1670,7 @@ case CYGWIN_X86_64:
    set CFLAGS = "$OFLAG -Wall -Wstrict-prototypes -DUSE_POLL -DLINUX -D_GNU_SOURCE -DGETHOSTBYNAME -DGETHOSTBYADDR -DHAVE_XDR_H=1 $DEBUG_FLAG $CFLAGS"
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS"
    set SHAREDLD = $CC
-   set SONAME_LFLAG_DRMAA10 = "-Wl,-soname,libdrmaa.so.1.0"
+   set SONAME_LFLAG_DRMAA10 = "-Wl,-soname,libdrmaa.so.1.0 -Wl,--version-script=drmaa.lds"
    set NOERR_CFLAG = "-Wno-error"
    set NOERR_PROTO = "-Wno-strict-prototypes"
    set XMTDEF   = ""
@@ -1926,10 +1926,6 @@ endsw
 if ( $HWLOC == 1 && $NO_HWLOC != 1 ) then
    set CFLAGS = "$CFLAGS -DHAVE_HWLOC=1"
    set HWLOCLIB = -lhwloc
-   if ( "$HWLOC_DIR" != "" ) then
-      set CORE_INCLUDE = "$CORE_INCLUDE -I$HWLOC_DIR/include"
-      set LIBS = "-L$HWLOC_DIR/lib $LIBS"
-   endif
 else
    set CFLAGS = "$CFLAGS -DHAVE_HWLOC=0"
 endif
@@ -2636,13 +2632,12 @@ if ( "$SGESSH" == 1) then
       mkdir -p $SOURCE/3rdparty/openssh/$COMPILE_ARCH
       cd $SOURCE/3rdparty/openssh/$COMPILE_ARCH
 
-      env REMOTE=sge SGE_ARCH=$buildarch LD_LIBRARY_PATH=${OPENSSL_HOME}/lib${SSL_LIB_SUFFIX} \
+      env REMOTE=sge SGE_ARCH=$buildarch \
       MAKE="${MAKE}" CFLAGS="${CFLAGS} ${NOERR_CFLAG}" CC="${CC}" AR="${AR}" \
       ../configure --prefix=${OPENSSH_PREFIX} --with-grd=${COMPILE_ARCH} --srcdir=.. \
          --with-cflags="${MEMCFLAG} ${NOERR_SSH} ${NOERR_PROTO} -DSGESSH_INTEGRATION" \
          --with-ldflags="${LFLAGS}" \
-         --with-libs="-L../../../${COMPILE_ARCH} -L../../../3rdparty/remote/${COMPILE_ARCH}/ -lsgeremote -luti -lcommlists ${LIBS} ${SLIBS}" \
-         --with-ssl-dir=${OPENSSL_HOME}
+         --with-libs="-L../../../${COMPILE_ARCH} -L../../../3rdparty/remote/${COMPILE_ARCH}/ -lsgeremote -luti -lcommlists ${LIBS} ${SLIBS}"
    endif
 
    $MAKE $MAKEOPT -f Makefile "MAKE=$MAKE" "CC=$CC" \
