@@ -36,7 +36,6 @@
 #include <unistd.h>
 
 #include "drmaa.h"
-#include "uti/sge_stdlib.h"
 
 /*
  * This test validates the required DRMAA functionality for the -hold_jid_ad option.
@@ -105,7 +104,7 @@ static int ids_remove_id(char **ids, int size, const char *id)
 
    for (j = 0; j < size; j++) {
       if (ids[j] && !strcmp(id, ids[j])) {
-         sge_free(&(ids[j]));
+         free(ids[j]);
          found = 1;
          break;
       }
@@ -261,14 +260,14 @@ validate_jobs(drmaa_job_ids_t *jobids_a, int chunks_a, drmaa_job_ids_t *jobids_b
    state_monitor(ids_a, chunks_a, ids_b, chunks_b);
 
    for (j = 0; j < BULK_SIZE/chunks_a; j++) {
-      sge_free(&(ids_a[j]));
+      free(ids_a[j]);
    }   
-   sge_free(&ids_a);
+   free(ids_a);
 
    for (j = 0; j < BULK_SIZE/chunks_b; j++) {
-      sge_free(&(ids_b[j]));
+      free(ids_b[j]);
    }   
-   sge_free(&ids_b);
+   free(ids_b);
 }
 
 static 

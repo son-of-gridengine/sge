@@ -35,7 +35,6 @@
 #include <string.h>
 
 #include "drmaa.h"
-#include "uti/sge_stdlib.h"
 
 static drmaa_job_template_t *create_job_template(const char *job_path,
                                                  const char *job_cat);
@@ -74,7 +73,7 @@ int main(int argc, char *argv[])
    buffer_size = 256 * sizeof(void*);
    buffer = malloc(buffer_size);
    memset(buffer, 255, buffer_size);
-   sge_free(&buffer);
+   free(buffer);
    
    drmaa_errno = drmaa_run_job(jobid, DRMAA_JOBNAME_BUFFER, jt, diagnosis,
                                DRMAA_ERROR_STRING_BUFFER);

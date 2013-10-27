@@ -1,0 +1,6 @@
+/* GNU/(Solaris?) linker script to export only symbols matching "drmaa_*",
+   hiding the general SGE symbols. */
+{
+  global: drmaa_*;
+  local: *;
+};
