@@ -191,8 +191,6 @@ do_gdi_packet(sge_gdi_ctx_class_t *ctx, lList **answer_list,
    /*
     * unpack the packet and set values 
     */
-   /* Fixme:  This returns false from communication from e.g. a v6
-      qstat, and we don't then report the version mismatch.  */
    local_ret = sge_gdi_packet_unpack(&packet, answer_list, pb_in);
    packet->host = sge_strdup(NULL, aMsg->snd_host);
    packet->commproc = sge_strdup(NULL, aMsg->snd_name);
@@ -207,9 +205,9 @@ do_gdi_packet(sge_gdi_ctx_class_t *ctx, lList **answer_list,
     *    check auth_info (user)
     *    check host, commproc 
     */
-   if (local_ret) {
-      local_ret = sge_gdi_packet_verify_version(packet, &(packet->first_task->answer_list));
-   }
+   local_ret =
+     sge_gdi_packet_verify_version(packet, &(packet->first_task->answer_list))
+     && local_ret;
    if (local_ret) {
       local_ret =
          sge_gdi_packet_parse_auth_info(packet,
