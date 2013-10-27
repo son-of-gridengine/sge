@@ -1530,7 +1530,7 @@ case LINUX*:
    set SHARED_CFLAGS = "-fPIC"
    set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared"
 
-   set SONAME_LFLAG_DRMAA10 = "-Wl,-soname,libdrmaa.so.1.0"
+   set SONAME_LFLAG_DRMAA10 = "-Wl,-soname,libdrmaa.so.1.0 -Wl,--version-script=drmaa.lds"
 
    if ( $SHAREDLIBS == 1 || $SPOOLING_METHOD == dynamic ) then
       set LFLAGS = "$LFLAGS -rdynamic"

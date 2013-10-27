@@ -40,9 +40,7 @@
 #include <sys/types.h>
 #include <sys/time.h>
 
-#include "uti/sge_uidgid.h"
 #include "drmaa.h"
-#include "basis_types.h"
 
 /* program defaults */
 int njobs    = 100;
@@ -249,7 +247,7 @@ int main(int argc, char *argv[])
          for (i = 0; i < nthreads; i++) {
             if (pthread_create(&ids[i], NULL, submit_jobs, NULL)) {
                fprintf(stderr, "pthread_create() failed: %s\n", strerror(errno));
-	       sge_free(&ids);
+	       free(ids);
                return 1;
             }
          }
