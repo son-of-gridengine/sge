@@ -433,6 +433,7 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
    char dir[SGE_PATH_MAX], taskfile[SGE_PATH_MAX], spid[PID_BSIZE];
    FILE *fp;
    bool rogue = false;
+   pid_t rpid;
 
    DENTER(TOP_LAYER, "remove_shepherd_cpuset");
    snprintf(dir, sizeof dir, "%s/"sge_u32"."sge_u32"/"pid_t_fmt,
@@ -465,7 +466,7 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
       /* Move the task away to avoid waiting for it to die.  */
       /* Fixme:  Keep the cpusetdir tasks open and just write to that.  */
       reparent_proc(spid, cgroup_dir(cg_cpuset));
-      pid_t rpid = atoi(spid);
+      rpid = atoi(spid);
 
       /* Kill rogue process (unless it's the shepherd)        */
       /* Shepherd needs to be killed exactly once, otherwise  */
