@@ -212,14 +212,12 @@ usage:
    echo "-no-remote        -> don't compile 3rdparty remote module (rsh, rshd, rlogin)"
    echo "-no-rmon          -> disable rmon debug output"
    echo "-no-secure        -> disable ssl security (enabled by default)"
-   echo "-no-jemalloc      -> disable jemalloc (enabled by default on GNU/Linux hosts)"
    echo "-no-mtmalloc      -> disable mtmalloc (this is needed for dbx debugging)"
    echo "-only-core        -> build only the core system"
    echo "-only-depend      -> only compile 3rdparty/sge_depend"
    echo "-only-java        -> only compile Java[TM] class files"
    echo "-only-gui-inst    -> only compile Java[TM] GUI installer"
    echo "-only-herd        -> only compile herd Hadoop interface"
-   echo "-only-jemalloc    -> build only the jemalloc library"
    echo "-only-qmake       -> build only qmake"
    echo "-only-qmon        -> build only qmon 3rdparty libs and qmon client"
    echo "-only-qtcsh       -> build only qtcsh"
@@ -240,7 +238,7 @@ usage:
    echo "-tight-ssh        -> compile SSH daemon with tight SGE integration"
    echo "                     (normally obsoleted by sge-sshd-control PAM module)"
 #   echo "-umap             -> compile with usermapping and hostgroup feature (currently broken)"
-   echo "-with-jemalloc    -> build SGE with the jemalloc library (default on GNU/Linux)"
+   echo "-with-jemalloc    -> build SGE with the jemalloc library"
   exit
 }
 
@@ -282,7 +280,6 @@ set REMOTE           = 1
 set QMAKE            = 1
 set QTCSH            = 1
 set MAKEMTMALLOCLIB  = 1
-set MAKEJEMALLOCLIB  = 0
 set MAKEWINGRIDLIB   = 0
 set MAKEWINGRIDAPP   = 0
 set WINGRIDLIB_A     = ""
@@ -308,7 +305,6 @@ set DEBUG_FLAG       = ""
 set HWLOC            = 0
 set NO_HWLOC         = 0
 set INSURE_FLAG      = ""
-set JEMALLOC_CFLAGS  = ""
 set NOERR_CFLAG      = ""
 set NOERR_PROTO      = ""
 set NOERR_SSH        = ""
@@ -435,8 +431,6 @@ set JUTI_OBJ      =
 # Fixme: arguably no point until we have message catalogues fixed; will result
 # in localized system error messages with unlocalized SGE ones.
 switch ($BUILDARCH) 
-   case LINUXAMD64:
-     set MAKEJEMALLOCLIB  = 1
    case LINUX*:
      set WITH_GETTEXT = 1
      breaksw
@@ -667,9 +661,6 @@ while ($#argv >= 1 && $?found)
       set SECLIB      = ""
       set KLFLAGS     = ""
       breaksw
-   case "-no-jemalloc":
-      set MAKEJEMALLOCLIB = 0
-      breaksw
    case "-no-hwloc":
       set NO_HWLOC = 1
       breaksw
@@ -701,7 +692,6 @@ while ($#argv >= 1 && $?found)
       set SGE_DEPEND = 1
       set MAKEWINGRIDAPP = 0
       set MAKEWINGRIDLIB = 0
-      set MAKEJEMALLOCLIB  = 0
       set ONLY_PARAM_SPEC = 1
       set MAKEPAM = 0
       breaksw
@@ -715,20 +705,6 @@ while ($#argv >= 1 && $?found)
       breaksw
    case  "-only-java"
       set JAVA = 2
-      set ONLY_PARAM_SPEC = 1
-      breaksw
-   case "-only-jemalloc":
-      set CORE   = 0
-      set JAVA   = 0
-      set JAVA_GUI_INST = 0
-      set JAVA_HERD = 0
-      set QMAKE  = 0
-      set QMON   = 0
-      set QTCSH  = 0
-      set REMOTE = 0
-      set MAKEJEMALLOCLIB  = 1
-      set MAKEWINGRIDAPP = 0
-      set MAKEWINGRIDLIB = 0
       set ONLY_PARAM_SPEC = 1
       breaksw
    case "-only-qmake":
@@ -901,7 +877,12 @@ while ($#argv >= 1 && $?found)
       set SGESSH = 1
       breaksw
    case  "-with-jemalloc"
-      set MAKEJEMALLOCLIB = 1
+      # fixme: this should probably only apply to qmaster
+      # Intentionally appended
+      set LIBS = "$LIBS -ljemalloc"
+      breaksw
+   case "-munge"
+      set MUNGE = 1
       breaksw
    default:
       unset found
@@ -914,10 +895,6 @@ while ($#argv >= 1 && $?found)
       set argv     = ""
    endif
 end
-
-if ( "$argv" == depend ) then
-    set MAKEJEMALLOCLIB = 0
-endif
 
 if ( $DEBUGGED && $USE_QMAKE ) then
    set MAKEOPT = "-verbose $MAKEOPT"
@@ -1526,17 +1503,6 @@ case LINUX*:
    set LFLAGS        = "$LFLAGS $RUNPATH"
    set SHARED_LFLAGS = "$SHARED_LFLAGS $RUNPATH"
 
-   if ( $COMPILE_ARCH == "ULINUX86_24" || $COMPILE_ARCH == "ULINUXAMD64_24" ) then
-      echo "Ignore jemalloc for unsupported architectures!"
-      set MAKEJEMALLOCLIB = 0
-   endif
-
-   if ( $MAKEJEMALLOCLIB == 1 ) then
-      set LIBRARY_LIBS = "$LIBS"
-      set JEMALLOC_CFLAGS  = "-DMOZ_MEMORY_LINUX"
-      set LIBS = "-ljemalloc $LIBS"
-   endif
-
    breaksw
  
 case WIN32_X86:
@@ -1938,23 +1904,14 @@ case SOLARISAMD64:
    set LFLAGS        = "$LFLAGS $RUNPATH"
    set SHARED_LFLAGS = "$SHARED_LFLAGS $RUNPATH"
 
-#   if ( $BUILDARCH == "SOLARISAMD64" ) then
-#      set MAKEJEMALLOCLIB = 1
-#   endif
-
    if ( $COMPILE_ARCH == "USOLARIS64" ) then
       set MAKEMTMALLOCLIB = 0
    endif
 
    set LFLAGS   = "$LFLAGS $DEBUG_FLAG"
    set LIBRARY_LIBS = "$LIBS"
-   if ( $MAKEJEMALLOCLIB == 1 ) then
-      set JEMALLOC_CFLAGS  = "-DMOZ_MEMORY_SOLARIS -xc99"
-      set LIBS = "-ljemalloc $LIBS"
-   else
-      if ( $MAKEMTMALLOCLIB == 1 ) then
-         set LIBS = "-lmtmalloc $LIBS"
-      endif
+   if ( $MAKEMTMALLOCLIB == 1 ) then
+      set LIBS = "-lmtmalloc $LIBS"
    endif
 
    breaksw
@@ -2364,52 +2321,6 @@ if ( "$MAKEWINGRIDLIB" == 1 ) then
    endif
 
    cd $SOURCE
-endif
-
-if ( "$MAKEJEMALLOCLIB" == 1 ) then
-   if ( CORE != 0 || QMAKE != 0 || QMON != 0 || QTCSH != 0 || REMOTE != 0 ) then
-   echo _________3_r_d_p_a_r_t_y__J_E_M_A_L_L_O_C_
-
-   cd $COMPILE_ARCH
-
-   switch ( "$argv" )
-      case clean:
-         set param = clean
-      breaksw
-
-      case depend:
-         set param = depend
-      breaksw
-
-      case messages:
-         set param = messages
-      breaksw
-
-      case libjemalloc.so:
-         set param = libjemalloc.so
-      breaksw
-
-      default:
-         set param = ""
-      breaksw
-   endsw
-
-   $MAKE $MAKEOPT -f $SOURCE/3rdparty/jemalloc/Makefile "MAKE=$MAKE" "CC=$CC" \
-      "COMPILE_ARCH=$COMPILE_ARCH" "JEMALLOC_CFLAGS=$JEMALLOC_CFLAGS" \
-      "CC=$CC" "CFLAGS=$CFLAGS" "SOURCE=$SOURCE" "SDIR=$SDIR" \
-      "LFLAGS=$LFLAGS" "STRIP=$STRIP" "RANLIB=$RANLIB" \
-      "AR=$AR" "ARFLAGS=$ARFLAGS" \
-      "SHARED_CFLAGS=$SHARED_CFLAGS" "SHARED_LFLAGS=$SHARED_LFLAGS" \
-      "DEPEND_FLAGS=$DEPEND_FLAGS" \
-      "SHAREDLD=$SHAREDLD" "SHAREDEXT=$SHAREDEXT" "LIBEXT=$LIBEXT" $param
-
-   if ( $status != 0 ) then
-      echo not done
-      exit 1
-   endif
-
-   cd $SOURCE
-   endif
 endif
 
 if ( "$CORE" == 1 && "$JAVA" != 2 ) then
