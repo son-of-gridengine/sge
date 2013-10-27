@@ -73,7 +73,7 @@ drmaa_extras_clean: drmaa_howto_clean
          test_drmaa_issue1832 test_drmaa_issue1832.o \
          test_drmaa_issue1892 test_drmaa_issue1892.o \
          test_drmaa.1.0 test_drmaa.o \
-         compile compile.o
+         compile compile.o drmaa.lds
 
 japilib: $(JAPILIB)
 drmaalib: $(DRMAALIB)
@@ -94,10 +94,14 @@ drmaa_messages:
 	   $(CC) $(CFLAGS) -DEXTRACT_MESSAGES -E $$i | $(XGETTEXT) - ;\
 	done
 
+# used with GNU ld via DRMAALIB_10_OBJS
+drmaa.lds:
+	@ln -sf $(JAPILIB_DIR)/drmaa.lds
+
 ###############################################################################
 # rules to build library
 ###############################################################################
-libdrmaa$(SHAREDEXT).1.0:  $(JAPILIB_10) $(JAPI_DEPEND_OBJS) $(DRMAALIB_OBJS) $(DRMAA_OBJS) $(WINGRIDLIB_DEP)
+libdrmaa$(SHAREDEXT).1.0:  $(JAPILIB_10) $(JAPI_DEPEND_OBJS) $(DRMAALIB_OBJS) $(DRMAA_OBJS) $(WINGRIDLIB_DEP) drmaa.lds
 	$(SHAREDLD) $(SHARED_LFLAGS) $(SONAME_LFLAG_DRMAA10) -o libdrmaa$(SHAREDEXT).1.0 $(DRMAALIB_10_OBJS) $(DRMAA_OBJS) $(JAPILIB_10) $(JAPI_ADD_OBJS) \
       $(SECLIB) $(WINGRIDLIB) $(LIBS) $(LIBRARY_LIBS) $(DLLIB) \
    && ../scripts/nonreentrant.sh -a `../dist/util/arch` -w libdrmaa$(SHAREDEXT).1.0 && true
@@ -135,7 +139,7 @@ test_drmaa: test_drmaa.1.0
 	rm -f test_drmaa ; cp test_drmaa.1.0 test_drmaa
 
 test_drmaa.1.0: test_drmaa.o $(DRMAALIB) $(WINGRIDLIB_DEP)
-	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa.o libdrmaa$(SHAREDEXT).1.0 $(WINGRIDLIB) $(LIBS)
+	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa.o libdrmaa$(SHAREDEXT).1.0 $(GDILIB) $(COMMLIB) $(COMMLISTSLIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB) $(UTILIB) $(WINGRIDLIB) $(LIBS)
 
 test_drmaa.o: $(JAPILIB_DIR)/test_drmaa.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/test_drmaa.c -o test_drmaa.o
