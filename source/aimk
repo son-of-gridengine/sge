@@ -64,7 +64,6 @@ set ERR_WARN_NONE = ""
 set ERR_WARN_ALL = ""
 set UNMODIFIED_ARGUMENTS = ( $argv )
 set FORCE_32BIT = 0
-set SYSTEM_LIBS = 0
 set SECTARGETS  = ""
 set RM = "rm -f"
 set HWLOCLIB    = ""
@@ -238,7 +237,6 @@ usage:
    echo "-spool-berkeleydb -> use berkeleydb spooling"
    echo "-spool-classic    -> use classic flatfile spooling"
    echo "-spool-targets    -> only create qmaster, spooldefaults and spoolinit"
-   echo "-system-libs      -> use dynamic system libraries (specifically libssl)"
    echo "-tight-ssh        -> compile SSH daemon with tight SGE integration"
    echo "                     (normally obsoleted by sge-sshd-control PAM module)"
 #   echo "-umap             -> compile with usermapping and hostgroup feature (currently broken)"
@@ -383,10 +381,8 @@ set INTERACTTARGETS   = "qmake qtcsh"
 
 # SECURE
 set SEC               = 1
-# LIBSSL_VER can be defined to link against libssl.soLIBSSL_VER at runtime.
 set SECFLAGS          = "-DSECURE -I$OPENSSL_HOME/include"
-set SECLIB            = ""
-set SECLIBS_STATIC    = "$OPENSSL_HOME/lib${SSL_LIB_SUFFIX}/libssl.a $OPENSSL_HOME/lib${SSL_LIB_SUFFIX}/libcrypto.a"
+set SECLIB            = "-lssl -lcrypto"
 set KLFLAGS           = "-L$OPENSSL_HOME/lib${SSL_LIB_SUFFIX}"
 
 set CORELIB           = ""
@@ -669,7 +665,6 @@ while ($#argv >= 1 && $?found)
       set SEC         = 0
       set SECFLAGS    = ""
       set SECLIB      = ""
-      set SECLIBS_STATIC = ""
       set KLFLAGS     = ""
       breaksw
    case "-no-jemalloc":
@@ -898,11 +893,6 @@ while ($#argv >= 1 && $?found)
          set COMPILE_DIR = ${BUILDARCH}_$SPOOLING_METHOD
       endif 
       breaksw
-   case "-system-libs":
-      set SYSTEM_LIBS = 1
-      set SECLIBS_STATIC="-lssl -lcrypto"
-      set KLFLAGS = ""
-      breaksw
    case  "-umap"
       echo "The -map option is currently broken"; exit 1
       set WITH_USERMAPPING = 1
@@ -933,12 +923,6 @@ if ( $DEBUGGED && $USE_QMAKE ) then
    set MAKEOPT = "-verbose $MAKEOPT"
 endif
 
-if ( $SYSTEM_LIBS != 1 ) then
-   # we generate a berkeley db shared lib, so we need bdb include and lib path
-   set CFLAGS        = "-I$BERKELEYDB_HOME/include/${BDB_INCLUDE_SUBDIR} $CFLAGS"
-   set LFLAGS        = "-L$BERKELEYDB_HOME/lib${BDB_LIB_SUFFIX} $LFLAGS"
-   set SHARED_LFLAGS = "$SHARED_LFLAGS -L$BERKELEYDB_HOME/lib${BDB_LIB_SUFFIX}"
-endif
 set CFLAGS = "$CFLAGS -DSPOOLING_$SPOOLING_METHOD $SECFLAGS"
 
 #---------------------------------------------------------------------------
@@ -949,28 +933,7 @@ if ($KRB == 1) then
       set KLIBS = "-lcrypto"
       breaksw
    default:
-      if ($SYSTEM_LIBS == 1) then
-         set SECLIB = "-lssl -lcrypto"
-      else
-         set CFLAGS = "-DLOAD_OPENSSL $CFLAGS"
-      endif
       set KLIBS = ""
-   endsw
-endif
-
-
-if ($SEC == 1) then
-   switch ($BUILDARCH)
-    case HP11:
-      set SECLIB = "-lssl -lcrypto"
-      breaksw
-   default:
-      if ($SYSTEM_LIBS == 1) then
-         set SECLIB = "-lssl -lcrypto"
-      else
-         set CFLAGS = "-DLOAD_OPENSSL $CFLAGS"
-         set SECLIB = ""
-      endif
    endsw
 endif
 
@@ -1602,14 +1565,12 @@ case WIN32_X86:
    set AUTHUSER_OBJ     = authuser.obj
    set LOADCHECK_OBJ    = loadcheck.obj
    set JUTI_OBJ         = juti.obj
-   set SECLIBS_STATIC   = "$OPENSSL_HOME/lib${SSL_LIB_SUFFIX}/libssl.a $OPENSSL_HOME/lib${SSL_LIB_SUFFIX}/libcrypto.a"
-   set SECLIB = ""
    
    set CORE_INCLUDE     = "$CORE_INCLUDE -I../libs/wingrid -I$OPENSSL_HOME/include"
    # libwingrid.a needs libdl for dlopen() etc.
-   set WINGRIDLIB       = "-lwingrid -L$OPENSSL_HOME/lib${SSL_LIB_SUFFIX} $SECLIBS_STATIC -ldl"
+   set WINGRIDLIB       = "-lwingrid $SECLIB -ldl"
    set WINGRIDLIB_DEP   = "libwingrid.a"
-   set WINGRIDLIB_A     = "-lwingrid_static $SECLIBS_STATIC -ldl"
+   set WINGRIDLIB_A     = "-lwingrid_static $SECLIB -ldl"
    set WINGRIDLIB_A_DEP = "libwingrid_static.a"
    if ($SEC != 0) then
       set SGEPASSWDO = sge_passwd.o
@@ -2157,28 +2118,13 @@ endif
 # for gettext
 #
 if ( $WITH_GETTEXT == 1 ) then
-   if ( $SYSTEM_LIBS == 1 ) then
-      set   XGETTEXT    = "xgettext --strict --foreign-user -k -k'sge_gettext' --language=C -j -o $MESSAGES"
-   else
-      set   XGETTEXT    = "$GETTEXTBASE/$BUILDARCH/bin/xgettext --strict --foreign-user -k -k'sge_gettext' --language=C -j -o $MESSAGES"
-   endif
+   set   XGETTEXT    = "xgettext --strict --foreign-user -k -k'sge_gettext' --language=C -j -o $MESSAGES"
    if ( "$?MYILIB" ) then
       set LFLAGS = "-L $MYILIB"
       echo "Using $MYILIB path for i18n support"
    else
-      if ( $BUILDARCH == SOLARIS || $BUILDARCH == SOLARIS64 || $BUILDARCH == SOLARIS86 || $BUILDARCH == SOLARISAMD64 || $BUILDARCH == LINUX86 || $BUILDARCH == LINUXIA64 || $BUILDARCH == LINUXAMD64 || $BUILDARCH == LINUXPPC || $BUILDARCH == LINUXPPC64 || $BUILDARCH == LINUXMIPS || $BUILDARCH == LINUXMIPSEL || $BUILDARCH == LINUXMIPS64 || $BUILDARCH == LINUXSPARC || $BUILDARCH == LINUXSPARC64 || $BUILDARCH == LINUXS390 || $BUILDARCH == LINUXS390X || $BUILDARCH == LINUXPARISC || $BUILDARCH == LINUXARM || $BUILDARCH == LINUXARMHF ) then
-         set LIBINTL = ""
-         set HFLAGS = ""
-      else
-         if ( $SYSTEM_LIBS == 1 ) then
-             set LIBINTL = ""
-	     set HFLAGS = ""
-	 else
-         set HFLAGS = "-I$GETTEXTBASE/$BUILDARCH/include"
-         set LFLAGS = "-L$GETTEXTBASE/$BUILDARCH/lib $LFLAGS"
-         set LIBINTL = "-lintl -lnlsut"
-	 endif
-      endif
+      set LIBINTL = ""
+      set HFLAGS = ""
    endif
    set LIBS = "$LIBINTL $LIBS"
    set CFLAGS = "$CFLAGS -D__SGE_COMPILE_WITH_GETTEXT__ $HFLAGS"
@@ -2520,7 +2466,6 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
          "SDIR=$SDIR" "SOURCE=$SOURCE" "COMPILE_ARCH=$COMPILE_ARCH" \
          "LIBS_DIR=$LIBS_DIR" \
          "SECLIB=$SECLIB" \
-         "SECLIBS_STATIC=$SECLIBS_STATIC" \
          "WINGRIDLIB=$WINGRIDLIB" "WINGRIDLIB_DEP=$WINGRIDLIB_DEP" \
          "WINGRIDLIB_STATIC=$WINGRIDLIB_A" "WINGRIDLIB_STATIC_DEP=$WINGRIDLIB_A_DEP" \
          "KRBTARGETS=$KRBTARGETS" "KRBDEPEND=$KRBDEPEND" "KRBCLEAN=$KRBCLEAN"\
@@ -2556,6 +2501,7 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
          "WINLIBS=$WINLIBS" "LIBRARY_LIBS=$LIBRARY_LIBS" HWLOCLIB=$HWLOCLIB \
          SGEPASSWDO=$SGEPASSWDO \
          $argv
+
    if ( $status != 0 ) then
       echo not done
       exit 1
