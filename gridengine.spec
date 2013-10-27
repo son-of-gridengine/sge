@@ -215,8 +215,6 @@ izpack.home=${sge.srcdir}/../IzPack-4.1.1
 libs.swing-layout.classpath=${sge.srcdir}/../swing-layout-1.0.3/dist/swing-layout.jar
 libs.ant.classpath=%{_javadir}/ant.jar
 EOF
-# Ensure dlopening the right libssl library version at runtime
-ssl_ver=$(objdump -p %{_libdir}/libssl.so | awk '/SONAME/ {print substr($2,10)}')
 
 # -O2/-O3 gives warnings about type puns.  It's not clear whether
 # they're serious, but -fno-strict-aliasing just in case.
@@ -232,7 +230,7 @@ JAVA_BUILD_OPTIONS="-no-herd"
 %endif
 sh scripts/bootstrap.sh $JAVA_BUILD_OPTIONS
 # -no-remote because we have ssh and PAM instead
-./aimk -DLIBSSL_VER='\"'$ssl_ver'\"' -system-libs -pam -no-remote $parallel_flags $JAVA_BUILD_OPTIONS
+./aimk -pam -no-remote $parallel_flags $JAVA_BUILD_OPTIONS
 ./aimk -man $JAVA_BUILD_OPTIONS
 %if %{with java}
 # "-no-gui-inst -no-herd -javadoc" still produces all the javadocs
