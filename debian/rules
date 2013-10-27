@@ -22,10 +22,11 @@ SGE_ROOT=/opt/sge
 
 override_dh_auto_build: build-stamp
 build-stamp:
+# maybe only build qmaster with jemalloc?
 	cd source && \
 	sh scripts/bootstrap.sh && \
 	SGE_INPUT_CFLAGS="$$CFLAGS $$CPPFLAGS" SGE_INPUT_LDFLAGS="$$LDFLAGS" \
-	  ./aimk -no-remote -debug $(NOOPT) $(PARALLEL) && \
+	  ./aimk -with-jemlloc -no-remote -debug $(NOOPT) $(PARALLEL) && \
 	./aimk -man && ant drmaa.javadoc juti.javadoc jgdi.javadoc jjsv.javadoc
 	touch build-stamp
 
