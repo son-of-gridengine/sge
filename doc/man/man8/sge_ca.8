@@ -317,9 +317,6 @@ For more details on the permission requirements consult the detailed description
 \fBsge_ca\fP creates a file tree starting in \fB$CATOP\fP and \fB$CALOCALTOP\fP. The default for \fB$CATOP\fP is usually $SGE_ROOT/$SGE_CELL/common/sgeCA and for \fB$CALOCALTOP\fP /var/lib/sgeCA/{port$SGE_QMASTER_PORT|sge_qmaster}/$SGE_CELL where the subpaths beginning with $ expand to the content of the corresponding environment variable.
 .PP
 In addition there may optionally exist the user certificate in $HOME/.sge/port$SGE_QMASTER_PORT/$SGE_CELL/certs/cert.pem and the corresponding private key in $HOME/.sge/port$SGE_QMASTER_PORT/$SGE_CELL/private/key.pem which are used instead of the files in $CATOP and $CALOCALTOP. (See \fBsge_ca \-copy\fP above.) 
-.PP
-.IR SGE_ROOT/util/sgeCA/sge_ssl_template.cnf :
-OpenSSL configuration file.
 .\"
 .\"
 .SH "SEE ALSO"
