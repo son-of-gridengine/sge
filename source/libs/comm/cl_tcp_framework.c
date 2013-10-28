@@ -287,7 +287,7 @@ int cl_com_tcp_open_connection(cl_com_connection_t* connection, int timeout) {
          CL_LOG_INT(CL_LOG_WARNING, "The file descriptor is < 3. Will dup fd to be >= 3! fd value: ", private->sockfd);
          ret = sge_dup_fd_above_stderr(&(private->sockfd));
          if (ret != 0) {
-            CL_LOG_INT(CL_LOG_ERROR, "can't dup socket fd to be >=3, errno = %d", ret);
+            CL_LOG_INT(CL_LOG_ERROR, "can't dup socket fd to be >=3, errno = ", ret);
             shutdown(private->sockfd, 2);
             close(private->sockfd);
             private->sockfd = -1;
@@ -299,9 +299,7 @@ int cl_com_tcp_open_connection(cl_com_connection_t* connection, int timeout) {
 
 #ifndef USE_POLL
       if (private->sockfd >= FD_SETSIZE) {
-          char tmp_buffer[256];
-          snprintf(tmp_buffer,256, "filedescriptor(fd=%d) exeeds FD_SETSIZE(=%d) of this system", private->sockfd , FD_SETSIZE );
-          CL_LOG(CL_LOG_ERROR,tmp_buffer);
+          CL_LOG_INT(CL_LOG_ERROR,"filedescriptors exceeds FD_SETSIZE of this system = ", FD_SETSIZE);
           shutdown(private->sockfd, 2);
           close(private->sockfd);
           private->sockfd = -1;
@@ -1021,7 +1019,7 @@ int cl_com_tcp_connection_request_handler_setup(cl_com_connection_t* connection,
       CL_LOG_INT(CL_LOG_WARNING, "The file descriptor is < 3. Will dup fd to be >= 3! fd value: ", sockfd);
       ret = sge_dup_fd_above_stderr(&sockfd);
       if (ret != 0) {
-         CL_LOG_INT(CL_LOG_ERROR, "can't dup socket fd to be >=3, errno = %d", ret);
+         CL_LOG_INT(CL_LOG_ERROR, "can't dup socket fd to be >=3, errno = ", ret);
          shutdown(sockfd, 2);
          close(sockfd);
          sockfd = -1;
@@ -1033,7 +1031,7 @@ int cl_com_tcp_connection_request_handler_setup(cl_com_connection_t* connection,
 
 #ifndef USE_POLL
    if (sockfd >= FD_SETSIZE) {
-       CL_LOG(CL_LOG_ERROR,"filedescriptors exeeds FD_SETSIZE of this system");
+       CL_LOG_INT(CL_LOG_ERROR,"number of filedescriptors exceeds FD_SETSIZE of this system: ", FD_SETSIZE);
        shutdown(sockfd, 2);
        close(sockfd);
        cl_commlib_push_application_error(CL_LOG_ERROR, CL_RETVAL_REACHED_FILEDESCRIPTOR_LIMIT, MSG_CL_COMMLIB_COMPILE_SOURCE_WITH_LARGER_FD_SETSIZE );
@@ -1227,7 +1225,7 @@ int cl_com_tcp_connection_request_handler(cl_com_connection_t* connection, cl_co
          CL_LOG_INT(CL_LOG_WARNING, "The file descriptor is < 3. Will dup fd to be >= 3! fd value: ", new_sfd);
          retval = sge_dup_fd_above_stderr(&new_sfd);
          if (retval != 0) {
-            CL_LOG_INT(CL_LOG_ERROR, "can't dup socket fd to be >=3, errno = %d", retval);
+            CL_LOG_INT(CL_LOG_ERROR, "can't dup socket fd to be >=3, errno = ", retval);
             shutdown(new_sfd, 2);
             close(new_sfd);
             new_sfd = -1;
@@ -1239,7 +1237,7 @@ int cl_com_tcp_connection_request_handler(cl_com_connection_t* connection, cl_co
 
 #ifndef USE_POLL
       if (new_sfd >= FD_SETSIZE) {
-         CL_LOG(CL_LOG_ERROR,"filedescriptors exeeds FD_SETSIZE of this system");
+         CL_LOG_INT(CL_LOG_ERROR,"number of filedescriptors exceeds FD_SETSIZE of this system: ", FD_SETSIZE);
          shutdown(new_sfd, 2);
          close(new_sfd);
          cl_commlib_push_application_error(CL_LOG_ERROR, CL_RETVAL_REACHED_FILEDESCRIPTOR_LIMIT, MSG_CL_COMMLIB_COMPILE_SOURCE_WITH_LARGER_FD_SETSIZE );
