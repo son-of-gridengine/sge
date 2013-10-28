@@ -13,6 +13,26 @@ changes due to Univa/Sun are tagged as "[U]", or "[(U)]" if partially
 due to them or appearing first in this version.
 
 
+Version 8.1.6
+-------------
+
+* Bug fixes
+
+  * Man and message fixes
+  * Fix building of patched openssh for tight integration
+  * Fix detailed_job_info XML schema for -ncb case
+  * Don't ignore qsub -tc when max_aj_instances=0
+  * Fix sge_ca failures [#1484]
+  * Replace missing bits of OpenBSD support
+  * Fix cpuset failures [#1479, #1480, #1483]
+  * Fix configuring classic spooling with GUI installer [#1478]
+  * Correct job type for qrsh -noshell
+  * Fix missing symbol in sge_authorize PAM module
+  * Fix qsub hang with -sync and single-task array
+  * Pass TERM from environment to interactive jobs (only)
+  * Fix qsched crash with no waiting, potentially-runnable jobs
+  * Better diagnose server and client version mis-matches
+
 Version 8.1.5
 -------------
 
