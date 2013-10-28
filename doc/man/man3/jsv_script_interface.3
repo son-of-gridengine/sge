@@ -30,7 +30,7 @@
 .de MO		\" external man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
-.TH JSV_SCRIPT_INTERFACE 3 2009-05-28 "xxRELxx" "xxQS_NAMExx File Formats"
+.TH JSV_SCRIPT_INTERFACE 3 2013-05-01 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
 jsv_is_param, jsv_get_param, jsv_add_param, jsv_mod_param, jsv_del_param, jsv_sub_is_param, jsv_sub_get_param, jsv_sub_add_param, jsv_sub_del_param, jsv_is_env, jsv_get_env, jsv_add_env, jsv_mod_env, jsv_del_env, jsv_accept, jsv_correct, jsv_reject, jsv_reject_wait, jsv_show_params, jsv_show_envs, jsv_log_info, jsv_log_warning, jsv_log_error, jsv_main, jsv_logging_enabled \- xxQS_NAMExx Job Submission Verifier Scripting Interface
@@ -731,7 +731,7 @@ following job is submitted:
 .RS
 .nf
 
-qsub -l mem=1G,mem2=200M ...
+qsub -l mem=1G,mem2=200M -l a=lx-amd64 ...
 
 .fi
 .TS
@@ -740,11 +740,15 @@ l l.
 function call @ returned value 
 _@_
 jsv_is_param(l_hard) @ "true"
-jsv_get_param(l_hard) @ "mem=1G,mem2=200M"
+jsv_get_param(l_hard) @ "mem=1G,mem2=200M,a=lx-amd64"
 jsv_sub_is_param(l_hard,mem) @ "true"
 jsv_sub_get_param(l_hard,mem) @ "1G"
 jsv_sub_is_param(l_hard,mem3) @ "false"
 jsv_sub_get_param(l_hard,mem3) @ ""
+jsv_sub_is_param(l_hard,a) @ "true"
+jsv_sub_get_param(l_hard,a) @ "lx-amd64"
+jsv_sub_is_param(l_hard,arch) @ "false"
+jsv_sub_get_param(l_hard,arch) @ ""
 .TE
 .RE
 .\"
@@ -752,7 +756,7 @@ jsv_sub_get_param(l_hard,mem3) @ ""
 .SH FILES
 .nf
 Include files:
-.I $SGE_ROOT/util/resources/jsv/jsv_inlcude.sh
+.I $SGE_ROOT/util/resources/jsv/jsv_include.sh
 .I $SGE_ROOT/util/resources/jsv/jsv_include.tcl
 .I $SGE_ROOT/util/resources/jsv/JSV.pm
 Example files:
@@ -765,6 +769,10 @@ Example files:
 Debugging log file:
 .br
 .I /tmp/jsv_$$.log
+.\"
+.SH BUGS
+Complex names seen by the script are not canonicalized, i.e. if the
+name and shortcut vary, it is necessary to consider both.
 .\"
 .SH "SEE ALSO"
 .M xxqs_name_sxx_intro 1 ,
