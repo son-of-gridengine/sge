@@ -1968,7 +1968,7 @@ int cl_com_ssl_open_connection(cl_com_connection_t* connection, int timeout) {
 
 #ifndef USE_POLL
       if (private->sockfd >= FD_SETSIZE) {
-          CL_LOG(CL_LOG_ERROR,"filedescriptors exeeds FD_SETSIZE of this system");
+          CL_LOG_INT(CL_LOG_ERROR,"number of filedescriptors exceeds FD_SETSIZE of this system: ", FD_SETSIZE);
           shutdown(private->sockfd, 2);
           close(private->sockfd);
           private->sockfd = -1;
@@ -2439,7 +2439,7 @@ int cl_com_ssl_connection_request_handler_setup(cl_com_connection_t* connection,
 
 #ifndef USE_POLL
    if (sockfd >= FD_SETSIZE) {
-       CL_LOG(CL_LOG_ERROR,"filedescriptors exeeds FD_SETSIZE of this system");
+       CL_LOG_int(CL_LOG_ERROR,"number of filedescriptors exceeds FD_SETSIZE of this system: ", FD_SETSIZE);
        shutdown(sockfd, 2);
        close(sockfd);
        cl_commlib_push_application_error(CL_LOG_ERROR, CL_RETVAL_REACHED_FILEDESCRIPTOR_LIMIT, MSG_CL_COMMLIB_COMPILE_SOURCE_WITH_LARGER_FD_SETSIZE );
@@ -2565,7 +2565,7 @@ int cl_com_ssl_connection_request_handler(cl_com_connection_t* connection,cl_com
 
 #ifndef USE_POLL
       if (new_sfd >= FD_SETSIZE) {
-         CL_LOG(CL_LOG_ERROR,"filedescriptors exeeds FD_SETSIZE of this system");
+         CL_LOG_INT(CL_LOG_ERROR,"number of filedescriptors exceeds FD_SETSIZE of this system: ", FD_SETSIZE);
          shutdown(new_sfd, 2);
          close(new_sfd);
          cl_commlib_push_application_error(CL_LOG_ERROR, CL_RETVAL_REACHED_FILEDESCRIPTOR_LIMIT, MSG_CL_COMMLIB_COMPILE_SOURCE_WITH_LARGER_FD_SETSIZE );
