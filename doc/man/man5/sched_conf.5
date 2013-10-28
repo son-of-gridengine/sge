@@ -522,21 +522,24 @@ parameter exists in order to reduce scheduling overhead. The default value
 is 50.
 .\"
 .SS "\fBmax_reservation\fP"
-The maximum number of reservations scheduled within a schedule interval. 
+The maximum number of reservations scheduled within a schedule interval.
+.PP
 When a runnable job can not be started due to a shortage of resources a 
 reservation can be scheduled instead. A reservation can cover consumable 
-resources with the global host, any execution host and any queue. For 
+resources with the global host, any execution host, and any queue. For
 parallel jobs reservations are done also for the slots resource as specified in
 .M sge_pe 5 .
-However,
+The top
 .B max_reservation
-specifies the number of jobs considered, not individual resources.
-As job runtime the maximum of the time specified with
+jobs (in priority order) are considered, not individual resources.
+The job runtime assumed is the maximum of the time specified with
 .BR "\-l h_rt=" ...
 or
 .BR "\-l s_rt=" ...
-is assumed. For jobs that have neither of them, the default_duration
-is assumed.
+For jobs that have neither of them, the
+.B default_duration
+(see below) is assumed.
+.PP
 Reservations prevent jobs of lower priority as specified in
 .M sge_priority 5
 from utilizing the reserved resource quota during the time of reservation.
@@ -556,7 +559,7 @@ scheduling is switched off by default. Since reservation scheduling performance
 consumption is known to grow with the number of pending jobs, the use
 of the \fB\-R y\fP option
 is recommended only for those jobs actually queuing for bottleneck resources. 
-Together with the max_reservation parameter, this technique can be used to narrow
+Together with the \fBmax_reservation\fP parameter, this technique can be used to narrow
 down performance impacts.  A JSV can be used to add reservation
 requests for particular resources, such as large parallel jobs.
 .\"

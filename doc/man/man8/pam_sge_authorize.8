@@ -26,7 +26,7 @@ other users of the host.
 .\"
 .SH OPTIONS
 .PP
-\fBexecd_spool_dir=\fR\fB\fIdir\fR\fR
+\fBexecd_spool_dir=\fR\fIdir\fR
 .RS 4
 Specify the spool directory in which to find the 
 .B active_jobs
@@ -40,7 +40,7 @@ Default:
 .RS 4
 The module ignores access by users with unames in the comma-separated
 .IR user_list .
-There is a limit of 30 users.
+There is a limit of 30 users.  root is always allowed access.
 .RE
 .PP
 \fBmax_sleep=\fR\fB\fImax_sleep\fR\fR
@@ -49,7 +49,7 @@ A non-zero
 .I max_sleep
 allows desynchronization of accesses to the spool directory.  The
 module sleeps for a random period
-.IR t,
+.IR t ,
 where
 .RI 0<= t <= max_sleep
 microseconds before accessing the spool directory.  This probably
@@ -64,8 +64,8 @@ e.g. at the top.
 .RS 2
 .nf
 
-account required /opt/sge/lib/lx26-amd64/pam_sge_authorize.so \\
-  bypass_users=foo,bar,baz,qux spool_dir=/opt/sge6.2/execd_spool
+account required /opt/sge/lib/lx-amd64/pam_sge_authorize.so \\
+  bypass_users=foo,bar,baz,qux spool_dir=/opt/sge/execd_spool
 
 .fi
 .RE
