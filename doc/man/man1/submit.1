@@ -1470,7 +1470,10 @@ will be expanded as value 9999999 in JSV scripts and it represents the value inf
 .M jsv 1 .)
 .\"
 .IP "\fB\-pty y\fP[\fBes\fP]|\fBn\fP[\fBo\fP]"
-Available for \fIqrsh\fP, \fIqsub\fP and \fIqlogin\fP only.
+Available for \fIqrsh\fP, \fIqsub\fP and \fIqlogin\fP only, and
+normally only effective for interactive jobs with the \fBbuiltin\fP
+remote startup method (see
+.M remote_startup 5 ).
 .sp 1
 .B \-pty\ yes
 starts the job in a pseudo terminal (pty). If no pty is 
@@ -1524,7 +1527,7 @@ is never done for immediate jobs, i.e. jobs submitted using the \fB\-now yes\fP
 option.  Please note that regardless of the reservation request,
 job reservation might be disabled using \fBmax_reservation\fP in
 .M sched_conf 5 ,
-or might be limited only to a certain number of high priority jobs.
+and is limited to that number of the highest priority jobs.
 .sp 1
 By default jobs are submitted with \fB\-R\ n\fP.
 .sp 1
@@ -2149,7 +2152,7 @@ The directory used by
 .M xxqs_name_sxx_shepherd 8
 to store job related data during job
 execution. This directory is owned by root or by a xxQS_NAMExx administrative
-account and commonly is not open for read or write access to regular users.
+account.
 .IP \fBxxQS_NAME_Sxx_TASK_ID\fP 1.5i
 The index number of the current array job task (see \fB\-t\fP option
 above). This is a unique number in each array job and can be used to
@@ -2185,11 +2188,11 @@ when the job was
 submitted. The job ID is a decimal integer in the range 1 to 99999.
 .IP "\fBJOB_NAME\fP" 1.5i
 The job name. 
-For batch jobs or jobs submitted by \fIqrsh\fP with a command, the job name is built as basename of the \fIqsub\fP script filename resp. the \fIqrsh\fP command.
-For interactive jobs it is set to `INTERACTIVE' for \fIqsh\fP jobs, `QLOGIN' for \fIqlogin\fP jobs and `QRLOGIN' for \fIqrsh\fP jobs without a command.
+For batch jobs or jobs submitted by \fIqrsh\fP with a command, the job name is the basename of the \fIqsub\fP script/binary filename or the \fIqrsh\fP command.
+For interactive jobs it is set to "INTERACTIVE" for \fIqsh\fP jobs, "QLOGIN" for \fIqlogin\fP jobs and "QRLOGIN" for \fIqrsh\fP jobs without a command.
 
 This default may be overwritten by the
-.I \-N.
+.B \-N
 option.
 .IP "\fBJOB_SCRIPT\fP" 1.5i
 The path to the job script which is executed. The value can not be 

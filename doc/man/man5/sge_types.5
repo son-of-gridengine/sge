@@ -77,27 +77,27 @@ These types are used for defining xxQS_NAMExx configuration:
 .SS "\fBcalendar_name\fP"
 A calendar name is the name of a xxQS_NAMExx calendar described in
 .M calendar_conf 5 . 
-.PP
+.nf
 \fIcalendar_name\fP := \fIobject_name\fP
 .fi
 .\"
 .SS "\fBckpt_name\fP"
 A "ckpt_name" is the name of a xxQS_NAMExx checkpointing interface described in
 .M checkpoint 5 . 
-.PP
+.nf
 \fIckpt_name\fP := \fIobject_name\fP
 .fi
 .\"
 .SS "\fBcomplex_name\fP"
 A complex name is the name of a xxQS_NAMExx resource attribute described in 
 .M complex 5 . 
-.PP
+.nf
 \fIcomplex_name\fP := \fIobject_name\fP
 .fi
 .\"
 .SS "\fBhost_identifier\fP"
 A host identifier can be either a host name or a host group name. 
-.PP
+.nf
 \fIhost_identifier\fP := \fIhost_name\fP | \fIhostgroup_name\fP
 .fi
 .\"
@@ -106,7 +106,7 @@ A host group name is the name of a xxQS_NAMExx host group described in
 .M hostgroup 5 .
 Note, to allow host group names to be distinguished easily from host names,
 a "@" prefix is used.
-.PP
+.nf
 \fIhostgroup_name\fP := @\fIobject_name\fP
 .fi
 .\"
@@ -167,21 +167,21 @@ on 32-bit systems, even for disk space, is system-dependent.
 .SS "\fBpe_name\fP"
 A PE name is the name of a xxQS_NAMExx parallel environment described in
 .M sge_pe 5 . 
-.PP
+.nf
 \fIpe_name\fP := \fIobject_name\fP
 .fi
 .\"
 .SS "\fBproject_name\fP"
 A project name is the name of a xxQS_NAMExx project described in
 .M project 5 . 
-.PP
+.nf
 \fIproject_name\fP := \fIobject_name\fP
 .fi
 .\"
 .SS "\fBqueue_name\fP"
 A queue name is the name of a xxQS_NAMExx queue described in
 .M queue_conf 5 .
-.PP
+.nf
 \fIqueue_name \fP := \fIobject_name\fP
 .fi
 .\"
@@ -199,14 +199,14 @@ A user name can be the name of a
 .M login 1 
 user or of the xxQS_NAMExx user object described in
 .M user 5 . 
-.PP
+.nf
 \fIuser_name\fP := \fIobject_name\fP
 .fi
 .\"
 .SS "\fBuserset_name\fP"
 A user set name is the name of a xxQS_NAMExx access list or department described in
 .M access_list 5 . 
-.PP
+.nf
 \fIuserset_name\fP := \fIobject_name\fP
 .fi
 .\"
@@ -267,9 +267,10 @@ When patterns are used the following definitions apply:
 .ta \w'XXXXXXXX'u
 "*"	matches any character and any number of characters 
 	(between 0 and infinity).
-"?"	matches any character. It cannot be no character.
+"?"	matches any single character.
 "."	is the character ".". It has no other meaning.
-"\\"	escape character; "\\\\" = "\\", "\\*" = "*", "\\?" = "?".
+"\\"	escape character, making the following character match literally;
+	 "\\\\" matches "\\", "\\*" matches "*", "\\?" matches "?".
 "[...]"	specifies an array or a range of allowed 
 	characters for one character at a specific position.
         Character ranges may be specified using the a\-z notation.
@@ -281,8 +282,8 @@ For more details please see
 .MO fnmatch 5 ,
 .MO glob 7 .
 .PP
-The pattern itself should be put inside quotes ('"') to ensure that \" "
-clients receive the complete pattern.
+A pattern on a shell command line should normally be quoted to avoid
+it being interpreted by the shell as a file match.
 .PP
 .SS "\fBrange\fP"
 The task range specifier has the form 
@@ -303,13 +304,13 @@ The wildcard advance reservation (AR) specification is a placeholder
 for AR ids, AR names including AR name patterns. An AR id always references one
 AR, while the name and pattern might reference multiple ARs.
 .sp 1
-wc_ar := ar_id | ar_name | pattern
+\fIwc_ar\fP := \fIar_id\fP | \fIar_name\fP | \fIpattern\fP
 .PP
 .SS "\fBwc_ar_list\fP"
 The wildcard advance reservation (AR) list specification allows referencing
 multiple ARs with one command.
 .PP
-wc_ar_list := wc_ar [ , wc_ar , ...]
+\fIwc_ar_list\fP := \fIwc_ar\fP[\fB,\fP \fIwc_ar\fP \fB,\fP ...]
 .PP
 .SS "\fBwc_host\fP"
 A wildcard host specification (\fIwc_host\fP) is a 
@@ -349,34 +350,34 @@ The wildcard job specification is a placeholder for job ids, job names
 including job name patterns. A job id always references one
 job, while the name and pattern might reference multiple jobs.
 .sp 1
-wc_job := job-id | job-name | pattern
+\fIwc_job\fP := \fIjob-id\fP | \fIjob-name\fP | \fIpattern\fP
 .PP
 .SS "\fBwc_job_range\fP"
 The wildcard job range specification allows referencing specific array
 tasks for one or multiple jobs. The job is referenced via \fIwc_job\fP and in
 addition gets a range specifier for the array tasks.
 .sp 1
-wc_job_range := wc_job [ \-t range]
+\fIwc_job_range\fP := \fIwc_job\fP [\fB\-t\fP \fIrange\fP]
+.sp 1
+If present, the \fItask_range\fP restricts the effect of the
+\fIqalter\fP etc.
+operation to the array job task range specified as a suffix to the job id.
+(See the \fB\-t\fP option to
+.M qsub 1
+for further details on array jobs.)
 .PP
 .SS "\fBwc_job_list\fP"
 The wildcard job list specification allows referencing multiple jobs
 with one command.
 .PP
-wc_job_list := wc_job [ , wc_job , ...]
+\fIwc_job_list\fP := \fIwc_job\fP[\fB,\fP \fIwc_job\fP, ...]
 .PP
 .SS "\fBwc_job_range_list\fP"
-The wildcard job range list (\fIwc_job_range_list\fP) is specified by 
+The wildcard job range list (\fIwc_job_range_list\fP) allows
+referencing multiple job ranges with one command.
 one of the following forms:
 .sp 1
-.ta 0.5i
-    \fIwc_job[ \-t range][{, }wc_job[ \-t range]{, }...]\fP
-.ta 0.0i
-.sp 1
-If present, the \fItask_range\fP restricts the effect of the \fIqmod\fP
-operation to the array job task range specified as a suffix to the job id.
-(See the \fB\-t\fP option to
-.M qsub 1
-for further details on array jobs.)
+\fIwc_job_range_list\fP := \fIwc_job_range\fP[\fB,\fP\fIwc_job_range\fP...]
 .PP
 .SS "\fBwc_qdomain\fP"
 \fIwc_qdomain\fP := \fIwc_cqueue\fP "@" \fIwc_hostgroup\fP
@@ -385,7 +386,7 @@ A wildcard expression queue domain specification (\fIwc_qdomain\fP) starts with 
 expression cluster queue name (\fIwc_cqueue\fP) followed by an at-character '@' 
 and a wildcard expression hostgroup specification (\fIwc_hostgroup\fP).
 .PP
-\fIwc_qdomain\fP are used to address a group of queue instances.
+A \fIwc_qdomain\fP is used to address a group of queue instances.
 All queue instances residing on a host which is part of matching hostgroups
 will be addressed. Please note, that \fIwc_hostgroup\fP always begins with
 an at-character.
@@ -468,7 +469,7 @@ big_*&!*1	cluster queues which begin with
 .SS "\fBwc_queue_list\fP"
 \fIwc_queue_list\fP := \fIwc_queue\fP ["," \fIwc_queue\fP "," ...]
 .PP
-Comma separated list of wc_queue elements.
+Comma-separated list of \fIwc_queue\fP elements.
 .PP
 e.g. 
 .RS
@@ -478,24 +479,24 @@ big, medium_*@@sol*, *@fangorn.sun.com
 A wildcard user name pattern is either a wildcard user name specification
 or a full user name.
 .PP
-wc_user := user_name | pattern
+\fIwc_user\fP := \fIuser_name\fP | \fIpattern\fP
 .PP
 .SS "\fBwc_user_list\fP"
 A list of user names.
 .PP
-wc_user_list := wc_user [ , wc_user , ...]
+\fIwc_user_list\fP := \fIwc_user\fP[\fB,\fP\fIwc_user\fP\fB,\fP...]
 .PP
 .SS "\fBwc_project\fP"
 A wildcard project name pattern is either a wildcard project name specification
 or a full project name.
 .PP
-wc_project := project | pattern
+\fIwc_project\fP := \fIproject\fB | \fIpattern\fP
 .PP
 .SS "\fBwc_pe_name\fP"
 A wildcard parallel environment name pattern is either a wildcard PE name specification
 or a full PE name.
 .PP
-wc_pe_name := pe_name | pattern
+\fIwc_pe_name\fP := \fIpe_name\fP | \fIpattern\fP
 .PP
 .SS "\fBparallel_env\fP"
 The
@@ -534,7 +535,7 @@ reserved. If not, the next smaller number of queues is checked,
 and so forth.
 .PP
 .SS "\fBdate_time\fP"
-The \fBdate_time\fP value must conform to
+A \fIdate_time\fP value must conform to
 .RI [[ CC ] YY ] MMDDhhmm [\fB.\fP SS ],
 where:
 .PP
@@ -569,7 +570,7 @@ and
 .M xxqs_name_sxx_execd 8
 are invoked.
 .SS "\fBtime\fP"
-The \fBtime\fP value must conform to \fIhh\fP\fB:\fP\fImm\fP\fB:\fP\fIss\fP, or \fIseconds\fP where:
+A \fItime\fP value must conform to \fIhh\fP\fB:\fP\fImm\fP\fB:\fP\fIss\fP, or \fIseconds\fP where:
 .PP
 .nf
 .RS
@@ -580,8 +581,7 @@ The \fBtime\fP value must conform to \fIhh\fP\fB:\fP\fImm\fP\fB:\fP\fIss\fP, or 
 \fIseconds\fP	is a number of seconds (used for duration values)
 .fi
 .SS "\fBname\fP"
-The \fBname\fP
-may be any arbitrary alphanumeric ASCII string,
+A \fIname\fP is an arbitrary ASCII string,
 but may not contain  "\\n", "\\t", "\\r", "/", ":", "@", "\\", "*",  or "?".
 .PP
 .\"

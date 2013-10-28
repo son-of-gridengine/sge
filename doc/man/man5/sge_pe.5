@@ -118,7 +118,7 @@ The command line respectively of a startup or shutdown procedure (an
 executable command, plus possible arguments) for the parallel environment, or
 "none" for no procedure (typically for tightly integrated PEs).
 The command line is started directly, not in a shell.
-An optional prefix "user@" specifies the username under which the
+An optional prefix "\fIuser\fP\fB@\fP" specifies the username under which the
 procedure is to be started.  In that case see the SECURITY section below
 concerning security issues running as a privileged user.
 .PP
@@ -282,8 +282,9 @@ configured as
 in the queue configuration;
 .IP \(bu
 propagation of the job environment to slave hosts, e.g. so that they
-write into the appropriate temporary directory specified by TMPDIR,
-which is properly clean up.
+write into the appropriate per-job temporary directory specified by TMPDIR,
+which is created on each host and properly cleaned up.
+.PP
 To gain control over the
 slave tasks of a parallel application, a sophisticated PE interface is
 required, which works closely together with xxQS_NAMExx facilities,
@@ -298,7 +299,7 @@ See, for instance, the
 directory and the
 .URL http://arc.liv.ac.uk/SGE/howto/#Tight%20Integration%20of%20Parallel%20Libraries "howto pages" .
 .sp 1
-Please set the control_slaves parameter to false for all other PE
+Please set the \fBcontrol_slaves\fP parameter to false for all other PE
 interfaces.
 .\"
 .\"

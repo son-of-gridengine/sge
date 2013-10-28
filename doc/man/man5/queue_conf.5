@@ -300,8 +300,8 @@ of the jobs and their process hierarchy) on the queue host. As soon as
 .M xxqs_name_sxx_execd 8
 is restarted and detects that a job has been aborted for such reasons
 it can be restarted if the jobs are restartable. A job may not be
-restartable, for example,if it updates databases (first reads then writes
-to the same record of a database/file), because abortion of the job
+restartable, for example, if it updates databases (first reads then writes
+to the same record of a database/file), because aborting the job
 may have left the database in an inconsistent state. If the owner of a job
 wants to overrule the default behavior for the jobs in the queue the
 \fB\-r\fP option of
@@ -339,7 +339,8 @@ via the
 .M qsub 1
 \fB\-S\fP option.
 .PP
-The type of the parameter is string. The default is /bin/csh.
+The type of the parameter is string. The default is
+.BR /bin/sh .
 .SS "\fBshell_start_mode\fP"
 This parameter defines the mechanisms which are used to actually
 invoke the job scripts on the execution hosts. The following
@@ -362,7 +363,7 @@ interpreters instead. Thus, if \fBshell_start_mode\fP is set to
 indicated by the \fB\-S\fP option of the
 .M qsub 1
 command or the \fBshell\fP parameter of the queue to be used (see
-above).  The template default is "unix_behavior".
+above).
 .\"
 .IP \fIscript_from_stdin\fP
 Setting the \fBshell_start_mode\fP parameter either to \fIposix_compliant\fP
