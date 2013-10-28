@@ -43,7 +43,10 @@
 PATH=/bin:/usr/bin
 ARCH=`"$SGE_ROOT/util/arch"`
 
-__jsv_logging_enabled="false" # is logging enabled?
+# Is logging enabled?  Setting it to "true" produces a log in $__jsv_logfile
+jsv_logging_enabled=${jsv_logging_enabled:-false}
+# An old name for the above, never documented.  Use one or the other.
+__jsv_logging_enabled="false"
 __jsv_logfile="/tmp/jsv_$$.log"  # logfile
 
 # Current state of the script
@@ -1587,7 +1590,7 @@ fi
 # private function
 jsv_script_log()
 {
-   if [ $__jsv_logging_enabled = true ]; then
+   if [ $__jsv_logging_enabled = true -o $jsv_logging_enabled = true ]; then
       echo "$@" >>$__jsv_logfile
    fi
 }
