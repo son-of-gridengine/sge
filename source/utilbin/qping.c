@@ -1327,7 +1327,7 @@ int main(int argc, char *argv[]) {
                printf("%s", sge_ctime(0, &ds));
    
                if (option_info == 0 && option_f == 0) {
-                  printf(" endpoint %s/%s/%d at port %d is up since %ld seconds\n", 
+                  printf(" endpoint %s/%s/%d at port %d is up for %ld seconds\n",
                          resolved_comp_host, comp_name, comp_id, comp_port,
                          status->runtime);  
                } else {

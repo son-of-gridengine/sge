@@ -488,7 +488,8 @@ sge_select_parallel_environment(sge_assignment_t *best, lList *pe_list)
          pe = lGetElemStr(pe_list, PE_name, lGetString(ar, AR_granted_pe));
 
          if (pe == NULL) {
-            DPRINTF(("Critical Error, ar references non existing PE\n"));
+            CRITICAL((SGE_EVENT, MSG_AR_BAD_PE_US, ar_id,
+                      lGetString(ar, AR_granted_pe)));
          } else {
             int available_slots = 0;
 
@@ -6290,7 +6291,7 @@ void sge_create_load_list(const lList *queue_list, const lList *host_list,
    DENTER(TOP_LAYER, "sge_create_load_list");
 
    if (load_list == NULL){
-      CRITICAL((SGE_EVENT, "no load_list specified\n"));
+      CRITICAL((SGE_EVENT, SFN, MSG_NO_LOAD_LIST));
       DEXIT;
       abort();
    }
@@ -6582,7 +6583,7 @@ void sge_remove_queue_from_load_list(lList **load_list, const lList *queue_list)
    DENTER(TOP_LAYER, "sge_remove_queue_from_load_list");
    
    if (load_list == NULL){
-      CRITICAL((SGE_EVENT, "no load_list specified\n"));
+      CRITICAL((SGE_EVENT, SFN, MSG_NO_LOAD_LIST));
       DEXIT;
       abort();
    }
