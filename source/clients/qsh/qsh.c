@@ -2221,7 +2221,6 @@ int main(int argc, char **argv)
          }
   
          if ((lp_poll == NULL || lGetNumberOfElem(lp_poll) == 0 ) || !(jep = lFirst(lp_poll))) {
-            WARNING((SGE_EVENT, "\n"));
             log_state_set_log_verbose(1);
             WARNING((SGE_EVENT, MSG_QSH_REQUESTCANTBESCHEDULEDTRYLATER_S, progname));
             do_exit = 1;
