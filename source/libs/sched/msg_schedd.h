@@ -37,7 +37,7 @@
 /* 
 ** schedd/sge_complex_schedd.c
 */ 
-#define MSG_ATTRIB_ACTUALELEMENTTOATTRIBXMISSING_S    _MESSAGE(47014, _("missing actual element to attrib "SFN))
+#define MSG_ATTRIB_ACTUALELEMENTTOATTRIBXMISSING_S    _MESSAGE(47014, _("missing actual element of attribute "SFN))
 #define MSG_SCHEDD_LOADADJUSTMENTSVALUEXNOTNUMERIC_S  _MESSAGE(47020, _("load adjustments value "SFQ" must be of numeric type"))
 
 /* 
@@ -214,6 +214,8 @@
 #define MSG_SCHEDD_UNKNOWN_HOST_SS                          _MESSAGE(47218, _("queue "SFQ" is referencing unknown host "SFQ))
 #define MSG_SCHEDD_NOCOMPLEXATTRIBUTEFORTHRESHOLD_S         _MESSAGE(47219, _("error: no complex attribute for threshold "SFN))
 #define MSG_SCHEDD_DUETORR                                  _MESSAGE(47220, _(" due to a reservation"))
+#define MSG_NO_LOAD_LIST                                    _MESSAGE(47221, _("no load_list specified"))
+#define MSG_AR_BAD_PE_US                                    _MESSAGE(47222, _("AR "sge_u32" references non existing PE "SFQ))
 #define MSG_SUBORDPOLICYCONFLICT_UUSS                       _MESSAGE(47227, _("Jobs "sge_U32CFormat" & "sge_U32CFormat" dispatched to master/subordinated queues "SFQ"/"SFQ". Suspend on subordinate to occur in same scheduling interval. Policy conflict!"))
 #define MSG_JOBMATCHINGUNEXPECTEDRESULT                     _MESSAGE(47228, _("job matching returned an unexpected result!"))
 #define MSG_SCHEDD_UNABLE_TO_SETUP_FILTER                   _MESSAGE(47229, _("unable to setup filter objects correctly"))

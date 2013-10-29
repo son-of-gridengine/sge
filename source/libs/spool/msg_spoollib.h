@@ -74,6 +74,7 @@
  */
 #define MSG_SPOOL_SPOOLINGOFXNOTSUPPORTED_S  _MESSAGE(59900, _("(un)spooling objects of type "SFQ" not supported"))
 #define MSG_ATTRIBUTENOTINOBJECT_S _MESSAGE(59901, _("attribute "SFQ" is not part of current object"))
+/* unused:
 #define MSG_CANTREADSUBLISTASPRIMARYKEYVALUEUNKNOWN_S _MESSAGE(59902, _("can't unspool sublist "SFQ" as primary key value is not (yet) known"))
 #define MSG_CANTOPENTRANSACTIONALREADYOPEN _MESSAGE(59903, _("can't open a transaction - it is already open"))
 #define MSG_CANTCLOSETRANSACTIONNONEOPEN _MESSAGE(59904, _("can't close a transaction - we have no transaction open"))
@@ -83,4 +84,5 @@
 #define MSG_NOTABLENAMEPASSEDTO_S _MESSAGE(59908, _("no table_name passed to function "SFN))
 #define MSG_UNKNOWNPREFIXORKEYNMFORTABLE_S _MESSAGE(59909, _("prefix or primary key unknown for table "SFN))
 #define MSG_SPOOL_WRONGVERSION_SS      _MESSAGE(59910, _("wrong version: database schema was created for version "SFQ", we run version "SFQ))
+*/
 #endif /* __MSG_SPOOLLIB_H */
