@@ -56,7 +56,6 @@ LGPL-3: ListTree (qmon), pam_sge-qrsh-setup, libuti2
         [possibly using the "any later version" term] (gridengine kernel),
         Java swing-layout (GUI installer binary)
 IconList, Spinbox, Xmt, XBae, XmTab: widgets used by qmon
-jemalloc: jemalloc library
 NanoXML: (GUI installer binary)
 tango: qmon icons
 top, hwloc, OpenSSL, BerkeleyDB: gridengine core
