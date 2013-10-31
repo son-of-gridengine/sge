@@ -288,6 +288,19 @@ lList *cull_parse_job_parameter(u_long32 uid, const char *username, const char *
       lSetUlong(*pjob, JB_ar, lGetUlong(ep, SPA_argval_lUlongT));
       lRemoveElem(cmdline, &ep);
    }
+
+   /*
+    * -sync
+    */
+   while ((ep = lGetElemStr(cmdline, SPA_switch, "-sync"))) {
+      if (lGetInt(ep, SPA_argval_lIntT) == TRUE) {
+         lListElem *new_var = lAddSubStr(*pjob, VA_variable, JOB_CLIENT_SYNC, JB_wildcard, VA_Type);
+
+         lSetString(new_var, VA_value, "TRUE");
+      }
+      lRemoveElem(cmdline, &ep);
+   }
+
    
    while ((ep = lGetElemStr(cmdline, SPA_switch, "-dl"))) {
       lSetUlong(*pjob, JB_deadline, lGetUlong(ep, SPA_argval_lUlongT));

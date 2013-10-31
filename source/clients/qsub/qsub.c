@@ -86,11 +86,10 @@ main(int argc, char **argv)
    lList *opts_all = NULL;
    lListElem *job = NULL;
    lList *alp = NULL;
-   lListElem *ep;
    int exit_status = 0;
    int just_verify;
    int tmp_ret;
-   int wait_for_job = 0, is_immediate = 0;
+   int is_immediate = 0;
    dstring session_key_out = DSTRING_INIT;
    dstring diag = DSTRING_INIT;
    dstring jobid = DSTRING_INIT;
@@ -201,21 +200,6 @@ main(int argc, char **argv)
       has_terse = true;
    }
 
-   /* If "-sync y" is set, wait for the job to end. */   
-   /* Remove all -sync switches since cull_parse_job_parameter()
-    * doesn't know what to do with them. */
-   while ((ep = lGetElemStr(opts_all, SPA_switch, "-sync"))) {
-      if (lGetInt(ep, SPA_argval_lIntT) == TRUE) {
-         wait_for_job = 1;
-      }
-      
-      lRemoveElem(opts_all, &ep);
-   }
-
-   if (wait_for_job) {
-      DPRINTF(("Wait for job end\n"));
-   }
-
    alp = cull_parse_job_parameter(myuid, username, cell_root, unqualified_hostname, 
                                   qualified_hostname, opts_all, &job);
 
@@ -243,7 +227,7 @@ main(int argc, char **argv)
       SGE_EXIT((void**)&ctx, 0);
    }
 
-   if (is_immediate || wait_for_job) {
+   if (is_immediate || job_wait_for_end(job)) {
       pthread_t sigt;
       
       qsub_setup_sig_handlers(); 
@@ -367,7 +351,7 @@ main(int argc, char **argv)
       printf("%s\n", MSG_JOB_VERIFYFOUNDQ);
    }
 
-   if ((wait_for_job || is_immediate) && !just_verify) {
+   if ((job_wait_for_end(job) || is_immediate) && !just_verify) {
       int event;
 
       if (is_immediate) {
@@ -410,7 +394,7 @@ main(int argc, char **argv)
          }
       }
          
-      if (wait_for_job) {
+      if (job_wait_for_end(job)) {
          /* Rather than using japi_synchronize on ALL for bulk jobs, we use
           * japi_wait on ANY num_tasks times because with synchronize, we would
           * have to wait for all the tasks to finish before we know if any
