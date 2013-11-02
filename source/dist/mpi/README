@@ -50,7 +50,7 @@ Environment Interface of Grid Engine.
 
    Use this template as a starting point when establishing a parallel
    environment (PE) for MPI without tight integration. You need to replace
-   <a_list_of_parallel_queues>, <the_number_of_slots> and <your_sge_root>
+   <a_list_of_parallel_queues> and <the_number_of_slots>
    with the appropriate information. The PE then must be added to all
    queues in the "pe_list" line where it should be made available.
 
