@@ -112,8 +112,11 @@ pack_job_delivery.o:	$(GDILIB_DIR)/pack_job_delivery.c
 qm_name.o: 	$(GDILIB_DIR)/qm_name.c
 		$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $(GDILIB_DIR)/qm_name.c
 
-sge_security.o: $(GDILIB_DIR)/sge_security.c 
-		$(CC) $(CFLAGS) $(NOERR_CFLAGS) $(SHARED_CFLAGS) -c $(GDILIB_DIR)/sge_security.c
+sge_security.o: $(GDILIB_DIR)/sge_security.c
+		$(CC) $(CFLAGS) $(NOERR_CFLAGS) $(SHARED_CFLAGS) -c $(GDILIB_DIR)/sge_security.c || \
+		{ case "$(CFLAGS)" in *HAVE_MUNGE*) \
+		echo "*** If you got a GPL complaint, use MUNGE 5.9+";;\
+		esac && false;}
 
 sge_qtcsh.o: $(GDILIB_DIR)/sge_qtcsh.c 
 		$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $(GDILIB_DIR)/sge_qtcsh.c

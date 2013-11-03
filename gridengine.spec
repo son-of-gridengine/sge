@@ -83,7 +83,7 @@ BuildRequires: ant-nodeps
 BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
-BuildRequires: net-tools, man, jemalloc-devel
+BuildRequires: net-tools, man, jemalloc-devel, munge-devel
 Requires: binutils, ncurses, shadow-utils, net-tools, /bin/awk
 # for makewhatis
 Requires: man
@@ -230,10 +230,10 @@ JAVA_BUILD_OPTIONS="-no-herd"
 %endif
 sh scripts/bootstrap.sh $JAVA_BUILD_OPTIONS
 # -no-remote because we have ssh and PAM instead
-./aimk -pam -no-remote $parallel_flags $JAVA_BUILD_OPTIONS
+./aimk -pam -no-remote -with-munge $parallel_flags $JAVA_BUILD_OPTIONS
 # jemalloc should only be relevant for qmaster; avoid it for other packages
 rm -f LINUX*/sge_qmaster
-./aimk -only-core -with-jemalloc $parallel_flags sge_qmaster
+./aimk -only-core -with-jemalloc -with-munge $parallel_flags sge_qmaster
 ./aimk -man $JAVA_BUILD_OPTIONS
 %if %{with java}
 # "-no-gui-inst -no-herd -javadoc" still produces all the javadocs
@@ -392,6 +392,9 @@ fi
 
 
 %changelog
+* Fri Oct 25 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.6
+- Remove -system-libs, build with MUNGE
+
 * Fri Aug 16 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4
 - Require /bin/ps for execd, qmaster
 

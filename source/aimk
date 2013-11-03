@@ -70,6 +70,7 @@ set HWLOCLIB    = ""
 set GSSLIBS = ""
 set AR = ar
 set SGEPASSWDO = ""
+set MUNGE = 0
 
 if ( -f dist/util/arch ) then
    set buildarch = `dist/util/arch`
@@ -239,6 +240,7 @@ usage:
    echo "                     (normally obsoleted by sge-sshd-control PAM module)"
 #   echo "-umap             -> compile with usermapping and hostgroup feature (currently broken)"
    echo "-with-jemalloc    -> build SGE with the jemalloc library"
+   echo "-with-munge       -> build with the MUNGE authentication library"
   exit
 }
 
@@ -484,18 +486,6 @@ while ($#argv >= 1 && $?found)
    case "-cov":
       set COVED      = 1
       set STRIP      = "echo"
-      breaksw
-   case "-crypto":
-      set CFLAGS  = "-DCRYPTO -I$OPENSSL_HOME/include $CFLAGS"
-      set LFLAGS  = "-L$OPENSSL_HOME/lib${SSL_LIB_SUFFIX} $LFLAGS"
-      switch ($BUILDARCH)
-         case HP11:
-            set KLIBS = "-lcrypto"
-            breaksw
-         default:
-            set CFLAGS = "-DLOAD_OPENSSL $CFLAGS"
-            set KLIBS = ""
-      endsw
       breaksw
    case "-D*":
       set CFLAGS = "$argv[1] $CFLAGS"
@@ -881,6 +871,9 @@ while ($#argv >= 1 && $?found)
       # Intentionally appended
       set LIBS = "$LIBS -ljemalloc"
       breaksw
+   case "-with-munge"
+      set MUNGE = 1
+      breaksw
    case "-munge"
       set MUNGE = 1
       breaksw
@@ -912,6 +905,11 @@ if ($KRB == 1) then
    default:
       set KLIBS = ""
    endsw
+endif
+
+if ($MUNGE == 1) then
+   set SECLIB = "-lmunge $SECLIB"
+   set CFLAGS = "-DHAVE_MUNGE $CFLAGS"
 endif
 
 #---------------------------------------------------------------------------

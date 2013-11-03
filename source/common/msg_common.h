@@ -1056,7 +1056,6 @@
 #define MSG_SGETEXT_MODIFIEDINLIST_SSSS    _MESSAGE(60501, _(""SFN"@"SFN" modified "SFQ" in "SFN" list"))
 #define MSG_SGETEXT_KILL_SSS               _MESSAGE(60502, _(""SFN"@"SFN" kills "SFN))
 #define MSG_SGETEXT_KILL_FAILED_SSS        _MESSAGE(60503, _(""SFN"@"SFN" failed to kill "SFN))
-#define MSG_GDI_FAILEDTOEXTRACTAUTHINFO    _MESSAGE(60600, _("failed to extract authentication information"))
 #define MSG_INAVLID_PARAMETER_IN_S         _MESSAGE(60601, _("invalid parameter in "SFN))
 #define MSG_OBJ_PE                         _MESSAGE(60603, _("parallel environment"))
 #define MSG_SGETEXT_MISSINGCULLFIELD_SS    _MESSAGE(60604, _("missing cull field "SFQ" in "SFN"()"))

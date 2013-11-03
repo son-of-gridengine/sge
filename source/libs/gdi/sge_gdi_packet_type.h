@@ -40,6 +40,9 @@
 extern "C" {
 #endif
 
+#define PACKET_USIZE 128
+#define PACKET_UFMT "%127s"
+
 typedef struct _sge_gdi_task_class_t sge_gdi_task_class_t;
 
 typedef struct _sge_gdi_packet_class_t sge_gdi_packet_class_t;
@@ -142,17 +145,9 @@ struct _sge_gdi_packet_class_t {
    sge_gdi_task_class_t *last_task;  
 
    /*
-    * encrypted authenitication information. This information will 
-    * be decrypted to the field "uid", "gid", "user" and "group"
+    * Possibly-encrypted authentication information. This information will
+    * be decrypted to the fields "uid", "gid", "user" and "group"
     * part of this structure 
-    *
-    * EB: TODO: Cleanup: remove "auth_info" from sge_gdi_packet_class_t
-    *
-    *    authinfo is not needed in this structure because the
-    *    same information is stored in "uid", "gid", "user" and "group"
-    *    If these elements are initialized during unpacking a packet
-    *    and if the GDI functions don't want to access auth_info
-    *    anymore then we can remove that field from this structure.
     */
    char *auth_info;  
 
@@ -163,8 +158,8 @@ struct _sge_gdi_packet_class_t {
     */
    uid_t uid;
    gid_t gid;
-   char user[128];
-   char group[128];
+   char user[PACKET_USIZE];
+   char group[PACKET_USIZE];
 
    /*
     * Packbuffer used for GDI GET requests to directly store the 
@@ -195,6 +190,3 @@ struct _sge_gdi_packet_class_t {
 #endif
 
 #endif 
-
-
-

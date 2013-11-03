@@ -469,7 +469,7 @@ whose user ID (as returned by
 is less than \fBmin_uid\fP will not be allowed to run jobs on the cluster.
 .PP
 Changes to \fBmin_uid\fP will take immediate effect.  The default is 0
-but, if CSP security is not in use, the installation script sets it to
+but, if CSP or MUNGE security is not in use, the installation script sets it to
 100 to prevent unauthorized access by root or system accounts.
 .PP
 This value is a global configuration parameter only. It cannot be

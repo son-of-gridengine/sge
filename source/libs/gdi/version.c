@@ -36,8 +36,10 @@
 
 const char GDI_VERSION[] = "8.1.7pre";
 
-const gdi_ulong32 GRM_GDI_VERSION = 0x10003000;
+const gdi_ulong32 GRM_GDI_VERSION = 0x10003001;
 
+/* fixme:  this isn't currently getting an entry for each release --
+   should it?  */
 vdict_t GRM_GDI_VERSION_ARRAY[] = 
 {
       { 0x10000000, "5.0"  },
@@ -66,7 +68,8 @@ vdict_t GRM_GDI_VERSION_ARRAY[] =
       { 0x100020F8, "6.2u5beta2" },
       { 0x100020F8, "6.2u5" },
       { 0x10010000, "6.2u5.1" },
-      { 0, NULL}
+      { 0x10003000, "8.0.0a" },
+      { 0, NULL }
 };
 
 const char GE_LONGNAME[] = "Son of Grid Engine";
