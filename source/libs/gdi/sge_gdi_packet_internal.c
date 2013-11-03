@@ -651,7 +651,7 @@ sge_gdi_packet_execute_external(sge_gdi_ctx_class_t* ctx, lList **answer_list,
       ret = sge_gdi_packet_unpack(&ret_packet, answer_list, &rpb);
       clear_packbuffer(&rpb); 
    }
-  
+
    /* 
     * consistency check of received data:
     *    - is the packet id the same
@@ -772,9 +772,7 @@ sge_gdi_packet_execute_internal(sge_gdi_ctx_class_t* ctx, lList **answer_list,
    packet->host = strdup(ctx->get_master(ctx, false));
    packet->is_intern_request = true;
 
-   ret = sge_gdi_packet_parse_auth_info(packet, &(packet->first_task->answer_list),
-                                        &(packet->uid), packet->user, sizeof(packet->user),
-                                        &(packet->gid), packet->group, sizeof(packet->group));
+   ret = sge_gdi_packet_parse_auth_info(packet, &(packet->first_task->answer_list));
 
    /* 
     * append the packet to the packet list of the worker threads

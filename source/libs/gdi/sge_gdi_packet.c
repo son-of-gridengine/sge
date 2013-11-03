@@ -513,7 +513,7 @@ sge_gdi_packet_create(sge_gdi_ctx_class_t * ctx, lList **answer_list, bool use_e
    DENTER(TOP_LAYER, "sge_gdi_packet_create");
    ret = sge_gdi_packet_create_base(answer_list);
    if (ret != NULL) {
-      sge_gdi_packet_initialize_auth_info(ctx, ret, use_euid_egid);
+      sge_gdi_packet_initialize_auth_info(ctx, ret, answer_list, use_euid_egid);
    }
    DRETURN(ret);
 }

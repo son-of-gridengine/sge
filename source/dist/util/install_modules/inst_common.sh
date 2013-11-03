@@ -493,7 +493,7 @@ ErrUsage()
              "       -post_upd|-start-all|-rccreate|[-host <hostname>] [-rsh] \n" \
              "       [-auto <filename>] [-nr] [-winupdate] [-winsvc] [-uwinsvc] [-csp] \n" \
              "       [-jmx] [-add-jmx] [-oldijs] [-afs] [-noremote] [-nosmf] [-nost]\n" \
-             "       [-nobincheck]\n" \
+             "       [-nobincheck] [-munge] ]\n" \
              "   -m         install qmaster host\n" \
              "   -um        uninstall qmaster host\n" \
              "   -x         install execution host\n" \
@@ -525,6 +525,7 @@ ErrUsage()
              "   -uwinsvc   uninstall Windows helper service\n" \
              "   -csp       install system with security framework protocol\n" \
              "              functionality\n" \
+             "   -munge     install system with MUNGE authentication\n" \
              "   -jmx       install qmaster with JMX server thread enabled \n" \
              "   -add-jmx   install and enable JMX server thread for existing qmaster\n" \
              "   -oldijs    configure old interactive job support\n" \
@@ -532,6 +533,7 @@ ErrUsage()
              "   -noremote  suppress remote installation during autoinstall\n" \
              "   -nosmf     disable SMF for Solaris 10+ machines (RC scripts are used)\n" \
              "   -nobincheck don't check that binaries are present\n" \
+             "   -munge     configure MUNGE authentication\n" \
              "   -help      show this help text\n\n" \
              "   Examples:\n" \
              "   inst_sge -m -x   or   inst_sge -m -jmx -x\n" \
@@ -2143,6 +2145,10 @@ GiveHints()
                 "$SGE_ROOT_VAL"/$SGE_CELL_VAL/common/settings.csh \
                 "$SGE_ROOT_VAL"/$SGE_CELL_VAL/common/settings.sh \
                 "$SGE_ROOT_VAL"/$SGE_CELL_VAL/common/sge.module
+      if [ "$MUNGE" = true ]; then
+          $INFOTEXT "\nSince -munge was specified, you need to set up the MUNGE daemon\n" \
+                    "on all nodes\n"
+      fi
 
       $INFOTEXT -wait -auto $AUTO -n "Hit <RETURN> to see where Grid Engine logs messages >> "
       $CLEAR

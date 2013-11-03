@@ -305,6 +305,9 @@ while [ $ARGC != 0 ]; do
    -csp)
      CSP=true
      ;;
+   -munge)
+     MUNGE=true
+     ;;
    -jmx)
      SGE_ENABLE_JMX=true
      SGE_SKIP_JMX_SETTING="false"
@@ -374,7 +377,7 @@ fi
 if [ -z "$WIN_ADMIN_NAME" ]; then
    WIN_ADMIN_NAME="Administrator"
 fi
-for item in WINDOWS_SUPPORT WIN_DOMAIN_ACCESS CSP_RECREATE CSP_COPY_CERTS; do   
+for item in WINDOWS_SUPPORT WIN_DOMAIN_ACCESS CSP_RECREATE CSP_COPY_CERTS MUNGE; do
    if [ x`eval echo '$'$item` = x ]; then
       eval $item="false"
    fi
@@ -477,14 +480,16 @@ if [ $ONLY_ENABLE_JMX = "true" ]; then
    ReplaceOrAddLine "$SGE_ROOT/$SGE_CELL/common/bootstrap" 666 'jvm_threads.*' "jvm_threads             1"
    ExecuteAsAdmin $CHMOD 644 "$SGE_ROOT/$SGE_CELL/common/bootstrap"
    # Do InitCA only when no CSP mode
-   if [ x`BootstrapGetValue "$SGE_ROOT/$SGE_CELL/common" "security_mode" | tr "[A-Z]" "[a-z]"` != xcsp ]; then
-      InitCA
-   elif [ "$SGE_JMX_SSL" = true ]; then
-      if [ ! -f "$SGE_JMX_SSL_KEYSTORE" ]; then
-         InitSysKs
-      fi
-      MakeUserKs $ADMINUSER
-   fi
+   case `BootstrapGetValue "$SGE_ROOT/$SGE_CELL/common" "security_mode" | tr "[A-Z]" "[a-z]"` in
+   *csp*)
+      InitCA;;
+   *) if [ "$SGE_JMX_SSL" = true ]; then
+         if [ ! -f "$SGE_JMX_SSL_KEYSTORE" ]; then
+            InitSysKs
+         fi
+         MakeUserKs $ADMINUSER
+      fi;;
+   esac
    CopyCA execd
    CopyCA submit
    #Update the default config
@@ -645,11 +650,14 @@ if [ "$UPDATE" = true ]; then
    PRODUCT_MODE=`BootstrapGetValue "${UPGRADE_BACKUP_DIR}/cell" "security_mode"`
    if [ "$UPGRADE_MODE" = "copy" ]; then
       case $PRODUCT_MODE in
-         csp)
+         *csp*)
             CSP=true
             ;;
-         afs)
+         *afs*)
             AFS=true
+            ;;
+         *munge*)
+            MUNGE=true
             ;;
       esac
       SetProductMode
@@ -657,6 +665,7 @@ if [ "$UPDATE" = true ]; then
       #We don't care about switches, setup is going to be reused
       CSP=false
       AFS=false
+      MUNGE=false
    fi
    #Find out if jmx should be used from the backup
    RestoreJMX "${UPGRADE_BACKUP_DIR}/cell/jmx"
@@ -1548,9 +1557,9 @@ if [ "$SUBMIT" = "install" ]; then
    CheckHostNameResolving install
    AddSubmitHosts
    product_mode=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep "security_mode" | awk '{ print $2 }'`
-   if [ "$product_mode" = "csp" ]; then
-      CSP="true"
-   fi
+   case $product_mode in
+       *csp* | *CSP*) CSP=true;;
+   esac
    #TODO XXX: This will attempt to copy certs to every submit host! We just need one.
    #Also, we probably prefer to do this from trusted (qmaster) node, that has remote 
    #access to this submit host
@@ -1583,10 +1592,10 @@ if [ "$COPY_CA" = "true" ]; then
       exit 1
    fi
 
-   product_mode=`cat "$SGE_ROOT/$SGE_CELL/common/bootstrap" | grep "security_mode" | awk '{ print $2 }'`
-   if [ "$product_mode" = "csp" ]; then
-      CSP="true"
-   fi
+   product_mode=`awk '/security_mode/ { print $2 }' "$SGE_ROOT/$SGE_CELL/common/bootstrap"`
+   case $product_mode in
+       *csp*|*CSP*) CSP=true;;
+   esac
    CopyCA copyonly
    ret=$?
    if [ $ret -eq 0 ]; then

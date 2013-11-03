@@ -607,7 +607,13 @@ SetProductMode()
    else
       AFS_PREFIX=""
    fi
+   if [ $MUNGE = true ]; then
+      MUNGE_PREFIX="munge"
+   else
+      MUNGE_PREFIX=""
+   fi
 
+   # fixme:  try to do something similar for munge
    if [ $CSP = true ]; then
 
       case $SGE_ARCH in
@@ -640,7 +646,7 @@ SetProductMode()
       CSP_PREFIX=""
    fi
 
-   for x in $CSP_PREFIX $AFS_PREFIX; do
+   for x in $CSP_PREFIX $AFS_PREFIX $MUNGE_PREFIX; do
        if [ -z "$PRODUCT_MODE" ]; then
            PRODUCT_MODE=$x
        else
@@ -768,7 +774,7 @@ PrintConf()
    $ECHO "epilog                 none"
    $ECHO "shell_start_mode       posix_compliant"
    $ECHO "login_shells           sh,bash,ksh,csh,tcsh"
-   if [ "$CSP" = true ]; then
+   if [ "$CSP" = true -o "$MUNGE" = true ]; then
    $ECHO "min_uid                0"
    $ECHO "min_gid                0"
    else                         # avoid worst of security issue

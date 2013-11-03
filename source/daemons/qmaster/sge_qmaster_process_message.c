@@ -211,10 +211,7 @@ do_gdi_packet(sge_gdi_ctx_class_t *ctx, lList **answer_list,
    if (local_ret) {
       local_ret =
          sge_gdi_packet_parse_auth_info(packet,
-                                        &(packet->first_task->answer_list),
-                                        &(packet->uid), packet->user,
-                                        sizeof(packet->user), &(packet->gid),
-                                        packet->group, sizeof(packet->group));
+                                        &(packet->first_task->answer_list));
    }
    if (local_ret) {
       const char *admin_user = ctx->get_admin_user(ctx);
@@ -317,8 +314,9 @@ do_report_request(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg, monitoring_t *mo
    DENTER(TOP_LAYER, "do_report_request");
 
    /* Load reports are only accepted from admin/root user */
+   /* fixme: no actual authentication without CSP? */
    if (!sge_security_verify_unique_identifier(true, admin_user, myprogname, 0,
-                                            aMsg->snd_host, aMsg->snd_name, aMsg->snd_id)) {
+                                              aMsg->snd_host, aMsg->snd_name, aMsg->snd_id)) {
       DRETURN_VOID;
     }
 

@@ -24,6 +24,7 @@
  *   The Initial Developer of the Original Code is: Sun Microsystems, Inc.
  * 
  *   Copyright: 2001 by Sun Microsystems, Inc.
+ *   Copyright (C) 2013 Dave Love University of Liverpool
  * 
  *   All Rights Reserved.
  * 
@@ -34,6 +35,7 @@
 #include <string.h>
 #include <pwd.h>
 #include <pthread.h>
+#include <errno.h>
 
 #include "comm/cl_commlib.h"
 #include "comm/cl_ssl_framework.h"
@@ -74,16 +76,15 @@
 #include "msg_common.h"
 #include "msg_qmaster.h"
 
-#ifdef CRYPTO
-#include <openssl/evp.h>
-#endif
-
 #ifdef INTERIX
 #include "wingrid/wingrid.h"
 #endif
 
-#define ENCODE_TO_STRING   1
-#define DECODE_FROM_STRING 0
+#if HAVE_MUNGE
+#include <munge.h>
+static munge_ctx_t decode_ctx = NULL;
+static munge_ctx_t encode_ctx = NULL;
+#endif
 
 #ifdef SECURE
 
@@ -99,11 +100,6 @@ static bool is_daemon(const char* progname);
 static bool is_master(const char* progname);
 
 #endif
-
-static bool sge_encrypt(char *intext, int inlen, char *outbuf, int outsize);
-static bool sge_decrypt(char *intext, int inlen, char *outbuf, int *outsize);
-static bool change_encoding(char *cbuf, int* csize, unsigned char* ubuf, int* usize, int mode);
-
 
 static bool is_daemon(const char* progname) {
    if (progname != NULL) {
@@ -576,6 +572,13 @@ int sge_security_initialize(const char *progname, const char *username)
    }
 #endif
 
+#if HAVE_MUNGE
+   encode_ctx = munge_ctx_create();
+   decode_ctx = munge_ctx_create();
+   if (!encode_ctx || !decode_ctx)
+      DRETURN(-1);
+#endif
+
 #ifdef KERBEROS
    if (krb_init(progname)) {
       DRETURN(-1);
@@ -613,7 +616,10 @@ void sge_security_exit(int i)
       SEC_UNLOCK_SSL_SETUP();
    } 
 #endif
-
+#if HAVE_MUNGE
+   munge_ctx_destroy(decode_ctx);
+   munge_ctx_destroy(encode_ctx);
+#endif
    DRETURN_VOID;
 }
 
@@ -1247,6 +1253,29 @@ void tgtcclr(lListElem *jep, const char *rhost)
 #endif
 }
 
+/* Authentication of GDI packets
+
+   Security methods configured in bootstrap(5) -- see also
+   sge_features.c -- can fill the auth_info field in packets so that
+   the user information in them can be relied upon.  Currently MUNGE
+   <http://munge.googlecode.com/> is provided if SGE is built against it.
+
+   Internal packets are treated separately, with a plain token
+   representing the "none" security method, even if a relevant
+   security type has been configured.  This is done for efficiency,
+   though the overhead from MUNGE processing hasn't been measured.  We
+   assume that external packets are packed, and a proper auth_info is
+   filled in by a call to "sge_put_auth_token" in
+   "sge_gdi_packet_pack".  The tag in the auth_info, currently "none"
+   or "MUNGE" avoids possible ambiguity and allows for the possibility
+   of multiple methods being used together.
+
+   Fixme:
+   Authentication methods should be loadable as external modules which
+   extend a list of methods with associated encode and decode function
+   pointers (see also sge_feature.c).
+   Look at whether GSSAPI can be dealt with in a similar way.  */
+
 /****** gdi/request_internal/sge_gdi_packet_initialize_auth_info() ***********
 *  NAME
 *     sge_gdi_packet_initialize_auth_info() -- initialize auth_info string 
@@ -1255,17 +1284,20 @@ void tgtcclr(lListElem *jep, const char *rhost)
 *     bool 
 *     sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx, 
 *                                         sge_gdi_packet_class_t *packet_handle,
-*                                         bool use_euid_egid)
+*                                         lList **answer_list, bool use_euid_egid)
 *
 *  FUNCTION
-*     Initialize the "auth_info" substring part of the "packet_handle". 
+*     Initialize the "auth_info" substring part of the "packet_handle".
 *     To initialize these values the functions get_uid(), get_gid(),
 *     get_username() and get_groupname() part of the ctx structure.
-*     will be used.
+*     will be used unless "use_euid_egid" is true.  This always uses
+*     the "none" security format, which may be altered subsequently if
+*     the packet is sent externally.
 *
 *  INPUTS
 *     sge_gdi_ctx_class_t *ctx              - context 
 *     sge_gdi_packet_class_t *packet_handle - context
+*     lList **answer_list                   - answer list for error messages
 *     use_euid_egid                         - use effective uid, gid
 *
 *  RESULT
@@ -1279,10 +1311,12 @@ void tgtcclr(lListElem *jep, const char *rhost)
 *  SEE ALSO
 *     gdi/request_internal/sge_gdi_packet_create()
 *     gdi/request_internal/sge_gdi_packet_parse_auth_info()
+*     gdi/request_internal/sge_put_auth_token()
 *******************************************************************************/
 bool
 sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
-                                    sge_gdi_packet_class_t *packet_handle, bool use_euid_egid)
+                                    sge_gdi_packet_class_t *packet_handle,
+                                    lList **answer_list, bool use_euid_egid)
 {
    bool ret = true;
    uid_t uid;
@@ -1290,7 +1324,6 @@ sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
    char username[128];
    char groupname[128];
    char buffer[SGE_SEC_BUFSIZE];
-   char obuffer[3*SGE_SEC_BUFSIZE];
 
    DENTER(TOP_LAYER, "sge_gdi_packet_initialize_auth_info");
 
@@ -1328,12 +1361,9 @@ sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
    DPRINTF(("sge_set_auth_info: username(uid) = %s("uid_t_fmt"), groupname = %s("gid_t_fmt")\n",
             username, uid, groupname, gid));
 
-   snprintf(buffer, sizeof(buffer), uid_t_fmt" "gid_t_fmt" %s %s", uid, gid, username, groupname);
-   if (sge_encrypt(buffer, sizeof(buffer), obuffer, sizeof(obuffer))) {
-      packet_handle->auth_info = sge_strdup(NULL, obuffer);
-   } else {
-      ret = false;
-   }  
+   snprintf(buffer, sizeof(buffer), "none:"uid_t_fmt" "gid_t_fmt" %s %s",
+            uid, gid, username, groupname);
+   packet_handle->auth_info = sge_strdup(NULL, buffer);
 
 #if 0
    sge_mutex_unlock(GDI_PACKET_MUTEX, SGE_FUNC, __LINE__, &(packet_handle->mutex));
@@ -1348,32 +1378,29 @@ sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
 *
 *  SYNOPSIS
 *     bool 
-*     sge_gdi_packet_parse_auth_info(sge_gdi_packet_class_t *packet, 
-*                                    lList **answer_list, uid_t *uid, 
-*                                    char *user, size_t user_len, 
-*                                    gid_t *gid, char *group, 
-*                                    size_t group_len) 
+*     sge_gdi_packet_parse_auth_info(sge_gdi_packet_class_t *packet
+*                                    lList **answer_list)
 *
 *  FUNCTION
-*     Decrypts and parses the "auth_info" substring part of "packet" and
-*     writes that information into the variables "uid", "gid", "user" and
-*     "group". If the buffer sizes of "user" and/or "group" are too small
-*     than the strings will be truncated. Corresponding buffer sizes have 
-*     to be provided by "user_len" and "group_len".
+*     Decrypts and parses the "auth_info" substring part of "packet"
+*     and writes that information into its "uid", "gid", "user" and
+*     "group" fields.
 *
-*     If "authinfo" does not contain useful information, then
+*     If "auth_info" does not contain useful information, then
 *     the function will return with a value of "false" and answer_list 
-*     will be filled. 
+*     will be filled.
+*
+*     The auth_info is of the form <tag>:<data>, where <tag>
+*     corresponds to an appropriate method from the bootstrap
+*     "security" entry, and the data field is interpreted according to
+*     that method.  (The tag is actually part of the MUNGE token.)
+*     For internal packets (that haven't been packed), or without a
+*     relevant security type configured, <tag> is "none", and <data>
+*     contains the user and group information as text.
 *
 *  INPUTS
 *     sge_gdi_packet_class_t *packet - GDI packet 
 *     lList **answer_list            - answer_list for error messages 
-*     uid_t *uid                     - user id 
-*     char *user                     - user name buffer
-*     size_t user_len                - length of buffer "user"
-*     gid_t *gid                     - group id 
-*     char *group                    - group name buffer?
-*     size_t group_len               - length of goup name buffer 
 *
 *  RESULT
 *     bool - error state
@@ -1385,245 +1412,138 @@ sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
 *
 *  SEE ALSO
 *     gdi/request_internal/sge_gdi_packet_initialize_auth_info()
+*     gdi/request_internal/sge_put_auth_token()
 *******************************************************************************/
 bool
-sge_gdi_packet_parse_auth_info(sge_gdi_packet_class_t *packet, lList **answer_list,
-                               uid_t *uid, char *user, size_t user_len, 
-                               gid_t *gid, char *group, size_t group_len)
+sge_gdi_packet_parse_auth_info(sge_gdi_packet_class_t *packet, lList **answer_list)
 {
-   bool ret = false;
-   char dbuffer[2 * SGE_SEC_BUFSIZE];
-   int dlen = 0;
+   char *auth;
+   bool ret = true;
 
    DENTER(TOP_LAYER, "sge_gdi_packet_parse_auth_info");
-   if (sge_decrypt(packet->auth_info, strlen(packet->auth_info), dbuffer, &dlen)) {
-      char userbuf[2 * SGE_SEC_BUFSIZE];
-      char groupbuf[2 * SGE_SEC_BUFSIZE];
+   auth = packet->auth_info;
+   if (!auth) {
+      ret = false;
+      goto end;
+   }
 
-      if (sscanf(dbuffer, uid_t_fmt" "gid_t_fmt
-                 " %2047s %2047s", /* SGE_SEC_BUFSIZE == 2048 */
-                 uid, gid, userbuf, groupbuf) == 4) {
-         if (strlen(userbuf) <= user_len && strlen(groupbuf) <= group_len) {
-            sge_strlcpy(user, userbuf, user_len);
-            sge_strlcpy(group, groupbuf, group_len);
-            if ((strlen(user) != 0) && (strlen(group) != 0)) {
-               DPRINTF(("uid/username = %d/%s, gid/groupname = %d/%s\n", (int)*uid, user, (int)*gid, group));
-               ret = true;
-            } else {
-               CRITICAL((SGE_EVENT, MSG_GDI_NULL_IN_GDI_SSS,
-                        (strlen(user) == 0) ? MSG_OBJ_USER : "",
-                        (strlen(group) == 0) ? MSG_OBJ_GROUP : "", packet->host));
-               answer_list_add(answer_list, SGE_EVENT, STATUS_ENOIMP, ANSWER_QUALITY_ERROR);
-            }
-         } else {
-            ERROR((SGE_EVENT, SFNMAX, MSG_GDI_FAILEDTOEXTRACTAUTHINFO));
-            answer_list_add(answer_list, SGE_EVENT, STATUS_ENOMGR, ANSWER_QUALITY_ERROR);
-         }
-      } else {
-         ERROR((SGE_EVENT, SFNMAX, MSG_GDI_FAILEDTOEXTRACTAUTHINFO));
-         answer_list_add(answer_list, SGE_EVENT, STATUS_ENOMGR, ANSWER_QUALITY_ERROR);
+   sge_mutex_lock(GDI_PACKET_MUTEX, SGE_FUNC, __LINE__, &(packet->mutex));
+
+   /* Always parse as MUNGE if it's configured and this isn't an
+      internal packet.  */
+   if (!packet->is_intern_request
+       && feature_is_enabled(FEATURE_MUNGE_SECURITY)) {
+#if HAVE_MUNGE
+      munge_err_t res = munge_decode(auth, decode_ctx, NULL, NULL,
+                                     &(packet->uid), &(packet->gid));
+
+      if (res != EMUNGE_SUCCESS) {
+         answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN,
+                                 ANSWER_QUALITY_ERROR, MSG_GDI_AUTHFAILED_SS,
+                                 "MUNGE", munge_strerror(res));
+         ret = false;
+         goto end;
       }
-   } else {
-      ERROR((SGE_EVENT, SFNMAX, MSG_GDI_FAILEDTOEXTRACTAUTHINFO));
-      answer_list_add(answer_list, SGE_EVENT, STATUS_ENOMGR, ANSWER_QUALITY_ERROR);
+      if (sge_uid2user(packet->uid, packet->user,
+                       PACKET_USIZE, MAX_NIS_RETRIES)) {
+         answer_list_add_sprintf(answer_list, STATUS_ESEMANTIC,
+                                 ANSWER_QUALITY_CRITICAL,
+                                 MSG_SYSTEM_RESOLVEUSER_U,
+                                 (u_long32) packet->uid);
+         ret = false;
+         goto end;
+      }
+      if (sge_gid2group(packet->gid, packet->group, PACKET_USIZE,
+                        MAX_NIS_RETRIES)) {
+         answer_list_add_sprintf(answer_list, STATUS_ESEMANTIC,
+                                 ANSWER_QUALITY_CRITICAL,
+                                 MSG_SYSTEM_RESOLVEGROUP_U,
+                                 (u_long32) packet->gid);
+         ret = false;
+      }
+      /* fixme: warn if decoded values don't agree with payload?  */
+#else /* HAVE_MUNGE */
+      answer_list_add_sprintf(answer_list, STATUS_ENOIMP, ANSWER_QUALITY_ERROR,
+                              MSG_GDI_AUTHUNAVAIL_S, "MUNGE");
+      ret = false;
+#endif
+   } else if (sscanf(auth, "none:"uid_t_fmt" "gid_t_fmt" "PACKET_UFMT" "PACKET_UFMT,
+                     &(packet->uid), &(packet->gid), packet->user,
+                     packet->group) != 4) {
+      answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN,
+                              ANSWER_QUALITY_ERROR, MSG_GDI_AUTHFAILED_SS,
+                              "null", "format error");
+      ret = false;
+   }
+
+ end:
+   sge_mutex_unlock(GDI_PACKET_MUTEX, SGE_FUNC, __LINE__, &(packet->mutex));
+   if (!ret) {
+      WARNING((SGE_EVENT, MSG_GDI_FAILEDTOEXTRACTAUTHINFO_SSS,
+               packet->host, packet->commproc, auth));
    }
    DRETURN(ret);
 }
 
-#ifndef CRYPTO
-/*
-** standard encrypt/decrypt functions
-**
-** MT-NOTE: sge_encrypt() is MT safe
-*/
-static bool sge_encrypt(char *intext, int inlen, char *outbuf, int outsize)
+/****** gdi/request_internal/sge_put_auth_token() ******************
+*  NAME
+*     sge_put_auth_token() -- replace the auth_info field of a packet
+*
+*  SYNOPSIS
+*     int
+*     sge_put_auth_token(sge_gdi_packet_class_t *packet, lList **answer_list)
+*
+*  FUNCTION
+*     Replace the auth_info field of "packet" with an authentication
+*     token appropriate for the configured security method.  The result
+*     must contain the same information as the initial contents of the
+*     field, which will be be from the "none" method, as parsed by
+*     sge_gdi_packet_parse_auth_info.
+*
+*  INPUTS
+*     sge_gdi_packet_class_t *packet - GDI packet
+*     lList **answer_list            - answer_list for error messages
+*                                      (filled if result is 2)
+*
+*  RESULT
+*     int - error state
+*        0  - success
+*        1  - no relevant authentication method available
+*        2  - a method was available but failed
+*
+*  NOTES
+*     MT-NOTE: sge_put_auth_token() is MT safe (conditional on the methods
+*              it uses)
+*
+*  SEE ALSO
+*     gdi/request_internal/sge_gdi_packet_initialize_auth_info()
+*******************************************************************************/
+int sge_put_auth_token(sge_gdi_packet_class_t *packet, lList **answer_list)
 {
-   int len;
+   DENTER(TOP_LAYER, "put_auth_token");
+   if (feature_is_enabled(FEATURE_MUNGE_SECURITY)) {
+#if HAVE_MUNGE
+      char *cred;
+      munge_err_t res =
+        munge_encode(&cred, encode_ctx, NULL, 0);
 
-   DENTER(TOP_LAYER, "sge_encrypt");
-
-/*    DPRINTF(("======== intext:\n"SFN"\n=========\n", intext)); */
-
-   len = strlen(intext);
-   if (!change_encoding(outbuf, &outsize, (unsigned char*) intext, &len, ENCODE_TO_STRING)) {
-      DRETURN(false);
-   }   
-
-/*    DPRINTF(("======== outbuf:\n"SFN"\n=========\n", outbuf)); */
-
-   DRETURN(true);
-}
-
-/*
-** MT-NOTE: standard sge_decrypt() is MT safe
-*/
-static bool sge_decrypt(char *intext, int inlen, char *outbuf, int* outsize)
-{
-   unsigned char decbuf[2*SGE_SEC_BUFSIZE];
-   int declen = sizeof(decbuf);
-
-   DENTER(TOP_LAYER, "sge_decrypt");
-
-   if (!change_encoding(intext, &inlen, decbuf, &declen, DECODE_FROM_STRING)) {
-      DRETURN(false);
-   }   
-   decbuf[declen] = '\0';
-
-   sge_strlcpy(outbuf, (char*)decbuf, 2*SGE_SEC_BUFSIZE);
-
-/*    DPRINTF(("======== outbuf:\n"SFN"\n=========\n", outbuf)); */
-
-   DRETURN(true);
-}
-
+      if (res != EMUNGE_SUCCESS) {
+         answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN,
+                                 ANSWER_QUALITY_ERROR,
+                                 "MUNGE: %s", munge_strerror(res));
+         DRETURN(auth_failed);
+      }
+      sge_free(&(packet->auth_info));
+      packet->auth_info = cred;
+      DRETURN(auth_ok);
 #else
-
-/* This is obviously junk with the hardwired key, but it could be
-   revamped to do more secure handling of ids with the SGE certicates,
-   but without CSP, a la sgepasswd.  It also looks like the place to
-   add MUNGE, for instance.  */
-/*
-** MT-NOTE: EVP based sge_encrypt() is not MT safe
-*/
-static bool sge_encrypt(char *intext, int inlen, char *outbuf, int outsize)
-{
-
-   int enclen, tmplen;
-   unsigned char encbuf[2*SGE_SEC_BUFSIZE];
-
-   unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-   unsigned char iv[] = {1,2,3,4,5,6,7,8};
-   EVP_CIPHER_CTX ctx;
-
-   DENTER(TOP_LAYER, "sge_encrypt");
-
-/*    DPRINTF(("======== intext:\n"SFN"\n=========\n", intext)); */
-
-   if (!EVP_EncryptInit(&ctx, /*EVP_enc_null() EVP_bf_cbc()*/EVP_cast5_ofb(), key, iv)) {
-      printf("EVP_EncryptInit failure !!!!!!!\n");
-      DRETURN(false);
-   }   
-
-   if (!EVP_EncryptUpdate(&ctx, encbuf, &enclen, (unsigned char*) intext, inlen)) {
-      DRETURN(false);
-   }
-
-   if (!EVP_EncryptFinal(&ctx, encbuf + enclen, &tmplen)) {
-      DRETURN(false);
-   }
-   enclen += tmplen;
-   EVP_CIPHER_CTX_cleanup(&ctx);
-
-   if (!change_encoding(outbuf, &outsize, encbuf, &enclen, ENCODE_TO_STRING)) {
-      DRETURN(false);
-   }   
-
-/*    DPRINTF(("======== outbuf:\n"SFN"\n=========\n", outbuf)); */
-
-   DRETURN(true);
-}
-
-static bool sge_decrypt(char *intext, int inlen, char *outbuf, int* outsize)
-{
-
-   int outlen, tmplen;
-   unsigned char decbuf[2*SGE_SEC_BUFSIZE];
-   int declen = sizeof(decbuf);
-
-   unsigned char key[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-   unsigned char iv[] = {1,2,3,4,5,6,7,8};
-   EVP_CIPHER_CTX ctx;
-
-   DENTER(TOP_LAYER, "sge_decrypt");
-
-   if (!change_encoding(intext, &inlen, decbuf, &declen, DECODE_FROM_STRING)) {
-      DRETURN(false);
-   }   
-
-   if (!EVP_DecryptInit(&ctx, /* EVP_enc_null() EVP_bf_cbc()*/EVP_cast5_ofb(), key, iv)) {
-      DRETURN(false);
-   }
-   
-   if (!EVP_DecryptUpdate(&ctx, (unsigned char*)outbuf, &outlen, decbuf, declen)) {
-      DRETURN(false);
-   }
-
-   if (!EVP_DecryptFinal(&ctx, (unsigned char*)outbuf + outlen, &tmplen)) {
-      DRETURN(false);
-   }
-   EVP_CIPHER_CTX_cleanup(&ctx);
-
-   *outsize = outlen+tmplen;
-
-/*    DPRINTF(("======== outbuf:\n"SFN"\n=========\n", outbuf)); */
-
-   DRETURN(true);
-}
-
+      answer_list_add(answer_list, MSG_NO_MUNGE,
+                      STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
+      DRETURN(auth_failed);
 #endif
-
-
-#define LOQUAD(i) (((i)&0x0F))
-#define HIQUAD(i) (((i)&0xF0)>>4)
-#define SETBYTE(hi, lo)  ((((hi)<<4)&0xF0) | (0x0F & (lo)))
-
-/*
- *
- * NOTES
- *    MT-NOTE: change_encoding() is MT safe
- *
- */
-static bool change_encoding(char *cbuf, int* csize, unsigned char* ubuf, int* usize, int mode)
-{
-   static const char alphabet[16] = {"*b~de,gh&j\247lrn=p"};
-
-   DENTER(TOP_LAYER, "change_encoding");
-
-   if (mode == ENCODE_TO_STRING) {
-      /*
-      ** encode to string
-      */
-      int i, j;
-      int enclen = *usize;
-      if ((*csize) < (2*enclen+1)) {
-         DRETURN(false);
-      }
-
-      for (i=0,j=0; i<enclen; i++) {
-         cbuf[j++] = alphabet[HIQUAD(ubuf[i])];
-         cbuf[j++] = alphabet[LOQUAD(ubuf[i])];
-      }
-      cbuf[j] = '\0';
+   } else {
+      DRETURN(auth_no_method);
    }
-
-   if (mode == DECODE_FROM_STRING) {
-      /*
-      ** decode from string
-      */
-      char *p;
-      int declen;
-      if ((*usize) < (*csize)) {
-         DRETURN(false);
-      }
-      for (p=cbuf, declen=0; *p; p++, declen++) {
-         int hi, lo, j;
-         for (j=0; j<16; j++) {
-            if (*p == alphabet[j]) 
-               break;
-         }
-         hi = j;
-         p++;
-         for (j=0; j<16; j++) {
-            if (*p == alphabet[j]) 
-               break;
-         }
-         lo = j;
-         ubuf[declen] = (unsigned char) SETBYTE(hi, lo);
-      }   
-      *usize = declen;
-   }
-      
-   DRETURN(true);
 }
 
 /* MT-NOTE: sge_security_verify_user() is MT safe (assumptions) */
@@ -1731,4 +1651,3 @@ void sge_security_event_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, mo
 #endif
    DEXIT;
 }
-

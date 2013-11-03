@@ -53,8 +53,9 @@ GPL-2: ConnectorBootstrap.java
 GPL-3:  qmake, adoc (not installed), several scripts [possibly using
         the "any later version" term]
 LGPL-3: ListTree (qmon), pam_sge-qrsh-setup, libuti2
-        [possibly using the "any later version" term] (gridengine kernel),
-        Java swing-layout (GUI installer binary)
+        [possibly using the "any later version" term] (gridengine core),
+        Java swing-layout (GUI installer binary), libmunge (optional
+        external library; gridengine core)
 IconList, Spinbox, Xmt, XBae, XmTab: widgets used by qmon
 NanoXML: (GUI installer binary)
 tango: qmon icons

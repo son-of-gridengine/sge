@@ -53,6 +53,7 @@ typedef enum {
    FEATURE_DCE_SECURITY,            /* GSSAPI security */
    FEATURE_KERBEROS_SECURITY,       /* KERBEROS security */
    FEATURE_CSP_SECURITY,            /* CSP security */
+   FEATURE_MUNGE_SECURITY,
  
    /* DON'T CHANGE THE ORDER OF THE ENTRIES ABOVE */
  

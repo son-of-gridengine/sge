@@ -549,6 +549,8 @@ static void qping_print_line(const char* buffer, int nonewline, int dump_tag, co
                         } else {
                            printf("version   : %s\n", "NULL");
                         }
+                        /* Note that we shouldn't try to decode this,
+                           to avoid replay errors.  */
                         if (packet->auth_info) {
                            printf("auth_info   : %s\n", packet->auth_info);
                         } else {

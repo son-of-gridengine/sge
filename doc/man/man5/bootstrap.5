@@ -33,6 +33,11 @@
 .de MO		\" other man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de URL
+\\$2 \(laURL: \\$1 \(ra\\$3
+..
+.if \n[.g] .mso www.tmac
+.\"
 .TH BOOTSTRAP 5 2012-04-26 "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
@@ -206,8 +211,12 @@ The security mode defines the set of security features the installed
 cluster is using, as a comma-separated list.
 .PP
 Possible security mode settings are "none", "afs", "dce", "kerberos",
-"csp" (no additional security, AFS, DCE/GSSAPI, Kerberos/GSSAPI, and
-X.509 certificate-based security).  The "dce" and "kerberos" methods
+"csp", "munge" (no additional security, AFS, DCE/GSSAPI, Kerberos/GSSAPI,
+X.509 certificate-based security, and
+.URL http://munge.googlecode.com/ "MUNGE authentication" ).
+Their availability depends on how xxQS_NAMExx was built/installed.
+.PP
+The "dce" and "kerberos" methods
 are nearly equivalent, calling the GSSAPI security modules in the same way,
 whether they were built for Kerberos/GSSAPI or DCE/GSSAPI, except
 that "dce" runs the program
@@ -218,9 +227,25 @@ is specified in
 .B execd_params
 in
 .M sge_conf 5 .
-Only the CSP method is currently properly functional and safe (from
-the point of view of not exposing credentials generally).
-.br
+.PP
+Only the CSP and MUNGE methods are currently properly functional and
+safe (from the point of view of not exposing credentials generally).
+Both provide user authentication, preventing impersonation of other users.
+CSP requires certificates to be generated for each user and available
+on each host which the user can access; it is appropriate for a
+loosely coupled system, e.g. including desktop systems, particularly
+as it protects the communication stream as well as providing
+authentication.  MUNGE is appropriate in the security domain of a
+tightly coupled system, such as a normal cluster, and allows operation
+with
+.B enforce_user=auto
+(see
+.M sge_conf 5);
+it requires the
+.I munged
+daemon to be running on each host, with a shared secret and doesn't
+encrypt the communication.
+.PP
 .B NB.
 Do not use AFS security without some means of user
 authentication, otherwise it is possible to submit jobs as another
