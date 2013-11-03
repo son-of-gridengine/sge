@@ -61,6 +61,7 @@
 #include "gdi/sge_gdi_packet_pb_cull.h"
 #include "gdi/sge_gdi_packet.h"
 #include "gdi/msg_gdilib.h"
+#include "gdi/sge_security.h"
 
 #include "sgeobj/sge_answer.h"
 #include "sgeobj/sge_event.h"
@@ -390,6 +391,7 @@ sge_gdi_packet_pack(sge_gdi_packet_class_t *packet, lList **answer_list,
       ret |= sge_gdi_packet_pack_task(packet, task, answer_list, pb);
       task = task->next;
    }
+   ret = ((sge_put_auth_token(packet, answer_list) != auth_failed) && ret);
 
    DRETURN(ret);
 }

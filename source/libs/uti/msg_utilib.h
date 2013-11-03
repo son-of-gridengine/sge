@@ -159,6 +159,7 @@
 #define MSG_SYSTEM_READ_SGEPASSWD_SSI           _MESSAGE(49116, _("can't open sgepasswd file \""SFNMAX"\": "SFN" (%d)"))
 #define MSG_SYSTEM_NO_PASSWD_ENTRY_SS           _MESSAGE(49117, _("can't find password entry for user "SFN" in sgepasswd file "SFN))
 #define MSG_SYSTEM_RESOLVEUSER_U                _MESSAGE(49118, _("can't resolve user "sge_U32CFormat))
+#define MSG_SYSTEM_RESOLVEGROUP_U               _MESSAGE(49119, _("can't resolve group "sge_U32CFormat))
 
 /* 
 ** utilib/sge_stdlib.c

@@ -6917,7 +6917,8 @@ static int qconf_is_manager(sge_gdi_ctx_class_t *ctx, const char *user)
          }
       }
    } else {
-      fprintf(stderr, MSG_SGETEXT_MUSTBEMANAGER_S , user);
+      /* fixme: print real uname in case of fakeroot &c */
+      fprintf(stderr, MSG_SGETEXT_MUSTBEMANAGER_S, user);
       fprintf(stderr, "\n");
    }
 

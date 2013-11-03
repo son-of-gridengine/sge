@@ -113,17 +113,8 @@ BuildRequires: swing-layout
 BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
-# hostname was in net-tools, but is in its own package in Fedora 19;
-# requiring /bin/hostname doesn't work generally as it's in /usr/bin in
-# Fedora > 20.
-%if 0%{?fedora} >= 19
-BuildRequires: hostname
-Requires: hostname
-%else
-BuildRequires: /bin/hostname
-Requires: /bin/hostname
-%endif
-Requires: binutils, ncurses, shadow-utils, /bin/awk, which, openssl
+BuildRequires: net-tools, man, jemalloc-devel
+Requires: binutils, ncurses, shadow-utils, net-tools, /bin/awk
 %if 0%{?fedora} || 0%{?rhel} > 6
 Requires: man-db
 %else
@@ -289,7 +280,10 @@ JAVA_BUILD_OPTIONS="-no-herd"
 %endif
 sh scripts/bootstrap.sh $JAVA_BUILD_OPTIONS
 # -no-remote because we have ssh and PAM instead
-./aimk -pam %with_jemalloc -no-remote $parallel_flags $JAVA_BUILD_OPTIONS
+./aimk -pam -no-remote $parallel_flags $JAVA_BUILD_OPTIONS
+# jemalloc should only be relevant for qmaster; avoid it for other packages
+rm -f LINUX*/sge_qmaster
+./aimk -only-core -with-jemalloc $parallel_flags sge_qmaster
 ./aimk -man $JAVA_BUILD_OPTIONS
 %if %{with java}
 # "-no-gui-inst -no-herd -javadoc" still produces all the javadocs
@@ -450,22 +444,6 @@ fi
 
 
 %changelog
-* Thu Aug 14 2014 Dave Love <d.love@liverpool.ac.uk> 8.1.8
-- Add rpm Epoch on Fedora
-- Mark sgeCA/*cnf files as config
-- Sanitize requires/provides somewhat
-- Require db.h and Xm.h, not packages
-- Conditions on ant-nodeps and db devel BRs
-- Move spool objects to qmaster package
-- Maybe use packaged swing-layout
-- Require xterm for execd package (for qsh)
-
-* Wed Jan 22 2014 Dave Love <d.love@liverpool.ac.uk> 8.1.7-1
-- Support RHEL7 beta
-- Remove -system-libs
-- Port to SuSE
-- Require xterm for execd (for qsh)
-
 * Fri Aug 16 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4
 - Require /bin/ps for execd, qmaster
 

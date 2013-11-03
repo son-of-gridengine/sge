@@ -46,6 +46,12 @@
 
 #define SGE_SEC_BUFSIZE 1024
 
+enum {
+  auth_ok = 0,
+  auth_no_method,
+  auth_failed
+};
+
 void sge_security_exit(int i);
 
 #ifdef SECURE
@@ -87,12 +93,12 @@ void sge_security_event_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, mo
 
 bool
 sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
-                                    sge_gdi_packet_class_t *packet_handle, bool use_euid_egid);
+                                    sge_gdi_packet_class_t *packet_handle,
+                                    lList **answer_list, bool use_euid_egid);
 
 bool  
-sge_gdi_packet_parse_auth_info(sge_gdi_packet_class_t *packet, lList **answer_list,
-                               uid_t *uid, char *user, size_t user_len,
-                               gid_t *gid, char *group, size_t group_len);
+sge_gdi_packet_parse_auth_info(sge_gdi_packet_class_t *packet, lList **answer_list);
+
+int sge_put_auth_token(sge_gdi_packet_class_t *packet, lList **answer_list);
 
 #endif /* __SGE_SECURITY_H */
-

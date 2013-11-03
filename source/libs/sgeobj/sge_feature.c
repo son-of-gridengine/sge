@@ -63,14 +63,18 @@ struct feature_state_t {
     lList* Master_FeatureSet_List;
 };
 
+/* Fixme:  Allow security methods to be dynamically loadable -- see
+   comments in sge_security.c.  */
+
 static const featureset_names_t featureset_list[] = {
    {FEATURE_NO_SECURITY,            "none"},
-   {FEATURE_AFS_SECURITY,           "afs"},
+   {FEATURE_AFS_SECURITY,           "AFS"},
    /* The next two are both GSSAPI, and don't distinguish between
       modules built for one or the other.  */
-   {FEATURE_DCE_SECURITY,           "dce"},
-   {FEATURE_KERBEROS_SECURITY,      "kerberos"},
-   {FEATURE_CSP_SECURITY,           "csp"},
+   {FEATURE_DCE_SECURITY,           "DCE"},
+   {FEATURE_KERBEROS_SECURITY,      "Kerberos"},
+   {FEATURE_CSP_SECURITY,           "CSP"},
+   {FEATURE_MUNGE_SECURITY,         "MUNGE"},
    {FEATURE_UNINITIALIZED,          NULL}
 };
 /* *INDENT-ON* */
@@ -202,7 +206,14 @@ int feature_initialize_from_string(const char *mode)
       if (id == FEATURE_UNINITIALIZED) {
          ERROR((SGE_EVENT, MSG_GDI_INVALIDPRODUCTMODESTRING_S, tok));
          ret = -3;
-      } else {
+      }
+#if !HAVE_MUNGE
+      else if (FEATURE_MUNGE_SECURITY == id) {
+         ERROR((SGE_EVENT, MSG_GDI_MODE_UNAVAILABLE_S, tok));
+         ret = -3;
+      }
+#endif
+      else {
          feature_activate(id);
          ret = 0;
       }

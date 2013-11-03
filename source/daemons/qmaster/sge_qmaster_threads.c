@@ -103,24 +103,11 @@
 *******************************************************************************/
 void sge_gdi_kill_master(sge_gdi_packet_class_t *packet, sge_gdi_task_class_t *task)
 {
-   uid_t uid;
-   gid_t gid;
-   char username[128];
-   char groupname[128];
-
    DENTER(GDI_LAYER, "sge_gdi_kill_master");
 
-   if (sge_gdi_packet_parse_auth_info(packet, &(task->answer_list), &uid, username, sizeof(username), 
-                                  &gid, groupname, sizeof(groupname)) == -1) {
-      ERROR((SGE_EVENT, SFNMAX, MSG_GDI_FAILEDTOEXTRACTAUTHINFO));
-      answer_list_add(&(task->answer_list), SGE_EVENT, STATUS_ENOMGR, ANSWER_QUALITY_ERROR);
-      DEXIT;
-      return;
-   }
+   DPRINTF(("uid/username = %d/%s, gid/groupname = %d/%s\n", (int) packet->uid, packet->user, (int) packet->gid, packet->group));
 
-   DPRINTF(("uid/username = %d/%s, gid/groupname = %d/%s\n", (int) uid, username, (int) gid, groupname));
-
-   if (!manop_is_manager(username)) {
+   if (!manop_is_manager(packet->user)) {
       ERROR((SGE_EVENT, SFNMAX, MSG_SHUTDOWN_SHUTTINGDOWNQMASTERREQUIRESMANAGERPRIVILEGES));
       answer_list_add(&(task->answer_list), SGE_EVENT, STATUS_ENOMGR, ANSWER_QUALITY_ERROR);
       DEXIT;
@@ -128,10 +115,10 @@ void sge_gdi_kill_master(sge_gdi_packet_class_t *packet, sge_gdi_task_class_t *t
    }
 
    if (sge_qmaster_shutdown_via_signal_thread(0) == 0) {
-      INFO((SGE_EVENT, MSG_SGETEXT_KILL_SSS, username, packet->host, prognames[QMASTER]));
+      INFO((SGE_EVENT, MSG_SGETEXT_KILL_SSS, packet->user, packet->host, prognames[QMASTER]));
       answer_list_add(&(task->answer_list), SGE_EVENT, STATUS_OK, ANSWER_QUALITY_INFO);
    } else {
-      ERROR((SGE_EVENT, MSG_SGETEXT_KILL_FAILED_SSS, username, packet->host, prognames[QMASTER]));
+      ERROR((SGE_EVENT, MSG_SGETEXT_KILL_FAILED_SSS, packet->user, packet->host, prognames[QMASTER]));
       answer_list_add(&(task->answer_list), SGE_EVENT, STATUS_ERROR1, ANSWER_QUALITY_ERROR);
    }
 
