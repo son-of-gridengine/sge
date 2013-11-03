@@ -1697,11 +1697,10 @@ have an exit code of 1.  If
 is interrupted, e.g. with CTRL-C, before the job completes, all of the job's
 tasks will be canceled.
 .sp 1
-If this option or a corresponding value in \fIqmon\fP is specified then
-this value will be passed to defined JSV
-instances as parameter with the name \fBsync\fP.
-(See \fB\-jsv\fP option above or find more information concerning JSV in
-.M jsv 1 .)
+Information that this switch was specified during submission is not
+available in the JSV context.
+(see \fB\-jsv\fP option above or find more information concerning JSV in
+.M jsv 1 )
 .
 .\"
 .IP "\fB\-S\fP [[\fIhostname\fP]\fB:\fP]\fIpathname\fP\fB,\fP..."
