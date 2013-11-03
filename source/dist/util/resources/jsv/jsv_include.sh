@@ -57,7 +57,7 @@ __jsv_state="initialized"
 # and these strings will also be used as variable suffixes in this script
 __jsv_cli_params="a ar A b ckpt cwd display\
                 dl e h hold_jid hold_jid_ad i j js m M masterq notify\
-                N o P p R r shell sync S tc w"
+                N o P p R r shell S tc w"
 
 # These names are the suffixes of variable names which will contain
 # the information of following submit client switches:
@@ -557,7 +557,6 @@ jsv_del_env()
 #        R
 #        r
 #        shell
-#        sync
 #        S
 #        tc
 #        t_min          (from -t)
