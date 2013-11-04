@@ -2,5 +2,6 @@
    hiding the general SGE symbols. */
 {
   global: drmaa_*;
+  	  Java_com_sun_grid_*;
   local: *;
 };
