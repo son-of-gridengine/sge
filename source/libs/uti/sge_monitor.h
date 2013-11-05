@@ -102,7 +102,7 @@ typedef enum {
    NO_WARNING    = 0,
    EMT_WARNING   = 10,
    TET_WARNING   = 30,
-   MT_WARNING    = 10,
+   MT_WARNING    = 0,  /* no timeout for this thread */
    ST_WARNING    = 0,  /* no timeout for this thread */
    EXECD_WARNING = 10,
    SCT_WARNING   = 20
@@ -118,7 +118,7 @@ typedef enum {
    NO_ERROR    = 0,
    EMT_ERROR   = 600,
    TET_ERROR   = 600,
-   MT_ERROR    = 600,
+   MT_ERROR    = 0,   /* no timeout for this thread */
    ST_ERROR    = 0,   /* no timeout for this thread */
    EXECD_ERROR = 600,
    SCT_ERROR   = 600   

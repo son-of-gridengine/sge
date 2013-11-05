@@ -394,10 +394,11 @@ u_long32 sge_monitor_status(char **info_message, u_long32 monitor_time)
       int error_count = 0;
       struct timeval now;
       double time;
-      char   state = 'R';
       gettimeofday(&now,NULL);
       
       for (i = 0; i < MAX_OUTPUT_LINES; i++) {
+         char   state = 'R';
+
          sge_mutex_lock("sge_monitor_status", SGE_FUNC, __LINE__, &(Output[i].Output_Mutex));
          if (Output[i].name != NULL) {
             time = now.tv_usec - Output[i].last_wait_time.tv_usec;
