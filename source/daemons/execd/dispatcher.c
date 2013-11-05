@@ -110,13 +110,16 @@ int sge_execd_process_messages(sge_gdi_ctx_class_t *ctx)
       struct_msg_t msg;
       char* buffer     = NULL;
       u_long32 buflen  = 0;
-      sge_monitor_output(&monitor);
 
       memset((void*)&msg, 0, sizeof(struct_msg_t));
 
-      ret = gdi2_receive_message(ctx, msg.snd_name, &msg.snd_id, msg.snd_host, 
-                              &msg.tag, &buffer, &buflen, 0);
+      MONITOR_IDLE_TIME(
+         (ret = gdi2_receive_message(ctx, msg.snd_name, &msg.snd_id, msg.snd_host,
+                                     &msg.tag, &buffer, &buflen, 0)),
+         &monitor, mconf_get_monitor_time(), mconf_is_monitor_message());
       init_packbuffer_from_buffer(&msg.buf, buffer, buflen);
+
+      sge_monitor_output(&monitor);
 
       if (ret == CL_RETVAL_OK) {
          bool is_apb_used = false;
