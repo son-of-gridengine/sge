@@ -541,9 +541,10 @@ int sge_get_confval_array(const char *fname, int n, int nmissing, bootstrap_entr
   
       /* search for all requested configuration values */ 
       for (i=0; i<n; i++) {
-         if ((strcasecmp(name[i].name, cp) == 0) &&
+         if (cp && (strcasecmp(name[i].name, cp) == 0) &&
              ((cp = strtok_r(NULL, " \t\n", &pos)) != NULL)) {
-	   /* fixme value elements are 1025 long in caller */
+             if (!cp) break;
+             /* fixme value elements are 1025 long in caller */
              strncpy(value[i], cp, 512);
              cp = value[i];
              is_found[i] = true;
