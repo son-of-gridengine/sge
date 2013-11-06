@@ -1479,7 +1479,9 @@ If this parameter is set then xxQS_NAMExx uses the supplementary group ids
 when a job is deleted, or when
 .M xxqs_name_sxx_shepherd 8
 cleans up after job termination.
-This currently only works under GNU/Linux, Solaris, and Tru64.
+This currently only works under GNU/Linux, Solaris, Tru64, FreeBSD,
+and Darwin.
+The default value is on.
 Irrelevant with cpuset support (see USE_CGROUPS below).
 .PP
 .IP "\fIPDC_INTERVAL\fP"
