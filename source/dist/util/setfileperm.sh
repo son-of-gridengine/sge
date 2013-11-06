@@ -41,17 +41,17 @@
 # This script must be called by user root on a machine where user root has
 # permissions to change the ownership of a file
 # 
-# It is not necessary to run this script if the distribtuon has been
-# installed with pkgadd, since pkgadd takes care about the correct
+# It is not necessary to run this script if the distribution has been
+# installed with a package manager that takes care about the correct
 # permissions.
 #
 
 PATH=/bin:/usr/bin:/usr/sbin
 
-FILELIST="bin dtrace examples inst_sge install_execd install_qmaster \
-          lib mpi pvm qmon util utilbin start_gui_installer"
+FILELIST="bin examples inst_sge install_execd install_qmaster \
+          lib mpi pvm util utilbin"
 
-OPTFILES="catman ckpt doc include man hadoop"
+OPTFILES="catman ckpt doc include man hadoop dtrace qmon start_gui_installer"
 
 SUIDFILES="utilbin/*/rsh utilbin/*/rlogin utilbin/*/testsuidroot bin/*/sgepasswd utilbin/*/authuser"
 
@@ -210,11 +210,14 @@ for f in $FILELIST $OPTFILES; do
 done
 
 for file in $SUIDFILES; do
-   # Windows NFS Server does not like suid files
-   if [ "`echo $file | grep win32-x86`" != "" ]; then
-      chmod 511 $file
-   else
-      chmod 4511 $file
+   # rsh etc. may be missing
+   if [ -f $file ]; then
+      # Windows NFS Server does not like suid files
+      if [ "`echo $file | grep win32-x86`" != "" ]; then
+         chmod 511 $file
+      else
+         chmod 4511 $file
+      fi
    fi
 done
 
