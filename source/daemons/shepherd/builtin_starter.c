@@ -811,8 +811,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       sge_set_env_value("SGE_STARTER_SHELL_START_MODE", shell_start_mode);
       if (!strcasecmp("unix_behavior", shell_start_mode))
          shell_start_mode = "posix_compliant";
-      if (use_login_shell)
-         sge_set_env_value("SGE_STARTER_USE_LOGIN_SHELL", "true");
+      sge_set_env_value("SGE_STARTER_USE_LOGIN_SHELL", use_login_shell ? "true" : "false");
     } else {
        use_starter_method = 0;
     }      
