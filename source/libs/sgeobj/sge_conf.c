@@ -187,7 +187,7 @@ static int max_dynamic_event_clients = 1000;
 static bool keep_active = false;
 static bool enable_windomacc = false;
 static bool enable_binding = false;
-static bool enable_addgrp_kill = false;
+static bool enable_addgrp_kill = true;
 static u_long32 pdc_interval = 1;
 static char s_descriptors[100];
 static char h_descriptors[100];
@@ -863,7 +863,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       keep_active = false;
       enable_windomacc = false;
       enable_binding = HAVE_HWLOC ? true : false;
-      enable_addgrp_kill = false;
+      enable_addgrp_kill = true;
       use_qsub_gid = false;
       prof_execd_thrd = false;
       inherit_env = true;
