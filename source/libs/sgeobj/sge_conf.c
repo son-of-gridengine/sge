@@ -875,7 +875,6 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       accounting_flush_time = -1;
       sharelog_time = 0;
       log_consumables = false;
-      enable_addgrp_kill = false;
       use_cgroups = false;
       use_smaps = false;
       strcpy(s_descriptors, "UNDEFINED");
