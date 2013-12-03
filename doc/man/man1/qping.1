@@ -253,6 +253,13 @@ After the thread information comes statistics on the
 .MO malloc 3
 state, if available, e.g. using
 .MO mallinfo 3 .
+If xxQS_NAMExx is built with the
+.M jemalloc 3
+allocator, the statistics are not printed by default because they are
+in a different, verbose format.  See
+.B print_malloc_info
+in
+.M sge_conf 5 .
 
 .in -3
 .in -3

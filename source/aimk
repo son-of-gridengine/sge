@@ -870,6 +870,7 @@ while ($#argv >= 1 && $?found)
       # fixme: this should probably only apply to qmaster
       # Intentionally appended
       set LIBS = "$LIBS -ljemalloc"
+      set CFLAGS = "$CFLAGS -DHAVE_JEMALLOC=1"
       breaksw
    case "-with-munge"
       set MUNGE = 1

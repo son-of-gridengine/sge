@@ -35,9 +35,13 @@
 #include <pthread.h>
 #include <dlfcn.h>
 
-#if defined(LINUX) || defined(AIX43) || defined(AIX51) || defined(IRIX) || defined(SOLARIS) || defined(HP11)
-#  include <malloc.h>           /* mallinfo */
-#endif
+#if HAVE_JEMALLOC
+#  include <jemalloc/jemalloc.h>
+#else
+#  if defined(LINUX) || defined(AIX43) || defined(AIX51) || defined(IRIX) || defined(SOLARIS) || defined(HP11)
+#    include <malloc.h>           /* mallinfo */
+#  endif
+#endif  /* HAVE_JEMALLOC */
 
 #include "uti/sge_mtutil.h"
 #include "uti/sge_rmon.h"
@@ -46,6 +50,7 @@
 #include "uti/sge_time.h"
 #include "uti/sge_log.h"
 #include "uti/msg_utilib.h"
+#include "sgeobj/sge_conf.h"
 
 
 /*************************************************
@@ -86,12 +91,14 @@ static pthread_mutex_t global_mutex = PTHREAD_MUTEX_INITIALIZER;
 /* a static dstring used as a temporary buffer to build the commlib info string */
 static dstring Info_Line= DSTRING_INIT;
 
+#if !HAVE_JEMALLOC
 /* mallinfo related data */
 #if defined(LINUX) || defined(AIX43) || defined(AIX51) || defined(IRIX) || defined(SOLARIS) || defined(HP11)
 static bool mallinfo_initialized = false;
 static void *mallinfo_shlib_handle = NULL;
 static struct mallinfo (*mallinfo_func_pointer)(void) = NULL;
 #endif
+#endif  /* HAVE_JEMALLOC */
 
 /***********************************************
  * static functin def. for special extensions 
@@ -156,6 +163,10 @@ void sge_monitor_free(monitoring_t *monitor)
    monitor->work_line = NULL;
    monitor->thread_name = NULL;
 
+#if HAVE_JEMALLOC
+   /* fixme: anything to do? */
+#else
+   /* fixme: replace by configured value */
 #if defined(LINUX) || defined(AIX43) || defined(AIX51) || defined(IRIX) || defined(SOLARIS) || defined(HP11)
    sge_mutex_lock("sge_monitor_status", SGE_FUNC, __LINE__, &global_mutex);
    if (mallinfo_shlib_handle != NULL) {  
@@ -164,6 +175,7 @@ void sge_monitor_free(monitoring_t *monitor)
    }
    sge_mutex_unlock("sge_monitor_status", SGE_FUNC, __LINE__, &global_mutex);
 #endif
+#endif  /* HAVE_JEMALLOC */
  
    DEXIT;
 }
@@ -198,6 +210,8 @@ sge_monitor_init(monitoring_t *monitor, const char *thread_name, extension_t ext
 {
    DENTER(GDI_LAYER, "sge_monitor_init");
 
+#if HAVE_JEMALLOC
+#else
    /*
     * initialize the mallinfo function pointer if it is available
     */
@@ -219,6 +233,7 @@ sge_monitor_init(monitoring_t *monitor, const char *thread_name, extension_t ext
    }
    sge_mutex_unlock("sge_monitor_status", SGE_FUNC, __LINE__, &global_mutex);
 #endif
+#endif  /* HAVE_JEMALLOC */
 
    monitor->thread_name = thread_name;
  
@@ -348,6 +363,12 @@ sge_monitor_init(monitoring_t *monitor, const char *thread_name, extension_t ext
    DEXIT;
 }
 
+#if HAVE_JEMALLOC
+static void write_cb(void *dstr, const char *string)
+{
+   sge_dstring_append(dstr, string);
+}
+#endif
 
 /****** uti/monitor/sge_monitor_status() ***************************************
 *  NAME
@@ -435,6 +456,10 @@ u_long32 sge_monitor_status(char **info_message, u_long32 monitor_time)
       sge_dstring_append(&Info_Line, "\n");
    }
 
+#if HAVE_JEMALLOC
+   if (mconf_print_malloc_info())
+      malloc_stats_print(&write_cb, &Info_Line, "ga");
+#else
 #if defined(LINUX) || defined(AIX43) || defined(AIX51) || defined(IRIX) || defined(SOLARIS) || defined(HP11)
    if (mallinfo_func_pointer != NULL) {
       struct mallinfo mallinfo_data = mallinfo_func_pointer();
@@ -453,6 +478,7 @@ u_long32 sge_monitor_status(char **info_message, u_long32 monitor_time)
       sge_dstring_append(&Info_Line, "\n");
    }
 #endif
+#endif  /* HAVE_JEMALLOC */
  
 
    if (monitor_time != 0) { /* generates the output monitoring output data */
