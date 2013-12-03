@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#ifdef __GLIBC__
+#if __GLIBC__ && !HAVE_JEMALLOC
 #  ifndef HAVE_MTRACE             /* fixme if we get autoconf */
 #    define HAVE_MTRACE 1
 #  endif
@@ -179,6 +179,9 @@ static bool old_reschedule_behavior_array_job = false;
 
 #if HAVE_MTRACE
 static bool enable_mtrace = false;
+#endif
+#if HAVE_JEMALLOC
+static bool malloc_info = false;
 #endif
 
 static long ptf_max_priority = -999;
@@ -697,6 +700,9 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       old_reschedule_behavior_array_job = false;
       jsv_threshold = 5000;
       jsv_timeout= 10;
+#if HAVE_JEMALLOC
+      malloc_info = false;
+#endif
 
       for (s=sge_strtok_r(qmaster_params, ",; ", &conf_context); s; s=sge_strtok_r(NULL, ",; ", &conf_context)) {
          bool use_syslog;
@@ -825,6 +831,11 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
             if (use_syslog) log_state_set_log_file("syslog");
             continue;
          }
+#if HAVE_JEMALLOC
+         if (parse_bool_param(s, "print_malloc_info", &malloc_info)) {
+            continue;
+         }
+#endif
       }
       SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_WRITE);
       sge_free_saved_vars(conf_context);
@@ -1033,6 +1044,11 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
          if (parse_bool_param(s, "USE_SMAPS", &use_smaps))
             continue;
          }
+#if HAVE_JEMALLOC
+         if (parse_bool_param(s, "print_malloc_info", &malloc_info)) {
+            continue;
+         }
+#endif
       }
       SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_WRITE);
       sge_free_saved_vars(conf_context);
@@ -2505,6 +2521,18 @@ bool mconf_get_ignore_ngroups_max_limit(void) {
    SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_READ);
    DRETURN(ret);
 }
+
+#if HAVE_JEMALLOC
+bool mconf_print_malloc_info(void) {
+   bool ret;
+
+   DENTER(BASIS_LAYER, "mconf_print_malloc_info");
+   SGE_LOCK(LOCK_MASTER_CONF, LOCK_READ);
+   ret = malloc_info;
+   SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_READ);
+   DRETURN(ret);
+}
+#endif
 
 int mconf_get_max_job_deletion_time(void) {
    int deletion_time;
