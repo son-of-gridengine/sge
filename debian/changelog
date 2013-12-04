@@ -1,3 +1,9 @@
+sge (8.1.7) unstable; urgency=low
+
+  * New version.
+
+ -- Dave Love <fx@gnu.org>  Wed, 04 Dec 2013 17:22:50 +0000
+
 sge (8.1.6) unstable; urgency=low
 
   * New version.
