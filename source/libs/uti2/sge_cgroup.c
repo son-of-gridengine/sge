@@ -478,7 +478,9 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
           rogue = true;
           if (l) INFO((SGE_EVENT, "rogue: "SFN2, replace_char(cmd, l, '\0', ' ')));
 
+          sge_switch2start_user();
           kill(rpid, SIGKILL);
+          sge_switch2admin_user();
       }
    }
    fclose(fp);
