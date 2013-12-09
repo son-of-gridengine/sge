@@ -93,6 +93,27 @@ dev_file2string(const char* file, char *buffer, size_t *lbuffer)
    DRETURN(buffer);
 }
 
+/* Check each line of FILE for a KEY (using BUFFER of size LBUFFER as
+   temporary storage). If found, return a pointer to the rest
+   of the line. */
+char *
+file_getvalue(char *buffer, int lbuffer, const char* file, const char *key) {
+   int   lkey  = strlen(key);
+   char *value = NULL;
+   FILE *fp;
+   if ((fp = fopen(file, "r"))) {
+      while(fgets(buffer, lbuffer, fp)) {
+         if (strncmp(buffer, key, lkey) == 0) {
+            value = buffer + lkey;
+            break;
+         }
+      }
+      fclose(fp);
+   }
+
+   return value;
+}
+
 /* Return in ISADMIN whether running as SGE admin user or root unless
    an error occurred, indicated by ERROR true.  Intended for
    determining whether to switch2start_user or switch2admin_user in
