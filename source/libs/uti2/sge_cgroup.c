@@ -454,32 +454,41 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
       DRETURN(false);
    }
    while (fgets(spid, sizeof spid, fp)) {
-      char buf[MAX_STRING_SIZE], cfile[SGE_PATH_MAX], *cmd;
-      size_t l = sizeof buf;
+      char buf[MAX_STRING_SIZE], file[SGE_PATH_MAX];
 
-      /* Terminate string and extract process name */
+      /* Terminate string */
       replace_char(spid, strlen(spid), '\n', '\0');
-      snprintf(cfile, sizeof cfile, "/proc/%s/cmdline", spid);
-      errno = 0;
-      cmd = dev_file2string(cfile, buf, &l);
+
+      /* Get task group id */
+      /* (same as pid for processes, parent process for threads) */
+      snprintf(file, sizeof file, "/proc/%s/status", spid);
+      char *v = file_getvalue(buf, MAX_STRING_SIZE, file, "Tgid:");
+      if (! v) continue;
+      pid_t tgid = atoi(v);
 
       /* Move the task away to avoid waiting for it to die.  */
       /* Fixme:  Keep the cpusetdir tasks open and just write to that.  */
       reparent_proc(spid, cgroup_dir(cg_cpuset));
-      rpid = atoi(spid);
+      pid_t rpid = atoi(spid);
 
       /* Kill rogue process (unless it's the shepherd)        */
       /* Shepherd needs to be killed exactly once, otherwise  */
       /* sge_reap_children_execd is called multiple times     */
-      if (rpid && rpid != pid) {
+      if (tgid != pid) {
           if (!rogue)
              WARNING((SGE_EVENT, "rogue process(es) found for task "
     		  sge_u32"."sge_u32, job, task));
           rogue = true;
+
+          /* Extract and log process name */
+          snprintf(file, sizeof file, "/proc/%s/cmdline", spid);
+          errno = 0;
+          size_t l = sizeof buf;
+          char *cmd = dev_file2string(file, buf, &l);
           if (l) INFO((SGE_EVENT, "rogue: "SFN2, replace_char(cmd, l, '\0', ' ')));
 
           sge_switch2start_user();
-          kill(rpid, SIGKILL);
+          kill(tgid, SIGKILL);
           sge_switch2admin_user();
       }
    }
