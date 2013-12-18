@@ -1190,7 +1190,7 @@ unsigned long comm_write_message(COMM_HANDLE *handle,
     * one byte for the message type at the beginning of the sendbuf.
     * The commlib will free this buffer when it's content was sent.
     */
-   sendbuf = malloc(size+1);
+   sendbuf = sge_malloc(size+1);
    sendbuf[0] = type;
    memcpy(&sendbuf[1], buffer, size);
 

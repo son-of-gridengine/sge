@@ -224,7 +224,7 @@ buffer_append(char **buffer, size_t *buffer_size, size_t *fill_size,
    DENTER(TOP_LAYER, "buffer_append");
    if (*buffer == NULL || *buffer_size == 0) {
       *buffer_size = initial_size;
-      *buffer = malloc(initial_size);
+      *buffer = sge_malloc(initial_size);
       memset(*buffer, 0, *buffer_size);
    } else if (*fill_size + size_append > *buffer_size) {
       *buffer_size += size_append;
@@ -574,7 +574,7 @@ buffer_decode_hex(unsigned char *input, size_t *len, unsigned char **output)
    DENTER(TOP_LAYER, "buffer_decode_hex");
 
    s = *len / 2 + 1;
-   *output = malloc(s);
+   *output = sge_malloc(s);
    memset(*output, 0, s);
 
    for (s = 0; s < *len; s+=2) {

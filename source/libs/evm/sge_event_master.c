@@ -2394,7 +2394,7 @@ static void build_subscription(lListElem *event_el)
 
    DPRINTF(("rebuild event mask for client(id): %s("sge_u32")\n", lGetString(event_el, EV_name), lGetUlong(event_el, EV_id)));
 
-   sub_array = (subscription_t *) malloc(sizeof(subscription_t) * sgeE_EVENTSIZE);
+   sub_array = sge_malloc(sizeof(subscription_t) * sgeE_EVENTSIZE);
    memset(sub_array, 0, sizeof(subscription_t) * sgeE_EVENTSIZE); 
 
    for (i = 0; i < sgeE_EVENTSIZE; i++) {
@@ -3048,7 +3048,7 @@ static lListElem *elem_select(subscription_t *subscription, lListElem *element,
       while (ids[ids_size] != -1) {
          ids_size++;
       }
-      sub_list = malloc(ids_size * sizeof(lList*));
+      sub_list = sge_malloc(ids_size * sizeof(lList*));
       memset(sub_list, 0 , ids_size * sizeof(lList*));
 
       /* remove the sub-lists from the main element */

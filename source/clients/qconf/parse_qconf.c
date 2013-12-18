@@ -7267,7 +7267,7 @@ static int qconf_modify_attribute(sge_gdi_ctx_class_t *ctx,
 static const char *write_attr_tmp_file(const char *name, const char *value, 
                                        const char *delimiter, dstring *error_message)
 {
-   char *filename = (char *)malloc(sizeof(char) * SGE_PATH_MAX);
+   char *filename = sge_malloc(sizeof(char) * SGE_PATH_MAX);
    FILE *fp;
    int fd;
    DENTER(TOP_LAYER, "write_attr_tmp_file");

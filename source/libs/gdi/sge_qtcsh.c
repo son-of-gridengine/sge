@@ -207,7 +207,7 @@ print_func_t ostream
       task_name = lGetString(cep, CF_name);
    
       /* build task name with leading '!' for search operation */
-      ro_task_name = (char *)malloc(strlen(task_name) + 2);
+      ro_task_name = sge_malloc(strlen(task_name) + 2);
       ro_task_name[0] = '!';
       strcpy(&ro_task_name[1], task_name); /* RATS: ignore */
 
@@ -239,7 +239,7 @@ print_func_t ostream
    for_each (cep, clp_cluster) {
       task_name = lGetString(cep, CF_name);
       if (task_name[0] == '!') {
-         char *t = (char *)malloc(strlen(task_name));
+         char *t = sge_malloc(strlen(task_name));
          strcpy(t, &task_name[1]); /* RATS: ignore */
          lSetString(cep, CF_name, t);
          sge_free(&t);
@@ -319,7 +319,7 @@ int close_stdin /* use of qrsh's -nostdin option */
       narg_resreq +                      /* resource requests to qrsh */
       narg_argv +                        /* argv of command to be started */
       1;                                 /* NULL */
-   newargv = (char **)malloc(sizeof(char *) * newargv_size);
+   newargv = sge_malloc(sizeof(char *) * newargv_size);
    memset(newargv, 0, newargv_size);
 
    /* build argv for qrsh */
@@ -435,7 +435,7 @@ char **sge_get_qtask_args(void *context, char *taskname, lList **answer_list)
       num_args = sge_quick_count_num_args(value);
    }
    
-   args = (char **)malloc(sizeof(char *) * (num_args + 1));   
+   args = sge_malloc(sizeof(char *) * (num_args + 1));
    memset(args, 0, sizeof(char *) * (num_args + 1));
    sge_parse_args (value, args);
    
