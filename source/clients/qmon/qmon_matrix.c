@@ -526,8 +526,8 @@ int num_fields,
       return;
    }
 
-   field = (int *)malloc(num_fields*sizeof(int));
-   col = (const char **)malloc(num_fields*sizeof(char *));
+   field = sge_malloc(num_fields*sizeof(int));
+   col = sge_malloc(num_fields*sizeof(char *));
    if (field == NULL || col == NULL) {
       abort();
    }
@@ -616,8 +616,8 @@ int num_fields,
 
    DENTER(GUI_LAYER, "qmonGetNxN");
 
-   field = (int *)malloc(num_fields*sizeof(int));
-   col = (char **)malloc(num_fields*sizeof(char *));
+   field = sge_malloc(num_fields*sizeof(int));
+   col = sge_malloc(num_fields*sizeof(char *));
    if (field == NULL || col == NULL) {
       abort();
    }

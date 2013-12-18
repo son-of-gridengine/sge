@@ -146,7 +146,7 @@ void permutation(int n)
    }
 
    if (!s) {
-      s = (char *)malloc(n+1);
+      s = sge_malloc(n+1);
       s[n]='\0';
    }
   

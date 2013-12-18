@@ -1718,7 +1718,7 @@ void setByteArray(const char *byteArray, int size, lListElem *elem, int name){
    if (!byteArray || !elem)
       return;
       
-   z_stream_str = malloc(target_size);
+   z_stream_str = sge_malloc(target_size);
    memset(z_stream_str, 0, target_size);
 
    for (i=0; i < size; i++){
@@ -1767,7 +1767,7 @@ int getByteArray(char **byte, const lListElem *elem, int name){
 
    string = lGetString(elem, name);
    size = strlen(string) /2;
-   *byte = malloc(size);
+   *byte = sge_malloc(size);
    memset(*byte, 0, size);
 
    for (i=0; i < size; i++){
