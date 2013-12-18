@@ -1999,7 +1999,7 @@ static void start_qrsh_job(void)
    nargs = count_command(command);
 
    if (nargs > 0) {
-      buf = (char*)malloc(strlen(command)+2049);
+      buf = sge_malloc(strlen(command)+2049);
 
       sge_root = sge_get_root_dir(0, NULL, 0, 1);
       if (sge_root == NULL) {

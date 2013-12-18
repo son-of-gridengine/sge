@@ -599,7 +599,7 @@ lListElem *ep
    }
 
    if (itemCount > 0) {
-      items = (XmString*) malloc(sizeof(XmString)*itemCount); 
+      items = sge_malloc(sizeof(XmString)*itemCount);
 
       for(cep = lFirst(confl), i=0; cep; cep = lNext(cep), i++) {
          const char *name = lGetString(cep, CF_name);

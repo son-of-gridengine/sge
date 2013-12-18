@@ -286,8 +286,8 @@ void job_related_adminmail(u_long32 progid, lListElem *jr, int is_array, const c
       /*
       ** allocate enough space for trace and error file
       */
-      sge_mail_body_total = (char*) malloc(sizeof(char) * 
-                                           sge_mail_body_total_size); 
+      sge_mail_body_total = sge_malloc(sizeof(char) *
+                                       sge_mail_body_total_size);
       
       strcpy(sge_mail_body_total, sge_mail_body); /* RATS: ignore */
 

@@ -836,7 +836,7 @@ u_long32 flags
             }
 
             if (nl_index != -1) {
-               parameters = (char *)malloc (sizeof (char) * (nl_index + 1));
+               parameters = sge_malloc (sizeof (char) * (nl_index + 1));
                
                if (parameters == NULL) {
                   answer_list_add(&answer, MSG_SGETEXT_NOMEM, 
@@ -851,7 +851,7 @@ u_long32 flags
                length = nl_index + 1;
             }
             else {
-               parameters = (char *)malloc (sizeof (char) * (nt_index + 1));
+               parameters = sge_malloc (sizeof (char) * (nt_index + 1));
                
                if (parameters == NULL) {
                   answer_list_add(&answer, MSG_SGETEXT_NOMEM, 

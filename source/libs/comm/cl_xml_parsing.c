@@ -245,7 +245,7 @@ int cl_com_transformString2XML(const char* input, char** output) {
 
    /* we malloc the double size of the original string and hope that we don't need to realloc */
    malloced_size = input_length * 2;
-   *output = (char*)malloc((sizeof(char) * (malloced_size + 1)));
+   *output = sge_malloc((sizeof(char) * (malloced_size + 1)));
    for (i=0; i < input_length; i++) {
       bool found = false;
       int add_length = 1;

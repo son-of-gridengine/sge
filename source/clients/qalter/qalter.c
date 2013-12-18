@@ -798,7 +798,7 @@ static lList *qalter_parse_job_parameter(u_long32 me_who, lList *cmdline, lList 
          }   
          size += 3;
           
-         name = malloc(size);
+         name = sge_malloc(size);
          /* format: <delimiter>old_name<delimiter>new_name */
          snprintf(name, size, "%s%s%s%s", JOB_NAME_DEL, lGetString(ep, ID_str), JOB_NAME_DEL, job_name?job_name:"");
          rep = lAddElemStr(prequestlist, JB_job_name, name, rdp);

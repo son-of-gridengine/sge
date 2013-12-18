@@ -247,7 +247,7 @@ typedef char stringT[MAX_STRING_SIZE];
    type *variable = pthread_getspecific(key); \
    if(variable == NULL) { \
       int ret; \
-      variable = (type *)malloc(sizeof(type)); \
+      variable = sge_malloc(sizeof(type)); \
       init_func(variable); \
       ret = pthread_setspecific(key, (void*)variable); \
       if (ret != 0) { \

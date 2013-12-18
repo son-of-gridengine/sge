@@ -291,7 +291,7 @@ ensure_valid_what_and_where(sge_where_what_t *where_what)
 
       tmp_what_queue = lIntVector2What(QU_Type, qinstance_field_ids);
       n = lCountWhat(tmp_what_queue, QU_Type);
-      tmp_what_descr = (lDescr *) malloc(sizeof(lDescr) * (n + 1));
+      tmp_what_descr = sge_malloc(sizeof(lDescr) * (n + 1));
       lPartialDescr(tmp_what_queue, QU_Type, tmp_what_descr, &index);
 
       lFreeWhat(&tmp_what_queue); 

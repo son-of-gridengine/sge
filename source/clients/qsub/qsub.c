@@ -517,7 +517,7 @@ Error:
 *******************************************************************************/
 static char *get_bulk_jobid_string(long job_id, int start, int end, int step)
 {
-   char *jobid_str = (char *)malloc(sizeof(char) * 1024);
+   char *jobid_str = sge_malloc(sizeof(char) * 1024);
    char *ret_str = NULL;
    
    sprintf(jobid_str, "%ld.%d-%d:%d", job_id, start, end, step);

@@ -1933,7 +1933,7 @@ static int cl_com_dup_host(char** host_dest, const char* source, cl_host_resolve
           if ((the_dot = strchr(source, '.')) != NULL) {
             int size = the_dot - source;
             if (is_static_buffer == false) {
-               *host_dest = malloc(sizeof(char) * (size + 1));
+               *host_dest = sge_malloc(sizeof(char) * (size + 1));
             }
             *host_dest = strncpy(*host_dest, source, size);
             (*host_dest)[size] = '\0';
@@ -3660,7 +3660,7 @@ int cl_com_connection_complete_request(cl_raw_list_t* connection_list, cl_connec
                /* don't add default case for this switch! */
                case CL_DEBUG_CLIENT_ALL:
                case CL_DEBUG_CLIENT_MSG: {
-                  tmp_connect_message_buffer = (cl_byte_t*) malloc(connection->read_gmsh_header->dl * sizeof(cl_byte_t));
+                  tmp_connect_message_buffer = sge_malloc(connection->read_gmsh_header->dl * sizeof(cl_byte_t));
                   memcpy(tmp_connect_message_buffer, 
                          &(connection->data_read_buffer[(connection->data_read_buffer_processed)]),
                          connection->read_gmsh_header->dl);

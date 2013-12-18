@@ -792,7 +792,7 @@ get_arsess_list(lnk_link_t *arsess_list)
 
    if (ashes == NULL) {
       ash_max = ASHMAXINC;
-      ashes = (ash_t *)malloc(sizeof(ash_t)*ash_max);
+      ashes = sge_malloc(sizeof(ash_t)*ash_max);
       memset(ashes, 0, sizeof(ash_t)*ash_max);
    }
 
@@ -2303,11 +2303,11 @@ main(int argc, char **argv)
       int num_samples = 1000;
       int use_winsize = 0;
 
-      curr_cpu = (double *)malloc(numjobs * sizeof(double));
+      curr_cpu = sge_malloc(numjobs * sizeof(double));
       memset(curr_cpu, 0, numjobs*sizeof(double));
-      prev_cpu = (double *)malloc(numjobs * sizeof(double));
+      prev_cpu = sge_malloc(numjobs * sizeof(double));
       memset(prev_cpu, 0, numjobs*sizeof(double));
-      diff_cpu = (double *)malloc(numjobs * sizeof(double));
+      diff_cpu = sge_malloc(numjobs * sizeof(double));
       memset(diff_cpu, 0, numjobs*sizeof(double));
 
       printf("%s\n", MSG_SGE_GROSVIEWEXPORTFILE );

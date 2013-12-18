@@ -462,7 +462,7 @@ static JNIEnv* create_vm(const char *libjvm_path, int argc, char** argv)
 
    DENTER(GDI_LAYER, "create_vm");
 
-   options = (JavaVMOption*)malloc((argc+extraOptionCount)*sizeof(JavaVMOption));
+   options = sge_malloc((argc+extraOptionCount)*sizeof(JavaVMOption));
 
 	/* There is a new JNI_VERSION_1_4, but it doesn't add anything for the purposes of our example. */
 	args.version = JNI_VERSION_1_2;
@@ -705,8 +705,8 @@ sge_run_jvm(sge_gdi_ctx_class_t *ctx, void *anArg, monitoring_t *monitor)
    }
 
    DPRINTF(("fixed_jvm_argc + additional_jvm_argc = jvm_argc: %d + %d = %d\n", fixed_jvm_argc, additional_jvm_argc, jvm_argc));
-  
-   jvm_argv = (char**)sge_malloc(jvm_argc * sizeof(char*));
+
+   jvm_argv = sge_malloc(jvm_argc * sizeof(char*));
    /*
    ** adjust fixed_jvm_argc if an additional fixed argument line is added
    */

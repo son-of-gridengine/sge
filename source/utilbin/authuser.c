@@ -785,13 +785,13 @@ static int GetSidStrings(HANDLE hToken,
    if(TokenInfo == TokenOwner) {
       TOKEN_OWNER *pTokenOwner = (TOKEN_OWNER*)pTokenInfo;
       
-      *pppszSid = (char**)malloc(sizeof(char*));
+      *pppszSid = sge_malloc(sizeof(char*));
       ConvertSidToStringSid(pTokenOwner->Owner, *pppszSid);
    } else if(TokenInfo == TokenGroups) {
       TOKEN_GROUPS *pTokenGroups = (TOKEN_GROUPS*)pTokenInfo;
    
-      *pppszSid = (char**)malloc(sizeof(char*) * pTokenGroups->GroupCount);
-      *pppszGroupNames = (char**)malloc(sizeof(char*) * pTokenGroups->GroupCount);      
+      *pppszSid = sge_malloc(sizeof(char*) * pTokenGroups->GroupCount);
+      *pppszGroupNames = sge_malloc(sizeof(char*) * pTokenGroups->GroupCount);
       *nStrings = pTokenGroups->GroupCount;
       for(i=0; i<pTokenGroups->GroupCount; i++) {
          ConvertSidToStringSid(pTokenGroups->Groups[i].Sid, &((*pppszSid)[i]));
@@ -799,7 +799,7 @@ static int GetSidStrings(HANDLE hToken,
             szGroupName, &dwMaxGroupName,
             szDomainName, &dwMaxDomainName,
             &SidNameUse);
-         (*pppszGroupNames)[i] = (char*)malloc(sizeof(char) * (strlen(szDomainName) + strlen(szGroupName) + 2));            
+         (*pppszGroupNames)[i] = sge_malloc(sizeof(char) * (strlen(szDomainName) + strlen(szGroupName) + 2));
          /* RATS: ignore */
          sprintf((*pppszGroupNames)[i], "%s\\%s", szDomainName, szGroupName);            
       }
