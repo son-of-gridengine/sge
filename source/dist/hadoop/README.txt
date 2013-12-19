@@ -2,7 +2,7 @@
 Using the SGE Hadoop Integration
 ================================
 
-Apache Hadoop is a distributed computation framework based on the
+http://hadoop.apache.org/[Apache Hadoop] is a distributed computation framework based on the
 Map/Reduce paper published by Google.  It is composed of two main
 parts:  Map/Reduce and HDFS.  HDFS is a distributed file system where
 data are broken down into blocks of uniform size and replicated to
@@ -22,6 +22,12 @@ attempts to assign nodes to Hadoop parallel jobs that offer the data
 blocks needed by the jobs.  Each Hadoop parallel job sets up its own
 Map/Reduce framework exclusively for the use of that job.  When the
 job ends, the Map/Reduce framework is taken down.
+
+The `herd` support library for SGE uses an old release
+(0.20) and the distributed SGE packages are built against the
+http://archive.cloudera.com/redhat/cdh/3/[Cloudera CDH3 repository].
+You will need to install a similar version.  `herd` probably needs
+significant porting to the latest Hadoop release.
 
 Configuring the Integration
 ---------------------------
