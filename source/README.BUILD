@@ -18,7 +18,7 @@ The result of a normal build is a tar file which can be used for
 installation on a cluster of machines of the same type.
 
 There is a short summary of the process (or recipe for direct local
-installation) in the <<quickstart,Quickstart>> section.
+installation) in the <<quickstart,Quickstart section>>.
 
 == Platform Support
 
@@ -34,25 +34,26 @@ packaging is a much better bet than the current official Debian
 packaging (which is being worked on); it doesn't currently provide GUI
 installer or Hadoop support, unlike the RPM packaging.
 
-* x86_64/amd64:  Widely used in production.  Should work at least on
+[horizontal]
+* x86_64/amd64::  Widely used in production.  Should work at least on
   any currently-supported distribution (e.g. Debian stable, RHEL 5 or
   later).  Binary packages are available for RHEL 5 and 6, and Debian
   Wheezy.
-* Other GNU/Linux architectures:  Debian packages are available for
+* Other GNU/Linux architectures::  Debian packages are available for
   armel; x86 is known to work; other architectures should work.  Build
   problems are most likely to be due to naming conventions for
   architectures (`uname -m`) and Java locations.
 
-Some support libraries are available in
-<http://arc.liv.ac.uk/downloads/SGE/support/> in case they aren't
-available from your OS.
+Some support libraries are available in the
+http://arc.liv.ac.uk/downloads/SGE/support/[distribution area] in case
+they aren't available from your OS.
 
 === Solaris
 
 Recent versions have built on Solaris 10 with GCC or the system
 compiler and should do so on Solaris 11.  Requires add-on library
 support for openssl, Berkeley DB, and hwloc, e.g. from
-<http://www.opencsw.org/>.  You need `/usr/ccs/bin` on your path.  You
+http://www.opencsw.org/[OpenCSW].  You need `/usr/ccs/bin` on your path.  You
 need to use GCC (`aimk -gcc`) to build against the CSW hwloc package.
 
 === MS Windows
@@ -72,7 +73,7 @@ Service Pack 3 using Services for UNIX.  `qmaster`, `qmon`, DRMAA, and
 32-bit builds and clients work, but there may be problems with daemons
 (tested on Windows 7), apparently related to threading.  The native
 components as in the Interix build are currently not supported, and
-neither are.  64-bit builds.
+neither are.  A 64-bit version builds.
 
 === FreeBSD, NetBSD, DragonFly, OpenBSD
 
@@ -185,7 +186,7 @@ top-level `build.properties`, and may be overridden in
 are typically found in `nbproject/project.properties` in each Java
 component directory;
 
-* For requirements for the Interix MS Windows build, see <<windows
+* For requirements for the Interix MS Windows build, see <<Windows
   build,below>>;
 
 * For the Cygwin MS Windows build, the packages required over the base
@@ -204,7 +205,7 @@ source directory.
 == Building
 
 The following commands assume that your current working directory is
-++sge++__version__++/source++ from unpacking the source distribution
+++sge-++__version__++/source++ from unpacking the source distribution
 tarball, and that you are using a Bourne-like shell.
 
 A summary of the build procedure is:
@@ -331,7 +332,10 @@ using a shared, writable spool directory, it isn't necessary to do an
 explicit install on them.  Use `inst_sge` to install the execd on the
 master host and copy to or share with the hosts the `sgeexecd` init
 script.  Then start this after the qmaster has been configured with
-the relevant host names.
+the relevant host names (with `qconf -ah`).  You may or may not want
+to keep the execd on the master host for maintaining global load
+values, for instance, but you probably want to ensure it has zero
+slots, so as not to be able to run jobs.
 
 == Quickstart Installation[[quickstart]]
 
@@ -352,7 +356,7 @@ If you haven't built all the binaries (e.g. used `aimk -only-core`),
 add the option `-nobincheck` to `inst_sge` to avoid a check for all
 the possible binaries.
 
-== Building on MS Windows with SUA/SFU[[windows build]]
+== Building on MS Windows with SUA/SFU[[windowsbuild]]
 
 These are notes from building 8.1.3+ on 64-bit MS ``Windows 7
 Enterprise'' in the ``normal'' way with the ``SUA'' system.  The
