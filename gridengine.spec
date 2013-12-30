@@ -230,10 +230,7 @@ JAVA_BUILD_OPTIONS="-no-herd"
 %endif
 sh scripts/bootstrap.sh $JAVA_BUILD_OPTIONS
 # -no-remote because we have ssh and PAM instead
-./aimk -pam -no-remote $parallel_flags $JAVA_BUILD_OPTIONS
-# jemalloc should only be relevant for qmaster; avoid it for other packages
-rm -f LINUX*/sge_qmaster
-./aimk -only-core -with-jemalloc $parallel_flags sge_qmaster
+./aimk -pam -with-jemalloc -no-remote -with-munge $parallel_flags $JAVA_BUILD_OPTIONS
 ./aimk -man $JAVA_BUILD_OPTIONS
 %if %{with java}
 # "-no-gui-inst -no-herd -javadoc" still produces all the javadocs
