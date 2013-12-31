@@ -711,20 +711,13 @@ static int linux_proc_io(char *proc, uint64 *iochars)
    Not thread-safe; initially called by psStartCollector. */
 bool swap_in_status (void)
 {
-   FILE *fp;
-   char procnam[256];
+   char buffer[32];
    static bool ret = false, called = false;
 
    if (called) return ret;
    called = true;
-   if ((fp = fopen(PROC_DIR "/self/status", "r"))) {
-      while (fgets(procnam, sizeof procnam, fp))
-         if (strncmp(procnam, "VmSwap:", 7) == 0) {
-            ret = true;
-            break;
-         }
-      fclose(fp);
-   }
+   ret = (file_getvalue(buffer, sizeof buffer, PROC_DIR "/self/status",
+                        "VmSwap:") != NULL);
    return ret;
 }
 
@@ -733,20 +726,13 @@ bool swap_in_status (void)
    Not thread-safe; initially called by psStartCollector. */
 bool swap_in_smaps(void)
 {
-   FILE *fp;
-   char procnam[256];
+   char buffer[32];
    static bool ret = false, called = false;
 
    if (called) return ret;
    called = true;
-   if ((fp = fopen(PROC_DIR "/self/smaps", "r"))) {
-      while (fgets(procnam, sizeof procnam, fp))
-         if (strncmp(procnam, "Swap:", 5) == 0) {
-            ret = true;
-            break;
-         }
-      fclose(fp);
-   }
+   ret = (file_getvalue(buffer, sizeof buffer, PROC_DIR "/self/smaps",
+                        "Swap:") != NULL);
    return ret;
 }
 
@@ -758,20 +744,13 @@ bool swap_in_smaps(void)
    Not thread-safe; initially called by psStartCollector. */
 bool pss_in_smaps(void)
 {
-   FILE *fp;
-   char procnam[256];
+   char buffer[32];
    static bool ret = false, called = false;
 
    if (called) return ret;
    called = true;
-   if ((fp = fopen(PROC_DIR "/self/smaps", "r"))) {
-      while (fgets(procnam, sizeof procnam, fp))
-         if (strncmp(procnam, "Pss:", 4) == 0) {
-            ret = true;
-            break;
-         }
-      fclose(fp);
-   }
+   ret = (file_getvalue(buffer, sizeof buffer, PROC_DIR "/self/smaps",
+                        "Pss:") != NULL);
    return ret;
 }
 
