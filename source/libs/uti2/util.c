@@ -31,24 +31,6 @@
 #include "uti/sge_uidgid.h"
 #include "util.h"
 
-/* Is DIR and existing directory?  */
-bool
-is_dir(const char *dir)
-{
-   struct stat statbuf;
-
-   errno = 0;
-   if (stat(dir, &statbuf) < 0) {
-      errno = ENODEV;
-      return false;
-   }
-   if (!S_ISDIR(statbuf.st_mode)) {
-      errno = ENODEV;
-      return false;
-   }
-   return true;
-}
-
 /* Replace all occurrences of C1 in first N characters of STR with C2.
    Return STR.  */
 char *

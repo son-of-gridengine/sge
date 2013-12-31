@@ -227,7 +227,7 @@ find_cgroup_dir(cgroup_t group, char *dir, size_t ldir)
             s = NULL;
          }
          sge_strlcat(path, "/sge", sizeof path);
-         ret = rw && got_type && is_dir(path);
+         ret = rw && got_type && sge_is_directory(path);
          if (ret) break;
       }
    }
@@ -252,7 +252,7 @@ get_cgroup_job_dir(cgroup_t group, char *dir, size_t ldir, u_long32 job, u_long3
       WARNING((SGE_EVENT, "Can't build cgroup_job_dir value"));
       DRETURN(false);
    }
-   if (!is_dir(dir)) {
+   if (!sge_is_directory(dir)) {
       dir[0] = '\0';
       DRETURN(false);
    }
@@ -267,7 +267,7 @@ have_cgroup_job_dir(cgroup_t group, u_long32 job, u_long32 task)
 
    if (!get_cgroup_job_dir(group, dir, sizeof dir, job, task))
       return false;
-   return *dir && is_dir(dir);
+   return *dir && sge_is_directory(dir);
 }
 
 /* Write string RECORD to the task's GROUP controller file CFILE with
@@ -366,7 +366,7 @@ make_sub_cgroup(cgroup_t group, char *parent, char *child)
 
    DENTER(TOP_LAYER, "make_sub_cgroup");
    build_path(child_dir, parent, child);
-   if (!is_dir(child_dir)) {
+   if (!sge_is_directory(child_dir)) {
       errno = 0;
       if (mkdir(child_dir, 0755) != 0) {
          WARNING((SGE_EVENT, MSG_FILE_CREATEDIRFAILED_SS, child_dir,
@@ -421,7 +421,7 @@ reparent_proc(const char *proc, char *dir)
    if (!pid) return false;
    /* Don't fail if the process no longer exists.  */
    build_path(path, "/proc", proc);
-   if (!is_dir(path)) return true;
+   if (!sge_is_directory(path)) return true;
    return set_pid_cgroup(pid, dir);
 }
 
@@ -471,7 +471,9 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
       reparent_proc(spid, cgroup_dir(cg_cpuset));
       rpid = atoi(spid);
 
-      /* Kill rogue process (unless it's the shepherd)        */
+      snprintf(buf, sizeof buf, "/proc/%s", spid);
+
+      /* Kill rogue processes (avoiding the shepherd).          */
       /* Shepherd needs to be killed exactly once, otherwise  */
       /* sge_reap_children_execd is called multiple times     */
       if (tgid != pid) {
@@ -515,7 +517,7 @@ remove_job_cpuset(u_long32 job, u_long32 task)
    snprintf(dirpath, sizeof dirpath, "%s/"sge_u32"."sge_u32,
             cgroup_dir(cg_cpuset), job, task);
    INFO((SGE_EVENT, "removing task cpuset "SFN, dirpath));
-   if (!is_dir(dirpath)) return true;
+   if (!sge_is_directory(dirpath)) return true;
    errno = 0;
    /* Maybe this should be made reentrant, though there's existing code
       which does the same sort of thing in the same context.  */
@@ -547,7 +549,7 @@ empty_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
 
    snprintf(dir, sizeof dir, "%s/"sge_u32"."sge_u32"/"pid_t_fmt,
             cgroup_dir(cg_cpuset), job, task, pid);
-   if (!is_dir(dir)) return true;
+   if (!sge_is_directory(dir)) return true;
    build_path(taskfile, dir, "tasks");
    snprintf(taskfile0, sizeof taskfile0, "%s/"sge_u32"."sge_u32"/0/tasks",
             cgroup_dir(cg_cpuset), job, task);
