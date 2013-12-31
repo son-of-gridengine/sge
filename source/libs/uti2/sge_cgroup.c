@@ -1,6 +1,7 @@
 /* sge_cgroup.c -- helpers for resource management with Linux cpusets/cgroups
 
-   Copyright (C) 2012 Dave Love, University of Liverpool <d.love@liv.ac.uk>
+   Copyright (C) 2012, 2013 Dave Love, University of Liverpool
+   Copyright 2012, 2013 Mark Dixon, University of Leeds
 
    This file is free software: you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public License
@@ -271,7 +272,7 @@ have_cgroup_job_dir(cgroup_t group, u_long32 job, u_long32 task)
 }
 
 /* Write string RECORD to the task's GROUP controller file CFILE with
-   MODE copy or append.  For a cpuset, add "cpuset." prefix to CFLE if
+   MODE copy or append.  For a cpuset, add "cpuset." prefix to CFILE if
    necessary.  */
 bool
 write_to_shepherd_cgroup(cgroup_t group, const char *cfile, const char *record, u_long32 job, u_long32 task, pid_t pid)
@@ -433,7 +434,6 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
    char dir[SGE_PATH_MAX], taskfile[SGE_PATH_MAX], spid[PID_BSIZE];
    FILE *fp;
    bool rogue = false;
-   pid_t rpid;
 
    DENTER(TOP_LAYER, "remove_shepherd_cpuset");
    snprintf(dir, sizeof dir, "%s/"sge_u32"."sge_u32"/"pid_t_fmt,
@@ -454,29 +454,27 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
       DRETURN(false);
    }
    while (fgets(spid, sizeof spid, fp)) {
-      char buf[MAX_STRING_SIZE], file[SGE_PATH_MAX];
+      char buf[MAX_STRING_SIZE], file[SGE_PATH_MAX], *v, *cmd;
+      pid_t tgid;
+      size_t l;
 
-      /* Terminate string */
       replace_char(spid, strlen(spid), '\n', '\0');
-
-      /* Get task group id */
-      /* (same as pid for processes, parent process for threads) */
-      snprintf(file, sizeof file, "/proc/%s/status", spid);
-      char *v = file_getvalue(buf, MAX_STRING_SIZE, file, "Tgid:");
-      if (! v) continue;
-      pid_t tgid = atoi(v);
 
       /* Move the task away to avoid waiting for it to die.  */
       /* Fixme:  Keep the cpusetdir tasks open and just write to that.  */
       reparent_proc(spid, cgroup_dir(cg_cpuset));
-      rpid = atoi(spid);
 
-      snprintf(buf, sizeof buf, "/proc/%s", spid);
-
-      /* Kill rogue processes (avoiding the shepherd).          */
-      /* Shepherd needs to be killed exactly once, otherwise  */
-      /* sge_reap_children_execd is called multiple times     */
-      if (tgid != pid) {
+      /* Kill rogue processes, avoiding the shepherd.  (Shepherd needs
+         to be killed exactly once, otherwise sge_reap_children_execd
+         is called multiple times.)  Only consider entries in the task
+         list that are processes (Tgid == Pid), not threads; this
+         copes with old-style cpusets, lacking cgroup.procs.  */
+      snprintf(file, sizeof file, "/proc/%s/status", spid);
+      v = file_getvalue(buf, MAX_STRING_SIZE, file, "Tgid:");
+      if (! v) continue;
+      tgid = atoi(v);
+      if (strcmp(v, spid)       /* process */
+          && (tgid != pid)) {   /* not shepherd */
           if (!rogue)
              WARNING((SGE_EVENT, "rogue process(es) found for task "
     		  sge_u32"."sge_u32, job, task));
@@ -485,9 +483,10 @@ remove_shepherd_cpuset(u_long32 job, u_long32 task, pid_t pid)
           /* Extract and log process name */
           snprintf(file, sizeof file, "/proc/%s/cmdline", spid);
           errno = 0;
-          size_t l = sizeof buf;
-          char *cmd = dev_file2string(file, buf, &l);
-          if (l) INFO((SGE_EVENT, "rogue: "SFN2, replace_char(cmd, l, '\0', ' ')));
+          l = sizeof buf;
+          cmd = dev_file2string(file, buf, &l);
+          if (l)
+             INFO((SGE_EVENT, "rogue: "SFN2, replace_char(cmd, l, '\0', ' ')));
 
           sge_switch2start_user();
           kill(tgid, SIGKILL);
