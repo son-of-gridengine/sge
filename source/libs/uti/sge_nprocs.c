@@ -61,11 +61,6 @@
 #   include <sys/sysctl.h>
 #endif
 
-#if defined(NETBSD)
-#   include <sys/param.h>
-#   include <sys/sysctl.h>
-#endif
-
 #ifdef NPROCS_TEST
 #   include <stdio.h>
 #endif
@@ -98,7 +93,7 @@ int sge_nprocs()
    int nprocs=1; /* default */
 
 
-#if defined(_SC_NPROCESSORS_ONLN) /* Solaris, AIX, Linux */
+#if defined(_SC_NPROCESSORS_ONLN) /* Solaris, AIX, Linux, NetBSD */
    nprocs = sysconf(_SC_NPROCESSORS_ONLN);
 #endif
 
@@ -142,19 +137,6 @@ int sge_nprocs()
 
    if (sysctlbyname("hw.ncpu", &nprocs, &nprocs_len, NULL, 0) == -1) {
       nprocs = -1;
-   }
-#endif
-
-#if defined(NETBSD)
-   int mib[2];
-   size_t nprocs_len;
-
-   nprocs_len = sizeof(nprocs);
-   mib[0]     = CTL_HW;
-   mib[1]     = HW_NCPU;
-
-   if (sysctl(mib, sizeof(mib)/sizeof(int), &nprocs, &nprocs_len, NULL, 0) == -1) {
-     nprocs = -1;
    }
 #endif
 
