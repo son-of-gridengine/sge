@@ -83,8 +83,8 @@ const char* sge_get_schedd_text( int nr )
       case SCHEDD_INFO_HASINCORRECTPRJ_SSS      :
          return MSG_SCHEDD_INFO_HASINCORRECTPRJ_SSS       ;  
  
-      case SCHEDD_INFO_HASNOPRJ_S               :
-         return MSG_SCHEDD_INFO_HASNOPRJ_S                ;  
+      case SCHEDD_INFO_HASNOPRJ_SS              :
+         return MSG_SCHEDD_INFO_HASNOPRJ_SS               ;
  
       case SCHEDD_INFO_EXCLPRJ_SSS               :
          return MSG_SCHEDD_INFO_EXCLPRJ_SSS; 
@@ -101,8 +101,8 @@ const char* sge_get_schedd_text( int nr )
       case SCHEDD_INFO_NOTINQUEUELSTOFPE_SS     :
          return MSG_SCHEDD_INFO_NOTINQUEUELSTOFPE_SS      ; 
  
-      case SCHEDD_INFO_NOTACKPTQUEUE_SS         :
-         return MSG_SCHEDD_INFO_NOTACKPTQUEUE_SS          ;  
+      case SCHEDD_INFO_NOTACKPTQUEUE_S          :
+         return MSG_SCHEDD_INFO_NOTACKPTQUEUE_S           ;
  
       case SCHEDD_INFO_NOTINQUEUELSTOFCKPT_SS   :
          return MSG_SCHEDD_INFO_NOTINQUEUELSTOFCKPT_SS    ;  
@@ -143,8 +143,8 @@ const char* sge_get_schedd_text( int nr )
       case SCHEDD_INFO_NOFORCEDRES_SS           :
          return MSG_SCHEDD_INFO_NOFORCEDRES_SS            ;  
  
-      case SCHEDD_INFO_NOGLOBFORCEDRES_SS       :
-         return MSG_SCHEDD_INFO_NOGLOBFORCEDRES_SS        ;   
+      case SCHEDD_INFO_NOGLOBFORCEDRES_S        :
+         return MSG_SCHEDD_INFO_NOGLOBFORCEDRES_S         ;
  
       case SCHEDD_INFO_CKPTNOTFOUND_            :
          return MSG_SCHEDD_INFO_CKPTNOTFOUND_             ;   
@@ -188,17 +188,17 @@ const char* sge_get_schedd_text( int nr )
       case SCHEDD_INFO_NOMESSAGE_               :
          return MSG_SCHEDD_INFO_NOMESSAGE_                ;   
  
-      case SCHEDD_INFO_QUEUEFULL_               :
-         return MSG_SCHEDD_INFO_QUEUEFULL_                ;   
+      case SCHEDD_INFO_QUEUEFULL_S              :
+         return MSG_SCHEDD_INFO_QUEUEFULL_S               ;
  
-      case SCHEDD_INFO_QUEUESUSP_               :
-         return MSG_SCHEDD_INFO_QUEUESUSP_                ;   
+      case SCHEDD_INFO_QUEUESUSP_S              :
+         return MSG_SCHEDD_INFO_QUEUESUSP_S               ;
  
-      case SCHEDD_INFO_QUEUEDISABLED_           :
-         return MSG_SCHEDD_INFO_QUEUEDISABLED_            ;  
+      case SCHEDD_INFO_QUEUEDISABLED_S          :
+         return MSG_SCHEDD_INFO_QUEUEDISABLED_S           ;
  
-      case SCHEDD_INFO_QUEUENOTAVAIL_           :
-         return MSG_SCHEDD_INFO_QUEUENOTAVAIL_            ;   
+      case SCHEDD_INFO_QUEUENOTAVAIL_S          :
+         return MSG_SCHEDD_INFO_QUEUENOTAVAIL_S           ;
       
       case SCHEDD_INFO_INSUFFICIENTSLOTS_       :
          return MSG_SCHEDD_INFO_INSUFFICIENTSLOTS_        ;

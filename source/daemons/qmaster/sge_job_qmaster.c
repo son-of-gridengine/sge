@@ -3395,7 +3395,7 @@ int verify_suitable_queues(lList **alpp, lListElem *jep, int *trigger, bool is_m
                       (qi_state & QI_AMBIGUOUS)
                      ) {
                      schedd_mes_add(a.monitor_alpp, a.monitor_next_run, a.job_id,
-                                    SCHEDD_INFO_QUEUENOTAVAIL_, lGetString(qinstance, QU_full_name));
+                                    SCHEDD_INFO_QUEUENOTAVAIL_S, lGetString(qinstance, QU_full_name));
                      continue;
                   }
                }
