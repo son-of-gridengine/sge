@@ -226,14 +226,14 @@ int scheduler_method(sge_evc_class_t *evc, lList **answer_list, scheduler_all_da
          qlp = lSelect("", lists->all_queue_list, where, what);
 
          for_each(mes_queues, qlp) {
-            schedd_mes_add_global(NULL, evc->monitor_next_run, SCHEDD_INFO_QUEUENOTAVAIL_,
+            schedd_mes_add_global(NULL, evc->monitor_next_run, SCHEDD_INFO_QUEUENOTAVAIL_S,
                                       lGetString(mes_queues, QU_full_name));
          }
 
       }
 
       for_each(mes_queues, lists->dis_queue_list) {
-         schedd_mes_add_global(NULL, evc->monitor_next_run, SCHEDD_INFO_QUEUENOTAVAIL_,
+         schedd_mes_add_global(NULL, evc->monitor_next_run, SCHEDD_INFO_QUEUENOTAVAIL_S,
                                    lGetString(mes_queues, QU_full_name));
       }
 
