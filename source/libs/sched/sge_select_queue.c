@@ -1563,7 +1563,7 @@ dispatch_t sge_queue_match_static(const sge_assignment_t *a, lListElem *queue)
    } else {
       /* this is not advance reservation job, we have to drop queues in orphaned state */
       if (lGetUlong(queue, QU_state) == QI_ORPHANED) {
-         schedd_mes_add_global(a->monitor_alpp, a->monitor_next_run, SCHEDD_INFO_QUEUENOTAVAIL_, qinstance_name);
+         schedd_mes_add_global(a->monitor_alpp, a->monitor_next_run, SCHEDD_INFO_QUEUENOTAVAIL_S, qinstance_name);
          DRETURN(DISPATCH_NEVER_CAT);
       }
    }
@@ -1581,7 +1581,7 @@ dispatch_t sge_queue_match_static(const sge_assignment_t *a, lListElem *queue)
    if ((projects = lGetList(queue, QU_projects))) {
       if (!a->project) {
          schedd_mes_add(a->monitor_alpp, a->monitor_next_run, a->job_id,
-                        SCHEDD_INFO_HASNOPRJ_S,
+                        SCHEDD_INFO_HASNOPRJ_SS,
                         "queue", qinstance_name);
          DRETURN(DISPATCH_NEVER_CAT);
       }
@@ -1675,7 +1675,7 @@ dispatch_t sge_queue_match_static(const sge_assignment_t *a, lListElem *queue)
          DPRINTF(("Queue \"%s\" is not a checkpointing queue as requested by "
                   "job %d\n", qinstance_name, (int)a->job_id));
          schedd_mes_add(a->monitor_alpp, a->monitor_next_run, a->job_id,
-                        SCHEDD_INFO_NOTACKPTQUEUE_SS, qinstance_name);
+                        SCHEDD_INFO_NOTACKPTQUEUE_S, qinstance_name);
          DRETURN(DISPATCH_NEVER_CAT);
       }
 
@@ -1935,7 +1935,7 @@ sge_host_match_static(const sge_assignment_t *a, lListElem *host)
    
       if (!a->project) {
          schedd_mes_add(a->monitor_alpp, a->monitor_next_run, a->job_id,
-                        SCHEDD_INFO_HASNOPRJ_S, "host", eh_name);
+                        SCHEDD_INFO_HASNOPRJ_SS, "host", eh_name);
          DRETURN(DISPATCH_NEVER_CAT);
       }
 
@@ -2566,7 +2566,7 @@ int sge_split_queue_slots_free(bool monitor_next_run, lList **free, lList **full
           
          if (!qinstance_state_is_full(this)) {
             schedd_mes_add_global(NULL, monitor_next_run,
-                                  SCHEDD_INFO_QUEUEFULL_,
+                                  SCHEDD_INFO_QUEUEFULL_S,
                                   lGetString(this, QU_full_name));
             qinstance_state_set_full(this, true);
 
@@ -2650,7 +2650,7 @@ lList **suspended         /* QU_Type */
          if (!qinstance_state_is_manual_suspended(mes_queue)) {
             qinstance_state_set_manual_suspended(mes_queue, true);
             schedd_mes_add_global(NULL, monitor_next_run,
-                                  SCHEDD_INFO_QUEUESUSP_,
+                                  SCHEDD_INFO_QUEUESUSP_S,
                                   lGetString(mes_queue, QU_full_name));
          }
       }   
@@ -2708,7 +2708,7 @@ sge_split_cal_disabled(bool monitor_next_run, lList **queue_list, lList **disabl
 
       for_each(mes_queue, lp) {
          schedd_mes_add_global(NULL, monitor_next_run,
-                               SCHEDD_INFO_QUEUEDISABLED_,
+                               SCHEDD_INFO_QUEUEDISABLED_S,
                                lGetString(mes_queue, QU_full_name));
       }   
  
@@ -2765,7 +2765,7 @@ sge_split_disabled(bool monitor_next_run, lList **queue_list, lList **disabled)
 
       for_each(mes_queue, lp) {
          schedd_mes_add_global(NULL, monitor_next_run,
-                               SCHEDD_INFO_QUEUEDISABLED_,
+                               SCHEDD_INFO_QUEUEDISABLED_S,
                                lGetString(mes_queue, QU_full_name));
       }   
  
@@ -3088,7 +3088,7 @@ dispatch_t cqueue_match_static(const char *cqname, sge_assignment_t *a)
       DPRINTF(("Cluster queue \"%s\" does not work for -P %s job %d\n",
          cqname, project?project:"<no project>", (int)a->job_id));
       schedd_mes_add(a->monitor_alpp, a->monitor_next_run, a->job_id,
-                     SCHEDD_INFO_HASNOPRJ_S, "cluster queue", cqname);
+                     SCHEDD_INFO_HASNOPRJ_SS, "cluster queue", cqname);
       DRETURN(DISPATCH_NEVER_CAT);
    }
 
