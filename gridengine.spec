@@ -1,16 +1,16 @@
-# This spec file is intended to build gridengine rpms on RedHat or
-# Fedora, but has only been tested under RHEL 5.  It installs into
-# /opt/sge, intended to support shared installations like the original
-# Sun distribution.  It doesn't deal with the configuration of the
-# installed binaries (use the vanilla instructions) or with init
-# scripts, because it's difficult with anything other than a
-# default cell.
+# This spec file is intended to build gridengine rpms on RedHat and
+# derivatives (with the EPEL repository enabled) or Fedora, and also
+# OpenSuSE.  It installs into /opt/sge, intended to support shared
+# installations like the original Sun distribution.  It doesn't deal
+# with the configuration of the installed binaries (use the vanilla
+# instructions) or with init scripts, because it's difficult with
+# anything other than a default cell.
 
 # This was originally derived from the Fedora version, but
 # doesn't bear much resemblance to it now.
 
 # Fixmes:
-# * Check on/port to SuSE and other relevant distributions.
+# * Check on/port to other relevant distributions.
 # * Support shared installs "--with sharedinstall"
 # * Clarify the licence on this file to the extent it's derived from the
 #   Fedora one.
@@ -58,11 +58,30 @@ Prefix: %{sge_home}
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-# opensuse needs at least: libdb-4_8-devel, libopenssl-devel, java-1_6_0-openjdk
+# OpenSuSE support; SLES changes welcome
+%if 0%{?suse_version}
+%global dbpkg db
+%global sslpkg libopenssl
+%global hwlocpkg libhwloc
+%global xmupkg xorg-x11-libXmu
+%global with_jemalloc %nil
+%else
+%if 0%{?rhel} > 6
+# db4-devel available in 7, but doesn't provide /usr/include/db.h
+%global dbpkg libdb
+%else
+%global dbpkg db4
+%endif
+%global sslpkg openssl
+%global hwlocpkg hwloc
+%global xmupkg libXmu
+%global with_jemalloc -with-jemalloc
+BuildRequires: jemalloc-devel
+%endif
 
 BuildRequires: gcc, make, binutils
-BuildRequires: /bin/csh, openssl-devel, db4-devel, ncurses-devel, pam-devel
-BuildRequires: libXmu-devel, hwloc-devel >= 1.1, net-tools
+BuildRequires: /bin/csh, %{sslpkg}-devel, %{dbpkg}-devel, ncurses-devel, pam-devel
+BuildRequires: net-tools, %xmupkg-devel, %hwlocpkg-devel >= 1.1
 # This used to test %{?rhel}, but that's not defined on RHEL 5, and
 # I don't know whether _host_vendor distinguishes Fedora and RHEL.
 %if 0%{?fedora}
@@ -72,18 +91,19 @@ BuildRequires: motif-devel
 BuildRequires: lesstif-devel
 %endif
 %else
+# OK for SuSE
 BuildRequires: openmotif-devel
 %endif
 %if %{with java}
 BuildRequires: java-devel >= 1.6.0, javacc, ant-junit
-%if 0%{?rhel}
+%if 0%{?rhel}  < 7
 BuildRequires: ant-nodeps
 %endif
 %if %{with hadoop}
 BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
-BuildRequires: net-tools, man, jemalloc-devel, munge-devel
+BuildRequires: net-tools, man, jemalloc-devel
 Requires: binutils, ncurses, shadow-utils, net-tools, /bin/awk
 # for makewhatis
 Requires: man
@@ -230,7 +250,10 @@ JAVA_BUILD_OPTIONS="-no-herd"
 %endif
 sh scripts/bootstrap.sh $JAVA_BUILD_OPTIONS
 # -no-remote because we have ssh and PAM instead
-./aimk -pam -with-jemalloc -no-remote -with-munge $parallel_flags $JAVA_BUILD_OPTIONS
+./aimk -pam -no-remote $parallel_flags $JAVA_BUILD_OPTIONS
+# jemalloc should only be relevant for qmaster; avoid it for other packages
+rm -f LINUX*/sge_qmaster
+./aimk -only-core -with-jemalloc $parallel_flags sge_qmaster
 ./aimk -man $JAVA_BUILD_OPTIONS
 %if %{with java}
 # "-no-gui-inst -no-herd -javadoc" still produces all the javadocs
@@ -389,9 +412,6 @@ fi
 
 
 %changelog
-* Fri Oct 25 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.6
-- Remove -system-libs, build with MUNGE
-
 * Fri Aug 16 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4
 - Require /bin/ps for execd, qmaster
 
