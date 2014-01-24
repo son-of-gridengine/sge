@@ -878,6 +878,10 @@ while ($#argv >= 1 && $?found)
    case "-munge"
       set MUNGE = 1
       breaksw
+   case "-*"
+      echo $argv[1] ": Unknown option, aborting"
+      exit 1
+      breaksw
    default:
       unset found
       continue
