@@ -1085,11 +1085,11 @@ static int job_stdout_job(job_handler_t* handler, u_long32 jid, job_summary_t *s
          printf("   NA ");
       } else {
          if (sge_ext || summary->is_queue_assigned) {
-            printf("%5d ", (int)summary->tickets),
-            printf("%5d ", (int)summary->override_tickets); 
-            printf("%5d ", (int)summary->otickets);
-            printf("%5d ", (int)summary->ftickets);
-            printf("%5d ", (int)summary->stickets);
+            printf("%5ld ", (unsigned long)summary->tickets),
+            printf("%5ld ", (unsigned long)summary->override_tickets);
+            printf("%5ld ", (unsigned long)summary->otickets);
+            printf("%5ld ", (unsigned long)summary->ftickets);
+            printf("%5ld ", (unsigned long)summary->stickets);
             printf("%-5.2f ", summary->share); 
          } else {
             printf("      "); 
