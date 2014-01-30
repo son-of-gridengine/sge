@@ -383,7 +383,9 @@ expressed through the jobs' resource requests.
 .sp 1
 .B Note:
 Jobs can be forced to request a resource and thus to specify their 
-assumed consumption via the 'forced' value of the
+assumed consumption via a
+.B forced
+value of the
 .B requestable 
 parameter (see above).
 .sp 1
@@ -403,11 +405,12 @@ requesting the attribute is not enforced as explained above.
 .SS "\fBdefault\fP"
 Meaningful only for consumable complex attributes (see
 .B consumable
-parameter above). xxQS_NAMExx assumes the resource amount denoted in the 
+parameter above) and must be specified as 0 otherwise.
+xxQS_NAMExx assumes the resource amount denoted in the
 .B default
 parameter implicitly to be consumed by jobs being dispatched to a 
 host or queue managing the consumable attribute. Jobs explicitly requesting 
-the attribute via the \fI\-l\fP option to
+the attribute via the \fB\-l\fP option to
 .M qsub 1
 override this default value.
 .\"
@@ -417,7 +420,7 @@ job priorities on a per-resource base. The urgency value effects
 the addend for each resource when determining the resource request-related
 urgency contribution. For numeric type resource requests the
 addend is the product of the urgency value, the job's assumed slot 
-allocation, and the per-slot request as specified via the \fI\-l\fP option to 
+allocation, and the per-slot request as specified via the \fB\-l\fP option to
 .M qsub 1 .
 For string type requests the resource's urgency value is directly 
 used as addend. Urgency values are of type real. See under 

@@ -285,7 +285,7 @@ time in a default request file, in the embedded script flags, or
 in a
 command-line option. It is, however, not available with \fIqalter\fP.
 .PP
-The
+The request
 options described below can be requested either hard or soft.
 By default, all requests are considered hard until the \fB\-soft\fP option (see
 below) is encountered. The hard/soft status remains in effect
@@ -829,15 +829,15 @@ in full before a job can be scheduled.
 .br
 As xxQS_NAMExx scans the command line and script file for xxQS_NAMExx
 options and parameters it builds a list of resources required
-by a job. All such resource requests are considered as
-absolutely essential for the job to commence. If the
+by a job. All such resource requests are normally considered as
+absolutely essential for the job to commence.  However, if the
 \fB\-soft\fP option (see below) is encountered during the scan
 then all following resources are designated as "soft
 requirements" for execution, or "nice-to-have, but not
 essential". If the \fB\-hard\fP flag is encountered at a later
 stage of the scan, all resource requests following it once
-again become "essential". The \fB\-hard\fP and \fB\-soft\fP
-options in effect act as "toggles" during the scan.
+again become essential. The \fB\-hard\fP and \fB\-soft\fP
+options in effect act as toggles during the scan.
 .sp 1
 If this option or a corresponding value in \fIqmon\fP is specified then
 the corresponding \fB\-q\fP and \fB\-l\fP resource requirements will be
@@ -960,7 +960,20 @@ reference by job name or pattern is only accepted if the
 referenced job is owned by the same user as the referring job. Each sub-task of the 
 submitted job is not eligible for execution unless the corresponding sub-tasks 
 of all jobs referenced in the comma-separated job id and/or job name list have 
-completed.  If any array task of the referenced jobs exits with exit code 100, the
+completed.
+If dependent jobs have a different array stride to referenced jobs,
+the dependency may be many-to-one or one-to-many, e.g. if an array is
+submitted with
+.BR "\-t 1:50:2" ,
+depending on one submitted with
+.BR "\-t 1:50" ,
+then task
+.I n
+of the dependent depends on task
+.IR n +1
+of the other.
+.sp 1
+If any array task of the referenced jobs exits with exit code 100, the
 dependent tasks of the submitted job will remain ineligible for execution.
 .sp 1
 With the help of job names or regular patterns, one can specify
@@ -1309,6 +1322,7 @@ cannot be executed immediately. \fB\-now n\fP is default for \fIqsub\fP.
 Available for \fIqsub\fP, \fIqsh\fP, \fIqrsh\fP, \fIqlogin\fP and
 \fIqalter\fP only.
 .sp 1
+.\" fixme: name is job/AR name type
 The name of the job. The name should follow the "\fBname\fP" definition in
 .M sge_types 5 .
 Invalid job names will be denied at submit time.
@@ -1638,15 +1652,15 @@ are to be filled on an "as available" basis.
 .br
 As xxQS_NAMExx scans the command line and script file for xxQS_NAMExx
 options and parameters, it builds a list of resources required
-by the job. All such resource requests are considered as
-absolutely essential for the job to commence. If the
+by the job. All such resource requests are normally considered as
+absolutely essential for the job to commence. However, if the
 \fB\-soft\fP option is encountered during the scan
 then all following resources are designated as "soft
 requirements" for execution, or "nice-to-have, but not
 essential". If the \fB\-hard\fP flag (see above) is encountered at a later
 stage of the scan, all resource requests following it once
-again become "essential". The \fB\-hard\fP and \fB\-soft\fP
-options in effect act as "toggles" during the scan.  However, requests
+again become essential. The \fB\-hard\fP and \fB\-soft\fP
+options in effect act as toggles during the scan.  However, requests
 for consumable resources cannot be soft.
 .sp 1
 If this option or a corresponding value in \fIqmon\fP is specified then
@@ -1739,6 +1753,8 @@ instances as parameter with the name \fBS\fP.
 (See \fB\-jsv\fP option above or find more information concerning JSV in
 .M jsv 1 .)
 .\"
+.\" Fixme: not clear how this is actually parsed, and what qsub prints
+.\" doesn't seem consistent with what's submitted if you omit n
 .IP "\fB\-t\fP \fIn\fP[\fB\-\fP\fIm\fP[\fB:\fP\fIs\fP]]"
 .\" https://arc.liv.ac.uk/trac/SGE/ticket/800
 .\" Available for \fIqsub\fP and \fIqalter\fP only.
@@ -2262,6 +2278,11 @@ The time zone variable imported from
 if set.
 .IP "\fBUSER\fP" 1.5i
 The user's login name from the passwd database.
+.PP
+An additional variable,
+.BR SGE_JOBEXIT_STAT ,
+is set to the job exit status in the epilog only (see also
+.M sge_conf 5 ).
 .\"
 .\"
 .SH RESTRICTIONS

@@ -179,7 +179,9 @@ may be used to enable such dumps.
 .\"
 .IP \fBSGE_EXECD_PIDFILE\fP 1.5i
 Path name of file to which to write the daemon process id at startup
-(default "execd.pid").
+(default "execd.pid").  Note that this must be writable by the admin
+user (see
+.M bootstrap 5 ).
 .\"
 .SH RESTRICTIONS
 .I xxqs_name_sxx_execd
