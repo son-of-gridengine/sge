@@ -120,8 +120,7 @@ In conjunction with the hosts load situation at some time, this
 parameter specifies this queue's position in the scheduling order 
 within the suitable queues for a job to be dispatched according to
 the \fBqueue_sort_method\fP (see 
-.M sched_conf 5
-). 
+.M sched_conf 5 ).
 .PP
 Regardless of the \fBqueue_sort_method\fP setting,
 .M qstat 1
@@ -131,10 +130,9 @@ increasing sequence. (Type: number; template default: 0.)
 .SS "\fBload_thresholds\fP"
 \fBload_thresholds\fP is a list of load thresholds. When one
 of the thresholds is exceeded
-no further jobs will be scheduled to the queues and
-.M qmon 1
-will signal an overload condition for the node. Arbitrary load
-values defined in the "host" and "global" complexes (see
+no further jobs will be scheduled to the queues and the relevant queue
+instance will be put into the "alarm" state by the overload condition.
+Arbitrary load values defined in the "host" and "global" complexes (see
 .M complex 5
 for details) can be used.
 .PP
@@ -143,7 +141,8 @@ with each list element consisting of the \fIcomplex_name\fP (see
 .M sge_types 5 )
 of a 
 load value, an equal sign and the threshold value intended to 
-trigger the overload situation (e.g. load_avg=1.75,users_logged_in=5).
+trigger the overload situation (e.g.
+.BR load_avg=1.75,users_logged_in=5 ).
 .PP
 .B Note:
 Load values as well as consumable resources may be scaled differently
@@ -153,6 +152,10 @@ to
 .M host_conf 5
 for more information). Load thresholds are compared against the
 scaled load and consumable values.
+Boolean complexes can be used to set an alarm state with the value
+.BR false ,
+typically from a load sensor which checks a host's "health", e.g.
+.BR load_avg=1.75,health=false .
 .SS "\fBsuspend_thresholds\fP"
 A list of load thresholds with the same semantics as the
 \fBload_thresholds\fP
@@ -241,10 +244,10 @@ execute at the same time, i.e.
 (see below) should be set to 1 for this queue. 
 .SS "\fBqtype\fP"
 The type of queue.  Currently
-.IR batch ,
-.IR interactive ,
+.IR BATCH ,
+.BR INTERACTIVE ,
 a combination in a comma-separated list of both, or
-.IR NONE .
+.BR NONE .
 .PP
 Jobs submitted with option \fB\-now y\fP can only be scheduled on
 .I interactive
@@ -255,8 +258,11 @@ queues.  \fB\-now y\fP is the default for \fIqsh\fP, \fIqrsh\fP, and
 Nevertheless, the option can be applied to all commands, with either
 argument, to direct jobs to specific queue types.
 .PP
-The formerly supported types parallel and checkpointing are not allowed 
-anymore. A queue
+The formerly supported types
+.B parallel
+And
+.B checkpointing
+are not allowed anymore. A queue
 instance is implicitly of type parallel/checkpointing 
 if there is a parallel environment or a checkpointing interface specified
 for this queue instance in \fBpe_list\fP/\fBckpt_list\fP. 
