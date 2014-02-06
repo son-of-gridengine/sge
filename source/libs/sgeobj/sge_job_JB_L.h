@@ -42,40 +42,41 @@ extern "C" {
 
 /****** sgeobj/job/--JB_Type **************************************************
 *  NAME
-*     JB_Type - CULL job element 
+*     JB_Type - CULL job element
 *
 *  ELEMENTS
 *     Job identification and dependencies
 *     ===================================
 *
 *     SGE_ULONG(JB_job_number) ---> JB_id
-*        Uniq job number.
+*        Unique job number.
 *
-*     SGE_STRING(JB_job_name) 
-*        Job name ("qsub/qalter -N job_name")  
+*     SGE_STRING(JB_job_name)
+*        Job name ("qsub/qalter -N job_name")
 *
-*     SGE_XULONG(JB_version)
+*     SGE_ULONG(JB_version)
+*        The number of times the job has been modified.
 *
 *     SGE_LIST(JB_jid_request_list)
 *        job requested dependencies (JRE_Type only JRE_job_name)
 *
 *     SGE_LIST(JB_jid_predecessor_list)
 *        Predecessor jobs (JRE_Type only JRE_job_name)
-*  
-*     SGE_LIST(JB_jid_successor_list)  
-*        Sucessor jobs (JRE_Type only JRE_job_number)
+*
+*     SGE_LIST(JB_jid_successor_list)
+*        Successor jobs (JRE_Type only JRE_job_number)
 *
 *     SGE_LIST(JB_ja_ad_request_list)
 *        job requested array dependencies (JRE_Type only JRE_job_name)
 *
 *     SGE_LIST(JB_ja_ad_predecessor_list)
 *        Predecessor array jobs (JRE_Type only JRE_job_name)
-*  
-*     SGE_LIST(JB_ja_ad_successor_list)  
-*        Sucessor array jobs (JRE_Type only JRE_job_number)
 *
-*     SGE_STRING(JB_session) 
-*        Jobs session (JAPI session tag for job event selection)  
+*     SGE_LIST(JB_ja_ad_successor_list)
+*        Successor array jobs (JRE_Type only JRE_job_number)
+*
+*     SGE_STRING(JB_session)
+*        Job's session (JAPI session tag for job event selection)
 *
 *     Project/Department
 *     ==================
@@ -89,34 +90,34 @@ extern "C" {
 *     Data related to job script
 *     ===========================
 *
-*     SGE_STRING(JB_directive_prefix)     
-*        Command prefix for jobscript ("qsub -C prefix") for parsing 
+*     SGE_STRING(JB_directive_prefix)
+*        Command prefix for jobscript ("qsub -C prefix") for parsing
 *        special comments in the script file.
 *
-*     SGE_XSTRING(JB_exec_file) 
-*     ---> is the path to the locally spooled copy on the execution daemon, 
-*          it is script what actually gets executed, 
+*     SGE_STRING(JB_exec_file)
+*     ---> The path to the locally spooled copy on the execution daemon,
+*          It is script what actually gets executed,
 *          In the case of a binary, is unused.
 *
 *     SGE_STRING(JB_script_file)
-*     ---> is the path to the job as sent from the CLI, is the path on the submit host  
-*          In the case of a binary, is the path to the binary 
+*     ---> The path to the job as sent from the CLI, is the path on the submit host
+*          In the case of a binary, is the path to the binary
 *
-*     SGE_ULONG(JB_script_size) 
+*     SGE_ULONG(JB_script_size)
 *     ---> really needed?
 *
-*     SGE_STRING(JB_script_ptr) 
-*     ---> the pointer to the character area of the jobscript
+*     SGE_STRING(JB_script_ptr)
+*     ---> the pointer to the character area of the job script
 *
 *     Time information
 *     ================
 *
 *     SGE_RULONG(JB_submission_time)
 *
-*     SGE_ULONG(JB_execution_time)         
+*     SGE_ULONG(JB_execution_time)
 *        When should the job start ("qsub/qalter -a date_time")
 *
-*     SGE_ULONG(JB_deadline)      
+*     SGE_ULONG(JB_deadline)
 *        Deadline initiation time. (qsub -dl date_time)
 *
 *     User related information
@@ -130,60 +131,60 @@ extern "C" {
 *
 *     SGE_RULONG(JB_gid)
 *
-*     SGE_STRING(JB_account)  
+*     SGE_STRING(JB_account)
 *        Account string ("qsub/qalter -A account string")
 *
 *     Submission environment
 *     ======================
 *
-*     SGE_STRING(JB_cwd)      
+*     SGE_STRING(JB_cwd)
 *        Current working directory during qsub ("qsub -cwd")
 *
-*     SGE_BOOL(JB_notify)                  
+*     SGE_BOOL(JB_notify)
 *        Notify job of impending kill/stop signal. ("qsub -notify")
 *
-*     SGE_ULONG(JB_type) 
+*     SGE_ULONG(JB_type)
 *        Start job immediately or not at all. ("qsub -now")
 *        JG: TODO: it is no boolean, but misused for other information!
 *
 *     SGE_BOOL(JB_reserve)
 *        Specifies a reservation is desired by the user ("-R y|n").
-*        Available for non-immediate job submissions. Irrespective 
+*        Available for non-immediate job submissions. Irrespective
 *        of the users desire a job reservation is made
 *
-*        o only in reservation scheduling mode 
-*        o only until the maximum number of reservations during a 
-*          scheduling run is not exceeded when the order comes at 
-*          this job. The maximum number (SC_max_reservation) can be 
+*        o only in reservation scheduling mode
+*        o only when the maximum number of reservations during a
+*          scheduling run is greater than the position of the job in
+*          priority order. The maximum number (SC_max_reservation) can be
 *          specified in sched_conf(5).
-*        o only for non-immediate jobs 
+*        o only for non-immediate jobs
 *
 *        Default is 'n'.
 *
 *     SGE_ULONG(JB_ar) ---> JB_ar
-*        Uniq advance reservation number.
+*        Unique advance reservation number.
 *
-*     SGE_ULONG(JB_priority) 
-*        Priority ("qsub/qalter -p priority")     
+*     SGE_ULONG(JB_priority)
+*        Priority ("qsub/qalter -p priority")
 *
-*     SGE_ULONG(JB_jobshare) 
-*        Priority ("qsub/qalter -js jobshare")     
+*     SGE_ULONG(JB_jobshare)
+*        Priority ("qsub/qalter -js jobshare")
 *
-*     SGE_LIST(JB_shell_list, PN_Type)    
+*     SGE_LIST(JB_shell_list, PN_Type)
 *        Command interpreter to be used (PN_Type).
 *        ("qsub/qalter -S shell")
 *
-*     SGE_ULONG(JB_verify)             
+*     SGE_ULONG(JB_verify)
 *        Triggers "verify" messages. (qsub -verify)
 *
-*     SGE_LIST(JB_env_list) 
-*        Export these env variables (VA_Type). ("qsub -V").
+*     SGE_LIST(JB_env_list)
+*        Export these environment variables (VA_Type). ("qsub -V").
 *
-*     SGE_TLIST(JB_context, VA_Type)       
-*        Custom attributes (name,val) pairs (VA_Type). 
+*     SGE_TLIST(JB_context, VA_Type)
+*        Custom attributes (name,val) pairs (VA_Type).
 *        ("qsub/qalter -ac/-dc context_list")
 *
-*     SGE_LIST(JB_job_args)  
+*     SGE_LIST(JB_job_args)
 *        Job arguments (ST_Type).
 *
 *     SGE_LIST(JB_binding)
@@ -191,133 +192,133 @@ extern "C" {
 *
 *     Checkpointing/Restart
 *     =====================
-*     SGE_ULONG(JB_checkpoint_attr)  ----> merge all checkpointing 
+*     SGE_ULONG(JB_checkpoint_attr)  ----> merge all checkpointing
 *                                          stuff to one object?
-*        Checkpoint attributes ("qsub/qalter -c interval_flags")   
+*        Checkpoint attributes ("qsub/qalter -c interval_flags")
 *
-*     SGE_STRING(JB_checkpoint_name)    
-*        Name of ckpt object ("qsub/qalter -ckpt ckpt_name")
+*     SGE_STRING(JB_checkpoint_name)
+*        Name of checkpoint object ("qsub/qalter -ckpt ckpt_name")
 *
 *     SGE_OBJECT(JB_checkpoint_object, CK_Type)
-*        Ckpt object which will be sent from qmaster to execd.
+*        Checkpoint object which will be sent from qmaster to execd.
 *
-*     SGE_ULONG(JB_checkpoint_interval)    
+*     SGE_ULONG(JB_checkpoint_interval)
 *        Checkpoint frequency ("qsub/qalter -c seconds")
 *
-*     SGE_ULONG(JB_restart)                 
+*     SGE_ULONG(JB_restart)
 *        Is job rerunable? ("qsub/qalter -r y/n")
 *        JG: TODO: it is no boolean, but misused for other information!
 *
 *     Job I/O
 *     =======
 *
-*     SGE_LIST(JB_stdout_path_list) 
+*     SGE_LIST(JB_stdout_path_list)
 *        Pathname for stdout (PN_Type). ("qsub/qalter -o path_name")
 *
-*     SGE_LIST(JB_stderr_path_list)   
-*        Std error path streams (PN_Type). ("qsub/qalter "-e path_name")
+*     SGE_LIST(JB_stderr_path_list)
+*        Standard error path streams (PN_Type). ("qsub/qalter "-e path_name")
 *
-*     SGE_LIST(JB_stdin_path_list)   
-*        Std input path streams (PN_Type). ("qsub/qalter "-i path_name")
+*     SGE_LIST(JB_stdin_path_list)
+*        Standard input path streams (PN_Type). ("qsub/qalter "-i path_name")
 *
-*     SGE_BOOL(JB_merge_stderr)   
+*     SGE_BOOL(JB_merge_stderr)
 *        Merge stdout and stderr? ("qsub/qalter -j y|n")
 *
 *     Resource requests
 *     =================
 *
-*     SGE_LIST(JB_hard_resource_list, CE_Type) 
+*     SGE_LIST(JB_hard_resource_list, CE_Type)
 *        Hard resource requirements/limits/restrictions (CE_Type).
 *        ("qsub -l resource_list")
 *
-*     SGE_LIST(JB_soft_resource_list, CE_Type) 
+*     SGE_LIST(JB_soft_resource_list, CE_Type)
 *        Soft resource requirements/limits/restrictions (CE_Type).
 *        ("qsub -l resource_list")
 *
-*     SGE_LIST(JB_hard_queue_list) 
+*     SGE_LIST(JB_hard_queue_list)
 *        ----> why separated from other requests?
 *        Hard queue list (QR_Type). ("qsub -q dest_identifier")
 *
-*     SGE_LIST(JB_soft_queue_list) 
+*     SGE_LIST(JB_soft_queue_list)
 *        ----> why separated from other requests?
 *        Soft queue list (QR_Type). ("qsub/qselect -q dest_identifier")
 *
 *     Mail options
 *     ============
 *
-*     SGE_ULONG(JB_mail_options)           
+*     SGE_ULONG(JB_mail_options)
 *        Mail options  ("qsub/qalter -m mail_options")
 *
-*     SGE_LIST(JB_mail_list)    
-*        Mail recipiants (MR_Type). ("qsub/qalter -M mail_list)
+*     SGE_LIST(JB_mail_list)
+*        Mail recipients (MR_Type). ("qsub/qalter -M mail_list)
 *
 *     Parallel Job info
 *     =================
 *
-*     SGE_STRING(JB_pe)      
+*     SGE_STRING(JB_pe)
 *        Name of requested PE or wildcard expression for matching PEs
 *
 *     SGE_LIST(JB_pe_range)
-*        PE slot range (RN_Type). Qmaster ensure it is ascending and 
+*        PE slot range (RN_Type). Qmaster ensures it is ascending and
 *        normalized.
 *
-*     SGE_LIST(JB_master_hard_queue_list)  
+*     SGE_LIST(JB_master_hard_queue_list)
 *        Master queue list (QR_Type). ("qsub -masterq queue_list")
 *
 *     Security related data
 *     =====================
 *
-*     SGE_XSTRING(JB_tgt)                  
-*        Kerberos client TGT 
+*     SGE_STRING(JB_tgt)
+*        Kerberos client TGT
 *
-*     SGE_XSTRING(JB_cred)                 
-*        DCE/Kerberos credentials 
+*     SGE_STRING(JB_cred)
+*        DCE/Kerberos credentials
 *
 *     Data related to array jobs
 *     ==========================
 *
-*     SGE_LIST(JB_ja_structure)  
-*        Elements describe task id range structure during the
-*        submission time of a (array) job (RN_Type). 
+*     SGE_LIST(JB_ja_structure)
+*        Elements describing task id range structure during the
+*        submission time of a (array) job (RN_Type).
 *        ("qsub -t tid_range")
 *
-*     SGE_LIST(JB_ja_n_h_ids)    
+*     SGE_LIST(JB_ja_n_h_ids)
 *        Just submitted array task without hold state (RN_Type).
 *        ("qsub -t tid_range")
 *
-*     SGE_LIST(JB_ja_u_h_ids)    
+*     SGE_LIST(JB_ja_u_h_ids)
 *        Just submitted and user hold applied (RN_Type).
 *        ("qsub -h -t tid_range")
 *        ("qalter -h u/U jid.tid1-tid2:step")
 *
-*     SGE_LIST(JB_ja_s_h_ids)    
+*     SGE_LIST(JB_ja_s_h_ids)
 *        Just submitted and system hold applied (RN_Type).
 *        ("qalter -h s/S jid.tid1-tid2:step")
-*  
-*     SGE_LIST(JB_ja_o_h_ids)    
+*
+*     SGE_LIST(JB_ja_o_h_ids)
 *        Just submitted and operator hold applied (RN_Type).
 *        ("qalter -h o/O jid.tid1-tid2:step")
 *
-*     SGE_LIST(JB_ja_a_h_ids)    
+*     SGE_LIST(JB_ja_a_h_ids)
 *        Just submitted and array hold applied (RN_Type).
 *        ("qalter -hold_jid_ad wc_job_list")
 *
-*     SGE_LIST(JB_ja_z_ids)      
+*     SGE_LIST(JB_ja_z_ids)
 *        Zombie task ids (RN_Type).
 *
-*     SGE_LIST(JB_ja_template)  
+*     SGE_LIST(JB_ja_template)
 *        Template for new tasks.  The schedd thread
 *        stores initial tickets in this element. (JAT_Type)
 *
-*     SGE_LIST(JB_ja_tasks)     
-*        List of array tasks (in case of array jobs) or one task 
+*     SGE_LIST(JB_ja_tasks)
+*        List of array tasks (in case of array jobs) or one task
 *        (in case of a job) (JAT_Type).
 *
 *     Data used only in scheduler
 *     ===========================
 *
-*     SGE_HOST(JB_host)                    
-*        host job is executing on. Local to scheduler.
+*     SGE_HOST(JB_host)
+*        Host job is executing on. Local to scheduler.
 *        Not spooled.
 *
 *     SGE_REF(JB_category)
@@ -326,61 +327,63 @@ extern "C" {
 *     Misc
 *     ====
 *
-*     SGE_LIST(JB_user_list)               
-*        List of usernames (qsub/qalter -u username_list). 
-*        ---> qsub -u does not exist. Not part of a job, but only 
-*             userd for qalter request as where condition. Could most 
+*     SGE_LIST(JB_user_list)
+*        List of usernames (qsub/qalter -u username_list).
+*        ---> qsub -u does not exist. Not part of a job, but only
+*             userd for qalter request as where condition. Could most
 *             probably be passed via lCondition.
 *
-*     SGE_LIST(JB_job_identifier_list) 
-*        ---> condition for qalter? Then it should better be passed 
-*             via condition. 
+*     SGE_LIST(JB_job_identifier_list)
+*        ---> condition for qalter? Then it should better be passed
+*             via condition.
 *        (ID_Type)
 *
-*     SGE_XULONG(JB_verify_suitable_queues)   ---> qalter?
+*     SGE_ULONG(JB_verify_suitable_queues)   ---> qalter?
 *
-*     SGE_XULONG(JB_soft_wallclock_gmt) ---> the same as complex s_rt?
+*     SGE_ULONG(JB_soft_wallclock_gmt)
+*        Time at which the job's s_rt expires.
 *
-*     SGE_XULONG(JB_hard_wallclock_gmt) ---> the same as complex h_rt?
+*     SGE_ULONG(JB_hard_wallclock_gmt)
+*        Time at which the job's h_rt expires.
 *
-*     SGE_DOUBLE(JB_urg )         
+*     SGE_DOUBLE(JB_urg )
 *        Absolute static urgency importance. The admin can use arbitrary
 *        weighting factors in the formula used to determine this number. So any
 *        value is possible. Needed only when scheduling code is run.
 *        Not spooled.
 *
-*     SGE_DOUBLE(JB_nurg )         
+*     SGE_DOUBLE(JB_nurg )
 *        Relative importance due to static urgency in the range between 0.0
-*        and 1.0. No need to make this a per task attribute as long as waiting time 
+*        and 1.0. No need to make this a per task attribute as long as waiting time
 *        and deadline remain job attributes.
 *        Not spooled.
 *
-*     SGE_DOUBLE(JB_nppri )         
+*     SGE_DOUBLE(JB_nppri )
 *        Relative importance due to Posix priority in the range between 0.0
 *        and 1.0. No need to make this a per task attribute as long as the POSIX
 *        priority remains a job attribute.
 *        Not spooled.
 *
-*     SGE_DOUBLE(JB_rrcontr )         
+*     SGE_DOUBLE(JB_rrcontr )
 *        Combined contribution to static urgency from all resources. This can
-*        be any value. Actually this is a property of job category. This field is 
-*        needed only to provide it for diagnosis purposes it as per job information 
-*        via GDI. 
+*        be any value. Actually this is a property of job category. This field is
+*        needed only to provide it for diagnosis purposes it as per job information
+*        via GDI.
 *        Not spooled.
 *
-*     SGE_DOUBLE(JB_dlcontr )         
+*     SGE_DOUBLE(JB_dlcontr )
 *        Contribution to static urgency from job deadline. This can be any
-*        value. No need to make this a per task attribute as long a deadline is a 
-*        job attribute. Increases over time. 
+*        value. No need to make this a per task attribute as long a deadline is a
+*        job attribute. Increases over time.
 *        Not spooled.
 *
-*     SGE_DOUBLE(JB_wtcontr )         
+*     SGE_DOUBLE(JB_wtcontr )
 *        Contribution to static urgency from waiting time. This can be any
-*        value. No need to make this a per task attribute as long as waiting time 
+*        value. No need to make this a per task attribute as long as waiting time
 *        is a job attribute. Increases over time.
 *        Not spooled.
 *
-*     SGE_ULONG(JB_override_tickets)       
+*     SGE_ULONG(JB_override_tickets)
 *        - override tickets assigned by admin.
 *        (qalter -ot tickets).
 *
@@ -388,7 +391,7 @@ extern "C" {
 *        Arguments for foreign queuing system (ST_Type).
 *        Either delete it, or recycle it to be used with starter_method.
 *
-*     SGE_LIST(JB_path_aliases)  
+*     SGE_LIST(JB_path_aliases)
 *        Path aliases list (PA_Type).
 *
 *     SGE_ULONG(JB_pty)
@@ -399,7 +402,7 @@ extern "C" {
 *
 *
 *  FUNCTION
-*     JB_Type elements make only sense in conjunction with JAT_Type
+*     JB_Type elements only make sense in conjunction with JAT_Type
 *     elements.  One element of each type is necessary to hold all
 *     data for the execution of one job. One JB_Type element and
 *     x JAT_Type elements are needed to execute an array job with
@@ -413,16 +416,16 @@ extern "C" {
 *     'JB_ja_tasks' sublist of a 'JB_Type' element. This list will
 *     contain all belonging JAT_Type elements.
 *
-*     The 'JAT_Type' CULL element containes all attributes in which
+*     The 'JAT_Type' CULL element contains all attributes in which
 *     one array task may differ from another array task of the
 *     same array job. The 'JB_Type' element defines all attributes
-*     wich are equivalent for all tasks of an array job.
+*     which are equivalent for all tasks of an array job.
 *     A job and an array job with one task are equivalent
 *     concerning their data structures. Both consist of one 'JB_Type'
 *     and one 'JAT_Type' element.
 *
 *  SEE ALSO
-*     gdi/job/--JAT_Type                             
+*     gdi/job/--JAT_Type
 ******************************************************************************/
 enum {
    JB_job_number = JB_LOWERBOUND,

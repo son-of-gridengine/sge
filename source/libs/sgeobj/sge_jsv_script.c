@@ -2243,7 +2243,7 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
       }
    }
 
-   /* -terse (ignored in JSV. it is just to late to change this) */
+   /* -terse (ignored in JSV. it is just too late to change this) */
    /* -u username,... (not handled in JSV because only available for qalter) */
    /* -v variable[=value],... (handles also -V; done below after all params are handled */
    /* -verbose (not available in JSV) */

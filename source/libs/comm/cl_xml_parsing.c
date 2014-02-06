@@ -95,13 +95,13 @@ static char *cl_xml_parse_version(char *charptr, unsigned long buffer_length)
 
 /****** commlib/cl_xml_parsing/cl_com_transformXML2String() ****************************
 *  NAME
-*     cl_com_transformXML2String() -- convert xml escape sequences to string
+*     cl_com_transformXML2String() -- convert XML escape sequences to string
 *
 *  SYNOPSIS
 *     int cl_com_transformXML2String(const char* input, char** output) 
 *
 *  FUNCTION
-*     Converts a xml string into standard string witout XML escape sequences.
+*     Converts an XML string into standard string without XML escape sequences.
 *
 *
 *     Character      XML escape sequence        name
@@ -196,15 +196,15 @@ int cl_com_transformXML2String(const char* input, char** output) {
 *     int cl_com_transformString2XML(const char* input, char** output) 
 *
 *  FUNCTION
-*     This function will parse the input char string and replace the character
-*     by escape sequences in the output string. The user has to sge_free() the 
-*     output string.
+*     This function will parse the input char string and replace characters
+*     by escape sequences in the output string where necessary. The user has
+*     to sge_free() the output string.
 *
 *  INPUTS
 *     const char* input - input string without xml escape sequences
 *     char** output     - pointer to empty string pointer. The function will
 *                         malloc() memory for the output string and return
-*                         the input string with xml escape squences.
+*                         the input string with xml escape sequences.
 *
 *     Character      XML escape sequence        name
 *
@@ -1898,8 +1898,3 @@ cl_com_endpoint_t* cl_com_create_endpoint(const char* host, const char* name,
    }
    return endpoint;
 }
-
-
-
-
-
