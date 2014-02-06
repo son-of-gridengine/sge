@@ -221,6 +221,7 @@ sge_worker_main(void *arg)
    cl_thread_settings_t *thread_config = (cl_thread_settings_t*)arg;
    sge_gdi_ctx_class_t *ctx = NULL;
    monitoring_t monitor;
+   monitoring_t *monitorp = &monitor;
    time_t next_prof_output = 0;
 
    DENTER(TOP_LAYER, "sge_worker_main");
@@ -247,7 +248,7 @@ sge_worker_main(void *arg)
          sge_tq_wait_for_task(Master_Task_Queue, 1, SGE_TQ_GDI_PACKET, (void *)&packet),
          &monitor, mconf_get_monitor_time(), mconf_is_monitor_message());
 
-      MONITOR_SET_QLEN((&monitor), sge_tq_get_task_count(Master_Task_Queue));
+      MONITOR_SET_QLEN((monitorp), sge_tq_get_task_count(Master_Task_Queue));
 
       if (packet != NULL) {
          sge_gdi_task_class_t *task = packet->first_task;
@@ -265,7 +266,7 @@ sge_worker_main(void *arg)
          }
 #endif
 
-         MONITOR_MESSAGES((&monitor));
+         MONITOR_MESSAGES((monitorp));
 
          if (packet->is_gdi_request == true) {
             /*
@@ -289,9 +290,9 @@ sge_worker_main(void *arg)
           * acquire the correct lock
           */
          if (is_only_read_request) {
-            MONITOR_WAIT_TIME(SGE_LOCK(LOCK_GLOBAL, LOCK_READ), &monitor); 
+            MONITOR_WAIT_TIME(SGE_LOCK(LOCK_GLOBAL, LOCK_READ), monitorp);
          } else {
-            MONITOR_WAIT_TIME(SGE_LOCK(LOCK_GLOBAL, LOCK_WRITE), &monitor);
+            MONITOR_WAIT_TIME(SGE_LOCK(LOCK_GLOBAL, LOCK_WRITE), monitorp);
          }
 
          if (packet->is_gdi_request == true) {
@@ -327,7 +328,7 @@ sge_worker_main(void *arg)
              * Send the answer to the client
              */
             if (packet->is_intern_request == false) {
-               MONITOR_MESSAGES_OUT(&monitor);
+               MONITOR_MESSAGES_OUT(monitorp);
                sge_gdi2_send_any_request(ctx, 0, NULL,
                                          packet->host, packet->commproc, packet->commproc_id, 
                                          &(packet->pb), TAG_GDI_REQUEST, 

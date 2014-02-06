@@ -127,6 +127,7 @@ sge_event_master_main(void *arg)
    cl_thread_settings_t *thread_config = (cl_thread_settings_t*)arg;
    sge_gdi_ctx_class_t *ctx = NULL;
    monitoring_t monitor;
+   monitoring_t *monitorp = &monitor;
 
    lListElem *report = NULL;
    lList *report_list = NULL;
@@ -160,7 +161,7 @@ sge_event_master_main(void *arg)
       MONITOR_IDLE_TIME(sge_event_master_wait_next(), (&monitor), mconf_get_monitor_time(), 
                         mconf_is_monitor_message());
 
-      MONITOR_MESSAGES((&monitor));
+      MONITOR_MESSAGES((monitorp));
       MONITOR_EDT_COUNT((&monitor));
       MONITOR_CLIENT_COUNT((&monitor), lGetNumberOfElem(Event_Master_Control.clients));
 
