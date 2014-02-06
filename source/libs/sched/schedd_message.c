@@ -182,14 +182,14 @@ void schedd_mes_initialize(void)
 *     void schedd_mes_commit(lList *job_list, int ignore_category) 
 *
 *  FUNCTION
-*     Each message contained in "tmp_sme" containes only
+*     Each message contained in "tmp_sme" contain es only
 *     one job id. We have to find other jobs in "job_list" and
 *     add the job ids to the list of ids contained in "tmp_sme"
 *     message elements. After that we have to move all messages 
 *     contained in "tmp_sme" into "sme".
 *
 *     If "ignore_category" is 1 than the job category will be ignored.
-*     This means thal all ids of "job_list" will be added to all 
+*     This means that all ids of "job_list" will be added to all
 *     messages contained in "tmp_sme". 
 *     
 *     If no category is passed in and ignore_category is false, the messages
@@ -237,13 +237,13 @@ void schedd_mes_commit(lList *job_list, int ignore_category, lRef jid_category) 
 
 /****** schedd/schedd_mes/schedd_mes_rollback() *******************************
 *  NAME
-*     schedd_mes_rollback() -- Free temporaryly generated messages 
+*     schedd_mes_rollback() -- Free temporarily generated messages
 *
 *  SYNOPSIS
 *     void schedd_mes_rollback(void) 
 *
 *  FUNCTION
-*     Free temporaryly generated messages contained in "tmp_sme". 
+*     Free temporarily generated messages contained in "tmp_sme".
 ******************************************************************************/
 void schedd_mes_rollback(void)
 {
@@ -265,11 +265,11 @@ void schedd_mes_rollback(void)
 *     lListElem *schedd_mes_obtain_packagevoid) 
 *
 *  FUNCTION
-*     Returns message structure which containes all messages.
+*     Returns message structure which contains all messages.
 *
 *  INPUTS
-*     int *global_mes_count - out: returns nr of global messages
-*     int *job_mes_count    - out: returns nr of job messages
+*     int *global_mes_count - out: returns number of global messages
+*     int *job_mes_count    - out: returns number of job messages
 *
 *  NOTES
 *     The calling function is responsible to free the returned
@@ -331,11 +331,11 @@ lListElem *schedd_mes_obtain_package(int *global_mes_count, int *job_mes_count)
 *                         ...)
 *
 *  FUNCTION
-*     During the time the scheduler trys to dispatch jobs it might
+*     During the time the scheduler tries to dispatch jobs it might
 *     call this function to add messages into a temporary structure.
 *     This function might be called several times. Each call
-*     will add one element which containes one message describing
-*     a reason, why a job can't be dispatched and the concerned jid.
+*     will add one element which contains one message describing
+*     a reason why a job can't be dispatched and the jid concerned.
 *
 *     When it is clear if the job could be dispatched or not, one of
 *     following functions has to be called:

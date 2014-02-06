@@ -453,13 +453,13 @@ static bool ssl_cert_verify_func(cl_ssl_verify_mode_t mode, bool service_mode, c
    /*
     *   CR:
     *
-    * - This callback function can be used to make additonal security checks 
+    * - This callback function can be used to make additional security checks
     * 
     * - this callback is not called from commlib with a value == NULL 
     * 
-    * - NOTE: This callback is called from the commlib. If the commlib is initalized with
+    * - NOTE: This callback is called from the commlib. If the commlib is initialized with
     *   thread support (see cl_com_setup_commlib() ) this may be a problem because the thread has
-    *   no application specific context initalization. So never call functions within this callback 
+    *   no application specific context initialization. So never call functions within this callback
     *   which need thread specific setup.
     */
    DENTER(TOP_LAYER, "ssl_cert_verify_func");
@@ -550,7 +550,7 @@ int sge_security_initialize(const char *progname, const char *username)
    {
 
      /*
-      * The dummy_string is only neccessary to be able to check with
+      * The dummy_string is only necessary to be able to check with
       * strings command in installation scripts whether the SECURE
       * compile option was used at compile time.
       * 

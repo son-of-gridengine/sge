@@ -174,12 +174,12 @@ lList **feature_get_master_featureset_list(void)
 *
 *  FUNCTION
 *     This function interprets the mode string and tags the 
-*     corresponding featureset enty within the Master_FeatureSet_List 
+*     corresponding featureset entry within the Master_FeatureSet_List
 *     as active.  
 *
 *  INPUTS
 *     char *mode - product mode string (valid strings are defined in
-*                  the arry featureset_list[])
+*                  the array featureset_list[])
 *
 *  RESULT
 *     0 OK
@@ -288,7 +288,7 @@ void feature_activate(feature_id_t id)
 
    DENTER(TOP_LAYER, "feature_activate");
 
-   /* get fature list, if it hasn't been initialized yet, do so */
+   /* Get feature list. If it hasn't been initialized yet, do so */
    feature_list_pp = feature_get_master_featureset_list();
    feature_list = *feature_list_pp;
    if (feature_list == NULL) {

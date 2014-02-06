@@ -67,7 +67,7 @@ typedef struct {
    thread_error_t   error_timeout;   /* how long can the thread be blocked before an error is shown */
    time_t           update_time;     /* last update time */
    dstring*         output;          /* thread specific info line */
-   pthread_mutex_t  Output_Mutex;    /* gards one line */
+   pthread_mutex_t  Output_Mutex;    /* guards one line */
 }Output_t;
 
 #define MAX_OUTPUT_LINES 10           /* number of threads to monitor, currently 10 threads at max
@@ -101,7 +101,7 @@ static struct mallinfo (*mallinfo_func_pointer)(void) = NULL;
 #endif  /* HAVE_JEMALLOC */
 
 /***********************************************
- * static functin def. for special extensions 
+ * static function def. for special extensions
  ***********************************************/
 
 static void ext_gdi_output(dstring *message, void *monitoring_extension, double time);
@@ -127,7 +127,7 @@ static void ext_sch_output(dstring *message, void *monitoring_extension, double 
 *     monitoring structure
 *
 *  INPUTS
-*     monitoring_t *monitor - monitoring strucutre
+*     monitoring_t *monitor - monitoring structure
 *
 *  NOTES
 *     MT-NOTE: sge_monitor_free() is MT safe 
@@ -194,7 +194,7 @@ void sge_monitor_free(monitoring_t *monitor)
 *     for the comlib output
 *
 *  INPUTS
-*     monitoring_t *monitor            - monitoring strucutre
+*     monitoring_t *monitor            - monitoring structure
 *     const char *thread_name          - the thread name
 *     extension_t ext                  - the extension time (-> enum)
 *     thread_warning_t warning_timeout - the warning timeout (-> enum)
@@ -553,15 +553,15 @@ void sge_set_last_wait_time(monitoring_t *monitor, struct timeval wait_time)
 *
 *  FUNCTION
 *     This function computes the output line from the gathered statistics.
-*     The output is only generated, when the the output flag in the
+*     The output is only generated, when the output flag in the
 *     monitoring structure is set.
 *
 *     The monitoring line is printed to the message file in the profiling
 *     class and it made available for the qping -f output. For the qping
-*     output, it stores the the generation time, though that qping can
+*     output, it stores the generation time, though that qping can
 *     show, when the message was generated.
 *
-*     If an extension is set, it calls the apropriate output function for
+*     If an extension is set, it calls the appropriate output function for
 *     it.
 *
 *  INPUTS
@@ -631,8 +631,8 @@ void sge_monitor_output(monitoring_t *monitor)
 *     void sge_monitor_reset(monitoring_t *monitor) 
 *
 *  FUNCTION
-*     Resets the data structure including the extesion. No data in the
-*     extension is presevered.
+*     Resets the data structure including the extension. No data in the
+*     extension is preserved.
 *
 *  INPUTS
 *     monitoring_t *monitor - monitoring structure
@@ -678,10 +678,10 @@ void sge_monitor_reset(monitoring_t *monitor)
 *     generates a string from the extension and returns it.
 *
 *  INPUTS
-*     char *message              - initilized string buffer
+*     char *message              - initialized string buffer
 *     int size                   - buffer size
 *     void *monitoring_extension - the extension structure
-*     double time                - length of the mesurement interval
+*     double time                - length of the measurement interval
 *
 *  NOTES
 *     MT-NOTE: ext_gdi_output() is MT safe 
@@ -703,10 +703,10 @@ static void ext_sch_output(dstring *message, void *monitoring_extension, double 
 *     generates a string from the extension and returns it.
 *
 *  INPUTS
-*     char *message              - initilized string buffer
+*     char *message              - initialized string buffer
 *     int size                   - buffer size
 *     void *monitoring_extension - the extension structure
-*     double time                - length of the mesurement interval
+*     double time                - length of the measurement interval
 *
 *  NOTES
 *     MT-NOTE: ext_gdi_output() is MT safe 
@@ -739,10 +739,10 @@ static void ext_gdi_output(dstring *message, void *monitoring_extension, double 
 *     generates a string from the extension and returns it.
 *
 *  INPUTS
-*     char *message              - initilized string buffer
+*     char *message              - initialized string buffer
 *     int size                   - buffer size
 *     void *monitoring_extension - the extension structure
-*     double time                - length of the mesurement interval
+*     double time                - length of the measurement interval
 *
 *  NOTES
 *     MT-NOTE: ext_lis_output() is MT safe 
@@ -771,10 +771,10 @@ static void ext_lis_output(dstring *message, void *monitoring_extension, double 
 *     generates a string from the extension and returns it.
 *
 *  INPUTS
-*     char *message              - initilized string buffer
+*     char *message              - initialized string buffer
 *     int size                   - buffer size
 *     void *monitoring_extension - the extension structure
-*     double time                - length of the mesurement interval
+*     double time                - length of the measurement interval
 *
 *  NOTES
 *     MT-NOTE: ext_edt_output() is MT safe 
@@ -808,9 +808,9 @@ static void ext_edt_output(dstring *message, void *monitoring_extension, double 
 *     generates a string from the extension and returns it.
 *
 *  INPUTS
-*     dstring *message           - initilized string buffer
+*     dstring *message           - initialized string buffer
 *     void *monitoring_extension - the extension structure
-*     double time                - length of the mesurement interval
+*     double time                - length of the measurement interval
 *
 *  NOTES
 *     MT-NOTE: ext_tet_output() is MT safe 

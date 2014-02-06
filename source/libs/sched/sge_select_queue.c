@@ -821,7 +821,7 @@ parallel_reservation_max_time_slots(sge_assignment_t *best, int *available_slots
 *
 *  NOTES
 *     MT-NOTE: parallel_maximize_slots_pe() is MT safe as long as the provided 
-*              lists are owned be the caller
+*              lists are owned by the caller
 *
 *  SEE ALSO:
 *     sconf_best_pe_alg
@@ -877,8 +877,10 @@ parallel_maximize_slots_pe(sge_assignment_t *best, int *available_slots)
 
    DPRINTF(("MAXIMIZE SLOT: FIRST %d LAST %d MAX SLOT %d\n", first, last, max_pe_slots));
 
-   /* This limits max range number RANGE_INFINITY (i.e. -pe pe 1-) to a
-      reasonable number.  See also the check on max_pe_slots below.  */
+   /* This limits max range number RANGE_INFINITY (i.e. -pe pe 1-) to
+      a reasonable number.  See the check on max_pe_slots below, which
+      would otherwise give a spurious error message if, say,
+      max_pe_slots == 0 (to disable the PE).  */
    max_slots = MIN(last, max_pe_slots);
 
    DPRINTF(("MAXIMIZE SLOT FOR "sge_u32" using \"%s\" FROM %d TO %d\n", 
@@ -888,9 +890,6 @@ parallel_maximize_slots_pe(sge_assignment_t *best, int *available_slots)
 
    if ((max_slots < min_slots) ||
        (min_slots <= 0)) {
-      /* If, say, max_pe_slots == 0 (to disable the PE), limiting
-         max_slots above gets us here with max_slots < min_slots and a
-         spurious error message every time.  */
       if (max_pe_slots >= min_slots)
          ERROR((SGE_EVENT, "invalid pe job range setting "
 		sge_U32CFormat"-"sge_U32CFormat

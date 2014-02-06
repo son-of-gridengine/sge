@@ -57,8 +57,7 @@ bool sge_dumpable = false;
 *     void* sge_malloc(size_t size)
 *
 *  FUNCTION
-*     Allocates a memory block. Initilizes the block (0). Aborts in case
-*     of error.
+*     Allocates a memory block. Aborts in case of error.
 *
 *  INPUTS
 *     size_t size - size in bytes

@@ -134,7 +134,7 @@ void sge_gdi_kill_master(sge_gdi_packet_class_t *packet, sge_gdi_task_class_t *t
 *     static void sge_daemonize_qmaster(void) 
 *
 *  FUNCTION
-*     If the environment variable 'SGE_ND' is set, the functions does return
+*     If the environment variable 'SGE_ND' is set, this function returns
 *     immediately.
 *
 *     First, we call 'fork()'. If the process was started as a shell command in
@@ -148,7 +148,7 @@ void sge_gdi_kill_master(sge_gdi_packet_class_t *packet, sge_gdi_task_class_t *t
 *     session leader of the new session, becomes the process group leader of a
 *     new process group, and has no controlling terminal.
 *
-*     By calling 'fork()' a second time, we guarantee the the daemon (second
+*     By calling 'fork()' a second time, we guarantee that the daemon (second
 *     child) is no longer a session leader, so it cannot acquire a controlling
 *     terminal. We must ignore 'SIGHUP' because when the session leader
 *     terminates (the first child), all processes in the session (our second
@@ -158,7 +158,7 @@ void sge_gdi_kill_master(sge_gdi_packet_class_t *packet, sge_gdi_task_class_t *t
 *     executed 'sge_qmaster', normally a shell. We redirect 'stdin', 'stdout'
 *     and 'stderr' to '/dev/null'. The reason for opening these descriptors
 *     is so that any library function called by 'sge_qmaster' that assumes it
-*     can read from standard input or write to either standard ouput or
+*     can read from standard input or write to either standard output or
 *     standard error will not fail.
 *
 *  INPUTS

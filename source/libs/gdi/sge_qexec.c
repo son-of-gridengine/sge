@@ -79,7 +79,7 @@ const char *qexec_last_err(void)
 
 /****** gdi/sge/sge_qexecve() ************************************************
 *  NAME
-*     sge_qexecve() -- start a task in a tightly integrated par. job
+*     sge_qexecve() -- start a task in a tightly integrated parallel job
 *
 *  SYNOPSIS
 *     sge_tid_t sge_qexecve(const char *hostname, const char *queuename, 

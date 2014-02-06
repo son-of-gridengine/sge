@@ -210,7 +210,7 @@ lSortOrder *lParseSortOrderVarArg(const lDescr *dp, const char *fmt,...)
 *                                 va_list ap) 
 *
 *  FUNCTION
-*     Create a sort oder array due to the given va_list. 
+*     Create a sort order array specified by the given va_list.
 *
 *  INPUTS
 *     const lDescr *dp - descriptor 
@@ -226,7 +226,7 @@ lSortOrder *lParseSortOrderVarArg(const lDescr *dp, const char *fmt,...)
 *  EXAMPLE
 *     lParseSortOrder(dp,"%I+ %I-", H_hostname, H_memsize )
 *     
-*     Returns a sort order array which can be used for sorting an list
+*     Returns a sort order array which can be used for sorting a list
 *     with ascending H_hostname and descending H_memsize. 
 *******************************************************************************/
 lSortOrder *lParseSortOrder(const lDescr *dp, const char *fmt, va_list ap) 

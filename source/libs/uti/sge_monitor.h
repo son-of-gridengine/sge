@@ -46,7 +46,7 @@
  *
  * - keeping statistics on what is done during a thread loop
  *
- * - outputing the statistics information via message file or
+ * - outputting the statistics information via message file or
  *   qping
  *
  *
@@ -73,10 +73,10 @@
  *    sge_monitor_free(&monitor);
  * ------end thread----------------
  *
- * Improtant:
+ * Important:
  * ----------
  *  The call to MONITOR_IDLE_TIME has to be the first one after the thread loop otherwise
- *  certain parts of the monitoring structure are not correctly initilized.
+ *  certain parts of the monitoring structure are not correctly initialized.
  *
  * General statistic methods:
  * --------------------------

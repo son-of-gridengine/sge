@@ -1136,12 +1136,6 @@ int gdi2_send_message_pb(sge_gdi_ctx_class_t *ctx,
 }
 
 /************************************************************
-   TODO: rewrite this function
-   COMMLIB/SECURITY WRAPPERS
-   FIXME: FUNCTIONPOINTERS SHOULD BE SET IN sge_security_initialize !!!
-
-   Test dlopen functionality, stub libs or check if openssl calls can be added 
-   without infringing a copyright
 
    NOTES
       MT-NOTE: gdi_send_message() is MT safe (assumptions)

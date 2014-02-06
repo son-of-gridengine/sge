@@ -375,7 +375,7 @@ qinstance_is_calendar_referenced(const lListElem *this_elem,
 *     bool qinstance_is_a_pe_referenced(const lListElem *this_elem) 
 *
 *  FUNCTION
-*     Test is at least one PE is referenced by qinstance "this_elem" 
+*     Test if at least one PE is referenced by qinstance "this_elem"
 *
 *  INPUTS
 *     const lListElem *this_elem - QU_Type 
@@ -704,8 +704,8 @@ qinstance_set_slots_used(lListElem *this_elem, int new_slots)
 *                                int slots)
 *
 *  FUNCTION
-*     Checks if there are nonstatic load values avaialable for the
-*     qinstance. If this is the case, then then the "unknown" state 
+*     Checks if there are nonstatic load values available for the
+*     qinstance. If this is the case, then the "unknown" state
 *     of that machine will be released. 
 *
 *  INPUTS
@@ -1268,7 +1268,7 @@ qinstance_verify(const lListElem *qep, lList **answer_list)
 *     qinstance_verify_full_name(lList **answer_list, const char *full_name) 
 *
 *  FUNCTION
-*     Verifies, if a queue instance full name is correct (form cqueue@host).
+*     Verifies if a queue instance full name is correct (form cqueue@host).
 *
 *  INPUTS
 *     lList **answer_list   - answer list to pass back error messages
@@ -1345,7 +1345,7 @@ qinstance_verify_full_name(lList **answer_list, const char *full_name)
 *     *message, bool set_error) 
 *
 *  FUNCTION
-*     Sets or Unsets a qinstance into error state and adds or removes the given
+*     Sets or unsets a qinstance into error state and adds or removes the given
 *     error message
 *
 *  INPUTS
