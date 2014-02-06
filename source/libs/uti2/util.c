@@ -114,7 +114,24 @@ sge_running_as_admin_user(bool *error, bool *isadmin)
    *isadmin = (geteuid() == uid) || geteuid() == SGE_SUPERUSER_UID;
 }
 
-/* Return true iff FILE can be stat'ed.  */
+/****** uti/file_exists() ***************************************
+*
+*  NAME
+*     file_exists -- whether file exists
+*
+*  SYNOPSIS
+*     bool file_exists(const char *file)
+*
+*  FUNCTION
+*     Test whether a file exists (actually can be stat'ed).
+*
+*  INPUTS
+*     file  - file name
+*
+*  RESULT
+*     true iff file can be stat'ed
+****************************************************************************
+*/
 bool
 file_exists(const char *file)
 {
@@ -122,8 +139,26 @@ file_exists(const char *file)
    return file && *file && (SGE_STAT(file, &statbuf) == 0);
 }
 
-/* Copy line-by-line (unbuffered writes) from file SRC to file DST,
-   assuming line length < MAX_STRING_SIZE.  */
+/****** uti/file_exists() ***************************************
+*
+*  NAME
+*     copy_linewise -- copy a file line-by-line
+*
+*  SYNOPSIS
+*     bool copy_linewise(const char *src, const char *dst)
+*
+*  FUNCTION
+*     Copy line-by-line (unbuffered writes) from file SRC to file DST,
+*     assuming line length < MAX_STRING_SIZE.
+*
+*  INPUTS
+*     src  - source file name
+*     dst  - destination file name
+*
+*  RESULT
+*     true on success, false if an i/o error occurs
+****************************************************************************
+*/
 bool
 copy_linewise(const char *src, const char *dst)
 {

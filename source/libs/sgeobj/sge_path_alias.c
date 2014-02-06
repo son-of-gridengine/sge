@@ -67,13 +67,13 @@
 *     necessary to map certain paths for specific hosts.
 *
 *     The administrators/users have the possibility to
-*     activate path aliasing by creating one or more of following
+*     activate path aliasing by creating one or more of the following
 *     files:
 *
 *        $SGE_ROOT/$CELL/common/sge_aliases
 *        $HOME/.sge_aliases 
 *
-*     The file format is documentied in the ADOC commet for the 
+*     The file format is documented in the ADOC comment for the
 *     function path_alias_read_from_file().
 *
 *     The files are interpreted as follows:
@@ -264,7 +264,7 @@ FCLOSE_ERROR:
 *     Intitialize "path_alias_list" according to the different
 *     path aliasing files. 
 *
-*     Following files will be used if available:
+*     The following files will be used if available:
 *
 *        $SGE_ROOT/$CELL/common/sge_aliases
 *        $HOME/.sge_aliases 
@@ -365,12 +365,12 @@ int path_alias_list_initialize(lList **path_alias_list,
 *     path_alias_list_get_path() -- map path according alias table 
 *
 *  SYNOPSIS
-*     int path_alias_list_get_path(const lList *path_aliases, 
-*                                  lList **alpp, 
-*                                  const char *inpath, 
-*                                  const char *myhost,
-*                                  char *outpath, 
-*                                  int outmax)
+*     void path_alias_list_get_path(const lList *path_aliases,
+*                                   lList **alpp,
+*                                   const char *inpath,
+*                                   const char *myhost,
+*                                   char *outpath,
+*                                   int outmax)
 *
 *  FUNCTION
 *     "path_aliases" is used to map "inpath" for the host "myhost"
@@ -384,10 +384,6 @@ int path_alias_list_initialize(lList **path_alias_list,
 *     const char *myhost        - hostname 
 *     char *outpath             - result path 
 *     int outmax                - size of "outpath" 
-*
-*  RESULT
-*     int - return state
-*        0 - OK
 *
 *  NOTES
 *     MT-NOTE: path_alias_list_get_path() is MT safe
@@ -537,7 +533,7 @@ path_verify(const char *path, lList **answer_list, const char *name, bool absolu
 *     path_alias_verify(const lList *path_aliases, lList **answer_list) 
 *
 *  FUNCTION
-*     Verify a path alias list as it is sent with job or pe task start orders
+*     Verify a path alias list, as sent with job or PE task start orders
 *     to sge_execd.
 *
 *  INPUTS

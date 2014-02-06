@@ -3092,7 +3092,7 @@ bool sconf_validate_config_(lList **answer_list)
       }
    }
 
-   /* --- max_pending_tasks_per_job */
+   /* --- SC_max_pending_tasks_per_job */
    if (sconf_get_max_pending_tasks_per_job() == 0) {
       SGE_ADD_MSG_ID(sprintf(SGE_EVENT, MSG_ATTRIB_WRONG_SETTING_SS, "max_pending_tasks_per_job", ">0"));    
       answer_list_add(answer_list, SGE_EVENT, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR);

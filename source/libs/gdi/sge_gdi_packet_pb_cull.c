@@ -217,9 +217,9 @@ sge_gdi_packet_get_pb_size(sge_gdi_packet_class_t *packet)
 *                           lList **answer_list, sge_pack_buffer *pb) 
 *
 *  FUNCTION
-*     This functions unpacks all data representing a single or multi 
+*     This function unpacks all data representing a single or multi
 *     GDI request. The information is parsed from the given packing 
-*     buffer "pb" and ist stored into "packet". Necessary memory will
+*     buffer "pb" and is stored into "packet". Necessary memory will
 *     be allocated.
 *
 *  INPUTS
@@ -321,7 +321,7 @@ sge_gdi_packet_unpack(sge_gdi_packet_class_t **packet, lList **answer_list,
          }
 
          /* EB: TODO: ST: cleanup - set last parameter to true */
-         aret = sge_gdi_packet_append_task(*packet, &a_list, target,
+         aret = sge_gdi_packet_append_task(*packet, answer_list, target,
                                            command, &data_list, &a_list,
                                            &condition, &enumeration,
                                            false);
@@ -334,8 +334,8 @@ sge_gdi_packet_unpack(sge_gdi_packet_class_t **packet, lList **answer_list,
  error_with_mapping:
    aret = sge_gdi_map_pack_errors(pack_ret, answer_list);
  error:
-   /* The calls of this access packet even when aret is false.  */
-/*    sge_gdi_packet_free(packet); */
+   /* Don't free packet; the calls of this function access it even
+      when aret is false.  */
    DRETURN(aret);
 }
 
