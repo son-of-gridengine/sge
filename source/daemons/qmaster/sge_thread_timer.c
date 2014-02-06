@@ -336,6 +336,7 @@ sge_timer_main(void *arg)
    cl_thread_settings_t *thread_config = (cl_thread_settings_t*)arg;
    sge_gdi_ctx_class_t *ctx = NULL;
    monitoring_t monitor;
+   monitoring_t *monitorp = &monitor;
 
    lListElem *le = NULL;
    te_event_t te = NULL;
@@ -366,7 +367,7 @@ sge_timer_main(void *arg)
       
       MONITOR_IDLE_TIME(te_wait_empty(), (&monitor), mconf_get_monitor_time(),
                         mconf_is_monitor_message());
-      MONITOR_MESSAGES((&monitor));
+      MONITOR_MESSAGES(monitorp);
 
       MONITOR_TET_COUNT((&monitor));
       MONITOR_TET_EVENT((&monitor), lGetNumberOfElem(Event_Control.list));
