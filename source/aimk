@@ -2477,9 +2477,7 @@ if ( "$QMON" == 1 ) then
    endif
    # On Red Hat 6, including Xft.h, as motif does, fails without this.
    if ( -d /usr/include/freetype2 ) then
-      set FT_INC = "-I/usr/include/freetype2"
-   else
-      set FT_INC = ""
+      set XCFLAGS = "$XCFLAGS -I/usr/include/freetype2"
    endif
 
    cd $COMPILE_ARCH
@@ -2488,7 +2486,7 @@ if ( "$QMON" == 1 ) then
          "LD_WRAPPER=$LD_WRAPPER" \
          "CFLAGS=$CFLAGS" "SDIR=$SDIR" "SOURCE=$SOURCE" \
          "COMPILE_ARCH=$COMPILE_ARCH" \
-         "XCFLAGS=$XCFLAGS $FT_INC" "XLFLAGS=$XLFLAGS" "KRBLIBS=$KRBLIBS" \
+         "XCFLAGS=$XCFLAGS" "XLFLAGS=$XLFLAGS" "KRBLIBS=$KRBLIBS" \
          "XLIBS=$XLIBS" "LFLAGS=$LFLAGS $KLFLAGS" "STRIP=$STRIP" "RANLIB=$RANLIB" \
          "AR=$AR" "ARFLAGS=$ARFLAGS" "TPLIB=$TPLIB" \
          "MEMCFLAG=$MEMCFLAG"  \

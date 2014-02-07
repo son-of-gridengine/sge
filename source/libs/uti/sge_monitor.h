@@ -235,7 +235,7 @@ void sge_monitor_reset(monitoring_t *monitor);
                                     execute; \
                                  } \
 
-#define MONITOR_MESSAGES(monitor) if ((monitor != NULL) && ((monitor)->monitor_time > 0)) (monitor)->message_in_count++
+#define MONITOR_MESSAGES(monitor) if (((monitor) != NULL) && ((monitor)->monitor_time > 0)) (monitor)->message_in_count++
 
 #define MONITOR_MESSAGES_OUT(monitor) if (((monitor) != NULL) && ((monitor)->monitor_time > 0)) (monitor)->message_out_count++
 
@@ -290,24 +290,24 @@ typedef struct {
    u_long32    queue_length;     /* worker queue length */
 } m_gdi_t;
 
-#define MONITOR_GDI_ADD(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->gdi_add_count++
-#define MONITOR_GDI_GET(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->gdi_get_count++
-#define MONITOR_GDI_MOD(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->gdi_mod_count++
-#define MONITOR_GDI_DEL(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->gdi_del_count++
-#define MONITOR_GDI_CP(monitor)     if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->gdi_cp_count++
-#define MONITOR_GDI_TRIG(monitor)   if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->gdi_trig_count++
-#define MONITOR_GDI_PERM(monitor)   if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->gdi_perm_count++
-#define MONITOR_GDI_REPLACE(monitor) if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->gdi_replace_count++
+#define MONITOR_GDI_ADD(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->gdi_add_count++
+#define MONITOR_GDI_GET(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->gdi_get_count++
+#define MONITOR_GDI_MOD(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->gdi_mod_count++
+#define MONITOR_GDI_DEL(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->gdi_del_count++
+#define MONITOR_GDI_CP(monitor)     if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->gdi_cp_count++
+#define MONITOR_GDI_TRIG(monitor)   if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->gdi_trig_count++
+#define MONITOR_GDI_PERM(monitor)   if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->gdi_perm_count++
+#define MONITOR_GDI_REPLACE(monitor) if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->gdi_replace_count++
 
-#define MONITOR_ACK(monitor)     if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->ack_count++
+#define MONITOR_ACK(monitor)     if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->ack_count++
 
-#define MONITOR_ELOAD(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->eload_count++
-#define MONITOR_ECONF(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->econf_count++
-#define MONITOR_EJOB(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->ejob_count++
-#define MONITOR_EPROC(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->eproc_count++
-#define MONITOR_EACK(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->eack_count++
+#define MONITOR_ELOAD(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->eload_count++
+#define MONITOR_ECONF(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->econf_count++
+#define MONITOR_EJOB(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->ejob_count++
+#define MONITOR_EPROC(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->eproc_count++
+#define MONITOR_EACK(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->eack_count++
 
-#define MONITOR_SET_QLEN(monitor, qlen)    if ((monitor) != NULL && (monitor->monitor_time > 0) && (monitor->ext_type == GDI_EXT)) ((m_gdi_t*)(monitor->ext_data))->queue_length = (qlen)
+#define MONITOR_SET_QLEN(monitor, qlen)    if ((monitor) != NULL && ((monitor)->monitor_time > 0) && ((monitor)->ext_type == GDI_EXT)) ((m_gdi_t*)((monitor)->ext_data))->queue_length = (qlen)
 
 /* listener extension */
 typedef struct {
@@ -317,10 +317,10 @@ typedef struct {
    u_long32    inc_rep; /* report request */
 } m_lis_t;
 
-#define MONITOR_INC_GDI(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == LIS_EXT)) ((m_lis_t*)(monitor->ext_data))->inc_gdi++
-#define MONITOR_INC_ACK(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == LIS_EXT)) ((m_lis_t*)(monitor->ext_data))->inc_ack++
-#define MONITOR_INC_ECE(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == LIS_EXT)) ((m_lis_t*)(monitor->ext_data))->inc_ece++
-#define MONITOR_INC_REP(monitor)    if ((monitor->monitor_time > 0) && (monitor->ext_type == LIS_EXT)) ((m_lis_t*)(monitor->ext_data))->inc_rep++
+#define MONITOR_INC_GDI(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == LIS_EXT)) ((m_lis_t*)((monitor)->ext_data))->inc_gdi++
+#define MONITOR_INC_ACK(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == LIS_EXT)) ((m_lis_t*)((monitor)->ext_data))->inc_ack++
+#define MONITOR_INC_ECE(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == LIS_EXT)) ((m_lis_t*)((monitor)->ext_data))->inc_ece++
+#define MONITOR_INC_REP(monitor)    if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == LIS_EXT)) ((m_lis_t*)((monitor)->ext_data))->inc_rep++
 
 /* event master thread extension */
 
@@ -336,32 +336,32 @@ typedef struct {
    u_long32   busy_client_count;    /* nr of event clients busy during send */
 }m_edt_t;
 
-#define MONITOR_CLIENT_COUNT(monitor, inc)  if ((monitor->monitor_time > 0) && (monitor->ext_type == EDT_EXT)) \
-                                               ((m_edt_t*) (monitor->ext_data))->client_count += inc
+#define MONITOR_CLIENT_COUNT(monitor, inc)  if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == EDT_EXT)) \
+                                               ((m_edt_t*) ((monitor)->ext_data))->client_count += inc
 
-#define MONITOR_EDT_COUNT(monitor) if ((monitor->monitor_time > 0) && (monitor->ext_type == EDT_EXT)) \
-                                    ((m_edt_t*) (monitor->ext_data))->count++
+#define MONITOR_EDT_COUNT(monitor) if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == EDT_EXT)) \
+                                    ((m_edt_t*) ((monitor)->ext_data))->count++
 
-#define MONITOR_EDT_MOD(monitor) if ((monitor->monitor_time > 0) && (monitor->ext_type == EDT_EXT)) \
-                                    ((m_edt_t*) (monitor->ext_data))->mod_client_count++
+#define MONITOR_EDT_MOD(monitor) if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == EDT_EXT)) \
+                                    ((m_edt_t*) ((monitor)->ext_data))->mod_client_count++
 
-#define MONITOR_EDT_ACK(monitor) if ((monitor->monitor_time > 0) && (monitor->ext_type == EDT_EXT)) \
-                                    ((m_edt_t*)(monitor->ext_data))->ack_count++
+#define MONITOR_EDT_ACK(monitor) if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == EDT_EXT)) \
+                                    ((m_edt_t*)((monitor)->ext_data))->ack_count++
 
-#define MONITOR_EDT_NEW(monitor) if ((monitor->monitor_time > 0) && (monitor->ext_type == EDT_EXT)) \
-                                    ((m_edt_t*)(monitor->ext_data))->new_event_count++
+#define MONITOR_EDT_NEW(monitor) if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == EDT_EXT)) \
+                                    ((m_edt_t*)((monitor)->ext_data))->new_event_count++
 
-#define MONITOR_EDT_ADDED(monitor) if ((monitor->monitor_time > 0) && (monitor->ext_type == EDT_EXT)) \
-                                    ((m_edt_t*)(monitor->ext_data))->added_event_count++
+#define MONITOR_EDT_ADDED(monitor) if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == EDT_EXT)) \
+                                    ((m_edt_t*)((monitor)->ext_data))->added_event_count++
 
-#define MONITOR_EDT_SKIP(monitor) if ((monitor->monitor_time > 0) && (monitor->ext_type == EDT_EXT)) \
-                                    ((m_edt_t*)(monitor->ext_data))->skip_event_count++
+#define MONITOR_EDT_SKIP(monitor) if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == EDT_EXT)) \
+                                    ((m_edt_t*)((monitor)->ext_data))->skip_event_count++
 
-#define MONITOR_EDT_BLOCKED(monitor)  if ((monitor->monitor_time > 0) && (monitor->ext_type == EDT_EXT)) \
-                                    ((m_edt_t*)(monitor->ext_data))->blocked_client_count++
+#define MONITOR_EDT_BLOCKED(monitor)  if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == EDT_EXT)) \
+                                    ((m_edt_t*)((monitor)->ext_data))->blocked_client_count++
 
-#define MONITOR_EDT_BUSY(monitor)  if ((monitor->monitor_time > 0) && (monitor->ext_type == EDT_EXT)) \
-                                    ((m_edt_t*)(monitor->ext_data))->busy_client_count++
+#define MONITOR_EDT_BUSY(monitor)  if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == EDT_EXT)) \
+                                    ((m_edt_t*)((monitor)->ext_data))->busy_client_count++
 
 /* timed event thread extension */
 
@@ -371,14 +371,14 @@ typedef struct {
    u_long32   exec_count;    /* nr of executed events */
 }m_tet_t;
 
-#define MONITOR_TET_COUNT(monitor)  if ((monitor->monitor_time > 0) && (monitor->ext_type == TET_EXT)) \
-                                    ((m_tet_t*)(monitor->ext_data))->count++
+#define MONITOR_TET_COUNT(monitor)  if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == TET_EXT)) \
+                                    ((m_tet_t*)((monitor)->ext_data))->count++
 
-#define MONITOR_TET_EVENT(monitor, inc)  if ((monitor->monitor_time > 0) && (monitor->ext_type == TET_EXT)) \
-                                    ((m_tet_t*)(monitor->ext_data))->event_count += inc
+#define MONITOR_TET_EVENT(monitor, inc)  if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == TET_EXT)) \
+                                    ((m_tet_t*)((monitor)->ext_data))->event_count += inc
 
-#define MONITOR_TET_EXEC(monitor)  if ((monitor->monitor_time > 0) && (monitor->ext_type == TET_EXT)) \
-                                    ((m_tet_t*)(monitor->ext_data))->exec_count++
+#define MONITOR_TET_EXEC(monitor)  if (((monitor)->monitor_time > 0) && ((monitor)->ext_type == TET_EXT)) \
+                                    ((m_tet_t*)((monitor)->ext_data))->exec_count++
 
 
 #endif /* _SGE_MONITIR_H */

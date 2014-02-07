@@ -1243,7 +1243,7 @@ int sge_add_group(gid_t add_grp_id, char *err_str, size_t lstr, bool skip_silent
  * INSURE detects a WRITE_OVERFLOW when getgroups was invoked (LINUX).
  * Is this a bug in the kernel or in INSURE?
  */
-#if defined(LINUX)
+#if __linux__
    list = (gid_t*) malloc(2*max_groups*sizeof(gid_t));
 #else
    list = (gid_t*) malloc(max_groups*sizeof(gid_t));

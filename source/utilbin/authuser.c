@@ -619,7 +619,7 @@ static auth_result_t get_crypted_password(const char* username, char* buffer, si
       error_handler->error(MSG_AUTHUSER_USER_UNKNOWN_S, username);
       return JUTI_AUTH_FAILED;
    } else {
-      strncpy(pw->upw_passwd, buffer, size);
+      sge_strlcpy(pw->upw_passwd, buffer, size);
       return JUTI_AUTH_SUCCESS;
    }
 #else   
