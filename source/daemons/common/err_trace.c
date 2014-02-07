@@ -634,7 +634,7 @@ static int sh_str2file(const char *header_str, const char *str, FILE* fp)
    int     ret_fp = -1;
    int     ret_fl = EOF;
    dstring ds;
-   char    buffer[128];
+   char    buffer[MAX_STRING_SIZE];
    uid_t   old_euid = SGE_SUPERUSER_UID;
 
    if (fp) {
@@ -847,7 +847,7 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
 static void shepherd_panic(const char *s)
 {
    dstring ds;
-   char buffer[128];
+   char buffer[MAX_STRING_SIZE];
 
    sge_dstring_init(&ds, buffer, sizeof(buffer));
    sge_dstring_sprintf_append(&ds, "["uid_t_fmt":"uid_t_fmt" "pid_t_fmt"]: PANIC: %s\n",

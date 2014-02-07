@@ -905,11 +905,6 @@ static int cl_com_ssl_log_ssl_errors(const char* function_name) {
       func_name = function_name;
    }
 
-   if (ERR_get_error == NULL) {
-      CL_LOG(CL_LOG_ERROR, "no ERR_get_error available");
-      return CL_RETVAL_OK;
-   }   
-
    while((ssl_error = ERR_get_error())) {
       ERR_error_string_n(ssl_error,buffer,512);
       snprintf(help_buf, 1024, MSG_CL_COMMLIB_SSL_ERROR_USS, sge_u32c(ssl_error), func_name, buffer);
