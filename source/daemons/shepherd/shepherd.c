@@ -2724,7 +2724,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
                /* Reset fd_pty_master as we do not have to poll again. */
                fd_pty_master = -1;
                /* Remove WNOHANG from wait-options as we just have to wait for the end of the job */
-               wait_options |= WNOHANG;
+               wait_options &= ~WNOHANG;
             }
          } else if (ret == -1) {
             /* if read was interrupted by a signal we do not have to abort */
@@ -2742,7 +2742,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
             /* Reset fd_pty_master as we do not have to poll again. */
             fd_pty_master = -1;
             /* Remove WNOHANG from wait-options as we just have to wait for the end of the job */
-            wait_options |= WNOHANG;
+            wait_options &= ~WNOHANG;
          }
       }
 
