@@ -1182,10 +1182,7 @@ static int start_child(const char *childname, /* prolog, job, epilog */
    }
    else { /* not job or job and not checkpointing */
       if (g_new_interactive_job_support == false || !is_interactive) {
-          if (use_pty == YES
-             && ((strcasecmp(script_file, JOB_TYPE_STR_QSH) != 0)
-                 || ((strcasecmp(script_file, JOB_TYPE_STR_QLOGIN)) != 0)
-                 || ((strcasecmp(script_file, JOB_TYPE_STR_QRLOGIN)) !=0))) {
+         if (use_pty == YES && strcasecmp(script_file, JOB_TYPE_STR_QSH) != 0) {
             char* job_owner = get_conf_val("job_owner");
             uid_t jobuser_id; gid_t jobuser_gid;
             if (job_owner == NULL) {
