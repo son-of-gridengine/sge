@@ -185,6 +185,11 @@ Linux)
    alpha | sparc | parisc | ia64 | ppc | ppc64 | mips64 | s390 | s390x)
       lxmachine=$osmachine
       ;;
+   aarch64)
+      lxmachine=arm64
+      ;;
+   arm*b)
+      lxmachine=armeb
    arm*)
       if /usr/bin/cpp -dM </dev/null | grep -q __ARM_PCS_VFP; then
           lxmachine=armhf       # what Debian calls it, at least (hard float)
@@ -201,6 +206,15 @@ Linux)
    mips)
       lxmachine=mips
       maybe_el
+      ;;
+   powerpc)
+      lxmachine=ppc
+      ;;
+   powerpc64))
+      lxmachine=ppc64
+      ;;
+   powerpc64le)
+      lxmachine=ppc64el
       ;;
    *)
       unsupported="UNSUPPORTED-"
