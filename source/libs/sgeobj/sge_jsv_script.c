@@ -1184,7 +1184,7 @@ jsv_handle_param_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answe
 
             if (result != ret) {
                answer_list_add_sprintf(answer_list, STATUS_DENIED, ANSWER_QUALITY_ERROR,
-                                       "\"PARAM %s %s\" was unexcpectedly %s\n",
+                                       "\"PARAM %s %s\" was unexpectedly %s\n",
                                        param, value != NULL ? value : " ",
                                        ret ? "accepted" : "rejected");
                ret = false;
@@ -2464,7 +2464,7 @@ jsv_handle_env_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_
 
          if (result != ret) {
             answer_list_add_sprintf(answer_list, STATUS_DENIED, ANSWER_QUALITY_ERROR,
-                                    "\"ENV %s %s %s\" was unexcpectedly %s\n",
+                                    "\"ENV %s %s %s\" was unexpectedly %s\n",
                                     (mod != NULL) ? mod : "<null>", 
                                     (var != NULL) ? var : "<null>", 
                                     (val != NULL) ? val : "<null>",
