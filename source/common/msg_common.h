@@ -951,7 +951,7 @@
  */
 #define MSG_SGETEXT_NOMEM                       _MESSAGE(23492, _("out of memory"))
 #define MSG_GDI_UTEXT_TASK_OPR                  _MESSAGE(23494, _("delete all jobs given in list"))
-#define MSG_SYSTEM_GETPWNAMFAILED_S             _MESSAGE(23495, _("can't get password entry for user "SFQ". Either the user does not exist or NIS error!") ) 
+#define MSG_SYSTEM_GETPWNAMFAILED_S             _MESSAGE(23495, _("can't get password entry for user "SFQ". Either user does not exist or error with NIS/LDAP etc.") )
 #define MSG_SGETEXT_NULLPTRPASSED_S             _MESSAGE(23497, _("NULL ptr passed to "SFN"()"))
 #define MSG_ATTRIB_MISSINGATTRIBUTEXINCOMPLEXES_S     _MESSAGE(23498, _("missing attribute "SFQ" in complexes"))
 
@@ -1131,7 +1131,7 @@
 #define MSG_GDI_USAGE_ar_list_OPT         "[-ar ar_id_list]"
 #define MSG_GDI_USAGE_wc_ar_list_OPT      "wc_ar_list"
 #define MSG_GDI_UTEXT_wc_ar_list_OPT      _MESSAGE(60711, _("delete all advance reservations given in list"))
-#define MSG_PARSE_INVALIDOPTIONARGUMENT   _MESSAGE(60712, _("invalid option argument!"))
+#define MSG_PARSE_INVALIDOPTIONARGUMENT   _MESSAGE(60712, _("invalid option argument"))
 #define MSG_CANTSPOOL_SS                  _MESSAGE(60713, _("unable to spool "SFN" "SFQ))
 
 #define MSG_PACK_ERRORUNPACKING_S      _MESSAGE(60714, _("error unpacking: "SFN))

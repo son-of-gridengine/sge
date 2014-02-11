@@ -1364,6 +1364,8 @@ static void qacct_usage(sge_gdi_ctx_class_t **ctx, FILE *fp)
    fprintf(fp, " [-d days]                         %s\n", MSG_HISTORY_d_OPT_USAGE ); 
    fprintf(fp, " [-D [department]]                 %s\n", MSG_HISTORY_D_OPT_USAGE);
    fprintf(fp, " [-e end_time]                     %s\n", MSG_HISTORY_e_OPT_USAGE);
+   fprintf(fp, " [-E]                              %s\n", MSG_HISTORY_E_OPT_USAGE );
+   fprintf(fp, " [[-f] acctfile]                   %s\n", MSG_HISTORY_f_OPT_USAGE );
    fprintf(fp, " [-g [groupid|groupname]]          %s\n", MSG_HISTORY_g_OPT_USAGE );
    fprintf(fp, " [-h [host]]                       %s\n", MSG_HISTORY_h_OPT_USAGE );
    fprintf(fp, " [-help]                           %s\n", MSG_HISTORY_help_OPT_USAGE);
@@ -1377,8 +1379,6 @@ static void qacct_usage(sge_gdi_ctx_class_t **ctx, FILE *fp)
    fprintf(fp, " [-q [queue]]                      %s\n", MSG_HISTORY_q_OPT_USAGE );
    fprintf(fp, " [-slots [slots]]                  %s\n", MSG_HISTORY_slots_OPT_USAGE);
    fprintf(fp, " [-t taskid[-taskid[:step]]]       %s\n", MSG_HISTORY_t_OPT_USAGE );
-   fprintf(fp, " [-E]                              %s\n", MSG_HISTORY_E_OPT_USAGE );
-   fprintf(fp, " [[-f] acctfile]                   %s\n", MSG_HISTORY_f_OPT_USAGE );
    
    fprintf(fp, "\n");
    fprintf(fp, " begin_time, end_time              %s\n", MSG_HISTORY_beginend_OPT_USAGE );
