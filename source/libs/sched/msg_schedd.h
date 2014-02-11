@@ -216,8 +216,8 @@
 #define MSG_SCHEDD_DUETORR                                  _MESSAGE(47220, _(" due to a reservation"))
 #define MSG_NO_LOAD_LIST                                    _MESSAGE(47221, _("no load_list specified"))
 #define MSG_AR_BAD_PE_US                                    _MESSAGE(47222, _("AR "sge_U32CFormat" references non existing PE "SFQ))
-#define MSG_SUBORDPOLICYCONFLICT_UUSS                       _MESSAGE(47227, _("Jobs "sge_U32CFormat" & "sge_U32CFormat" dispatched to master/subordinated queues "SFQ"/"SFQ". Suspend on subordinate to occur in same scheduling interval. Policy conflict!"))
-#define MSG_JOBMATCHINGUNEXPECTEDRESULT                     _MESSAGE(47228, _("job matching returned an unexpected result!"))
+#define MSG_SUBORDPOLICYCONFLICT_UUSS                       _MESSAGE(47227, _("Jobs "sge_U32CFormat" & "sge_U32CFormat" dispatched to master/subordinated queues "SFQ"/"SFQ". Suspend on subordinate to occur in same scheduling interval -- policy conflict"))
+#define MSG_JOBMATCHINGUNEXPECTEDRESULT                     _MESSAGE(47228, _("job matching returned an unexpected result"))
 #define MSG_SCHEDD_UNABLE_TO_SETUP_FILTER                   _MESSAGE(47229, _("unable to setup filter objects correctly"))
 #define MSG_SCHEDD_LOGLIST_QUEUESTEMPORARLYNOTAVAILABLEDROPPED _MESSAGE(47230, _("queues dropped because they are temporarily not available: "))
 

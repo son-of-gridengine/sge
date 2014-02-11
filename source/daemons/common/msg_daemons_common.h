@@ -60,15 +60,15 @@
 #define MSG_LIST_ERRORFORMATINGJOBIDENTIFIERLISTASJID       _MESSAGE(27008, _("Error formatting job_identifier_list as -jid"))
 #define MSG_PARSE_ERRORUNPARSINGMAILOPTIONS       _MESSAGE(27009, _("Error unparsing mail options"))
 #define MSG_LIST_ERRORFORMATTINGMAILLISTASM       _MESSAGE(27010, _("Error formatting mail list as -M"))
-#define MSG_PROC_INVALIDPROIRITYMUSTBELESSTHAN1025       _MESSAGE(27011, _("ERROR! invalid priority, priority must be less than 1025"))
-#define MSG_PROC_INVALIDPRIORITYMUSTBEGREATERTHANMINUS1024       _MESSAGE(27012, _("ERROR! invalid priority, priority must be greater than -1024"))
+#define MSG_PROC_INVALIDPROIRITYMUSTBELESSTHAN1025       _MESSAGE(27011, _("Invalid priority; must be less than 1025"))
+#define MSG_PROC_INVALIDPRIORITYMUSTBEGREATERTHANMINUS1024       _MESSAGE(27012, _("Invalid priority; must be greater than -1024"))
 #define MSG_LIST_ERRORFORMATINGHARDQUEUELISTASQ       _MESSAGE(27013, _("Error formatting hard_queue_list as -q"))
 #define MSG_LIST_ERRORFORMATINGSOFTQUEUELISTASQ       _MESSAGE(27014, _("Error formatting soft_queue_list as -q"))
 /* #define MSG_LIST_ERRORFORMATINGQSARGSLIST       _message(27015, _("Error formatting qs_args list")) __TS Removed automatically from testsuite!! TS__*/
 #define MSG_LIST_ERRORFORMATINGSHELLLIST       _MESSAGE(27016, _("Error formatting shell_list"))
 #define MSG_LIST_ERRORFORMATINGENVIRONMENTLISTASV       _MESSAGE(27017, _("Error formatting environment list as -v"))
 #define MSG_LIST_ERRORFORMATINGJOBARGUMENTS       _MESSAGE(27018, _("Error formatting job arguments"))
-#define MSG_JOB_INVALIDVALUEFORCHECKPOINTATTRIBINJOB_U       _MESSAGE(27019, _("ERROR! invalid value for checkpoint attribute in job "sge_U32CFormat))
+#define MSG_JOB_INVALIDVALUEFORCHECKPOINTATTRIBINJOB_U       _MESSAGE(27019, _("Invalid value for checkpoint attribute in job "sge_U32CFormat))
 #define MSG_LIST_ERRORFORMATINGHARDRESOURCELISTASL       _MESSAGE(27020, _("Error formatting hard_resource_list as -l"))
 #define MSG_JOB_JOBHASPEWITHNORANGES       _MESSAGE(27021, _("Job has parallel environment with no ranges"))
 #define MSG_LIST_ERRORFORMATINGRANGESINPE       _MESSAGE(27022, _("Error formatting ranges in -pe"))
@@ -210,7 +210,7 @@
 #define MSG_HEART_CANT_SIGNAL               _MESSAGE(27100, _("can't send signal to signal thread"))
 
 /* procfs.c */
-#define MSG_NO_SMAPS                        _MESSAGE(27102, _("memory accounting inaccurate with USE_SMAPS=no"))
+#define MSG_NO_SMAPS                        _MESSAGE(27102, _("memory accounting inaccurate with USE_SMAPS=false"))
 #define MSG_NO_SWAP                         _MESSAGE(27103, _("memory accounting can't include swap: using (unrealistic) VMsize"))
 
 #endif /* MSG_DAEMONS_COMMON_H */
