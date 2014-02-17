@@ -190,6 +190,7 @@ Linux)
       ;;
    arm*b)
       lxmachine=armeb
+      ;;
    arm*)
       if /usr/bin/cpp -dM </dev/null | grep -q __ARM_PCS_VFP; then
           lxmachine=armhf       # what Debian calls it, at least (hard float)
@@ -210,7 +211,7 @@ Linux)
    powerpc)
       lxmachine=ppc
       ;;
-   powerpc64))
+   powerpc64)
       lxmachine=ppc64
       ;;
    powerpc64le)
