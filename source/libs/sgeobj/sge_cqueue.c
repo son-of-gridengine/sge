@@ -757,7 +757,9 @@ cqueue_set_template_attributes(lListElem *this_elem, lList **answer_list)
          };
 
          value[0] = lCreateList("", ST_Type);
-         lAddElemStr(&(value[0]), ST_name, "make smp", ST_Type);
+         lAddElemStr(&(value[0]), ST_name, "make", ST_Type);
+         lAddElemStr(&(value[0]), ST_name, "smp", ST_Type);
+         lAddElemStr(&(value[0]), ST_name, "mpi", ST_Type);
 
          while (attr[index] != NoName) {
             lList *attr_list = NULL;
