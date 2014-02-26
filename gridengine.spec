@@ -153,7 +153,7 @@ License: BSD and LGPLv3+ and MIT and SISSL and others
 Requires: %{name} = %{version}-%{release}
 Requires(postun): %{name} = %{version}-%{release}
 Requires(preun): %{name} = %{version}-%{release}
-Requires: /bin/ps
+Requires: /bin/ps xterm
 
 %description execd
 Programs needed to run a Grid Engine execution host.
@@ -408,13 +408,6 @@ fi
 
 
 %changelog
-* Wed Jan 22 2014 Dave Love <d.love@liverpool.ac.uk> 8.1.7
-- Support RHEL7 beta
-- Port to SuSE
-
-* Fri Oct 25 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.6
-- Remove -system-libs, build with MUNGE
-
 * Fri Aug 16 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4
 - Require /bin/ps for execd, qmaster
 
