@@ -1,4 +1,3 @@
-#!/bin/sh
 #
 # SGE configuration script (Installation/Uninstallation/Upgrade/Downgrade)
 # Scriptname: inst_common.sh

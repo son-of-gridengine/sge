@@ -1,4 +1,4 @@
-#!/bin/sh
+# -*- sh -*-
 #
 # SGE configuration script (Installation/Uninstallation/Upgrade/Downgrade)
 # Scriptname: inst_execd_uninst.sh
