@@ -1590,8 +1590,11 @@ spool_berkeleydb_handle_bdb_error(lList **answer_list, bdb_info info,
                                   int bdb_errno)
 {
    /* we lost the connection to a RPC server */
-#if defined DB_NOTFOUND && defined DB_NOSERVER_ID
-   if (bdb_errno == DB_NOSERVER || bdb_errno == DB_NOSERVER_ID) {
+   if (bdb_errno == DB_NOSERVER
+#ifdef DB_NOSERVER_ID
+       || bdb_errno == DB_NOSERVER_ID
+#endif
+       ) {
       const char *server = bdb_get_server(info);
       const char *path   = bdb_get_path(info);
 
@@ -1602,7 +1605,9 @@ spool_berkeleydb_handle_bdb_error(lList **answer_list, bdb_info info,
                               path != NULL ? path : "no database path defined");
 
       spool_berkeleydb_error_close(info);
-   } else if (bdb_errno == DB_NOSERVER_HOME) {
+   }
+#ifdef DB_NOSERVER_HOME
+   else if (bdb_errno == DB_NOSERVER_HOME) {
       const char *server = bdb_get_server(info);
       const char *path   = bdb_get_path(info);
 
@@ -1613,9 +1618,9 @@ spool_berkeleydb_handle_bdb_error(lList **answer_list, bdb_info info,
                               path != NULL ? path : "no database path defined");
 
       spool_berkeleydb_error_close(info);
-   } else
+   }
 #endif
-   if (bdb_errno == DB_RUNRECOVERY) {
+   else if (bdb_errno == DB_RUNRECOVERY) {
       answer_list_add_sprintf(answer_list, STATUS_EUNKNOWN, 
                               ANSWER_QUALITY_ERROR, 
                               "%s", MSG_BERKELEY_RUNRECOVERY);
