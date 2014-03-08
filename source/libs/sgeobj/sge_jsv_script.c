@@ -800,7 +800,7 @@ jsv_handle_param_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answe
             binding_elem = lFirst(binding_list);
          }
          /* 
-          * parse JSV binding parameter and overwite previous setting
+          * parse JSV binding parameter and overwrite previous setting
           */
          if (ret && strcmp("binding_strategy", param) == 0) {
             if (value) {
@@ -1674,7 +1674,7 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
     * PARAM h u|n
     *
     * where 'u' means "user hold"
-    * and 'n' whould mean "no hold"
+    * and 'n' would mean "no hold"
     */
    {
       lList *hold_list = lGetList(old_job, JB_ja_u_h_ids);
@@ -1922,7 +1922,7 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
       }
    }
 
-   /* -tc task concurency
+   /* -tc task concurrency
     * optional; only provided if specified during submission
     */
    {
@@ -2227,7 +2227,7 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
 
          /*
           * if -t is not specified then all values will be 1 therefore we have to 
-          * provide the values to JSV only if one value differes from 1
+          * provide the values to JSV only if one value differs from 1
           */
          if (max != 1 || min != 1 || step != 1) {
             sge_dstring_clear(&buffer);
@@ -2265,8 +2265,8 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
    }
 
    /* command (handled as PARAM SCRIPT NAME above) */
-   /* command_args (handeled as PARAM SCRIPT above) */
-   /* xterm_args (handeled as PARAM SCRIPT above) */
+   /* command_args (handled as PARAM SCRIPT above) */
+   /* xterm_args (handled as PARAM SCRIPT above) */
 
    /* 
     * handle -v -V and -display here 
@@ -2302,7 +2302,7 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
          } 
       }
 
-      /* send the varaibles to the JSV but only if it was requested */
+      /* send the variable to the JSV but only if it was requested */
       if (lGetBool(jsv, JSV_send_env) == true) {
          for_each(env, env_list) {
             const char *value = lGetString(env, VA_value);
@@ -2645,7 +2645,7 @@ jsv_do_communication(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_li
                   }
 
                   /*
-                   * set start time for ne iteration
+                   * set start time for one iteration
                    */
                   start_time = sge_get_gmt();
                   sge_dstring_free(&sub_command);
@@ -2659,7 +2659,7 @@ jsv_do_communication(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_li
             /* 
              * try to read a line from the error stream. If there is something then
              * restart the script before next check, do not communicate with script 
-             * anymore during shutdown. The last message in the strerr stream will be 
+             * anymore during shutdown. The last message in the stderr stream will be
              * send as answer to the calling function.
              */
             while (fscanf(err_stream, "%[^\n]\n", input) == 1) {

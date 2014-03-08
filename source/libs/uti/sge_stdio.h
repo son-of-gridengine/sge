@@ -26,6 +26,7 @@
  *   The Initial Developer of the Original Code is: Sun Microsystems, Inc.
  * 
  *   Copyright: 2001 by Sun Microsystems, Inc.
+ *   Copyright (C) 2012 Mark Dixon, University of Leeds
  * 
  *   All Rights Reserved.
  * 
