@@ -49,8 +49,8 @@
 
 /****** wingrid/wl_start_job_remote() ****************************************
 *  NAME
-*     wl_start_job_remote() -- Sends a job to the N1GE Helper Service and
-*                              requests it's start
+*     wl_start_job_remote() -- Sends a job to the SGE Helper Service and
+*                              requests its start
 *
 *  SYNOPSIS
 *     int wl_start_job_remote(const char *filename, 
@@ -63,7 +63,7 @@
 *                             char       *err_str)
 *
 *  FUNCTION
-*     Sends a job start request to the N1GE Helper Service, waits blocking
+*     Sends a job start request to the SGE Helper Service, waits blocking
 *     for job end.
 *
 *  INPUTS
@@ -270,14 +270,14 @@ int wl_start_job_remote(const char *filename,
 /****** wingrid/wl_getrusage_remote() ****************************************
 *  NAME
 *     wl_getrusage_remote() -- Retrieves the usage of a job from 
-*                              N1GE Helper Service
+*                              SGE Helper Service
 *
 *  SYNOPSIS
 *     int wl_getrusage_remote(const char *szjob_id, int *pstatus,
 *                             struct rusage *prusage, char *pszerrormsg)
 *
 *  FUNCTION
-*     Retrieves the job usage from the N1GE Helper Service and fills
+*     Retrieves the job usage from the SGE Helper Service and fills
 *     a rusage struct with this information.
 *
 *  INPUTS
@@ -332,17 +332,17 @@ int wl_getrusage_remote(const char *szjob_id, int *pstatus,
 /****** wingrid/wl_request_job_usage() ***************************************
 *  NAME
 *     wl_request_job_usage() -- Requests the usage of a job from 
-*                               N1GE Helper Service
+*                               SGE Helper Service
 *
 *  SYNOPSIS
 *     int wl_request_job_usage(int comm_sock, char *job_results, 
 *                              int *resultslen, char* errormsg, int errorlen)
 *
 *  FUNCTION
-*     Requests the job usage from the N1GE Helper Service.
+*     Requests the job usage from the SGE Helper Service.
 *
 *  INPUTS
-*     int  comm_sock    - socket fd of the connection to N1GE Helper Service
+*     int  comm_sock    - socket fd of the connection to SGE Helper Service
 *     char *job_results - buffer for the usage data
 *     int  *resultslen  - size of buffer for usage data
 *     char *errormsg    - buffer for error message
@@ -454,17 +454,17 @@ int wl_request_job_usage(int comm_sock, char *job_results, int *resultslen,
 /****** wingrid/wl_request_job_exit_status() *********************************
 *  NAME
 *     wl_request_job_exit_status() -- Requests the exit status of a job from 
-*                                     N1GE Helper Service
+*                                     SGE Helper Service
 *
 *  SYNOPSIS
 *     int wl_request_job_usage(int comm_sock, char *job_exit_status,
 *                          int *exit_status_len, char* errormsg, int errorlen)
 *
 *  FUNCTION
-*     Requests the job exit status from the N1GE Helper Service.
+*     Requests the job exit status from the SGE Helper Service.
 *
 *  INPUTS
-*     int  comm_sock        - socket fd of the connection to N1GE Helper Service
+*     int  comm_sock        - socket fd of the connection to SGE Helper Service
 *     char *job_exit_status - buffer for the exit status
 *     int  *exit_status_len - size of buffer for exit status
 *     char *errormsg        - buffer for error message
@@ -574,7 +574,7 @@ int wl_request_job_exit_status(int comm_sock, char *job_exit_status,
 
 /****** wingrid/wl_forward_signal_to_job() ***********************************
 *  NAME
-*     wl_forward_signal_to_job() -- Forwards a signal to the N1GE Helper Service
+*     wl_forward_signal_to_job() -- Forwards a signal to the SGE Helper Service
 *                                   which delivers it to the job
 *
 *  SYNOPSIS
@@ -582,7 +582,7 @@ int wl_request_job_exit_status(int comm_sock, char *job_exit_status,
 *                                                  char *errormsg, int errorlen)
 *
 *  FUNCTION
-*     Forwards a signal to the N1GE Helper Service
+*     Forwards a signal to the SGE Helper Service
 *
 *  INPUTS
 *     const char *szjob_id   - the job ID as string
@@ -652,14 +652,14 @@ int wl_forward_signal_to_job(const char *szjob_id,
 
 /****** wingrid/wl_read_port_from_registry() ********************************
 *  NAME
-*     wl_read_port_from_registry() -- reads N1GE Helper Service's port
+*     wl_read_port_from_registry() -- reads SGE Helper Service's port
 *                                     from the registry
 *
 *  SYNOPSIS
 *     int wl_read_port_from_registry(int *pPort) 
 *
 *  FUNCTION
-*     Read N1GE Helper Service's port from the Windows registry
+*     Read SGE Helper Service's port from the Windows registry
 *
 *  OUTPUTS
 *     int *pPort - the port that gets read from the registry
@@ -685,13 +685,13 @@ int wl_read_port_from_registry(int *pPort)
 /****** wingrid/wl_connect_to_service() *************************************
 *  NAME
 *     wl_connect_to_service() -- establishes connection to
-*                                N1GE Helper Service
+*                                SGE Helper Service
 *
 *  SYNOPSIS
 *     int wl_connect_to_service(int *comm_sock, char *errormsg, int errorlen)
 *
 *  FUNCTION
-*     Establishes connection to N1GE Helper Service
+*     Establishes connection to SGE Helper Service
 *
 *  INPUTS
 *     char *errormsg - buffer for error message
@@ -759,18 +759,18 @@ int wl_connect_to_service(int *comm_sock, char *errormsg, int errorlen)
 /****** wingrid/wl_request_job_start() ***************************************
 *  NAME
 *     wl_request_job_start() -- sends job start request to
-*                               N1GE Helper Service
+*                               SGE Helper Service
 *
 *  SYNOPSIS
 *     int wl_request_job_start(int comm_sock, char *message, int messagelen,
 *                              char* errormsg, int errorlen)
 *
 *  FUNCTION
-*     Sends job start request to the N1GE Helper Service, waits blocking
+*     Sends job start request to the SGE Helper Service, waits blocking
 *     for job end.
 *
 *  INPUTS
-*     int  comm_sock  - The socket fd of the connection to N1GE Helper Service
+*     int  comm_sock  - The socket fd of the connection to SGE Helper Service
 *     char *message   - The serialized job
 *     int  messagelen - length of message
 *     char *errormsg  - buffer for error message
@@ -811,26 +811,26 @@ int wl_request_job_start(int comm_sock, char *message, int messagelen,
 /****** wingrid/wl_wait_for_answer() *****************************************
 *  NAME
 *     wl_wait_for_answer() -- waits for an answer from
-*                             N1GE Helper Service
+*                             SGE Helper Service
 *
 *  SYNOPSIS
 *     int wl_wait_for_answer(int comm_sock, char *buffer, int *bufferlen,
 *                            char* errormsg, int errorlen)
 *
 *  FUNCTION
-*     Waits blocking for an answer from the N1GE Helper Service.
-*     The N1GE Helper Service gives answers to requests, either an
+*     Waits blocking for an answer from the SGE Helper Service.
+*     The SGE Helper Service gives answers to requests, either an
 *     ACK/NAK or the requested information.
 *
 *  INPUTS
-*     int  comm_sock  - The socket fd of the connection to N1GE Helper Service
+*     int  comm_sock  - The socket fd of the connection to SGE Helper Service
 *     char *buffer    - A buffer for the answer
 *     int  *bufferlen - The size of the buffer
 *     char *errormsg  - buffer for error message
 *     int  error_len  - length of errormsg buffer
 *
 *  OUTPUTS
-*     char *buffer    - the answer from the N1GE Helper Service
+*     char *buffer    - the answer from the SGE Helper Service
 *     int  *bufferlen - the size of the answer
 *     char *errormsg  - in case of error: the error description
 *
@@ -864,16 +864,16 @@ int wl_wait_for_answer(int comm_sock, char *buffer, int *bufferlen,
 /****** wingrid/wl_disconnect_from_service() *********************************
 *  NAME
 *     wl_disconnect_from_service() -- disconnects from
-*                                     N1GE Helper Service
+*                                     SGE Helper Service
 *
 *  SYNOPSIS
 *     int wl_disconnect_from_service(int *comm_sock)
 *
 *  FUNCTION
-*     Disconnects from N1GE Helper Service
+*     Disconnects from SGE Helper Service
 *
 *  INPUTS
-*     int  *comm_sock  - The socket fd of the connection to N1GE Helper Service
+*     int  *comm_sock  - The socket fd of the connection to SGE Helper Service
 *
 *  OUTPUTS
 *     int  *comm_sock  - -1, if the function succeeded.
@@ -931,5 +931,3 @@ bool wl_get_GUI_mode(const char *conf_val)
    }
    return ret;
 }
-
-

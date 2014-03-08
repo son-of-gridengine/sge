@@ -651,14 +651,14 @@ bool parse_int_param(const char *input, const char *variable,
 
 /****** uti/parse_script_params() *****************************************
 *  NAME
-*     parse_script_params() -- Parse prolog/epilog/pe_start/pe_stop line from
-*                              config
+*     parse_script_params() -- Parse prolog/epilog/pe_start/pe_stop/mailer
+*                              line from config
 *
 *  SYNOPSIS
 *     char *parse_script_params(char **script_file)
 *
 *  FUNCTION
-*     Parses the config value for prolog/epilog/pe_start or pe_stop.
+*     Parses the config value for prolog, epilog, pe_start, pe_stop, or mailer.
 *     Retrieves the target user (as whom the script should be run) and
 *     eats the target user from the config value string, so that the path of
 *     the script file remains.

@@ -71,7 +71,7 @@ static void schedd_mes_find_others(lListElem *tmp_sme, lList *job_list, int igno
 
       /*
        * Here we have a list of message elements where each 
-       * MES_job_number_list containes only one id.
+       * MES_job_number_list contains only one id.
        * We have to find the other jobs (jids) which have the same category.
        */
       for_each(message_elem, message_list) {
@@ -82,7 +82,7 @@ static void schedd_mes_find_others(lListElem *tmp_sme, lList *job_list, int igno
          jid_category = schedd_mes_get_category(jid, job_list);
 
          /*
-          * Initilize jid_cat_list if not initialized
+          * Initialize jid_cat_list if not initialized
           * or if category differs from the last run
           */
          if (category != jid_category || ignore_category) {
@@ -225,7 +225,7 @@ void schedd_mes_commit(lList *job_list, int ignore_category, lRef jid_category) 
       }
 
       /*
-       * Tranfer all messages from tmp_sme to sme
+       * Transfer all messages from tmp_sme to sme
        */
       sme_mes_list = lGetList(sme, SME_message_list);
       lXchgList(tmp_sme, SME_message_list, &tmp_sme_list);
@@ -289,7 +289,7 @@ lListElem *schedd_mes_obtain_package(int *global_mes_count, int *job_mes_count)
 
    if (schedd_job_info == SCHEDD_JOB_INFO_FALSE) {
       /*
-       * Temporaryly we enable schedd_job_info to add one
+       * Temporarily we enable schedd_job_info to add one
        * message which says that schedd_job_info is disabled. 
        */
       sconf_enable_schedd_job_info();
@@ -603,7 +603,7 @@ void schedd_mes_add_global(lList **monitor_alpp, bool monitor_next_run, u_long32
 *     void schedd_mes_set_tmp_list(lListElem *category, int name, int name, u_long32 job_number) 
 *
 *  FUNCTION
-*     Takes a mesage list, changes the job number to the current job and stores
+*     Takes a message list, changes the job number to the current job and stores
 *     the list. 
 *
 *  INPUTS

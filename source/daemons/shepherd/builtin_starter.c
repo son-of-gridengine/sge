@@ -322,9 +322,9 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
        *  We work around this problem by opening output files as 
        *  job owner and then changing to the prolog user. 
        *
-       *  Additionally it prevents that a root procedures write to
+       *  Additionally it prevents root procedures writing to
        *  files which may not be accessible by the job owner
-       *  (e.g. /etc/passwd)
+       *  (e.g. /etc/passwd),
        *
        *  This workaround doesn't work for Interix - we have to find
        *  another solution here!

@@ -75,7 +75,7 @@ static pthread_mutex_t jsv_mutex = PTHREAD_MUTEX_INITIALIZER;
 /*
  * Each element in this list contains data which shows the state
  * of the corresponding JSV. The order of the elements in the list 
- * is important because the JSV's are executed in that order.
+ * is important because the JSVs are executed in that order.
  */
 static lList *jsv_list = NULL;   /* JSV_Type */
 
@@ -93,7 +93,7 @@ static lList *jsv_list = NULL;   /* JSV_Type */
 *     Returns a new JSV instance. 
 *
 *  INPUTS
-*     const char *name       - Name od the new JSV element 
+*     const char *name       - Name of the new JSV element
 *     const char *context    - JSV_CONTEXT_CLIENT or thread name
 *     lList **answer_list    - AN_Type list 
 *     const char *jsv_url    - JSV URL 
@@ -254,7 +254,7 @@ jsv_send_data(lListElem *jsv, lList **answer_list, const char *buffer, size_t si
 
 /****** sgeobj/jsv/jsv_start() **********************************************
 *  NAME
-*     jsv_start() -- Start a JSV isntance 
+*     jsv_start() -- Start a JSV instance
 *
 *  SYNOPSIS
 *     bool jsv_start(lListElem *jsv, lList **answer_list) 
@@ -416,16 +416,16 @@ jsv_stop(lListElem *jsv, lList **answer_list, bool try_soft_quit) {
 *     not be changed. 
 *
 *     A JSV URL has following format:
-*     
-*        jsi_url := client_jsv_url | server_jsv_url ;
-*        server_jsi_url := [ type ":" ] [ user "@" ] path ;
-*        client_jsi_url := [ type ":" ] path ;
+*
+*        jsv_url := client_jsv_url | server_jsv_url ;
+*        server_jsv_url := [ type ":" ] [ user "@" ] path ;
+*        client_jsv_url := [ type ":" ] path ;
 *
 *     Within client JSVs it is not allowed to specify a user. This function
 *     has to be used with value 'true' for the parameter 'in_client'. 
 *     If an error happens during parsing then this function will fill
 *     'answer_list' with a corresponding message and the function will
-*     return with value 'false' otherwiese 'true' will be returned.
+*     return with value 'false' otherwise 'true' will be returned.
 *
 *  INPUTS
 *     dstring *jsv_url    - dstring containing a JSV url 
@@ -433,7 +433,7 @@ jsv_stop(lListElem *jsv, lList **answer_list, bool try_soft_quit) {
 *     dstring *type       - "script" 
 *     dstring *user       - specified username or NULL 
 *     dstring *path       - absolute path to a script or binary 
-*     bool in_client      - true in commandline clients
+*     bool in_client      - true in command-line clients
 *                           false within qmaster 
 *
 *  RESULT
@@ -582,7 +582,7 @@ jsv_send_command(lListElem *jsv, lList **answer_list, const char *message)
 *     'jsv_url'. The 'name' and 'context' will be used to identify the JSV.
 *     In command line clients the 'context' string JSV_CONTEXT_CLIENT should
 *     be passed to this function. Within qmaster the name of the thread
-*     which calls this function sould be used as 'context' string.
+*     which calls this function should be used as 'context' string.
 *
 *     The JSV data structures will be initialized but the JSV is not started
 *     when this function returns. 
@@ -794,7 +794,7 @@ jsv_list_remove_all(void)
 *
 *  INPUTS
 *     const char *name    - name of the JSV element 
-*     const char *context - context string which indentifies JSVs 
+*     const char *context - context string which identifies JSVs
 *     lList **answer_list - AN_Type answer list 
 *     const char *jsv_url - JSV URL string 
 *
@@ -923,7 +923,7 @@ jsv_list_update(const char *name, const char *context,
 
 /****** sgeobj/jsv/jsv_do_verify() *********************************************
 *  NAME
-*     jsv_do_verify() -- verify a job using JSV's 
+*     jsv_do_verify() -- verify a job using JSVs
 *
 *  SYNOPSIS
 *     bool 
@@ -932,11 +932,11 @@ jsv_list_update(const char *name, const char *context,
 *
 *  FUNCTION
 *     This function verifies a job specification using one or multiple 
-*     JSVs. The 'context' string will be used to identify which JSV's
+*     JSVs. The 'context' string will be used to identify which JSVs
 *     should be executed. 
 *
-*     In commandline clients the string "JSV_CONTEXT_CLIENT" has to be 
-*     passed to this function. In qmaster context the name of the thread 
+*     In command-line clients the string "JSV_CONTEXT_CLIENT" has to be
+*     passed to this function. In qmaster context the name of the thread
 *     which calls this function has to be provided.
 *
 *     If multiple JSVs should be executed then the job specification
@@ -947,24 +947,24 @@ jsv_list_update(const char *name, const char *context,
 *     last JSV returns successfully or until a JSV rejects the job.
 *
 *     'job' is input and output parameter. It might either be unchanged,
-*     partially changed or completely removed. Therfore 'job' might not be 
+*     partially changed or completely removed. Therefore 'job' might not be
 *     element in a list when the function is called.
 *
 *     'holding_lock' notifies the function that the calling function
 *     is holding the global lock. In that case the global lock will be
 *     released during the verification process. After that the global
-*     lock will be aquired again.
+*     lock will be acquired again.
 *
 *     This function will return 'true' if the verification process
-*     was successfull. In that case 'job' contains the job specification
+*     was successful. In that case 'job' contains the job specification
 *     of the verified job with all adjustments which might have been 
-*     requested during the verification process of all JSV's.
+*     requested during the verification process of all JSVs.
 *
 *     If the job was rejected by one of the JSVs then the return value
-*     of this funtion will be 'false' and the answer list will eiter 
+*     of this function will be 'false' and the answer list will either 
 *     contain the error reason which was provided by the rejecting JSV 
 *     script/binary or it will contain a uniform message that the
-*     job was rejected due to JSV verification. If the job is acceped
+*     job was rejected due to JSV verification. If the job is accepted
 *     or accepted with modifications the returned value will be 'true'.
 *
 *  INPUTS
@@ -1050,19 +1050,19 @@ jsv_do_verify(sge_gdi_ctx_class_t* ctx, const char *context, lListElem **job,
             DPRINTF(("JSVs local variables initialized for verification run\n"));
 
             /* 
-             * A) If we came here and if the JSV which is currenty handled is a server JSV
+             * A) If we came here and if the JSV which is currently handled is a server JSV
              *    then the current state is this:
              *   which was hold before communication with JSV 
              *    - holding_lock is true because this code is then executed within the 
-             *      master as part of a GDI JOB ADD request. The lock was accquired outside
-             *    - jsv_mutex is currently hold because it was accquired above
+             *      master as part of a GDI JOB ADD request. The lock was acquired outside
+             *    - jsv_mutex is currently hold because it was acquired above
              *    - jsv_next will always be NULL because there is only one server JSV 
              *      instance which has to be executed,
              *
              * B) If we came here and this code is executed due to a configured client JSV then
              *
              *    - holding_lock is false. There is no global lock in the client code.
-             *    - jsv_mutex is currently hold because it was accquired above.    
+             *    - jsv_mutex is currently hold because it was acquired above.
              *    - jsv_next might be != NULL when there are other client JSVs which have
              *      to be executed after the one which is currently handled.
              *

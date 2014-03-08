@@ -28,6 +28,7 @@
  *  All Rights Reserved.
  *
  *  Portions of this software are Copyright (c) 2011-2012 Univa Corporation
+ *  Copyright (C) 2012 Mark Dixon, University of Leeds
  *
  ************************************************************************/
 /*___INFO__MARK_END__*/

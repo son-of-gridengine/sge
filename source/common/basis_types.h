@@ -165,7 +165,7 @@ extern "C" {
 
 #define gid_t_fmt    uid_t_fmt
 
-/* _POSIX_PATH_MAX is only 255 and this is less than in most real systmes */
+/* _POSIX_PATH_MAX is only 255 and this is less than in most real systems */
 /* NB although this fixed value is necessary for static string
    declarations, the value is potentially at least filesystem-dependent,
    and should be got dynamically with (f)pathconf.  */
