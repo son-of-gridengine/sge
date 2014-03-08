@@ -713,7 +713,7 @@ centry_list_init_double(lList *this_list)
 *  FUNCTION
 *     This function fills a given list of complex entries with missing
 *     attributes which can be found in the complex. It checks also
-*     wether the given in the centry_list-List are valid.
+*     whether the given in the centry_list-List are valid.
 *
 *  INPUTS
 *     lList *this_list           - resources as complex list CE_Type
@@ -768,7 +768,7 @@ centry_list_fill_request(lList *this_list, lList **answer_list, lList *master_ce
          /* so we know the type of the requested data */
          lSetUlong(entry, CE_valtype, lGetUlong(cep, CE_valtype));
 
-         /* we also know wether it is a consumable attribute */
+         /* we also know whether it is a consumable attribute */
          {
             /* With 6.2u2 the type for CE_consumable changed from bool to ulong
                for old objects we change the type to the new one */
@@ -992,7 +992,7 @@ centry_list_remove_duplicates(lList *this_list)
 *     lList *answer_list    - contains the error messages
 *
 *  RESULT   
-*     bool  false - error (the anwer_list contains the error message)
+*     bool  false - error (the answer_list contains the error message)
 *           true - okay
 *
 *******************************************************************************/
@@ -1066,7 +1066,7 @@ bool centry_elem_validate(lListElem *centry, lList *centry_list,
       char error_msg[200];
       error_msg[0] = '\0';
 
-      /* donot allow REQUESTABLE for "tmpdir" attribute, refer CR6650497 */
+      /* do not allow REQUESTABLE for "tmpdir" attribute, refer CR6650497 */
       if (!strcmp(attrname, "tmpdir") && lGetUlong(centry, CE_requestable)!= REQU_NO) {
             answer_list_add_sprintf(answer_list, STATUS_ESYNTAX, ANSWER_QUALITY_ERROR,
                                     MSG_CENTRY_NOTREQUESTABLE_S, attrname);
@@ -1411,7 +1411,7 @@ int ensure_attrib_available(lList **alpp, lListElem *ep, int nm)
 *
 *  RESULT
 *     bool - true if valid
-*            false if unvalid 
+*            false if invalid
 *
 * MT-NOTE: is MT-safe, works only on the passed in data
 *

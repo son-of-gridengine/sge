@@ -205,7 +205,7 @@ int wl_getpwuid_ex_r(uid_t uid, struct passwd *pwd, char *buffer,
 *                               const char *host, char *error_string)
 *
 *  FUNCTION
-*     Parses the result of an externel loadsensor. Returns true if the 
+*     Parses the result of an external loadsensor. Returns true if the
 *     loadsensors reported load, returns false if the loadsensor
 *     reported an error.
 *
@@ -278,7 +278,7 @@ gid_t wl_get_superuser_gid()
 *  FUNCTION
 *     Return name of local Administrator.
 *     The name depends on the language of Windows and could be set manually
-*     by the Admnistrator.
+*     by the Administrator.
 *
 *  INPUTS
 *     bufsize - sife of buffer that is to receive superuser name.

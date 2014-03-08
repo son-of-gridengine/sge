@@ -3082,10 +3082,10 @@ shepherd_signal_job(pid_t pid, int sig) {
       }
 
      /*
-      * It is possible that one signal requests from qmaster contains severeal
+      * It is possible that one signal request from qmaster contains severeal
       * kills for the same process. If this process is a tight integrated job
       * the master task can be killed twice. For the slave tasks this means the
-      * qrsh -d is killed in the same time as the qrsh_starter child and so no
+      * qrshd is killed in the same time as the qrsh_starter child and so no
       * qrsh_exit_code file is written (see Issue: 1679)
       */
       if ((first_kill == 1) || (sge_get_gmt() - first_kill_ts > 10) || (sig != SIGKILL)) {
