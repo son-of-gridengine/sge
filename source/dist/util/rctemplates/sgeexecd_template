@@ -405,7 +405,7 @@ if [ "$startup" = true ]; then
       else
          ping_port=$SGE_EXECD_PORT
       fi
-      echo "   starting sge_execd"
+      echo "   Starting Grid Engine execution daemon"
       exec 1>/dev/null 2>&1
       $bin_dir/sge_execd
       [ $? -eq 0 -a -d /var/lock/subsys ] && touch /var/lock/subsys/sgeexecd
