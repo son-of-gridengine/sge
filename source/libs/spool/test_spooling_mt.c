@@ -154,7 +154,7 @@ static void *work(void *args)
 
    work_num = *((int *)args);
   
-   WARNING((SGE_EVENT, "work %d starting %d loops\n", work_num, loops));
+   WARNING((SGE_EVENT, "work %d starting %d loops", work_num, loops));
   
    for (i = 0; i < loops; i++) {
 #if SGE_LOCKING
@@ -170,7 +170,7 @@ static void *work(void *args)
 #endif
    }
 
-   WARNING((SGE_EVENT, "work %d finished adding %d jobs, %d failed\n", 
+   WARNING((SGE_EVENT, "work %d finished adding %d jobs, %d failed",
             work_num, loops, failed));
 
    failed = 0;
@@ -188,7 +188,7 @@ static void *work(void *args)
 #endif
    }
 
-   WARNING((SGE_EVENT, "work %d finished deleting %d jobs, %d failed\n", 
+   WARNING((SGE_EVENT, "work %d finished deleting %d jobs, %d failed",
             work_num, loops, failed));
 
    

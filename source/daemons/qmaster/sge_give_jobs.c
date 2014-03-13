@@ -490,7 +490,7 @@ send_slave_jobs_wc(sge_gdi_ctx_class_t *ctx, lListElem *jep,
       if (failed != CL_RETVAL_OK) { 
          /* we failed sending the job to the execd */
          ERROR((SGE_EVENT, MSG_COM_SENDJOBTOHOST_US, sge_u32c(lGetUlong(jep, JB_job_number)), hostname));
-         ERROR((SGE_EVENT, "commlib error: %s\n", cl_get_error_text(failed)));
+         ERROR((SGE_EVENT, "commlib error: %s", cl_get_error_text(failed)));
          sge_mark_unheard(hep);
          ret = -1;
          break;
@@ -681,7 +681,7 @@ send_job(sge_gdi_ctx_class_t *ctx,
    if (failed != CL_RETVAL_OK) { 
       /* we failed sending the job to the execd */
       ERROR((SGE_EVENT, MSG_COM_SENDJOBTOHOST_US, sge_u32c(lGetUlong(jep, JB_job_number)), rhost));
-      ERROR((SGE_EVENT, "commlib error: %s\n", cl_get_error_text(failed)));
+      ERROR((SGE_EVENT, "commlib error: %s", cl_get_error_text(failed)));
       sge_mark_unheard(hep);
       DRETURN(-1);
    } else {
