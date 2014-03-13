@@ -1927,7 +1927,7 @@ static int handle_jobs_not_enrolled(lListElem *job, bool print_jobid, char *mast
       }
    }
 
-   job_destroy_hold_id_lists(job, range_list); 
+   job_destroy_hold_id_lists(range_list);
    sge_dstring_free(&ja_task_id_string);
    DRETURN(ret);
 }                 

@@ -883,7 +883,7 @@ void updateJobList(void)
                }
             }
          }
-         job_destroy_hold_id_lists(jep, range_list);
+         job_destroy_hold_id_lists(range_list);
       }
       lFreeList(&etasks);
    }

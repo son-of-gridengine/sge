@@ -2901,7 +2901,7 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
                               HOSTREF_DEFAULT);
 
                      attr_list_append_to_dstring(tmp_attribute_list,
-                                                 &value, descr, cqueue_attribute_array[index].href_attr,
+                                                 &value, cqueue_attribute_array[index].href_attr,
                                                  cqueue_attribute_array[index].value_attr);
 
                      if (!fnmatch(sge_dstring_get_string(&value_pattern), sge_dstring_get_string(&value), 0)) {
