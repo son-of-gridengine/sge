@@ -1545,7 +1545,7 @@ static void init_array(pthread_t num) {
    DENTER(CULL_LAYER,"init_array");
    
    if (sge_prof_array_initialized == 0) {
-      CRITICAL((SGE_EVENT,"Profiling array is not initialized!\n"));
+      CRITICAL((SGE_EVENT,"Profiling array is not initialized!"));
       abort();
    }
 

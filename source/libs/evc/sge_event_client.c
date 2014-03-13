@@ -3137,7 +3137,7 @@ static bool get_event_list(sge_evc_class_t *thiz, int sync, lList **report_list,
       if (help == CL_RETVAL_NO_MESSAGE || help == CL_RETVAL_SYNC_RECEIVE_TIMEOUT) {
          DEBUG((SGE_EVENT, "commlib returns %s\n", cl_get_error_text(help)));
       } else {
-         WARNING((SGE_EVENT, "commlib returns %s\n", cl_get_error_text(help))); 
+         WARNING((SGE_EVENT, "commlib returns %s", cl_get_error_text(help)));
       }
       ret = false;
    } else {

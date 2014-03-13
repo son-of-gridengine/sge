@@ -93,7 +93,7 @@ sge_signaler_initiate_termination(void)
    thread = cl_thread_list_get_first_thread(Main_Control.signal_thread_pool);
    if (thread != NULL) {
       pthread_kill(*(thread->thread_pointer), SIGINT);
-      INFO((SGE_EVENT, "send SIGINT to "SFN"\n", thread->thread_name));
+      INFO((SGE_EVENT, "send SIGINT to "SFN, thread->thread_name));
    }
    DRETURN_VOID;
 }

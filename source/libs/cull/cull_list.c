@@ -1777,7 +1777,7 @@ int lRemoveElem(lList *lp, lListElem **ep1)
    ep = *ep1;
 
    if (lp->descr != ep->descr) {
-      CRITICAL((SGE_EVENT, "Removing element from other list !!!\n"));
+      CRITICAL((SGE_EVENT, "Removing element from other list !!!"));
       DEXIT;
       abort();
    }
@@ -1842,7 +1842,7 @@ lDechainList(lList *source, lList **target, lListElem *ep)
    }
 
    if (source->descr != ep->descr) {
-      CRITICAL((SGE_EVENT,"Dechaining element from other list !!!\n"));
+      CRITICAL((SGE_EVENT,"Dechaining element from other list !!!"));
       DEXIT;
       abort();
    }
@@ -1851,7 +1851,7 @@ lDechainList(lList *source, lList **target, lListElem *ep)
       *target = lCreateList(lGetListName(source), source->descr);
    } else {
       if (lCompListDescr(source->descr, (*target)->descr) != 0) {
-         CRITICAL((SGE_EVENT,"Dechaining element into a different list !!!\n"));
+         CRITICAL((SGE_EVENT,"Dechaining element into a different list !!!"));
          DEXIT;
          abort();
          

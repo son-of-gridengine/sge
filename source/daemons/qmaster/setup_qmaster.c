@@ -188,7 +188,7 @@ int sge_setup_qmaster(sge_gdi_ctx_class_t *ctx, char* anArgv[])
    qmaster_unlock(QMASTER_LOCK_FILE);
 
    if (write_qm_name(qualified_hostname, act_qmaster_file, err_str, sizeof(err_str))) {
-      ERROR((SGE_EVENT, "%s\n", err_str));
+      ERROR((SGE_EVENT, "%s", err_str));
       SGE_EXIT(NULL, 1);
    }
 
@@ -624,7 +624,7 @@ static void communication_setup(sge_gdi_ctx_class_t *ctx)
 
    if (com_handle == NULL)
    {
-      ERROR((SGE_EVENT, "port "sge_u32" already bound\n", qmaster_port));
+      ERROR((SGE_EVENT, "port "sge_u32" already bound", qmaster_port));
 
       if (is_qmaster_already_running(qmaster_spool_dir) == true)
       {
@@ -1298,7 +1298,7 @@ remove_invalid_job_references(bool job_spooling, int user, object_description *o
          jobid = lGetUlong(upu, UPU_job_number);
          if (!job_list_locate(*(object_type_get_master_list(SGE_TYPE_JOB)), jobid)) {
             lRemoveElem(lGetList(up, debited_job_usage_key), &upu);
-            WARNING((SGE_EVENT, "removing reference to no longer existing job "sge_u32" of %s "SFQ"\n",
+            WARNING((SGE_EVENT, "removing reference to no longer existing job "sge_u32" of %s "SFQ,
                            jobid, object_name, lGetString(up, object_key)));
             spool_me = 1;
          }

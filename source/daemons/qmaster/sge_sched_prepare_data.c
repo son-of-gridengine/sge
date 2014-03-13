@@ -427,7 +427,7 @@ sge_process_schedd_conf_event_before(sge_evc_class_t *evc, object_description *o
    new = lFirst(lGetList(event, ET_new_version));
 
    if (new == NULL) {
-      ERROR((SGE_EVENT, "> > > > > no scheduler configuration available < < < < <\n"));
+      ERROR((SGE_EVENT, "> > > > > no scheduler configuration available < < < < <"));
       DEXIT;
       return SGE_EMA_FAILURE;
    }
