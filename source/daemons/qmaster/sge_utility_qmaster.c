@@ -646,13 +646,13 @@ bool attr_mod_sub_list(lList **alpp, lListElem *this_elem, int this_elem_name,
 
                if (ret) {
                   if (!no_info && SGE_GDI_IS_SUBCOMMAND_SET(sub_command, SGE_GDI_REMOVE)) {
-                     INFO((SGE_EVENT, SFQ" does not exist in "SFQ" of "SFQ"\n",
+                     INFO((SGE_EVENT, SFQ" does not exist in "SFQ" of "SFQ,
                            rstring, sub_list_name, object_name));
                      answer_list_add(alpp, SGE_EVENT, STATUS_OK, ANSWER_QUALITY_INFO);
                   } else {
                      if (!full_sublist) {
                         if (!no_info && SGE_GDI_IS_SUBCOMMAND_SET(sub_command, SGE_GDI_CHANGE)) {
-                           INFO((SGE_EVENT, SFQ" of "SFQ" is empty - Adding new element(s).\n",
+                           INFO((SGE_EVENT, SFQ" of "SFQ" is empty - Adding new element(s).",
                                  sub_list_name, object_name));
                            answer_list_add(alpp, SGE_EVENT, STATUS_OK, ANSWER_QUALITY_INFO);
                         }
@@ -663,7 +663,7 @@ bool attr_mod_sub_list(lList **alpp, lListElem *this_elem, int this_elem_name,
                         break;
                      } else {
                         if (!no_info && SGE_GDI_IS_SUBCOMMAND_SET(sub_command, SGE_GDI_CHANGE)) {
-                           INFO((SGE_EVENT, "Unable to find "SFQ" in "SFQ" of "SFQ" - Adding new element.\n",
+                           INFO((SGE_EVENT, "Unable to find "SFQ" in "SFQ" of "SFQ" - Adding new element.",
                                  rstring, sub_list_name, object_name));
                            answer_list_add(alpp, SGE_EVENT, STATUS_OK, ANSWER_QUALITY_INFO);
                         }

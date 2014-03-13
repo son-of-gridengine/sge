@@ -361,7 +361,7 @@ static bool shutdown_main(void)
    ret = (*myjvm)->AttachCurrentThread(myjvm, (void**) &env, &attach_args);
 
    if (ret < 0) { 
-      CRITICAL((SGE_EVENT, "could not attach thread to vm\n"));
+      CRITICAL((SGE_EVENT, "could not attach thread to vm"));
       pthread_mutex_unlock(&myjvm_mutex);
       DRETURN(false);
    }   
@@ -371,11 +371,11 @@ static bool shutdown_main(void)
       if (main_class != NULL) {
 	      shutdown_mid = (*env)->GetStaticMethodID(env, main_class, "shutdown", "()V");
          if (shutdown_mid == NULL) {
-            CRITICAL((SGE_EVENT, "class has no shutdown method\n"));
+            CRITICAL((SGE_EVENT, "class has no shutdown method"));
             error_occured = true;
          }
       } else {
-         CRITICAL((SGE_EVENT, "main_class is NULL\n"));
+         CRITICAL((SGE_EVENT, "main_class is NULL"));
          error_occured = true;
       }  
 
@@ -384,7 +384,7 @@ static bool shutdown_main(void)
 
          if ((*env)->ExceptionOccurred(env)) {
             (*env)->ExceptionClear(env);
-            CRITICAL((SGE_EVENT, "unexpected jvm exception\n"));
+            CRITICAL((SGE_EVENT, "unexpected jvm exception"));
             error_occured = true;
          }
       }   
@@ -392,7 +392,7 @@ static bool shutdown_main(void)
 
    ret = (*myjvm)->DetachCurrentThread(myjvm);
    if (ret < 0) { 
-      CRITICAL((SGE_EVENT, "could not detach thread from vm\n"));
+      CRITICAL((SGE_EVENT, "could not detach thread from vm"));
       error_occured = true;
    }   
 
@@ -541,7 +541,7 @@ static JNIEnv* create_vm(const char *libjvm_path, int argc, char** argv)
       if (have_jvm && jvm != NULL) {
          if ((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_2) == JNI_EDETACHED) {
             if ((i = (*jvm)->AttachCurrentThread(jvm, (void**) &env, &attach_args)) < 0) {
-               CRITICAL((SGE_EVENT, "can not get JNIEnv (error code %d)\n", i));
+               CRITICAL((SGE_EVENT, "can not get JNIEnv (error code %d)", i));
                env = NULL;
                myjvm = NULL;
             } else {
@@ -552,7 +552,7 @@ static JNIEnv* create_vm(const char *libjvm_path, int argc, char** argv)
          }
       } else {
          if ((i = sge_JNI_CreateJavaVM(&jvm, (void **)&env, &args)) < 0) {
-            CRITICAL((SGE_EVENT, "can not create JVM (error code %d)\n", i));
+            CRITICAL((SGE_EVENT, "can not create JVM (error code %d)", i));
             env = NULL;
             myjvm = NULL;
          } else {
@@ -592,7 +592,7 @@ static int invoke_main(JNIEnv* env, jclass main_class, int argc, char** argv)
    
 	main_mid = (*env)->GetStaticMethodID(env, main_class, "main", "([Ljava/lang/String;)V");
    if (main_mid == NULL) {
-      CRITICAL((SGE_EVENT, "class has no main method\n"));
+      CRITICAL((SGE_EVENT, "class has no main method"));
       DRETURN(1);
    }
 
@@ -604,12 +604,12 @@ static int invoke_main(JNIEnv* env, jclass main_class, int argc, char** argv)
       (*env)->SetObjectArrayElement(env, main_args, i, str);
    }
 
-   INFO((SGE_EVENT, "Starting up jvm thread (euid/uid: %d/%d)\n", geteuid(), getuid()));
+   INFO((SGE_EVENT, "Starting up jvm thread (euid/uid: %d/%d)", geteuid(), getuid()));
 	(*env)->CallStaticVoidMethod(env, main_class, main_mid, main_args);
    
    if ((*env)->ExceptionOccurred(env)) {
       (*env)->ExceptionClear(env);
-      CRITICAL((SGE_EVENT, "unexpected exception in invoke_main\n"));
+      CRITICAL((SGE_EVENT, "unexpected exception in invoke_main"));
       DRETURN(1);
    }
 
@@ -650,7 +650,7 @@ sge_run_jvm(sge_gdi_ctx_class_t *ctx, void *anArg, monitoring_t *monitor)
    }   
 
    if (libjvm_path == NULL) {
-      WARNING((SGE_EVENT, "libjvm_path is NULL\n"));
+      WARNING((SGE_EVENT, "libjvm_path is NULL"));
       DRETURN(false);
    }  
 
@@ -667,7 +667,7 @@ sge_run_jvm(sge_gdi_ctx_class_t *ctx, void *anArg, monitoring_t *monitor)
       DPRINTF(("++ management.properties: %s\n", sge_dstring_get_string(&ds)));
       if (sge_get_management_entry(sge_dstring_get_string(&ds), NUM_PROPS, NUM_PROPS, name, 
                                     value, &error_dstring)) {
-         WARNING((SGE_EVENT, "could not read keystore path %s\n", sge_dstring_get_string(&error_dstring)));
+         WARNING((SGE_EVENT, "could not read keystore path %s", sge_dstring_get_string(&error_dstring)));
          sge_dstring_free(&error_dstring);
          sge_dstring_free(&ds);
          sge_free(&libjvm_path);
@@ -765,11 +765,11 @@ sge_run_jvm(sge_gdi_ctx_class_t *ctx, void *anArg, monitoring_t *monitor)
       main_class = (*env)->FindClass(env, main_class_name);
       if (main_class != NULL) {
          if (invoke_main(env, main_class, sizeof(main_argv)/sizeof(char*), main_argv) != 0) {
-            CRITICAL((SGE_EVENT, "invoke_main failed\n"));
+            CRITICAL((SGE_EVENT, "invoke_main failed"));
             ret = false;
          }
       } else {
-         CRITICAL((SGE_EVENT, "main_class is NULL\n"));
+         CRITICAL((SGE_EVENT, "main_class is NULL"));
          ret = false;
       }  
    } else {

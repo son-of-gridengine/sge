@@ -1156,7 +1156,7 @@ reporting_is_intermediate_acct_required(const lListElem *job,
    /* valid input data? */
    if (job == NULL || ja_task == NULL) {
       /* JG: TODO: i18N */
-      WARNING((SGE_EVENT, "reporting_is_intermediate_acct_required: invalid input data\n"));
+      WARNING((SGE_EVENT, "reporting_is_intermediate_acct_required: invalid input data"));
       DRETURN(false);
    }
 

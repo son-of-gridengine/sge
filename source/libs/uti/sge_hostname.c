@@ -542,7 +542,7 @@ struct hostent *sge_gethostbyname(const char *name, int* system_error_retval)
 
    /* warn about blocking gethostbyname() calls */
    if (time > MAX_RESOLVER_BLOCKING) {
-      WARNING((SGE_EVENT, "gethostbyname(%s) took %d seconds and returns %s\n", 
+      WARNING((SGE_EVENT, "gethostbyname(%s) took %d seconds and returns %s",
             name, (int)time, he?"success":
           (l_errno == HOST_NOT_FOUND)?"HOST_NOT_FOUND":
           (l_errno == TRY_AGAIN)?"TRY_AGAIN":
@@ -821,7 +821,7 @@ struct hostent *sge_gethostbyaddr(const struct in_addr *addr, int* system_error_
 
    /* warn about blocking gethostbyaddr() calls */
    if (time > MAX_RESOLVER_BLOCKING) {
-      WARNING((SGE_EVENT, "gethostbyaddr() took %d seconds and returns %s\n", (int)time, he?"success":
+      WARNING((SGE_EVENT, "gethostbyaddr() took %d seconds and returns %s", (int)time, he?"success":
           (l_errno == HOST_NOT_FOUND)?"HOST_NOT_FOUND":
           (l_errno == TRY_AGAIN)?"TRY_AGAIN":
           (l_errno == NO_RECOVERY)?"NO_RECOVERY":
