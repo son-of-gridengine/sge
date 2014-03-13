@@ -130,8 +130,7 @@ static char *read_from_qrsh_socket(int msgsock);
 static int get_remote_exit_code(int sock);
 static const char *quote_argument(const char *arg);
 static int parse_result_list(lList *alp, int *alp_error);
-static int start_client_program(const char *client_name, 
-                                lList *opts_qrsh,
+static int start_client_program(const char *client_name,
                                 const char *host,
                                 const char *port,
                                 const char *job_dir,
@@ -145,7 +144,7 @@ static int get_client_server_context(int msgsock, char **port, char **job_dir, c
 static const char *get_client_name(sge_gdi_ctx_class_t *ctx, int is_rsh, int is_rlogin, int inherit_job);
 static void set_job_info(lListElem *job, const char *name, int is_qlogin, int is_rsh, int is_rlogin);
 static void remove_unknown_opts(lList *lp, u_long32 jb_now, int tightly_integrated, bool error,
-                                int is_qlogin, int is_rsh, int is_qsh); 
+                                int is_rsh);
 static void delete_job(sge_gdi_ctx_class_t *ctx, u_long32 job_id, lList *lp);
 static void set_builtin_ijs_signals_and_handlers(void);
 
@@ -652,7 +651,6 @@ static int parse_result_list(lList *alp, int *alp_error)
 *
 *  SYNOPSIS
 *     static void start_client_program(const char *client_name,
-*                                      lList *opts_qrsh,
 *                                      const char *host,
 *                                      const char *port,
 *                                      const char *job_dir,
@@ -672,7 +670,6 @@ static int parse_result_list(lList *alp, int *alp_error)
 *
 *  INPUTS
 *     client_name - name of the program to start
-*     opts_qrsh   - arguments passed to a qrsh call
 *     host        - host on which to start command
 *     port        - port on which to contact server process (telnetd etc.)
 *     job_dir     - job directory
@@ -690,8 +687,7 @@ static int parse_result_list(lList *alp, int *alp_error)
 ****************************************************************************
 *
 */
-static int start_client_program(const char *client_name, 
-                                lList *opts_qrsh,
+static int start_client_program(const char *client_name,
                                 const char *host,
                                 const char *port,
                                 const char *job_dir,
@@ -1711,9 +1707,12 @@ int main(int argc, char **argv)
       set_job_info(job, name, is_qlogin, is_rsh, is_rlogin); 
    }
 
-   remove_unknown_opts(opts_cmdline, lGetUlong(job, JB_type), existing_job, true, is_qlogin, is_rsh, is_qsh);
-   remove_unknown_opts(opts_defaults, lGetUlong(job, JB_type), existing_job, false, is_qlogin, is_rsh, is_qsh);
-   remove_unknown_opts(opts_scriptfile, lGetUlong(job, JB_type), existing_job, false, is_qlogin, is_rsh, is_qsh);
+   remove_unknown_opts(opts_cmdline, lGetUlong(job, JB_type), existing_job,
+                       true, is_rsh);
+   remove_unknown_opts(opts_defaults, lGetUlong(job, JB_type), existing_job,
+                       false, is_rsh);
+   remove_unknown_opts(opts_scriptfile, lGetUlong(job, JB_type), existing_job,
+                       false, is_rsh);
 
    opt_list_merge_command_lines(&opts_all, &opts_defaults, &opts_scriptfile,
                                 &opts_cmdline);
@@ -1885,7 +1884,7 @@ int main(int argc, char **argv)
          VERBOSE_LOG((stderr, "\n")); 
 
          /* start task via rsh on rshd */
-         exit_status = start_client_program(client_name, opts_qrsh, host, port,
+         exit_status = start_client_program(client_name, host, port,
             job_dir, utilbin_dir, is_rsh, is_rlogin, nostdin, noshell, sock);
       } else { /* g_new_interactive_job_support == true */
          int     ret;
@@ -2081,7 +2080,7 @@ int main(int argc, char **argv)
                    * start client program (e.g. rsh) and wait blocking until
                    * it quits.
                    */
-                  exit_status = start_client_program(client_name, opts_qrsh, 
+                  exit_status = start_client_program(client_name, 
                      host, port, job_dir, utilbin_dir, is_rsh, is_rlogin, 
                      nostdin, noshell, sock);
 
@@ -2344,8 +2343,8 @@ static void delete_job(sge_gdi_ctx_class_t *ctx, u_long32 job_id, lList *jlp)
    lFreeList(&alp);
 }
 
-static void remove_unknown_opts(lList *lp, u_long32 jb_now, int tightly_integrated, bool error,
-                                int is_qlogin, int is_rsh, int is_qsh)
+static void remove_unknown_opts(lList *lp, u_long32 jb_now,
+                                int tightly_integrated, bool error, int is_rsh)
 {
    lListElem *ep, *next;
 

@@ -123,8 +123,7 @@ TEMPLATE_ATTR_PROTO(solist_attr, const char *, lList *)
 
 bool
 attr_list_append_to_dstring(const lList *this_list, dstring *string,
-                            const lDescr *descriptor, int href_nm, 
-                            int value_nm);
+                            int href_nm, int value_nm);
 
 #undef ATTR_TYPE_PROTOTYPES 
 

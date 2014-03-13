@@ -103,7 +103,7 @@ char execd_spool_dir[SGE_PATH_MAX];
 static void execd_exit_func(void **ctx, int i);
 static void parse_cmdline_execd(char **argv);
 static lList *sge_parse_cmdline_execd(char **argv, lList **ppcmdline);
-static lList *sge_parse_execd(lList **ppcmdline, lList **ppreflist, u_long32 *help);
+static lList *sge_parse_execd(lList **ppcmdline, u_long32 *help);
 
 static u_long32 last_qmaster_registration_time = 0;
 
@@ -565,7 +565,7 @@ static void parse_cmdline_execd(char **argv)
       SGE_EXIT(NULL, 1);
    }
 
-   alp = sge_parse_execd(&pcmdline, &ref_list, &help);
+   alp = sge_parse_execd(&pcmdline, &help);
    lFreeList(&pcmdline);
    lFreeList(&ref_list);
 
@@ -636,8 +636,7 @@ lList *alp = NULL;
  * sge_parse_execd
  *
  *-------------------------------------------------------------*/
-static lList *sge_parse_execd(lList **ppcmdline, lList **ppreflist, 
-                              u_long32 *help) 
+static lList *sge_parse_execd(lList **ppcmdline, u_long32 *help) 
 {
    lList *alp = NULL;
    int usageshowed = 0;

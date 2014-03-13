@@ -141,7 +141,7 @@ int do_signal_queue(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg, sge_pack_buffe
                               signal = SGE_MIGRATE;
                            }   
                            if (sge_execd_deliver_signal(signal, jep, jatep) == 0) {
-                              sge_send_suspend_mail(signal,master_q ,jep, jatep); 
+                              sge_send_suspend_mail(signal, jep, jatep); 
                            }
                         }   
                      } else {
@@ -151,7 +151,7 @@ int do_signal_queue(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg, sge_pack_buffe
                            qinstance_state_set_manual_suspended(master_q, false);
                            if (!VALID(JSUSPENDED, lGetUlong(jatep, JAT_state))) {
                               if ( sge_execd_deliver_signal(signal, jep, jatep) == 0) {
-                                 sge_send_suspend_mail(signal,master_q ,jep, jatep); 
+                                 sge_send_suspend_mail(signal, jep, jatep);
                               }
                            }
                         } else {
@@ -314,8 +314,7 @@ int sge_execd_deliver_signal(u_long32 sig, lListElem *jep, lListElem *jatep)
 *     sge_send_suspend_mail() -- send suspend / continue mail if enabled
 *
 *  SYNOPSIS
-*     void sge_send_suspend_mail(u_long32 signal, lListElem *master_q, 
-*     lListElem *jep, lListElem *jatep) 
+*     void sge_send_suspend_mail(u_long32 signal, lListElem *jep, lListElem *jatep) 
 *
 *  FUNCTION
 *     This function will send the suspend/continue mail to the job owner 
@@ -327,14 +326,12 @@ int sge_execd_deliver_signal(u_long32 sig, lListElem *jep, lListElem *jatep)
 *
 *  INPUTS
 *     u_long32 signal     - type of signal (SGE_SIGSTOP/SGE_SIGCONT)
-*     lListElem *master_q - pointer to QU_Type  cull list element 
-*                           of job (not used)
 *     lListElem *jep      - pointer to JB_Type  cull list element 
 *                           of job 
 *     lListElem *jatep    - pointer to JAT_Type cull list element 
 *                           of job
 *******************************************************************************/
-void sge_send_suspend_mail(u_long32 signal, lListElem *master_q, lListElem *jep, lListElem *jatep) {
+void sge_send_suspend_mail(u_long32 signal, lListElem *jep, lListElem *jatep) {
 
    u_long32 mail_options; 
 
@@ -685,10 +682,10 @@ int signal_job(u_long32 jobid, u_long32 jataskid, u_long32 signal)
       }
       /* write mail */
       if (send_mail == 1) {
-         sge_send_suspend_mail(SGE_SIGCONT,master_q, jep, jatep); 
+         sge_send_suspend_mail(SGE_SIGCONT, jep, jatep); 
       }
       if (send_mail == 2) {
-         sge_send_suspend_mail(SGE_SIGSTOP,master_q, jep, jatep);
+         sge_send_suspend_mail(SGE_SIGSTOP, jep, jatep);
       }
 
    } else {

@@ -157,8 +157,8 @@ static void task_ref_copy_to_ja_task(sge_task_ref_t *tref, lListElem *ja_task);
 
 static void sge_do_sgeee_priority(lList *job_list, double min_tix, double max_tix,
             bool do_nprio, bool do_nurg);
-static void sgeee_priority(lListElem *task, u_long32 jobid, double nsu, double npri, 
-            double min_tix, double max_tix);
+static void sgeee_priority(lListElem *task, double nsu, double npri,
+                           double min_tix, double max_tix);
 static void recompute_prio(sge_task_ref_t *tref, lListElem *task, double uc, double npri);
 
 
@@ -688,8 +688,7 @@ static void recompute_prio(sge_task_ref_t *tref, lListElem *task, double nurg, d
  *--------------------------------------------------------------------*/
 
 static int
-job_is_active( lListElem *job,
-               lListElem *ja_task )
+job_is_active( lListElem *ja_task )
 {
    u_long job_status = lGetUlong(ja_task, JAT_status);
 #ifdef SGE_INCLUDE_QUEUED_JOBS
@@ -2083,8 +2082,7 @@ calc_job_functional_tickets_pass2( sge_ref_t *ref,
                                    double sum_of_department_functional_shares,
                                    double sum_of_job_functional_shares,
                                    double total_functional_tickets,
-                                   double weight[],
-                                   int shared)
+                                   double weight[])
 {
    double user_functional_tickets=0,
           project_functional_tickets=0,
@@ -2489,8 +2487,7 @@ static void calc_intern_pending_job_functional_tickets(
                                      sum_of_department_functional_shares,
                                      sum_of_job_functional_shares,
                                      total_functional_tickets,
-                                     weight,
-                                     share_functional_shares);
+                                     weight);
 
    return;
 }
@@ -2527,8 +2524,7 @@ static void calc_pending_job_functional_tickets(sge_ref_t *ref,
                                      *sum_of_department_functional_shares,
                                      *sum_of_job_functional_shares,
                                      total_functional_tickets,
-                                     weight,
-                                     shared);
+                                     weight);
    return;
 }
 
@@ -2675,7 +2671,7 @@ sge_calc_tickets( scheduler_all_data_t *lists,
             if (++task_cnt > max) {
                break;
             }
-            if (job_is_active(job, ja_task)) {
+            if (job_is_active(ja_task)) {
                num_queued_jobs++;
                num_jobs++;
             }
@@ -2695,7 +2691,7 @@ sge_calc_tickets( scheduler_all_data_t *lists,
       for_each(job, running_jobs) {
          lListElem *ja_task;
          for_each(ja_task, lGetList(job, JB_ja_tasks))
-            if (job_is_active(job, ja_task))
+            if (job_is_active(ja_task))
                num_jobs++;
       }
    }
@@ -2720,7 +2716,7 @@ sge_calc_tickets( scheduler_all_data_t *lists,
          lListElem *ja_task;
 
          for_each(ja_task, lGetList(job, JB_ja_tasks)) {
-            if (!job_is_active(job, ja_task)) {
+            if (!job_is_active(ja_task)) {
                sge_clear_ja_task(ja_task);
             } else {
                sge_set_job_refs(job, ja_task, &job_ref[job_ndx], NULL, lists, 0);
@@ -2750,7 +2746,7 @@ sge_calc_tickets( scheduler_all_data_t *lists,
             sge_ref_t *jref = &job_ref[job_ndx];
 
             if (++task_cnt > MIN(max_pending_tasks_per_job, free_qslots+1) ||
-                !job_is_active(job, ja_task)) {
+                !job_is_active(ja_task)) {
                sge_clear_ja_task(ja_task);
             } else {
                sge_set_job_refs(job, ja_task, jref, NULL, lists, 1);
@@ -2941,8 +2937,7 @@ sge_calc_tickets( scheduler_all_data_t *lists,
                                            sum_of_department_functional_shares,
                                            sum_of_job_functional_shares,
                                            total_functional_tickets,
-                                           weight,
-                                           share_functional_shares);
+                                           weight);
          }                                  
 
          sum_of_active_override_tickets +=
@@ -4277,13 +4272,13 @@ static void sge_do_sgeee_priority(lList *job_list, double min_tix, double max_ti
       enrolled = false;
 
       for_each (task, lGetList(job, JB_ja_tasks)) {
-         sgeee_priority(task, jobid, nsu, npri, min_tix, max_tix);
+         sgeee_priority(task, nsu, npri, min_tix, max_tix);
          enrolled = true;
       }
 
       if (!enrolled) {
          task = lFirst(lGetList(job, JB_ja_template));
-         sgeee_priority(task, jobid, nsu, npri, min_tix, max_tix);
+         sgeee_priority(task, nsu, npri, min_tix, max_tix);
       }
    }
 }
@@ -4293,8 +4288,8 @@ static void sge_do_sgeee_priority(lList *job_list, double min_tix, double max_ti
 *     sgeee_priority() -- Compute final GE priority 
 *
 *  SYNOPSIS
-*     static void sgeee_priority(lListElem *task, u_long32 jobid, double nsu, 
-*     double min_tix, double max_tix) 
+*     static void sgeee_priority(lListElem *task, double nsu,
+*                                double min_tix, double max_tix)
 *
 *  FUNCTION
 *     The GE priority is computed for the task based on the already known
@@ -4313,8 +4308,8 @@ static void sge_do_sgeee_priority(lList *job_list, double min_tix, double max_ti
 *  NOTES
 *     MT-NOTE: sgeee_priority() is MT safe
 *******************************************************************************/
-static void sgeee_priority(lListElem *task, u_long32 jobid, double nsu, 
-      double npri, double min_tix, double max_tix)
+static void sgeee_priority(lListElem *task, double nsu,
+                           double npri, double min_tix, double max_tix)
 {
 
    double nta, geee_priority;

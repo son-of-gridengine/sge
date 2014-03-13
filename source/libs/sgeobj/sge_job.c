@@ -434,21 +434,19 @@ void job_create_hold_id_lists(const lListElem *job, lList *id_list[16],
 *     job_destroy_hold_id_lists() -- destroy hold combination lists
 *
 *  SYNOPSIS
-*     void job_destroy_hold_id_lists(const lListElem *job, 
-*                                    lList *id_list[16]) 
+*     void job_destroy_hold_id_lists(lList *id_list[16])
 *
 *  FUNCTION
 *     This function frees all memory allocated by a previous call of 
 *     job_create_hold_id_lists(). 
 *
 *  INPUTS
-*     const lListElem *job - JB_Type 
 *     lList *id_list[16]   - array of RN_Type lists
 *
 *  SEE ALSO
 *     sgeobj/job/job_create_hold_id_lists 
 ******************************************************************************/
-void job_destroy_hold_id_lists(const lListElem *job, lList *id_list[16]) 
+void job_destroy_hold_id_lists(lList *id_list[16])
 {
    int i;
 
@@ -1098,15 +1096,13 @@ lListElem *job_create_task(lListElem *job, lList **answer_list, u_long32 ja_task
 *     job_get_shell_start_mode() -- get shell start mode for 'job' 
 *
 *  SYNOPSIS
-*     const char* job_get_shell_start_mode(const lListElem *job, 
-*                                        const lListElem *queue,
+*     const char* job_get_shell_start_mode(const lListElem *queue,
 *                             const char *conf_shell_start_mode) 
 *
 *  FUNCTION
 *     Returns a string identifying the shell start mode for 'job'.
 *
 *  INPUTS
-*     const lListElem *job              - JB_Type element 
 *     const lListElem *queue            - QU_Type element
 *     const char *conf_shell_start_mode - shell start mode of 
 *                                         configuration
@@ -1114,8 +1110,7 @@ lListElem *job_create_task(lListElem *job, lList **answer_list, u_long32 ja_task
 *  RESULT
 *     const char* - shell start mode
 ******************************************************************************/
-const char *job_get_shell_start_mode(const lListElem *job,
-                                     const lListElem *queue,
+const char *job_get_shell_start_mode(const lListElem *queue,
                                      const char *conf_shell_start_mode) 
 {
    const char *ret;

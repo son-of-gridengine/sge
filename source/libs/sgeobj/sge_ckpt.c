@@ -246,7 +246,7 @@ int ckpt_validate(const lListElem *this_elem, lList **alpp)
       { CK_clean_command, "clean_command"},
       { NoName,           NULL} };
 
-   int i;
+   unsigned i;
    int found = 0;
    const char *s, *interface;
 
