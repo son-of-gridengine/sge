@@ -102,7 +102,7 @@ int do_get_new_conf(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg)
          for_each (jatask, lGetList(job, JB_ja_tasks)) {
             int priority;
 
-            master_queue = responsible_queue(job, jatask, NULL);
+            master_queue = responsible_queue(jatask, NULL);
             priority = atoi(lGetString(master_queue, QU_priority));
 
             DPRINTF(("Set priority of job "sge_u32"."sge_u32" running in"
@@ -115,7 +115,7 @@ int do_get_new_conf(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg)
                                       NULL, priority);
 
             for_each(petask, lGetList(jatask, JAT_task_list)) {
-               master_queue = responsible_queue(job, jatask, petask);
+               master_queue = responsible_queue(jatask, petask);
                priority = atoi(lGetString(master_queue, QU_priority));
                DPRINTF(("Set priority of task "sge_u32"."sge_u32"-%s running "
                         "in queue %s to %d\n", 

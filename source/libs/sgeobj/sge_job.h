@@ -312,15 +312,14 @@ int job_list_add_job(lList **job_list, const char *name, lListElem *job,
 
 u_long32 job_get_ja_task_hold_state(const lListElem *job, u_long32 ja_task_id);
 
-void job_destroy_hold_id_lists(const lListElem *job, lList *id_list[16]);
+void job_destroy_hold_id_lists(lList *id_list[16]);
 
 void job_create_hold_id_lists(const lListElem *job, lList *id_list[16],
                               u_long32 hold_state[16]);
 
 bool job_is_zombie_job(const lListElem *job); 
 
-const char *job_get_shell_start_mode(const lListElem *job,
-                                     const lListElem *queue,
+const char *job_get_shell_start_mode(const lListElem *queue,
                                      const char *conf_shell_start_mode);
 
 bool job_is_array(const lListElem *job); 

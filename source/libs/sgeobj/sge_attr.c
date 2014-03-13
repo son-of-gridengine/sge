@@ -98,7 +98,7 @@ PREFIX##_list_find_value(const lList *this_list, lList **answer_list,         \
    return attr_list_find_value(this_list, answer_list, hostname,              \
                                value, mastching_host_or_group,                \
                                matching_group, is_ambiguous,                  \
-                               DESCRIPTOR, HREF_NM, VALUE_NM);                \
+                               HREF_NM, VALUE_NM);                            \
 }                                                                             \
                                                                               \
 bool                                                                          \
@@ -107,7 +107,7 @@ PREFIX##_list_find_value_href(const lList *this_list, lList **answer_list,    \
                          bool *found)                                         \
 {                                                                             \
    return attr_list_find_value_href(this_list, answer_list, hostname,         \
-                               value, found, DESCRIPTOR, HREF_NM,             \
+                               value, found, HREF_NM,                         \
                                VALUE_NM);                                     \
 }                                                                             \
                                                                               \
@@ -115,7 +115,7 @@ bool                                                                          \
 PREFIX##_list_append_to_dstring(const lList *this_list, dstring *string)      \
 {                                                                             \
    return attr_list_append_to_dstring(this_list, string,                      \
-                                      DESCRIPTOR, HREF_NM, VALUE_NM);         \
+                                      HREF_NM, VALUE_NM);                     \
 }                                                                             \
                                                                               \
 bool                                                                          \
@@ -151,14 +151,12 @@ attr_list_find_value(const lList *this_list, lList **answer_list,
                      const char *hostname, void *value_buffer, 
                      const char **matching_host_or_group,
                      const char **matching_group,
-                     bool *is_ambiguous, const lDescr *descriptor, 
-                     int href_nm, int value_nm);
+                     bool *is_ambiguous, int href_nm, int value_nm);
 
 static bool
 attr_list_find_value_href(const lList *this_list, lList **answer_list, 
                      const char *hostname, void *value_buffer, 
-                     bool *found, const lDescr *descriptor, 
-                     int href_nm, int value_nm);
+                     bool *found, int href_nm, int value_nm);
 
 static bool
 attr_list_parse_from_string(lList **this_list, lList **answer_list,
@@ -500,8 +498,7 @@ attr_list_find_value(const lList *this_list, lList **answer_list,
                      const char *hostname, void *value_buffer,
                      const char **matching_host_or_group,
                      const char **matching_group,
-                     bool *is_ambiguous, const lDescr *descriptor, 
-                     int href_nm, int value_nm)
+                     bool *is_ambiguous, int href_nm, int value_nm)
 {
    bool ret = false;
 
@@ -604,12 +601,11 @@ value_nm          ASTR_value
 static bool
 attr_list_find_value_href(const lList *this_list, lList **answer_list, 
                      const char *hostname, void *value_buffer,
-                     bool *found, const lDescr *descriptor, 
-                     int href_nm, int value_nm)
+                     bool *found, int href_nm, int value_nm)
 {
    bool ret = false;
 
-   DENTER(HOSTATTR_LAYER, "attr_list_find_value");
+   DENTER(HOSTATTR_LAYER, "attr_list_find_value_href");
 
    if (this_list != NULL && hostname != NULL) {
       lListElem *href = NULL;
@@ -655,7 +651,7 @@ value_nm          ASTR_value
 */
 bool
 attr_list_append_to_dstring(const lList *this_list, dstring *string,
-                            const lDescr *descriptor, int href_nm, int value_nm)
+                            int href_nm, int value_nm)
 {
    bool found_default = false;
    bool found_group = false;

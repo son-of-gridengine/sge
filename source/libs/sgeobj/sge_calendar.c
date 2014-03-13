@@ -118,7 +118,7 @@ static void eat_token(void);
 
 static char *save_error(void);
 
-static int cheap_scan(char *s, token_set_t tokenv[], int n, char *name);
+static int cheap_scan(char *s, token_set_t tokenv[], int n);
 
 static int disabled_year_entry(lListElem **calep);
 
@@ -1525,7 +1525,7 @@ static int month(int *mp) {
 
    if (scan(NULL, NULL)==STRING) {
       char *s = get_string();
-      if ((m = cheap_scan(s, monthv, 3, "month"))<0) {
+      if ((m = cheap_scan(s, monthv, 3))<0) {
          DRETURN(-1);
       }
       eat_token();
@@ -1752,7 +1752,7 @@ static int action(int *sp) {
    } 
 
    s = get_string();
-   if ((state = cheap_scan(s, statev, 3, "state specifier"))<0) {
+   if ((state = cheap_scan(s, statev, 3))<0) {
       snprintf(parse_error, sizeof(parse_error),
                MSG_PARSE_XISNOTASTATESPECIFIER_S, s);
       DRETURN(-1);
@@ -1841,7 +1841,7 @@ static int disabled_week_entry(lListElem **cal) {
    DENTER(TOP_LAYER, "disabled_week_entry");
 
    if (scan(NULL, NULL)==STRING &&
-       cheap_scan(get_string(), statev, 3, "state specifier")<0) {
+       cheap_scan(get_string(), statev, 3)<0) {
 
       if (week_day_range_list(&wdrl)) {
          goto ERROR;
@@ -2227,7 +2227,7 @@ static int week_day(lListElem **tm) {
       DRETURN(-1);
    }
    s = get_string();
-   if ((wday = cheap_scan(s, weekdayv, 3, "weekday"))<0) {
+   if ((wday = cheap_scan(s, weekdayv, 3))<0) {
       snprintf(parse_error, sizeof(parse_error),
                MSG_PARSE_XISNOTAWEEKDAY_S, s);
       DRETURN(-1);
@@ -2361,7 +2361,7 @@ static int scan(const char *s, token_set_t token_set[]) {
    DRETURN(token);
 }
 
-static int cheap_scan(char *s, token_set_t tokenv[], int n, char *name) {
+static int cheap_scan(char *s, token_set_t tokenv[], int n) {
    int i;
    int len;
    int match_all_chars = 0;

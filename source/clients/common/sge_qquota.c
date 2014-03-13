@@ -84,7 +84,7 @@ static bool get_all_lists(sge_gdi_ctx_class_t *ctx, lList **rqs_l, lList **centr
 static char *qquota_get_next_filter(stringT filter, const char *cp);
 static bool qquota_print_out_rule(lListElem *rule, dstring rule_name, const char *limit_name,
                                   const char *usage_value, const char *limit_value, qquota_filter_t filter,
-                                  lListElem *centry, report_handler_t* report_handler, lList *printed_rules, lList **alpp);
+                                  report_handler_t* report_handler, lList *printed_rules, lList **alpp);
 
 static bool qquota_print_out_filter(lListElem *filter, const char *name, const char *value, dstring *buffer, report_handler_t *report_handler, lList **alpp);
 
@@ -178,6 +178,9 @@ bool qquota_output(sge_gdi_ctx_class_t *ctx, lList *host_list, lList *resource_m
             lListElem *pe_ep = lFirst(pe_list);
             lListElem *queue_ep = lFirst(cqueue_list);
             lListElem *host_ep = lFirst(host_list);
+            /* fixme: for #1315, check lGetString(rqs, RQS_name) below
+               However, this routine is used in jgdi, so that needs
+               changing in sync  */
             do {
                if (user_ep != NULL) {
                   qquota_filter.user = lGetString(user_ep, ST_name);
@@ -317,7 +320,7 @@ bool qquota_output(sge_gdi_ctx_class_t *ctx, lList *host_list, lList *resource_m
                                        qf.host = host;
                                        ret = qquota_print_out_rule(rule, rule_name, limit_name, 
                                                                    sge_dstring_get_string(&value_str), sge_dstring_get_string(&limit_str),
-                                                                   qf, raw_centry, report_handler, printed_rules, alpp);
+                                                                   qf, report_handler, printed_rules, alpp);
 
                                        sge_dstring_free(&limit_str);
                                        sge_dstring_free(&value_str);
@@ -329,7 +332,7 @@ bool qquota_output(sge_gdi_ctx_class_t *ctx, lList *host_list, lList *resource_m
                                     DPRINTF(("found centry %s - static value\n", limit_name));
                                     ret = qquota_print_out_rule(rule, rule_name, limit_name, 
                                                                 NULL, lGetString(limit, RQRL_value),
-                                                                qf, raw_centry, report_handler, printed_rules, alpp);
+                                                                qf, report_handler, printed_rules, alpp);
 
                                  }
                               }
@@ -573,8 +576,7 @@ static char *qquota_get_next_filter(stringT filter, const char *cp)
 *  SYNOPSIS
 *     static bool qquota_print_out_rule(lListElem *rule, dstring rule_name, 
 *     const char *limit_name, const char *usage_value, const char *limit_value, 
-*     qquota_filter_t qfilter, lListElem *centry, report_handler_t* 
-*     report_handler, lList **alpp) 
+*     qquota_filter_t qfilter, report_handler_t* report_handler, lList **alpp)
 *
 *  FUNCTION
 *     ??? 
@@ -586,7 +588,6 @@ static char *qquota_get_next_filter(stringT filter, const char *cp)
 *     const char *usage_value          - debited usage
 *     const char *limit_value          - configured limitation
 *     qquota_filter_t qfilter          - filter tuple
-*     lListElem *centry                - limitation centry element
 *     report_handler_t* report_handler - handler for xml output
 *     lList **alpp                     - answer list
 *
@@ -600,7 +601,7 @@ static char *qquota_get_next_filter(stringT filter, const char *cp)
 *******************************************************************************/
 static bool qquota_print_out_rule(lListElem *rule, dstring rule_name, const char *limit_name,
                                   const char *usage_value, const char *limit_value, qquota_filter_t qfilter,
-                                  lListElem *centry, report_handler_t* report_handler, lList *printed_rules, lList **alpp) 
+                                  report_handler_t* report_handler, lList *printed_rules, lList **alpp)
 {
    static bool printheader = true;
    bool ret = true;

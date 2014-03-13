@@ -154,7 +154,7 @@ static long get_next_addgrpid(lList *, long);
    in case of tasks the queue is the appropriate entry in the gdil list of the slave job
 */
 
-lListElem* responsible_queue(lListElem *jep, lListElem *jatep, lListElem *petep)
+lListElem* responsible_queue(lListElem *jatep, lListElem *petep)
 {
    lListElem *master_q = NULL;
 
@@ -363,7 +363,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
                (long) job_id, (long) ja_task_id,
                pe_task_id != NULL ? pe_task_id : "none"));
 
-      master_q = responsible_queue(jep, jatep, petep);
+      master_q = responsible_queue(jatep, petep);
       SGE_ASSERT((master_q));
 
       pw_buffer_size = get_pw_buffer_size();
@@ -1303,7 +1303,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
   
    shell_start_mode = mconf_get_shell_start_mode(); 
    fprintf(fp, "shell_start_mode=%s\n", 
-         job_get_shell_start_mode(jep, master_q, shell_start_mode));
+         job_get_shell_start_mode(master_q, shell_start_mode));
    sge_free(&shell_start_mode);
    /* we need the basename for loginshell test */
    shell = strrchr(shell_path, '/');

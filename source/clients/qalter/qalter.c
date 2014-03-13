@@ -71,7 +71,8 @@
    */
 static const char *JOB_NAME_DEL = ":";
 
-static lList *qalter_parse_job_parameter(u_long32 prog_number, lList *cmdline, lList **pjob, int *all_jobs, int *all_users);
+static lList *qalter_parse_job_parameter(u_long32 prog_number, lList *cmdline,
+                                         lList **pjob, int *all_jobs);
 
 int verify = 0;
 
@@ -147,8 +148,7 @@ int main(int argc, char **argv) {
       SGE_EXIT((void**)&ctx, 0);
    }
    
-   alp = qalter_parse_job_parameter(me_who, cmdline, &request_list, &all_jobs, 
-                                    &all_users);
+   alp = qalter_parse_job_parameter(me_who, cmdline, &request_list, &all_jobs);
 
    DPRINTF(("all_jobs = %d, all_user = %d\n", all_jobs, all_users));
 
@@ -237,7 +237,7 @@ int main(int argc, char **argv) {
 **      dummy job and put them into the prequestlist
 */
 static lList *qalter_parse_job_parameter(u_long32 me_who, lList *cmdline, lList **prequestlist,
-                                         int *all_jobs, int *all_users)
+                                         int *all_jobs)
 {
    lListElem *ep  = NULL;
    lListElem *job = NULL;
@@ -512,7 +512,7 @@ static lList *qalter_parse_job_parameter(u_long32 me_who, lList *cmdline, lList 
          nm_set(job_field, JB_mail_options);
       }
 
-      parse_list_simple(cmdline, "-M", job, JB_mail_list, MR_host, MR_user, FLG_LIST_MERGE);
+      parse_list_simple(cmdline, "-M", job, JB_mail_list, MR_host, MR_user, FLG_LIST_APPEND);
       if (lGetList(job, JB_mail_list))
          nm_set(job_field, JB_mail_list);
 

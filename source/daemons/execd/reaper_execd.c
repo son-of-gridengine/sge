@@ -108,7 +108,7 @@
 static void unregister_from_ptf(u_long32 jobid, u_long32 jataskid, const char *pe_task_id, lListElem *jr);
 #endif
 
-static int clean_up_job(lListElem *jr, int failed, int signal, int is_array, const lListElem *ja_task, const char *job_owner);
+static int clean_up_job(lListElem *jr, int failed, int signal, int is_array, const char *job_owner);
 static void convert_attribute(lList **cflpp, lListElem *jr, char *name, u_long32 udefau);
 static int extract_ulong_attribute(lList **cflpp, char *name, u_long32 *valuep); 
 
@@ -299,7 +299,8 @@ int sge_reap_children_execd(int max_count, bool is_qmaster_down)
             lSetUlong(jatep, JAT_status, JEXITING);
          }
 
-         clean_up_job(jr, failed, exit_status, job_is_array(jep), jatep, lGetString(jep, JB_owner));
+         clean_up_job(jr, failed, exit_status, job_is_array(jep),
+                      lGetString(jep, JB_owner));
 
          /* set JR_delay_report true if the job is a JAPI/DRMAA job ... 
           * -sync/DRMAA jobs have unique session key, qsub jobs have JAPI_SSK
@@ -400,7 +401,7 @@ static void unregister_from_ptf(u_long32 job_id, u_long32 ja_task_id,
    failed = indicates a failure of job execution, see shepherd_states.h
  ************************************************************************/
 static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status, 
-                        int is_array, const lListElem *ja_task, const char* job_owner) 
+                        int is_array, const char* job_owner)
 {
    char* binding;
    dstring jobdir = DSTRING_INIT;
@@ -739,7 +740,7 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
 
          /* search job and ja_task */
          if (execd_get_job_ja_task(job_id, ja_task_id, &job, &ja_task)) {
-            master_queue = responsible_queue(job, ja_task, NULL);
+            master_queue = responsible_queue(ja_task, NULL);
          }
 
          if ((failed == SSTATE_NO_SHELL) && (job != NULL) && 
@@ -750,8 +751,8 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
             job_caused_failure = 1;
          } else if ((failed == SSTATE_NO_SHELL) && (master_queue != NULL)) {
             char* shell_start_mode = mconf_get_shell_start_mode();
-            const char *mode = job_get_shell_start_mode(job, master_queue, 
-                                                   shell_start_mode);
+            const char *mode = job_get_shell_start_mode(master_queue,
+                                                        shell_start_mode);
             sge_free(&shell_start_mode);
 
             if (!strcmp(mode, "unix_behavior") != 0) {
@@ -881,9 +882,9 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
             DRETURN_VOID;
          }
 
-         master_q = responsible_queue(jep, jatep, petep);
+         master_q = responsible_queue(jatep, petep);
       } else { 
-         master_q = responsible_queue(jep, jatep, NULL);
+         master_q = responsible_queue(jatep, NULL);
       }   
      
       /* use mail list of job instead of tasks one */
@@ -1413,7 +1414,8 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
             jr = add_job_report(jobid, jataskid, pe_task_id_str, NULL);
          }
          lSetUlong(jr, JR_state, JEXITING);
-         clean_up_job(jr, ESSTATE_NO_PID, 0, job_is_array(jep), jatep, lGetString(jep, JB_owner));  /* failed before execution */
+         clean_up_job(jr, ESSTATE_NO_PID, 0, job_is_array(jep),
+                      lGetString(jep, JB_owner)); /* failed before execution */
       }
       DRETURN_VOID;
    }
@@ -1509,7 +1511,7 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
       DRETURN_VOID;
    }
 
-   clean_up_job(jr, 0, 0, job_is_array(jep), jatep, lGetString(jep, JB_owner));
+   clean_up_job(jr, 0, 0, job_is_array(jep), lGetString(jep, JB_owner));
    lSetUlong(jr, JR_state, JEXITING);
    
 
