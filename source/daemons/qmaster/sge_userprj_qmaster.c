@@ -55,7 +55,7 @@
 #include "sgeobj/sge_usage.h"
 #include "sgeobj/sge_attr.h"
 #include "sgeobj/cull_parse_util.h"
-#include "sgeobj/config.h"
+#include "sgeobj/sge_config.h"
 #include "sgeobj/sge_answer.h"
 #include "sgeobj/sge_qinstance.h"
 #include "sgeobj/sge_userprj.h"

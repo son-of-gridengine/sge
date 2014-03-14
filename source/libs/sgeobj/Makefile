@@ -47,7 +47,7 @@ SGEOBJDLIB_SRC = \
          sge_all_listsL.c
 
 SGEOBJLIB_SRC = \
-         config.c \
+         sge_config.c \
          cull_parse_util.c \
          parse.c \
          sge_attr.c \
@@ -168,8 +168,8 @@ include $(SGEOBJLIB_DIR)/sgeobj_dependencies
 ###############################################################################
 # rules to build object codes
 ###############################################################################
-config.o: $(SGEOBJLIB_DIR)/config.c 
-		$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $(SGEOBJLIB_DIR)/config.c
+sge_config.o: $(SGEOBJLIB_DIR)/sge_config.c
+		$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $<
 
 cull_parse_util.o: $(SGEOBJLIB_DIR)/cull_parse_util.c 
 		$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $(SGEOBJLIB_DIR)/cull_parse_util.c

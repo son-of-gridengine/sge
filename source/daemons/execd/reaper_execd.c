@@ -62,7 +62,7 @@
 #include "uti/sge_stdio.h"
 #include "uti2/sge_cgroup.h"
 
-#include "sgeobj/config.h"
+#include "sgeobj/sge_config.h"
 #include "sgeobj/sge_job.h"
 #include "sgeobj/sge_ja_task.h"
 #include "sgeobj/sge_pe_task.h"

@@ -61,4 +61,6 @@ xargs chmod +x <<EOF
 ./libs/jgdi/jgdievc
 ./aimk
 ../debian/rules
+./configure
+./scripts/pre-dist
 EOF

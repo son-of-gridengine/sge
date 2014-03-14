@@ -61,7 +61,7 @@
 #include "uti/sge_unistd.h"
 #include "uti/sge_profiling.h"
 
-#include "sgeobj/config.h"
+#include "sgeobj/sge_config.h"
 #include "sgeobj/sge_answer.h"
 #include "sgeobj/sge_utility.h"
 #include "sgeobj/sge_feature.h"
