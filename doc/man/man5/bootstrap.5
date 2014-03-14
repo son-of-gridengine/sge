@@ -123,7 +123,10 @@ The name of a shared library containing the \fBspooling_method\fP to be loaded
 at 
 .M xxqs_name_sxx_qmaster 8
 initialization time.
-The extension characterizing a shared library (.so, .sl, .dylib etc.) is not contained in \fBspooling_lib\fP.
+The extension characterizing a shared library (.so, .sl, .dylib etc.) is not
+contained in \fBspooling_lib\fP.  The value should be the full
+filename less the extension, unless the shared library resides
+somewhere where the system will normally find it.
 .PP
 If \fBspooling_method\fP was set to \fIberkeleydb\fP during
 installation, \fBspooling_lib\fP is set to \fIlibspoolb\fP, and if
