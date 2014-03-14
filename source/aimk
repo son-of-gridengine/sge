@@ -322,7 +322,6 @@ set JAVA_HERD        = 1
 set JNI              = 1
 set JNI_TARGET       = "ALL"
 set PROTECTED        = 0
-set RUNPATH          = ""
 
 set LFLAGS           = "-L. $INP_LFLAGS"
 set XLFLAGS          = ""
@@ -342,7 +341,7 @@ set SHAREDLIBS       = 0
 set SHAREDEXT        = ".so"
 set SHAREDLD         = ""
 set SHARED_CFLAGS    = ""
-set SHARED_LFLAGS    = ""
+set SHARED_LFLAGS    = "$LFLAGS"
 
 # linker flag for -ldrmaa name and version
 set SONAME_LFLAG_DRMAA10 = ""
@@ -1385,14 +1384,6 @@ case HP1164:
    # +W arg1,arg2,.. suppress individual warnings
    # -D_XOPEN_UNIX
    # -D_XOPEN_SOURCE_EXTENDED
-
-   # http://docs.hp.com/en/B2355-90968/linkertasks.htm#BAJEBEEC
-   # set RUNPATH = -Wl,+b,'\$$ORIGIN'/../../lib/$buildarch
-   # echo "aimk RUNPATH: #${RUNPATH}#"
-   if ($BUILDARCH == HP1164) then
-      set RUNPATH = -Wl,+b,'\$$ORIGIN'/../../lib/$buildarch
-      echo "aimk RUNPATH: #${RUNPATH}#"
-   endif
    breaksw
    
 case LINUX*:
@@ -1494,17 +1485,6 @@ case LINUX*:
    # fixme: -lSMm -lICE seem necessary with openmotif, but not lesstif
    set XLIBS    = "-lXm -lXt -lXext -lX11 -lSM -lICE"
    set JAVA_ARCH = "linux"
-
-   # due to -rpath relative_path the LD_LIBRARY_PATH not needed anymore
-   # Fixme:  Should we use rpath, or remove it (per Fedora/Debian patch)?
-   # Since it hinders relocation of the shared distribution, and is
-   # irrelevant on the unshared one, I think it should go and be replaced
-   # by an /etc/ld.so.conf rule for the few libraries involved.
-   # Actually, this should probably just be conditionalized; see
-   # also the enforce_shlib stuff in distinst and the templates.
-   set RUNPATH       = -Wl,-rpath,'\$$ORIGIN'/../../lib/$buildarch
-   set LFLAGS        = "$LFLAGS $RUNPATH"
-   set SHARED_LFLAGS = "$SHARED_LFLAGS $RUNPATH"
 
    breaksw
  
@@ -1683,9 +1663,7 @@ case CYGWIN_X86_64:
    set XINCD    = "$XMTINCD $XINCD -I/usr/X11R6/include"
    set XCFLAGS  = "-Wno-strict-prototypes -Wno-error $XMTDEF $XINCD"
    set XLIBS    = "-lXm -lXt -lXext -lXmu -lX11 -lSM -lICE"
-   set RUNPATH       = -Wl,-rpath,'\$$ORIGIN'/../../lib/$buildarch
-   set LFLAGS        = "$LFLAGS $RUNPATH"
-   set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared $RUNPATH"
+   set SHARED_LFLAGS = "$SHARED_LFLAGS -L."
    set CFLAGS = "$CFLAGS -D_FILE_OFFSET_BITS=64"
    set SHAREDEXT = .dll
    set HWLOC = 1
@@ -1901,11 +1879,6 @@ case SOLARISAMD64:
 
    set RANLIB   = "echo"
    set JAVA_ARCH = "solaris"
-
-   # due to -R relative_path the LD_LIBRARY_PATH not needed anymore
-   set RUNPATH       = "-R "'\$$ORIGIN'/../../lib/$buildarch
-   set LFLAGS        = "$LFLAGS $RUNPATH"
-   set SHARED_LFLAGS = "$SHARED_LFLAGS $RUNPATH"
 
    if ( $COMPILE_ARCH == "USOLARIS64" ) then
       set MAKEMTMALLOCLIB = 0

@@ -700,7 +700,7 @@ PrintBootstrap()
    $ECHO "default_domain          $CFG_DEFAULT_DOMAIN"
    $ECHO "ignore_fqdn             $IGNORE_FQDN_DEFAULT"
    $ECHO "spooling_method         $SPOOLING_METHOD"
-   $ECHO "spooling_lib            $SPOOLING_LIB"
+   $ECHO "spooling_lib            $SGE_ROOT_VAL/lib/$ARCH/$SPOOLING_LIB"
    $ECHO "spooling_params         $SPOOLING_ARGS"
    $ECHO "binary_path             $SGE_ROOT_VAL/bin"
    $ECHO "qmaster_spool_dir       $QMDIR"
@@ -723,7 +723,7 @@ InitSpoolingDatabase()
 {
    $INFOTEXT "Initializing spooling database"
    $INFOTEXT -log "Initializing spooling database"
-   ExecuteAsAdmin $SPOOLINIT $SPOOLING_METHOD $SPOOLING_LIB "$SPOOLING_ARGS" init
+   ExecuteAsAdmin $SPOOLINIT $SPOOLING_METHOD $SGE_ROOT_VAL/lib/$ARCH/$SPOOLING_LIB "$SPOOLING_ARGS" init
 
    $INFOTEXT -wait -auto $AUTO -n "\nHit <RETURN> to continue >> "
    $CLEAR
