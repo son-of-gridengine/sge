@@ -43,7 +43,7 @@
 
 #include "cull/cull.h"
 
-#include "sgeobj/config.h"
+#include "sgeobj/sge_config.h"
 #include "sgeobj/sge_answer.h"
 #include "sgeobj/sge_conf.h"
 #include "sgeobj/parse.h"

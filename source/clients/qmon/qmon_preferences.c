@@ -48,7 +48,7 @@
 #include "sgeobj/sge_pref_PREF_L.h"
 #include "sgeobj/sge_qref.h"
 #include "sgeobj/sge_str.h"
-#include "sgeobj/config.h"
+#include "sgeobj/sge_config.h"
 #include "sgeobj/sge_feature.h"
 #include "sgeobj/sge_answer.h"
 #include "sgeobj/sge_centry.h"

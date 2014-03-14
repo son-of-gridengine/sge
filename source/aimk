@@ -2316,6 +2316,13 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
       cd $COMPILE_DIR
    endif
 
+   if ( ! -f configure ) then
+      ( cd ..;  autoreconf )
+   endif
+   if ( ! -f ./config.h ) then
+      ../configure CC="$CC" CFLAGS="`echo ${CFLAGS} | sed -e's/-DSGE_ARCH_STRING=[^ ]*//'`" || exit 1
+   endif
+
    # spooledit is only available if berkeleydb is available.
    # if we build with spooling method classic, touch spooledit
    if ( $SPOOLING_METHOD == classic ) then

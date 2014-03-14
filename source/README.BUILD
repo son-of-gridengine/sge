@@ -131,6 +131,8 @@ build dependencies mentioned below.
 
 * A version of `csh` (e.g. http://www.tcsh.org/Welcome[tcsh]) and the
   normal packages for building C source on your system;
+* GNU autoconf if you are building from the repository rather than
+  a distribution;
 * It is highly recommended to use CSP security or MUNGE authentication
   <http://arc.liv.ac.uk/SGE/howto/sge-security.html>.  For CSP you
   need the http://www.openssl.org/[openSSL library], preferably your OS's
