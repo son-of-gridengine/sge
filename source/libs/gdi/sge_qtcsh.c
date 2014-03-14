@@ -50,7 +50,7 @@
 #include "uti/sge_parse_args.h"
 
 #include "sgeobj/sge_answer.h"
-#include "sgeobj/config.h"
+#include "sgeobj/sge_config.h"
 #include "sgeobj/sge_conf.h"
 
 #include "gdi/sge_gdi.h"

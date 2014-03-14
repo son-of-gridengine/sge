@@ -56,7 +56,7 @@
 #include "sgeobj/sge_event.h"
 #include "sgeobj/sge_id.h"
 #include "sgeobj/sge_answer.h"
-#include "sgeobj/config.h"
+#include "sgeobj/sge_config.h"
 #include "sgeobj/sge_host.h"
 #include "sgeobj/sge_sharetree.h"
 #include "sgeobj/sge_userset.h"
