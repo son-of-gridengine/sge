@@ -30,6 +30,8 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/                 
 
+#include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -451,7 +453,31 @@ int sge_rmdir(const char *cp, dstring *error)
       if (strcmp(dent->d_name, ".") && strcmp(dent->d_name, "..")) {
  
          snprintf(fname, sizeof(fname), "%s/%s", cp, dent->d_name);
- 
+
+#ifdef HAVE_STRUCT_DIRENT_D_TYPE
+	 switch (dent->d_type) {
+	 case DT_UNKNOWN:
+	    break;
+	 case DT_DIR:
+	    if (sge_rmdir(fname, error)) {
+	       sge_dstring_sprintf(error, "%s", MSG_FILE_RECURSIVERMDIRFAILED );
+	       closedir(dir);
+	       DEXIT;
+	       return -1;
+	    }
+	    continue;
+	 default:
+	    if (unlink(fname)) {
+	       sge_dstring_sprintf(error, MSG_FILE_UNLINKFAILED_SS,
+				   fname, strerror(errno));
+	       closedir(dir);
+	       DEXIT;
+	       return -1;
+	    }
+	    continue;
+	 }
+#endif /* HAVE_STRUCT_DIRENT_D_TYPE */
+
 #ifndef WIN32 /* lstat not called */
          if (SGE_LSTAT(fname, &statbuf)) {
             sge_dstring_sprintf(error, MSG_FILE_STATFAILED_SS , fname, strerror(errno));
