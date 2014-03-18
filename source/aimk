@@ -2326,6 +2326,7 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
    # spooledit is only available if berkeleydb is available.
    # if we build with spooling method classic, touch spooledit
    if ( $SPOOLING_METHOD == classic ) then
+      touch -t 202012312357 sge_spooling_berkeleydb.o sge_bdb.o sge_bdb_types.o
       touch -t 202012312358 libspoolb.a spooledit.o
       touch -t 202012312359 spooledit
    endif
