@@ -29,6 +29,9 @@
  * 
  ************************************************************************/
 /*___INFO__MARK_END__*/
+
+/* fixme: drop into cgroups of (arbitrary choice of) user's job */
+
 #define MAX_SLEEP_DEFAULT 0 /* Max sleep default (micro-secs) */
 #define EXECD_SPOOL_DIR_DEFAULT "/opt/sge/default/spool"
 #define MAX_BYPASS_USERS 30
@@ -38,6 +41,8 @@
 #define PAM_SM_ACCOUNT
 #define PAM_SM_SESSION
 #define PAM_SM_PASSWORD
+
+#define SERVICENAME "pam_sge_authorize"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,6 +54,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <syslog.h>
 
 #include "sgeobj/sge_all_listsL.h"
 #include "sge_bootstrap.h"
@@ -98,6 +104,19 @@ PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh,int flags,int argc
 }
 
 
+/* Adapted from pam_sge-qrsh-setup */
+static void pam_sge_log(int priority, const char *msg, ...)
+{
+  char buf[512];
+  va_list plist;
+  va_start(plist, msg);
+  vsnprintf(buf, sizeof(buf), msg, plist);
+  va_end(plist);
+  openlog(SERVICENAME, LOG_PID | LOG_CONS | LOG_NOWAIT, LOG_AUTH);
+  syslog(priority, "%s", buf);
+  closelog();
+}
+
 
 PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
                                 const char **argv)
@@ -113,9 +132,7 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
   float normalized_rndm;
   int i;
   int ii;
-#ifdef PAM_DEBUG 
-  FILE *fpd;
-#endif
+  int debug=0;
   FILE *fp;
   DIR *dp;
   struct dirent *ep;
@@ -157,23 +174,6 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
     return PAM_SUCCESS;
 
   gethostname(hostname,namelength);
-
-#ifdef PAM_DEBUG 
-  fpd = fopen("/tmp/pam_sge_debug.out","a");
-  fprintf(fpd,"Hostname is: %s\n",hostname);
-  fprintf(fpd,"User is:     %s\n",user);
-  fflush(fpd);
-#endif
-
-   /* immediately bail out if root or special people are knocking */
-  if( (strcmp(user,"root") == 0) )
-    {
-#ifdef PAM_DEBUG 
-      fprintf(fpd,"Allowing root access...\n");
-      fclose(fpd);
-#endif
-      return PAM_SUCCESS;
-    }
         
    /* read interesting parameters from the /etc/pam.d/sshd file */
    /* note: a couple of other possible params are:
@@ -202,22 +202,29 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
          }
        }
      }
+     if (strncmp(argv[i], "debug", 5) == 0) {
+       debug=1;
+       pam_sge_log(LOG_DEBUG, "Hostname is: %s", hostname);
+       pam_sge_log(LOG_DEBUG, "User is:     %s", user);
+     }
   }
+
+   /* immediately bail out if root or special people are knocking */
+  if( (strcmp(user,"root") == 0) )
+    {
+      if (debug) pam_sge_log(LOG_DEBUG, "Allowing root access...");
+      return PAM_SUCCESS;
+    }
   
   /* scan the bypass list right away and return success if the user is in it */
   
-#ifdef PAM_DEBUG 
-  fprintf(fpd,"checking bypass list...\n");
-  fflush(fpd);
-#endif
+  if (debug) pam_sge_log(LOG_DEBUG, "checking bypass list...");
 
   for (i=0;i<bypass_user_count;i++) {
        if(strcmp(bypass_user_list[i],user)==0) {
-#ifdef PAM_DEBUG 
-          fprintf(fpd,"Allowing access to user in bypass list...\n");
-          fclose(fpd);
-#endif
-          return PAM_SUCCESS;
+         if (debug)
+           pam_sge_log(LOG_DEBUG, "Allowing access to user in bypass list...");
+         return PAM_SUCCESS;
        }
   }
 
@@ -232,13 +239,12 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
      }
      
 
-#ifdef PAM_DEBUG 
-      fprintf(fpd,"SGE execd spool dir set to...\n");
-      fprintf(fpd,"execd_spool_dir = %s\n",execd_spool_dir);
-      fprintf(fpd,"Max sleep time set to (micro sec)...\n");
-      fprintf(fpd,"max_sleep = %ld\n",max_sleep);
-      fflush(fpd);
-#endif
+  if (debug) {
+      pam_sge_log(LOG_DEBUG, "SGE execd spool dir set to...");
+      pam_sge_log(LOG_DEBUG, "execd_spool_dir = %s", execd_spool_dir);
+      pam_sge_log(LOG_DEBUG, "Max sleep time set to (micro sec)...");
+      pam_sge_log(LOG_DEBUG, "max_sleep = %ld", max_sleep);
+  }
  
   /*-------------------------------------------------------------------------
    * Desynchronize the sge execd spool directory accesses - 
@@ -264,10 +270,9 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
       usleep(local_sleep);
    }
 
-#ifdef PAM_DEBUG 
-   fprintf(fpd,"checking the execd spool directory for active jobs and job data ...\n");
-   fflush(fpd);
-#endif
+   if (debug)
+     pam_sge_log(LOG_DEBUG,
+                 "checking execd spool directory for active jobs and job data...");
 
    /* get rid of the domain name from the pam call */
    host=strtok(hostname,".");
@@ -280,67 +285,62 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
    if (dp !=NULL) {
        while ((ep=readdir(dp))){
              if (strncmp(".",ep->d_name,1)!=0) {
-#ifdef PAM_DEBUG 
-                fprintf(fpd,"processing active job: %s\n",my_active_job);
-                fflush(fpd);
-#endif
                 strcpy(my_active_job,ep->d_name);
+                if (debug)
+                  pam_sge_log(LOG_DEBUG, "processing active job: %s",
+                              my_active_job);
                 strptr=strtok(my_active_job,".");
                 my_job_id=atoi(strptr);
                 my_task_id=strtok(NULL,".");
 
-#ifdef PAM_DEBUG 
-                fprintf(fpd,"using SGE tools to build path for job: %d, task: %s ...\n",my_job_id,my_task_id);
-                fflush(fpd);
-#endif
+                pam_sge_log(LOG_DEBUG,
+                            "using SGE tools to build path for job: %d, task: %s...",
+                            my_job_id,my_task_id);
 
                 sge_get_file_path(spool_path, JOB_SPOOL_DIR, SPOOL_DEFAULT,my_flags, my_job_id, junk, NULL);
                 sprintf(host_file,"%s/%s/%s.%s",execd_spool_dir,host,spool_path,my_task_id);
 
-#ifdef PAM_DEBUG 
-                fprintf(fpd,"sge tools returned: %s ...\n",spool_path);
-                fprintf(fpd,"fixed up to: %s ...\n",host_file);
-                fprintf(fpd,"checking if this file exists ...\n");
-                fflush(fpd);
-#endif
+                if (debug) {
+                  pam_sge_log(LOG_DEBUG, "sge tools returned: %s ...",
+                              spool_path);
+                  pam_sge_log(LOG_DEBUG, "fixed up to: %s ...", host_file);
+                  pam_sge_log(LOG_DEBUG, "checking if this file exists ...");
+                }
 
                 if ((fp=fopen(host_file,"r"))) {
                    fclose(fp);
-#ifdef PAM_DEBUG 
-                   fprintf(fpd,"file exists. using SGE tools to load job data...\n");
-                   fflush(fpd);
-#endif
+                   if (debug)
+                     pam_sge_log(LOG_DEBUG,
+                                 "file exists. using SGE tools to load job data...");
 		   
                    my_job = lReadElemFromDisk(NULL, host_file, JB_Type, "job");
 		   
 
-#ifdef PAM_DEBUG 
-		   if(!my_job) fprintf(fpd,"my_job: %p\n",my_job);
-                   fprintf(fpd,"job data loaded, checking job owner...\n");
-                   fflush(fpd);
-		   int retval=0;
-#endif
+                   if (debug) {
+                     if(!my_job) pam_sge_log(LOG_DEBUG, "my_job: %p",
+                                             my_job);
+                     pam_sge_log(LOG_DEBUG,
+                                 "job data loaded, checking job owner...");
+                   }
                    if ((retval=lGetPosViaElem(my_job, JB_owner, SGE_NO_ABORT))>=0) {
                       if ((user_sge=lGetString(my_job, JB_owner))){
-#ifdef PAM_DEBUG 
-                         fprintf(fpd,"job owner is: %s\n",user_sge);
-                         fflush(fpd);
-#endif		      
-                         if(strcmp(user,user_sge)==0) {
-#ifdef PAM_DEBUG 
-                           fprintf(fpd,"PAM_SUCCESS !\n");
-                           fflush(fpd);
-#endif		      
-                           lFreeElem(&my_job);
-		           return PAM_SUCCESS;
-	                 }
+                        if (debug)
+                          pam_sge_log(LOG_DEBUG, "job owner is: %s",
+                                      user_sge);
+                        if(strcmp(user,user_sge)==0) {
+                          if (debug)
+                            pam_sge_log(LOG_DEBUG, "PAM_SUCCESS !");
+                          /* fixme: do the same as pam_sge-qrsh-setup
+                             to attach this session to a job.  */
+                          lFreeElem(&my_job);
+                          return PAM_SUCCESS;
+                        }
                       }
                    }
 		   else {
-#ifdef PAM_DEBUG 
-		     fprintf(fpd,"Failed to GetPosViaElem w/ val %d\n",retval);
-		     fflush(fpd);
-#endif		      
+                     if (debug)
+                       pam_sge_log(LOG_DEBUG,
+                                   "Failed to GetPosViaElem w/ val %d", retval);
 		   }
                    lFreeElem(&my_job);
                  }
@@ -349,16 +349,14 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
        } 
        closedir(dp);
    } else {
-#ifdef PAM_DEBUG 
-                fprintf(fpd,"no active jobs directory present: %s\n", my_active_jobs_directory);
-                fflush(fpd);
-#endif
+     if (debug)
+       pam_sge_log(LOG_DEBUG, "no active jobs directory present: %s",
+                   my_active_jobs_directory);
    }
    
-#ifdef PAM_DEBUG 
-   fprintf(fpd,"PAM_ACCT_EXPIRED returned - no valid user matches found...\n");
-   fclose(fpd);
-#endif
+   if (debug)
+   pam_sge_log(LOG_DEBUG,
+               "PAM_ACCT_EXPIRED returned - no valid user matches found...");
    return PAM_ACCT_EXPIRED;
 	   
 }
