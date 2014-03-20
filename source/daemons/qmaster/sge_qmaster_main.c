@@ -279,6 +279,7 @@ int main(int argc, char* argv[])
    sge_gdi_ctx_class_t *ctx = NULL;
    u_long32 start_time = sge_get_gmt();
    monitoring_t monitor;
+   const char *pidfile = getenv("SGE_QMASTER_PIDFILE");
 
    DENTER_MAIN(TOP_LAYER, "qmaster");
 
@@ -447,7 +448,6 @@ int main(int argc, char* argv[])
    sge_shutdown((void**)&ctx, sge_qmaster_get_exit_state());
    sge_prof_cleanup();
 
-   const char *pidfile = getenv("SGE_MASTER_PIDFILE");
    if (!pidfile) pidfile = QMASTER_PID_FILE;
    unlink(pidfile);
 
