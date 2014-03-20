@@ -186,7 +186,7 @@ void
 job_lists_split_with_reference_to_max_running(bool monitor_next_run, lList **job_lists[],
                                               lList **user_list,
                                               const char *user_name,
-                                              int max_jobs_per_user);
+                                              u_long32 max_jobs_per_user);
 
 bool
 job_move_first_pending_to_running(lListElem **pending_job,

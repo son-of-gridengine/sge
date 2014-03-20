@@ -406,7 +406,7 @@ char **allowed
 ) {
    char err_str[MAX_STRING_SIZE];
    char name[256];
-   int name_len;
+   size_t name_len;
    const char *sp;
    size_t dp_pos = 0;
 

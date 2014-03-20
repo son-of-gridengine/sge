@@ -1232,7 +1232,7 @@ static char **disassemble_proc_args(const char *script_file, char **preargs, int
 
 static char **read_job_args(char **preargs, int extra_args)
 {
-   int n_preargs = 0;
+   unsigned n_preargs = 0;
    unsigned long n_job_args = 0;
    unsigned long i;
    char **pstr;
@@ -1336,7 +1336,7 @@ int use_starter_method /* If this flag is set the shell path contains the
       sge_dstring_append(&arguments, script_file);
      
       sge_dstring_append(&arguments, " ");
-      for (i=0; i<n_job_args; i++) {
+      for (i=0; i<(unsigned)n_job_args; i++) {
          char conf_val[256];
 
          sprintf(conf_val, "job_arg%lu", i + 1);

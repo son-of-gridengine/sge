@@ -280,12 +280,12 @@ wcal,  CA_Type
 */
 static int state_at(time_t now, const lList *ycal, const lList *wcal, time_t *next_event) {
    struct tm *tm_now;
-   int state = 0, w_is_active = -1, y_is_active;
+   int w_is_active = -1;
    lListElem *yc, *wc, *tm;
    time_t limit;
    time_t temp_next_event = 0;
    struct tm res;
-   u_long32 next_state;
+   u_long32 next_state, state = 0, y_is_active;
 
    DENTER(TOP_LAYER, "state_at");
 

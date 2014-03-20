@@ -56,7 +56,7 @@ int             log_state_get_log_as_admin_user(void);
 
 void log_state_set_log_context(void *context);
 
-int sge_log(int log_level, const char *mesg, const char *file__, 
+int sge_log(unsigned log_level, const char *mesg, const char *file__,
             const char *func__, int line__);
 
 /* extern stringTlong SGE_EVENT; */

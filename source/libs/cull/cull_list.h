@@ -289,9 +289,9 @@ struct _lDescr {
    (DENTER); perhaps they shouldn't.  */
 const char *lGetListName(const lList *lp);
 const lDescr *lGetListDescr(const lList *lp);
-int lGetNumberOfElem(const lList *lp);
-int lGetNumberOfRemainingElem(const lListElem *ep);
-int lGetElemIndex(const lListElem *ep, const lList *lp);
+size_t lGetNumberOfElem(const lList *lp);
+size_t lGetNumberOfRemainingElem(const lListElem *ep);
+ssize_t lGetElemIndex(const lListElem *ep, const lList *lp);
 
 const lDescr *lGetElemDescr(const lListElem *ep);
 void lWriteElem(const lListElem *ep);
@@ -337,6 +337,7 @@ lListElem *lDechainObject(lListElem *parent, int name);
 int lRemoveElem(lList *lp, lListElem **ep);
 int lInsertElem(lList *lp, lListElem *ep, lListElem *new_elem);
 
+/* NB shouldn't have format attribute as the string isn't printf-ish */
 int lPSortList(lList *lp, const char *fmt, ...);
 int lSortList(lList *lp, const lSortOrder *sp);
 int lUniqStr(lList *lp, int keyfield);

@@ -664,7 +664,7 @@ int cl_com_tcp_close_connection(cl_com_connection_t** connection) {
 #define __CL_FUNCTION__ "cl_com_tcp_write()"
 int cl_com_tcp_write(cl_com_connection_t* connection, cl_byte_t* message, unsigned long size, unsigned long *only_one_write) {
    cl_com_tcp_private_t* private = NULL;
-   long data_written = 0;
+   size_t data_written = 0;
    int my_errno;
 
    if (message == NULL) {
@@ -740,7 +740,7 @@ int cl_com_tcp_write(cl_com_connection_t* connection, cl_byte_t* message, unsign
 #define __CL_FUNCTION__ "cl_com_tcp_read()"
 int cl_com_tcp_read(cl_com_connection_t* connection, cl_byte_t* message, unsigned long size, unsigned long* only_one_read) {
    cl_com_tcp_private_t* private = NULL;
-   long data_read = 0;
+   size_t data_read = 0;
    int my_errno;
 
    if (message == NULL) {

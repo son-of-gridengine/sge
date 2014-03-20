@@ -145,7 +145,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
          if (fd == -1) {
             sprintf(err_str, MSG_ERROROPENINGFILEFORWRITING_SS, "/dev/null", strerror(errno));
             sprintf(err_str, "\n");
-            if (write(2, err_str, strlen(err_str)) != strlen(err_str)) {
+            if (write(2, err_str, strlen(err_str)) != (int)strlen(err_str)) {
                /* nothing we can do here - we are anyway about to exit */
             }
             SGE_EXIT(NULL, 1);
@@ -189,7 +189,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
          if (!(pw=sge_getpwnam_r(user, &pw_struct, buffer, size))) {
             sprintf(err_str, MSG_SYSTEM_NOUSERFOUND_SS , user, strerror(errno));
             sprintf(err_str, "\n");
-            if (write(2, err_str, strlen(err_str)) != strlen(err_str)) {
+            if (write(2, err_str, strlen(err_str)) != (int)strlen(err_str)) {
                /* nothing we can do here - we are anyway about to exit */
             }
             sge_free(&buffer);
@@ -207,7 +207,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
                SGE_EXIT(NULL, 1);
             }
             sprintf(err_str, "%s %d\n", pw->pw_name, (int)pw->pw_gid);
-            if (write(2, err_str, strlen(err_str)) != strlen(err_str)) {
+            if (write(2, err_str, strlen(err_str)) != (int)strlen(err_str)) {
                /* TODO: required protocol step? If sending fails, exit? */
             }
 #if !(defined(WIN32) || defined(INTERIX))  /* initgroups not called */
@@ -215,7 +215,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
                sprintf(err_str, MSG_SYSTEM_INITGROUPSFORUSERFAILED_ISS,
                        user, strerror(errno));
                sprintf(err_str, "\n");
-               if (write(2, err_str, strlen(err_str)) != strlen(err_str)) {
+               if (write(2, err_str, strlen(err_str)) != (int)strlen(err_str)) {
                   /* nothing we can do here - we are anyway about to exit */
                }
                sge_free(&buffer);
@@ -227,7 +227,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
                sprintf(err_str, MSG_SYSTEM_SWITCHTOUSERFAILED_SS , user,
                      strerror(errno));
                sprintf(err_str, "\n");
-               if (write(2, err_str, strlen(err_str)) != strlen(err_str)) {
+               if (write(2, err_str, strlen(err_str)) != (int)strlen(err_str)) {
                   /* nothing we can do here - we are anyway about to exit */
                }
                sge_free(&buffer);

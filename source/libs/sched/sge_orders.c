@@ -346,7 +346,7 @@ sge_send_orders2master(sge_evc_class_t *evc, lList **orders)
    DENTER(TOP_LAYER, "sge_send_orders2master");
 
    if (*orders != NULL) {
-      DPRINTF(("SENDING %d ORDERS TO QMASTER\n", lGetNumberOfElem(*orders)));
+      DPRINTF(("SENDING %zd ORDERS TO QMASTER\n", lGetNumberOfElem(*orders)));
       order_id = ctx->gdi_multi(ctx, &alp, SGE_GDI_SEND, SGE_ORDER_LIST, SGE_GDI_ADD,
                                 orders, NULL, NULL, false, &state, false);
       ctx->gdi_wait(ctx, &alp, &malp, &state);

@@ -124,7 +124,7 @@ static void qrsh_error(const char *fmt, ...)
       return;
    }
 
-   if (write(file, message, strlen(message)) != strlen(message)) {
+   if (write(file, message, strlen(message)) != (int)strlen(message)) {
       dstring ds = DSTRING_INIT;
       fprintf(stderr, MSG_FILE_CANNOT_WRITE_SS, fileName, sge_strerror(errno, &ds));
       sge_dstring_free(&ds);
@@ -411,7 +411,7 @@ static int write_pid_file(pid_t pid)
 
    snprintf(pid_str, 20, pid_t_fmt, pid);
 
-   if (write(pid_file, pid_str, strlen(pid_str)) != strlen(pid_str)) {
+   if (write(pid_file, pid_str, strlen(pid_str)) != (int)strlen(pid_str)) {
       dstring ds = DSTRING_INIT;
       qrsh_error(MSG_FILE_CANNOT_WRITE_SS, pid_file_name, sge_strerror(errno, &ds));
       sge_dstring_free(&ds);
@@ -818,7 +818,7 @@ static int writeExitCode(int myExitCode, int programExitCode)
    }
  
    snprintf(exitCode_str, 20, "%d", exitCode);
-   if (write(file, exitCode_str, strlen(exitCode_str)) != strlen(exitCode_str)) {
+   if (write(file, exitCode_str, strlen(exitCode_str)) != (int)strlen(exitCode_str)) {
       dstring ds = DSTRING_INIT;
       qrsh_error(MSG_FILE_CANNOT_WRITE_SS, fileName, sge_strerror(errno, &ds));
       sge_dstring_free(&ds);

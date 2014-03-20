@@ -185,7 +185,7 @@ void process_job_report(sge_gdi_ctx_class_t *ctx, lListElem *report,
 
    sge_dstring_init(&job_id_dstring, job_id_buffer, MAX_STRING_SIZE);
 
-   DPRINTF(("received job report with %d elements:\n", lGetNumberOfElem(jrl)));
+   DPRINTF(("received job report with %zd elements:\n", lGetNumberOfElem(jrl)));
 
    /* 
    ** first process job reports of sub tasks to ensure this we put all these 
@@ -337,7 +337,7 @@ void process_job_report(sge_gdi_ctx_class_t *ctx, lListElem *report,
                         /* here qmaster hears the first time about this task
                            and thus adds it to the task list of the appropriate job */
                         new_task = true;
-                        DPRINTF(("--- task (#%d) "SFN" -> running\n", 
+                        DPRINTF(("--- task (#%zd) "SFN" -> running\n",
                            lGetNumberOfElem(lGetList(jatep, JAT_task_list)), job_id_string));
                         petask = lAddSubStr(jatep, PET_id, pe_task_id_str, JAT_task_list, PET_Type);
                         lSetUlong(petask, PET_status, JRUNNING);

@@ -1421,7 +1421,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          args = lGetList(jep, JB_job_args);
       }
 
-      fprintf(fp, "njob_args=%d\n", lGetNumberOfElem(args));
+      fprintf(fp, "njob_args=%zd\n", lGetNumberOfElem(args));
 
       for_each(se, args) {
          const char *arg = lGetString(se, ST_name);
@@ -2437,7 +2437,7 @@ static bool explicit(dstring* result, lListElem* binding_elem)
    /* the from the request extracted sockets and cores (to bind to) */
    int* socket_list = NULL;
    int* core_list   = NULL;
-   int socket_list_length, core_list_length;
+   unsigned socket_list_length, core_list_length;
    bool retval;
 
    DENTER(TOP_LAYER, "explicit");

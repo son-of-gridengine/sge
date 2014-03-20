@@ -330,7 +330,8 @@ lDescr **dpp
              * equivalent with the current entry in the namespace (first nm id) 
              */ 
             if (dp[0].nm == ns[i].lower) {
-               int nm, k;
+               int nm;
+               u_long32 k;
 
                /* we change the initial assumption */
                is_reduced = false;
@@ -369,7 +370,7 @@ lDescr **dpp
        * found all names in the descriptor
        */
       {
-         int l;
+         u_long32 l;
 
          for (l = 0; l <= n; l++) {
             dp[l].mt |= (is_reduced == true) ? CULL_IS_REDUCED : 0; 
@@ -1800,7 +1801,7 @@ int getByteArray(char **byte, const lListElem *elem, int name){
 
 void cull_dump_pack_buffer(sge_pack_buffer *pb, FILE *fp)
 { 
-   int i;
+   unsigned i;
    int j = 0;
    char hex[2048], tex[2048];
 

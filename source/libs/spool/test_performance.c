@@ -158,7 +158,7 @@ static bool spool_data(void)
 
    context = spool_get_default_context();
 
-   fprintf(stdout, "spooling %d jobs\n", lGetNumberOfElem(*object_type_get_master_list(SGE_TYPE_JOB)));
+   fprintf(stdout, "spooling %zd jobs\n", lGetNumberOfElem(*object_type_get_master_list(SGE_TYPE_JOB)));
 
    for_each(job, *object_type_get_master_list(SGE_TYPE_JOB)) {
       lList *ja_tasks = lGetList(job, JB_ja_tasks);

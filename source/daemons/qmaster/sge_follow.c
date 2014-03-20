@@ -1126,7 +1126,7 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
 
          sge_mutex_unlock("follow_last_update_mutex", SGE_FUNC, __LINE__, &Follow_Control.last_update_mutex);
 
-         DPRINTF(("ORDER: update %d projects\n", lGetNumberOfElem(lGetList(ep, OR_joker))));
+         DPRINTF(("ORDER: update %zd projects\n", lGetNumberOfElem(lGetList(ep, OR_joker))));
 
          for_each (up_order, lGetList(ep, OR_joker)) {
             if ((pos=lGetPosViaElem(up_order, PR_name, SGE_NO_ABORT))<0 ||
@@ -1134,7 +1134,7 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
                continue;
             }
 
-            DPRINTF(("%s %s usage updating with %d jobs\n", MSG_OBJ_PRJ,
+            DPRINTF(("%s %s usage updating with %zd jobs\n", MSG_OBJ_PRJ,
                up_name, lGetNumberOfElem(lGetList(up_order, PR_debited_job_usage))));
 
             if (!(up=prj_list_locate(*object_base[SGE_TYPE_PROJECT].list, up_name))) {
@@ -1267,7 +1267,7 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
 
          sge_mutex_unlock("follow_last_update_mutex", SGE_FUNC, __LINE__, &Follow_Control.last_update_mutex);
 
-         DPRINTF(("ORDER: update %d users\n", lGetNumberOfElem(lGetList(ep, OR_joker))));
+         DPRINTF(("ORDER: update %zd users\n", lGetNumberOfElem(lGetList(ep, OR_joker))));
 
          for_each (up_order, lGetList(ep, OR_joker)) {
             if ((pos=lGetPosViaElem(up_order, UU_name, SGE_NO_ABORT))<0 ||
@@ -1275,7 +1275,7 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
                continue;
             }
 
-            DPRINTF(("%s %s usage updating with %d jobs\n", MSG_OBJ_USER,
+            DPRINTF(("%s %s usage updating with %zd jobs\n", MSG_OBJ_USER,
                up_name, lGetNumberOfElem(lGetList(up_order, UU_debited_job_usage))));
 
             if (!(up=user_list_locate(*object_base[SGE_TYPE_USER].list, up_name))) {
@@ -1513,7 +1513,7 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
                lListElem *first;
                lList **master_job_schedd_info_list = object_base[SGE_TYPE_JOB_SCHEDD_INFO].list;
 
-               DPRINTF(("ORDER: got %d schedd infos\n", lGetNumberOfElem(lGetList(sme, SME_message_list))));
+               DPRINTF(("ORDER: got %zd schedd infos\n", lGetNumberOfElem(lGetList(sme, SME_message_list))));
 
                while ((first = lFirst(*master_job_schedd_info_list))) {
                   lRemoveElem(*master_job_schedd_info_list, &first);

@@ -1155,8 +1155,8 @@ monitoring_t *monitor
 
    DEBUG((SGE_EVENT, "queue_signal: %d, queue: %s, job: %d, jatask: %d", how,
             (qep?lGetString(qep, QU_full_name):"none"),
-            (int)(jep?lGetUlong(jep,JB_job_number):-1),
-            (int)(jatep?lGetUlong(jatep,JAT_task_number):-1)
+            (jep?(int)lGetUlong(jep,JB_job_number):-1),
+            (jatep?(int)lGetUlong(jatep,JAT_task_number):-1)
         ));
 
    if (!jep && (how == SGE_SIGSTOP || how == SGE_SIGCONT)) {
