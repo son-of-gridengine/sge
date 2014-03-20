@@ -210,14 +210,6 @@ bool sge_daemonize_qmaster()
       SGE_EXIT(NULL, 0);
    }
 
-   const char *pidfile = getenv("SGE_QMASTER_PIDFILE");
-   FILE *fd;
-   if (!pidfile) pidfile = QMASTER_PID_FILE;
-   if ((fd = fopen(pidfile, "w")) != NULL) {
-     fprintf(fd, "%d\n", (int)getpid());
-     fclose(fd);
-   }
-
    DEXIT;
    return true;
 } /* sge_daemonize_qmaster() */

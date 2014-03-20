@@ -176,6 +176,7 @@ int sge_setup_qmaster(sge_gdi_ctx_class_t *ctx, char* anArgv[])
    char err_str[MAX_STRING_SIZE];
    const char *qualified_hostname = ctx->get_qualified_hostname(ctx);
    const char *act_qmaster_file = ctx->get_act_qmaster_file(ctx);
+   const char *pidfile = getenv("SGE_QMASTER_PIDFILE");
 
    DENTER(TOP_LAYER, "sge_setup_qmaster");
 
@@ -194,7 +195,8 @@ int sge_setup_qmaster(sge_gdi_ctx_class_t *ctx, char* anArgv[])
 
    qmaster_init(ctx, anArgv);
 
-   sge_write_pid(QMASTER_PID_FILE);
+   if (!pidfile) pidfile = QMASTER_PID_FILE;
+   sge_write_pid(pidfile);
 
    DEXIT;
    return 0;
@@ -731,10 +733,15 @@ static bool is_qmaster_already_running(const char *qmaster_spool_dir)
    bool res = true;
    char pidfile[SGE_PATH_MAX] = { '\0' };
    pid_t pid = 0;
+   char *env_pidfile = getenv("SGE_QMASTER_PIDFILE");
 
    DENTER(TOP_LAYER, "is_qmaster_already_running");
 
-   snprintf(pidfile, sizeof(pidfile), "%s/%s", qmaster_spool_dir, QMASTER_PID_FILE);
+   if (env_pidfile)
+      snprintf(pidfile, sizeof(pidfile), "%s", env_pidfile);
+   else
+      snprintf(pidfile, sizeof(pidfile), "%s/%s", qmaster_spool_dir,
+               QMASTER_PID_FILE);
 
    if ((pid = sge_readpid(pidfile)) == 0)
    {
