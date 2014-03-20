@@ -62,6 +62,13 @@ Default: 0.
 Send debugging information to syslog.
 .RE
 .PP
+\fBactive\fP
+.RS 4
+Require an active job, i.e. a running shepherd on the host.  This can
+be used to enforce tight integration for distributed jobs, i.e. direct
+access to other nodes of the job is prevented via SSH, rather than
+.BR "qrsh \-inherit" .
+.RE
 .\"
 .SH EXAMPLE
 On a typical GNU/Linux system, add something like the following to
