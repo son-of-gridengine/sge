@@ -133,7 +133,7 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags _UNUSED,int argc,
   float normalized_rndm;
   int i;
   int ii;
-  int debug=0;
+  int debug=0, active=0;
   FILE *fp;
   DIR *dp;
   struct dirent *ep;
@@ -207,6 +207,9 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags _UNUSED,int argc,
        debug=1;
        pam_sge_log(LOG_DEBUG, "Hostname is: %s", hostname);
        pam_sge_log(LOG_DEBUG, "User is:     %s", user);
+     }
+     if (strncmp(argv[i], "active", 6) == 0) {
+       active=1;
      }
   }
 
@@ -298,6 +301,26 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags _UNUSED,int argc,
                             "using SGE tools to build path for job: %d, task: %s...",
                             my_job_id,my_task_id);
 
+                if (active) {
+                  /* Is there anything in active_jobs, i.e. a job
+                     active on this host?  */
+                  snprintf(spool_path, sizeof spool_path, "%s/%s",
+                           my_active_jobs_directory, ep->d_name);
+                  {
+                    struct dirent *d;
+                    DIR *dd;
+                    if (!(dd = opendir(spool_path))) {
+                      int i=0;
+                      while ((d=readdir(dd)))
+                        i++;
+                      closedir(dd);
+                      if (i<3)  /* just . and .. */
+                        return PAM_PERM_DENIED;
+                    } else {
+                      return PAM_SYSTEM_ERR;
+                    }
+                  }
+                }
                 sge_get_file_path(spool_path, JOB_SPOOL_DIR, SPOOL_DEFAULT,my_flags, my_job_id, junk, NULL);
                 sprintf(host_file,"%s/%s/%s.%s",execd_spool_dir,host,spool_path,my_task_id);
 
