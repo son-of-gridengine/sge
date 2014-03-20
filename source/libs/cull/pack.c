@@ -893,7 +893,7 @@ int unpackbitfield(sge_pack_buffer *pb, bitfield *bitfield, int descr_size)
    }
 
    /* size may not be bigger than bitfield initialized from descr information */
-   if (size > descr_size) {
+   if ((int)size > descr_size) {
       DEXIT;
       return PACK_ENOMEM;
    }
@@ -986,7 +986,7 @@ pb_are_equivalent(sge_pack_buffer *pb1, sge_pack_buffer *pb2)
 void
 pb_print_to(sge_pack_buffer *pb, bool only_header, FILE* file)
 {
-   int i;
+   unsigned i;
 
    fprintf(file, "head_ptr: %p\n", pb->head_ptr);
    fprintf(file, "cur_ptr: %p\n", pb->cur_ptr);

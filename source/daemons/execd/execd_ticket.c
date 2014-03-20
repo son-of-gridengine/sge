@@ -83,7 +83,7 @@ int do_ticket(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg)
       }
    }
   
-   DPRINTF(("got new tickets for %d jobs\n", lGetNumberOfElem(ticket_modifier)));
+   DPRINTF(("got new tickets for %zd jobs\n", lGetNumberOfElem(ticket_modifier)));
 
 #ifdef COMPILE_DC
    { 

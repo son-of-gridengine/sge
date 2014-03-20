@@ -37,7 +37,7 @@
 char *
 replace_char(char *str, size_t n, char c1, char c2)
 {
-   int i;
+   size_t i;
 
    for (i=0; i<n; i++)
       if (str[i] == c1) str[i] = c2;

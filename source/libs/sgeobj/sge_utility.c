@@ -256,7 +256,7 @@ an_status_t verify_str_key(
 
    /* Check for non-ASCII/non-graphic after more specific tests above
       for non-printing ones.  */
-   for (i=0; i<strlen(str); ++i) {
+   for (i=0; i<(int)strlen(str); ++i) {
       if (!(isgraph(str[i]) && asciichar(str[i]))) {
          char mesg[128];
          snprintf (mesg, sizeof(mesg), "Non-graphic character (hex %x)",

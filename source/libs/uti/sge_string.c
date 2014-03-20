@@ -1010,13 +1010,13 @@ int sge_strisint(const char *str)
 *  NOTES
 *     MT-NOTE: sge_strtoupper() is MT safe
 ******************************************************************************/
-void sge_strtoupper(char *buffer, int max_len) 
+void sge_strtoupper(char *buffer, size_t max_len)
 {
    DENTER(BASIS_LAYER, "sge_strtoupper");
 
    if (buffer != NULL) {
-      int i;
-      int length = MIN(strlen(buffer), max_len);
+      unsigned i;
+      unsigned length = MIN(strlen(buffer), max_len);
       for (i = 0; i < length; i++) {
          buffer[i] = toupper(buffer[i]); 
       }

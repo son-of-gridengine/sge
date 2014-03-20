@@ -81,15 +81,15 @@ typedef struct sig_mapT {
 
 int sge_unmap_signal(u_long32 sge_sig);
 
-u_long32 sge_map_signal(int sys_sig);
+int sge_map_signal(int sys_sig);
 
-u_long32 sge_str2signal(const char *str);
+int sge_str2signal(const char *str);
 
 const char *sge_sig2str(u_long32 sge_sig);
 
 const char *sge_sys_sig2str(u_long32 sig);
 
-u_long32 sge_sys_str2signal(const char *str);
+int sge_sys_str2signal(const char *str);
 
 typedef void (*err_func_t)(char *s);
  

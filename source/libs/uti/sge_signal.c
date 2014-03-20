@@ -96,16 +96,16 @@ const sig_mapT sig_map[] =
 
 /****** uti/signal/sge_unmap_signal() *****************************************
 *  NAME
-*     sge_unmap_signal() -- Unmap 32bit SGE/EE signal to system signal 
+*     sge_unmap_signal() -- Unmap 32bit SGE signal to system signal
 *
 *  SYNOPSIS
 *     int sge_unmap_signal(u_long32 sge_sig) 
 *
 *  FUNCTION
-*     Unmap the 32bit SGE/EEsignal to the system specific signal 
+*     Unmap the 32bit SGEsignal to the system specific signal
 *
 *  INPUTS
-*     u_long32 sge_sig - SGE/EE signal 
+*     u_long32 sge_sig - SGE signal
 *
 *  RESULT
 *     int - system signal
@@ -129,7 +129,7 @@ int sge_unmap_signal(u_long32 sge_sig)
 
 /****** uti/signal/sge_map_signal() *******************************************
 *  NAME
-*     sge_map_signal() -- Map system signal to 32bit SGE/EE signal 
+*     sge_map_signal() -- Map system signal to 32bit SGE signal
 *
 *  SYNOPSIS
 *     u_long32 sge_map_signal(int sys_sig) 
@@ -141,13 +141,13 @@ int sge_unmap_signal(u_long32 sge_sig)
 *     int sys_sig - system signal 
 *
 *  RESULT
-*     u_long32 - SGE/EE Signal
+*     int - SGE Signal
 *
 *  NOTES
 *     MT-NOTE: sge_map_signal() is MT safe
 *
 ******************************************************************************/
-u_long32 sge_map_signal(int sys_sig) 
+int sge_map_signal(int sys_sig)
 {
    const sig_mapT *mapptr=sig_map;
 
@@ -176,13 +176,13 @@ u_long32 sge_map_signal(int sys_sig)
 *     const char *str - signal string 
 *
 *  RESULT
-*     u_long32 - SGE/EE signal 
+*     int - SGE signal
 *
 *  NOTES
 *     MT-NOTE: sge_str2signal() is MT safe
 *
 ******************************************************************************/
-u_long32 sge_str2signal(const char *str) 
+int sge_str2signal(const char *str)
 {
    const sig_mapT *mapptr=sig_map;
    u_long32 signum;
@@ -224,13 +224,13 @@ u_long32 sge_str2signal(const char *str)
 *     const char *str - signal name 
 *
 *  RESULT
-*     u_long32 - SGE/EE signal
+*     int - SGE signal
 *
 *  NOTES
 *     MT-NOTE: sge_sys_str2signal() is MT safe
 *
 ******************************************************************************/
-u_long32 sge_sys_str2signal(const char *str) 
+int sge_sys_str2signal(const char *str)
 {
    const sig_mapT *mapptr=sig_map;
    u_long32 signum;

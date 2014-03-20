@@ -312,7 +312,7 @@ int scheduler_method(sge_evc_class_t *evc, lList **answer_list, scheduler_all_da
    if(prof_is_active(SGE_PROF_CUSTOM0)) {
       prof_stop_measurement(SGE_PROF_CUSTOM0, NULL);
 
-      PROFILING((SGE_EVENT, "PROF: scheduled in %.3f (u %.3f + s %.3f = %.3f): %d sequential, %d parallel, %d orders, %d H, %d Q, %d QA, %d J(qw), %d J(r), %d J(s), %d J(h), %d J(e), %d J(x), %d J(all), %d C, %d ACL, %d PE, %d U, %d D, %d PRJ, %d ST, %d CKPT, %d RU, %d gMes, %d jMes, %d/%d pre-send, %d/%d/%d pe-alg\n",
+      PROFILING((SGE_EVENT, "PROF: scheduled in %.3f (u %.3f + s %.3f = %.3f): %d sequential, %d parallel, %d orders, %zd H, %zd Q, %zd QA, %zd J(qw), %zd J(r), %zd J(s), %zd J(h), %zd J(e), %zd J(x), %d J(all), %zd C, %zd ACL, %zd PE, %zd U, %zd D, %zd PRJ, %zd ST, %zd CKPT, %zd RU, %d gMes, %d jMes, %d/%d pre-send, %d/%d/%d pe-alg\n",
          prof_get_measurement_wallclock(SGE_PROF_CUSTOM0, true, NULL),
          prof_get_measurement_utime(SGE_PROF_CUSTOM0, true, NULL),
          prof_get_measurement_stime(SGE_PROF_CUSTOM0, true, NULL),
@@ -562,7 +562,7 @@ static int dispatch_jobs(sge_evc_class_t *evc, scheduler_all_data_t *lists, orde
     * FILTER JOBS
     *---------------------------------------------------------------------*/
 
-   DPRINTF(("STARTING PASS 1 WITH %d PENDING JOBS\n",
+   DPRINTF(("STARTING PASS 1 WITH %zd PENDING JOBS\n",
             lGetNumberOfElem(*(splitted_job_lists[SPLIT_PENDING]))));
 
    user_list_init_jc(&user_list, splitted_job_lists);

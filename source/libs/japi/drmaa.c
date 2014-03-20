@@ -3004,8 +3004,8 @@ static int opt_list_append_opts_from_drmaa_attr(lList **args, const lList *attrs
    /* Turn each DRMAA attribute into a list entry. */
 
    DENTER(TOP_LAYER, "opt_list_append_opts_from_drmaa_attr");
-   DPRINTF(("%d DRMAA attributes\n", lGetNumberOfElem(attrs)));
-   DPRINTF(("%d DRMAA vector attributes\n", lGetNumberOfElem(vattrs)));
+   DPRINTF(("%zd DRMAA attributes\n", lGetNumberOfElem(attrs)));
+   DPRINTF(("%zd DRMAA vector attributes\n", lGetNumberOfElem(vattrs)));
    
    /* job name -- -N <name>*/
    if ((ep=lGetElemStr(attrs, VA_variable, DRMAA_JOB_NAME))) {
@@ -3021,10 +3021,10 @@ static int opt_list_append_opts_from_drmaa_attr(lList **args, const lList *attrs
       
       DPRINTF(("processing %s = \"%s\"\n", DRMAA_JOB_CATEGORY, value));
       
-      DPRINTF(("%d args before adding job cat\n", lGetNumberOfElem(*args)));
+      DPRINTF(("%zd args before adding job cat\n", lGetNumberOfElem(*args)));
       ep_opt = sge_add_arg(args, cat_OPT, lStringT, "-cat", value);
       lSetString(ep_opt, SPA_argval_lStringT, value);
-      DPRINTF(("%d args after adding job cat\n", lGetNumberOfElem(*args)));
+      DPRINTF(("%zd args after adding job cat\n", lGetNumberOfElem(*args)));
    }
    
    /* join files -- -j "y|n" */
@@ -3263,7 +3263,7 @@ static int opt_list_append_opts_from_drmaa_attr(lList **args, const lList *attrs
       }
    }
 
-   DPRINTF(("%d args at end of method\n", lGetNumberOfElem(*args)));
+   DPRINTF(("%zd args at end of method\n", lGetNumberOfElem(*args)));
    
    DRETURN(DRMAA_ERRNO_SUCCESS);
 }

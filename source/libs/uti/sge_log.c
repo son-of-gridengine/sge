@@ -537,7 +537,7 @@ void log_state_set_log_context(void *theCtx)
 *     MT-NOTE: sge_log() can be used if DENTER_MAIN() is called only by one 
 *     MT-NOTE: thread
 ******************************************************************************/
-int sge_log(int log_level, const char *mesg, const char *file__, const char *func__, int line__) 
+int sge_log(unsigned log_level, const char *mesg, const char *file__, const char *func__, int line__)
 {
    char buf[128*4];
    int levelchar;

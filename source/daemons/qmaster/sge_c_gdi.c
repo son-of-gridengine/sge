@@ -539,9 +539,10 @@ sge_c_gdi_add(sge_gdi_ctx_class_t *ctx, sge_gdi_packet_class_t *packet, sge_gdi_
                     case -2 : is_scheduler_resync = true;
                     case -1 :
                     case -3 :
-                              /* stop the order processing */
-                              WARNING((SGE_EVENT, "Skipping remaining %d orders", lGetNumberOfRemainingElem(ep)));
-                              next = NULL;
+                       /* stop the order processing */
+                       WARNING((SGE_EVENT, "Skipping remaining %zd orders",
+                                lGetNumberOfRemainingElem(ep)));
+                       next = NULL;
                        break;
 
                     default :  DPRINTF(("--> FAILED: unexpected state from in the order processing <--\n"));

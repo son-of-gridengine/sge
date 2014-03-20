@@ -219,14 +219,14 @@ static int append_to_buf(int fd, char *pbuf, int *buf_bytes)
 *     send_buf() -- sends the content of the buffer over the commlib
 *
 *  SYNOPSIS
-*     int send_buf(char *pbuf, int buf_bytes, int message_type)
+*     int send_buf(char *pbuf, size_t buf_bytes, int message_type)
 *
 *  FUNCTION
 *     Sends the content of the buffer over to the commlib to the receiver.
 *
 *  INPUTS
 *     char *pbuf        - buffer to send
-*     int  buf_bytes   - number of bytes in the buffer to send
+*     size_t buf_bytes  - number of bytes in the buffer to send
 *     int  message_tye - type of the message that is to be sent over
 *                        commlib. Can be STDOUT_DATA_MSG or
 *                        STDERR_DATA_MSG, depending on where the data 
@@ -242,7 +242,7 @@ static int append_to_buf(int fd, char *pbuf, int *buf_bytes)
 *
 *  SEE ALSO
 *******************************************************************************/
-static int send_buf(char *pbuf, int buf_bytes, int message_type)
+static int send_buf(char *pbuf, size_t buf_bytes, int message_type)
 {
    int ret = 0;
    dstring err_msg = DSTRING_INIT;
@@ -729,7 +729,7 @@ static void* commlib_to_pty(void *t_conf)
                shepherd_trace("commlib_to_pty: writing to child %ld bytes: %s",
                               (long) strlen(recv_mess.data), recv_mess.data);
                if (write(g_p_ijs_fds->pipe_to_child, recv_mess.data, 
-                         strlen(recv_mess.data)) != strlen(recv_mess.data)) {
+                         strlen(recv_mess.data)) != (int)strlen(recv_mess.data)) {
                   shepherd_trace("commlib_to_pty: error in communicating "
                      "with child -> exiting");
                   do_exit = 1;
@@ -991,7 +991,7 @@ parent_loop(int job_pid, const char *childname, int timeout, ckpt_info_t *p_ckpt
 
 int close_parent_loop(int exit_status)
 {
-   int     ret = 0;
+   unsigned long ret = 0;
    char    sz_exit_status[21]; 
    dstring err_msg = DSTRING_INIT;
 
@@ -1003,14 +1003,14 @@ int close_parent_loop(int exit_status)
                   sz_exit_status);
    shepherd_trace("sending to host: %s", 
                   g_hostname != NULL ? g_hostname : "<null>");
-   ret = (int)comm_write_message(g_comm_handle, g_hostname,
+   ret = comm_write_message(g_comm_handle, g_hostname,
       COMM_SERVER, 1, (unsigned char*)sz_exit_status, strlen(sz_exit_status), 
       UNREGISTER_CTRL_MSG, &err_msg);
 
    if (ret != strlen(sz_exit_status)) {
       shepherd_trace("comm_write_message returned: %s", 
                              sge_dstring_get_string(&err_msg));
-      shepherd_trace("close_parent_loop: comm_write_message() returned %d "
+      shepherd_trace("close_parent_loop: comm_write_message() returned %ld "
                              "instead of %d!!!", ret, (int) strlen(sz_exit_status));
    }
 
@@ -1055,7 +1055,7 @@ int close_parent_loop(int exit_status)
             shepherd_trace("client disconnected - break");
             break;
          } else {
-            shepherd_trace("No connection or problem while waiting for message: %d", ret);
+            shepherd_trace("No connection or problem while waiting for message: %ld", ret);
             break;
          }
          comm_free_message(&recv_mess, &err_msg);
@@ -1075,7 +1075,7 @@ int close_parent_loop(int exit_status)
     */
    ret = comm_cleanup_lib(&err_msg);
    if (ret != COMM_RETVAL_OK) {
-      shepherd_trace("parent: error in comm_cleanup_lib(): %d", ret);
+      shepherd_trace("parent: error in comm_cleanup_lib(): %ld", ret);
    }
 
    sge_free(&g_hostname);

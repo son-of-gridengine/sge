@@ -3178,7 +3178,7 @@ static int policy_hierarchy_verify_value(const char* value)
    if (value != NULL) {
       if (strcmp(value, "") && strcasecmp(value, "NONE")) {
          int is_contained[POLICY_VALUES]; 
-         int i;
+         unsigned i;
 
          for (i = 0; i < POLICY_VALUES; i++) {
             is_contained[i] = 0;
@@ -3272,7 +3272,7 @@ void sconf_ph_fill_array(policy_hierarchy_t array[])
 {
    int is_contained[POLICY_VALUES];
    int index = 0;
-   int i;
+   unsigned i;
    const char *policy_hierarchy_string = NULL;
    
    DENTER(TOP_LAYER, "sconf_ph_fill_array");

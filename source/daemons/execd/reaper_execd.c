@@ -222,14 +222,14 @@ int sge_reap_children_execd(int max_count, bool is_qmaster_down)
    
          petep = NULL;
          for_each (jatep, lGetList(jep, JB_ja_tasks)) {
-            if (lGetUlong(jatep, JAT_pid) == pid) {
+            if ((int)lGetUlong(jatep, JAT_pid) == pid) {
                petep = NULL;
                Break = 1;
                break;
             }
             
             for_each(petep, lGetList(jatep, JAT_task_list)) {
-               if (lGetUlong(petep, PET_pid) == pid) {
+               if ((int)lGetUlong(petep, PET_pid) == pid) {
                   break;
                }
             }

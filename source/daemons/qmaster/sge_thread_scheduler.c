@@ -712,8 +712,8 @@ sge_scheduler_main(void *arg)
             copy.dept_list = lSelect("", master_userset_list, where_what.where_dept, where_what.what_acldept);
             copy.acl_list = lSelect("", master_userset_list, where_what.where_acl, where_what.what_acldept);
 
-            DPRINTF(("RAW CQ:%d, J:%d, H:%d, C:%d, A:%d, D:%d, P:%d, CKPT:%d,"
-                     " US:%d, PR:%d, RQS:%d, AR:%d, S:nd:%d/lf:%d\n",
+            DPRINTF(("RAW CQ:%zd, J:%zd, H:%zd, C:%zd, A:%zd, D:%zd, P:%zd, CKPT:%zd,"
+                     " US:%zd, PR:%zd, RQS:%zd, AR:%zd, S:nd:%d/lf:%d\n",
                lGetNumberOfElem(master_cqueue_list),
                lGetNumberOfElem(master_job_list),
                lGetNumberOfElem(master_exechost_list),
@@ -813,8 +813,8 @@ sge_scheduler_main(void *arg)
             copy.ar_list = lCopyList("", master_ar_list);
 
             /* report number of reduced and raw (in brackets) lists */
-            DPRINTF(("Q:%d, AQ:%d J:%d(%d), H:%d(%d), C:%d, A:%d, D:%d, P:%d, CKPT:%d,"
-                     " US:%d, PR:%d, RQS:%d, AR:%d, S:nd:%d/lf:%d \n",
+            DPRINTF(("Q:%zd, AQ:%zd J:%zd(%zd), H:%zd(%zd), C:%zd, A:%zd, D:%zd, P:%zd, CKPT:%zd,"
+                     " US:%zd, PR:%zd, RQS:%zd, AR:%zd, S:nd:%d/lf:%d \n",
                lGetNumberOfElem(copy.queue_list),
                lGetNumberOfElem(copy.all_queue_list),
                lGetNumberOfElem(copy.job_list),
@@ -835,8 +835,8 @@ sge_scheduler_main(void *arg)
             ));
 
             if (getenv("SGE_ND")) {
-               printf("Q:%d, AQ:%d J:%d(%d), H:%d(%d), C:%d, A:%d, D:%d, "
-                  "P:%d, CKPT:%d, US:%d, PR:%d, RQS:%d, AR:%d, S:nd:%d/lf:%d \n",
+               printf("Q:%zd, AQ:%zd J:%zd(%zd), H:%zd(%zd), C:%zd, A:%zd, D:%zd, "
+                  "P:%zd, CKPT:%zd, US:%zd, PR:%zd, RQS:%zd, AR:%zd, S:nd:%d/lf:%d \n",
                   lGetNumberOfElem(copy.queue_list),
                   lGetNumberOfElem(copy.all_queue_list),
                   lGetNumberOfElem(copy.job_list),
@@ -920,10 +920,10 @@ sge_scheduler_main(void *arg)
 
             if (prof_is_active(SGE_PROF_CUSTOM6)) {
                PROFILING((SGE_EVENT, "PROF: schedd run took: %.3f s (init: %.3f s, copy: %.3f s, "
-                          "run:%.3f, free: %.3f s, jobs: %d, categories: %d/%d)",
+                          "run:%.3f, free: %.3f s, jobs: %zd, categories: %d/%d)",
                            prof_total, prof_init, prof_copy, prof_run, prof_free,
                            lGetNumberOfElem(*object_type_get_master_list(SGE_TYPE_JOB)), sge_category_count(),
-                           sge_cs_category_count() ));
+                           sge_cs_category_count()));
             }
             if (getenv("SGE_ND") != NULL) {
                printf("--------------STOP-SCHEDULER-RUN-------------\n");

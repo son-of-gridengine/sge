@@ -49,8 +49,8 @@ bool
 binding_type_to_string(binding_type_t type, dstring *string);
 
 bool 
-binding_explicit_extract_sockets_cores(const char* parameter, int** list_of_sockets, int* samount,
-                                       int** list_of_cores, int* camount);
+binding_explicit_extract_sockets_cores(const char* parameter, int** list_of_sockets, unsigned* samount,
+                                       int** list_of_cores, unsigned* camount);
 
 bool 
 binding_printf_explicit_sockets_cores(dstring *string, int *socket_array, int sockets,

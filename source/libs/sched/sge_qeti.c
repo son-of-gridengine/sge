@@ -317,7 +317,7 @@ sge_qeti_t *sge_qeti_allocate(sge_assignment_t *a)
       }
    }
 
-   DPRINTF(("QETI: P %d G %d H %d Q %d\n", 
+   DPRINTF(("QETI: P %zd G %zd H %zd Q %zd\n",
       lGetNumberOfElem(iter->cr_refs_pe),
       lGetNumberOfElem(iter->cr_refs_global),
       lGetNumberOfElem(iter->cr_refs_host),
@@ -365,7 +365,8 @@ static void sge_qeti_max_end_time(u_long32 *max_time, const lList *cref_lp)
          continue;
       }
       DPRINTF(("   QETI END: %s "sge_U32CFormat" ("sge_U32CFormat")\n", 
-            lGetString(rue_ep, RUE_name), lGetUlong(ref, RDE_time), tmp_time));
+               lGetString(rue_ep, RUE_name),
+               (u_long32)lGetUlong(ref, RDE_time), tmp_time));
       tmp_time = MAX(tmp_time, lGetUlong(ref, RDE_time));
    }
    *max_time = tmp_time;
@@ -397,7 +398,8 @@ static void sge_qeti_switch_to_next(u_long32 time, lList *cref_lp)
       }
 
       DPRINTF(("   QETI NEXT: %s set to "sge_U32CFormat" (%p)\n", 
-            lGetString(rue_ep, RUE_name), ref?lGetUlong(ref, RDE_time):0, ref));
+               lGetString(rue_ep, RUE_name),
+               (u_long32)(ref?lGetUlong(ref, RDE_time):0), ref));
       lSetRef(cr_ep, QETI_queue_end_next, ref);
    }
 

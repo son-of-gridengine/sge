@@ -845,7 +845,7 @@ parallel_maximize_slots_pe(sge_assignment_t *best, int *available_slots)
    int old_logging = 0;
    category_use_t use_category;
    u_long32 max_slotsp = 0;
-   int current = 0;
+   unsigned current = 0;
    int match_current = 0;
    int runs = 0;
    schedd_pe_algorithm alg =  sconf_best_pe_alg();
@@ -4041,7 +4041,7 @@ parallel_tag_queues_suitable4job(sge_assignment_t *a, category_use_t *use_catego
                         continue;
 
                      slots = 0;
-                     slots_qend = MIN(lGetUlong(qep, QU_tag_qend), maxslots - rqs_hslots);
+                     slots_qend = MIN((long)lGetUlong(qep, QU_tag_qend), maxslots - rqs_hslots);
 
                      if (!have_master_host_qend && !got_master_queue_qend) {
                         if (lGetUlong(qep, QU_tagged4schedule) == 0) {
@@ -4859,7 +4859,7 @@ static int sequential_update_host_order(lList *host_list, lList *queues)
    lListElem *hep, *qep;
    double previous_load = 0;
    int previous_load_inited = 0;
-   int host_seqno = 0;
+   unsigned host_seqno = 0;
    const char *eh_name;
    const void *iterator = NULL;
    bool host_order_changed = false;
@@ -6847,7 +6847,7 @@ sge_call_pe_qsort(sge_assignment_t *a, const char *qsort_args)
    int ret = 0;
    struct saved_vars_s *cntx = NULL;
    char *tok;
-   int argc = 0;
+   unsigned argc = 0;
    pqs_qsort_t pqs_qsort;
    const char *pe_name = a->pe_name;
    const char *lib_name;

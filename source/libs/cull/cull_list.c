@@ -501,7 +501,7 @@ const lDescr *lGetListDescr(const lList *lp)
 *     lGetNumberOfElem() -- Returns the number of elements in a list 
 *
 *  SYNOPSIS
-*     int lGetNumberOfElem(const lList *lp) 
+*     size_t lGetNumberOfElem(const lList *lp)
 *
 *  FUNCTION
 *     Returns the number of elements in a list 
@@ -510,12 +510,12 @@ const lDescr *lGetListDescr(const lList *lp)
 *     const lList *lp - list pointer 
 *
 *  RESULT
-*     int - number of elements 
+*     unsigned - number of elements
 * 
 *  NOTES
 *     MT-NOTE: lGetNumberOfElem() is MT safe
 ******************************************************************************/
-int lGetNumberOfElem(const lList *lp) 
+size_t lGetNumberOfElem(const lList *lp)
 {
    DENTER(CULL_LAYER, "lGetNumberOfElem");
 
@@ -532,7 +532,7 @@ int lGetNumberOfElem(const lList *lp)
 *     lGetElemIndex() -- returns the index of element in list lp 
 *
 *  SYNOPSIS
-*     int lGetElemIndex(const lListElem* ep, const lList* lp) 
+*     ssize_t lGetElemIndex(const lListElem* ep, const lList* lp) 
 *
 *  FUNCTION
 *     returns the index of element in list lp 
@@ -542,9 +542,9 @@ int lGetNumberOfElem(const lList *lp)
 *     lList* lp     - list 
 *
 *  RESULT
-*     index number 
+*     index number, -1 on error
 ******************************************************************************/
-int lGetElemIndex(const lListElem *ep, const lList *lp) 
+ssize_t lGetElemIndex(const lListElem *ep, const lList *lp) 
 {
    int i = -1;
    lListElem *ep2;
@@ -569,7 +569,7 @@ int lGetElemIndex(const lListElem *ep, const lList *lp)
 *     lGetNumberOfRemainingElem() -- Number of following elements 
 *
 *  SYNOPSIS
-*     int lGetNumberOfRemainingElem(const lListElem *ep) 
+*     size_t lGetNumberOfRemainingElem(const lListElem *ep)
 *
 *  FUNCTION
 *     Returns the number of elements behind an element 
@@ -578,9 +578,9 @@ int lGetElemIndex(const lListElem *ep, const lList *lp)
 *     const lListElem *ep - element 
 *
 *  RESULT
-*     int - number of elements 
+*     unsigned - number of elements
 ******************************************************************************/
-int lGetNumberOfRemainingElem(const lListElem *ep) 
+size_t lGetNumberOfRemainingElem(const lListElem *ep)
 {
    int i = 0;
 
@@ -861,7 +861,7 @@ static void lWriteList_(const lList *lp, dstring *buffer, int nesting_level)
    }
    indent[i] = '\0';
 
-   sge_dstring_sprintf_append(buffer, "\n%sList: <%s> %c #Elements: %d\n",    
+   sge_dstring_sprintf_append(buffer, "\n%sList: <%s> %c #Elements: %zd\n",
                               indent, (lGetListName(lp) != NULL) ? lGetListName(lp) : "NULL", 
                               lp->changed ? '*' : ' ', lGetNumberOfElem(lp));
    for_each(ep, lp) {

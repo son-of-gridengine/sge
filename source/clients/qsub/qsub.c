@@ -95,8 +95,8 @@ main(int argc, char **argv)
    dstring diag = DSTRING_INIT;
    dstring jobid = DSTRING_INIT;
    u_long32 start, end, step;
-   u_long32 num_tasks;
-   int count, stat;
+   u_long32 count, num_tasks;
+   int stat;
    char *jobid_string = NULL;
    bool has_terse = false;
    drmaa_attr_values_t *jobids = NULL;

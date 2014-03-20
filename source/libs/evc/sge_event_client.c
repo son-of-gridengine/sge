@@ -2865,7 +2865,7 @@ static bool ec2_get(sge_evc_class_t *thiz, lList **event_list, bool exit_on_qmas
                continue;
             }
 
-            DPRINTF(("got %d events till "sge_u32"\n", 
+            DPRINTF(("got %zd events til "sge_u32"\n",
                      lGetNumberOfElem(new_events), sge_evc->next_event - 1));
 
             if (*event_list != NULL) {
@@ -2936,7 +2936,7 @@ static bool ec2_get(sge_evc_class_t *thiz, lList **event_list, bool exit_on_qmas
    }
 
    if (*event_list != NULL) {
-      DPRINTF(("ec2_get - received %d events\n", lGetNumberOfElem(*event_list)));
+      DPRINTF(("ec2_get - received %zd events\n", lGetNumberOfElem(*event_list)));
    }
 
    /* check if we got a QMASTER_GOES_DOWN or sgeE_ACK_TIMEOUT event. 
@@ -3014,7 +3014,7 @@ static bool ck_event_number(lList *lp, u_long32 *waiting_for, u_long32 *wrong_nu
       /* got a dummy event list for alive protocol */
       DPRINTF(("received empty event list\n"));
    } else {
-      DPRINTF(("Checking %d events (" sge_u32"-"sge_u32 ") while waiting for #"sge_u32"\n",
+      DPRINTF(("Checking %zd events (" sge_u32"-"sge_u32 ") while waiting for #"sge_u32"\n",
             lGetNumberOfElem(lp), 
             lGetUlong(lFirst(lp), ET_number),
             lGetUlong(lLast(lp), ET_number),
@@ -3054,7 +3054,7 @@ static bool ck_event_number(lList *lp, u_long32 *waiting_for, u_long32 *wrong_nu
          }
 
          if (skipped) {
-            DPRINTF(("Skipped %d events, still %d in list\n", skipped, 
+            DPRINTF(("Skipped %d events, still %zd in list\n", skipped,
                      lGetNumberOfElem(lp)));
          }
 
@@ -3077,7 +3077,7 @@ static bool ck_event_number(lList *lp, u_long32 *waiting_for, u_long32 *wrong_nu
          if (ret) {
             /* that's the new number we wait for */
             *waiting_for = i;
-            DPRINTF(("check complete, %d events in list\n", 
+            DPRINTF(("check complete, %zd events in list\n",
                      lGetNumberOfElem(lp)));
          }
       }

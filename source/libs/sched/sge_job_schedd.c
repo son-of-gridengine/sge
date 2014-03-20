@@ -423,7 +423,7 @@ void user_list_init_jc(lList **user_list, lList **splitted_job_lists[])
 *     lList **job_lists[]   - Array of JB_Type lists 
 *     lList **user_list     - User list of Type JC_Type 
 *     const char* user_name - user name
-*     int max_jobs_per_user - "max_u_jobs" 
+*     u_long32 max_jobs_per_user - "max_u_jobs"
 *
 *  NOTE
 *     JC_jobs of the user elements contained in "user_list" has to be 
@@ -438,7 +438,7 @@ void user_list_init_jc(lList **user_list, lList **splitted_job_lists[])
 void job_lists_split_with_reference_to_max_running(bool monitor_next_run, lList **job_lists[],
                                                    lList **user_list,
                                                    const char* user_name,
-                                                   int max_jobs_per_user)
+                                                   u_long32 max_jobs_per_user)
 {
    DENTER(TOP_LAYER, "job_lists_split_with_reference_to_max_running");
    if (max_jobs_per_user != 0 && 
@@ -585,7 +585,7 @@ void split_jobs(lList **job_list, u_long32 max_aj_instances,
       lListElem *ja_task = NULL;
       lListElem *next_ja_task = NULL;
       u_long32 task_instances;
-      int i, move_job;
+      u_long32 i, move_job;
 #ifdef JOB_SPLIT_DEBUG
       u_long32 job_id = lGetUlong(job, JB_job_number);
 #endif
@@ -1040,9 +1040,9 @@ void job_lists_print(lList **job_list[])
             ids += job_get_enrolled_ja_tasks(job);
             ids += job_get_not_enrolled_ja_tasks(job);
          }
-         DPRINTF(("job_list[%s] CONTAINS %d JOB(S) ("sge_u32" TASK(S))\n",
-            get_name_of_split_value(i),
-            lGetNumberOfElem(*(job_list[i])), ids));
+         DPRINTF(("job_list[%s] CONTAINS %zd JOB(S) ("sge_u32" TASK(S))\n",
+                  get_name_of_split_value(i),
+                  lGetNumberOfElem(*(job_list[i])), ids));
       }
    } 
 

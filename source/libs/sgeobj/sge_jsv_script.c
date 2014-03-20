@@ -339,7 +339,7 @@ jsv_handle_param_command(sge_gdi_ctx_class_t *ctx _UNUSED, lListElem *jsv,
             lListElem *elem;
             u_long32 id = 0;
             u_long32 length;
-            int i;
+            unsigned i;
             const char *id_string = param + 6;
             if (!isdigit(id_string[0])) {
                if (value) {
@@ -896,8 +896,8 @@ jsv_handle_param_command(sge_gdi_ctx_class_t *ctx _UNUSED, lListElem *jsv,
             u_long32 new_core_id = 0;
             int *socket_array = NULL;
             int *core_array = NULL;
-            int sockets = 0;
-            int cores = 0;
+            unsigned sockets = 0;
+            unsigned cores = 0;
 
             /* 1) */
             if (ret && strncmp("binding_exp_socket", param, strlen("binding_exp_socket")) == 0) {
@@ -988,7 +988,7 @@ jsv_handle_param_command(sge_gdi_ctx_class_t *ctx _UNUSED, lListElem *jsv,
                   }
 
                   if (do_resize) {
-                     int i;
+                     unsigned i;
 
                      socket_array = sge_realloc(socket_array, new_length * sizeof(int), 1);
                      core_array = sge_realloc(core_array, new_length * sizeof(int), 1);
@@ -1389,7 +1389,7 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
       int i = 0;
 
       sge_dstring_clear(&buffer);
-      sge_dstring_sprintf(&buffer, "%s CMDARGS %d", prefix, lGetNumberOfElem(list));
+      sge_dstring_sprintf(&buffer, "%s CMDARGS %zd", prefix, lGetNumberOfElem(list));
       jsv_send_command(jsv, answer_list, sge_dstring_get_string(&buffer));
 
       for_each(elem, list) {
@@ -2016,9 +2016,9 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
          if (strcmp("explicit", strategy) == 0) {
             int *socket_array = NULL;
             int *core_array = NULL;
-            int socket = 0;
-            int core = 0;
-            int i;
+            unsigned socket = 0;
+            unsigned core = 0;
+            unsigned i;
 
             binding_explicit_extract_sockets_cores(
                lGetString(binding, BN_parameter_explicit), 
@@ -2542,7 +2542,7 @@ jsv_do_communication(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_li
    if (ret) {
       u_long32 start_time = sge_get_gmt();
       bool do_retry = true;
-      int jsv_timeout = 10;
+      unsigned jsv_timeout = 10;
       
       if (strcmp(lGetString(jsv, JSV_context), JSV_CONTEXT_CLIENT) == 0 && getenv("SGE_JSV_TIMEOUT") != NULL) {
          if (atoi(getenv("SGE_JSV_TIMEOUT")) > 0) {
