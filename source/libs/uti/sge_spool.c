@@ -48,6 +48,7 @@
 #include "uti/msg_utilib.h"
 
 #include "sge.h"
+#include "msg_common.h"
 
 #define MAX_JA_TASKS_PER_DIR  (4096l)
 #define MAX_JA_TASKS_PER_FILE (1l)  
@@ -412,12 +413,18 @@ FCLOSE_ERROR:
 ******************************************************************************/
 void sge_write_pid(const char *pid_log_file)
 {
-   int pid;
+   int pid, ret;
    FILE *fp;
  
    DENTER(TOP_LAYER, "sge_write_pid");
  
-   close(creat(pid_log_file, 0644));
+   errno = 0;
+   close(ret=creat(pid_log_file, 0644));
+   if (-1 == ret) {
+      /* fixme: stop afterwards? */
+      ERROR((SGE_EVENT, MSG_FILE_CANNOT_CREATE_SS, pid_log_file,
+             strerror(errno)));
+   }
 #if defined( INTERIX )
    /*
     * Interix has a bug if the file is created on a NFS mapped drive.
@@ -425,13 +432,15 @@ void sge_write_pid(const char *pid_log_file)
    /* Flawfinder: ignore */   
    chown(pid_log_file, geteuid(), -1);
 #endif
-   if ((fp = fopen(pid_log_file, "w")) != NULL) {
+   if ((fp = fopen(pid_log_file, "w")) == NULL) {
+      /* fixme: stop afterwards? */
+      ERROR((SGE_EVENT, MSG_FILE_FOPENFAILED_SS, pid_log_file,
+             strerror(errno)));
+   } else {
       pid = getpid();
       FPRINTF((fp, "%d\n", pid));
       FCLOSE(fp);
    }
-   DEXIT;
-   return;
 FPRINTF_ERROR:
 FCLOSE_ERROR:
    /* EB: TODO: CLEANUP: make it possible that calling function handles this error */
