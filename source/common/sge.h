@@ -32,14 +32,6 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#ifndef DEFAULT_EDITOR
-#   ifdef WIN32
-#      define DEFAULT_EDITOR     "notepad.exe"
-#   else
-#      define DEFAULT_EDITOR     "vi"
-#   endif
-#endif
-
 #define MAX_SEQNUM        9999999
 
 /* template/global/default/queue names */
