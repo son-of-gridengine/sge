@@ -126,117 +126,6 @@ unsigned long sge_qmaster_application_status(char** info_message)
    return sge_monitor_status(info_message, mconf_get_monitor_time());
 }
 
-#ifndef USE_POLL
-/****** qmaster/sge_qmaster_main/set_file_descriptor_limit() ********************
-*  NAME
-*     set_file_descriptor_limit() -- check and set file descriptor limit
-*
-*  SYNOPSIS
-*     static int set_file_descriptor_limit(void) 
-*
-*  FUNCTION
-*     This function will check the file descriptor limit for the qmaster. If
-*     soft limit < hard limit the soft limit will set to the hard limit, but
-*     max. to 8192 file descriptors, even when the hard limit is higher.
-*
-*  RESULT
-*     0  - success 
-*     1  - can't set limit because FD_SETSIZE is to small
-*
-*
-*  NOTES
-*     MT-NOTE: set_file_descriptor_limit() is not MT safe because the limit
-*              is a process specific parameter. This function should only be
-*              called before starting up the threads.
-*
-*******************************************************************************/
-static int set_file_descriptor_limit(void) {
-
-   /* define the max qmaster file descriptor limit */
-#define SGE_MAX_QMASTER_SOFT_FD_LIMIT 8192
-   int modified_hard_limit = 0;
-   int return_value = 0;
-
-#if defined(IRIX)
-   struct rlimit64 qmaster_rlimits;
-#else
-   struct rlimit qmaster_rlimits;
-#endif
-
-
-   /* 
-    * check file descriptor limits for qmaster 
-    */
-#if defined(IRIX)
-   getrlimit64(RLIMIT_NOFILE, &qmaster_rlimits);
-#else
-   getrlimit(RLIMIT_NOFILE, &qmaster_rlimits);
-#endif
-
-   /* check hard limit and set it to SGE_MAX_QMASTER_SOFT_FD_LIMIT
-      if hard limit is smaller AND
-      smaller than FD_SETSIZE */
-
-   if (qmaster_rlimits.rlim_max < SGE_MAX_QMASTER_SOFT_FD_LIMIT) {
-      qmaster_rlimits.rlim_max = SGE_MAX_QMASTER_SOFT_FD_LIMIT;
-      if (qmaster_rlimits.rlim_cur > SGE_MAX_QMASTER_SOFT_FD_LIMIT) {
-         qmaster_rlimits.rlim_cur = SGE_MAX_QMASTER_SOFT_FD_LIMIT;
-      }
-      modified_hard_limit = 1;
-   }
-
-#ifndef USE_POLL
-   if (qmaster_rlimits.rlim_max > FD_SETSIZE) {
-      qmaster_rlimits.rlim_max = FD_SETSIZE;
-      if (qmaster_rlimits.rlim_cur > FD_SETSIZE) {
-         qmaster_rlimits.rlim_cur = FD_SETSIZE;
-      }
-      modified_hard_limit = 1;
-      return_value = 1;
-   }
-#endif
-
-   if (modified_hard_limit == 1) {
-#if defined(IRIX)
-      setrlimit64(RLIMIT_NOFILE, &qmaster_rlimits);
-#else
-      setrlimit(RLIMIT_NOFILE, &qmaster_rlimits);
-#endif
-   }
-
-#if defined(IRIX)
-   getrlimit64(RLIMIT_NOFILE, &qmaster_rlimits);
-#else
-   getrlimit(RLIMIT_NOFILE, &qmaster_rlimits);
-#endif
-
-   if (modified_hard_limit == 1) {
-      /* if we have modified the hard limit by ourselfs we set 
-         SGE_MAX_QMASTER_SOFT_FD_LIMIT as soft limit (if possible) */ 
-      if ( qmaster_rlimits.rlim_cur < SGE_MAX_QMASTER_SOFT_FD_LIMIT &&
-           qmaster_rlimits.rlim_max < SGE_MAX_QMASTER_SOFT_FD_LIMIT ) {
-         qmaster_rlimits.rlim_cur = qmaster_rlimits.rlim_max;
-      } else {
-         qmaster_rlimits.rlim_cur = SGE_MAX_QMASTER_SOFT_FD_LIMIT;
-      }
-#if defined(IRIX)
-      setrlimit64(RLIMIT_NOFILE, &qmaster_rlimits);
-#else
-      setrlimit(RLIMIT_NOFILE, &qmaster_rlimits);
-#endif
-   } else {
-      /* if limits are set high enough through user we use the
-         hard limit setting for the soft limit */
-      qmaster_rlimits.rlim_cur = qmaster_rlimits.rlim_max;
-#if defined(IRIX)
-      setrlimit64(RLIMIT_NOFILE, &qmaster_rlimits);
-#else
-      setrlimit(RLIMIT_NOFILE, &qmaster_rlimits);
-#endif
-   }
-   return return_value;
-}
-#endif  /* ! USE_POLL */
 
 /****** qmaster/sge_qmaster_main/main() ****************************************
 *  NAME
@@ -272,9 +161,6 @@ int main(int argc, char* argv[])
 {
    int max_enroll_tries;
    int ret_val;
-#ifndef USE_POLL
-   int file_descriptor_settings_result = 0;
-#endif
    bool has_daemonized = false;
    sge_gdi_ctx_class_t *ctx = NULL;
    u_long32 start_time = sge_get_gmt();
@@ -315,9 +201,6 @@ int main(int argc, char* argv[])
     * zombie jobs
     */
    has_daemonized = sge_daemonize_qmaster();
-#ifndef USE_POLL
-   file_descriptor_settings_result = set_file_descriptor_limit();
-#endif
    init_sig_action_and_mask();
 
    /* init qmaster threads without becomming admin user */
@@ -388,15 +271,6 @@ int main(int argc, char* argv[])
    sge_event_master_init();
 
    sge_setup_qmaster(ctx, argv);
-
-#ifndef USE_POLL
-   if (file_descriptor_settings_result == 1) {
-      WARNING((SGE_EVENT, MSG_QMASTER_FD_SETSIZE_LARGER_THAN_LIMIT_U, sge_u32c(FD_SETSIZE)));
-      WARNING((SGE_EVENT, MSG_QMASTER_FD_SETSIZE_COMPILE_MESSAGE1_U, sge_u32c(FD_SETSIZE - 20)));
-      WARNING((SGE_EVENT, MSG_QMASTER_FD_SETSIZE_COMPILE_MESSAGE2));
-      WARNING((SGE_EVENT, MSG_QMASTER_FD_SETSIZE_COMPILE_MESSAGE3));
-   }
-#endif
 
    /*
     * Setup all threads and initialize corresponding modules. 
