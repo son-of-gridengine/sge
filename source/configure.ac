@@ -1,7 +1,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_INIT
-AC_CONFIG_HEADERS([config.h:common/config.h.in])
+dnl Using config.h would conflict with qtcsh, at least
+AC_CONFIG_HEADERS([sge_config.h:common/sge_config.h.in])
 
 # Checks for programs.
 AC_PROG_CC

@@ -2316,10 +2316,12 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
       cd $COMPILE_DIR
    endif
 
-   if ( ! -f configure ) then
-      ( cd ..;  autoreconf )
+   if ( ! -f ../configure || ! -f ../common/sge_config.h.in ) then
+      pushd ..
+      autoreconf || exit 1
+      popd
    endif
-   if ( ! -f ./config.h ) then
+   if ( ! -f sge_config.h ) then
       ../configure CC="$CC" CFLAGS="`echo ${CFLAGS} | sed -e's/-DSGE_ARCH_STRING=[^ ]*//'`" || exit 1
    endif
 

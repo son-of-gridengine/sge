@@ -5,5 +5,5 @@
 rm .gitignore
 # For rpmbuild -tb
 ln -sf gridengine.spec sge.spec
-# Generated files aren't under revision control.'
-cd source && autoreconf && sh configure
+# Generated files aren't under revision control.
+cd source && autoreconf

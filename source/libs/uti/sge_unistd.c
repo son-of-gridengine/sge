@@ -30,7 +30,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/                 
 
-#include "config.h"
+#include "sge_config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
