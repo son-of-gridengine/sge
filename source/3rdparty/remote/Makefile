@@ -69,9 +69,9 @@ rshd:   $(RSHD_OBJS) $(RSHD_ADD_OBJS) $(RSHD_LIB_DEPENDS)
 		$(CC) -o $@ $(LFLAGS) $(RSHD_OBJS) $(RSHD_ADD_OBJS) $(RSHD_ADD_LIBS) $(LIBS) 
 
 rshd.o: $(REMOTE_DIR)/rshd.c $(RSHD_ADD_OBJS)
-		$(CC) $(CFLAGS) $(REMOTE_CFLAGS) -I$(SGE_DIR)/daemons/common -I$(SGE_DIR)/common -I$(SGE_DIR)/libs/uti -I$(SGE_DIR)/daemons/shepherd -c $(REMOTE_DIR)/rshd.c
+		$(CC) $(CFLAGS) $(REMOTE_CFLAGS) -I$(SGE_ARCH_DIR) -I$(SGE_DIR)/daemons/common -I$(SGE_DIR)/common -I$(SGE_DIR)/libs/uti -I$(SGE_DIR)/daemons/shepherd -c $(REMOTE_DIR)/rshd.c
 
 sgessh.o: $(REMOTE_DIR)/sgessh.c $(RSHD_ADD_OBJS)
-		$(CC) $(CFLAGS) $(REMOTE_CFLAGS) -I$(SGE_DIR)/daemons/common -I$(SGE_DIR)/common -I$(SGE_DIR)/libs/uti -I$(SGE_DIR)/daemons/shepherd -c $(REMOTE_DIR)/sgessh.c
+		$(CC) $(CFLAGS) $(REMOTE_CFLAGS) -I$(SGE_ARCH_DIR) -I$(SGE_DIR)/daemons/common -I$(SGE_DIR)/common -I$(SGE_DIR)/libs/uti -I$(SGE_DIR)/daemons/shepherd -c $(REMOTE_DIR)/sgessh.c
 
 

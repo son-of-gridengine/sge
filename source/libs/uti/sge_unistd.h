@@ -32,6 +32,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/   
 
+#include "sge_config.h"
 #include "sge.h"                /* for __attribute__ */
 
 #include <unistd.h>
@@ -46,13 +47,9 @@
 #  include "../wingrid/wingrid.h"
 #endif
 
-#if defined(SOLARIS) || defined(__linux__) || defined(IRIX)
-#  define SGE_OPEN2(filename, oflag)       open64(filename, oflag)
-#  define SGE_OPEN3(filename, oflag, mode) open64(filename, oflag, mode)
-#else
-#  define SGE_OPEN2(filename, oflag)       open(filename, oflag)
-#  define SGE_OPEN3(filename, oflag, mode) open(filename, oflag, mode)
-#endif
+/* historical reasons */
+#define SGE_OPEN2(filename, oflag)       open(filename, oflag)
+#define SGE_OPEN3(filename, oflag, mode) open(filename, oflag, mode)
 
 #if defined (IRIX)
 #  define SGE_CLOSE(fd) fsync(fd); close(fd)
@@ -61,49 +58,20 @@
 #endif
 
 
-#ifdef IRIX
-#  define SGE_STAT(filename, buffer) stat64(filename, buffer)
-#  define SGE_LSTAT(filename, buffer) lstat64(filename, buffer)
-#  define SGE_FSTAT(filename, buffer) fstat64(filename, buffer)
-#  define SGE_STRUCT_STAT struct stat64
-#  define SGE_INO_T ino64_t
-#  define SGE_OFF_T off64_t
-#elif defined(SOLARIS)
-#  define SGE_STAT(filename, buffer) stat64(filename, buffer)
-#  define SGE_LSTAT(filename, buffer) lstat64(filename, buffer)
-#  define SGE_FSTAT(filename, buffer) fstat64(filename, buffer)
-#  define SGE_STRUCT_STAT struct stat64
-#  define SGE_INO_T ino64_t
-#  define SGE_OFF_T off64_t
-#elif defined(INTERIX)
+#if defined(INTERIX)
 #  define SGE_STAT(filename, buffer) wl_stat(filename, buffer)
-#  define SGE_LSTAT(filename, buffer) lstat(filename, buffer)
-#  define SGE_FSTAT(filedes, buffer) fstat(filedes, buffer)
-#  define SGE_STRUCT_STAT struct stat
-#  define SGE_INO_T ino_t
-#  define SGE_OFF_T off_t
 #else
 #  define SGE_STAT(filename, buffer) stat(filename, buffer)
-#  define SGE_LSTAT(filename, buffer) lstat(filename, buffer)
-#  define SGE_FSTAT(filename, buffer) fstat(filename, buffer)
-#  define SGE_STRUCT_STAT struct stat
-#  define SGE_INO_T ino_t
-#  define SGE_OFF_T off_t
-#endif                
-
-#if defined(IRIX) || defined(SOLARIS) || defined(__linux__)
-#  define SGE_READDIR(directory) readdir64(directory)
-#  define SGE_READDIR_R(directory, entry, result) readdir64_r(directory, entry, result)
-#  define SGE_TELLDIR(directory) telldir64(directory)
-#  define SGE_SEEKDIR(directory, offset) seekdir64(directory, offset)
-#  define SGE_STRUCT_DIRENT struct dirent64
-#else
-#  define SGE_READDIR(directory) readdir(directory)
-#  define SGE_READDIR_R(directory, entry, result) readdir_r(directory, entry, result)
-#  define SGE_TELLDIR(directory) telldir(directory)
-#  define SGE_SEEKDIR(directory, offset) seekdir(directory, offset)
-#  define SGE_STRUCT_DIRENT struct dirent
-#endif       
+#endif
+/* historical */
+#define SGE_LSTAT(filename, buffer) lstat(filename, buffer)
+#define SGE_FSTAT(filename, buffer) fstat(filename, buffer)
+#define SGE_STRUCT_STAT struct stat
+#define SGE_READDIR(directory) readdir(directory)
+#define SGE_READDIR_R(directory, entry, result) readdir_r(directory, entry, result)
+#define SGE_TELLDIR(directory) telldir(directory)
+#define SGE_SEEKDIR(directory, offset) seekdir(directory, offset)
+#define SGE_STRUCT_DIRENT struct dirent
 
 #if defined(SOLARIS) || defined(__hpux) || defined(LINUX) || defined(AIX) || defined(DARWIN9) || defined(DARWIN10)
 #   define SETPGRP setpgrp()

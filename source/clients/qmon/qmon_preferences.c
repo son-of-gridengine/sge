@@ -450,7 +450,7 @@ static lListElem* read_object( const char *dirname, const char *filename, int sp
 
    if (!SGE_STAT(fullname, &sb)) {
       size = MAX(sb.st_size, 10000);
-      if ((SGE_OFF_T)size != MAX(sb.st_size, 10000) ||
+      if ((off_t)size != MAX(sb.st_size, 10000) ||
          (buf = (char *) malloc(size)) == NULL) {
          FCLOSE(fp);
          ERROR((SGE_EVENT, MSG_MEMORY_CANTMALLOCBUFFERFORXOFFILEY_SS, 
