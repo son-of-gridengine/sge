@@ -849,8 +849,8 @@ static void shepherd_panic(const char *s)
    char buffer[128];
 
    sge_dstring_init(&ds, buffer, sizeof(buffer));
-   sge_dstring_sprintf_append(&ds, "%s ["uid_t_fmt":"uid_t_fmt" "pid_t_fmt"]: PANIC: %s\n",
-                              sge_ctime(0, &ds), getuid(), geteuid(), getpid(), s);
+   sge_dstring_sprintf_append(&ds, "["uid_t_fmt":"uid_t_fmt" "pid_t_fmt"]: PANIC: %s\n",
+                              getuid(), geteuid(), getpid(), s);
    syslog(LOG_USER, "%s", sge_dstring_get_string(&ds));
    return;
 }
