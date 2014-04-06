@@ -83,7 +83,7 @@ char *sge_read_token(const char *file)
    }
 
    size = sb.st_size + 1;
-   if (((SGE_OFF_T)size != sb.st_size + 1)
+   if (((off_t)size != sb.st_size + 1)
        || (tokenbuf = (char *) malloc(size)) == NULL) {
       DTRACE;
       return NULL;
