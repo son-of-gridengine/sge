@@ -19,4 +19,8 @@ AC_CHECK_FUNCS([getgrouplist])
 
 # Compatibility
 
+if test -f /etc/debian_version; then
+  AC_DEFINE([DEFAULT_EDITOR], "sensible-editor", [Define the default editor])
+fi
+
 AC_OUTPUT

@@ -30,6 +30,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
+#include "sge_config.h"
 #include <string.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -48,6 +49,14 @@
 #include "sge.h"
 
 #include "msg_common.h"
+
+#ifndef DEFAULT_EDITOR
+#   ifdef WIN32
+#      define DEFAULT_EDITOR     "notepad.exe"
+#   else
+#      define DEFAULT_EDITOR     "vi"
+#   endif
+#endif
 
 int sge_edit(const char *fname, uid_t myuid, gid_t mygid)
 {
