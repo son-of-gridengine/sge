@@ -359,13 +359,11 @@ typedef struct cl_com_handle {
    struct timeval last_message_queue_cleanup_time; /* used in service thread */
 } cl_com_handle_t;
 
-#ifdef USE_POLL
 typedef struct cl_com_poll {
    struct pollfd*        poll_array;     /* array of pollfd structs */
    cl_com_connection_t** poll_con;       /* array of connection pointers */
    unsigned long         poll_fd_count;  /* nr of malloced pollfd structs and connection pointers */
 } cl_com_poll_t;
-#endif
 
 typedef struct cl_com_hostent {
    struct hostent *he;              /* pointer of type struct hostent (defined in netdb.h) */
