@@ -19,8 +19,9 @@
 # Copyright 2004 Duke University
 # Written by Sean Dilda <sean@duke.edu>
 
-
-version = '0.5'
+# Updates for SGE 8 and monitoring load independent of alarm -- see
+# repo history.
+version = '0.6'
 #
 #
 # Version History:
@@ -42,11 +43,18 @@ import os
 import sys
 import string
 import getopt
-import popen2
 import signal
+import warnings
+# fixme: replace popen2
+warnings.simplefilter("ignore", DeprecationWarning)
+import popen2
 
-qhostPath = '/usr/bin/qhost'
-os.environ['SGE_ROOT'] = '/usr/share/sge'
+# fixme: should be configured externally
+qhostPath = '/opt/sge/bin/lx-amd64/qhost'
+os.environ['SGE_ROOT'] = '/opt/sge'
+os.environ['SGE_QMASTER_PORT'] = '6444'
+os.environ['SGE_CELL'] = 'default'
+os.environ['SGE_CLUSTER_NAME'] = 'p6444'
 
 nagiosStateOk = 0
 nagiosStateWarning = 1
@@ -60,25 +68,42 @@ childPid = 0
 timeout = 15
 
 def printUsage():
-    print 'Usage: check_sge -H <hostname> [-w <warning states>] [-c <critical states>]'
-    print '                 [-t <timeout>]'
+    print """\
+Usage: check_sge -H <hostname> [-w <warning states>] [-c <critical states>]
+    [--load-warning=<level>] [--load-critical=<level>] [-t <timeout>]"""
 
 def printHelp():
     printUsage()
-    print ''
-    print 'Options:'
-    print '-H, --hostname=HOST'
-    print '   The hostname (as recognized by SGE) of the node you want to check'
-    print '-w, --warning=STR'
-    print '   The queue states that will cause a warning.  (ie -w ds)'
-    print '-c, --critical=STR'
-    print '   The queue states that will cause a critical error.  (ie -c au)'
-    print '-t, --timeout=TIMEOUT'
-    print '   Plugin timeout in seconds.  (default: 15)'
+    print"""
+Options:
+-H, --hostname=HOST
+   The hostname (as recognized by SGE) of the node you want to check
+-w, --warning=STR
+   The queue states that will cause a warning.  (ie -w ds)
+-c, --critical=STR
+   The queue states that will cause a critical error.  (ie -c au)
+-t, --timeout=TIMEOUT
+   Plugin timeout in seconds.  (default: 15)
+--load-warning=LEVEL
+   Load level that will cause a warning.
+   If LEVEL has a leading "+", warn if load is that much higher than the
+   number of CPUs.  If it has a trailing "%", warn if load is that
+   percentage higher than the number of CPUs.
+--load-critical=LEVEL
+   Load level that will cause a critical error, similarly to --load-warning."""
+# --vm-warning=LEVEL
+#    Virtual memory value (in megabytes) that will cause a warning.
+#    If LEVEL has a leading "+", warn if VM usage is that much higher than
+#    the node's physical memory.  If it has a trailing "%", warn if VM
+#    usage is that percentage higher than physical memory.
+# --vm-critical=LEVEL
+#    Virtual memory value that will cause a critical error, similarly to
+#    --vm-warning.
+# """
     sys.exit(nagiosStateUnknown)
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'VhH:w:c:t:v?', ['version', 'help', 'hostname=', 'warning=', 'critical=', 'verbose', 'timeout='])
+    optlist, args = getopt.getopt(sys.argv[1:], 'VhH:w:c:t:v?', ['version', 'help', 'hostname=', 'warning=', 'critical=', 'verbose', 'timeout=', "load-warning=", "load-critical=", "vm-warning=", "vm-critical="])
 except getopt.GetoptError, errorStr:
     print errorStr
     printUsage()
@@ -87,6 +112,23 @@ except getopt.GetoptError, errorStr:
 if len(args) != 0:
     printUsage()
     sys.exit(nagiosStateUnknown)
+
+def check_load_or_vm_arg (name, arg):
+    kind = None; val = 0
+    try:
+        if arg[0] == "+":
+            kind = "+"
+            val = float (arg[1:])
+        elif arg[-1:] == "%":
+            kind = "%"
+            val = float (arg[:-1])
+        else:
+            val = float (arg)
+    except:
+        print "Invalid argument for %s: %s" % (name, arg)
+    return (kind, val)
+
+swarn = scrit = lwarn = lcrit = None
 
 for opt, arg in optlist:
     if opt in ('-V', '--version'):
@@ -111,6 +153,14 @@ for opt, arg in optlist:
         except ValueError:
             print 'Invalid argument for %s: %s' % (opt, arg)
             sys.exit(nagiosStateUnknown)
+    elif opt == "--load-critical":
+        lcrit = check_load_or_vm_arg (opt, arg)
+    elif opt == "--load-warning":
+        lwarn = check_load_or_vm_arg (opt, arg)
+#     elif opt == "--vm-critical":
+#         scrit = check_load_or_vm_arg (opt, arg)
+#     elif opt == "--vm-warning":
+#         swarn = check_load_or_vm_arg (opt, arg)
     elif opt == '-?':
         printUsage()
         sys.exit(nagiosStateUnknown)
@@ -147,7 +197,7 @@ if not os.WIFEXITED(exitStatus) or os.WEXITSTATUS(exitStatus) != 0 or len(lines)
     if len(lines) >= 1:
         # Print first line of output.  Use [:-1] so that we don't get an extra
         # carriage return
-        print 'Error with qhost: %s' % (lines[0][:-1])
+        print 'Error with qhost %s: %s' % ('%s -q -h %s' % (qhostPath, hostName), lines[0][:-1])
     else:
         print 'Error with qhost'
     sys.exit(nagiosStateUnknown)
@@ -160,9 +210,54 @@ if hostData[0] == 'global':
     lines = lines[1:]
 queueLines = lines
 
+def check_load_or_vm (param, warn, crit, base, value):
+    if crit:
+        if crit[0] == "+":
+            threshold = crit[1] + base
+        elif crit[0] == "%":
+            threshold = base + (base * crit[1]/100.0)
+        else:
+            threshold = crit[1]
+        if value >= threshold:
+            print "CRITICAL: %s: %s >= %s" % (param, value, threshold)
+            sys.exit (nagiosStateCritical)
+    if warn:
+        if warn[0] == "+":
+            threshold = warn[1] + base
+        elif warn[0] == "%":
+            threshold = base + (base * warn[1]/100.0)
+        else:
+            threshold = warn[1]
+        if value >= threshold:
+            print "WARNING: %s: %s >= %s" % (param, value, threshold)
+            sys.exit (nagiosStateWarning)
+
 if hostData[3] == '-':
     print "CRITICAL: execd not communicating"
     sys.exit(nagiosStateCritical)
+
+def memory (val):
+    """Return number in MB, given value with G, M, or K suffix."""
+    if val[-1:] == "G": return float (val[:-1]) * 1000.0
+    elif val[-1:] == "M": return float (val[:-1])
+    # qhost prints `K', not `k'
+    elif val[-1:] == "K": return float (val[:-1]) / 1000.0
+    else: return float (val)
+
+# Fixme: get the hostData indices from the header line, in case the format
+# changes, like it did with v8.0.0
+ncpu = int (hostData[2])
+load = float (hostData[6])
+mem = memory (hostData[7])
+memused = memory (hostData[8])
+vmused = memory (hostData[9]) + memused
+
+check_load_or_vm ("load", None, lcrit, ncpu, load)
+if memused + 100 > mem:         # 100 is arbitrary fiddle-factor
+#    check_load_or_vm ("virtual memory", None, scrit, mem, vmused)
+    print "WARNING: real memory (%sGB) consumed; real+swap=%s" % \
+        (mem/1000.0, vmused/1000.0)
+    sys.exit (nagiosStateWarning)
 
 warning = []
 critical = []
@@ -185,18 +280,23 @@ for line in queueLines:
 outputMsg = ''
 exitCode = nagiosStateOk
 if len(critical) >= 1:
-    outputMsg = 'Queues in critical state: %s' % (string.join(critical, ', '))
+    outputMsg = 'SGE CRITICAL: Queues in critical state: %s' % (string.join(critical, ', '))
     exitCode = nagiosStateCritical
 
 if len(warning) >= 1:
     if len(outputMsg) > 0:
         outputMsg = outputMsg + ' '
+    else:
+        outputMsg = 'SGE WARNING: '
     outputMsg = outputMsg + 'Queues in warning state: %s' % (string.join(warning, ', '))
     exitCode = max(exitCode, nagiosStateWarning)
 
 if len(outputMsg) > 0:
     print outputMsg
 else:
-    print 'Host and Queues Ok'
+    check_load_or_vm ("load", lwarn, lwarn, ncpu, load)
+    if memused + 100 > mem:
+        check_load_or_vm ("virtual memory", swarn, swarn, mem, vmused)
+    print 'SGE OK Host and Queues'
 
 sys.exit(exitCode)
