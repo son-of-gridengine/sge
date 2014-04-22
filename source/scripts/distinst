@@ -932,7 +932,9 @@ if [ $instcommon = true ]; then
                         $DEST_SGE_ROOT/util/resources/wrappers/* \
                         $DEST_SGE_ROOT/util/resources/scripts/* \
                         $DEST_SGE_ROOT/util/upgrade_modules/*.sh \
-                        $DEST_SGE_ROOT/inst*
+                        $DEST_SGE_ROOT/inst* \
+                        $DEST_SGE_ROOT/util/resources/check* \
+                        $DEST_SGE_ROOT/util/resources/ganglia-sge-jobs
 
       Execute chmod 644 $DEST_SGE_ROOT/util/install_modules/* \
                         $DEST_SGE_ROOT/util/rctemplates/* \
