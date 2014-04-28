@@ -33,11 +33,11 @@
 
 ########################################################################### 
 #
-# example for a job verification script 
-#
 # Be careful:  Job verification scripts are started with sgeadmin 
 #              permissions if they are executed within the master process
 #
+
+# fixme: use arrays in bash
 
 PATH=/bin:/usr/bin
 ARCH=`"$SGE_ROOT/util/arch"`
@@ -46,6 +46,7 @@ ARCH=`"$SGE_ROOT/util/arch"`
 jsv_logging_enabled=${jsv_logging_enabled:-false}
 # An old name for the above, never documented.  Use one or the other.
 __jsv_logging_enabled="false"
+# fixme: use mktemp
 __jsv_logfile="/tmp/jsv_$$.log"  # logfile
 
 # Current state of the script
@@ -449,7 +450,7 @@ jsv_mod_env()
 #     from the set of variables that will be exported
 #     to the job, when it is started.
 #
-#     If "variable_name" does not already exists in the set of job 
+#     If "variable_name" does not already exist in the set of job
 #     environment variables then the command is ignored.
 #
 #     To change the value of a variable use the function jsv_mod_env()
@@ -1565,8 +1566,10 @@ fi
 # escaping, and read -r (raw mode) may not be available.  Therefore we
 # may have to use our own implementation.
 if [ -n "$BASH_VERSION" -o "$ARCH" = "darwin-x86" -o "$ARCH" = "darwin-x64" ]; then
+__jsv_use_read=true
 _jsv_read_raw() {
-    read -r __jsv_input
+    read -r __jsv_first __jsv_second __jsv_remaining
+    __jsv_input="$__jsv_first $__jsv_second $__jsv_remaining"
 }
 else
 _jsv_read_raw() {
@@ -1608,7 +1611,7 @@ _jsv_script_log()
 #     components which might start JSV scripts.
 #     
 #     This function does not return immediately. It returns only when
-#     the "QUIT" command is send by the client or server component.
+#     the "QUIT" command is sent by the client or server component.
 #
 #     During the communication with client and server components, this
 #     function triggers two callback functions for each job that 
@@ -1680,7 +1683,7 @@ jsv_main()
    _jsv_script_log "This file contains logging output from an SGE JSV script. Lines beginning"
    _jsv_script_log "with >>> contain the data which was send by a command line client or"
    _jsv_script_log "sge_qmaster to the JSV script. Lines beginning with <<< contain data"
-   _jsv_script_log "which is send for this JSV script to the client or sge_qmaster"
+   _jsv_script_log "which is sent for this JSV script to the client or sge_qmaster."
    _jsv_script_log ""
 
    while [ $__jsv_quit = false ]; do
@@ -1692,17 +1695,25 @@ jsv_main()
       else
          if [ "$__jsv_input" != "" ]; then
             _jsv_script_log ">>> $__jsv_input"
-            __jsv_first=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 1`
-            __jsv_second=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 2`
-            __jsv_remaining=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 3-`
+            if [ -n "$__jsv_use_read" ]; then
+                __jsv_first=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 1`
+                __jsv_second=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 2`
+                __jsv_remaining=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 3-`
+            fi
             if [ "$__jsv_first" = "QUIT" ]; then
                __jsv_quit=true
             elif [ "$__jsv_first" = "PARAM" ]; then
                _jsv_handle_param_command "$__jsv_second" "$__jsv_remaining"
             elif [ "$__jsv_first" = "ENV" ]; then
-               __jsv_third=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 3`
-               __jsv_len=`_jsv_echo_raw "$__jsv_first $__jsv_second $__jsv_third " | wc -c`
-               __jsv_data=`_jsv_echo_raw $__jsv_input | cut -c ${__jsv_len}-`
+               if [ -n "$BASH_VERSION" ]; then
+                  read -r __jsv_third __jsv_data <<EOF
+$__jsv_remaining
+EOF
+               else
+                   __jsv_third=`_jsv_echo_raw $__jsv_input | cut -d' ' -f 3`
+                   __jsv_len=`_jsv_echo_raw "$__jsv_first $__jsv_second $__jsv_third " | wc -c`
+                   __jsv_data=`_jsv_echo_raw $__jsv_input | cut -c ${__jsv_len}-`
+               fi
                _jsv_handle_env_command "$__jsv_second" "$__jsv_third" "$__jsv_data"
             elif [ "$__jsv_first" = "START" ]; then
                _jsv_handle_start_command
