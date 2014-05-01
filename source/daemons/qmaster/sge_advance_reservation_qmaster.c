@@ -262,7 +262,7 @@ int ar_mod(sge_gdi_ctx_class_t *ctx, lList **alpp, lListElem *new_ar,
 
    if (max_advance_reservations > 0 &&
        max_advance_reservations <= lGetNumberOfElem(*object_base[SGE_TYPE_AR].list)) {
-      ERROR((SGE_EVENT, MSG_AR_MAXARSPERCLUSTER_U, sge_u32c(max_advance_reservations)));
+      INFO((SGE_EVENT, MSG_AR_MAXARSPERCLUSTER_U, sge_u32c(max_advance_reservations)));
       answer_list_add(alpp, SGE_EVENT, STATUS_NOTOK_DOAGAIN, ANSWER_QUALITY_ERROR);
       goto DOITAGAIN; 
    }

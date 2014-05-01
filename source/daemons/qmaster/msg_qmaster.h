@@ -304,7 +304,7 @@
 #define MSG_JOB_PEUNKNOWN_S           _MESSAGE(33212, _("job rejected: the requested parallel environment "SFQ" does not exist"))
 #define MSG_JOB_CKPTUNKNOWN_S         _MESSAGE(33213, _("job rejected: the requested checkpointing environment "SFQ" does not exist"))
 #define MSG_JOB_CKPTMINUSC            _MESSAGE(33215, _("job rejected: checkpointing with \"-c n\" requested"))
-#define MSG_JOB_NOCKPTREQ             _MESSAGE(33216, _("job rejected: checkpointing without checkpointing environment requested"))
+/* #define MSG_JOB_NOCKPTREQ             _MESSAGE(33216, _("job rejected: checkpointing without checkpointing environment requested")) */
 #define MSG_JOB_CKPTDENIED            _MESSAGE(33217, _("checkpointing denied") )   
 #define MSG_JOB_NOTINANYQ_S           _MESSAGE(33218, _("warning: "SFN"'s job is not allowed to run in any queue"))
 #define MSG_JOB_PRJUNKNOWN_S          _MESSAGE(33219, _("job rejected: the requested project "SFQ" does not exist"))
@@ -434,7 +434,7 @@
 #define MSG_SGETEXT_DOESNOTEXISTTASK_SU               _MESSAGE(33341, _("job \""SFN"\" task \"" sge_U32CFormat "\" does not exist"))
 #define MSG_SGETEXT_DOESNOTEXISTTASKRANGE_SUUU        _MESSAGE(33342, _("job \""SFN"\" task id range \"" sge_U32CFormat "-" sge_U32CFormat ":" sge_U32CFormat "\" comprises no tasks"))
 #define MSG_JSV_THRESHOLD_UU                          _MESSAGE(33343, _("JSV for job "sge_U32CFormat" took "sge_U32CFormat" ms"))
-#define MSG_JSV_BINDING_REJECTED                      _MESSAGE(33344, _("job rejected: binding parameters not consistent with strategy"))
+/* #define MSG_JSV_BINDING_REJECTED                      _MESSAGE(33344, _("job rejected: binding parameters not consistent with strategy")) */
 #define MSG_JSV_BINDING_REJECTED_SS                   _MESSAGE(33345, _("job rejected: binding parameter not consistent with strategy ("SFN" is "SFN")"))
 /*
 ** sge_manop.c

@@ -2116,7 +2116,7 @@ int *trigger
    /* If it is a deadline job the user has to be a deadline user */
    if ((pos=lGetPosViaElem(jep, JB_deadline, SGE_NO_ABORT))>=0) {
       if (!userset_is_deadline_user(*object_type_get_master_list(SGE_TYPE_USERSET), ruser)) {
-         ERROR((SGE_EVENT, MSG_JOB_NODEADLINEUSER_S, ruser));
+         INFO((SGE_EVENT, MSG_JOB_NODEADLINEUSER_S, ruser));
          answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          DRETURN(STATUS_EUNKNOWN);
       } else {
@@ -2579,7 +2579,7 @@ int *trigger
 
       /* reject PE ranges change requests for jobs without PE request */
       if (!(pe_name=lGetString(new_job, JB_pe))) {
-         ERROR((SGE_EVENT, SFNMAX, MSG_JOB_PERANGE_ONLY_FOR_PARALLEL));
+         INFO((SGE_EVENT, SFNMAX, MSG_JOB_PERANGE_ONLY_FOR_PARALLEL));
          answer_list_add(alpp, SGE_EVENT, STATUS_EEXIST, ANSWER_QUALITY_ERROR);
          DRETURN(STATUS_EUNKNOWN);
       }
@@ -3539,7 +3539,7 @@ int sge_gdi_copy_job(sge_gdi_ctx_class_t *ctx,
 
    /* ensure copy is allowed */
    if (strcmp(ruser, lGetString(old_jep, JB_owner)) && !manop_is_manager(ruser)) {
-      ERROR((SGE_EVENT, MSG_JOB_NORESUBPERMS_SSS, ruser, rhost, lGetString(old_jep, JB_owner)));
+      INFO((SGE_EVENT, MSG_JOB_NORESUBPERMS_SSS, ruser, rhost, lGetString(old_jep, JB_owner)));
       answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
       DRETURN(STATUS_EUNKNOWN);
    }
@@ -4220,7 +4220,7 @@ job_verify_project(const lListElem *job, lList **alpp,
       /* make sure the requested project exists at all */
       lListElem *pep = prj_list_locate(*object_base[SGE_TYPE_PROJECT].list, project);
       if (pep == NULL) {
-         ERROR((SGE_EVENT, MSG_JOB_PRJUNKNOWN_S, project));
+         INFO((SGE_EVENT, MSG_JOB_PRJUNKNOWN_S, project));
          answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          ret = STATUS_EUNKNOWN;
       }
@@ -4231,7 +4231,7 @@ job_verify_project(const lListElem *job, lList **alpp,
                               lGetList(pep, PR_acl), 
                               lGetList(pep, PR_xacl), 
                               *object_base[SGE_TYPE_USERSET].list)) {
-            ERROR((SGE_EVENT, MSG_SGETEXT_NO_ACCESS2PRJ4USER_SS,
+            INFO((SGE_EVENT, MSG_SGETEXT_NO_ACCESS2PRJ4USER_SS,
                      project, user));
             answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
             ret = STATUS_EUNKNOWN;
@@ -4244,7 +4244,7 @@ job_verify_project(const lListElem *job, lList **alpp,
 
          if ((xprojects != NULL && prj_list_locate(xprojects, project)) ||
              (projects != NULL && prj_list_locate(projects, project) == NULL)) {
-            ERROR((SGE_EVENT, MSG_JOB_PRJNOSUBMITPERMS_S, project));
+            INFO((SGE_EVENT, MSG_JOB_PRJNOSUBMITPERMS_S, project));
             answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
             ret = STATUS_EUNKNOWN;
          }
@@ -4259,7 +4259,7 @@ job_verify_project(const lListElem *job, lList **alpp,
        * every job *must* request a project
        */
       if (lGetNumberOfElem(projects) > 0) {
-         ERROR((SGE_EVENT, SFNMAX, MSG_JOB_PRJREQUIRED));
+         INFO((SGE_EVENT, SFNMAX, MSG_JOB_PRJREQUIRED));
          answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          ret = STATUS_EUNKNOWN;
       }
@@ -4268,7 +4268,7 @@ job_verify_project(const lListElem *job, lList **alpp,
          char* enforce_project = mconf_get_enforce_project();
 
          if (enforce_project != NULL && strcasecmp(enforce_project, "true") == 0) {
-            ERROR((SGE_EVENT, SFNMAX, MSG_SGETEXT_NO_PROJECT));
+            INFO((SGE_EVENT, SFNMAX, MSG_SGETEXT_NO_PROJECT));
             answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
             ret = STATUS_EUNKNOWN;
          }

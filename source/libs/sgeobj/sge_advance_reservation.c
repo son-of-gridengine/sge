@@ -204,7 +204,7 @@ bool ar_validate(lListElem *ar, lList **alpp, bool in_master, bool is_spool)
             lList *master_ckpt_list = *object_base[SGE_TYPE_CKPT].list;
             lListElem *ckpt_ep = ckpt_list_locate(master_ckpt_list, ckpt_name);
             if (!ckpt_ep) {
-               ERROR((SGE_EVENT, MSG_JOB_CKPTUNKNOWN_S, ckpt_name));
+               INFO((SGE_EVENT, MSG_JOB_CKPTUNKNOWN_S, ckpt_name));
                answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
                goto ERROR;
             }
@@ -251,7 +251,7 @@ bool ar_validate(lListElem *ar, lList **alpp, bool in_master, bool is_spool)
             const lListElem *pep;
             pep = pe_list_find_matching(*object_base[SGE_TYPE_PE].list, pe_name);
             if (!pep) {
-               ERROR((SGE_EVENT, MSG_JOB_PEUNKNOWN_S, pe_name));
+               INFO((SGE_EVENT, MSG_JOB_PEUNKNOWN_S, pe_name));
                answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
                goto ERROR;
             }
