@@ -103,7 +103,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
    /* check min_uid */
    if (ret == STATUS_OK) {
       if (uid < mconf_get_min_uid()) {
-         ERROR((SGE_EVENT, MSG_JOB_UID2LOW_II, (int)uid, (int)mconf_get_min_uid()));
+         INFO((SGE_EVENT, MSG_JOB_UID2LOW_II, uid, mconf_get_min_uid()));
          answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          ret = STATUS_EUNKNOWN;
       }
@@ -112,7 +112,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
    /* check min_gid */
    if (ret == STATUS_OK) {
       if (gid < mconf_get_min_gid()) {
-         ERROR((SGE_EVENT, MSG_JOB_GID2LOW_II, (int)gid, (int)mconf_get_min_gid()));
+         INFO((SGE_EVENT, MSG_JOB_GID2LOW_II, gid, mconf_get_min_gid()));
          answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          ret = STATUS_EUNKNOWN;
       }
@@ -134,7 +134,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
    /* check for non-parallel job that define a master queue */
    if (ret == STATUS_OK) {
       if (lGetList(jep, JB_master_hard_queue_list) != NULL && lGetString(jep, JB_pe) == NULL) {
-         ERROR((SGE_EVENT, SFNMAX, MSG_JOB_MQNONPE));
+         INFO((SGE_EVENT, SFNMAX, MSG_JOB_MQNONPE));
          answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          ret = STATUS_EUNKNOWN;
       }
@@ -178,7 +178,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
    if (ret == STATUS_OK) {
       if ((!JOB_TYPE_IS_BINARY(lGetUlong(jep, JB_type)) &&
           !lGetString(jep, JB_script_ptr) && lGetString(jep, JB_script_file))) {
-         ERROR((SGE_EVENT, SFNMAX, MSG_JOB_NOSCRIPT));
+         INFO((SGE_EVENT, SFNMAX, MSG_JOB_NOSCRIPT));
          answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          ret = STATUS_EUNKNOWN;
       }
@@ -246,7 +246,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
          u_long32 submit_size = range_list_get_number_of_ids(range_list);
       
          if (submit_size > max_aj_tasks) {
-            ERROR((SGE_EVENT, MSG_JOB_MORETASKSTHAN_U, sge_u32c(max_aj_tasks)));
+            INFO((SGE_EVENT, MSG_JOB_MORETASKSTHAN_U, sge_u32c(max_aj_tasks)));
             answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
             ret = STATUS_EUNKNOWN;
          }
@@ -317,7 +317,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
 
       if (!sge_has_access_(ruser, lGetString(jep, JB_group), /* read */
             user_lists, xuser_lists, *object_base[SGE_TYPE_USERSET].list)) {
-         ERROR((SGE_EVENT, MSG_JOB_NOPERMS_SS, ruser, rhost));
+         INFO((SGE_EVENT, MSG_JOB_NOPERMS_SS, ruser, rhost));
          answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          lFreeList(&user_lists);
          lFreeList(&xuser_lists);
@@ -388,7 +388,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
 
          pep = pe_list_find_matching(*object_base[SGE_TYPE_PE].list, pe_name);
          if (!pep) {
-            ERROR((SGE_EVENT, MSG_JOB_PEUNKNOWN_S, pe_name));
+            INFO((SGE_EVENT, MSG_JOB_PEUNKNOWN_S, pe_name));
             answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
             DRETURN(STATUS_EUNKNOWN);
          }
@@ -456,18 +456,18 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
       if (ckpt_err) {
          switch (ckpt_err) {
          case 1:
-            ERROR((SGE_EVENT, MSG_JOB_CKPTUNKNOWN_S, ckpt_name));
+            INFO((SGE_EVENT, MSG_JOB_CKPTUNKNOWN_S, ckpt_name));
           break;
          case 2:
          case 3:
-            ERROR((SGE_EVENT, "%s", MSG_JOB_CKPTMINUSC));
+            INFO((SGE_EVENT, "%s", MSG_JOB_CKPTMINUSC));
             break;
          case 4:
          case 5:
-            ERROR((SGE_EVENT, "%s", MSG_JOB_CKPTDENIED));
+            INFO((SGE_EVENT, "%s", MSG_JOB_CKPTDENIED));
           break;
          default:
-            ERROR((SGE_EVENT, "%s", MSG_JOB_CKPTDENIED));
+            INFO((SGE_EVENT, "%s", MSG_JOB_CKPTDENIED));
             break;
          }
          answer_list_add(alpp, SGE_EVENT, STATUS_ESEMANTIC, ANSWER_QUALITY_ERROR);
@@ -519,7 +519,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
       /* ensure user exists if enforce_user flag is set */
       if (enforce_user && !strcasecmp(enforce_user, "true") &&
                !user_list_locate(*object_base[SGE_TYPE_USER].list, ruser)) {
-         ERROR((SGE_EVENT, MSG_JOB_USRUNKNOWN_S, ruser));
+         INFO((SGE_EVENT, MSG_JOB_USRUNKNOWN_S, ruser));
          answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          sge_free(&enforce_user);
          DRETURN(STATUS_EUNKNOWN);
@@ -554,7 +554,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
     */
    if (lGetUlong(jep, JB_deadline)) {
       if (!userset_is_deadline_user(*object_base[SGE_TYPE_USERSET].list, ruser)) {
-         ERROR((SGE_EVENT, MSG_JOB_NODEADLINEUSER_S, ruser));
+         INFO((SGE_EVENT, MSG_JOB_NODEADLINEUSER_S, ruser));
          answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
          DRETURN(STATUS_EUNKNOWN);
       }
@@ -633,7 +633,7 @@ sge_job_verify_adjust(sge_gdi_ctx_class_t *ctx, lListElem *jep, lList **alpp,
     * jobs with higher priority than 0 (=BASE_PRIORITY)
     */
    if (lGetUlong(jep, JB_priority) > BASE_PRIORITY && !manop_is_operator(ruser)) {
-      ERROR((SGE_EVENT, SFNMAX, MSG_JOB_NONADMINPRIO));
+      INFO((SGE_EVENT, SFNMAX, MSG_JOB_NONADMINPRIO));
       answer_list_add(alpp, SGE_EVENT, STATUS_EUNKNOWN, ANSWER_QUALITY_ERROR);
       DRETURN(STATUS_EUNKNOWN);
    }
