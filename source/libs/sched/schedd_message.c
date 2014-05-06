@@ -595,32 +595,6 @@ void schedd_mes_add_global(lList **monitor_alpp, bool monitor_next_run, u_long32
 }
 
 
-/****** schedd_message/schedd_mes_get_tmp_list() *******************************
-*  NAME
-*     schedd_mes_get_tmp_list() -- gets all messages for the current job 
-*
-*  SYNOPSIS
-*     lList* schedd_mes_get_tmp_list() 
-*
-*  FUNCTION
-*     returns a list of all messages for the current job 
-*
-*  RESULT
-*     lList* -  message list
-*
-*******************************************************************************/
-lList *schedd_mes_get_tmp_list(){
-   lList *ret = NULL;
-   lListElem *tmp_sme = sconf_get_tmp_sme();
-   
-   DENTER(TOP_LAYER, "schedd_mes_get_tmp_list");
-
-   if (tmp_sme) {
-     ret =  lGetList(tmp_sme, SME_message_list);  
-   }
-   DRETURN(ret);
-}
-
 /****** schedd_message/schedd_mes_set_tmp_list() *******************************
 *  NAME
 *     schedd_mes_set_tmp_list() -- sets the messages for a current job 

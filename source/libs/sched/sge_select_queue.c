@@ -3202,7 +3202,6 @@ sequential_tag_queues_suitable4job(sge_assignment_t *a)
    
    /* restore job messages from previous dispatch runs of jobs of the same category */
    if (use_category.use_category) {
-      schedd_mes_set_tmp_list(use_category.cache, CCT_job_messages, a->job_id);
       skip_host_list = lGetList(use_category.cache, CCT_ignore_hosts);
       skip_queue_list = lGetList(use_category.cache, CCT_ignore_queues);
    }
@@ -3512,14 +3511,6 @@ sequential_tag_queues_suitable4job(sge_assignment_t *a)
 
    lFreeList(&unclear_cqueue_list);
    lFreeList(&unclear_host_list);
-
-   /* cache so far generated messages with the job category */
-   if (use_category.use_category) {  
-      lList *temp = schedd_mes_get_tmp_list();
-      if (temp){    
-         lSetList(use_category.cache, CCT_job_messages, lCopyList(NULL, temp));
-      }
-   }
    
    sge_dstring_free(&rue_string);
    sge_dstring_free(&limit_name);
@@ -3645,7 +3636,6 @@ static void fill_category_use_t(const sge_assignment_t *a, category_use_t *use_c
          lSetString(use_category->cache, CCT_pe_name, pe_name);
          lSetList(use_category->cache, CCT_ignore_queues, lCreateList("", CTI_Type));
          lSetList(use_category->cache, CCT_ignore_hosts, lCreateList("", CTI_Type));
-         lSetList(use_category->cache, CCT_job_messages, lCreateList("", MES_Type));
             
          if (lGetList(use_category->category, CT_cache) == NULL) {
             lSetList(use_category->category, CT_cache, lCreateList("pe_cache", CCT_Type));
@@ -3656,7 +3646,9 @@ static void fill_category_use_t(const sge_assignment_t *a, category_use_t *use_c
       use_category->mod_category = true; 
 
       use_category->use_category = ((a->start == DISPATCH_TIME_NOW) && 
-                                  lGetUlong(use_category->category, CT_refcount) > MIN_JOBS_IN_CATEGORY) ? true : false;
+                                    (lGetUlong(use_category->category,
+                                               CT_refcount)
+                                     > MIN_JOBS_IN_CATEGORY)) ? true : false;
    }
    else {
       use_category->cache = NULL;
@@ -3755,10 +3747,6 @@ parallel_tag_queues_suitable4job(sge_assignment_t *a, category_use_t *use_catego
 
    clean_up_parallel_job(a); 
 
-   if (use_category->use_category) {
-      schedd_mes_set_tmp_list(use_category->cache, CCT_job_messages, a->job_id);
-   }
-
    if (lGetUlong(a->job, JB_ar) == 0) {
       if (a->pi)
          a->pi->par_global++;
@@ -3853,6 +3841,7 @@ parallel_tag_queues_suitable4job(sge_assignment_t *a, category_use_t *use_catego
          }
 
          for_each (hep, a->host_list) {
+           /* fixme: sign! */
             lSetUlong(hep, EH_seq_no, -1);
          }
 
@@ -4210,13 +4199,6 @@ parallel_tag_queues_suitable4job(sge_assignment_t *a, category_use_t *use_catego
    sge_dstring_free(&rule_name);
    sge_dstring_free(&rue_name);
    sge_dstring_free(&limit_name);
-
-   if (use_category->use_category) {  
-      lList *temp = schedd_mes_get_tmp_list();
-      if (temp){    
-         lSetList(use_category->cache, CCT_job_messages, lCopyList(NULL, temp));
-       }
-   }
 
    if (best_result != DISPATCH_OK) {
       lFreeList(&(a->gdil));
