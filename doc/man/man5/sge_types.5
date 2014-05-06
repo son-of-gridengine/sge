@@ -1,4 +1,4 @@
-'\" t
+'\" t e
 .\"___INFO__MARK_BEGIN__
 .\"
 .\" Copyright: 2004-2007 by Sun Microsystems, Inc.
@@ -32,6 +32,7 @@
 .de MO		\" other man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.\" Fixme: check for missing definitions
 .TH xxQS_NAME_Sxx_TYPES 5 2011-06-22 "xxRELxx" "xxQS_NAMExx User Commands"
 .\"
 .SH NAME
@@ -54,7 +55,7 @@ types is explained in this page.
 .\" wc_ar_list        := wc_ar[,wc_ar,...]
 .\" wc_host           := wildcard expression matching a host
 .\" wc_hostgroup      := wildcard expression matching a hostgroup
-.\" wc_job            := job-id|job-name|pattern
+.\" wc_job            := job-id|job_name|pattern
 .\" wc_job_range      := wc_job[ -t range]
 .\" wc_job_list       := wc_job[,wc_job,...]
 .\" wc_job_range_list := wc_job_range[,wc_job_range,...]
@@ -73,6 +74,11 @@ types is explained in this page.
 .\"
 .SH "OBJECT TYPES"
 These types are used for defining xxQS_NAMExx configuration:
+.\"
+.SS "\fBobject_name\fP"
+An object name is a sequence of up to 512 ASCII printing characters except 
+SPACE, "/", ":", "\'", "\\", "[", "]", "{", "}", 
+"|", "(", ")", "@", "%", "," or the '"' character itself.         \" "
 .\"
 .SS "\fBcalendar_name\fP"
 A calendar name is the name of a xxQS_NAMExx calendar described in
@@ -118,7 +124,7 @@ the install time parameters \fBdefault_domain\fP and \fBignore_fqdn\fP (see
 .M bootstrap 5 )
 affect how xxQS_NAMExx deals with host names in general.
 .PP
-The following host names are invalid or reserved:
+The following host names are generally invalid or reserved:
 .\" fixme:  list is from old doc, but can't see where "all" &
 .\" "default" are excluded
 .BR global ,\  template ,\  all ,\  default ,\  unknown ,\  none .
@@ -154,11 +160,14 @@ The \fIpath\fP has always to be the absolute path to a binary or application.
 .SS "\fBmemory_specifier\fP"
 Memory specifiers are positive decimal, hexadecimal or octal
 integer constants which may be followed by a multiplier
-letter. Valid multiplier letters are k, K, m, M, g, G, t, and T,
-where k means multiply the value by 1000, K multiply by
-1024, m multiply by 1000*1000, M multiply by 1024*1024, g
-multiply by 1000*1000*1000, G multiply by 1024*1024*1024, t multiply
-by 1000*1000*1000*1000, and T multiply by 1024*1024*1024*1024.
+letter. Valid multiplier letters are
+.BR k ,\  K ,\  m ,\  M ,\  g ,\  G ,\  t ,
+and
+.BR T ,
+where \fBk\fP means multiply the value by 1000, \fBK\fP multiply by
+1024, \fBm\fP multiply by 1000\(mu1000, \fBM\fP multiply by 1024\(mu1024, \fBg\fP
+multiply by 1000\(mu1000\(mu1000, \fBG\fP multiply by 1024\(mu1024\(mu1024, \fBt\fP multiply
+by 1000\(mu1000\(mu1000\(mu1000, and \fBT\fP multiply by 1024\(mu1024\(mu1024\(mu1024.
 If no multiplier is present, the value is just counted in
 bytes.
 Whether memory values above the 32-bit limit are representable
@@ -209,12 +218,76 @@ A user set name is the name of a xxQS_NAMExx access list or department described
 .nf
 \fIuserset_name\fP := \fIobject_name\fP
 .fi
-.\"
-.SS "\fBobject_name\fP"
-An object name is a sequence of up to 512 ASCII string characters except 
-"\\n", "\\t", "\\r", " ", "/", ":", "\'", "\\", "[", "]", "{", "}", 
-"|", "(", ")", "@", "%", "," or the " character itself.         \" "
+.PP
+.SS "\fBdate_time\fP"
+A \fIdate_time\fP value must conform to
+.RI [[ CC ] YY ] MMDDhhmm [\fB.\fP SS ],
+where:
+.PP
+.nf
+.RS
+.ta \w'XXXXXXXXXX'u
+\fICC\fP	denotes the century in 2 digits.
+\fIYY\fP	denotes the year in 2 digits.
+\fIMM\fP	denotes the month in 2 digits.
+\fIDD\fP	denotes the day in 2 digits.
+\fIhh\fP	denotes the hour in 2 digits.
+\fImm\fP	denotes the minute in 2 digits.
+\fIss\fP	denotes the seconds in 2 digits (default 00).
 .fi
+.sp 1
+If any of the optional date fields are omitted, the corresponding value of
+the current date is assumed. If
+.I CC
+is not specified, a
+.I YY
+of <70 means
+.RI 20 YY .
+.br
+Use of this option may cause unexpected results if the clocks of the
+hosts in the xxQS_NAMExx pool are out of sync. Also, the proper behavior of
+this option very much depends on the correct setting of the
+appropriate timezone, e.g. in the TZ environment variable (see
+.MO date 1
+for details), when the xxQS_NAMExx daemons
+.M xxqs_name_sxx_qmaster 8
+and
+.M xxqs_name_sxx_execd 8
+are invoked.
+.SS "\fBtime\fP"
+A \fItime\fP value must conform to \fIhh\fP\fB:\fP\fImm\fP\fB:\fP\fIss\fP, or \fIseconds\fP where:
+.PP
+.nf
+.RS
+.ta \w'XXXXXXXXXX'u
+\fIhh\fP	denotes the hour in 2 digits.
+\fImm\fP	denotes the minute in 2 digits.
+\fIss\fP	denotes the seconds in 2 digits (default 00).
+\fIseconds\fP	is a number of seconds (used for duration values)
+.fi
+.\"
+.SS "\fBname\fP"
+A \fIname\fP is an arbitrary string of ASCII printing characters,
+but may not contain  "/", ":", "@", "\\", "*",  or "?".
+.SS \fBaccount_name\fP
+Identifies the account to which the resource consumption of a job
+should be charged.
+.nf
+\fIaccount_name\fP := \fIname\fP
+.fi
+.\"
+.SS \fBjob_name\fP
+A job name is a
+.I name
+as above, with the restriction that it cannot start with a digit (to
+avoid ambiguity with a job number in some contexts).
+.\"
+.SS \fBar_name\fP
+An advance reservation name is a
+.I name
+as above, with the restriction that it cannot start with a digit (to
+avoid ambiguity with an AR number in some contexts).
+.\"
 .SH "MATCHING TYPES"
 These types are used for matching xxQS_NAMExx configuration:
 .\"
@@ -301,7 +374,7 @@ range of the form \fIn\fP\fB\-\fP\fIm\fP, or a range with a step size.
 .PP
 .SS "\fBwc_ar\fP"
 The wildcard advance reservation (AR) specification is a placeholder
-for AR ids, AR names including AR name patterns. An AR id always references one
+for AR ids and AR names including AR name patterns. An AR id always references one
 AR, while the name and pattern might reference multiple ARs.
 .sp 1
 \fIwc_ar\fP := \fIar_id\fP | \fIar_name\fP | \fIpattern\fP
@@ -346,11 +419,11 @@ e.g.
 .fi
 .\"
 .SS "\fBwc_job\fP"
-The wildcard job specification is a placeholder for job ids, job names 
+The wildcard job specification is a placeholder for job ids, and job names
 including job name patterns. A job id always references one
 job, while the name and pattern might reference multiple jobs.
 .sp 1
-\fIwc_job\fP := \fIjob-id\fP | \fIjob-name\fP | \fIpattern\fP
+\fIwc_job\fP := \fIjob-id\fP | \fIjob_name\fP | \fIpattern\fP
 .PP
 .SS "\fBwc_job_range\fP"
 The wildcard job range specification allows referencing specific array
@@ -533,57 +606,6 @@ number of queues requested is checked first. If enough queues
 meeting the specified attribute list are available, all are
 reserved. If not, the next smaller number of queues is checked,
 and so forth.
-.PP
-.SS "\fBdate_time\fP"
-A \fIdate_time\fP value must conform to
-.RI [[ CC ] YY ] MMDDhhmm [\fB.\fP SS ],
-where:
-.PP
-.nf
-.RS
-.ta \w'XXXXXXXXXX'u
-\fICC\fP	denotes the century in 2 digits.
-\fIYY\fP	denotes the year in 2 digits.
-\fIMM\fP	denotes the month in 2 digits.
-\fIDD\fP	denotes the day in 2 digits.
-\fIhh\fP	denotes the hour in 2 digits.
-\fImm\fP	denotes the minute in 2 digits.
-\fIss\fP	denotes the seconds in 2 digits (default 00).
-.fi
-.sp 1
-If any of the optional date fields are omitted, the corresponding value of
-the current date is assumed. If
-.I CC
-is not specified, a
-.I YY
-of <70 means
-.RI 20 YY .
-.br
-Use of this option may cause unexpected results if the clocks of the
-hosts in the xxQS_NAMExx pool are out of sync. Also, the proper behavior of
-this option very much depends on the correct setting of the
-appropriate timezone, e.g. in the TZ environment variable (see
-.MO date 1
-for details), when the xxQS_NAMExx daemons
-.M xxqs_name_sxx_qmaster 8
-and
-.M xxqs_name_sxx_execd 8
-are invoked.
-.SS "\fBtime\fP"
-A \fItime\fP value must conform to \fIhh\fP\fB:\fP\fImm\fP\fB:\fP\fIss\fP, or \fIseconds\fP where:
-.PP
-.nf
-.RS
-.ta \w'XXXXXXXXXX'u
-\fIhh\fP	denotes the hour in 2 digits.
-\fImm\fP	denotes the minute in 2 digits.
-\fIss\fP	denotes the seconds in 2 digits (default 00).
-\fIseconds\fP	is a number of seconds (used for duration values)
-.fi
-.SS "\fBname\fP"
-A \fIname\fP is an arbitrary ASCII string,
-but may not contain  "\\n", "\\t", "\\r", "/", ":", "@", "\\", "*",  or "?".
-.PP
 .\"
 .SH SEE ALSO
 .M qacct 1 ,
