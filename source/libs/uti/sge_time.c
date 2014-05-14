@@ -168,13 +168,9 @@ void append_time(time_t i, dstring *buffer, bool is_xml)
 {
    struct tm *tm;
 
-#ifdef HAS_LOCALTIME_R
    struct tm tm_buffer;
    
-   tm = (struct tm *)localtime_r(&i, &tm_buffer);
-#else   
-   tm = localtime(&i);
-#endif
+   tm = localtime_r(&i, &tm_buffer);
 
    if (is_xml) {
       sge_dstring_sprintf_append(buffer, "%04d-%02d-%02dT%02d:%02d:%02d", 
@@ -212,18 +208,12 @@ void append_time(time_t i, dstring *buffer, bool is_xml)
 ******************************************************************************/
 const char *sge_ctime(time_t i, dstring *buffer) 
 {
-#ifdef HAS_LOCALTIME_R
    struct tm tm_buffer;
-#endif
    struct tm *tm;
 
    if (!i)
       i = (time_t)sge_get_gmt();
-#ifndef HAS_LOCALTIME_R
-   tm = localtime(&i);
-#else
-   tm = (struct tm *)localtime_r(&i, &tm_buffer);
-#endif
+   tm = localtime_r(&i, &tm_buffer);
    sge_dstring_sprintf(buffer, "%02d/%02d/%04d %02d:%02d:%02d",
            tm->tm_mon + 1, tm->tm_mday, 1900 + tm->tm_year,
            tm->tm_hour, tm->tm_min, tm->tm_sec);
@@ -234,18 +224,12 @@ const char *sge_ctime(time_t i, dstring *buffer)
 /* TODO: should be replaced by sge_dstring_append_time() */
 const char *sge_ctimeXML(time_t i, dstring *buffer) 
 {
-#ifdef HAS_LOCALTIME_R
    struct tm tm_buffer;
-#endif
    struct tm *tm;
 
    if (!i)
       i = (time_t)sge_get_gmt();
-#ifndef HAS_LOCALTIME_R
-   tm = localtime(&i);
-#else
-   tm = (struct tm *)localtime_r(&i, &tm_buffer);
-#endif
+   tm = localtime_r(&i, &tm_buffer);
    sge_dstring_sprintf(buffer, "%04d-%02d-%02dT%02d:%02d:%02d",
            1900 + tm->tm_year, tm->tm_mon + 1, tm->tm_mday,
            tm->tm_hour, tm->tm_min, tm->tm_sec);
@@ -283,20 +267,13 @@ const char *sge_ctimeXML(time_t i, dstring *buffer)
 const char *sge_ctime32(u_long32 *i, dstring *buffer) 
 {
    const char *s;
-#ifdef HAS_CTIME_R
    char str[128]; 
-#endif
 #if SOLARIS64
    volatile
 #endif
    time_t temp = (time_t)*i;
 
-#ifndef HAS_CTIME_R
-   /* if ctime_r() does not exist a mutex must be used to guard *all* ctime() calls */
-   s = ctime((time_t *)&temp);
-#else 
-   s = (const char *)ctime_r((time_t *)&temp, str);
-#endif
+   s = ctime_r((time_t *)&temp, str);
    if (!s)
       return NULL;
    return sge_dstring_copy_string(buffer, s);
@@ -327,18 +304,12 @@ const char *sge_ctime32(u_long32 *i, dstring *buffer)
 ******************************************************************************/
 const char *sge_at_time(time_t i, dstring *buffer) 
 {
-#ifdef HAS_LOCALTIME_R
    struct tm tm_buffer;
-#endif
    struct tm *tm;
 
    if (!i)
       i = (time_t)sge_get_gmt();
-#ifndef HAS_LOCALTIME_R
-   tm = localtime(&i);
-#else
-   tm = (struct tm *)localtime_r(&i, &tm_buffer);
-#endif
+   tm = localtime_r(&i, &tm_buffer);
    return sge_dstring_sprintf(buffer, "%04d%02d%02d%02d%02d.%02d",
            tm->tm_year+1900, tm->tm_mon + 1, tm->tm_mday,
            tm->tm_hour, tm->tm_min, tm->tm_sec);

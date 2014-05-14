@@ -1044,7 +1044,7 @@ int main(int argc, char *argv[])
 
    /* LD_LIBRARY_PATH &c should be ignored for a setuid program, but
       maybe it isn't everywhere, so make sure.  */
-   sge_unsetenv(var_get_sharedlib_path_name());
+   unsetenv(var_get_sharedlib_path_name());
 
    ERR_load_crypto_strings();
    sge_dstring_init(&bw, buffer, sizeof(buffer));

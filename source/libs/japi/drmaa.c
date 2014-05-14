@@ -2593,7 +2593,7 @@ static int drmaa_job2sge_job(lListElem **jtp, const drmaa_job_template_t *drmaa_
     * doing drmaa_wait(). An SGE job template attribute
     * could be supported to enable SGE error state.
     */
-   if (sge_getenv(ENABLE_ERROR_STATE) == NULL)
+   if (getenv(ENABLE_ERROR_STATE) == NULL)
      JOB_TYPE_SET_NO_ERROR(jb_now);
 
    /* mark array job */
@@ -3540,7 +3540,7 @@ o   -V                                     export all environment variables
       }
    }
   
-   if (sge_getenv(ENABLE_CWD_ENV) == NULL) {
+   if (getenv(ENABLE_CWD_ENV) == NULL) {
       while ((element = lGetElemStr(args, SPA_switch, "-cwd"))) {
          lRemoveElem(args, &element);
       }

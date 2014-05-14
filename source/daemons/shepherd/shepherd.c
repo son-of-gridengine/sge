@@ -3226,7 +3226,7 @@ cpusetting(void)
 {
    u_long32 job = atoi(get_conf_val("job_id"));
    u_long32 task = MAX(1, atoi(get_conf_val("ja_task_id")));
-   char *binding = (char *) sge_getenv("SGE_BINDING");
+   char *binding = (char *) getenv("SGE_BINDING");
    char path[SGE_PATH_MAX], child[64];
    pid_t pid = getpid();
 

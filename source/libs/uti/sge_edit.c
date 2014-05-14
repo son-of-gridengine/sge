@@ -112,7 +112,7 @@ int sge_edit(const char *fname, uid_t myuid, gid_t mygid)
       sge_setuid(getuid());
       sge_setgid(getgid());
 
-      cp = sge_getenv("EDITOR");
+      cp = getenv("EDITOR");
       if (cp == NULL || strlen(cp) == 0) {
          cp = DEFAULT_EDITOR;
       }
