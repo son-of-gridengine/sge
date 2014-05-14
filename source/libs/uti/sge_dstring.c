@@ -246,17 +246,11 @@ const char* sge_dstring_append_char(dstring *sb, const char a)
 const char* sge_dstring_append_time(dstring *buffer, time_t time, bool as_xml)
 {
    struct tm *tm;
-#ifdef HAS_LOCALTIME_R
    struct tm tm_buffer;
-#endif
           
    DENTER(DSTRING_LAYER, "sge_dstring_append_time");
 
-#ifdef HAS_LOCALTIME_R
-   tm = (struct tm *)localtime_r(&time, &tm_buffer);
-#else   
-   tm = localtime(&i);
-#endif       
+   tm = localtime_r(&time, &tm_buffer);
 
    if (as_xml) {
       sge_dstring_sprintf_append(buffer, "%04d-%02d-%02dT%02d:%02d:%02d",

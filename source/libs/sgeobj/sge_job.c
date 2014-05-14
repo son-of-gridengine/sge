@@ -1750,7 +1750,7 @@ void job_initialize_env(lListElem *job, lList **answer_list,
       u_long32 job_type = lGetUlong(job, JB_type);
 
       while (env_name[++i] != NULL) {
-         const char *env_value = sge_getenv(env_name[i]);
+         const char *env_value = getenv(env_name[i]);
 
          sge_dstring_sprintf(&buffer, "%s%s%s", VAR_PREFIX, "O_",
                              env_name[i]);
@@ -1761,7 +1761,7 @@ void job_initialize_env(lListElem *job, lList **answer_list,
          when relevant (interactive jobs) */
       if (JOB_TYPE_IS_QLOGIN(job_type) || JOB_TYPE_IS_QRLOGIN(job_type)
           || JOB_TYPE_IS_QRSH(job_type)) {
-         const char *term = sge_getenv("TERM");
+         const char *term = getenv("TERM");
          if (term) var_list_set_string(&env_list, "TERM", term);
       } else
          /* If deleted, it's inherited from execd.  */
@@ -1769,7 +1769,7 @@ void job_initialize_env(lListElem *job, lList **answer_list,
    }
    {
      /* fixme: shouldn't come from environment; LOGNAME also maybe shouldn't */
-      const char* host = sge_getenv("HOST"); /* ??? */
+      const char* host = getenv("HOST"); /* ??? */
 
       if (host == NULL) {
          host = unqualified_hostname;
@@ -2214,7 +2214,7 @@ void job_add_parent_id_to_context(lListElem *job)
    lListElem *context_parent = NULL;   /* VA_Type */
    const char *job_id_string = NULL;
    
-   job_id_string = sge_getenv("JOB_ID");
+   job_id_string = getenv("JOB_ID");
    context_parent = lGetSubStr(job, VA_variable, CONTEXT_PARENT, JB_context); 
    if (job_id_string != NULL && context_parent == NULL) {
       context_parent = lAddSubStr(job, VA_variable, CONTEXT_PARENT, 

@@ -227,7 +227,7 @@ int main(int argc, char **argv)
 
    /* unset XAUTHORITY if set */
    if (getenv("XAUTHORITY") != NULL) {
-      sge_unsetenv("XAUTHORITY");
+      unsetenv("XAUTHORITY");
    }
 
    parse_cmdline_execd(argv);   

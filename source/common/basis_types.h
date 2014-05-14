@@ -256,15 +256,6 @@ typedef char stringT[MAX_STRING_SIZE];
       } \
    }
 
-
-#define HAS_GETPWNAM_R
-#define HAS_GETGRNAM_R
-#define HAS_GETPWUID_R
-#define HAS_GETGRGID_R
-
-#define HAS_LOCALTIME_R
-#define HAS_CTIME_R
-
 typedef enum {
    NO    = 0,
    YES   = 1,

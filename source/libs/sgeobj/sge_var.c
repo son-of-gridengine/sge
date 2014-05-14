@@ -884,7 +884,7 @@ int var_list_parse_from_string(lList **lpp, const char *variable_str,
       if (val_str[var_len] == '=') {
           lSetString(ep, VA_value, &val_str[var_len+1]);
       } else if (check_environment) {
-         lSetString(ep, VA_value, sge_getenv(variable));
+         lSetString(ep, VA_value, getenv(variable));
       } else {
          lSetString(ep, VA_value, NULL);
       }

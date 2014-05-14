@@ -232,9 +232,7 @@ static void qping_convert_time(char* buffer, char* dest, bool show_hour) {
    time_t i;
    char* help;
    char* help2;
-#ifdef HAS_LOCALTIME_R
    struct tm tm_buffer;
-#endif
    struct tm *tm;
    struct saved_vars_s *context = NULL;
 
@@ -252,11 +250,7 @@ static void qping_convert_time(char* buffer, char* dest, bool show_hour) {
    } else {
 
       i = atoi(help);
-#ifndef HAS_LOCALTIME_R
-      tm = localtime(&i);
-#else
-      tm = (struct tm *)localtime_r(&i, &tm_buffer);
-#endif
+      tm = localtime_r(&i, &tm_buffer);
       if (show_hour == true) {
          sprintf(dest, "%02d:%02d:%02d.%s", tm->tm_hour, tm->tm_min, tm->tm_sec, help2);
       } else {

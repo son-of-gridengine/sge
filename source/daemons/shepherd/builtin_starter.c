@@ -1187,7 +1187,7 @@ const char *sge_get_env_value(const char *name)
       }
    }
    else {
-      ret = sge_getenv (name);
+      ret = getenv(name);
    }
    
    return ret;

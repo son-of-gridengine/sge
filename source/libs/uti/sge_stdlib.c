@@ -161,41 +161,6 @@ void sge_free(void *cp)
    }
 }  
 
-/****** uti/stdlib/sge_getenv() ***********************************************
-*  NAME
-*     sge_getenv() -- get an environment variable 
-*
-*  SYNOPSIS
-*     const char* sge_getenv(const char *env_str) 
-*
-*  FUNCTION
-*     The function searches the environment list for a
-*     string that matches the string pointed to by 'env_str'.
-*
-*  INPUTS
-*     const char *env_str - name of env. varibale 
-*
-*  RESULT
-*     const char* - value
-*
-*  SEE ALSO
-*     uti/stdlib/sge_putenv()
-*     uti/stdlib/sge_setenv() 
-*
-*  NOTES
-*     MT-NOTE: sge_getenv() is MT safe
-******************************************************************************/
-const char *sge_getenv(const char *env_str) 
-{
-   const char *cp=NULL;
- 
-   DENTER_(BASIS_LAYER, "sge_getenv");
- 
-   cp = (char *) getenv(env_str);
-
-   DRETURN_(cp);
-}    
-
 /****** uti/stdlib/sge_putenv() ***********************************************
 *  NAME
 *     sge_putenv() -- put an environment variable to environment
@@ -280,63 +245,6 @@ int sge_setenv(const char *name, const char *value)
       sge_dstring_free(&variable);
    }
    return ret;
-}
-
-
-/****** uti/stdlib/sge_unsetenv() *************************************************
-*  NAME
-*     sge_unsetenv() -- unset environment variable
-*
-*  SYNOPSIS
-*     void sge_unsetenv(const char* varName) 
-*
-*  FUNCTION
-*     Some architectures doesn't support unsetenv(), sge_unsetenv() is used
-*     to unset an environment variable. 
-*
-*  INPUTS
-*     const char* varName - name of envirionment variable
-*
-*  RESULT
-*     void - no return value
-*
-*  NOTES
-*     MT-NOTE: sge_unsetenv() is not MT safe 
-*******************************************************************************/
-void sge_unsetenv(const char* varName) {
-#ifdef USE_SGE_UNSETENV
-   extern char **environ;
-   char* searchString = NULL;
-
-   if (varName != NULL) {
-      size_t length = (strlen(varName) + 2) * sizeof(char);
-      searchString = malloc(length);
-      if (searchString != NULL) {
-         bool found = false;
-         int i;
-         snprintf(searchString, length, "%s=", varName);
-         
-         /* At first we have to search the index of varName */
-         for (i=0; i < ARG_MAX && environ[i] != NULL; i++) {
-            if (strstr(environ[i],searchString) != NULL) {
-               found = true;
-               break;
-            }
-         }
-        
-         /* At second we remove varName by copying varName+1 to varName */ 
-         if (found == true) {
-            for (; i < ARG_MAX-1 && environ[i] != NULL; i++) {
-               environ[i] = environ[i+1];
-            }
-            environ[i] = NULL; 
-         }
-         sge_free(&searchString);
-      }
-   }
-#else
-   unsetenv(varName);
-#endif
 }
 
 /* Enable daemon core dumps after setuid etc. calls in routines below,

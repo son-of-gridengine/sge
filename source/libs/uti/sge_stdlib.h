@@ -41,10 +41,8 @@ void *sge_realloc(void *ptr, int size, int do_abort);
 
 void sge_free(void *cp);        
 
-const char *sge_getenv(const char *env_str); 
 int sge_putenv(const char *var);
 int sge_setenv(const char *name, const char *value);
-void sge_unsetenv(const char* name);
 
 int sge_setuid(uid_t);
 int sge_seteuid(uid_t);

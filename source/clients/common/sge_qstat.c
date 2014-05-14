@@ -1249,7 +1249,7 @@ static int qstat_env_get_all_lists(qstat_env_t* qstat_env, bool need_job_list, l
       /*
        * debug output to perform testsuite tests
        */
-      if (sge_getenv("_SGE_TEST_QSTAT_JOB_STATES") != NULL) {
+      if (getenv("_SGE_TEST_QSTAT_JOB_STATES") != NULL) {
          fprintf(stderr, "_SGE_TEST_QSTAT_JOB_STATES: jobs_received=%d\n", 
                  lGetNumberOfElem(*job_l));
       }

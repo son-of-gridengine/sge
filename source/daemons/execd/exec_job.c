@@ -914,7 +914,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
           * set is not worth it, in my opinion. */
          if (mconf_get_inherit_env()) {
             const char *lib_path_env = var_get_sharedlib_path_name();
-            const char *lib_path = sge_getenv(lib_path_env);
+            const char *lib_path = getenv(lib_path_env);
 
             if (lib_path != NULL) {
                var_list_set_string(&environmentList, lib_path_env, lib_path);
