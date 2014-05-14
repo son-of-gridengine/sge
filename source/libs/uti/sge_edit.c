@@ -126,7 +126,7 @@ int sge_edit(const char *fname, uid_t myuid, gid_t mygid)
                 strerror(errno)));
          SGE_EXIT(NULL, 1);
       }
-      cp = sge_getenv("EDITOR");
+      cp = getenv("EDITOR");
       if (cp == NULL || strlen(cp) == 0) {
          cp = DEFAULT_EDITOR;
       }
