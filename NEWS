@@ -13,6 +13,63 @@ changes due to Univa/Sun are tagged as "[U]", or "[(U)]" if partially
 due to them or appearing first in this version.
 
 
+Version 8.1.7
+-------------
+
+* Building
+
+  * Remove the shipped old jemalloc in favour of an external one
+    (aimk -jemalloc)
+  * Always use system libraries -- never load SSL stuff dynamically
+  * aimk no longer uses specific paths for openssl etc.  Use
+    INPUT_*_FLAGS if necessary
+  * SUpport building rpm on OpenSuSE and RHEL7
+
+* Bug fixes
+
+  * Man, other doc, and message fixes/changes [#1504]
+  * Fix minor memory leaks and check result of all malloc calls
+  * Don't pause for a second with client JSVs [#1475]
+  * Allow longer "failed" strings in admin mail
+  * Fix spurious thread error reports from qping [#588]
+  * Avoid possible crash reading malformed configuration files
+  * Fix GUI installer startup [#1488]
+  * Always define SGE_STARTER_USE_LOGIN_SHELL with starter method
+  * Modify cpuset-based process killing [#1483, #1490]
+  * Make various files optional when setting permissions at installation
+  * Fix cpu-bound shepherd with qlogin
+  * Fix queue list for adding queue in qmon [#1495]
+  * Clean up some file permissions and shebangs in non-executables [#1493]
+  * Really ignore -e, -o args of qrsh/qsh/qlogin, as documented
+  * Fix use of SGE_QMASTER_PIDFILE and double writing of pid file
+  * Fix occasional qmaster major space leak with schedd_job_info [#360, #682]
+  * Wait until daemon goes down when stopping sge_execd
+
+* Enhancements
+
+  * Support Cygwin x86_64, and GNU/Linux on arm64 and ppc64el (untested)
+  * qconf -aattr et al now support modifying types user, userset, calendar,
+    and project
+  * Translate exit code to signal name in qacct output
+  * qacct -m prints only master tasks
+  * Add ar_sub_time to qacct output
+  * Allow rctemplate configuration from /etc/sysconfig as well as
+    /etc/default
+  * Update MPI PE templates and install a tight integration "mpi" PE
+  * Make suid files, dtrace, qmon, start_gui_installer optional in
+    setfileperm.sh (used at installation)
+  * Speed up JSV in bash by not calling cut
+
+* Potentially incompatible changes
+
+  * Default ENABLE_ADDGRP_KILL to on
+  * Clean symbol exports from libdrmaa.so (GNU ld only); now only exports
+    drmaa_* and Java_com_sun_grid_*
+  * Non-public functions in Bourne shell JSV implementation are
+    prefixed with "_"
+  * qping -info prints (very different) malloc statistics when the daemon
+    uses jemalloc.  See print_malloc_info in sge_conf(5).
+
 Version 8.1.6
 -------------
 
@@ -32,6 +89,8 @@ Version 8.1.6
   * Pass TERM from environment to interactive jobs (only)
   * Fix qsched crash with no waiting, potentially-runnable jobs
   * Better diagnose server and client version mis-matches
+  * Fix problems with killing processes via cpusets [#1483,#1490]
+  * Check for malloc failures in various places
 
 Version 8.1.5
 -------------
