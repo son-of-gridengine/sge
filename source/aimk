@@ -1433,18 +1433,6 @@ case LINUX*:
       set DEBUG_FLAG = "$DEBUG_FLAG -fprofile-arcs -ftest-coverage"
    endif
 
-   if ( -f /lib/libc.so.6 ) then
-      strings /lib/libc.so.6 | grep "GNU C Library" | grep '2.[234]' >& /dev/null
-      if ($status == 0) then
-         set CFLAGS = "-DHAS_IN_PORT_T $CFLAGS"
-      endif
-   else if ( -f /usr/include/netinet/in.h ) then
-      grep typedef /usr/include/netinet/in.h | grep in_port_t >& /dev/null
-      if ($status == 0) then
-         set CFLAGS = "-DHAS_IN_PORT_T $CFLAGS"
-      endif
-   endif
-
 # Fixme:  Why would we want to suppress this?
 #    if ($buildarch == "lx-x86" || $buildarch == "lx-amd64" || $buildarch == "lx-x86" || $buildarch == "lx-sparc" || $buildarch == "lx-mips" || $buildarch == "lx-mips64" || $buildarch == "lx-s390" || $buildarch == "lx-s390x") then
 #       set CFLAGS = "$CFLAGS -Wno-strict-aliasing -U_FORTIFY_SOURCE"
@@ -1570,13 +1558,6 @@ case WIN32_X86:
 
    if ($GPROFFED == 1) then
       set DEBUG_FLAG = "$DEBUG_FLAG -pg"
-   endif
-
-   if ( -f /lib/libc.so.6 ) then
-      strings /lib/libc.so.6 | grep "GNU C Library" | grep '2.[234]' >& /dev/null
-      if ($status == 0) then
-         set CFLAGS = "-DHAS_IN_PORT_T $CFLAGS"
-      endif
    endif
 
    set LFLAGS        = "$DEBUG_FLAG $LFLAGS -L$SOURCE/$COMPILE_ARCH"
@@ -1755,10 +1736,6 @@ case SOLARISAMD64:
 
    # INFO: rel is also used later ...
    set rel = `uname -r | cut -f 2 -d .`
-   if ( $rel > 6 ) then
-      set CFLAGS = "-DHAS_SOCKLEN_T $CFLAGS"
-   endif
-
    if ( $rel < 10 ) then
       set CFLAGS = "-DUSE_SGE_UNSETENV $CFLAGS"
    endif
