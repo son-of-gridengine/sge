@@ -198,7 +198,7 @@ int sge_get_lib_dir(char *buffer, size_t size) {
    /* check if given lib_dir-buffer is big enough
     * sge_root + sge_arch + /lib/ + \0
     */
-   if (sge_strlen(sge_root) + sge_strlen(sge_arch) + 6 > size) {
+   if (strlen(sge_root) + strlen(sge_arch) + 6 > size) {
       return -3;
    }
 
