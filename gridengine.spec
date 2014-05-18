@@ -265,8 +265,9 @@ SGE_ROOT=$RPM_BUILD_ROOT%{sge_home}
 export SGE_ROOT
 mkdir -p $SGE_ROOT
 cd source
+echo instremote=false >> distinst.private
 gearch=`dist/util/arch`
-echo 'y'| scripts/distinst -local -allall -noexit ${gearch}
+echo 'y'| scripts/distinst -local -allall ${gearch}
 ( cd $RPM_BUILD_ROOT/%{sge_home}
   rm -rf dtrace catman
 %if %{without hadoop}
