@@ -1421,35 +1421,6 @@ void sge_strip_quotes(char **pstr)
    DRETURN_VOID;
 }
 
-/****** uti/string/sge_strlen() ***********************************************
-*  NAME
-*     sge_strlen() -- replacement for strlen() 
-*
-*  SYNOPSIS
-*     int sge_strlen(const char *str) 
-*
-*  FUNCTION
-*     replacement for strlen 
-*
-*  INPUTS
-*     const char *str - NULL or pointer to string 
-*
-*  RESULT
-*     int - length of string or 0 if NULL pointer
-*
-*  NOTES
-*     MT-NOTE: sge_strlen() is MT safe
-*******************************************************************************/
-int sge_strlen(const char *str)
-{
-   int ret = 0;
-
-   if (str != NULL) {
-      ret = strlen(str);
-   }
-   return ret;
-}
-
 /*
 ** problem: modifies input string,
 ** this is the most frequently used mode

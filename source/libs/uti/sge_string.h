@@ -54,9 +54,6 @@ char *sge_dirname(const char *name, int delim);
 
 char *sge_strdup(char *old, const char *src) __attribute__ ((malloc));
 
-/* fixme:  make inline? */
-int sge_strlen(const char *str) __attribute__ ((__pure__));
-
 char *sge_strtok(const char *str, const char *delimitor);
 
 bool sge_is_pattern(const char *p) __attribute__ ((__pure__));

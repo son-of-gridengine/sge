@@ -572,7 +572,7 @@ spool_flatfile_align_object(lList **answer_list, spooling_field *fields)
    SGE_CHECK_POINTER_FALSE(fields, answer_list);
 
    for (i = 0; fields[i].nm != NoName; i++) {
-      width = MAX(width, sge_strlen(fields[i].name));
+      width = MAX(width, fields[i].name ? strlen(fields[i].name) : 0);
    }
 
    for (i = 0; fields[i].nm != NoName; i++) {
@@ -626,7 +626,7 @@ spool_flatfile_align_list(lList **answer_list, const lList *list,
    SGE_CHECK_POINTER_FALSE(fields, answer_list);
 
    for (i = 0; fields[i].nm != NoName; i++) {
-      fields[i].width = sge_strlen(fields[i].name);
+      fields[i].width = fields[i].name ? strlen(fields[i].name) : 0;
    }
 
    for_each(object, list) {
@@ -636,7 +636,8 @@ spool_flatfile_align_list(lList **answer_list, const lList *list,
          sge_dstring_clear(&buffer);
          value = object_append_field_to_dstring(object, answer_list, 
                                                 &buffer, fields[i].nm, '\0');
-         fields[i].width = MAX(fields[i].width, (sge_strlen(value) + padding));
+         fields[i].width = MAX(fields[i].width,
+                               (value ? strlen(value) : 0) + padding);
       }
    }
 

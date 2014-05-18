@@ -229,7 +229,7 @@ _spool_get_fields_to_spool(lList **answer_list, const lDescr *descr,
    if (instr->copy_field_names && instr->strip_field_prefix) {
       dstring buffer = DSTRING_INIT;
       const char *prefix = object_get_name_prefix(descr, &buffer);
-      strip = sge_strlen(prefix);
+      strip = prefix ? strlen(prefix) : 0;
       sge_dstring_free(&buffer);
    }
 
