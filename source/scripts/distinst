@@ -98,7 +98,7 @@ PVMSOURCES="start_pvm.c stop_pvm.c slave.c master.c spmd.c Makefile"
 PVMSRCSCRIPTS="install.sh aimk"
 PVMSCRIPTS="startpvm.sh stoppvm.sh pvm.sh pvm_nogs.sh README pvm.template"
 
-MPI_FILES="README mpi.template mpich.template"
+MPI_FILES="README mpich.template"
 MPI_SCRIPTS="hostname  mpi.sh mpi_cpi.sh rsh startmpi.sh stopmpi.sh"
 
 HADOOP_FILES="logging.properties"
@@ -107,7 +107,7 @@ HADOOP_SCRIPTS="env.sh jsv.sh load_sensor.sh make_conf.sh pestart.sh pestop.sh s
 DTRACE_FILES="README-dtrace.txt monitor.d"
 DTRACE_SCRIPTS="monitor.sh"
 
-MYRINET_FILES="README README.x mpi.template mpich.template \
+MYRINET_FILES="README README.x mpich.template \
                mpich_multi.template"
 MYRINET_SCRIPTS="gmps sge_mpirun sge_mpirun.x startmpi.sh startmpi.sh.x \
                  stopmpi.sh"
@@ -893,7 +893,6 @@ if [ $instcommon = true ]; then
 	      Execute mv $DEST_SGE_ROOT/util/resources/scripts/$script $DEST_SGE_ROOT/bin/$script
 	      Execute chmod 755 $DEST_SGE_ROOT/bin/$script
 	  done
-          Execute chmod 664 $DEST_SGE_ROOT/bin/README.*
       fi
 
       Cleanup util
@@ -947,6 +946,7 @@ if [ $instcommon = true ]; then
                         $DEST_SGE_ROOT/util/resources/pe/* \
                         $DEST_SGE_ROOT/util/resources/schemas/*/* \
                         $DEST_SGE_ROOT/util/resources/usersets/* \
+                        $DEST_SGE_ROOT/util/dl.sh \
                         $DEST_SGE_ROOT/util/resources/jsv/jsv_include*
    fi
    
