@@ -4,6 +4,11 @@ build_private.properties
 build_testsuite.properties
 distinst.private
 
+# autoconf generated files
+source/autom4te.cache
+source/common/sge_config.h.in
+source/configure
+
 # dependencies files, tags and tmp-files
 *_dependencies
 *.swp
