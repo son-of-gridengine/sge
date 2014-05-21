@@ -246,11 +246,13 @@ static void cl_com_ssl_log_option_settings(long mode) {
    } else {
       CL_LOG(CL_LOG_INFO,"SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER:             off");
    }
+#ifdef SSL_OP_MSIE_SSLV2_RSA_PADDING
    if (mode & SSL_OP_MSIE_SSLV2_RSA_PADDING) {
       CL_LOG(CL_LOG_INFO,"SSL_OP_MSIE_SSLV2_RSA_PADDING:                 on");
    } else {
       CL_LOG(CL_LOG_INFO,"SSL_OP_MSIE_SSLV2_RSA_PADDING:                 off");
    }
+#endif
    if (mode & SSL_OP_SSLEAY_080_CLIENT_DH_BUG) {
       CL_LOG(CL_LOG_INFO,"SSL_OP_SSLEAY_080_CLIENT_DH_BUG:               on");
    } else {
