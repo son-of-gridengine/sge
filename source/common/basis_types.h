@@ -146,7 +146,7 @@ extern "C" {
    solaris (who else - it's IRIX?) uses long 
    variables for uid_t, gid_t and pid_t 
 */
-#if defined(FREEBSD)
+#if defined(FREEBSD) || defined(NETBSD)
 #  define uid_t_fmt "%u"
 #elif __CYGWIN__ && \
   (((CYGWIN_VERSION_DLL_MAJOR)*1000 + (CYGWIN_VERSION_DLL_MINOR)) < 1007022)
