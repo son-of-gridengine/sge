@@ -28,7 +28,7 @@ build-stamp:
 	cd source && \
 	sh scripts/bootstrap.sh && \
 	SGE_INPUT_CFLAGS="$$CFLAGS $$CPPFLAGS" SGE_INPUT_LDFLAGS="$$LDFLAGS" \
-	  ./aimk -with-jemlloc -no-remote -debug $(NOOPT) $(PARALLEL) && \
+	  ./aimk $(JEMALLOC) -with-munge -no-remote -debug -DDEFAULT_EDITOR='\"sensible-editor\"' $(NOOPT) $(PARALLEL) && \
 	./aimk -man && ant drmaa.javadoc juti.javadoc jgdi.javadoc jjsv.javadoc
 	touch build-stamp
 
