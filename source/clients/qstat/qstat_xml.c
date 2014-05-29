@@ -54,6 +54,7 @@
 #include "qstat_printing.h"
 #include "sge.h"
 #include "sge_qstat.h"
+#include "qstat_xml.h"
 
 /* ----------------------- qselect xml handler ------------------------------ */
 
@@ -110,7 +111,7 @@ static int qselect_xml_report_queue(qselect_handler_t *thiz, const char* qname, 
 static int cqueue_summary_xml_report_finished(cqueue_summary_handler_t *handler, lList **alpp);
 static int cqueue_summary_xml_report_cqueue(cqueue_summary_handler_t *handler, const char* cqname, cqueue_summary_t *summary, lList **alpp);
 
-int cqueue_summary_xml_handler_init(cqueue_summary_handler_t *handler) {
+int cqueue_summary_xml_handler_init(cqueue_summary_handler_t *handler, lList **alpp) {
    memset(handler, 0, sizeof(cqueue_summary_handler_t));
    
    handler->report_finished = cqueue_summary_xml_report_finished;
