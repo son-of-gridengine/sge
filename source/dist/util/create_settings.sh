@@ -36,6 +36,8 @@
 #
 # $1 = base directory  where settings.[c]sh is created
 
+# fixme:  use dl.sh/dl.csh to provide `dl' always
+
 PATH=/bin:/usr/bin
 
 ErrUsage()
@@ -92,6 +94,8 @@ if [ "$SGE_EXECD_PORT" != "" ]; then
 else
    echo "unsetenv SGE_EXECD_PORT"                                    >> $SP_CSH
 fi
+# for python-drmaa, at least
+echo "setenv DRMAA_LIBRARY_PATH $SGE_ROOT/lib/$SGE_ARCH/libdrmaa.so" >> $SP_CSH
 
 
 echo ""                                                          >> $SP_CSH
@@ -140,6 +144,7 @@ echo 'if [ -x $SGE_ROOT/util/arch ]; then'                       >> $SP_SH
 echo "SGE_ARCH=\`\$SGE_ROOT/util/arch\`; export SGE_ARCH"        >> $SP_SH
 echo "DEFAULTMANPATH=\`\$SGE_ROOT/util/arch -m\`"                >> $SP_SH
 echo "MANTYPE=\`\$SGE_ROOT/util/arch -mt\`"                      >> $SP_SH
+echo "DRMAA_LIBRARY_PATH=$SGE_ROOT/lib/$SGE_ARCH/libdrmaa.so" >> $SP_SH
 echo ""                                                          >> $SP_SH
 
 if [ "$SGE_CELL" != "" ]; then
@@ -216,6 +221,7 @@ set sge_arch "`$SGE_ROOT/util/arch`"
 setenv SGE_ROOT "\$sge_root"
 setenv SGE_CELL "\$sge_cell"
 setenv SGE_CLUSTER_NAME "`cat $SGE_ROOT/$SGE_CELL/common/cluster_name 2>/dev/null`"
+setenv DRMAA_LIBRARY_PATH "\$sge_root/lib/\$sge_arch/libdrmaa.so"
 prepend-path PATH "\$sge_root/bin/\$sge_arch"
 prepend-path PATH "\$sge_root/bin"
 prepend-path MANPATH "\$sge_root/man"
