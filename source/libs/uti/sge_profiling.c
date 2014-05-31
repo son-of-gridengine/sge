@@ -173,13 +173,13 @@ typedef struct {
 
 static int sge_prof_array_initialized = 0;
 
-static void        prof_info_init(prof_level level, pthread_t thread_id);
+static void        prof_info_init(prof_level level);
 static void        prof_info_level_init(prof_level i, int thread_num);
 static void        prof_reset_thread(int thread_num, prof_level level);
 static void        init_array(pthread_t num);
 static void        init_array_first(void);
 static void        init_thread_info(void);
-static int         get_prof_info_thread_id(pthread_t thread_num);
+static int         get_prof_info_thread_id(void);
 
 static sge_prof_info_t **theInfo = NULL;
 static sge_thread_info_t *thrdInfo = NULL;
@@ -298,8 +298,8 @@ bool prof_set_level_name(prof_level level, const char *name, dstring *error)
       ret = false;
    } else {
       thread_id = pthread_self();
-      
-      thread_num = get_prof_info_thread_id(thread_id);
+
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          ret = false;
@@ -341,7 +341,7 @@ bool prof_is_active(prof_level level)
    if (profiling_enabled && (level <= SGE_PROF_ALL)) {
       thread_id = pthread_self();
       
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
       if ((thread_num >= 0) && (thread_num < MAX_THREAD_NUM)) {
          ret = theInfo[thread_num][level].prof_is_started;
       }
@@ -389,7 +389,7 @@ bool prof_start(prof_level level, dstring *error)
    } else if (profiling_enabled) {
       thread_id = pthread_self();
 
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_start");
@@ -483,7 +483,7 @@ bool prof_stop(prof_level level, dstring *error)
    } else if (profiling_enabled) {
       thread_id = pthread_self();
       
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_stop");
@@ -544,7 +544,7 @@ bool prof_start_measurement(prof_level level, dstring *error)
    } else if (profiling_enabled) {
       thread_id = pthread_self();
       
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_start_measurement");
@@ -615,7 +615,7 @@ bool prof_stop_measurement(prof_level level, dstring *error)
    } else if (profiling_enabled) {
       thread_id = pthread_self();
       
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_stop_measurement");
@@ -699,7 +699,7 @@ bool prof_reset(prof_level level, dstring *error)
    } else if (profiling_enabled) {
       thread_id = pthread_self();
 
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_reset");
@@ -814,7 +814,7 @@ double prof_get_measurement_wallclock(prof_level level, bool with_sub, dstring *
    } else if (profiling_enabled) {
       thread_id = pthread_self();
 
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_get_measurement_wallclock");
@@ -868,7 +868,7 @@ double prof_get_measurement_utime(prof_level level, bool with_sub, dstring *erro
    } else if (profiling_enabled) {
       thread_id = pthread_self();
 
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_get_measurement_utime");
@@ -922,7 +922,7 @@ double prof_get_measurement_stime(prof_level level, bool with_sub, dstring *erro
    } else if (profiling_enabled) {
       thread_id = pthread_self();
 
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_get_measurement_stime");
@@ -974,7 +974,7 @@ double prof_get_total_wallclock(prof_level level, dstring *error)
    } else if (profiling_enabled) {
       thread_id = pthread_self();
 
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_get_total_wallclock");
@@ -1018,13 +1018,12 @@ double prof_get_total_wallclock(prof_level level, dstring *error)
 *  NOTES
 *     MT-NOTE: prof_get_total_busy() is MT safe
 *******************************************************************************/
-static double _prof_get_total_busy(prof_level level, bool with_sub, dstring *error)
+static double _prof_get_total_busy(prof_level level, bool with_sub, dstring *error _UNUSED)
 {
-   pthread_t thread_id = pthread_self();
    int thread_num;
    clock_t clock = 0;
 
-   thread_num = get_prof_info_thread_id(thread_id);
+   thread_num = get_prof_info_thread_id();
 
    clock = theInfo[thread_num][level].total;
 
@@ -1046,7 +1045,7 @@ double prof_get_total_busy(prof_level level, bool with_sub, dstring *error)
    } else if (profiling_enabled) {
       thread_id = pthread_self();
       
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_get_total_busy");
@@ -1088,13 +1087,12 @@ double prof_get_total_busy(prof_level level, bool with_sub, dstring *error)
 *  NOTES
 *     MT-NOTE: prof_get_total_utime() is MT safe
 *******************************************************************************/
-static double _prof_get_total_utime(prof_level level, bool with_sub, dstring *error)
+static double _prof_get_total_utime(prof_level level, bool with_sub, dstring *error _UNUSED)
 {
-   pthread_t thread_id = pthread_self();
    int thread_num;
    clock_t clock = 0;
 
-   thread_num = get_prof_info_thread_id(thread_id);
+   thread_num = get_prof_info_thread_id();
 
    clock = theInfo[thread_num][level].total_utime;
 
@@ -1116,7 +1114,7 @@ double prof_get_total_utime(prof_level level, bool with_sub, dstring *error)
    } else if (profiling_enabled) {
       thread_id = pthread_self();
 
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_get_total_utime");         
@@ -1158,13 +1156,12 @@ double prof_get_total_utime(prof_level level, bool with_sub, dstring *error)
 *  NOTES
 *     MT-NOTE: prof_get_total_stime() is MT safe
 *******************************************************************************/
-static double _prof_get_total_stime(prof_level level, bool with_sub, dstring *error)
+static double _prof_get_total_stime(prof_level level, bool with_sub, dstring *error _UNUSED)
 {
-   pthread_t thread_id = pthread_self();
    int thread_num;
    clock_t clock = 0;
 
-   thread_num = get_prof_info_thread_id(thread_id);
+   thread_num = get_prof_info_thread_id();
 
    clock = theInfo[thread_num][level].total_stime;
 
@@ -1186,7 +1183,7 @@ double prof_get_total_stime(prof_level level, bool with_sub, dstring *error)
    } else if (profiling_enabled) {
       thread_id = pthread_self();
 
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_get_total_stime");
@@ -1246,13 +1243,12 @@ double prof_get_total_stime(prof_level level, bool with_sub, dstring *error)
 static const char *
 _prof_get_info_string(prof_level level, dstring *info_string, bool with_sub, dstring *error)
 {  
-   pthread_t thread_id = pthread_self();
    int thread_num;
    dstring level_string = DSTRING_INIT;
    const char *ret = NULL;
    double busy, utime, stime, utilization;
 
-   thread_num = get_prof_info_thread_id(thread_id);
+   thread_num = get_prof_info_thread_id();
 
    busy        = prof_get_total_busy(level, with_sub, error);
    utime       = prof_get_total_utime(level, with_sub, error);
@@ -1284,7 +1280,7 @@ prof_get_info_string(prof_level level, bool with_sub, dstring *error)
    } else {
       thread_id = pthread_self();
 
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num < 0) || (thread_num >= MAX_THREAD_NUM)) {
          sge_dstring_sprintf_append(error, MSG_PROF_MAXTHREADSEXCEEDED_S, "prof_get_info_string");
@@ -1346,7 +1342,7 @@ bool prof_output_info(prof_level level, bool with_sub, const char *info)
       pthread_t thread_id;
 
       thread_id = pthread_self();
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num >= 0) && (thread_num < MAX_THREAD_NUM) && prof_is_active(level)) {
          const char *info_message = NULL;
@@ -1391,11 +1387,11 @@ bool prof_output_info(prof_level level, bool with_sub, const char *info)
 *  NOTES
 *     MT-NOTE: prof_info_init() is MT safe
 *******************************************************************************/
-static void prof_info_init(prof_level level, pthread_t thread_id)
+static void prof_info_init(prof_level level)
 {
    int thread_num;
 
-   thread_num = get_prof_info_thread_id(thread_id);
+   thread_num = get_prof_info_thread_id();
 
    if (level <= SGE_PROF_ALL) {
       if (level == SGE_PROF_ALL) {
@@ -1571,7 +1567,7 @@ static void init_array(pthread_t num) {
          storage = i;
          pthread_setspecific (thread_id_key, (void *)storage);
          
-         prof_info_init(SGE_PROF_ALL, num);
+         prof_info_init(SGE_PROF_ALL);
 
          break;
       }
@@ -1709,7 +1705,7 @@ void set_thread_name(pthread_t thread_id, const char* thread_name) {
 
    init_array(thread_id); 
 
-   thread_num = get_prof_info_thread_id(thread_id);
+   thread_num = get_prof_info_thread_id();
 
    if ((thread_num >= 0) && (thread_num < MAX_THREAD_NUM)) {
       pthread_mutex_lock(&thrdInfo_mutex);
@@ -1757,7 +1753,7 @@ void set_thread_prof_status_by_id(pthread_t thread_id, bool prof_status) {
    
    init_thread_info();
 
-   thread_num = get_prof_info_thread_id(thread_id);
+   thread_num = get_prof_info_thread_id();
 
    pthread_mutex_lock(&thrdInfo_mutex);
 
@@ -1879,13 +1875,13 @@ void sge_prof_cleanup(void) {
 *     thread_prof_active_by_id() -- returns the status of a thread 
 *
 *  SYNOPSIS
-*     bool thread_prof_active_by_id(pthread_t thread_id) 
+*     bool thread_prof_active_by_id(void) 
 *
 *  FUNCTION
-*     returns the profiling status of a thread
+*     returns the profiling status of the thread
 *
 *  INPUTS
-*     pthread_t thread_id
+*     void
 *
 *  RESULT
 *
@@ -1894,7 +1890,7 @@ void sge_prof_cleanup(void) {
 *  NOTES
 *     MT-NOTE: thread_prof_active_by_id() is MT safe
 *******************************************************************************/
-bool thread_prof_active_by_id(pthread_t thread_id) {
+bool thread_prof_active_by_id(void) {
 
    int thread_num;
    bool ret = false;
@@ -1902,7 +1898,7 @@ bool thread_prof_active_by_id(pthread_t thread_id) {
    if (profiling_enabled) {
       init_thread_info();
 
-      thread_num = get_prof_info_thread_id(thread_id);
+      thread_num = get_prof_info_thread_id();
 
       if ((thread_num >= 0) && (thread_num < MAX_THREAD_NUM)) {
          pthread_mutex_lock(&thrdInfo_mutex);
@@ -1963,12 +1959,10 @@ bool thread_prof_active_by_name(const char* thread_name) {
 }
 
 
-static int get_prof_info_thread_id(pthread_t thread_num) {
-   long ret = -1;
-   
-   ret = (long)pthread_getspecific (thread_id_key);
+static int get_prof_info_thread_id(void) {
+   long ret = (long)pthread_getspecific (thread_id_key);
 
-   return (int)ret;
+   return ret;
 }
 
 /****** uti/profiling/thread_start_stop_profiling() ****************************
@@ -1995,7 +1989,7 @@ thread_start_stop_profiling(void)
       return;
    }
    
-   if (thread_prof_active_by_id(pthread_self())) {
+   if (thread_prof_active_by_id()) {
       prof_start(SGE_PROF_ALL, NULL);
    } else {
       prof_stop(SGE_PROF_ALL, NULL);
