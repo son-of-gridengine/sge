@@ -370,7 +370,7 @@ int main(int argc, char **argv)
 
    sge_sig_handler_in_main_loop = 1;
 
-   if (thread_prof_active_by_id(pthread_self())) {
+   if (thread_prof_active_by_id()) {
       prof_start(SGE_PROF_CUSTOM1, NULL);
       prof_start(SGE_PROF_CUSTOM2, NULL);
       prof_start(SGE_PROF_GDI_REQUEST, NULL);
