@@ -49,7 +49,7 @@
 #include "err_trace.h"
 #include "setosjobid.h"
 
-void setosjobid(pid_t sid, gid_t *add_grp_id_ptr, struct passwd *pw)
+void setosjobid(pid_t sid _UNUSED, gid_t *add_grp_id_ptr, struct passwd *pw _UNUSED)
 {
    FILE *fp=NULL;
 

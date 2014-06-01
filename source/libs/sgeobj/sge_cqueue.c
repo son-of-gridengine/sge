@@ -1146,7 +1146,7 @@ cqueue_verify_attributes(lListElem *cqueue, lList **answer_list,
 *******************************************************************************/
 bool
 cqueue_list_find_all_matching_references(const lList *this_list,
-                                         lList **answer_list,
+                                         lList **answer_list _UNUSED,
                                          const char *cqueue_pattern,
                                          lList **qref_list)
 {
@@ -1347,7 +1347,7 @@ cqueue_is_used_in_subordinate(const char *cqueue_name, const lListElem *cqueue)
 *     MT-NOTE: cqueue_list_find_hgroup_references() is MT safe 
 *******************************************************************************/
 bool
-cqueue_list_find_hgroup_references(const lList *this_list, lList **answer_list,
+cqueue_list_find_hgroup_references(const lList *this_list, lList **answer_list _UNUSED,
                                    const lListElem *hgroup, lList **string_list)
 {
    bool ret = true;
@@ -1595,7 +1595,7 @@ cqueue_find_used_href(lListElem *this_elem, lList **answer_list,
 *     MT-NOTE: cqueue_trash_used_href_setting() is MT safe 
 *******************************************************************************/
 bool
-cqueue_trash_used_href_setting(lListElem *this_elem, lList **answer_list, 
+cqueue_trash_used_href_setting(lListElem *this_elem, lList **answer_list _UNUSED,
                                const char *hgroup_or_hostname) 
 {
    bool ret = true;
@@ -1660,7 +1660,7 @@ cqueue_trash_used_href_setting(lListElem *this_elem, lList **answer_list,
 *
 *******************************************************************************/
 bool 
-cqueue_purge_host(lListElem *this_elem, lList **answer_list, 
+cqueue_purge_host(lListElem *this_elem, lList **answer_list _UNUSED,
                   lList *attr_list, const char *hgroup_or_hostname)
 {
    bool ret = false;
@@ -1716,7 +1716,7 @@ cqueue_purge_host(lListElem *this_elem, lList **answer_list,
 }
 
 bool
-cqueue_sick(lListElem *cqueue, lList **answer_list, 
+cqueue_sick(lListElem *cqueue, lList **answer_list _UNUSED,
             lList *master_hgroup_list, dstring *ds)
 {
    bool ret = true;

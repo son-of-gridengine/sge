@@ -63,15 +63,15 @@
 
 /* --- authentication management functions --- */
 
-PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh,int flags,int argc
-                                   ,const char **argv)
+PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh _UNUSED, int flags _UNUSED,
+                                   int argc _UNUSED, const char **argv _UNUSED)
 {
   return PAM_SUCCESS;
 }
 
 
-PAM_EXTERN int pam_sm_setcred(pam_handle_t *pamh,int flags,int argc
-                              ,const char **argv)
+PAM_EXTERN int pam_sm_setcred(pam_handle_t *pamh _UNUSED, int flags _UNUSED,
+                              int argc _UNUSED, const char **argv _UNUSED)
 {
   return PAM_SUCCESS;
 }
@@ -80,8 +80,8 @@ PAM_EXTERN int pam_sm_setcred(pam_handle_t *pamh,int flags,int argc
 /* --- password management --- */
 
 
-PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh,int flags,int argc
-                                ,const char **argv)
+PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh _UNUSED, int flags _UNUSED,
+                                int argc _UNUSED, const char **argv _UNUSED)
 {
   return PAM_SUCCESS;
 }
@@ -89,16 +89,17 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh,int flags,int argc
 
 /* --- session management --- */
 
-PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh,int flags,int argc
-                                   ,const char **argv)
+PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh _UNUSED,
+                                   int flags _UNUSED, int argc _UNUSED,
+                                   const char **argv _UNUSED)
 {
   return PAM_SUCCESS;
 }
 
 
 
-PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh,int flags,int argc
-                                    ,const char **argv)
+PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh _UNUSED, int flags _UNUSED,
+                                    int argc _UNUSED, const char **argv _UNUSED)
 {
   return PAM_SUCCESS;
 }
@@ -118,7 +119,7 @@ static void pam_sge_log(int priority, const char *msg, ...)
 }
 
 
-PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags,int argc,
+PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh,int flags _UNUSED,int argc,
                                 const char **argv)
 {
   int retval;

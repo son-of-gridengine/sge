@@ -292,8 +292,8 @@ cqueue_verify_shell_start_mode(lListElem *cqueue, lList **answer_list,
    return ret;
 }
 bool
-cqueue_verify_shell(lListElem *cqueue, lList **answer_list,
-                                     lListElem *attr_elem)
+cqueue_verify_shell(lListElem *cqueue _UNUSED, lList **answer_list,
+                    lListElem *attr_elem)
     {
        bool ret = true;
        bool path_found = true;

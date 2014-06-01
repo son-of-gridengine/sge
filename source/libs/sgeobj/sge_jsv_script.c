@@ -153,8 +153,9 @@ jsv_split_token(dstring *input, dstring *token, dstring *args)
 }
 
 static bool
-jsv_handle_param_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_list,
-                         dstring *c, dstring *s, dstring *a)
+jsv_handle_param_command(sge_gdi_ctx_class_t *ctx _UNUSED, lListElem *jsv,
+                         lList **answer_list, dstring *c _UNUSED, dstring *s,
+                         dstring *a)
 {
    bool ret = true;
    const char *param = sge_dstring_get_string(s);
@@ -1200,8 +1201,9 @@ jsv_handle_param_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answe
 }
 
 static bool
-jsv_handle_send_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_list,
-                        dstring *c, dstring *s, dstring *a)
+jsv_handle_send_command(sge_gdi_ctx_class_t *ctx _UNUSED, lListElem *jsv,
+                        lList **answer_list, dstring *c _UNUSED, dstring *s,
+                        dstring *a _UNUSED)
 {
    bool ret = true;
    const char *subcommand = sge_dstring_get_string(s);
@@ -1224,8 +1226,9 @@ jsv_handle_send_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer
 }
 
 static bool
-jsv_handle_result_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_list,
-                          dstring *c, dstring *s, dstring *a)
+jsv_handle_result_command(sge_gdi_ctx_class_t *ctx _UNUSED, lListElem *jsv,
+                          lList **answer_list, dstring *c _UNUSED,
+                          dstring *s, dstring *a)
 {
    bool ret = true;
    dstring m = DSTRING_INIT;
@@ -1291,7 +1294,7 @@ jsv_handle_result_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answ
 
 static bool
 jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_list,
-                           dstring *c, dstring *s, dstring *a)
+                           dstring *c _UNUSED, dstring *s _UNUSED, dstring *a _UNUSED)
 {
    const char *prefix = "PARAM";
    dstring buffer = DSTRING_INIT;
@@ -2351,8 +2354,9 @@ jsv_handle_started_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **ans
 }
 
 static bool
-jsv_handle_log_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_list,
-                       dstring *c, dstring *s, dstring *a)
+jsv_handle_log_command(sge_gdi_ctx_class_t *ctx _UNUSED, lListElem *jsv,
+                       lList **answer_list _UNUSED,
+                       dstring *c _UNUSED, dstring *s, dstring *a)
 {
    bool ret = true;
    const char *command = sge_dstring_get_string(s);
@@ -2381,8 +2385,8 @@ jsv_handle_log_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_
 }
 
 static bool
-jsv_handle_env_command(sge_gdi_ctx_class_t *ctx, lListElem *jsv, lList **answer_list,
-                       dstring *c, dstring *s, dstring *a)
+jsv_handle_env_command(sge_gdi_ctx_class_t *ctx _UNUSED, lListElem *jsv, lList **answer_list,
+                       dstring *c _UNUSED, dstring *s, dstring *a)
 {
    bool ret = true;
    dstring variable = DSTRING_INIT;

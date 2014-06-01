@@ -77,4 +77,6 @@
 # endif
 #endif
 
+#define _UNUSED __attribute__((unused))
+
 #endif /* __SGE_H */
