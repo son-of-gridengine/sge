@@ -424,7 +424,7 @@ int main(int argc, char **argv)
  * Function installed to be called just before exit() is called.
  * clean up
  *-------------------------------------------------------------*/
-static void execd_exit_func(void **ctx_ref, int i)
+static void execd_exit_func(void **ctx_ref, int i _UNUSED)
 {
    DENTER(TOP_LAYER, "execd_exit_func");
 

@@ -834,7 +834,7 @@ href_list_append_to_dstring(const lList *this_list, dstring *string)
 *        false - Error
 ******************************************************************************/
 bool
-href_list_remove_existing(lList **this_list, lList **answer_list,
+href_list_remove_existing(lList **this_list, lList **answer_list _UNUSED,
                           lList *list)
 {
    bool ret = true;
@@ -923,7 +923,7 @@ href_list_debug_print(const lList *this_list, const char *prefix)
 *     void - none 
 *******************************************************************************/
 void
-href_list_make_uniq(lList *this_list, lList **answer_list)
+href_list_make_uniq(lList *this_list, lList **answer_list _UNUSED)
 {
    lListElem *elem = NULL;
    lListElem *next_elem = NULL;

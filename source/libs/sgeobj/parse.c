@@ -149,13 +149,8 @@ const char *opt_switch_arg
  **** An errormessage is appended to the answer-list (alpp).
  **** The function returns a pointer to the next argument.
  ****/
-char **parse_noopt(
-char **sp,
-const char *shortopt,
-const char *longopt,
-lList **ppcmdline,
-lList **alpp 
-) {
+char **parse_noopt(char **sp, const char *shortopt, const char *longopt,
+                   lList **ppcmdline, lList **alpp _UNUSED) {
 
    DENTER (TOP_LAYER, "parse_noopt");
 
@@ -231,13 +226,9 @@ lListElem *ep; /* SPA_Type */
  **** appended to the answer-list (alpp).
  **** The function returns a pointer to the next argument.
  ****/
-char **parse_until_next_opt2(
-char **sp,
-const char *shortopt,
-const char *longopt,
-lList **ppcmdline,
-lList **alpp 
-) {
+char **parse_until_next_opt2(char **sp, const char *shortopt,
+                             const char *longopt, lList **ppcmdline,
+                             lList **alpp _UNUSED) {
    char **rp;
    lListElem *ep; /* SPA_Type */
 
@@ -276,12 +267,8 @@ lList **alpp
  **** ppcmdline (SPA_Type).
  **** The function returns a pointer to the next argument.
  ****/
-char **parse_param(
-char **sp,
-const char *opt,
-lList **ppcmdline,
-lList **alpp 
-) {
+char **parse_param(char **sp, const char *opt, lList **ppcmdline,
+                   lList **alpp _UNUSED) {
 char **rp;
 lListElem *ep = NULL; /* SPA_Type */
 
@@ -312,12 +299,8 @@ lListElem *ep = NULL; /* SPA_Type */
  ****
  **** The answerlist ppal is not used yet.
  ****/
-bool parse_flag(
-lList **ppcmdline,
-const char *opt,
-lList **ppal,
-u_long32 *pflag 
-) {
+bool parse_flag(lList **ppcmdline, const char *opt, lList **ppal _UNUSED,
+                u_long32 *pflag) {
 lListElem *ep;
 char* actual_opt;
 
@@ -352,14 +335,9 @@ char* actual_opt;
  **** The arguments are collected. 
  **** The arguments can be either space- or comma-separated.
  ****/ 
-bool parse_multi_stringlist(
-lList **ppcmdline,
-const char *opt,
-lList **ppal,
-lList **ppdestlist,
-lDescr *type,
-int field 
-) {
+bool parse_multi_stringlist(lList **ppcmdline, const char *opt,
+                            lList **ppal _UNUSED, lList **ppdestlist,
+                            lDescr *type, int field) {
    lListElem *ep, *sep;
 
    DENTER(TOP_LAYER, "parse_multi_stringlist");
@@ -438,12 +416,7 @@ u_long32 action
    DRETURN(ret);
 }
 
-int parse_string(
-lList **ppcmdline,
-const char *opt,
-lList **ppal,
-char **str 
-) {
+int parse_string(lList **ppcmdline, const char *opt, lList **ppal _UNUSED, char **str) {
    lListElem *ep, *ep2;
 
    DENTER(TOP_LAYER, "parse_string");
@@ -470,7 +443,7 @@ char **str
 }
 
 int 
-parse_u_long32(lList **ppcmdline, const char *opt, lList **ppal, u_long32 *value) 
+parse_u_long32(lList **ppcmdline, const char *opt, lList **ppal _UNUSED, u_long32 *value) 
 {
    bool ret = false;
    lListElem *ep = NULL;
@@ -487,7 +460,7 @@ parse_u_long32(lList **ppcmdline, const char *opt, lList **ppal, u_long32 *value
 }
 
 int 
-parse_u_longlist(lList **ppcmdline, const char *opt, lList **ppal, lList **value) 
+parse_u_longlist(lList **ppcmdline, const char *opt, lList **ppal _UNUSED, lList **value) 
 {
    bool ret = false;
    lListElem *ep = NULL;

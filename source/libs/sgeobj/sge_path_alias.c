@@ -388,7 +388,7 @@ int path_alias_list_initialize(lList **path_alias_list,
 *  NOTES
 *     MT-NOTE: path_alias_list_get_path() is MT safe
 *******************************************************************************/
-void path_alias_list_get_path(const lList *path_aliases, lList **alpp,
+void path_alias_list_get_path(const lList *path_aliases, lList **alpp _UNUSED,
                               const char *inpath, const char *myhost,
                               dstring *outpath)
 {

@@ -847,7 +847,7 @@ void job_delete_not_enrolled_ja_task(lListElem *job, lList **answer_list,
 *  SEE ALSO
 *     sgeobj/job/job_delete_not_enrolled_ja_task()
 ******************************************************************************/
-void job_add_as_zombie(lListElem *zombie, lList **answer_list, 
+void job_add_as_zombie(lListElem *zombie, lList **answer_list _UNUSED,
                        u_long32 ja_task_id) 
 {
    lList *z_ids = NULL;    /* RN_Type */
@@ -1039,7 +1039,7 @@ u_long32 job_get_hold_state(lListElem *job, u_long32 ja_task_id)
 *     given answer_list (answer_list != NULL).
 *     MT-NOTE: job_search_task() is MT safe
 ******************************************************************************/
-lListElem *job_search_task(const lListElem *job, lList **answer_list,
+lListElem *job_search_task(const lListElem *job, lList **answer_list _UNUSED,
                            u_long32 ja_task_id)
 {
    lListElem *ja_task = NULL; 
