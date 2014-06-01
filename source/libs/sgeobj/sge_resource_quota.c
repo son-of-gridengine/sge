@@ -161,7 +161,7 @@ bool rqs_parse_filter_from_string(lListElem **filter, const char* buffer, lList 
 *     MT-NOTE: rqs_append_filter_to_dstring() is MT safe 
 *
 *******************************************************************************/
-bool rqs_append_filter_to_dstring(const lListElem *filter, dstring *buffer, lList **alp){
+bool rqs_append_filter_to_dstring(const lListElem *filter, dstring *buffer, lList **alp _UNUSED){
    lList *tlp = NULL;
    lListElem *scope = NULL;
    bool first = true;
@@ -650,7 +650,7 @@ lListElem* rqs_rule_locate(lList *lp, const char *name)
 *  NOTES
 *     MT-NOTE: rqs_xattr_pre_gdi() is MT safe 
 *******************************************************************************/
-bool rqs_xattr_pre_gdi(lList *this_list, lList **answer_list) 
+bool rqs_xattr_pre_gdi(lList *this_list, lList **answer_list _UNUSED)
 {
    bool ret = true;
    char delim[] = "/";

@@ -686,7 +686,7 @@ void sge_monitor_reset(monitoring_t *monitor)
 *  NOTES
 *     MT-NOTE: ext_gdi_output() is MT safe 
 *******************************************************************************/
-static void ext_sch_output(dstring *message, void *monitoring_extension, double time)
+static void ext_sch_output(dstring *message, void *monitoring_extension _UNUSED, double time _UNUSED)
 {
    sge_dstring_sprintf_append(message, "%s", "");
 }
@@ -826,4 +826,3 @@ static void ext_tet_output(dstring *message, void *monitoring_extension, double 
              tet_ext->exec_count / time
            );
 }
-

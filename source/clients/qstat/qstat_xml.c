@@ -63,7 +63,7 @@ static int qselect_xml_finished(qselect_handler_t *thiz, lList** alpp);
 static int qselect_xml_destroy(qselect_handler_t *thiz, lList** alpp);
 static int qselect_xml_started(qselect_handler_t *thiz, lList** alpp);
 
-int qselect_xml_init(qselect_handler_t* handler, lList **alpp) {
+int qselect_xml_init(qselect_handler_t* handler, lList **alpp _UNUSED) {
    
    memset(handler, 0, sizeof(qselect_handler_t));
    
@@ -82,7 +82,7 @@ int qselect_xml_init(qselect_handler_t* handler, lList **alpp) {
    return 0;
 }
 
-static int qselect_xml_destroy(qselect_handler_t *thiz, lList** alpp) {
+static int qselect_xml_destroy(qselect_handler_t *thiz, lList** alpp _UNUSED) {
    if (thiz != NULL ) {
       sge_dstring_free((dstring*)thiz->ctx);
       sge_free(&(thiz->ctx));
@@ -90,17 +90,17 @@ static int qselect_xml_destroy(qselect_handler_t *thiz, lList** alpp) {
    return 0;
 }
 
-static int qselect_xml_started(qselect_handler_t *thiz, lList** alpp) {
+static int qselect_xml_started(qselect_handler_t *thiz _UNUSED, lList** alpp _UNUSED) {
    printf("<qselect>\n");
    return 0;
 }
 
-static int qselect_xml_finished(qselect_handler_t *thiz, lList** alpp) {
+static int qselect_xml_finished(qselect_handler_t *thiz _UNUSED, lList** alpp _UNUSED) {
    printf("</qselect>\n");
    return 0;
 }
 
-static int qselect_xml_report_queue(qselect_handler_t *thiz, const char* qname, lList** alpp) {
+static int qselect_xml_report_queue(qselect_handler_t *thiz, const char* qname, lList** alpp _UNUSED) {
    escape_string(qname, (dstring*)thiz->ctx);
    printf("   <queue>%s</queue>\n", sge_dstring_get_string((dstring*)thiz->ctx));
    sge_dstring_clear((dstring*)thiz->ctx);
@@ -111,7 +111,7 @@ static int qselect_xml_report_queue(qselect_handler_t *thiz, const char* qname, 
 static int cqueue_summary_xml_report_finished(cqueue_summary_handler_t *handler, lList **alpp);
 static int cqueue_summary_xml_report_cqueue(cqueue_summary_handler_t *handler, const char* cqname, cqueue_summary_t *summary, lList **alpp);
 
-int cqueue_summary_xml_handler_init(cqueue_summary_handler_t *handler, lList **alpp) {
+int cqueue_summary_xml_handler_init(cqueue_summary_handler_t *handler, lList **alpp _UNUSED) {
    memset(handler, 0, sizeof(cqueue_summary_handler_t));
    
    handler->report_finished = cqueue_summary_xml_report_finished;
@@ -120,7 +120,7 @@ int cqueue_summary_xml_handler_init(cqueue_summary_handler_t *handler, lList **a
 }
 
 
-static int cqueue_summary_xml_report_finished(cqueue_summary_handler_t *handler, lList **alpp) {
+static int cqueue_summary_xml_report_finished(cqueue_summary_handler_t *handler, lList **alpp _UNUSED) {
    if (handler->ctx != NULL) {
       lListElem *xml_elem = NULL;
     
@@ -132,7 +132,7 @@ static int cqueue_summary_xml_report_finished(cqueue_summary_handler_t *handler,
    return 0;
 }
 
-static int cqueue_summary_xml_report_cqueue(cqueue_summary_handler_t *handler, const char* cqname, cqueue_summary_t *summary, lList **alpp) {
+static int cqueue_summary_xml_report_cqueue(cqueue_summary_handler_t *handler, const char* cqname, cqueue_summary_t *summary, lList **alpp _UNUSED) {
    
    lListElem *elem = NULL;
    lList *attributeList = NULL;
@@ -342,7 +342,7 @@ error:
    return ret;
 }
 
-static int qstat_xml_started(qstat_handler_t* handler, lList** alpp) {
+static int qstat_xml_started(qstat_handler_t* handler, lList** alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lListElem *attr_elem = NULL;
    
@@ -365,7 +365,7 @@ static int qstat_xml_started(qstat_handler_t* handler, lList** alpp) {
    return 0;
 }
 
-static int qstat_xml_finished(qstat_handler_t* handler, lList** alpp) {
+static int qstat_xml_finished(qstat_handler_t* handler, lList** alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lListElem *xml_elem = NULL;
    lList *XML_out = NULL;
@@ -391,15 +391,15 @@ static int qstat_xml_finished(qstat_handler_t* handler, lList** alpp) {
 /*
 ** start and finished functions needed for clients/common/sge_qstat.c do work
 */
-static int qstat_xml_dummy_started(job_handler_t* handler, lList** alpp) {
+static int qstat_xml_dummy_started(job_handler_t* handler _UNUSED, lList** alpp _UNUSED) {
    return 0;
 }
 
-static int qstat_xml_dummy_finished(job_handler_t* handler, lList** alpp) {
+static int qstat_xml_dummy_finished(job_handler_t* handler _UNUSED, lList** alpp _UNUSED) {
    return 0;
 }
 
-static int qstat_xml_job(job_handler_t* handler, u_long32 jid, job_summary_t *summary, lList **alpp) {
+static int qstat_xml_job(job_handler_t* handler, u_long32 jid, job_summary_t *summary, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    qstat_env_t *qstat_env = handler->qstat_env;
    int sge_ext, tsk_ext, sge_urg, sge_pri, sge_time;
@@ -516,7 +516,7 @@ static int qstat_xml_job(job_handler_t* handler, u_long32 jid, job_summary_t *su
    return 0;
 }
 
-static int qstat_xml_job_finished(job_handler_t* handler, u_long32 jid, lList **alpp) {
+static int qstat_xml_job_finished(job_handler_t* handler, u_long32 jid _UNUSED, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    
    DENTER(TOP_LAYER,"qstat_xml_job_finished");
@@ -528,7 +528,7 @@ static int qstat_xml_job_finished(job_handler_t* handler, u_long32 jid, lList **
    return 0;
 }
 
-static int qstat_xml_sub_task(job_handler_t* handler, task_summary_t *summary, lList **alpp) {
+static int qstat_xml_sub_task(job_handler_t* handler, task_summary_t *summary, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lListElem *xml_elem = NULL;
    lList *attribute_list = NULL;
@@ -576,7 +576,7 @@ static char* ADDITIONAL_TAG_NAMES[] = {
    "full_job_name"
 };
 
-static int qstat_xml_job_additional_info(job_handler_t* handler, job_additional_info_t name, const char* value, lList **alpp) {
+static int qstat_xml_job_additional_info(job_handler_t* handler, job_additional_info_t name, const char* value, lList **alpp _UNUSED) {
    
    DENTER(TOP_LAYER,"qstat_xml_job_additional_info");
    
@@ -602,7 +602,7 @@ static int qstat_xml_job_additional_info(job_handler_t* handler, job_additional_
    return 0;
 }
 
-static int qstat_xml_job_requested_pe(job_handler_t *handler, const char* pe_name, const char* pe_range, lList **alpp) {
+static int qstat_xml_job_requested_pe(job_handler_t *handler, const char* pe_name, const char* pe_range, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lListElem *xml_elem = NULL;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
@@ -616,7 +616,7 @@ static int qstat_xml_job_requested_pe(job_handler_t *handler, const char* pe_nam
    return 0;
 }
 
-static int qstat_xml_job_granted_pe(job_handler_t *handler, const char* pe_name, int pe_slots, lList **alpp) {
+static int qstat_xml_job_granted_pe(job_handler_t *handler, const char* pe_name, int pe_slots, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lListElem *xml_elem = NULL;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
@@ -630,7 +630,7 @@ static int qstat_xml_job_granted_pe(job_handler_t *handler, const char* pe_name,
    return 0;
 }
 
-static int qstat_xml_job_request(job_handler_t* handler, const char* name, const char* value, lList **alpp) {
+static int qstat_xml_job_request(job_handler_t* handler, const char* name, const char* value, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lListElem *xml_elem = NULL;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
@@ -644,7 +644,7 @@ static int qstat_xml_job_request(job_handler_t* handler, const char* name, const
    return 0;
 }
 
-static int qstat_xml_job_report_hard_resource(job_handler_t *handler, const char* name, const char* value, double uc, lList **alpp) {
+static int qstat_xml_job_report_hard_resource(job_handler_t *handler, const char* name, const char* value, double uc, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lListElem *xml_elem = NULL;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
@@ -659,7 +659,7 @@ static int qstat_xml_job_report_hard_resource(job_handler_t *handler, const char
    return 0;
 }
 
-static int qstat_xml_job_soft_resource(job_handler_t *handler, const char* name, const char* value, double uc, lList **alpp) {
+static int qstat_xml_job_soft_resource(job_handler_t *handler, const char* name, const char* value, double uc _UNUSED, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lListElem *xml_elem = NULL;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
@@ -673,7 +673,7 @@ static int qstat_xml_job_soft_resource(job_handler_t *handler, const char* name,
    return 0;
 }
 
-static int qstat_xml_job_hard_requested_queue(job_handler_t *handler, const char* name, lList **alpp) {
+static int qstat_xml_job_hard_requested_queue(job_handler_t *handler, const char* name, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
 
@@ -685,7 +685,7 @@ static int qstat_xml_job_hard_requested_queue(job_handler_t *handler, const char
    return 0;
 }
 
-static int qstat_xml_job_soft_requested_queue(job_handler_t *handler, const char* name, lList **alpp) {
+static int qstat_xml_job_soft_requested_queue(job_handler_t *handler, const char* name, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
 
@@ -697,7 +697,7 @@ static int qstat_xml_job_soft_requested_queue(job_handler_t *handler, const char
    return 0;
 }
 
-static int qstat_xml_job_master_hard_requested_queue(job_handler_t* handler, const char* name, lList **alpp) {
+static int qstat_xml_job_master_hard_requested_queue(job_handler_t* handler, const char* name, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
 
@@ -709,7 +709,7 @@ static int qstat_xml_job_master_hard_requested_queue(job_handler_t* handler, con
    return 0;
 }
 
-static int qstat_xml_job_predecessor_requested(job_handler_t* handler, const char* name, lList **alpp) {
+static int qstat_xml_job_predecessor_requested(job_handler_t* handler, const char* name, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
 
@@ -721,7 +721,7 @@ static int qstat_xml_job_predecessor_requested(job_handler_t* handler, const cha
    return 0;
 }
 
-static int qstat_xml_job_predecessor(job_handler_t* handler, u_long32 jid, lList **alpp) {
+static int qstat_xml_job_predecessor(job_handler_t* handler, u_long32 jid, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
 
@@ -733,7 +733,7 @@ static int qstat_xml_job_predecessor(job_handler_t* handler, u_long32 jid, lList
    return 0;
 }
 
-static int qstat_xml_job_ad_predecessor_requested(job_handler_t* handler, const char* name, lList **alpp) {
+static int qstat_xml_job_ad_predecessor_requested(job_handler_t* handler, const char* name, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
 
@@ -745,7 +745,7 @@ static int qstat_xml_job_ad_predecessor_requested(job_handler_t* handler, const 
    return 0;
 }
 
-static int qstat_xml_job_ad_predecessor(job_handler_t* handler, u_long32 jid, lList **alpp) {
+static int qstat_xml_job_ad_predecessor(job_handler_t* handler, u_long32 jid, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = lGetList(ctx->job_elem, XMLE_List);
 
@@ -792,7 +792,7 @@ static int qstat_xml_create_job_list(qstat_handler_t *handler, lList **alpp) {
    return 0;
 }
 
-static int qstat_xml_finish_job_list(qstat_handler_t *handler, const char* state, lList* target_list, lList **alpp) {
+static int qstat_xml_finish_job_list(qstat_handler_t *handler, const char* state, lList* target_list, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lListElem *job_elem = NULL;
    lListElem *state_elem = NULL;
@@ -821,7 +821,7 @@ static int qstat_xml_finish_job_list(qstat_handler_t *handler, const char* state
    return 0;
 }
 
-static int qstat_xml_queue_jobs_started(qstat_handler_t *handler, const char* qname, lList **alpp) {
+static int qstat_xml_queue_jobs_started(qstat_handler_t *handler, const char* qname _UNUSED, lList **alpp) {
    int ret = 0;
    DENTER(TOP_LAYER, "qstat_xml_queue_jobs_started" );
 
@@ -831,7 +831,7 @@ static int qstat_xml_queue_jobs_started(qstat_handler_t *handler, const char* qn
    return ret;
 }
 
-static int qstat_xml_queue_jobs_finished(qstat_handler_t *handler, const char* qname, lList **alpp) {
+static int qstat_xml_queue_jobs_finished(qstat_handler_t *handler, const char* qname _UNUSED, lList **alpp) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    qstat_env_t *qstat_env = handler->qstat_env;
    int ret = 0;
@@ -958,7 +958,7 @@ static int qstat_xml_zombie_jobs_finished(qstat_handler_t *handler, lList **alpp
    return ret;
 }
 
-static int qstat_xml_queue_finished(qstat_handler_t* handler, const char* qname, lList **alpp) {
+static int qstat_xml_queue_finished(qstat_handler_t* handler, const char* qname, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    qstat_env_t *qstat_env = handler->qstat_env;   
    lList* queue_list = NULL;
@@ -989,7 +989,7 @@ static int qstat_xml_queue_finished(qstat_handler_t* handler, const char* qname,
    return 0;
 }
 
-static int qstat_xml_queue_started(qstat_handler_t* handler, const char* qname, lList **alpp) {
+static int qstat_xml_queue_started(qstat_handler_t* handler, const char* qname, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    qstat_env_t *qstat_env = handler->qstat_env;
    lList *attribute_list = NULL;
@@ -1018,7 +1018,7 @@ static int qstat_xml_queue_started(qstat_handler_t* handler, const char* qname, 
    return 0;
 }
 
-static int qstat_xml_queue_summary(qstat_handler_t* handler, const char* qname, queue_summary_t *summary, lList **alpp) {
+static int qstat_xml_queue_summary(qstat_handler_t* handler, const char* qname, queue_summary_t *summary, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = NULL;
    lListElem *xml_elem = NULL;
@@ -1055,7 +1055,7 @@ static int qstat_xml_queue_summary(qstat_handler_t* handler, const char* qname, 
    return 0;
 }
 
-static int qstat_xml_queue_load_alarm(qstat_handler_t* handler, const char* qname, const char* reason, lList **alpp) {
+static int qstat_xml_queue_load_alarm(qstat_handler_t* handler, const char* qname _UNUSED, const char* reason, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    int ret = 0;
    lList *attribute_list = NULL;
@@ -1071,7 +1071,7 @@ static int qstat_xml_queue_load_alarm(qstat_handler_t* handler, const char* qnam
    return ret;
 }
 
-static int qstat_xml_queue_suspend_alarm(qstat_handler_t* handler, const char* qname, const char* reason, lList **alpp) {
+static int qstat_xml_queue_suspend_alarm(qstat_handler_t* handler, const char* qname _UNUSED, const char* reason, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = NULL;
    lListElem *xml_elem = NULL;
@@ -1086,7 +1086,7 @@ static int qstat_xml_queue_suspend_alarm(qstat_handler_t* handler, const char* q
    return 0;
 }
 
-static int qstat_xml_queue_message(qstat_handler_t* handler, const char* qname, const char *message, lList **alpp) {
+static int qstat_xml_queue_message(qstat_handler_t* handler, const char* qname _UNUSED, const char *message, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = NULL;
    lListElem *xml_elem = NULL;
@@ -1101,7 +1101,7 @@ static int qstat_xml_queue_message(qstat_handler_t* handler, const char* qname, 
    return 0;
 }
 
-static int qstat_xml_queue_resource(qstat_handler_t* handler, const char* dom, const char* name, const char* value, lList **alpp) {
+static int qstat_xml_queue_resource(qstat_handler_t* handler, const char* dom, const char* name, const char* value, lList **alpp _UNUSED) {
    qstat_xml_ctx_t *ctx = (qstat_xml_ctx_t*)handler->ctx;
    lList *attribute_list = NULL;
    lListElem *xml_elem = NULL;

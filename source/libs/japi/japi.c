@@ -471,7 +471,9 @@ int japi_init_mt(dstring *diag)
 *  NOTES
 *      MT-NOTE: japi_init() is MT safe
 *******************************************************************************/
-int japi_init(const char *contact, const char *session_key_in, 
+/* fixme: use contact (in form root/cell) to temporarily set the root
+   and cell around initialization */
+int japi_init(const char *contact _UNUSED, const char *session_key_in, 
               dstring *session_key_out, int my_prog_num, bool enable_wait,
               error_handler_t handler, dstring *diag)
 {
@@ -803,7 +805,10 @@ int japi_enable_job_wait(const char *username, const char *unqualified_hostname,
 *  NOTES
 *     MT-NOTE: japi_open_session() is MT safe 
 *******************************************************************************/
-static int japi_open_session(const char *username, const char* unqualified_hostname, const char *key_in, dstring *key_out, dstring *diag)
+static int japi_open_session(const char *username _UNUSED,
+                             const char* unqualified_hostname,
+                             const char *key_in, dstring *key_out,
+                             dstring *diag _UNUSED)
 {
 #ifdef ENABLE_PERSISTENT_JAPI_SESSIONS
    struct passwd pw_struct, *pwd;
@@ -3531,7 +3536,7 @@ int japi_job_ps(const char *job_id_str, int *remote_ps, dstring *diag)
 *  SEE ALSO
 *     JAPI/japi_wait()
 *******************************************************************************/
-int japi_wifaborted(int *aborted, int stat, dstring *diag)
+int japi_wifaborted(int *aborted, int stat, dstring *diag _UNUSED)
 {
    *aborted = SGE_GET_NEVERRAN(stat)?1:0;
    return DRMAA_ERRNO_SUCCESS;
@@ -3566,7 +3571,7 @@ int japi_wifaborted(int *aborted, int stat, dstring *diag)
 *  SEE ALSO
 *     JAPI/japi_wexitstatus()
 *******************************************************************************/
-int japi_wifexited(int *exited, int stat, dstring *diag)
+int japi_wifexited(int *exited, int stat, dstring *diag _UNUSED)
 {
    *exited = SGE_GET_WEXITED(stat)?1:0;
    return DRMAA_ERRNO_SUCCESS;
@@ -3599,7 +3604,7 @@ int japi_wifexited(int *exited, int stat, dstring *diag)
 *  SEE ALSO
 *     JAPI/japi_wifexited()
 *******************************************************************************/
-int japi_wexitstatus(int *exit_status, int stat, dstring *diag)
+int japi_wexitstatus(int *exit_status, int stat, dstring *diag _UNUSED)
 {
    *exit_status = SGE_GET_WEXITSTATUS(stat);
    return DRMAA_ERRNO_SUCCESS;
@@ -3635,7 +3640,7 @@ int japi_wexitstatus(int *exit_status, int stat, dstring *diag)
 *  SEE ALSO
 *     JAPI/japi_wtermsig()
 *******************************************************************************/
-int japi_wifsignaled(int *signaled, int stat, dstring *diag)
+int japi_wifsignaled(int *signaled, int stat, dstring *diag _UNUSED)
 {
    *signaled = SGE_GET_WSIGNALED(stat)?1:0;
    return DRMAA_ERRNO_SUCCESS;
@@ -3671,7 +3676,7 @@ int japi_wifsignaled(int *signaled, int stat, dstring *diag)
 *  SEE ALSO
 *     JAPI/japi_wifsignaled()
 *******************************************************************************/
-int japi_wtermsig(dstring *sig, int stat, dstring *diag)
+int japi_wtermsig(dstring *sig, int stat, dstring *diag _UNUSED)
 {
    u_long32 sge_sig = SGE_GET_WSIGNAL(stat);
    sge_dstring_sprintf(sig, "SIG%s", sge_sig2str(sge_sig));
@@ -3705,7 +3710,7 @@ int japi_wtermsig(dstring *sig, int stat, dstring *diag)
 *  NOTES
 *     MT-NOTE: japi_wifcoredump() is MT safe
 *******************************************************************************/
-int japi_wifcoredump(int *core_dumped, int stat, dstring *diag)
+int japi_wifcoredump(int *core_dumped, int stat, dstring *diag _UNUSED)
 {
    *core_dumped = SGE_GET_WCOREDUMP(stat)?1:0;
    return DRMAA_ERRNO_SUCCESS;
@@ -4012,7 +4017,7 @@ static void japi_subscribe_job_list(const char *japi_session_key, sge_evc_class_
 *  NOTES
 *     MT-NOTE: japi_implementation_thread() is MT safe
 *******************************************************************************/
-static void *japi_implementation_thread(void * a_user_data_pointer)
+static void *japi_implementation_thread(void * a_user_data_pointer _UNUSED)
 {
    lList *alp = NULL, *event_list = NULL;
    lListElem *event;
