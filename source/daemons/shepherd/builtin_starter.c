@@ -1299,10 +1299,7 @@ int use_starter_method /* If this flag is set the shell path contains the
    char **pstr;
    char *pc;
    char *pre_args[10];
-   char **pre_args_ptr;
    char err_str[2048];
-
-   pre_args_ptr = &pre_args[0];
    
 #if 0
    shepherd_trace("childname = %s", childname? childname : "NULL");
@@ -1333,9 +1330,9 @@ int use_starter_method /* If this flag is set the shell path contains the
       shepherd_trace("Case 1: handle_as_binary, shell, no rsh, no qlogin, starter_method=none");
 #endif
 
-      pre_args_ptr[arg_id++] = argv0;
+      pre_args[arg_id++] = argv0;
       n_job_args = atoi(get_conf_val("njob_args"));
-      pre_args_ptr[arg_id++] = "-c";
+      pre_args[arg_id++] = "-c";
       sge_dstring_append(&arguments, script_file);
      
       sge_dstring_append(&arguments, " ");
@@ -1353,8 +1350,8 @@ int use_starter_method /* If this flag is set the shell path contains the
          }
       }
       
-      pre_args_ptr[arg_id++] = strdup(sge_dstring_get_string(&arguments));
-      pre_args_ptr[arg_id++] = NULL;
+      pre_args[arg_id++] = strdup(sge_dstring_get_string(&arguments));
+      pre_args[arg_id++] = NULL;
       sge_dstring_free(&arguments);
       args = pre_args;
    /* No need to test for binary since this option excludes binary */
@@ -1370,9 +1367,9 @@ int use_starter_method /* If this flag is set the shell path contains the
       ** problem: if arguments are options that shell knows it
       ** will interpret and eat them
       */
-      pre_args_ptr[0] = argv0;
-      pre_args_ptr[1] = "-s";
-      pre_args_ptr[2] = NULL;
+      pre_args[0] = argv0;
+      pre_args[1] = "-s";
+      pre_args[2] = NULL;
       args = read_job_args(pre_args, 0);
    /* Binary, noshell jobs have to make it to the else */
    } else if ( (!strcasecmp("posix_compliant", shell_start_mode) &&
@@ -1382,9 +1379,9 @@ int use_starter_method /* If this flag is set the shell path contains the
       shepherd_trace("Case 3: posix_compliant, no binary or starter_method!=none" );
 #endif
 
-      pre_args_ptr[0] = argv0;
-      pre_args_ptr[1] = script_file;
-      pre_args_ptr[2] = NULL;
+      pre_args[0] = argv0;
+      pre_args[1] = script_file;
+      pre_args[2] = NULL;
       args = read_job_args(pre_args, 0);
    /* No need to test for binary since this option excludes binary */
    } else if (!strcasecmp("start_as_command", shell_start_mode)) {
@@ -1393,12 +1390,12 @@ int use_starter_method /* If this flag is set the shell path contains the
       shepherd_trace("Case 4: start_as_command" );
 #endif
 
-      pre_args_ptr[0] = argv0;
-      shepherd_trace("start_as_command: pre_args_ptr[0] = argv0; \"%s\""
+      pre_args[0] = argv0;
+      shepherd_trace("start_as_command: pre_args[0] = argv0; \"%s\""
                      " shell_path = \"%s\"", argv0, shell_path); 
-      pre_args_ptr[1] = "-c";
-      pre_args_ptr[2] = script_file;
-      pre_args_ptr[3] = NULL;
+      pre_args[1] = "-c";
+      pre_args[2] = script_file;
+      pre_args[3] = NULL;
       args = pre_args;
    /* No need to test for binary since this option excludes binary */
    } else if (is_interactive) {
@@ -1408,12 +1405,12 @@ int use_starter_method /* If this flag is set the shell path contains the
       shepherd_trace("Case 5: interactive");
 #endif
 
-      pre_args_ptr[0] = script_file;
-      pre_args_ptr[1] = "-display";
-      pre_args_ptr[2] = get_conf_val("display");
-      pre_args_ptr[3] = "-n";
-      pre_args_ptr[4] = str_title;
-      pre_args_ptr[5] = NULL;   
+      pre_args[0] = script_file;
+      pre_args[1] = "-display";
+      pre_args[2] = get_conf_val("display");
+      pre_args[3] = "-n";
+      pre_args[4] = str_title;
+      pre_args[5] = NULL;
       args = read_job_args(pre_args, 2);
       njob_args = atoi(get_conf_val("njob_args"));
       args[njob_args + 5] = "-e";
@@ -1425,7 +1422,7 @@ int use_starter_method /* If this flag is set the shell path contains the
 #if 0
      shepherd_trace("Case 6: qlogin");
 #endif
-      pre_args_ptr[0] = script_file;
+      pre_args[0] = script_file;
       if (is_rsh) {
          conf_name = "rsh_daemon";
       } else {
@@ -1435,16 +1432,16 @@ int use_starter_method /* If this flag is set the shell path contains the
             conf_name = "qlogin_daemon";
          }
       }
-      pre_args_ptr[1] = get_conf_val(conf_name);
+      pre_args[1] = get_conf_val(conf_name);
 
-      if (check_configured_method(pre_args_ptr[1], conf_name, err_str) != 0
+      if (check_configured_method(pre_args[1], conf_name, err_str) != 0
           && g_new_interactive_job_support == false) {
          shepherd_state = SSTATE_CHECK_DAEMON_CONFIG;
          shepherd_error(1, "%s", err_str);
       }
 
-      pre_args_ptr[2] = "-d"; 
-      pre_args_ptr[3] = NULL;
+      pre_args[2] = "-d";
+      pre_args[3] = NULL;
       args = read_job_args(pre_args, 0);
    /* Here we finally deal with binary, noshell jobs */
    } else {
@@ -1462,10 +1459,10 @@ int use_starter_method /* If this flag is set the shell path contains the
          shepherd_trace("Case 7.1: job" );
 #endif
          if( use_starter_method ) {
-           pre_args_ptr[arg_id++] = shell_path;
+           pre_args[arg_id++] = shell_path;
          }
-         pre_args_ptr[arg_id++] = script_file;
-         pre_args_ptr[arg_id++] = NULL; 
+         pre_args[arg_id++] = script_file;
+         pre_args[arg_id++] = NULL;
          
          args = read_job_args(pre_args, 0);
       } else {
@@ -1476,10 +1473,10 @@ int use_starter_method /* If this flag is set the shell path contains the
          /* the script file also contains procedure arguments
             need to disassemble the string and put into args vector */
          if( use_starter_method ) {
-            pre_args_ptr[0] = shell_path;
-            pre_args_ptr[1] = NULL; 
+            pre_args[0] = shell_path;
+            pre_args[1] = NULL;
          } else {
-            pre_args_ptr[0] = NULL;
+            pre_args[0] = NULL;
          }
          args = disassemble_proc_args(script_file, pre_args, 0);
          
@@ -1516,7 +1513,7 @@ int use_starter_method /* If this flag is set the shell path contains the
 
       if( use_starter_method ) {
          filename = shell_path;
-      } else if( pre_args_ptr[0] == argv0 ) {
+      } else if (pre_args[0] == argv0) {
          filename = shell_path;
       } else {
          filename = script_file;
