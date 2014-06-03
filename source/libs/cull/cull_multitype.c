@@ -120,9 +120,7 @@ int unknownType(const char *str)
       function please free your memory                      */
    DPRINTF(("Unknown Type in %s.\n", str));
    LERROR(LEUNKTYPE);
-   DEXIT;
-   return -1;
-   /* abort(); */
+   abort();
 }
 
 /****** cull/multitype/lGetPosViaElem() ****************************************
@@ -193,7 +191,7 @@ int lGetPosViaElem(const lListElem *element, int name, int do_abort)
 ******************************************************************************/
 const char *lMt2Str(int mt) 
 {
-   if (mt >= 0 && mt < sizeof(multitypes)/sizeof(char*)) {
+   if (mt >= 0 && mt < (int)(sizeof(multitypes)/sizeof(char*))) {
       return multitypes[mt];
    } else {
       return "unknown multitype";
