@@ -139,7 +139,7 @@ test_drmaa: test_drmaa.1.0
 	rm -f test_drmaa ; cp test_drmaa.1.0 test_drmaa
 
 test_drmaa.1.0: test_drmaa.o $(DRMAALIB) $(WINGRIDLIB_DEP)
-	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa.o libdrmaa$(SHAREDEXT).1.0 $(GDILIB) $(COMMLIB) $(COMMLISTSLIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB) $(UTILIB) $(WINGRIDLIB) $(LIBS)
+	$(LD_WRAPPER) $(CC) -o $@ $(LFLAGS) test_drmaa.o libdrmaa$(SHAREDEXT).1.0 $(GDILIB) $(COMMLIB) $(COMMLISTSLIB) $(SGEOBJLIB) $(SGEOBJDLIB) $(CULLLIB) $(UTILIB) $(WINGRIDLIB) $(LIBS) -lssl -lcrypto -ldl
 
 test_drmaa.o: $(JAPILIB_DIR)/test_drmaa.c
 	$(CC) $(CFLAGS) -c $(JAPILIB_DIR)/test_drmaa.c -o test_drmaa.o
