@@ -1663,7 +1663,7 @@ void remote_setup ()
    if(remote_enabled) {
       init_remote();
 
-      if(gethostname(hostbuffer, 1023) != 0) {
+      if(gethostname(hostbuffer, sizeof hostbuffer) != 0) {
          remote_exit(EXIT_FAILURE, "gethostname failed", strerror(errno));
       }
    
