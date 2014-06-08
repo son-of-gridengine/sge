@@ -41,6 +41,13 @@
 
 %global _hardened_build 1
 
+# swing-layout is now in supported Fedora and EPEL6
+%if 0%{?fedora} > 18 || 0%{?el6}
+%global have_layout 1
+%else
+%global have_layout 0
+%endif
+
 Name:    gridengine
 Version: 8.1.7
 Release: 1%{?dist}
@@ -98,6 +105,9 @@ BuildRequires: openmotif-devel
 BuildRequires: java-devel >= 1.6.0, javacc, ant-junit
 %if 0%{?rhel}  < 7
 BuildRequires: ant-nodeps
+%endif
+%if %have_layout
+BuildRequires: swing-layout
 %endif
 %if %{with hadoop}
 BuildRequires: hadoop-0.20 >= 0.20.2+923.197
@@ -212,14 +222,21 @@ Optional Java-based GUI installer for Grid Engine.
 %prep
 
 %setup -q -n sge-%{version}
+%if %{with java}
 tar zfx %SOURCE1
+%if ! %have_layout
 tar zfx %SOURCE2
+%endif
+%endif
 
 %build
 %if %{with java}
+# swing-layout is now in EPEL6 and supported Fedora
+%if ! %have_layout
 cd swing-layout-1.0.3
 ant
 cd ..
+%endif
 %endif
 cd source
 > aimk.private
@@ -231,7 +248,9 @@ hadoop.version=0.20.2-cdh3u3
 file.reference.hadoop-0.20.2-core.jar=${hadoop.dir}/hadoop-core.jar
 file.reference.hadoop-0.20.2-tools.jar=${hadoop.dir}/hadoop-tools.jar
 izpack.home=${sge.srcdir}/../IzPack-4.1.1
+%if ! %have_layout
 libs.swing-layout.classpath=${sge.srcdir}/../swing-layout-1.0.3/dist/swing-layout.jar
+%endif
 libs.ant.classpath=%{_javadir}/ant.jar
 EOF
 
