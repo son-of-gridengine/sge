@@ -57,7 +57,7 @@
 }
 
 Name:    gridengine
-Version: 8.1.7
+Version: 8.1.8pre
 Release: 1%{?dist}
 Summary: Grid Engine - Distributed Resource Manager
 
