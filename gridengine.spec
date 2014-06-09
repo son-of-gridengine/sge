@@ -58,6 +58,10 @@
 
 Name:    gridengine
 Version: 8.1.8pre
+
+%if 0%{?fedora}
+Epoch:   1
+%endif
 Release: 1%{?dist}
 Summary: Grid Engine - Distributed Resource Manager
 
@@ -109,8 +113,10 @@ BuildRequires: swing-layout
 BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
-BuildRequires: net-tools
-Requires: binutils, ncurses, shadow-utils, net-tools, /bin/awk
+# was in net-tools, but is in its own package in Fedora 19
+BuildRequires: /bin/hostname
+Requires: binutils, ncurses, shadow-utils, /bin/hostname, /bin/awk, which
+Requires: openssl
 %if 0%{?fedora} || 0%{?rhel} > 6
 Requires: man-db
 %else
@@ -119,6 +125,12 @@ Requires: man
 %endif
 # There's an implicit dependency on perl(XML::Simple), which is in
 # package perl-XML-Simple but only in the optional-rpms repo on RH6.
+
+%if 0%{?epoch}
+%global epch %{epoch}:
+%else
+%global epch %{nil}
+%endif
 
 %description
 Grid Engine (often known as SGE) is a distributed resource manager,
@@ -139,7 +151,7 @@ https://arc.liv.ac.uk/trac/SGE
 Summary: Gridengine development files
 Group: Development/Libraries
 License: SISSL
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{epch}%{version}-%{release}
 %if 0%{?rhel} >= 6 || 0%{?fedora}
 BuildArch: noarch
 %endif
@@ -151,7 +163,7 @@ Grid Engine development headers and libraries.
 Summary: Gridengine qmon monitor
 Group: Applications/System
 License: BSD and LGPLv3+ and MIT and SISSL and others
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{epch}%{version}-%{release}
 Requires: xorg-x11-fonts-ISO8859-1-100dpi xorg-x11-fonts-ISO8859-1-75dpi
 
 %description qmon
@@ -161,10 +173,10 @@ The qmon graphical graphical interface to Grid Engine.
 Summary: Gridengine execd program
 Group: Applications/System
 License: BSD and LGPLv3+ and MIT and SISSL and others
-Requires: %{name} = %{version}-%{release}
-Requires(postun): %{name} = %{version}-%{release}
-Requires(preun): %{name} = %{version}-%{release}
-Requires: /bin/ps xterm
+Requires: %{name} = %{epch}%{version}-%{release}
+Requires(postun): %{name} = %{epch}%{version}-%{release}
+Requires(preun): %{name} = %{epch}%{version}-%{release}
+Requires: /bin/ps xterm mail
 
 %description execd
 Programs needed to run a Grid Engine execution host.
@@ -173,10 +185,10 @@ Programs needed to run a Grid Engine execution host.
 Summary: Gridengine qmaster programs
 Group: Applications/System
 License: BSD and LGPLv3+ and MIT and SISSL and others
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{epch}%{version}-%{release}
 Requires: db4-utils
-Requires(postun): %{name} = %{version}-%{release}
-Requires(preun): %{name} = %{version}-%{release}
+Requires(postun): %{name} = %{epch}%{version}-%{release}
+Requires(preun): %{name} = %{epch}%{version}-%{release}
 Requires: /bin/ps
 
 %description qmaster
