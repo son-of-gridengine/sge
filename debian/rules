@@ -46,9 +46,10 @@ override_dh_auto_install:
 	rm -f util/resources/loadsensors/interix-loadsensor.sh
 	mandb -u -c debian/tmp/$(SGE_ROOT)/man
 # We need the versions of the db utils corresponding to the dev library.
-# They are named like db5.1_load.
+# They are named like db5.1_load.  The version could be like
+# "1:5.3.21~exp1ubuntu1".
 	db=$$(dpkg-query -W --showformat '$${Version}' libdb-dev) && \
-	  db=$$(expr $$db : '\([1-9]\.[0-9]\)') && \
+	  db=$$(expr $$db : '.*\([1-9]\.[0-9]\)\.') && \
 	  cd debian/tmp$(SGE_ROOT)/utilbin/lx* && \
 	  ln -sf /usr/bin/db$${db}_load db_load && \
 	  ln -sf /usr/bin/db$${db}_dump db_dump
