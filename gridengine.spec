@@ -48,6 +48,14 @@
 %global have_layout 0
 %endif
 
+%global __requires_exclude \(libspool.*\|/usr/bin/\(tclsh\|python\|ruby\|ksh\)\)
+%global __provides_exclude_from %{sge_lib}/[^/]+/libspool.*\.so
+%{?filter_setup:
+%filter_from_provides /libspool.*\.so/d
+%filter_from_requires /\/usr\/bin\/\(tclsh\|python\|ruby\|ksh\)/d
+%filter_setup
+}
+
 Name:    gridengine
 Version: 8.1.7
 Release: 1%{?dist}
@@ -81,7 +89,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: jemalloc-devel
 %endif
 
-BuildRequires: gcc, make, binutils
 BuildRequires: /bin/csh, %{sslpkg}-devel, ncurses-devel, pam-devel
 BuildRequires: net-tools, %xmupkg-devel, %hwlocpkg-devel >= 1.1
 # The relevant package might be db4-devel or libdb-devel, so simplify
@@ -178,6 +185,7 @@ Programs needed to run a Grid Engine master host.
 Summary: Ruby binding for DRMAA library
 Group: Development/Libraries
 License: SISSL
+Requires: /usr/bin/ruby
 %if 0%{?rhel} >= 6 || 0%{?fedora}
 BuildArch: noarch
 %endif
