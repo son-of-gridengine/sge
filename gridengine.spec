@@ -350,6 +350,7 @@ fi
 %exclude %{sge_mandir}/man8/pam*8
 %exclude %{sge_mandir}/man3
 %exclude %{sge_lib}/*/pam*
+%exclude %{sge_lib}/*/libspool*
 %if %{with hadoop}
 %exclude %{sge_home}/hadoop
 %exclude %{sge_lib}/herd.jar
@@ -410,6 +411,7 @@ fi
 %{sge_mandir}/man8/sge_qmaster.8
 %{sge_mandir}/man8/sge_shadowd.8
 %{sge_mandir}/man1/qsched.1
+%{sge_lib}/*/libspool*
 
 %files drmaa4ruby
 %{sge_home}/util/resources/drmaa4ruby
