@@ -42,7 +42,7 @@
 %global _hardened_build 1
 
 # swing-layout is now in supported Fedora and EPEL6
-%if 0%{?fedora} > 18 || 0%{?el6}
+%if 0%{?fedora} > 18 || 0%{?el6} || 0%{?suse_version}
 %global have_layout 1
 %else
 %global have_layout 0
@@ -66,19 +66,14 @@ Prefix: %{sge_home}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # OpenSuSE support; SLES changes welcome
+# Fixme: maybe just depend on specific file names
 %if 0%{?suse_version}
-%global dbpkg db
 %global sslpkg libopenssl
+# Only in Factory as of OS 13.1
 %global hwlocpkg libhwloc
 %global xmupkg xorg-x11-libXmu
 %global with_jemalloc %nil
 %else
-%if 0%{?rhel} > 6
-# db4-devel available in 7, but doesn't provide /usr/include/db.h
-%global dbpkg libdb
-%else
-%global dbpkg db4
-%endif
 %global sslpkg openssl
 %global hwlocpkg hwloc
 %global xmupkg libXmu
@@ -87,23 +82,17 @@ BuildRequires: jemalloc-devel
 %endif
 
 BuildRequires: gcc, make, binutils
-BuildRequires: /bin/csh, %{sslpkg}-devel, %{dbpkg}-devel, ncurses-devel, pam-devel
+BuildRequires: /bin/csh, %{sslpkg}-devel, ncurses-devel, pam-devel
 BuildRequires: net-tools, %xmupkg-devel, %hwlocpkg-devel >= 1.1
-# This used to test %{?rhel}, but that's not defined on RHEL 5, and
-# I don't know whether _host_vendor distinguishes Fedora and RHEL.
-%if 0%{?fedora}
-%if %fedora > 17
-BuildRequires: motif-devel
-%else
-BuildRequires: lesstif-devel
-%endif
-%else
-# OK for SuSE
-BuildRequires: openmotif-devel
-%endif
+# The relevant package might be db4-devel or libdb-devel, so simplify
+# by requiring the header.  "zypper install /usr/include/db.h" doesn't work
+# on SuSE, so you have to install the packages explicitly.
+BuildRequires: /usr/include/db.h
+# This could be in lesstif-devel, motif-devel, or openmotif-devel
+BuildRequires: /usr/include/Xm/Xm.h
 %if %{with java}
 BuildRequires: java-devel >= 1.6.0, javacc, ant-junit
-%if 0%{?rhel}  < 7
+%if ! 0%{?fedora} && 0%{?rhel} < 7
 BuildRequires: ant-nodeps
 %endif
 %if %have_layout
@@ -114,8 +103,12 @@ BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
 Requires: binutils, ncurses, shadow-utils, net-tools, /bin/awk
-# for makewhatis
+%if 0%{?fedora} || 0%{?rhel} > 6
+Requires: man-db
+%else
+# for makewhatis, or SuSE mandb
 Requires: man
+%endif
 # There's an implicit dependency on perl(XML::Simple), which is in
 # package perl-XML-Simple but only in the optional-rpms repo on RH6.
 
@@ -139,7 +132,7 @@ Summary: Gridengine development files
 Group: Development/Libraries
 License: SISSL
 Requires: %{name} = %{version}-%{release}
-%if 0%{?rhel} >= 6
+%if 0%{?rhel} >= 6 || 0%{?fedora}
 BuildArch: noarch
 %endif
 
@@ -185,7 +178,7 @@ Programs needed to run a Grid Engine master host.
 Summary: Ruby binding for DRMAA library
 Group: Development/Libraries
 License: SISSL
-%if 0%{?rhel} >= 6
+%if 0%{?rhel} >= 6 || 0%{?fedora}
 BuildArch: noarch
 %endif
 
@@ -198,7 +191,7 @@ This binding is presumably not Grid Engine-specific.
 Summary: Grid Engine Hadoop integration
 Group: Applications/System
 License: SISSL
-%if 0%{?rhel} >= 6
+%if 0%{?rhel} >= 6 || 0%{?fedora}
 BuildArch: noarch
 %endif
 
@@ -211,7 +204,7 @@ Summary: Grid Engine GUI installer
 Group: Applications/System
 License: SISSL and LGPLv3+ and Apache License and others
 Requires: java >= 1.6.0
-%if 0%{?rhel} >= 6
+%if 0%{?rhel} >= 6 || 0%{?fedora}
 BuildArch: noarch
 %endif
 
@@ -320,7 +313,7 @@ rm -rf $RPM_BUILD_ROOT
    -M -r -c 'Grid Engine admin' %username 2>/dev/null || :
 
 %post
-if [ -f /usr/sbin/mandb ]; then
+if [ -f /usr/sbin/mandb -o  -f /usr/bin/mandb ]; then
   # Later Fedora
   mandb %{sge_home}/man
 else
@@ -351,6 +344,7 @@ fi
 %exclude %{sge_mandir}/man3
 %exclude %{sge_lib}/*/pam*
 %exclude %{sge_lib}/*/libspool*
+%exclude %{sge_home}/utilbin/*/spool*
 %if %{with hadoop}
 %exclude %{sge_home}/hadoop
 %exclude %{sge_lib}/herd.jar
