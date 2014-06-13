@@ -31,54 +31,54 @@ drmaa_strerror, drmaa_get_contact, drmaa_version, drmaa_get_DRM_system \- Miscel
 .nf
 \fBconst char *drmaa_strerror(\fB
 .RS
-\fBint drmaa_errno
+.BI int\  drmaa_errno
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
 .nf
-\fBint drmaa_get_contact(\fB
+\fBint drmaa_get_contact(\fP
 .RS
-\fBchar *contact,\fB
-\fBsize_t contact_len,\fB
-\fBchar *error_diagnosis,\fB
-\fBsize_t error_diag_len\fB
+.BI "char *" contact ,
+.BI size_t\  contact_len ,
+.BI "char *" error_diagnosis ,
+.BI size_t\  error_diag_len
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
 .nf
-\fBint drmaa_version(\fB
+\fBint drmaa_version(\fP
 .RS
-\fBunsigned int *major,\fB
-\fBunsigned int *minor,\fB
-\fBchar *error_diagnosis,\fB
-\fBsize_t error_diag_len\fB
+.BI "unsigned int *" major ,
+.BI "unsigned int *" minor ,
+.BI "char *" error_diagnosis ,
+.BI size_t\  error_diag_len
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
 .nf
-\fBint drmaa_get_DRM_system(\fB
+\fBint drmaa_get_DRM_system(\fP
 .RS
-\fBchar *drm_system,\fB
-\fBsize_t drm_system_len,\fB
-\fBchar *error_diagnosis,\fB
-\fBsize_t error_diag_len\fB
+.BI "char *" drm_system ,
+.BI size_t\  drm_system_len ,
+.BI "char *" error_diagnosis ,
+.BI size_t\  error_diag_len
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
 .nf
-\fBint drmaa_get_DRMAA_implementation(\fB
+\fBint drmaa_get_DRMAA_implementation(\fP
 .RS
-\fBchar *drm_impl,\fB
-\fBsize_t drm_impl_len,\fB
-\fBchar *error_diagnosis,\fB
-\fBsize_t error_diag_len\fB
+.BI "char *" drm_impl ,
+.BI size_t\  drm_impl_len ,
+.BI "char *" error_diagnosis ,
+.BI size_t\  error_diag_len
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
 .nf
 .\"
@@ -187,26 +187,32 @@ information is then provided in the buffer \fIerror_diagnosis\fP.
 .\"
 .SH "ERRORS"
 The drmaa_get_contact(), drmaa_version(), drmaa_get_DRM_system(), and
-drmaa_get_DRMAA_implementation() will fail if:
+drmaa_get_DRMAA_implementation() can fail with:
 .\" 
-.SS "DRMAA_ERRNO_INTERNAL_ERROR"
+.TP
+.B DRMAA_ERRNO_INTERNAL_ERROR
 Unexpected or internal DRMAA error, like system call failure, etc.
 .\" 
-.SS "DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE"
+.TP
+.B DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE
 Could not contact DRM system for this request.
 .\" 
-.SS "DRMAA_ERRNO_AUTH_FAILURE"
+.TP
+.B DRMAA_ERRNO_AUTH_FAILURE
 The specified request is not processed successfully due to authorization failure.
 .\" 
-.SS "DRMAA_ERRNO_INVALID_ARGUMENT"
+.TP
+.B DRMAA_ERRNO_INVALID_ARGUMENT
 The input value for an argument is invalid.
 .\" 
-.SS "DRMAA_ERRNO_NO_MEMORY"
+.TP
+.B DRMAA_ERRNO_NO_MEMORY
 Failed allocating memory.
 .PP
-The drmaa_get_contact() and drmaa_get_DRM_system() will fail if:
+The drmaa_get_contact() and drmaa_get_DRM_system() can fail with:
 .\" 
-.SS "DRMAA_ERRNO_NO_ACTIVE_SESSION"
+.TP
+.B DRMAA_ERRNO_NO_ACTIVE_SESSION
 Failed because there is no active session.
 .\" 
 .\" 

@@ -260,12 +260,13 @@ argument, to direct jobs to specific queue types.
 .PP
 The formerly supported types
 .B parallel
-And
+and
 .B checkpointing
 are not allowed anymore. A queue
 instance is implicitly of type parallel/checkpointing 
 if there is a parallel environment or a checkpointing interface specified
-for this queue instance in \fBpe_list\fP/\fBckpt_list\fP. 
+for this queue instance in \fBpe_list\fP/\fBckpt_list\fP, and is
+implicitly BATCH if it has a parallel environment attached.
 Formerly possible settings e.g.
 .PP
 .nf

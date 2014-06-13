@@ -29,28 +29,27 @@ drmaa_job_ps, drmaa_control, \- Monitor and control jobs
 .\"
 .\"
 .nf
-\fBint drmaa_job_ps(\fB
+\fBint drmaa_job_ps(\fP
 .RS
-\fBconst char *job_id,\fB
-\fBint *remote_ps,\fB
-\fBchar *error_diagnosis,\fB
-\fBsize_t error_diag_len\fB
+.BI "const char *" job_id ,
+.BI "int *" remote_ps ,
+.BI "char *" error_diagnosis ,
+.BI size_t\  error_diag_len
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
 .nf
 \fBint drmaa_control(\fB
 .RS
-\fBconst char *jobid,\fB
-\fBint action,\fB
-\fBchar *error_diagnosis,\fB
-\fBsize_t error_diag_len\fB
+.BI "const char *" jobid ,
+.BI int\  action ,
+.BI "char *" error_diagnosis ,
+.BI size_t\  error_diag_len
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
-.nf
 .\"
 .\"
 .\"
@@ -62,18 +61,20 @@ listed below.  See
 for the correspondence between them and the xxQS_NAMExx status.
 .sp 1
 .RS
-.nf
-DRMAA_PS_UNDETERMINED        job status cannot be determined
-DRMAA_PS_QUEUED_ACTIVE       job is queued and active
-DRMAA_PS_SYSTEM_ON_HOLD      job is queued and in system hold
-DRMAA_PS_USER_ON_HOLD        job is queued and in user hold
-DRMAA_PS_USER_SYSTEM_ON_HOLD job is queued and in user and system hold
-DRMAA_PS_RUNNING             job is running
-DRMAA_PS_SYSTEM_SUSPENDED    job is system suspended
-DRMAA_PS_USER_SUSPENDED      job is user suspended
-DRMAA_PS_DONE                job finished normally
-DRMAA_PS_FAILED              job finished, but failed
-.fi
+.TS
+tab(@);
+l l.
+DRMAA_PS_UNDETERMINED        @ job status cannot be determined
+DRMAA_PS_QUEUED_ACTIVE       @ job is queued and active
+DRMAA_PS_SYSTEM_ON_HOLD      @ job is queued and in system hold
+DRMAA_PS_USER_ON_HOLD        @ job is queued and in user hold
+DRMAA_PS_USER_SYSTEM_ON_HOLD @ job is queued and in user and system hold
+DRMAA_PS_RUNNING             @ job is running
+DRMAA_PS_SYSTEM_SUSPENDED    @ job is system suspended
+DRMAA_PS_USER_SUSPENDED      @ job is user suspended
+DRMAA_PS_DONE                @ job finished normally
+DRMAA_PS_FAILED              @ job finished, but failed
+.TE
 .RE
 .sp 1
 Jobs' user hold and user suspend states can be controlled via 
@@ -92,18 +93,22 @@ session opened using
 Legal values for \fIaction\fP and their meanings are: 
 .sp 1
 .RS
-.nf
-DRMAA_CONTROL_SUSPEND        suspend the job 
-DRMAA_CONTROL_RESUME         resume the job,
-DRMAA_CONTROL_HOLD           put the job on-hold 
-DRMAA_CONTROL_RELEASE        release the hold on the job
-DRMAA_CONTROL_TERMINATE      kill the job
-.fi
+.TS
+tab(@);
+l l.
+DRMAA_CONTROL_SUSPEND   @ suspend the job
+DRMAA_CONTROL_RESUME    @ resume the job
+DRMAA_CONTROL_HOLD      @ put the job on-hold
+DRMAA_CONTROL_RELEASE   @ release the hold on the job
+DRMAA_CONTROL_TERMINATE @ kill the job
+.TE
 .RE
 .sp 1
 The DRMAA suspend/resume operations are equivalent to the use of 
-`-sj <jobid>' and `-usj <jobid>' options with  
-xxQS_NAMExx
+.BI \-sj\  jobid
+and
+.BI \-usj\  jobid
+options with xxQS_NAMExx
 .M qmod 1 .
 The DRMAA hold/release operations are equivalent to the use of 
 xxQS_NAMExx
@@ -163,42 +168,53 @@ information is then provided in the buffer, \fIerror_diagnosis\fP.
 .\"
 .\"
 .SH "ERRORS"
-The drmaa_job_ps(), and drmaa_control() will fail if:
+The drmaa_job_ps() and drmaa_control() functions may fail with:
 .\" 
-.SS "DRMAA_ERRNO_INTERNAL_ERROR"
+.TP
+.B DRMAA_ERRNO_INTERNAL_ERROR
 Unexpected or internal DRMAA error, like system call failure, etc.
 .\" 
-.SS "DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE"
+.TP
+.B DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE
 Could not contact DRM system for this request.
 .\" 
-.SS "DRMAA_ERRNO_AUTH_FAILURE"
+.TP
+.B DRMAA_ERRNO_AUTH_FAILURE
 The specified request was not processed successfully due to authorization failure.
 .\" 
-.SS "DRMAA_ERRNO_INVALID_ARGUMENT"
+.TP
+.B DRMAA_ERRNO_INVALID_ARGUMENT
 The input value for an argument is invalid.
 .\" 
-.SS "DRMAA_ERRNO_NO_ACTIVE_SESSION"
+.TP
+.B DRMAA_ERRNO_NO_ACTIVE_SESSION
 Failed because there is no active session.
 .\" 
-.SS "DRMAA_ERRNO_NO_MEMORY"
+.TP
+.B DRMAA_ERRNO_NO_MEMORY
 Failed allocating memory.
 .\" 
-.SS "DRMAA_ERRNO_INVALID_JOB"
+.TP
+.B DRMAA_ERRNO_INVALID_JOB
 The specified job does not exist.
 .PP
 .\"
-The drmaa_control() will fail if:
+The drmaa_control() function may fail with:
 .\" 
-.SS "DRMAA_ERRNO_RESUME_INCONSISTENT_STATE"
+.TP
+.B DRMAA_ERRNO_RESUME_INCONSISTENT_STATE
 The job is not suspended. The resume request will not be processed.
 .\" 
-.SS "DRMAA_ERRNO_SUSPEND_INCONSISTENT_STATE"
+.TP
+.B DRMAA_ERRNO_SUSPEND_INCONSISTENT_STATE
 The job is not running and thus cannot be suspended.
 .\" 
-.SS "DRMAA_ERRNO_HOLD_INCONSISTENT_STATE"
+.TP
+.B DRMAA_ERRNO_HOLD_INCONSISTENT_STATE
 The job cannot be moved to a hold state.
 .\" 
-.SS "DRMAA_ERRNO_RELEASE_INCONSISTENT_STATE"
+.TP
+.B DRMAA_ERRNO_RELEASE_INCONSISTENT_STATE
 The job is not in a hold state.
 .PP
 .\" 
