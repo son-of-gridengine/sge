@@ -27,71 +27,66 @@ drmaa_run_job, drmaa_run_bulk_jobs, drmaa_get_next_job_id, drmaa_get_num_job_ids
 .\"
 .\"
 .nf
-\fBint drmaa_run_job(\fB
+\fBint drmaa_run_job(\fP
 .RS
-\fBchar *job_id,\fB
-\fBsize_t job_id_len,\fB
-\fBdrmaa_job_template_t *jt,\fB
-\fBchar *error_diagnosis,\fB 
-\fBsize_t error_diag_len\fB
+.BI "char *" job_id ,
+.BI size_t\  job_id_len ,
+.BI "drmaa_job_template_t *" jt ,
+.BI "char *" error_diagnosis ,
+.BI size_t\  error_diag_len
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
 .\"
 .\"
 .\"
 .nf
-\fBint drmaa_run_bulk_jobs(\fB
+\fBint drmaa_run_bulk_jobs(\fP
 .RS
-drmaa_job_ids_t **jobids,\fB
-drmaa_job_template_t *jt,\fB
-int start,\fB
-int end,\fB
-int incr,\fB
-char *error_diagnosis,\fB
-size_t error_diag_len\fB
+.BI "drmaa_job_ids_t **" jobids ,
+.BI "drmaa_job_template_t *" jt ,
+.BI int\  start ,
+.BI int\  end ,
+.BI int\  incr ,
+.BI "char *" error_diagnosis ,
+.BI size_t\  error_diag_len
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
-.\"
 .\"
 .\"
 .nf
-\fBint drmaa_get_next_job_id(\fB
+\fBint drmaa_get_next_job_id(\fP
 .RS
-\fBdrmaa_job_ids_t* values,\fB
-\fBchar *value,\fB
-\fBint value_len\fB
+.BI "drmaa_job_ids_t *" values ,
+.BI "char *" value ,
+.BI int\  value_len
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
-.\"
 .\"
 .\"
 .nf
-\fBint drmaa_get_num_job_ids(\fB
+\fBint drmaa_get_num_job_ids(\fP
 .RS
-\fBdrmaa_job_ids_t* values,\fB
-\fBint *size\fB
+.BI "drmaa_job_ids_t *" values ,
+.BI "int *" size
 .RE
 .fi
-);\fB
+\fB);\fP
 .PP
-.\"
 .\"
 .\"
 .nf
 \fBvoid drmaa_release_job_ids(\fB
 .RS
-\fBdrmaa_job_ids_t* values\fB
+.BI "drmaa_job_ids_t *" values
 .RE
 .fi
-);\fB
-.PP
-.nf
+\fB);\fP
 .\"
 .\"
 .\"
@@ -191,39 +186,48 @@ information is then provided in the buffer \fIerror_diagnosis\fP.
 .\"
 .\"
 .SH "ERRORS"
-The drmaa_run_job(), drmaa_run_bulk_jobs(), and drmaa_get_next_job_id() will fail if:
-.\" 
-.SS "DRMAA_ERRNO_INTERNAL_ERROR"
+The drmaa_run_job(), drmaa_run_bulk_jobs(), and
+drmaa_get_next_job_id() functions can fail with:
+.\"
+.TP
+.B DRMAA_ERRNO_INTERNAL_ERROR
 Unexpected or internal DRMAA error, like system call failure, etc.
 .\" 
-.SS "DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE"
+.TP
+.B DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE
 Could not contact DRM system for this request.
 .\" 
-.SS "DRMAA_ERRNO_AUTH_FAILURE"
+.TP
+.B DRMAA_ERRNO_AUTH_FAILURE
 The specified request is not processed successfully due to authorization failure.
 .\" 
-.SS "DRMAA_ERRNO_INVALID_ARGUMENT"
+.TP
+.B DRMAA_ERRNO_INVALID_ARGUMENT
 The input value for an argument is invalid.
 .\" 
-.SS "DRMAA_ERRNO_NO_ACTIVE_SESSION"
+.TP
+.B DRMAA_ERRNO_NO_ACTIVE_SESSION
 Failed because there is no active session.
 .\" 
-.SS "DRMAA_ERRNO_NO_MEMORY"
+.TP
+.B DRMAA_ERRNO_NO_MEMORY
 Failed allocating memory.
 .\" 
 .PP
-The drmaa_run_job() and drmaa_run_bulk_jobs() functions will fail if:
-.SS "DRMAA_ERRNO_TRY_LATER "
+The drmaa_run_job() and drmaa_run_bulk_jobs() functions can fail with:
+.TP
+.B DRMAA_ERRNO_TRY_LATER 
 The DRM system indicated that it is too busy to accept the job. A retry may succeed, however.
 .\" 
-.SS "DRMAA_ERRNO_DENIED_BY_DRM"
+.TP
+.B DRMAA_ERRNO_DENIED_BY_DRM
 The DRM system rejected the job. The job will never be accepted due to DRM configuration or job template settings.
 .\" 
 .PP
-The drmaa_get_next_job_id() will fail if:
-.SS "DRMAA_ERRNO_INVALID_ATTRIBUTE_VALUE"
+The drmaa_get_next_job_id() function can fail with:
+.TP
+.B DRMAA_ERRNO_INVALID_ATTRIBUTE_VALUE
 When there are no more entries in the vector.
-.PP
 .\" 
 .\" 
 .\" 

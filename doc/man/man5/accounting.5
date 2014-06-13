@@ -91,11 +91,11 @@ Priority value assigned to the job, corresponding to the \fBpriority\fP
 parameter in the queue configuration (see
 .M queue_conf 5 ).
 .SS "\fB9. submission_time\fP"
-Submission time.
+Submission time in seconds since the Unix epoch (1970-01-01 00:00:00 UTC).
 .SS "\fB10. start_time\fP"
-Start time.
+Start time in seconds since the epoch.
 .SS "\fB11. end_time\fP"
-End time.
+End time in seconds since the epoch.
 .SS "\fB12. failed\fP"
 Indicates the problem which occurred in case a job failed (at the
 system level, as opposed to the job script or binary having non-zero
