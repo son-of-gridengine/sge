@@ -29,25 +29,23 @@ drmaa_init, drmaa_exit \- Start/finish xxQS_NAMExx DRMAA session
 .\"
 .\"
 .nf
-\fBint drmaa_init(\fB
+\fBint drmaa_init(\fP
 .RS
-\fBconst char *contact,\fB
-\fBchar *error_diagnosis,\fB
-\fBsize_t error_diag_len\fB
+.BI "const char *" contact ,
+.BI "char *" error_diagnosis ,
+.BI size_t\  error_diag_len
 .RE
 .fi
-\fB);\fB
+\fB);\fP
 .PP
 .nf
-\fBint drmaa_exit(\fB
+\fBint drmaa_exit(\fP
 .RS
-\fBchar *error_diagnosis,\fB
-\fBsize_t error_diag_len\fB
+.BI "char *" error_diagnosis ,
+.BI size_t\  error_diag_len
 .RE
 .fi
-\fB);\fB
-.PP
-.nf
+\fB);\fP
 .\"
 .\"
 .\"
@@ -68,11 +66,11 @@ error.
 specify which xxQS_NAMExx cell to use. If 
 \fIcontact\fP 
 is NULL, the default xxQS_NAMExx cell will be used. In the 1.0 implementation 
-\fIcontact\fP may have the following value: \fIsession=<session_id>\fP.  To
+\fIcontact\fP may have the following value: \fBsession=\fIsession_id\fP.  To
 determine the session_id, the
 .M drmaa_get_contact 3
 function should be called after the session has already been initialized.  By
-passing the \fIsession=<session_id>\fP string to the drmaa_init() function,
+passing the \fBsession=\fIsession_id\fP string to the drmaa_init() function,
 instead of creating a new session, DRMAA will attempt to reconnect to the
 session indicated by the \fIsession_id\fP.  The result of reconnecting to a
 previous session is that all jobs previously submitted in that session \fBthat
@@ -145,43 +143,54 @@ information is then provided in the buffer \fIerror_diagnosis\fP.
 .\"
 .\"
 .SH "ERRORS"
-The drmaa_init() and drmaa_exit() functions will fail if:
-.\" 
-.SS "DRMAA_ERRNO_INTERNAL_ERROR"
+The drmaa_init() and drmaa_exit() functions can fail with:
+.\"
+.TP
+.B DRMAA_ERRNO_INTERNAL_ERROR
 Unexpected or internal DRMAA error, like system call failure, etc.
 .\" 
-.SS "DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE"
+.TP
+.B DRMAA_ERRNO_DRM_COMMUNICATION_FAILURE
 Could not contact DRM system for this request.
 .\" 
-.SS "DRMAA_ERRNO_AUTH_FAILURE"
+.TP
+.B DRMAA_ERRNO_AUTH_FAILURE
 The specified request is not processed successfully due to authorization failure.
 .\" 
-.SS "DRMAA_ERRNO_INVALID_ARGUMENT"
+.TP
+.B DRMAA_ERRNO_INVALID_ARGUMENT
 The input value for an argument is invalid.
 .\" 
 .PP
-The drmaa_init() will fail if:
-.SS "DRMAA_ERRNO_INVALID_CONTACT_STRING"
+The drmaa_init() function can fail with:
+.TP
+.B DRMAA_ERRNO_INVALID_CONTACT_STRING
 Initialization failed due to invalid contact string.
 .\" 
-.SS "DRMAA_ERRNO_DEFAULT_CONTACT_STRING_ERROR"
+.TP
+.B DRMAA_ERRNO_DEFAULT_CONTACT_STRING_ERROR
 Could not use the default contact string to connect to DRM system.
 .\" 
-.SS "DRMAA_ERRNO_DRMS_INIT_FAILED"
+.TP
+.B DRMAA_ERRNO_DRMS_INIT_FAILED
 Initialization failed due to failure to init DRM system.
 .\" 
-.SS "DRMAA_ERRNO_ALREADY_ACTIVE_SESSION"
+.TP
+.B DRMAA_ERRNO_ALREADY_ACTIVE_SESSION
 Initialization failed due to existing DRMAA session.
 .\" 
-.SS "DRMAA_ERRNO_NO_MEMORY"
+.TP
+.B DRMAA_ERRNO_NO_MEMORY
 Failed allocating memory.
 .\" 
 .PP
-The drmaa_exit() will fail if:
-.SS "DRMAA_ERRNO_NO_ACTIVE_SESSION"
+The drmaa_exit() function can fail with:
+.TP
+.B DRMAA_ERRNO_NO_ACTIVE_SESSION
 Failed because there is no active session.
 .\" 
-.SS "DRMAA_ERRNO_DRMS_EXIT_ERROR"
+.TP
+.B DRMAA_ERRNO_DRMS_EXIT_ERROR
 DRM system disengagement failed.
 .PP
 .\" 
