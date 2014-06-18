@@ -369,6 +369,7 @@ fi
 %{sge_home}/mpi
 %{sge_home}/pvm
 %{sge_home}/util
+%config(noreplace) )%{sge_home}/util/sgeCA/*cnf
 %config(noreplace) %{sge_home}/util/install_modules/inst_template.conf
 %{sge_home}/utilbin
 %attr(4755,root,root) %{sge_home}/utilbin/*/testsuidroot
