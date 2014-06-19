@@ -23,7 +23,7 @@
 # Configure these:
 # SGE_ROOT=/opt/sge
 # export SGE_ROOT
-. /etc/profile.d/sge.sh
+[ -f /etc/profile.d/sge.sh ] && . /etc/profile.d/sge.sh
 qping=$SGE_ROOT/bin/$($SGE_ROOT/util/arch)/qping
 
 if [ -f /bin/basename ]; then

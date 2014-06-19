@@ -119,8 +119,8 @@ ErrUsage()
    "   -kspwf <file>       keystore pw file\n" \
    "   -ksout <file>       keystore output file\n" \
    "   -sysks              generate keystore for SGE daemon\n" \
-   "   -showCaTop          echo caTop path\n" \
-   "   -showCaLocalTop     echo caLocalTop path\n" \
+   "   -showCaTop          caTop path\n" \
+   "   -showCaLocalTop     caLocalTop path\n" \
    $myname
 
    exit 1
