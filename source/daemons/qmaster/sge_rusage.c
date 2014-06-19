@@ -56,8 +56,8 @@
 
 #define ACTFILE_FPRINTF_FORMAT \
 "%s%c%s%c%s%c%s%c%s%c"sge_u32"%c%s%c"sge_u64"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c" \
-sge_u64"%c%f%c%f%c%f%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c%f%c" \
-sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c"sge_u32"%c%s%c%s%c%s%c%d%c"sge_u32"%c%f%c%f%c%f%c%s%c%f%c%s%c%f%c"sge_u32"%c"sge_u32"" \
+sge_u64"%c%f%c%f%c%f%c"sge_u64"%c"sge_u64"%c"sge_u64"%c"sge_u64"%c"sge_u64"%c"sge_u64"%c"sge_u64"%c%f%c" \
+sge_u64"%c"sge_u64"%c"sge_u64"%c"sge_u64"%c"sge_u64"%c"sge_u64"%c%s%c%s%c%s%c%d%c"sge_u32"%c%f%c%f%c%f%c%s%c%f%c%s%c%f%c"sge_u32"%c"sge_u32"" \
 ARCH_COLUMN \
 "\n"
 
@@ -71,7 +71,7 @@ ARCH_COLUMN \
 *     reporting_get_ulong_usage() -- return usage of a certain attribute
 *
 *  SYNOPSIS
-*     static u_long32
+*     static u_long64
 *     reporting_get_ulong_usage(const lList *usage_list, lList *reported_list, 
 *                               const char *name, const char *rname, u_long32 def) 
 *
@@ -97,7 +97,7 @@ ARCH_COLUMN \
 *     u_long32 def            - default value
 *
 *  RESULT
-*     static u_long32 - the usage
+*     static u_long64 - the usage
 *
 *  NOTES
 *     MT-NOTE: reporting_get_ulong_usage() is MT safe 
@@ -105,15 +105,15 @@ ARCH_COLUMN \
 *  SEE ALSO
 *     sgeobj/usage/usage_list_get_ulong_usage()
 *******************************************************************************/
-static u_long32
+static u_long64
 reporting_get_ulong_usage(const lList *usage_list, lList *reported_list,
                            const char *name, const char *rname, u_long32 def)
 {
    /* total usage */
-   u_long32 usage = usage_list_get_ulong_usage(usage_list, name, def);
+   u_long64 usage = usage_list_get_ulong_usage(usage_list, name, def);
 
    if (reported_list != NULL) {
-      u_long32 reported;
+      u_long64 reported;
 
       /* usage already reported */
       reported = usage_list_get_ulong_usage(reported_list, rname, def);
@@ -135,7 +135,7 @@ reporting_get_ulong_usage(const lList *usage_list, lList *reported_list,
 *     reporting_get_ulong_usage_sum() -- return usage for a certain attribute
 *
 *  SYNOPSIS
-*     static u_long32
+*     static u_long64
 *     reporting_get_ulong_usage_sum(const lList *usage_list, lList *reported_list,
 *                                   bool accounting_summary, const lListElem *ja_task,
 *                                   const char *name, const char *rname, u_long32 def)
@@ -168,7 +168,7 @@ reporting_get_ulong_usage(const lList *usage_list, lList *reported_list,
 *     u_long32 def             - default value
 *
 *  RESULT
-*     static u_long32 - the usage
+*     static u_long64 - the usage
 *
 *  NOTES
 *     MT-NOTE: reporting_get_ulong_usage_sum() is MT safe 
@@ -176,12 +176,12 @@ reporting_get_ulong_usage(const lList *usage_list, lList *reported_list,
 *  SEE ALSO
 *     sge_rusage/reporting_get_ulong_usage()
 *******************************************************************************/
-static u_long32
+static u_long64
 reporting_get_ulong_usage_sum(const lList *usage_list, lList *reported_list,
                                bool accounting_summary, const lListElem *ja_task,
                                const char *name, const char *rname, u_long32 def)
 {
-   u_long32 usage = reporting_get_ulong_usage(usage_list, reported_list, name, rname, def);
+   u_long64 usage = reporting_get_ulong_usage(usage_list, reported_list, name, rname, def);
 
    /* when we do an accounting summary, we also have to sum up the pe task usage */
    if (accounting_summary) {
