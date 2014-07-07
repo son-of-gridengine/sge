@@ -259,6 +259,9 @@ const char* sge_get_schedd_text( int nr )
       case SCHEDD_INFO_NOTINHARDQUEUELST        :
          return MSG_SCHEDD_INFO_NOTINHARDQUEUELST         ;  
  
+      case SCHEDD_INFO_NOTPARALLELQUEUE         :
+         return MSG_SCHEDD_INFO_NOTPARALLELQUEUE          ;
+
       case SCHEDD_INFO_NOTINQUEUELSTOFPE        :
          return MSG_SCHEDD_INFO_NOTINQUEUELSTOFPE         ;  
  
@@ -271,6 +274,12 @@ const char* sge_get_schedd_text( int nr )
       case SCHEDD_INFO_QUEUENOTINTERACTIVE      :
          return MSG_SCHEDD_INFO_QUEUENOTINTERACTIVE       ; 
  
+      case SCHEDD_INFO_NOTASERIALQUEUE          :
+         return MSG_SCHEDD_INFO_NOTASERIALQUEUE           ;
+
+      case SCHEDD_INFO_NOTPARALLELJOB           :
+         return MSG_SCHEDD_INFO_NOTPARALLELJOB            ;
+
       case SCHEDD_INFO_NOTREQFORCEDRES          :
          return MSG_SCHEDD_INFO_NOTREQFORCEDRES           ;   
  
