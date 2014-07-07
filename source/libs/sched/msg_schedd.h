@@ -122,13 +122,13 @@
 #define MSG_SCHEDD_INFO_EXCLPRJ                       _MESSAGE(47091, _("Jobs can not run because excluded project list of queue does not allow it"))
 #define MSG_SCHEDD_INFO_QUEUENOTREQUESTABLE           _MESSAGE(47092, _("Jobs can not run because queues are configured to be non requestable"))
 #define MSG_SCHEDD_INFO_NOTINHARDQUEUELST             _MESSAGE(47093, _("Jobs can not run because queue instance is not contained in its hard queue list"))
-/* #define MSG_SCHEDD_INFO_NOTPARALLELQUEUE              _MESSAGE(47094, _("Jobs can not run because queue instance is not a parallel queue") )  */
+#define MSG_SCHEDD_INFO_NOTPARALLELQUEUE              _MESSAGE(47094, _("Jobs can not run because queue instance is not a parallel queue") )
 #define MSG_SCHEDD_INFO_NOTINQUEUELSTOFPE             _MESSAGE(47095, _("Jobs can not run because queue instance is not in queue list of PE") )  
 #define MSG_SCHEDD_INFO_NOTACKPTQUEUE                 _MESSAGE(47096, _("Jobs can not run because queue instance is not of type checkpointing") )  
 #define MSG_SCHEDD_INFO_NOTINQUEUELSTOFCKPT           _MESSAGE(47097, _("Jobs can not run because queue instance is not in queue list of ckpt interface definition"))
 #define MSG_SCHEDD_INFO_QUEUENOTINTERACTIVE           _MESSAGE(47098, _("Jobs can not run because queue instance is not interactive") )  
-/* #define MSG_SCHEDD_INFO_NOTASERIALQUEUE               _MESSAGE(47099, _("Jobs can not run because queue instance is not of type batch or transfer")) */
-/* #define MSG_SCHEDD_INFO_NOTPARALLELJOB                _MESSAGE(47100, _("Jobs can not run in queue instance because the job is not parallel")) */
+#define MSG_SCHEDD_INFO_NOTASERIALQUEUE               _MESSAGE(47099, _("Jobs can not run because queue instance is not of type batch or transfer"))
+#define MSG_SCHEDD_INFO_NOTPARALLELJOB                _MESSAGE(47100, _("Jobs can not run in queue instance because the job is not parallel"))
 #define MSG_SCHEDD_INFO_NOTREQFORCEDRES               _MESSAGE(47101, _("Jobs can not run because they do not request 'forced' resource") )   
 #define MSG_SCHEDD_INFO_WOULDSETQEUEINALARM           _MESSAGE(47102, _("Jobs would set queue in load alarm state") )     
 #define MSG_SCHEDD_INFO_NOSLOTSINQUEUE                _MESSAGE(47103, _("Jobs can not run because queue has 0 slots") )    
