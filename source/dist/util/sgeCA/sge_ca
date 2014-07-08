@@ -89,11 +89,16 @@ ErrUsage()
    "   -print <cert>       print a <cert>\n" \
    "   -printkey <key>     print a <key>\n" \
    "   -printcrl <crl>     print a <crl>\n" \
+   "   -rrenew <user>      revoke and extend the certificate of <user>\n" \
    "   -renew <user>       extend the certificate of <user>\n" \
    "   -renew_ca           extend the CA certificate\n" \
    "   -renew_sys          extend the daemon certificate\n" \
+   "   -rrenew_sys         revoke and extend the daemon certificate\n" \
    "   -renew_sdm <g>      renew certificate of a SDM daemon with\n" \
    "                       <g>=Common Name of the SDM daemon\n" \
+   "   -rrenew_sdm <g>     revoke and renew certificate of a SDM daemon with\n" \
+   "                       <g>=Common Name of the SDM daemon\n" \
+   "   -revoke <cert>      Revoke certificate <cert>\n" \
    "   -days <days>        days of validity of the certificate/CRL\n" \
    "   -sha1               use SHA-1 instead of MD5 as message digest\n" \
    "   -encryptkey         use DES to encrypt the generated key with a passphrase\n" \
@@ -1295,6 +1300,7 @@ RenewCA()
 #
 # $1 = certificate type ("daemon" or "user" or "sdm_daemon"
 # $2 = userId   (Unix user name of common name of sdm_damon)
+# $3 = revoke (blank or "true")
 #
 RenewCert()
 {
@@ -1417,114 +1423,114 @@ RenewCert()
 
    umask 077
 
-   # revoke the old certificate and create the certificate revocation list
-   ExecuteAsAdmin $CA -config $TMPFILE1 -policy policy_anything \
-                      -batch $DAYS \
-                      -revoke $CERTFILE 
-
-   if [ $? != 0 ]; then
-      PrintError "Can't revoke %s." $CERTFILE
-      return 1
-   else
-
-      # sign certificate request
-      ExecuteAsAdmin $CA -config $TMPFILE1 \
-                         -policy policy_anything -batch $DAYS \
-                         -notext -out $NEWCERTFILE -infiles $REQFILE
+   if [ "$3" = "true" ]; then
+      # revoke the old certificate
+      ExecuteAsAdmin $CA -config $TMPFILE1 -policy policy_anything \
+                         -batch $DAYS \
+                         -revoke $CERTFILE 
 
       if [ $? != 0 ]; then
-         PrintError "Can't renew %s." $CERTFILE
+         PrintError "Can't revoke %s." $CERTFILE
          return 1
-      else  
-      
-         # create the certificate revocation list
-         ExecuteAsAdmin $CA -config $TMPFILE1 -policy policy_anything \
-                            -batch $CRLDAYS \
-                            -gencrl -out ${CRLFILE}.tmp
+      fi
+   fi
 
-         if [ $? != 0 ]; then
-            PrintError "Can't generate revocation list %s.." $CRLFILE
-            return 1
+   # sign certificate request
+   ExecuteAsAdmin $CA -config $TMPFILE1 \
+                      -policy policy_anything -batch $DAYS \
+                      -notext -out $NEWCERTFILE -infiles $REQFILE
+
+   if [ $? != 0 ]; then
+      PrintError "Can't renew %s." $CERTFILE
+      return 1
+   else  
+      
+      # create the certificate revocation list
+      ExecuteAsAdmin $CA -config $TMPFILE1 -policy policy_anything \
+                         -batch $CRLDAYS \
+                         -gencrl -out ${CRLFILE}.tmp
+
+      if [ $? != 0 ]; then
+         PrintError "Can't generate revocation list %s.." $CRLFILE
+         return 1
+      else
+         if [ $1 = daemon ]; then
+            $INFOTEXT "renewed certificate for SGE daemons" 
          else
-            if [ $1 = daemon ]; then
-               $INFOTEXT "renewed certificate for SGE daemons" 
-            else
-               $INFOTEXT "renewed certificate for user '%s' in '%s'" $2 $KEYDIR
-            fi
-         fi  
+            $INFOTEXT "renewed certificate for user '%s' in '%s'" $2 $KEYDIR
+         fi
+      fi  
 
-         if [ -f $OLDCERTFILE ]; then
-            ExecuteAsAdmin $RM -f $OLDCERTFILE
-            if [ $? != 0 ]; then
-               PrintError "Can not delete old cert file (%s)"  $OLDCERTFILE
-               return 1
-            fi
-         fi
-
-         ExecuteAsAdmin $CP $CERTFILE $OLDCERTFILE
+      if [ -f $OLDCERTFILE ]; then
+         ExecuteAsAdmin $RM -f $OLDCERTFILE
          if [ $? != 0 ]; then
-            PrintError "Could not copy file (%s -> %s)"  $CERTFILE $OLDCERTFILE
-            return 1
-         fi
-         ExecuteAsAdmin $MV $NEWCERTFILE $CERTFILE
-         if [ $? != 0 ]; then
-            PrintError "Could not move file (%s -> %s)"  $NEWCERTFILE $CERTFILE
-            return 1
-         fi
-         ExecuteAsAdmin $CHMOD 644 $CERTFILE
-         if [ $? != 0 ]; then
-            PrintError "chmod failed (%s)" $CERTFILE
-            return 1
-         fi
-
-         # copy renewed cert.pem to $CERTFILE_PUBLIC_DIR
-         if [ "$1" = user ]; then
-            umask 022
-            if [ ! -d "$CERTFILE_PUBLIC_DIR" ]; then
-               ExecuteAsAdmin $MKDIR -m 755 -p $CERTFILE_PUBLIC_DIR
-               if [ $? != 0 ]; then
-                  umask 077
-                  PrintError "Could not create %s"  $CERTFILE_PUBLIC_DIR
-                  return 1
-               fi
-            fi
-            ExecuteAsAdmin $CP $CERTFILE $CERTFILE_PUBLIC_DIR
-            if [ $? != 0 ]; then
-               umask 077
-               PrintError "Could not copy file (%s -> %s)"  $CERTFILE $CERTFILE_PUBLIC_DIR
-               return 1
-            fi
-            ExecuteAsAdmin $CHMOD 644 $CERTFILE_PUBLIC_DIR/cert.pem
-            if [ $? != 0 ]; then
-               umask 077
-               PrintError "Could not chown 644 file %s"  $CERTFILE_PUBLIC_DIR/cert.pem
-               return 1
-            fi
-            umask 077
-         fi
-      
-         if [ "$1" != daemon ]; then
-            Execute $CP -f $NEWKEYDIR/* $KEYDIR
-            if [ $? != 0 ]; then
-               PrintError "Could not copy files (%s/\* -> %s)"  $NEWKEYDIR $KEYDIR
-               return 1
-            fi
-         fi
-
-         ExecuteAsAdmin $MV ${CRLFILE}.tmp $CRLFILE
-         if [ $? != 0 ]; then
-            PrintError "Could not move file (%s -> %s)"  ${CRLFILE}.tmp $CRLFILE
-            return 1
-         fi
-         ExecuteAsAdmin $CHMOD 644 $CRLFILE 
-         if [ $? != 0 ]; then
-            PrintError "chmod failed (%s)" $CERTFILE
+            PrintError "Can not delete old cert file (%s)"  $OLDCERTFILE
             return 1
          fi
       fi
- 
-   fi
 
+      ExecuteAsAdmin $CP $CERTFILE $OLDCERTFILE
+      if [ $? != 0 ]; then
+         PrintError "Could not copy file (%s -> %s)"  $CERTFILE $OLDCERTFILE
+         return 1
+      fi
+      ExecuteAsAdmin $MV $NEWCERTFILE $CERTFILE
+      if [ $? != 0 ]; then
+         PrintError "Could not move file (%s -> %s)"  $NEWCERTFILE $CERTFILE
+         return 1
+      fi
+      ExecuteAsAdmin $CHMOD 644 $CERTFILE
+      if [ $? != 0 ]; then
+         PrintError "chmod failed (%s)" $CERTFILE
+         return 1
+      fi
+
+      # copy renewed cert.pem to $CERTFILE_PUBLIC_DIR
+      if [ "$1" = user ]; then
+         umask 022
+         if [ ! -d "$CERTFILE_PUBLIC_DIR" ]; then
+            ExecuteAsAdmin $MKDIR -m 755 -p $CERTFILE_PUBLIC_DIR
+            if [ $? != 0 ]; then
+               umask 077
+               PrintError "Could not create %s"  $CERTFILE_PUBLIC_DIR
+               return 1
+            fi
+         fi
+         ExecuteAsAdmin $CP $CERTFILE $CERTFILE_PUBLIC_DIR
+         if [ $? != 0 ]; then
+            umask 077
+            PrintError "Could not copy file (%s -> %s)"  $CERTFILE $CERTFILE_PUBLIC_DIR
+            return 1
+         fi
+         ExecuteAsAdmin $CHMOD 644 $CERTFILE_PUBLIC_DIR/cert.pem
+         if [ $? != 0 ]; then
+            umask 077
+            PrintError "Could not chown 644 file %s"  $CERTFILE_PUBLIC_DIR/cert.pem
+            return 1
+         fi
+         umask 077
+      fi
+   
+      if [ "$1" != daemon ]; then
+         Execute $CP -f $NEWKEYDIR/* $KEYDIR
+         if [ $? != 0 ]; then
+            PrintError "Could not copy files (%s/\* -> %s)"  $NEWKEYDIR $KEYDIR
+            return 1
+         fi
+      fi
+
+      ExecuteAsAdmin $MV ${CRLFILE}.tmp $CRLFILE
+      if [ $? != 0 ]; then
+         PrintError "Could not move file (%s -> %s)"  ${CRLFILE}.tmp $CRLFILE
+         return 1
+      fi
+      ExecuteAsAdmin $CHMOD 644 $CRLFILE 
+      if [ $? != 0 ]; then
+         PrintError "chmod failed (%s)" $CERTFILE
+         return 1
+      fi
+   fi
+ 
    Execute $RM -f $TMPFILE $TMPFILE1 
 
    if [ "$1" != daemon ]; then
@@ -1868,6 +1874,7 @@ AUTO="false"
 # CommandLine Argument Parsing
 #
 WHICH="undef"
+revoke=""
 newkey=newkey.pem
 newreq=newreq.pem
 newcert=newcert.pem
@@ -2143,28 +2150,31 @@ while [ $ARGC != 0 ]; do
       shift
       ARGC=`expr $ARGC - 1`
       ;;
-   -renew)
+   -renew|-rrenew)
       if [ $ARGC -lt 2 ]; then
          PrintError "-renew needs argument"
          ErrUsage
       fi
       WHICH="renew"
+      if echo "$1" | egrep '^-rr' >/dev/null; then revoke="true"; fi
       user=$2
       shift
       ARGC=`expr $ARGC - 1`
       ;;
-   -renew_sdm)
+   -renew_sdm|-rrenew_sdm)
       if [ $ARGC -lt 2 ]; then
-         PrintError "-renew_sdm needs argument"
+         PrintError "-rrenew_sdm needs argument"
          ErrUsage
       fi
       WHICH="renew_sdm"
+      if echo "$1" | egrep '^-rr' >/dev/null; then revoke="true"; fi
       user=$2
       shift
       ARGC=`expr $ARGC - 1`
       ;;
-   -renew_sys)
+   -renew_sys|-rrenew_sys)
       WHICH="renew_sys"
+      if echo "$1" | egrep '^-rr' >/dev/null; then revoke="true"; fi
       ;;
    -renew_ca)
       WHICH="renew_ca"
@@ -2275,19 +2285,19 @@ printcrl)
     PrintX509 crl $newcert
     ;;
 renew) 
-    RenewCert user $user
+    RenewCert user $user $revoke
     if [ $? != 0 ]; then
        exit 1
     fi
     ;;
 renew_sdm) 
-    RenewCert sdm_daemon $user
+    RenewCert sdm_daemon $user $revoke
     if [ $? != 0 ]; then
        exit 1
     fi
     ;;
 renew_sys) 
-    RenewCert daemon $ADMINUSER
+    RenewCert daemon $ADMINUSER $revoke
     if [ $? != 0 ]; then
        exit 1
     fi
