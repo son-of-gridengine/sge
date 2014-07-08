@@ -68,8 +68,21 @@ Export the certificate and key for user \fIuser\fP or SDM daemon \fIg\fP in PKCS
 Create keystore for all users with a certificate and key, the keystore
 for a single user \fIuser\fP, or the keystore containing the xxQS_NAMExx daemon certificate and key.
 .IP "\fB\-renew\fP \fIuser\fP |\fB \-renew_ca \fP|\fB \-renew_sys \fP|\fB \-renew_sdm\fP \fIg\fP [\fIcommand options\fP]"
-Renew the corresponding certificates for user \fIuser\fP, for the CA,
-for the xxQS_NAMExx daemon, or the SDM daemon with common name \fIg\fP.
+Renew the certificate for user \fIuser\fP, for the CA,
+for the xxQS_NAMExx daemon, or the SDM daemon with common name
+\fIg\fP.  The old certificate remains valid until it expires.
+NB. The option of this name was re-named to \fB\-rrenew\fP in
+xxQS_NAMExx 8.1.9.
+.IP "\fB\-rrenew\fP \fIuser\fP |\fB \-rrenew_ca \fP|\fB \-rrenew_sys \fP|\fB \-rrenew_sdm\fP \fIg\fP [\fIcommand options\fP]"
+Renew the certificate for user \fIuser\fP, for the CA,
+for the xxQS_NAMExx daemon, or the SDM daemon with common name
+\fIg\fP, and revoke the old ones (updating the revocation list).
+NB. This requires \fBunique_subject=no\fP in \fIsge_ssl_template.cnf\fP,
+which is the default for new installations, but might not be set for
+old ones.
+.IP "\fB\-revoke\fP \fIcert\fP"
+Revoke the certificate \fIcert\fP, which should be an actual PEM file,
+updating the revocation list.
 .PP
 In the above, "\fIcommand options\fP" is a combination of the following
 options depending on the command. The COMMAND DETAILS section explains
