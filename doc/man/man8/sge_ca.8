@@ -46,30 +46,30 @@ CSP mode improves the security behavior of xxQS_NAMExx by enabling OpenSSL secur
 There follows a list of possible commands and command options to give
 an overview of what functionality is available. For further details about every command refer to the COMMAND DETAILS section.
 .SH COMMAND OVERVIEW
-.IP "\fBsge_ca\fP [\fB\-help\fP]"
+.IP "\fB\-help\fP"
 Show usage.
-.IP "\fBsge_ca \-init \fP[\fIcommand options\fP]"
+.IP "\fB\-init \fP[\fIcommand options\fP]"
 Create the infrastructure for a new xxQS_NAMExx Certificate Authority
 with its corresponding files and directories, and a set of keys and
 certificates for the xxQS_NAMExx daemon, root and admin user.
-.IP "\fBsge_ca \-req \fP|\fB \-verify \fP\fIcert\fP |\fB \-sign \fP|\fB \-copy \fP[\fIcommand options\fP]"
+.IP "\fB\-req \fP|\fB \-verify \fP\fIcert\fP |\fB \-sign \fP|\fB \-copy \fP[\fIcommand options\fP]"
 Manipulate individual keys and certificates.
-.IP "\fBsge_ca \-print \fP\fIcert\fP |\fB \-printkey\fP \fIkey\fP |\fB \-printcrl\fP \fIcrl\fP"
+.IP "\fB\-print \fP\fIcert\fP |\fB \-printkey\fP \fIkey\fP |\fB \-printcrl\fP \fIcrl\fP"
 Print out certificates, keys and certificate revocation lists in human readable form. 
-.IP "\fBsge_ca \-showCaTop \fP|\fB \-showCaLocalTop \fP[\fIcommand options\fP]"
+.IP "\fB\-showCaTop \fP|\fB \-showCaLocalTop \fP[\fIcommand options\fP]"
 Echo the $CATOP or $CALOCALTOP directory. This command is usually run as root on the qmaster host after a CA infrastructure has been created. If "\fB\-cadir\fP", "\fB\-catop\fP" or "\fB\-calocaltop\fP" are set, the corresponding directories are printed.
-.IP "\fBsge_ca \-usercert\fP \fIuser file\fP |\fB \-user\fP \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP |\fB \-sdm_daemon\fP \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP [\fIcommand options\fP]"
+.IP "\fB\-usercert\fP \fIuser file\fP |\fB \-user\fP \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP |\fB \-sdm_daemon\fP \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP [\fIcommand options\fP]"
 Create certificates and keys for a bunch of users contained in \fIuser
 file\fP, a single user, or SDM daemon
 in the form \fIu\fP\fB:\fP\fIg\fP\fB:\fP\fIe\fP.
-.IP "\fBsge_ca \-pkcs12\fP \fIuser\fP |\fB \-sdm_pkcs12\fP \fIg\fP |\fB \-sys_pkcs12 \fP[\fIcommand options\fP]"
+.IP "\fB\-pkcs12\fP \fIuser\fP |\fB \-sdm_pkcs12\fP \fIg\fP |\fB \-sys_pkcs12 \fP[\fIcommand options\fP]"
 Export the certificate and key for user \fIuser\fP or SDM daemon \fIg\fP in PKCS12 format and to export the xxQS_NAMExx daemon certificate and key in PKCS12 format.
-.IP "\fBsge_ca \-userks \fP|\fB \-ks\fP \fIuser\fP |\fB \-sysks \fP[\fIcommand options\fP]"
+.IP "\fB\-userks \fP|\fB \-ks\fP \fIuser\fP |\fB \-sysks \fP[\fIcommand options\fP]"
 Create keystore for all users with a certificate and key, the keystore
 for a single user \fIuser\fP, or the keystore containing the xxQS_NAMExx daemon certificate and key.
-.IP "\fBsge_ca \-renew\fP \fIuser\fP |\fB \-renew_ca \fP|\fB \-renew_sys \fP|\fB \-renew_sdm\fP \fIg\fP [\fIcommand options\fP]"
+.IP "\fB\-renew\fP \fIuser\fP |\fB \-renew_ca \fP|\fB \-renew_sys \fP|\fB \-renew_sdm\fP \fIg\fP [\fIcommand options\fP]"
 Renew the corresponding certificates for user \fIuser\fP, for the CA,
-for the xxQS_NAMExx daemon, or the SDM daemon \fIg\fP common name,
+for the xxQS_NAMExx daemon, or the SDM daemon with common name \fIg\fP.
 .PP
 In the above, "\fIcommand options\fP" is a combination of the following
 options depending on the command. The COMMAND DETAILS section explains
