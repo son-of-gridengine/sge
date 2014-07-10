@@ -87,8 +87,15 @@ only on that queue.
 .sp 1
 When an administrator attaches a resource attribute to an object, they also have
 to assign a value
-to it: the resource limit. Another way to get a resource attribute value is by
-configuring a load sensor for that attribute. 
+to it: the resource limit.  A load sensor may be run to adjust the value
+presented by a host down from that limit.  For instance, to support
+requests for free space in the /tmp filesystem, set up a load sensor
+to report the value (probably using
+.M df 1 )
+and attach a sufficiently high limit to each host, e.g.
+.nf
+qconf -aattr exechost complex_values tmp_free=10T $(qconf -sel)
+.fi
 .PP
 .\"
 .SS "\fBDefault queue resource attributes\fP"
@@ -159,7 +166,7 @@ such as the CPU load average (see
 .MO uptime 1 ),
 or load values defined by the xxQS_NAMExx administration (see the
 .B load_sensor
-parameter in the cluster configuration (see
+parameter in the cluster or host configuration (see
 .M xxqs_name_sxx_conf 5
 .\" and the
 .\" .I xxQS_NAMExx Installation and Administration Guide
@@ -192,7 +199,7 @@ lower level. The user-defined value always overrides the load value.
 .BR >= ,
 .BR > ,
 .BR <= ,
-And
+and
 .B <
 operators can only be overridden when the new value is more
 restrictive than the old one.

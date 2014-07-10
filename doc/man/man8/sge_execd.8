@@ -72,17 +72,25 @@ or
 .IR qidle
 (when
 .B USE_QIDLE
-is set).
+is set \- see 
+.M sge_conf 5 ).
 The executable path of the load sensor is invoked by
 .I xxqs_name_sxx_execd
-on a regular basis 
+on a regular basis (governed by
+.B load_report_time
+in
+.M sge_conf 5 ),
 and delivers one or multiple load figures for the execution host (e.g.
 users currently logged in) or the complete cluster (e.g. free
 disk space on a network wide scratch file system).  A load
 sensor may be a script or a binary executable. In either case
 its handling of the STDIN and STDOUT streams and its control
-flow must comply with the following rules:
-.PP
+flow must comply with the following rules.  Load sensors are restarted
+if their modification time changes or they are killed.  If they read a
+configuration file, for instance, killing will be necessary
+to  pick up modifications to it unless the sensor will re-read a
+modified version.
+.SS "Load sensor interface"
 The load sensor must be written as an infinite loop, waiting at
 a certain point for input from STDIN. If the string "quit"
 is read from STDIN, the load sensor should exit.  When an
