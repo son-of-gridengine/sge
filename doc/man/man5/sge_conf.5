@@ -188,7 +188,9 @@ searches for an executable file named
 in the execution host's xxQS_NAMExx binary directory path.
 If such a file is found, it is treated like the configurable load sensors
 defined in \fBload_sensor\fP. This facility is intended for pre-installing
-a default load sensor.
+a default load sensor.  See
+.M sge_execd 8
+for information on writing load sensors.
 .\"
 .\"
 .SS "\fBprolog\fP"
@@ -1454,6 +1456,8 @@ created by the job user on this execution host.
 .br
 \fIS_MEMORYLOCKED\fP and \fIH_MEMORYLOCKED\fP specify the maximum number of bytes of
 virtual memory that may be locked into RAM.
+This typically needs to be set to "unlimited" for use with openib
+Infiniband, and possibly similar transports.
 .br
 \fIS_LOCKS\fP and \fIH_LOCKS\fP specify the maximum number of file locks any process
 of a job may establish.
@@ -1581,7 +1585,7 @@ default is no.  Without
 usage is reported as RSS+swap, instead of PSS+swap, or simply as the
 VMsize if the swap value isn't available.
 .PP
-.IP \fIprint_malloc_info\fB
+.IP \fIprint_malloc_info\fP
 See
 .B qmaster_params
 above.

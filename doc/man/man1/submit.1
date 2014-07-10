@@ -768,9 +768,9 @@ stream of prolog and epilog is redirected.
 If the \fIpath\fP constitutes an absolute path name, the
 error-path attribute of the job is set to \fIpath\fP, including
 the \fIhostname\fP. If the path name is relative, xxQS_NAMExx
-expands \fIpath\fP either with the current working directory
-path (if the \fB\-cwd\fP switch (see above) is also
-specified) or with the home directory path. If 
+expands \fIpath\fP, either relative to the current working directory
+(if the \fB\-cwd\fP switch \- see above \- is also
+specified) or to the home directory. If
 \fIhostname\fP is present, the standard error stream will be
 placed in the corresponding location only if the job runs on
 the specified host. If the path contains a ":" without a
@@ -1394,8 +1394,8 @@ process it would be undefined which process would get the input.
 Available for \fIqsub\fP and \fIqalter\fP only, but currently silently
 ignored by \fIqsh\fP, \fIqrsh\fP, and \fIqlogin\fP.
 .sp 1
-The path used for the standard output stream of the job. The
-\fBpath\fP is handled as described in the \fB\-e\fP option for
+Specify the path used for the standard output stream of the job.
+\fIpath\fP is handled as described in the \fB\-e\fP option for
 the standard error stream.
 .sp 1
 By default the file name for standard
@@ -1681,8 +1681,8 @@ to wait for the job to complete before exiting.  If the job completes successful
 exit code will be that of the completed job.  If the job fails to complete
 successfully,
 .I qsub
-will print out a error message indicating why the job failed and will have an
-exit code of 1.  If
+will print an error message to the standard error stream indicating
+why the job failed, and will have an exit code of 1.  If
 .I qsub
 is interrupted, e.g. with CTRL-C, before the job completes, the job will be
 canceled.
@@ -1704,21 +1704,20 @@ If \fB\-sync y\fP is used in conjunction with \fB\-t\fP,
 will wait for all the job's tasks to complete before exiting.  If all
 the job's tasks complete successfully,
 .IR qsub 's
-exit code will be that of the first completed job tasks with a non-zero exit
+exit code will be that of the first completed job task with a non-zero exit
 code, or 0 if all job tasks exited with an exit code of 0.  If any of the job's
 tasks fail to complete successfully,
 .I qsub
-will print out an error message indicating why the job task(s) failed and will
-have an exit code of 1.  If
+will print an error message to the standard error stream indicating
+why the job task(s) failed, and will have an exit code of 1.  If
 .I qsub
 is interrupted, e.g. with CTRL-C, before the job completes, all of the job's
 tasks will be canceled.
 .sp 1
 Information that this switch was specified during submission is not
 available in the JSV context.
-(see \fB\-jsv\fP option above or find more information concerning JSV in
-.M jsv 1 )
-.
+(See \fB\-jsv\fP option above or find more information concerning JSV in
+.M jsv 1 .)
 .\"
 .IP "\fB\-S\fP [[\fIhostname\fP]\fB:\fP]\fIpathname\fP\fB,\fP..."
 Available for \fIqsub\fP, \fIqsh\fP and \fIqalter\fP.

@@ -161,13 +161,16 @@ a detailed description of the layout of the parallel environment to be
 setup by the start-up procedure. Each line of the file refers to a host
 on which parallel processes are to be run. The first entry of each line
 denotes the hostname, the second entry the number of parallel processes
-to be run on the host, the third entry the name of the queue, and the
-fourth entry a multi-processor configuration (or "NONE").  If
+to be run on the host, the third entry the name of the queue.  If
 .B \-binding pe
 is specified on job submission, the fourth column is the core binding
 specification as colon-separated socket-core pairs, like "0,0:0,1",
 meaning the first core on the first socket and the second
-core on the first socket can be used for binding.
+core on the first socket can be used for binding.  Otherwise it will
+be "UNDEFINED".  With the obsolete queue
+.B processors
+specification the fourth entry could be a multi-processor
+configuration (or "<NULL>").
 .IP "\fI$host\fP"
 The name of the host on which the startup or stop procedures are run.
 .IP "\fI$ja_task_id\fP"

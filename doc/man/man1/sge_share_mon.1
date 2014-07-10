@@ -40,19 +40,21 @@ sge_share_mon \- print xxQS_NAMExx live share tree
 .I sge_share_mon
 prints the live state of the xxQS_NAMExx share tree (as opposed to
 .M qmon 1 's
-graphical view).  It does so for a given number (default infinite) of
-intervals.
+static graphical view).  It does so for a given number (default infinite) of
+intervals; use
+.B \-c 1
+for a snapshot.
 .SH OPTIONS
 .TP
 .BI \-c\  count
 Print
 .I count
-collections (default infinite)
+collections (default infinite).
 .TP
 .BI \-d\  delimiter
 Delimit output columns with string
 .I delimiter
-(default a tab)
+(default a tab).
 .TP
 .BI \-f\  field\fR,...
 Print the given
@@ -79,7 +81,7 @@ The available fields in the default order are
 .BR ltio .
 .TP
 .B \-h
-Print a header listing field names
+Print a header listing field names.
 .TP
 .BI \-i\  interval
 Collect over
@@ -89,7 +91,7 @@ seconds (default 15)
 .BI \-l\  delimiter
 Delimit nodes output with string
 .I delimiter
-(default a carriage return)
+(default a carriage return).
 .TP
 .BI \-m\  output_mode
 Open
@@ -111,12 +113,12 @@ Print in the form
 .BI \-o\  output_file
 Print to file
 .IR output_file
-(default standard output)
+(default standard output).
 .TP
 .BI \-r\  delimiter
 Delimit collection records with string
 .I delimiter
-(default a carriage return)
+(default a carriage return).
 .TP
 .BI \-s\  string_format
 .MO printf 3 -style
@@ -129,7 +131,7 @@ Show times formatted per
 (Default is seconds since the epoch.)
 .TP
 .B \-u
-Print decayed usage (since timestamp) in nodes
+Print decayed usage (since timestamp) in nodes.
 .TP
 .B \-x
 Don't print non-leaf nodes.
