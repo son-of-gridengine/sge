@@ -1,15 +1,3 @@
-sge (8.1.8) unstable; urgency=low
-
-  * Build with MUNGE
-
- -- Dave Love <fx@gnu.org>  Fri, 25 Oct 2013 22:48:29 +0100
-
-sge (8.1.7) unstable; urgency=low
-
-  * New version.
-
- -- Dave Love <fx@gnu.org>  Fri, 16 May 2014 17:22:50 +0100
-
 sge (8.1.6) unstable; urgency=low
 
   * New version.
