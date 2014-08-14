@@ -57,7 +57,7 @@
 }
 
 Name:    gridengine
-Version: 8.1.8pre
+Version: 8.1.8
 
 %if 0%{?fedora}
 Epoch:   1
@@ -387,7 +387,7 @@ fi
 %{sge_home}/mpi
 %{sge_home}/pvm
 %{sge_home}/util
-%config(noreplace) )%{sge_home}/util/sgeCA/*cnf
+%config(noreplace) %{sge_home}/util/sgeCA/*cnf
 %config(noreplace) %{sge_home}/util/install_modules/inst_template.conf
 %{sge_home}/utilbin
 %attr(4755,root,root) %{sge_home}/utilbin/*/testsuidroot
@@ -450,6 +450,16 @@ fi
 
 
 %changelog
+* Thu Aug 14 2014 Dave Love <d.love@liverpool.ac.uk> 8.1.8
+- Add rpm Epoch on Fedora
+- Mark sgeCA/*cnf files as config
+- Sanitize requires/provides somewhat
+- Require db.h and Xm.h, not packages
+- Conditions on ant-nodeps and db devel BRs
+- Move spool objects to qmaster package
+- Maybe use packaged swing-layout
+- Require xterm for execd package (for qsh)
+
 * Wed Jan 22 2014 Dave Love <d.love@liverpool.ac.uk> 8.1.7-1
 - Support RHEL7 beta
 - Remove -system-libs
