@@ -113,10 +113,17 @@ BuildRequires: swing-layout
 BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
-# was in net-tools, but is in its own package in Fedora 19
+# hostname was in net-tools, but is in its own package in Fedora 19;
+# requiring /bin/hostname doesn't work generally as it's in /usr/bin in
+# Fedora > 20.
+%if 0%{?fedora} >= 19
+BuildRequires: hostname
+Requires: hostname
+%else
 BuildRequires: /bin/hostname
-Requires: binutils, ncurses, shadow-utils, /bin/hostname, /bin/awk, which
-Requires: openssl
+Requires: /bin/hostname
+%endif
+Requires: binutils, ncurses, shadow-utils, /bin/awk, which, openssl
 %if 0%{?fedora} || 0%{?rhel} > 6
 Requires: man-db
 %else
