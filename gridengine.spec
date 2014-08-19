@@ -446,6 +446,23 @@ fi
 
 
 %changelog
+
+* Thu Aug 14 2014 Dave Love <d.love@liverpool.ac.uk> 8.1.8
+- Add rpm Epoch on Fedora
+- Mark sgeCA/*cnf files as config
+- Sanitize requires/provides somewhat
+- Require db.h and Xm.h, not packages
+- Conditions on ant-nodeps and db devel BRs
+- Move spool objects to qmaster package
+- Maybe use packaged swing-layout
+- Require xterm for execd package (for qsh)
+
+* Wed Jan 22 2014 Dave Love <d.love@liverpool.ac.uk> 8.1.7-1
+- Support RHEL7 beta
+- Remove -system-libs
+- Port to SuSE
+- Require xterm for execd (for qsh)
+
 * Fri Aug 16 2013 Dave Love <d.love@liverpool.ac.uk> 8.1.4
 - Require /bin/ps for execd, qmaster
 

@@ -1,3 +1,23 @@
+sge (8.1.9) unstable; urgency=low
+
+  * Build with MUNGE
+
+ -- Dave Love <fx@gnu.org>  Fri, 25 Oct 2013 22:48:29 +0100
+
+sge (8.1.8) unstable; urgency=low
+
+  * Fix possible FTBFS
+  * Modify depends
+  * Add conffiles
+
+ -- Dave Love <fx@gnu.org>  Thu, 14 Aug 2014 21:58:50 +0100
+
+sge (8.1.7) unstable; urgency=low
+
+  * New version.
+
+ -- Dave Love <fx@gnu.org>  Fri, 16 May 2014 17:22:50 +0100
+
 sge (8.1.6) unstable; urgency=low
 
   * New version.
