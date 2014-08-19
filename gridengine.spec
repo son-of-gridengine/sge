@@ -113,8 +113,10 @@ BuildRequires: swing-layout
 BuildRequires: hadoop-0.20 >= 0.20.2+923.197
 %endif
 %endif
-BuildRequires: net-tools, man, jemalloc-devel
-Requires: binutils, ncurses, shadow-utils, net-tools, /bin/awk
+# was in net-tools, but is in its own package in Fedora 19
+BuildRequires: /bin/hostname
+Requires: binutils, ncurses, shadow-utils, /bin/hostname, /bin/awk, which
+Requires: openssl
 %if 0%{?fedora} || 0%{?rhel} > 6
 Requires: man-db
 %else
