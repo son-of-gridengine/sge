@@ -176,7 +176,7 @@ License: BSD and LGPLv3+ and MIT and SISSL and others
 Requires: %{name} = %{epch}%{version}-%{release}
 Requires(postun): %{name} = %{epch}%{version}-%{release}
 Requires(preun): %{name} = %{epch}%{version}-%{release}
-Requires: /bin/ps xterm mail
+Requires: /bin/ps xterm /bin/mail
 
 %description execd
 Programs needed to run a Grid Engine execution host.
