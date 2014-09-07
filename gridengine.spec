@@ -435,6 +435,7 @@ fi
 %{sge_mandir}/man8/sge_shadowd.8
 %{sge_mandir}/man1/qsched.1
 %{sge_lib}/*/libspool*
+%{sge_home}/utilbin/*/spool*
 
 %files drmaa4ruby
 %{sge_home}/util/resources/drmaa4ruby
