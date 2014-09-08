@@ -52,7 +52,7 @@
 %global __provides_exclude_from %{sge_lib}/[^/]+/libspool.*\.so
 %{?filter_setup:
 %filter_from_provides /libspool.*\.so/d
-%filter_from_requires /\/usr\/bin\/\(tclsh\|python\|ruby\|ksh\)/d
+%filter_from_requires /\/usr\/bin\/\(tclsh\|python\|ruby\|ksh\)\|libspool.*\.so/d
 %filter_setup
 }
 
