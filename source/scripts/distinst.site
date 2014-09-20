@@ -57,6 +57,7 @@ instguiinst=true
 instbdb=false
 instopenssl=false
 insthadoop=true
+instjobs=true
 QMON_NEED_SHARED_LIBRARIES=""
 
 # Use this in distinst.private if you have a suitable install(1), such
