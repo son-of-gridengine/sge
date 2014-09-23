@@ -379,9 +379,7 @@ fi
 %endif
 %exclude %{sge_home}/pvm/src
 %exclude %{sge_bin}/process-scheduler-log
-%exclude %{sge_bin}/qsched
 %exclude %{sge_home}/util/resources/drmaa4ruby
-%exclude %{sge_mandir}/man1/qsched.1
 %{sge_bin}
 %{sge_lib}
 %doc %{sge_docdir}
@@ -429,11 +427,9 @@ fi
 %{sge_bin}/*/sge_qmaster
 %{sge_bin}/*/sge_shadowd
 %{sge_bin}/process-scheduler-log
-%{sge_bin}/qsched
 %{sge_home}/install_qmaster
 %{sge_mandir}/man8/sge_qmaster.8
 %{sge_mandir}/man8/sge_shadowd.8
-%{sge_mandir}/man1/qsched.1
 %{sge_lib}/*/libspool*
 %{sge_home}/utilbin/*/spool*
 
