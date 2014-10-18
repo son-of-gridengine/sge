@@ -294,7 +294,7 @@ int main(int argc, char **argv)
 
    /* are we using qidle or not */
    sge_ls_qidle(mconf_get_use_qidle());
-   sge_ls_gnu_ls(1);
+   sge_ls_qls(1);
    
    DPRINTF(("use_qidle: %d\n", mconf_get_use_qidle()));
 

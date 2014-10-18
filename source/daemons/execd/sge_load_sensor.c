@@ -84,9 +84,9 @@ static lList *ls_list = NULL;   /* LS_Type */
 static int has_to_use_qidle = 0;
 
 /* 
- * should we start the (GNU)-load sensor with 
+ * should we start the qload sensor
  */
-static int has_to_use_gnu_load_sensor = 0;
+static int has_to_use_qload_sensor = 0;
 
 
 /****** execd/loadsensor/sge_ls_get_pid() *************************************
@@ -643,12 +643,12 @@ void sge_ls_qidle(int qidle)
    has_to_use_qidle = qidle;
 }
 
-/****** execd/loadsensor/sge_ls_gnu_ls() **************************************
+/****** execd/loadsensor/sge_ls_qls() **************************************
 *  NAME
-*     sge_ls_gnu_ls -- enable/disable qloadsensor
+*     sge_ls_qls -- enable/disable qloadsensor
 *
 *  SYNOPSIS
-*     static void sge_ls_gnu_ls(int gnu_ls)
+*     static void sge_ls_qls(int qls)
 *
 *  FUNCTION
 *     enable/disable qidle loadsensor
@@ -657,9 +657,9 @@ void sge_ls_qidle(int qidle)
 *     qidle: 1 - enable qidle
 *            0 - disable qidle
 ******************************************************************************/
-void sge_ls_gnu_ls(int gnu_ls)
+void sge_ls_qls(int qls)
 {
-   has_to_use_gnu_load_sensor = gnu_ls;
+   has_to_use_qload_sensor = qls;
 }
 
 /****** execd/loadsensor/sge_ls_start() ***************************************
@@ -681,7 +681,7 @@ void sge_ls_gnu_ls(int gnu_ls)
 *
 *     Depending on global variables additional internal
 *     loadsensors will be started:
-*      'has_to_use_gnu_load_sensor' == 1  => start qloadsensor
+*      'has_to_use_qload_sensor' == 1  => start qloadsensor
 *      'has_to_use_qidle' == 1            => start qidle
 *     
 *  INPUTS
@@ -761,20 +761,19 @@ static int sge_ls_start(const char *qualified_hostname, const char *binary_path,
       }
    }
 
-   /* GNU loadsensor */
-   if (has_to_use_gnu_load_sensor) {
+   if (has_to_use_qload_sensor) {
       snprintf(scriptfiles_buffer, MAX_STRING_SIZE, "%s/%s/%s",
                binary_path, sge_get_arch(),
-               GNU_LOADSENSOR_NAME);
+               QLOADSENSOR_NAME);
       
       if (SGE_STAT(scriptfiles_buffer, &stat_buffer) != 0) {
          snprintf(scriptfiles_buffer, MAX_STRING_SIZE, "%s/%s",
-                  binary_path, GNU_LOADSENSOR_NAME);
+                  binary_path, QLOADSENSOR_NAME);
       }
       
       ls_elem = lGetElemStr(ls_list, LS_command, scriptfiles_buffer);
       if (ls_elem == NULL) {
-         ls_elem = sge_ls_create_ls(qualified_hostname, GNU_LOADSENSOR_NAME, scriptfiles_buffer);
+         ls_elem = sge_ls_create_ls(qualified_hostname, QLOADSENSOR_NAME, scriptfiles_buffer);
 
          if (ls_list == NULL) {
             ls_list = lCreateList("", LS_Type);
@@ -914,7 +913,7 @@ int sge_ls_get(const char *qualified_hostname, const char *binary_path, lList **
       /* the modification time of the ls script changed */
       if (!restart) {
          if (ls_command && SGE_STAT(ls_command, &st)) {
-            if (!strcmp(GNU_LOADSENSOR_NAME, ls_name) ||
+            if (!strcmp(QLOADSENSOR_NAME, ls_name) ||
                 !strcmp(IDLE_LOADSENSOR_NAME, ls_name)) {
                WARNING((SGE_EVENT, MSG_LS_NOMODTIME_SS, ls_command,
                       strerror(errno)));
