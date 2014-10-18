@@ -35,7 +35,7 @@
 #include <sys/time.h>
 
 #define IDLE_LOADSENSOR_NAME "qidle"
-#define GNU_LOADSENSOR_NAME "qloadsensor"
+#define QLOADSENSOR_NAME "qloadsensor"
 
 enum { 
    LS_OK = 0,
@@ -53,7 +53,7 @@ void trigger_ls_restart(void);
 
 void sge_ls_qidle(int);
 
-void sge_ls_gnu_ls(int);
+void sge_ls_qls(int);
 
 void set_ls_fds(fd_set *fds);
 
