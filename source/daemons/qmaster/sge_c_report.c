@@ -60,7 +60,9 @@
 #include "sge_event_master.h"
 #include "reschedule.h"
 
+#if LICENCE_REPORT
 static int update_license_data(sge_gdi_ctx_class_t *ctx, lListElem *hep, lList *lp_lic); 
+#endif
 
 
 /****** sge_c_report() *******************************************************
@@ -213,11 +215,13 @@ void sge_c_report(sge_gdi_ctx_class_t *ctx, char *rhost, char *commproc, int id,
          /*
          ** save number of processors
          */
+#if LICENCE_REPORT
          MONITOR_EPROC(monitor);
          ret = update_license_data(ctx, hep, lGetList(report, REP_list)); 
          if (ret) {
             ERROR((SGE_EVENT, MSG_LICENCE_ERRORXUPDATINGLICENSEDATA_I, ret));
          }
+#endif
          break;
 
       case NUM_REP_REPORT_JOB:
@@ -258,6 +262,7 @@ void sge_c_report(sge_gdi_ctx_class_t *ctx, char *rhost, char *commproc, int id,
    DRETURN_VOID;
 } /* sge_c_report */
 
+#if LICENCE_REPORT
 /*
 ** NAME
 **   update_license_data
@@ -316,4 +321,5 @@ static int update_license_data(sge_gdi_ctx_class_t *ctx, lListElem *hep, lList *
 
    DRETURN(0);
 }
+#endif
 
