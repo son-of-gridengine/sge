@@ -85,8 +85,10 @@ static int
 execd_add_load_report(sge_gdi_ctx_class_t *ctx, lList *report_list, u_long32 now, u_long32 *next_send);
 static int 
 execd_add_conf_report(sge_gdi_ctx_class_t *ctx, lList *report_list, u_long32 now, u_long32 *next_send);
+#if LICENCE_REPORT
 static int 
 execd_add_license_report(sge_gdi_ctx_class_t *ctx, lList *report_list, u_long32 now, u_long32 *next_send);
+#endif
 static int 
 execd_add_job_report(sge_gdi_ctx_class_t *ctx, lList *report_list, u_long32 now, u_long32 *next_send);
 static int 
@@ -101,7 +103,9 @@ static int sge_get_hwthreads(const char *qualified_hostname, lList **lpp);
 report_source execd_report_sources[] = {
    { NUM_REP_REPORT_LOAD, execd_add_load_report , 0 },
    { NUM_REP_REPORT_CONF, execd_add_conf_report , 0 },
+#if LICENCE_REPORT
    { NUM_REP_REPORT_PROCESSORS, execd_add_license_report , 0 },
+#endif
    { NUM_REP_REPORT_JOB, execd_add_job_report , 0 },
    { 0, NULL }
 };
@@ -313,6 +317,8 @@ execd_add_conf_report(sge_gdi_ctx_class_t *ctx, lList *report_list, u_long32 now
    DRETURN(0);
 }
 
+/* might just be useful for something else */
+#if LICENCE_REPORT
 static int 
 execd_add_license_report(sge_gdi_ctx_class_t *ctx, lList *report_list, u_long32 now, u_long32 *next_send) 
 {
@@ -350,6 +356,7 @@ execd_add_license_report(sge_gdi_ctx_class_t *ctx, lList *report_list, u_long32 
    }
    DRETURN(0);
 }
+#endif
 
 static int 
 execd_add_job_report(sge_gdi_ctx_class_t *ctx, lList *report_list, u_long32 now, u_long32 *next_send) 
