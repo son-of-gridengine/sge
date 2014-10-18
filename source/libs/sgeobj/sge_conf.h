@@ -164,5 +164,6 @@ bool print_malloc_info(void);
 bool mconf_get_ignore_ngroups_max_limit(void);
 bool mconf_get_use_cgroups(void);
 bool mconf_get_use_smaps(void);
+bool mconf_get_demand_ls(void);
 
 #endif /* __SGE_CONF_H */

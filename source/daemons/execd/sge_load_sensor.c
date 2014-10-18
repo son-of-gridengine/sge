@@ -270,6 +270,10 @@ static int sge_ls_start_ls(const char *qualified_hostname, lListElem *this_ls)
    DPRINTF(("%s: successfully started load sensor \"%s\"\n",
             SGE_FUNC, lGetString(this_ls, LS_command)));
 
+   /* request first load report after starting */
+   if (!mconf_get_demand_ls())
+      ls_send_command(this_ls, "\n");
+
    return LS_OK;
 }
 
@@ -440,6 +444,7 @@ static int read_ls(void)
    int wait = 1;
    int highest_fd;
    int ret;
+   bool demand = mconf_get_demand_ls();
 
    DENTER(TOP_LAYER, "read_ls");
 
@@ -451,45 +456,47 @@ static int read_ls(void)
       }
 
       /* request load report from ls */
-      ls_send_command(ls_elem, "\n");
+      if (demand) ls_send_command(ls_elem, "\n");
 
       DPRINTF(("receiving from %s\n", lGetString(ls_elem, LS_command)));
 
       highest_fd = fileno(file);
       while (flag) {
          if (fscanf(file, "%[^\n]\n", input) != 1) {
-            FD_ZERO(&readfds);
-            FD_SET(highest_fd, &readfds);
+            if (demand) {
+               FD_ZERO(&readfds);
+               FD_SET(highest_fd, &readfds);
       
-            /* wait up to 1 second per line for reading report */
-            timeleft.tv_sec = wait;
-            timeleft.tv_usec = 0;
-            ret = select(highest_fd + 1, &readfds, NULL, NULL, &timeleft);
-            if (ret == -1) {
-               switch (errno) {
-               case EINTR:
-                  DPRINTF(("select failed with EINTR\n"));
-                  WARNING((SGE_EVENT, "[load_sensor %s] read select failed with EINTR", lGetString(ls_elem, LS_pid)));
-                  break;
-               case EBADF:
-                  DPRINTF(("select failed with EBADF\n"));
-                  WARNING((SGE_EVENT, "[load_sensor %s] read select failed with EBADF", lGetString(ls_elem, LS_pid)));
-                  break;
-               case EINVAL:
-                  DPRINTF(("select failed with EINVAL\n"));
-                  WARNING((SGE_EVENT, "[load_sensor %s] read select failed with EINVAL", lGetString(ls_elem, LS_pid)));
-                  break;
-               default:
-                  DPRINTF(("select failed with unexpected errno %d", errno));
-                  WARNING((SGE_EVENT, "[load_sensor %s] read select failed with [%s]", lGetString(ls_elem, LS_pid), strerror(errno)));
+               /* wait up to 1 second per line for reading report */
+               timeleft.tv_sec = wait;
+               timeleft.tv_usec = 0;
+               ret = select(highest_fd + 1, &readfds, NULL, NULL, &timeleft);
+               if (ret == -1) {
+                  switch (errno) {
+                  case EINTR:
+                     DPRINTF(("select failed with EINTR\n"));
+                     WARNING((SGE_EVENT, "[load_sensor %s] read select failed with EINTR", lGetString(ls_elem, LS_pid)));
+                     break;
+                  case EBADF:
+                     DPRINTF(("select failed with EBADF\n"));
+                     WARNING((SGE_EVENT, "[load_sensor %s] read select failed with EBADF", lGetString(ls_elem, LS_pid)));
+                     break;
+                  case EINVAL:
+                     DPRINTF(("select failed with EINVAL\n"));
+                     WARNING((SGE_EVENT, "[load_sensor %s] read select failed with EINVAL", lGetString(ls_elem, LS_pid)));
+                     break;
+                  default:
+                     DPRINTF(("select failed with unexpected errno %d", errno));
+                     WARNING((SGE_EVENT, "[load_sensor %s] read select failed with [%s]", lGetString(ls_elem, LS_pid), strerror(errno)));
+                  }
+                  DRETURN(-1);
                }
-               DRETURN(-1);
-            }
 
-            /* if something is there now, go back and read it */
-            if (ret) continue;
+               /* if something is there now, go back and read it */
+               if (ret) continue;
  
-            /* nothing to read, so exit */
+               /* nothing to read, so exit */
+            }
             break;
          }
 #ifdef INTERIX
@@ -512,9 +519,16 @@ static int read_ls(void)
             lXchgList(ls_elem, LS_complete, &tmp_list);
             lFreeList(&tmp_list);
 
-            /* see without waiting if there is any backlog to process, we'll exit if fscanf fails */
-            wait = 0;
-            continue;
+            if (demand) {
+               /* see without waiting if there is any backlog to
+                  process. we'll exit if fscanf fails */
+               wait = 0;
+               continue;
+            } else {
+               /* request next load report from ls */
+               ls_send_command(ls_elem, "\n");
+               break;
+            }
          }
 
          /* add a newline for pattern matching in sscanf */

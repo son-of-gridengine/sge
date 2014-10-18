@@ -1589,6 +1589,10 @@ VMsize if the swap value isn't available.
 See
 .B qmaster_params
 above.
+.IP \fBDEMAND_LS\fP
+If true, generate load sensor reports just before sending them, making
+the data fresher.  The default is true.  The switch is provided in
+case slow sensors are found to have a bad effect on the execd.
 .PP
 Changing \fBexecd_params\fP will take effect after it is propagated to the
 execution daemons. The propagation is done in one load report interval.

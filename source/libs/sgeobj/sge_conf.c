@@ -202,6 +202,7 @@ static char s_locks[100];
 static char h_locks[100];
 static bool use_cgroups = false;
 static bool use_smaps = false;
+static bool demand_ls = true;
 
 /* 
  * reporting params 
@@ -885,6 +886,7 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
       reporting_flush_time = 15;
       accounting_flush_time = -1;
       sharelog_time = 0;
+      demand_ls = true;
       log_consumables = false;
       use_cgroups = false;
       use_smaps = false;
@@ -1079,6 +1081,8 @@ int merge_configuration(lList **answer_list, u_long32 progid, const char *cell_r
                                        15);
                reporting_flush_time = 15;
             }
+            continue;
+         if (parse_bool_param(s, "DEMAND_LS", &demand_ls))
             continue;
          }
          if (parse_int_param(s, "accounting_flush_time", &accounting_flush_time, TYPE_TIM)) {
@@ -2659,6 +2663,16 @@ bool mconf_get_use_cgroups(void) {
 
    ret = use_cgroups;
 
+   SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_READ);
+   DRETURN(ret);
+}
+
+bool mconf_get_demand_ls(void) {
+   bool ret;
+
+   DENTER(BASIS_LAYER, "mconf_get_demand_ls");
+   SGE_LOCK(LOCK_MASTER_CONF, LOCK_READ);
+   ret = demand_ls;
    SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_READ);
    DRETURN(ret);
 }
