@@ -567,19 +567,16 @@ static bool is_starting_point(const char* topo, const int length, const int pos,
 *******************************************************************************/
 bool account_job(const char* job_topology)
 {
-   int gotit = false;
    if (logical_used_topology_length == 0 || logical_used_topology == NULL) {
 
       /* initialize without any usage */
-      gotit = get_topology(&logical_used_topology,
-                           &logical_used_topology_length);
+      if (!get_topology(&logical_used_topology,
+                        &logical_used_topology_length))
+         return false;
    }
-   if (gotit)
-      return account_job_on_topology(&logical_used_topology,
-                                     strlen(logical_used_topology),
-                                     job_topology, strlen(job_topology));
-   else
-     return false;
+   return account_job_on_topology(&logical_used_topology,
+                                  strlen(logical_used_topology),
+                                  job_topology, strlen(job_topology));
 }
 
 /****** sge_binding/account_job_on_topology() **********************************
