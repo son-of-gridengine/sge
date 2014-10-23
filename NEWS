@@ -13,6 +13,34 @@ changes due to Univa/Sun are tagged as "[U]", or "[(U)]" if partially
 due to them or appearing first in this version.
 
 
+Version 8.1.8
+-------------
+
+* Building
+
+  * Fix build with recent GNU binutils
+  * Fix rpm build on Fedora and maybe use packaged swing-layout
+  * Fix dpkg build on recent Debian/Ubuntu
+  * uid_t/gid_t are unsigned on NetBSD
+  * Install "work" in utilbin
+  * Move qsched back to main package
+
+* Bug fixes
+
+  * Man fixes
+  * Fix buffer overflow in qmake [#1507]
+  * Avoid possible link-time error (Debian bug # 749413)
+  * Fix some global messages from qstat -j
+  * Avoid truncating usage values in accounting records
+  * Fix execd remembering existing core binding when restarted [#1511]
+
+* Enhancements
+
+  * Nagios and Ganglia monitoring scripts
+  * Python JSV implementation
+  * Upstart and systemd startup files
+  * Define DRMAA_LIBRARY_PATH in setup scripts
+
 Version 8.1.7
 -------------
 
