@@ -52,9 +52,10 @@ import popen2
 # fixme: should be configured externally
 qhostPath = '/opt/sge/bin/lx-amd64/qhost'
 os.environ['SGE_ROOT'] = '/opt/sge'
-os.environ['SGE_QMASTER_PORT'] = '6444'
 os.environ['SGE_CELL'] = 'default'
-os.environ['SGE_CLUSTER_NAME'] = 'p6444'
+# These might be required for CSP
+#os.environ['SGE_QMASTER_PORT'] = '6444'
+#os.environ['SGE_CLUSTER_NAME'] = 'p6444'
 
 nagiosStateOk = 0
 nagiosStateWarning = 1
@@ -238,7 +239,8 @@ if hostData[3] == '-':
 
 def memory (val):
     """Return number in MB, given value with G, M, or K suffix."""
-    if val[-1:] == "G": return float (val[:-1]) * 1000.0
+    if val[-1:] == "T": return float (val[:-1]) * 1e6
+    elif val[-1:] == "G": return float (val[:-1]) * 1000.0
     elif val[-1:] == "M": return float (val[:-1])
     # qhost prints `K', not `k'
     elif val[-1:] == "K": return float (val[:-1]) / 1000.0
