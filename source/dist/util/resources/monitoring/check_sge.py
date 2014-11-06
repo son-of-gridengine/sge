@@ -233,7 +233,7 @@ def check_load_or_vm (param, warn, crit, base, value):
             print "WARNING: %s: %s >= %s" % (param, value, threshold)
             sys.exit (nagiosStateWarning)
 
-if hostData[3] == '-':
+if hostData[6] == '-':
     print "CRITICAL: execd not communicating"
     sys.exit(nagiosStateCritical)
 
