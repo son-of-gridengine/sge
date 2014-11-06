@@ -1168,8 +1168,8 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
    } else {
       errno = 0;
       if (use_qsub_gid) {
-         if (sge_setgid(pw->pw_gid)) {
-            snprintf(err_str, lstr, MSG_SYSTEM_SETGIDFAILED_US,
+         if (sge_setegid(pw->pw_gid)) {
+            snprintf(err_str, lstr, MSG_SYSTEM_SETEGIDFAILED_US,
                      sge_u32c(pw->pw_gid), strerror(errno));
             return 1;
          }
