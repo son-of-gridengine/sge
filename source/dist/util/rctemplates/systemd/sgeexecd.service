@@ -1,7 +1,6 @@
 [Unit]
 Description=Grid Engine execd
-# fixme: network fs too
-After=network.target remote-fs.target
+After=network-online.target remote-fs.target
 
 [Service]
 Type=forking
