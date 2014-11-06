@@ -1,6 +1,6 @@
 [Unit]
 Description=Grid Engine shadow master
-After=network.target network-fs.target
+After=network-online.target network-fs.target
 
 [Service]
 Type=forking
