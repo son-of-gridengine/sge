@@ -73,7 +73,7 @@ static char *get_bulk_jobid_string(long job_id, int start, int end, int step);
 static void qsub_setup_sig_handlers(void);
 static void qsub_terminate(void);
 static void *sig_thread(void *dummy);
-static int report_exit_status(int stat, const char *jobid);
+static int report_exit_status(int stat, const char *jobid, bool has_terse);
 static void error_handler(const char *message);
 
 /************************************************************************/
@@ -437,12 +437,14 @@ main(int argc, char **argv)
              * the exit code for qsub. */
             if (exit_status == 0) {
                exit_status = report_exit_status(stat,
-                                              sge_dstring_get_string(&jobid));
+                                                sge_dstring_get_string(&jobid),
+                                                has_terse);
             }
             /* If we've already found a non-zero exit code, just print the exit
              * info for the task. */
             else {
-               report_exit_status(stat, sge_dstring_get_string(&jobid));
+               report_exit_status(stat, sge_dstring_get_string(&jobid),
+                                  has_terse);
             }               
          }
       }
@@ -636,14 +638,15 @@ static void *sig_thread(void *dummy)
 *     report_exit_status() -- Prints a job's exit status
 *
 *  SYNOPSIS
-*     static int report_exit_status(int stat, const char *jobid)
+*     static int report_exit_status(int stat, const char *jobid, bool has_terse)
 *
 *  FUNCTION
-*     Prints a job's exit status to stdout.
+*     Prints a job's exit status to stdout or stderr.
 *
 *  INPUT
 *     int stat          - The job's exit status
 *     const char *jobid - The job id string
+*     bool has_terse    - Whether -terse was specified
 *
 *  RESULT
 *     static int        - The exit code of the job
@@ -651,37 +654,48 @@ static void *sig_thread(void *dummy)
 *  NOTES
 *     MT-NOTES: report_exit_status() is MT safe
 *******************************************************************************/
-static int report_exit_status(int stat, const char *jobid)
+static int report_exit_status(int stat, const char *jobid, bool has_terse)
 {
    int aborted, exited, signaled;
    int exit_status = 0;
    
    japi_wifaborted(&aborted, stat, NULL);
 
+   /* This used just to use printf, but submit(1) (under -terse) says
+      that error messages go to stderr.  arguably the success message
+      should too.  */
    if (aborted) {
-      printf(MSG_QSUB_JOBNEVERRAN_S, jobid);
+      fprintf(stderr, MSG_QSUB_JOBNEVERRAN_S, jobid);
    } else {
       japi_wifexited(&exited, stat, NULL);
       if (exited) {
          japi_wexitstatus(&exit_status, stat, NULL);
-         printf(MSG_QSUB_JOBEXITED_SI, jobid, exit_status);
+         if (exit_status == 0) {
+            if (!has_terse) {
+               printf(MSG_QSUB_JOBEXITED_SI, jobid, exit_status);
+               printf("\n");
+            }
+            return exit_status;
+         } else {
+            fprintf(stderr, MSG_QSUB_JOBEXITED_SI, jobid, exit_status);
+         }
       } else {
          japi_wifsignaled(&signaled, stat, NULL);
          
          if (signaled) {
             dstring termsig = DSTRING_INIT;
             japi_wtermsig(&termsig, stat, NULL);
-            printf(MSG_QSUB_JOBRECEIVEDSIGNAL_SS, jobid,
+            fprintf(stderr, MSG_QSUB_JOBRECEIVEDSIGNAL_SS, jobid,
                     sge_dstring_get_string(&termsig));
             sge_dstring_free(&termsig);
          } else {
-            printf(MSG_QSUB_JOBFINISHUNCLEAR_S, jobid);
+            fprintf(stderr, MSG_QSUB_JOBFINISHUNCLEAR_S, jobid);
          }
 
          exit_status = 1;
       }
    }
-   printf("\n");
+   fprintf(stderr, "\n");
    
    return exit_status;
 }
