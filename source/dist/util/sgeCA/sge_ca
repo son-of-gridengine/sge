@@ -804,9 +804,9 @@ MakeUserCert()
    fi   
 
    if [ "$ADMINUSER" = default ]; then
-      entries=`grep "CN=$gecos" $CATOP/index.txt|grep '^V'|wc -l`
+      entries=`grep "CN=$gecos/" $CATOP/index.txt|grep '^V'|wc -l`
    else 
-      entries=`$V5UTILBIN/adminrun $ADMINUSER grep "CN=$gecos" $CATOP/index.txt|grep '^V'|wc -l`
+      entries=`$V5UTILBIN/adminrun $ADMINUSER grep "CN=$gecos/" $CATOP/index.txt|grep '^V'|wc -l`
    fi
    if [ $entries = 0 ]; then
       $INFOTEXT "Generating %s certificate and key for '%s' ('%s','%s')." \
