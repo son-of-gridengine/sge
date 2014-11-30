@@ -1627,7 +1627,9 @@ bool sge_security_verify_unique_identifier(bool check_admin_user, const char* us
             DRETURN(false);
          }     
       } else {
-         if (strcmp(unique_identifier, user) != 0) {
+         if (strcmp(unique_identifier, user) != 0
+             /* See suggestion in #492 (IZ2507) */
+             && !sge_is_user_superuser(unique_identifier)) {
             DPRINTF((MSG_REQUEST_DENIED_FOR_USER_S, user ? user: "NULL"));
             WARNING((SGE_EVENT, MSG_REQUEST_DENIED_FOR_USER_S, user ? user: "NULL"));
             sge_free(&unique_identifier);
