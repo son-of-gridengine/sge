@@ -73,7 +73,7 @@
 #define SGE_SEEKDIR(directory, offset) seekdir(directory, offset)
 #define SGE_STRUCT_DIRENT struct dirent
 
-#if defined(SOLARIS) || defined(__hpux) || defined(LINUX) || defined(AIX) || defined(DARWIN9) || defined(DARWIN10)
+#if defined(SOLARIS) || defined(__hpux) || defined(LINUX) || defined(AIX) || defined(DARWIN)
 #   define SETPGRP setpgrp()
 #elif defined(__sgi)
 #   define SETPGRP BSDsetpgrp(getpid(),getpid())

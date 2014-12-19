@@ -1057,7 +1057,6 @@ case ALPHA5:
 case DARWIN:
 case DARWIN_X86:
 case DARWIN_X64:
-case DARWIN_PPC:
    set MAKEWINGRIDLIB   = 0
    set MAKEWINGRIDAPP   = 0
    set COMPILE_DC = 1
@@ -1089,19 +1088,13 @@ case DARWIN_PPC:
    # These used to define DARWIN7 and DARWIN8, but they're unused.
    case "7.*":
    case "8.*":
-      set CFLAGS = "$OFLAG -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -D_DARWIN_C_SOURCE -DDARWIN -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
       breaksw
    case "9.*":
-      set CFLAGS = "$OFLAG -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -D_DARWIN_C_SOURCE -DDARWIN -DDARWIN9 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
-      breaksw
-   case "10.[1-5].*":
-      set CFLAGS = "$OFLAG -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DHAVE_GETGROUPLIST -D_DARWIN_C_SOURCE -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
-      set SHARED_CFLAGS = "$SHARED_CFLAGS -arch x86_64"
-      set SHARED_LFLAGS = "$SHARED_LFLAGS -arch x86_64"
-      set LFLAGS = "$LFLAGS -arch x86_64"
+      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -DDARWIN9 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
       breaksw
    case "10.*":
-      set CFLAGS = "$OFLAG -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DHAVE_GETGROUPLIST -D_DARWIN_C_SOURCE -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M -DSECURITYPAMAPPL $DEBUG_FLAG $CFLAGS"
+      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
       set SHARED_CFLAGS = "$SHARED_CFLAGS -arch x86_64"
       set SHARED_LFLAGS = "$SHARED_LFLAGS -arch x86_64"
       set LFLAGS = "$LFLAGS -arch x86_64"
@@ -1142,10 +1135,6 @@ case DARWIN_PPC:
    endif
 
    switch ($REL)
-   case "6.*":
-   case "7.*":
-   case "8.*":
-   case "9.*":
    case "10.*":
       set XLFLAGS = "$XLIBD"
       breaksw
@@ -1410,6 +1399,12 @@ case LINUX*:
    else
       set OFLAG = ""
    endif
+
+   if (! $?CC) then
+      set CC  = gcc
+   endif
+#       set CC  = clanga
+#       set CFLAGS = "$CFLAGS -Wno-unused-value"
 
    if ($BUILDARCH == LINUXPPC) then
       set CFLAGS = "-m32 $CFLAGS" # fixme: why?
