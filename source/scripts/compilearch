@@ -109,10 +109,6 @@ case $buildarch in
       BUILDARCH=DARWIN_X86
       TARGET_BITS=TARGET_32BIT
       ;;
-   darwin-ppc)
-      BUILDARCH=DARWIN_PPC
-      TARGET_BITS=TARGET_32BIT
-      ;;
    darwin-x64)
       BUILDARCH=DARWIN_X64
       TARGET_BITS=TARGET_64BIT
