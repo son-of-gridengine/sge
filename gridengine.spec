@@ -57,7 +57,7 @@
 }
 
 Name:    gridengine
-Version: 8.1.8
+Version: 8.1.9pre
 
 %if 0%{?fedora}
 Epoch:   1
@@ -371,8 +371,6 @@ fi
 %exclude %{sge_mandir}/man8/pam*8
 %exclude %{sge_mandir}/man3
 %exclude %{sge_lib}/*/pam*
-%exclude %{sge_lib}/*/libspool*
-%exclude %{sge_home}/utilbin/*/spool*
 %if %{with hadoop}
 %exclude %{sge_home}/hadoop
 %exclude %{sge_lib}/herd.jar
@@ -430,8 +428,6 @@ fi
 %{sge_home}/install_qmaster
 %{sge_mandir}/man8/sge_qmaster.8
 %{sge_mandir}/man8/sge_shadowd.8
-%{sge_lib}/*/libspool*
-%{sge_home}/utilbin/*/spool*
 
 %files drmaa4ruby
 %{sge_home}/util/resources/drmaa4ruby
@@ -450,6 +446,8 @@ fi
 
 
 %changelog
+* Thu Feb  5 2015 Dave Love <d.love@liverpool.ac.uk> 1:8.1.9pre
+- Move spool objects back to main package
 
 * Thu Aug 14 2014 Dave Love <d.love@liverpool.ac.uk> 8.1.8
 - Add rpm Epoch on Fedora
