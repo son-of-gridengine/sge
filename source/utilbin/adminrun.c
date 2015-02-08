@@ -81,7 +81,8 @@ int main(int argc, char **argv)
       return 1;
    }
    
-   if (setgid(pw->pw_gid) || setuid(pw->pw_uid)) {
+   if (initgroups(pw->pw_name, pw->pw_gid) || setgid(pw->pw_gid)
+       || setuid(pw->pw_uid)) {
       fprintf(stderr, "%s\n", MSG_SETUID_FAILED);
       return 1;
    }

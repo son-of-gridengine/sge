@@ -70,6 +70,8 @@ typedef struct {
    const char *user_name;
    uid_t uid;
    gid_t gid;
+   int ngroups;
+   gid_t *groups;
    bool  initialized;
 } admin_user_t;
 
@@ -90,7 +92,7 @@ static void uidgid_state_destroy(void* theState);
 static void uidgid_state_init(struct uidgid_state_t* theState);
 
 static void set_admin_user(const char *user_name, uid_t, gid_t);
-static int  get_admin_user(uid_t*, gid_t*);
+static int  get_admin_user(uid_t*, gid_t*, int*, gid_t**);
 
 static uid_t       uidgid_state_get_last_uid(void);
 static const char* uidgid_state_get_last_username(void);
@@ -214,9 +216,9 @@ bool sge_is_start_user_superuser(void)
 int sge_set_admin_username(const char *user, char *err_str, size_t lstr)
 {
    struct passwd *admin;
-   int ret;
+   int ret, ngroups;
    uid_t uid;
-   gid_t gid;
+   gid_t gid, *groups;
 #if defined( INTERIX )
    char fq_name[1024];
 #endif
@@ -238,7 +240,7 @@ int sge_set_admin_username(const char *user, char *err_str, size_t lstr)
    /*
     * Do only if admin user is not already set!
     */
-   if (get_admin_user(&uid, &gid) != ESRCH) {
+   if (get_admin_user(&uid, &gid, &ngroups, &groups) != ESRCH) {
       DEXIT;
       return -2;
    }
@@ -349,8 +351,9 @@ bool sge_is_admin_user(const char *username)
 int sge_switch2admin_user(void)
 {
    uid_t uid;
-   gid_t gid;
+   gid_t gid, *groups;
    int ret = 0;
+   int ngroups;
 
    DENTER(UIDGID_LAYER, "sge_switch2admin_user");
 #if !defined(INTERIX)
@@ -363,7 +366,7 @@ int sge_switch2admin_user(void)
     * But we don't need to switch to the SGE admin user anyway, as spooling
     * always has to be done locally, so we can just skip it always.
     */
-   if (get_admin_user(&uid, &gid) == ESRCH) {
+   if (get_admin_user(&uid, &gid, &ngroups, &groups) == ESRCH) {
       CRITICAL((SGE_EVENT, SFNMAX, MSG_SWITCH_USER_NOT_INITIALIZED));
       abort();
    }
@@ -374,7 +377,7 @@ int sge_switch2admin_user(void)
       goto exit;
    } else {
       if (getegid() != gid) {
-         if (setegid(gid) == -1) {
+         if (setgroups(ngroups, groups) != 0 || setegid(gid) == -1) {
             DTRACE;
             ret = -1;
             goto exit;
@@ -434,7 +437,8 @@ int sge_switch2start_user(void)
    uid_t uid, start_uid;
    gid_t gid, start_gid;
 #endif
-   int ret = 0;
+   gid_t *groups;
+   int ret = 0, ngroups;
 
    DENTER(UIDGID_LAYER, "sge_switch2start_user");
 #if !defined(INTERIX)
@@ -448,7 +452,7 @@ int sge_switch2start_user(void)
     * always has to be done locally, so we can just skip it always.
     */
  
-   if (get_admin_user(&uid, &gid) == ESRCH) {
+   if (get_admin_user(&uid, &gid, &ngroups, &groups) == ESRCH) {
       CRITICAL((SGE_EVENT, SFNMAX, MSG_SWITCH_USER_NOT_INITIALIZED));
       abort();
    }
@@ -1521,17 +1525,18 @@ static void uidgid_state_set_last_groupname(const char *group)
 
 /****** uti/uidgid/set_admin_user() ********************************************
 *  NAME
-*     set_admin_user() -- Set user and group id of admin user. 
+*     set_admin_user() -- Cache user and group info for admin user.
 *
 *  SYNOPSIS
-*     static void set_admin_user(uid_t theUID, gid_t theGID) 
+*     static void set_admin_user(const char *user_name, uid_t theUID, gid_t theGID)
 *
 *  FUNCTION
-*     Set user and group id of admin user. 
+*     Initialize the admin_user structure.
 *
 *  INPUTS
-*     uid_t theUID - user id of admin user 
-*     gid_t theGID - group id of admin user 
+*     const char *user_name - uer name of admin user
+*     uid_t theUID - user id of admin user
+*     gid_t theGID - group id of admin user
 *
 *  RESULT
 *     static void - none
@@ -1544,19 +1549,35 @@ static void set_admin_user(const char *user_name, uid_t theUID, gid_t theGID)
 {
    uid_t uid = theUID;
    gid_t gid = theGID;
+   gid_t dummy[1];
 
    DENTER(UIDGID_LAYER, "set_admin_user");
 
    sge_mutex_lock("admin_user_mutex", SGE_FUNC, __LINE__, &admin_user.mutex);
+   errno = 0;
    admin_user.user_name = user_name;
    admin_user.uid = uid;
    admin_user.gid = gid;
+   /* Cache the supplementary groups to avoid access to the groups
+      database.  */
+   admin_user.ngroups = 1;
+   getgrouplist(user_name, gid, dummy, &admin_user.ngroups);
+   if (admin_user.ngroups <= 0) goto err;
+   admin_user.groups = sge_malloc(admin_user.ngroups * sizeof(gid_t));
+   if (getgrouplist(user_name, gid, admin_user.groups, &admin_user.ngroups)
+       < 0) goto err;
+   if (admin_user.ngroups <= 0) goto err;
    admin_user.initialized = true;
    sge_mutex_unlock("admin_user_mutex", SGE_FUNC, __LINE__, &admin_user.mutex);
 
    DPRINTF(("auid=%ld; agid=%ld\n", (long)uid, (long)gid));
 
    DEXIT;
+   return;
+ err:
+   CRITICAL((SGE_EVENT, MSG_SYSTEM_ADMIN_INFO_S, strerror(errno)));
+   DEXIT;
+   sge_exit(NULL, 1);
    return;
 } /* set_admin_user() */
 
@@ -1597,7 +1618,7 @@ static void set_admin_user(const char *user_name, uid_t theUID, gid_t theGID)
 *     MT-NOTE: get_admin_user() is MT safe.
 *
 *******************************************************************************/
-static int get_admin_user(uid_t* theUID, gid_t* theGID)
+static int get_admin_user(uid_t* theUID, gid_t* theGID, int *ngroups, gid_t **groups)
 {
    uid_t uid;
    gid_t gid;
@@ -1609,6 +1630,8 @@ static int get_admin_user(uid_t* theUID, gid_t* theGID)
    sge_mutex_lock("admin_user_mutex", SGE_FUNC, __LINE__, &admin_user.mutex);
    uid = admin_user.uid;
    gid = admin_user.gid;
+   *ngroups = admin_user.ngroups;
+   *groups = admin_user.groups;
    init = admin_user.initialized;
    sge_mutex_unlock("admin_user_mutex", SGE_FUNC, __LINE__, &admin_user.mutex);
 
@@ -1669,10 +1692,11 @@ bool
 sge_has_admin_user(void) {
    bool ret = true;
    uid_t uid;
-   gid_t gid;
+   gid_t gid, *groups;
+   int ngroups;
 
    DENTER(TOP_LAYER, "sge_has_admin_user");
-   ret = (get_admin_user(&uid, &gid) == ESRCH) ? false : true; 
+   ret = (get_admin_user(&uid, &gid, &ngroups, &groups) == ESRCH) ? false : true;
    DRETURN(ret);
 }
 

@@ -44,6 +44,7 @@
 #include <limits.h>
 #include <fcntl.h>
 #include <pwd.h>
+#include <grp.h>
 #if defined KRBGSS && !defined HEIMDAL
 #include <gssapi/gssapi_generic.h>
 #else
@@ -254,7 +255,7 @@ main(int argc, char **argv)
 
       if (become_user) {
 
-	 if (setgid(pw->pw_gid)<0) {
+         if (initgroups(pw->pw_name, pw->pw_gid) || setgid(pw->pw_gid)<0) {
 	    cc = 4;
 	    perror(MSG_GSS_PERROR_SETGID);
 	    goto error;
