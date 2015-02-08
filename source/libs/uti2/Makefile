@@ -54,3 +54,6 @@ util.o: $(UTI2LIB_DIR)/util.c
 
 sge_cgroup.o: $(UTI2LIB_DIR)/sge_cgroup.c
 	$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $(UTI2LIB_DIR)/sge_cgroup.c
+
+getgrouplist.o: $(UTI2LIB_DIR)/getgrouplist.c
+	$(CC) $(CFLAGS) $(SHARED_CFLAGS) -c $<

@@ -15,6 +15,7 @@ AC_PROG_CC
 AC_CHECK_MEMBERS([struct dirent.d_type], [] ,[] ,[[#include <dirent.h>]])
 
 # Checks for library functions.
+AC_CHECK_FUNCS([getgrouplist])
 
 # Compatibility
 

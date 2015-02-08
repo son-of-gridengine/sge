@@ -35,6 +35,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <grp.h>
 
 #include "uti/sge_rmon.h"
 #include "uti/sge_prog.h"
@@ -106,12 +107,16 @@ int sge_edit(const char *fname, uid_t myuid, gid_t mygid)
       }
    } else {
       const char *cp = NULL;
+      gid_t groups[1] = {getuid()};
+      size_t n = 1;
 
       sge_set_def_sig_mask(NULL, NULL);
       sge_unblock_all_signals();
-      sge_setuid(getuid());
-      sge_setgid(getgid());
-
+      if (sge_setgid(getgid()) != 0 || sge_setuid(getuid()) != 0) {
+         ERROR((SGE_EVENT, MSG_SYSTEM_SETUIDFAILED_US, getuid(),
+                strerror(errno)));
+         SGE_EXIT(NULL, 1);
+      }
       cp = getenv("EDITOR");
       if (cp == NULL || strlen(cp) == 0) {
          cp = DEFAULT_EDITOR;
