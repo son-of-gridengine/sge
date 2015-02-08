@@ -1,6 +1,6 @@
 /* util.c -- extra utility functions
 
-   Copyright (C) 2012, 2013 Dave Love, University of Liverpool
+   Copyright (C) 2012, 2013, 2014 Dave Love, University of Liverpool
 
    This file is free software: you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public License
@@ -26,6 +26,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <msg_common.h>
+#include "sge_config.h"
 #include "uti/sge_rmon.h"
 #include "uti/sge_log.h"
 #include "uti/sge_uidgid.h"
@@ -263,4 +264,61 @@ char *strsignal(int signo) {
    }
    return "Unknown signal";
 }
-#endif
+#endif  /* !HAVE_STRSIGNAL */
+
+#if !HAVE_GETGROUPLIST
+/* This is for systems missing getgrouplist.  The obvious sources of a
+   suitably-licensed version are mixed up with other routines.
+
+   Not thread-safe.  */
+
+#include <grp.h>
+#include <string.h>
+#include <limits.h>
+
+int
+getgrouplist (char const *user, gid_t gid, gid_t *groups, int *ngroups)
+{
+  int index = 0;                /* next index in groups */
+
+  if (*ngroups < 0) return -1;
+
+  if (*ngroups > 0)
+    groups[index] = gid;
+  index++;
+
+  setgrent ();
+  while (1) {
+    char **cp;
+    struct group *grp;
+
+    grp = getgrent ();
+    if (!grp) break;
+
+    for (cp = grp->gr_mem; *cp; ++cp) {
+      int n;
+
+      if (strcmp (user, *cp) != 0) continue;
+      /* check if already in list */
+      for (n = 0; n < index; ++n)
+        if (groups && groups[n] == grp->gr_gid)
+          break;
+      if (n == index) {        /* not in list */
+        if (index < *ngroups)
+          groups[index] = grp->gr_gid;
+        if (index == INT_MAX) goto finish;
+        index++;
+      }
+    }
+  }
+
+ finish:
+  endgrent ();
+  if (index > *ngroups || index == INT_MAX) {
+    *ngroups = index;
+    return -1;
+  }
+  *ngroups = index;
+  return index;
+}
+#endif  /* !HAVE_GETGROUPLIST */

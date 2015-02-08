@@ -1071,8 +1071,8 @@ int main(int argc, char *argv[])
     * switch to root
     */
    starter_uid = getuid();
-   setuid(SGE_SUPERUSER_UID);
    setgid(SGE_SUPERUSER_GID);
+   setuid(SGE_SUPERUSER_UID);
    DPRINTF(("uid=%ld; gid=%ld; euid=%ld; egid=%ld\n", 
          (long)getuid(), (long)getgid(), 
          (long)geteuid(), (long)getegid()));

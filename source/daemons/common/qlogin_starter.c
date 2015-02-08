@@ -47,6 +47,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netdb.h>
+#include <grp.h>
 
 #include "uti/sge_stdio.h"
 #include "uti/sge_uidgid.h"
