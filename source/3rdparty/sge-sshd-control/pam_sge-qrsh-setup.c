@@ -64,7 +64,8 @@ PAM_EXTERN int pam_sm_setcred(pam_handle_t *pamh,
 	
 	static const char setup_file[] = "/var/run/sge-qrsh-setup";
 
-	if ( ! (flags & PAM_REINITIALIZE_CRED) ) return PAM_SUCCESS;
+	if ( ! (flags & (PAM_REINITIALIZE_CRED | PAM_ESTABLISH_CRED)) )
+           return PAM_SUCCESS;
 
 	/* this should find the correct file if sshd privsep is off */
 	sprintf(buffer, "%s.%d", setup_file, getppid());
