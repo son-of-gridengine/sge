@@ -446,8 +446,8 @@
 #define MSG_GDI_USAGE_clear_OPT                          "[-clear]"
 #define MSG_GDI_UTEXT_clear_OPT                          _MESSAGE(23324, _("skip previous definitions for job"))
 
-#define MSG_GDI_USAGE_clearusage_OPT                     "[-clearusage]"
-#define MSG_GDI_UTEXT_clearusage_OPT                     _MESSAGE(23325, _("clear all user/project sharetree usage"))
+#define MSG_GDI_USAGE_clearusage_OPT                     "[-clearusage [user_list]]"
+#define MSG_GDI_UTEXT_clearusage_OPT                     _MESSAGE(23325, _("clear sharetree usage for user_list or all users/projects"))
 
 #define MSG_GDI_USAGE_cwd_OPT                            "[-cwd]"
 #define MSG_GDI_UTEXT_cwd_OPT                            _MESSAGE(23326, _("use current working directory"))

@@ -678,9 +678,10 @@ graphical view in
 .B \-sstree
 shows the same information in a less-readable (linearized) form.
 .\"
-.IP "\fB\-clearusage\fP	\fI<clear sharetree usage>\fP"
-Clears all user and project usage from the sharetree.  All usage will be initialized
-back to zero.
+.IP "\fB\-clearusage\fP [\fIuser_list\fP]	\fI<clear sharetree usage>\fP"
+Clears usage from the sharetree, either just for \fIuser_list\fP or for
+all users and projects if \fIuser_list\fP isn't supplied.
+All specified usage will be set to zero.
 .\"
 .IP "\fB\-cq\fP \fIwc_queue_list\fP	\fI<clean queue>\fP"
 Cleans queue of jobs which haven't been reaped.  (Actually purges jobs
