@@ -49,8 +49,9 @@
 #       start       start qmaster or shadowd 
 #       stop        Terminates qmaster if we are on the master machine.
 #       restart     equivalent to stop followed by start
-#       -qmaster    only starts qmaster 
-#       -shadowd    start shadwod if found in the "shadow_masters" file
+#       status      check if daemon(s) running (obeys -qmaster, -qmaster)
+#       -qmaster    only act on qmaster
+#       -shadowd    start act on shadwod if found applicable
 #       -migrate    shuts down qmaster if it is running
 #                   on another host and start the daemons on this host
 #
@@ -438,8 +439,9 @@ usage()
    echo "   \"start\"        ditto."
    echo "   \"stop\"         shut down qmaster and shadow daemon if applicable"
    echo "   \"restart\"      restart (stop and start) daemons"
-   echo "   \"-qmaster\"     only start/stop qmaster (if applicable)"
-   echo "   \"-shadowd\"     only start/stop shadowd (if applicable)"   
+   echo "   \"status\"       check whether daemon(s) running"
+   echo "   \"-qmaster\"     only act on qmaster (if applicable)"
+   echo "   \"-shadowd\"     only act on shadowd (if applicable)"
    echo "   \"-migrate\"     shutdown qmaster if it's running on another"
    echo "                    host and restart it on this host"
    echo "                    Migration only works if this host is an admin host"
@@ -471,6 +473,7 @@ qstd=false
 migrate_qmaster=false
 noSMF=false
 stop=false
+status=false
 
 for i in $*; do
    if [ "$i" = start ]; then
@@ -481,6 +484,9 @@ for i in $*; do
    elif [ "$i" = restart ]; then
        stop=true
        startup=true
+   elif [  "$i" = status ]; then
+      startup=false
+      status=true
    elif [ "$i" = -qmaster ]; then
       qmaster=true
       shadowd=false
@@ -770,4 +776,54 @@ if [ "$startup" = true ]; then
    if [ $exit_val -ne 0 ]; then
       exit $exit_val
    fi
+fi
+
+master_not=0
+shadow_not=0
+if [ "$status" = true ]; then
+   if [ "$qmaster" = true ]; then
+      if [ -s "$qma_run_dir/qmaster.pid" ]; then
+         pid=`cat "$qma_run_dir/qmaster.pid"`
+         if $utilbin_dir/checkprog $pid sge_qmaster > /dev/null; then
+            echo "qmaster (pid $pid) is running..."
+         else
+            echo "qmaster (pid $pid) is not running..."
+            master_not=1
+         fi
+      else
+         echo "qmaster is not running..."
+         master_not=1
+      fi
+   fi
+   if [ "$shadowd" = true ]; then
+      UQpidfile=$qma_run_dir/shadowd_$UQHOST.pid
+      pidfile=$qma_run_dir/shadowd_$HOST.pid
+      pid=``
+      shadow_running=0
+      if [ -s "$UQpidfile" ]; then
+         pid=`cat $UQpidfile`
+         if $utilbin_dir/checkprog $pid sge_shadowd > /dev/null; then
+            shadow_running=1
+         fi
+      fi
+      if [ -s "$pidfile" ]; then
+         pid=`cat $pidfile`
+         if $utilbin_dir/checkprog $pid sge_shadowd > /dev/null; then
+            shadow_running=1
+         fi
+      fi
+      if [ -s "$pidfile" ] || [ -s "$UQpidfile" ]; then
+         if [ $shadow_running = 1 ]; then
+            echo "shadowd (pid $pid) is running..."
+         else
+            echo "shadowd (pid $pid) is not running..."
+            shadow_not=1
+         fi
+      else
+         echo "shadowd (pid $pid) is not running..."
+         shadow_not=1
+      fi
+   fi
+   # fixme: check LSB values
+   [ $master_not$shadow_not -gt 0 ] && exit 1 || exit 0
 fi
