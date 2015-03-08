@@ -52,6 +52,7 @@
 #                   spool directory is in the default location.
 #       softstop    do not kill the shepherd process
 #       restart     equivalent to softstop followed by start
+#       status      check if execd running
 #
 # Unix commands which may be used in this script:
 #    cat cut tr ls grep awk sed basename
@@ -288,6 +289,7 @@ usage()
    echo "   \"stop\"         shutdown local Grid Engine processes and jobs"
    echo "   \"softstop\"     shutdown local Grid Engine processes (no jobs)"
    echo "   \"restart\"      restart local Grid Engine processes (keeping jobs)"
+   echo "   \"status\"       check whether execd runnig"
    echo "   \"-nosmf\"       force no SMF"
    echo ""
    echo "Only one of \"start\", \"stop\", \"restart\", or \"softstop\" is allowed."
@@ -312,6 +314,7 @@ execd=true
 softstop=false
 stop=false
 noSMF=false
+status=false
 
 for i in $*; do
    if [ "$i" = start ]; then
@@ -327,6 +330,9 @@ for i in $*; do
    elif [ "$i" = restart ]; then
       startup=true
       softstop=true
+   elif [ "$i" = status ]; then
+      startup=false
+      status=true
    else
       usage
    fi
@@ -447,4 +453,20 @@ if [ "$startup" = true ]; then
          exit 1
       fi
       exit 0
+fi
+
+if [ "$status" = true ]; then
+   if [ -f $pidfile ]; then
+      pid=`cat $pidfile`
+      if $utilbin_dir/checkprog $pid $name > /dev/null; then
+         echo "execd (pid $pid) is running..."
+         exit 0
+      else
+         echo "execd (pid $pid) is not running..."
+         exit 1
+      fi
+   else
+      echo "execd is not running..."
+      exit 1
+   fi
 fi
