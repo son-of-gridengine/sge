@@ -1350,33 +1350,40 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
          qconf_is_adminhost(ctx, qualified_hostname);
          qconf_is_manager(ctx, username);
 
-         /* get user list */
-         what = lWhat("%T(ALL)", STN_Type);
-         alp = ctx->gdi(ctx, SGE_UU_LIST, SGE_GDI_GET, &lp, NULL, what, false);
-         lFreeWhat(&what);
+         if (!sge_next_is_an_opt(spp)) {
+            /* selected user list */
+            spp = sge_parser_get_next(ctx, spp);
+            lString2List(*spp, &lp, UU_Type, UU_name, ", ");
+            lFreeList(&lp2);    /* ensure project list is null */
+        } else {
+            /* get total user list */
+            what = lWhat("%T(ALL)", STN_Type);
+            alp = ctx->gdi(ctx, SGE_UU_LIST, SGE_GDI_GET, &lp, NULL, what, false);
+            lFreeWhat(&what);
 
-         aep = lFirst(alp);
-         answer_exit_if_not_recoverable(aep);
-         if (answer_get_status(aep) != STATUS_OK) {
-            fprintf(stderr, "%s\n", lGetString(aep, AN_text));
-            spp++;
-            continue;
-         }
-         lFreeList(&alp);
- 
-         /* get project list */
-         what = lWhat("%T(ALL)", STN_Type);
-         alp = ctx->gdi(ctx, SGE_PR_LIST, SGE_GDI_GET, &lp2, NULL, what, false);
-         lFreeWhat(&what);
+            aep = lFirst(alp);
+            answer_exit_if_not_recoverable(aep);
+            if (answer_get_status(aep) != STATUS_OK) {
+               fprintf(stderr, "%s\n", lGetString(aep, AN_text));
+               spp++;
+               continue;
+            }
+            lFreeList(&alp);
 
-         aep = lFirst(alp);
-         answer_exit_if_not_recoverable(aep);
-         if (answer_get_status(aep) != STATUS_OK) {
-            fprintf(stderr, "%s\n", lGetString(aep, AN_text));
-            spp++;
-            continue;
+            /* get project list */
+            what = lWhat("%T(ALL)", STN_Type);
+            alp = ctx->gdi(ctx, SGE_PR_LIST, SGE_GDI_GET, &lp2, NULL, what, false);
+            lFreeWhat(&what);
+
+            aep = lFirst(alp);
+            answer_exit_if_not_recoverable(aep);
+            if (answer_get_status(aep) != STATUS_OK) {
+               fprintf(stderr, "%s\n", lGetString(aep, AN_text));
+               spp++;
+               continue;
+            }
+            lFreeList(&alp);
          }
-         lFreeList(&alp);
  
          /* clear user usage */
          for_each(ep, lp) {
