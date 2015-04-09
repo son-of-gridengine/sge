@@ -12,7 +12,7 @@ AC_PROG_CC
 # Checks for header files.
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_MEMBERS([struct dirent.d_type], [] ,[] ,[[#include <dirent.h>]])
+AC_CHECK_MEMBERS([struct dirent.d_type],,,[[#include <dirent.h>]])
 
 # Checks for library functions.
 AC_CHECK_FUNCS([getgrouplist])
