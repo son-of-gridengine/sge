@@ -119,6 +119,7 @@
          snprintf((buffer), sizeof(buffer), "%s/%s", (dir), (tail));    \
    } while(0)
 
+static bool half_initialized= false;
 static bool initialized = false;
 /* do we have "cpus" or "cpuset.cpus"? */
 static bool cpuset_prefix = false;
@@ -147,7 +148,7 @@ init_cgroups(void) {
          if (cg_cpuset == group) {
             char path[SGE_PATH_MAX], shortbuf[10];
             size_t l = sizeof shortbuf;
-
+            half_initialized=true;
             build_path(path, group_dir[group], "cpuset.mems");
             cpuset_prefix = file_exists(path);
             if (!cpuset_prefix)
@@ -167,7 +168,7 @@ init_cgroups(void) {
             if (l <= 1) {
                WARNING((SGE_EVENT, "Populating "SFN" in " SFN
                         " so cpusets will work",
-                        cpuset_prefix ? "cpuset.mems" : "mems",
+                        cpuset_prefix ? "cpuset.cpus" : "cpus",
                         group_dir[group]));
                copy_from_parent (group_dir[group], "cpus");
             }
@@ -180,7 +181,8 @@ init_cgroups(void) {
 char *
 cgroup_dir(cgroup_t group)
 {
-   if (!initialized) abort();
+   /*We need to retrieve the cpuset directory part way through the initializtion procedure others can wait*/
+   if (group==cg_cpuset?!half_initialized:!initialized) abort();
    return group_dir[group];
 }
 
@@ -350,7 +352,7 @@ copy_from_parent(char *dir, const char *cfile)
    /* For some reason we're not getting the glibc version of dirname
       that doesn't alter its arg.  */
    sge_strlcpy(dirx, dir, sizeof dirx);
-   if (strncmp(dir, cgroup_dir(cg_cpuset), strlen(cgroup_dir(cg_cpuset)))
+   if (!strncmp(dir, cgroup_dir(cg_cpuset), strlen(cgroup_dir(cg_cpuset)))
        && cpuset_prefix
        && strncmp("cpuset.", cfile, 7) != 0)
       prefix = "cpuset.";
