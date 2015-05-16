@@ -1089,13 +1089,19 @@ case DARWIN_PPC:
    # These used to define DARWIN7 and DARWIN8, but they're unused.
    case "7.*":
    case "8.*":
-      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+      set CFLAGS = "$OFLAG -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -D_DARWIN_C_SOURCE -DDARWIN -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
       breaksw
    case "9.*":
-      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -DDARWIN9 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+      set CFLAGS = "$OFLAG -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -D_DARWIN_C_SOURCE -DDARWIN -DDARWIN9 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+      breaksw
+   case "10.[1-5].*":
+      set CFLAGS = "$OFLAG -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DHAVE_GETGROUPLIST -D_DARWIN_C_SOURCE -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+      set SHARED_CFLAGS = "$SHARED_CFLAGS -arch x86_64"
+      set SHARED_LFLAGS = "$SHARED_LFLAGS -arch x86_64"
+      set LFLAGS = "$LFLAGS -arch x86_64"
       breaksw
    case "10.*":
-      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+      set CFLAGS = "$OFLAG -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DHAVE_GETGROUPLIST -D_DARWIN_C_SOURCE -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M -DSECURITYPAMAPPL $DEBUG_FLAG $CFLAGS"
       set SHARED_CFLAGS = "$SHARED_CFLAGS -arch x86_64"
       set SHARED_LFLAGS = "$SHARED_LFLAGS -arch x86_64"
       set LFLAGS = "$LFLAGS -arch x86_64"
@@ -1883,7 +1889,7 @@ else
    set CFLAGS = "$CFLAGS -DHAVE_HWLOC=0"
 endif
 
-set DEPEND_FLAGS = "`echo $DEPEND_FLAGS | sed -e 's/-rpath  *[^ ]*//g' -e 's/-[^DI][^ ]*//g'`"
+set DEPEND_FLAGS = "`echo $DEPEND_FLAGS | sed -e 's/ -arch / PRESERVEOPTARCH /' -e 's/-rpath  *[^ ]*//g' -e 's/-[^DI][^ ]*//g' -e 's/ PRESERVEOPTARCH / -arch /'`"
 
 # we set SGE_ARCH_STRING down here because the sed command above
 # would mess up the quotes around buildarch

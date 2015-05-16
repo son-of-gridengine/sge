@@ -10,7 +10,7 @@ typedef struct _drmaa2_node
    struct _drmaa2_node *next;
 } _drmaa2_Node;
 
-struct drmaa2_list_s
+static struct drmaa2_list_s
 {
    _drmaa2_Node   *head;
    _drmaa2_Node   *tail;
@@ -33,7 +33,7 @@ typedef struct _drmaa2_dictentry_t
   struct _drmaa2_dictentry_t* next;
 } _drmaa2_dictentry_t;
 
-struct drmaa2_dict_s
+static struct drmaa2_dict_s
 {
   _drmaa2_dictentry_t    *head;
   _drmaa2_dictentry_t    *tail;
