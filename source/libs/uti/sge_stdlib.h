@@ -34,7 +34,8 @@
 
 #include <stdlib.h>
 #include <sge.h>                /* for __attribute__ */
-
+#include <sys/types.h>
+#include <unistd.h>
 void *sge_malloc(size_t size) __attribute__ ((__malloc__));
 
 void *sge_realloc(void *ptr, int size, int do_abort);
