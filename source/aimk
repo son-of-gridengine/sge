@@ -1084,7 +1084,7 @@ case DARWIN_PPC:
       set DEBUG_FLAG = "$DEBUG_FLAG -fprofile-arcs -ftest-coverage"
    endif
 
-   set REL = `/usr/bin/uname -r`
+   set REL = `/usr/bin/sw_vers -productVersion`
    switch ($REL)
    # These used to define DARWIN7 and DARWIN8, but they're unused.
    case "7.*":

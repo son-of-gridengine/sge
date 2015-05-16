@@ -36,6 +36,7 @@
 switch($buildarch)
    case "aix51":
    case "darwin":
+   case "darwin-x64":
    case "win32-x86":
    case cygwin-*:
       set argv = ( -no-jni -no-java $* )
@@ -93,7 +94,11 @@ if ( ! $?JAVA_HOME ) then
    # assuming we have readlink(1).
    if ( $status == 0 && { test -L "$JAVAC_BIN" } ) then
        if ( -f /usr/bin/readlink || -f /bin/readlink ) then
-          set JAVAC_BIN = `readlink -f "$JAVAC_BIN"`
+          if($buildarch == "darwin-x64") then
+             set JAVAC_BIN=`readlink "$JAVAC_BIN"`
+          else
+             set JAVAC_BIN=`readlink -f "$JAVAC_BIN"`
+          endif
        endif
    endif
 
