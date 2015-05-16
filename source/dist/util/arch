@@ -104,13 +104,14 @@ AIX)
    esac
    ;;
 Darwin)
+   osrelease=`/usr/bin/sw_vers -productVersion`
    case $osmachine in
-      i386)
+      i386|x86_64)
          case $osrelease in
             10.1.*)
                darwin_machine=x86
                ;;
-            10.[2-8].*)
+            10.[2-9].*|10.10.*)
                darwin_machine=x64
                ;;
             *)
