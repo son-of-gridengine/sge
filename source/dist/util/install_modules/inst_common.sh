@@ -247,11 +247,11 @@ Removedir()
 ExecuteAsAdmin()
 {
    if [ "$verbose" = true ]; then
-      $ECHO $*
+      $ECHO "$@"
    fi
 
    if [ "$ADMINUSER" = root ]; then
-      $*
+      "$@"
    else
       if [ -f $SGE_UTILBIN/adminrun ]; then
          $SGE_UTILBIN/adminrun $ADMINUSER "$@"
@@ -263,13 +263,13 @@ ExecuteAsAdmin()
    if [ $? != 0 ]; then
 
       $ECHO >&2
-      Translate 1 "Command failed: %s" "$*"
+      Translate 1 "Command failed: %s" "$@"
       $ECHO >&2
       Translate 1 "Probably a permission problem. Please check file access permissions."
       Translate 1 "Check read/write permission. Check if SGE daemons are running."
       $ECHO >&2
 
-      $INFOTEXT -log "Command failed: %s" $*
+      $INFOTEXT -log "Command failed: %s" "$@"
       $INFOTEXT -log "Probably a permission problem. Please check file access permissions."
       $INFOTEXT -log "Check read/write permission. Check if SGE daemons are running."
 
@@ -299,11 +299,11 @@ ExecuteAsAdmin()
 ExecuteAsAdminForUpgrade()
 {
    if [ "$verbose" = true ]; then
-      $ECHO $*
+      $ECHO "$@"
    fi
 
    if [ "$ADMINUSER" = root ]; then
-      $*
+      "$@"
    else
       cmd=$1
       shift
@@ -691,7 +691,7 @@ return $ret
 ResolveHosts()
 {
    ret=0
-   for host in $*; do
+   for host in "$@"; do
       if [ "$host" = "none" ]; then
          echo $host
       else
@@ -2615,7 +2615,7 @@ PLIST
 #
 AddDefaultManager()
 {
-   ExecuteAsAdmin $SPOOLDEFAULTS managers $*
+   ExecuteAsAdmin $SPOOLDEFAULTS managers "$@"
 #  TruncCreateAndMakeWriteable $QMDIR/managers
 #  $ECHO $1 >> $QMDIR/managers
 #  SetPerm $QMDIR/managers
@@ -2627,7 +2627,7 @@ AddDefaultManager()
 #
 AddDefaultOperator()
 {
-   ExecuteAsAdmin $SPOOLDEFAULTS operators $*
+   ExecuteAsAdmin $SPOOLDEFAULTS operators "$@"
 }
 
 MoveLog()
@@ -4269,6 +4269,7 @@ ManipulateOneDaemonType()
          list=`$SGE_BIN/qconf -sel`
          start_cmd="$SGE_ROOT/$SGE_CELL/common/sgeexecd"
          ;;
+# fixme: remove sgebdb?
       bdb)
          list=`cat "$SGE_ROOT"/$SGE_CELL/common/bootstrap | grep "spooling_params" | awk -F '[ 	;]+' '{ print $2}' 2>/dev/null`
          # fixme: treat options?
