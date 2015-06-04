@@ -55,8 +55,8 @@ PrintError()
 {
    fmt="Error: $1"
    shift
-   $INFOTEXT -e "$fmt" $*
-   $INFOTEXT -log "$fmt" $*
+   $INFOTEXT -e "$fmt" "$@"
+   $INFOTEXT -log "$fmt" "$@"
 }
 
 PrintErrorAndExit()
@@ -65,7 +65,7 @@ PrintErrorAndExit()
    shift
    fmt="$1"
    shift
-   PrintError "$fmt" $*
+   PrintError "$fmt" "$@"
    exit $exitcode
 }
 
@@ -75,7 +75,7 @@ PrintErrorAndExit()
 ErrUsage()
 {
    if [ $# -gt 0 ]; then
-      PrintError $*
+      PrintError "$@"
    fi
    myname=`basename $0`
    $INFOTEXT -e \
@@ -164,11 +164,11 @@ Enter()
 ExecuteAsAdmin()
 {
    if [ "$verbose" = true ]; then
-      $ECHO $*
+      $ECHO "$@"
    fi
 
    if [ $ADMINUSER = default ]; then
-      $*
+      "$@"
    else
       $V5UTILBIN/adminrun $ADMINUSER "$@"
    fi
@@ -182,16 +182,16 @@ ExecuteAsAdmin()
 Execute()
 {
    if [ "$verbose" = true ]; then
-      $ECHO $*
+      $ECHO "$@"
    fi
-   $*
+   "$@"
    return $?
 }
 
 ExecRm() {
-  Execute $RM -rf $* > /dev/null 2>&1
+  Execute $RM -rf "$@" > /dev/null 2>&1
   files=""
-  for i in $*; do
+  for i in "$@"; do
      if [ -f $i -o -d $i ]; then
         files="$files $i" 
      fi 
@@ -209,9 +209,9 @@ ExecRm() {
 }
 
 ExecRmAsAdmin() {
-  ExecuteAsAdmin $RM -rf $*  > /dev/null 2>&1
+  ExecuteAsAdmin $RM -rf "$@"  > /dev/null 2>&1
   files=""
-  for i in $*; do
+  for i in "$@"; do
      if [ -f $i -o -d $i ]; then
         files="$files $i" 
      fi 
@@ -235,7 +235,7 @@ ExecRmAsAdmin() {
 ExecChown()
 {
    if [ $rootinstalls = true ]; then
-      Execute $CHOWN $*
+      Execute $CHOWN "$@"
       return $?
    else
       return 0
@@ -1854,7 +1854,7 @@ else
    rootinstalls=false
 fi
 
-ReadConfig $*
+ReadConfig "$@"
 
 #--------------------------------------------------------------------------
 # SGE specific settings to keep previous behavior
