@@ -1467,8 +1467,9 @@ int sge_chck_mod_perm_host(lList **alpp, u_long32 target, char *host,
       /* host must be either admin host or exec host and execd */
 
       if (!(host_list_locate(*object_base[SGE_TYPE_ADMINHOST].list, host) ||
-         (host_list_locate(*object_base[SGE_TYPE_EXECHOST].list, host) && !strcmp(commproc, prognames[EXECD])))) {
-         ERROR((SGE_EVENT, MSG_SGETEXT_NOADMINHOST_S, host));
+            (host_list_locate(*object_base[SGE_TYPE_EXECHOST].list, host) &&
+             !strcmp(commproc, prognames[EXECD])))) {
+         ERROR((SGE_EVENT, MSG_SGETEXT_NOADMINEXECDHOST_SS, commproc, host));
          answer_list_add(alpp, SGE_EVENT, STATUS_EDENIED2HOST, ANSWER_QUALITY_ERROR);
          DRETURN(1);
       }
