@@ -212,7 +212,7 @@ case $buildarch in
       COMPILE_ARCH=LINUXPPC64
       TARGET_BITS=TARGET_64BIT
       ;;
-   lx-ppc64el)
+   lx-ppc64el | lx-ppc64le)
       BUILDARCH=LINUXPPC64EL
       COMPILE_ARCH=LINUXPPC64EL
       TARGET_BITS=TARGET_64BIT
