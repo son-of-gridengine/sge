@@ -1085,16 +1085,14 @@ case DARWIN_X64:
 
    set REL = `/usr/bin/sw_vers -productVersion`
    switch ($REL)
-   # These used to define DARWIN7 and DARWIN8, but they're unused.
-   case "7.*":
-   case "8.*":
-      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
-      breaksw
-   case "9.*":
-      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -Wall -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -DDARWIN9 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+   case "10.[1-5].*":
+      set CFLAGS = "$OFLAG -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DHAVE_GETGROUPLIST -D_DARWIN_C_SOURCE -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+      set SHARED_CFLAGS = "$SHARED_CFLAGS -arch x86_64"
+      set SHARED_LFLAGS = "$SHARED_LFLAGS -arch x86_64"
+      set LFLAGS = "$LFLAGS -arch x86_64"
       breaksw
    case "10.*":
-      set CFLAGS = "$OFLAG -no-cpp-precomp -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+      set CFLAGS = "$OFLAG -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DHAVE_GETGROUPLIST -D_DARWIN_C_SOURCE -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M -DSECURITYPAMAPPL $DEBUG_FLAG $CFLAGS"
       set SHARED_CFLAGS = "$SHARED_CFLAGS -arch x86_64"
       set SHARED_LFLAGS = "$SHARED_LFLAGS -arch x86_64"
       set LFLAGS = "$LFLAGS -arch x86_64"
