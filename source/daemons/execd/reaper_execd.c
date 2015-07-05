@@ -834,6 +834,15 @@ static int clean_up_job(lListElem *jr, int failed, int shepherd_exit_status,
    return 0;
 }
 
+/* Add usage value if one doesn't already exist.  */
+static int
+maybe_add_usage(lListElem *jr, const char *name, const char *val_as_str,
+                double val)
+{
+   if (!lGetSubStr(jr, UA_name, name, JR_usage))
+      add_usage(jr, name, val_as_str, val);
+}
+
 /* ------------------------- */
 void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 ja_task_id, const char *pe_task_id, lListElem *jr)
 {
@@ -992,7 +1001,10 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
          if (lGetNumberOfElem(lGetList(jatep, JAT_task_list)) == 0) {
             lListElem *jr = get_job_report(job_id, ja_task_id, NULL);
             if (jr != NULL && lGetUlong(jr, JR_state) == JSLAVE && ISSET(lGetUlong(jatep, JAT_state), JDELETED)) {
-               add_usage(jr, "exit_status", NULL, 0);
+              /* Fixme:  Repalced out on the same basis as the one
+                 inexecd_slave_job_exit -- why was it there?  */
+               /* add_usage(jr, "exit_status", NULL, 0); */
+               maybe_add_usage(jr, "exit_status", NULL, 0);
                flush_job_report(jr);
             }
          }
@@ -2108,7 +2120,14 @@ void execd_slave_job_exit(u_long32 job_id, u_long32 ja_task_id)
        */
       if (lGetNumberOfElem(lGetList(ja_task, JAT_task_list)) == 0) {
          lListElem *jr = get_job_report(job_id, ja_task_id, NULL);
-         add_usage(jr, "exit_status", NULL, 0);
+         /* Fixme: The commented line is part of the "JG-2009-01-02-0"
+            change (which added the whole function).  It causes the
+            exit status of tightly integrated jobs always to be 0.
+            Why was it there?
+            Replaced by a conditional version in case the status could
+            be missing.  */
+         /* add_usage(jr, "exit_status", NULL, 0); */
+         maybe_add_usage(jr, "exit_status", NULL, 0);
          flush_job_report(jr);
       }
    }
