@@ -1002,8 +1002,8 @@ void remove_acked_job_exit(sge_gdi_ctx_class_t *ctx, u_long32 job_id, u_long32 j
          if (lGetNumberOfElem(lGetList(jatep, JAT_task_list)) == 0) {
             lListElem *jr = get_job_report(job_id, ja_task_id, NULL);
             if (jr != NULL && lGetUlong(jr, JR_state) == JSLAVE && ISSET(lGetUlong(jatep, JAT_state), JDELETED)) {
-              /* Fixme:  Repalced out on the same basis as the one
-                 inexecd_slave_job_exit -- why was it there?  */
+              /* Fixme:  Commented out on the same basis as the one
+                 in execd_slave_job_exit -- why was it there?  */
                /* add_usage(jr, "exit_status", NULL, 0); */
                maybe_add_usage(jr, "exit_status", NULL, 0);
                flush_job_report(jr);
@@ -1481,15 +1481,18 @@ examine_job_task_from_file(sge_gdi_ctx_class_t *ctx, int startup, char *dir, lLi
             /* the first usage data after restart      */
 
             if (HAVE_HWLOC) {
-               /* do accounting of bound cores */ 
+               /* Do accounting of bound cores.  See sge_exec_job.  */
                dstring fconfig = DSTRING_INIT;
 
-               sge_get_active_job_file_path(&fconfig, jobid, jataskid, pe_task_id_str, "config");
+               sge_get_active_job_file_path(&fconfig, jobid, jataskid,
+                                            pe_task_id_str, "config");
                
                if (sge_dstring_get_string(&fconfig) == NULL) {
                   DPRINTF(("couldn't find config file for running job\n"));
                } else {   
                   DPRINTF(("path to config file %s\n", sge_dstring_get_string(&fconfig)));
+                  /* binding goes in ja_task, not pe_task */
+                  jr = get_job_report(jobid, jataskid, NULL);
                   update_used_cores(sge_dstring_get_string(&fconfig), &jr);
                }
                
@@ -1568,6 +1571,8 @@ static void update_used_cores(const char* path_to_config, lListElem** jr)
                sge_dstring_sprintf(&pseudo_usage, "binding_inuse!%s", jobtopo); 
                
                add_usage(*jr, sge_dstring_get_string(&pseudo_usage), NULL, 0);
+               sge_dstring_sprintf(&pseudo_usage, "binding_strategy!%s",
+                                   binding_cfg);
                sge_dstring_free(&pseudo_usage); 
 
             } else {
