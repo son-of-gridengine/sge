@@ -451,30 +451,40 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
                host_slots = pe_slots;
          }
 
-         /* check, depending on the used topology, which cores are can be used 
-            in order to fulfil the selected strategy. if strategy is not
-            applicable or in case of errors "NULL" is written to this 
-            line in the "config" file */
+         /* Check whether there's a binding (in the job report) for
+            this ja_task, and use that if so.  All pe_tasks should get
+            the same binding.  See also examine_job_task_from_file,
+            which sets up the usage for a restarted execd.  */
+         processor_binding_strategy =
+            usage_binding(get_job_report(job_id, ja_task_id, NULL));
+         if (!processor_binding_strategy) {
+         /* Check, depending on the used topology, which cores can
+            be used to fulfil the selected strategy.  If strategy is
+            not applicable, or in case of errors, "NULL" is written to
+            this line in the "config" file */
          create_binding_strategy_string(&core_binding_strategy_string, jep,
                                         &rankfileinput, host_slots);
- 
-         if (sge_dstring_get_string(&core_binding_strategy_string) != NULL
-               && strcmp(sge_dstring_get_string(&core_binding_strategy_string), "NULL") != 0) {
-            
-            DPRINTF((SGE_EVENT, "core binding: %s", sge_dstring_get_string(&core_binding_strategy_string)));
+         processor_binding_strategy = sge_dstring_get_string(&core_binding_strategy_string);
+         if (processor_binding_strategy
+             && strcmp(processor_binding_strategy, "NULL") != 0) {
+            DPRINTF((SGE_EVENT, "core binding: %s", processor_binding_strategy));
 
             /* add to job report */
-            jr = get_job_report(job_id, ja_task_id, pe_task_id);
+            jr = get_job_report(job_id, ja_task_id, NULL);
+            /* Reported by qstat but is only useful for single node jobs.  */
             sge_dstring_sprintf(&pseudo_usage, "binding_inuse!%s", 
-                           binding_get_topology_for_job(sge_dstring_get_string(&core_binding_strategy_string)));
-            
+                                binding_get_topology_for_job(processor_binding_strategy));
             add_usage(jr, sge_dstring_get_string(&pseudo_usage), NULL, 0);
-            
+            /* Only intended for correctly assigning bindings.  */
+            sge_dstring_sprintf(&pseudo_usage, "binding_strategy!%s",
+                                processor_binding_strategy);
+            add_usage(jr, sge_dstring_get_string(&pseudo_usage), NULL, 0);
             /* send job report   */
             flush_job_report(jr);
          }
 
          sge_dstring_free(&pseudo_usage);
+        }
         }
       }
       if (rankfileinput != NULL) {
@@ -1329,17 +1339,11 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       range_list_print_to_string(processor_set, &range_string, true, false, false);
       fprintf(fp, "processors=%s\n", sge_dstring_get_string(&range_string));
       sge_dstring_free(&range_string);
-      
-      
-      if (sge_dstring_get_string(&core_binding_strategy_string) == NULL) {
-         processor_binding_strategy = "NULL";
-      } else {
-         processor_binding_strategy = sge_dstring_get_string(&core_binding_strategy_string); 
-      }
-      /* write binding strategy */ 
-      fprintf(fp, "binding=%s\n", processor_binding_strategy);
-      
    }
+   if (processor_binding_strategy == NULL) {
+      processor_binding_strategy = "NULL";
+   }
+   fprintf(fp, "binding=%s\n", processor_binding_strategy);
    if(petep != NULL) {
       fprintf(fp, "job_name=%s\n", lGetString(petep, PET_name));
    } else {

@@ -189,6 +189,21 @@ void cleanup_job_report(u_long32 jobid, u_long32 jataskid)
    DRETURN_VOID;
 }
 
+/* Return the binding strategy in the job report JR */
+const char *
+usage_binding(lListElem *jr)
+{
+  lListElem *elem;
+  const char *prefix = "binding_strategy!";
+  for_each (elem, lGetList(jr, JR_usage)) {
+     const char *usage_name = lGetString(elem, UA_name);
+
+     if (usage_name && strncmp(usage_name, prefix, strlen(prefix)) == 0)
+        return usage_name + strlen(prefix);
+  }
+  return NULL;
+}
+
 /* ------------------------------------------------------------
    NAME
 
