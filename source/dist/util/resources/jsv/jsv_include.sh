@@ -581,8 +581,6 @@ jsv_del_env()
 #     jsv/jsv_show_params() 
 #     jsv/jsv_is_param()
 #     jsv/jsv_get_param()
-#     jsv/jsv_add_param()
-#     jsv/jsv_mod_param()
 #     jsv/jsv_on_start()
 ################################################################################
 jsv_is_param() 
@@ -776,8 +774,6 @@ jsv_del_param()
 #     jsv/jsv_show_params() 
 #     jsv/jsv_is_param()
 #     jsv/jsv_get_param()
-#     jsv/jsv_add_param()
-#     jsv/jsv_mod_param()
 #     jsv/jsv_on_start()
 ################################################################################
 jsv_sub_is_param() {
@@ -1629,8 +1625,6 @@ _jsv_script_log()
 #
 #        jsv_is_param()
 #        jsv_get_param()
-#        jsv_add_param()
-#        jsv_mod_param()
 #        jsv_del_param()
 #
 #     List based job parameters can be accessed with:

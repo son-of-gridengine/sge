@@ -125,12 +125,12 @@ typedef enum {
 }thread_error_t;
 
 /**
- * This function definition is the prototyp for the output function of a data
+ * This function definition is the prototype for the output function of a data
  * extension
  */
 typedef void (*extension_output)(
    dstring *info_message,    /* target memory buffer*/
-   void *monitor_extension,  /* contains the monitor extension structur */
+   void *monitor_extension,  /* contains the monitor extension structure */
    double time               /* length of the time inteval */
 );
 

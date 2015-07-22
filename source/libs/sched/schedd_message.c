@@ -182,7 +182,7 @@ void schedd_mes_initialize(void)
 *     void schedd_mes_commit(lList *job_list, int ignore_category) 
 *
 *  FUNCTION
-*     Each message contained in "tmp_sme" contain es only
+*     Each message contained in "tmp_sme" contains only
 *     one job id. We have to find other jobs in "job_list" and
 *     add the job ids to the list of ids contained in "tmp_sme"
 *     message elements. After that we have to move all messages 
@@ -193,7 +193,7 @@ void schedd_mes_initialize(void)
 *     messages contained in "tmp_sme". 
 *     
 *     If no category is passed in and ignore_category is false, the messages
-*     are only generated for the current job, meaning, they are just copied.
+*     are only generated for the current job, meaning they are just copied.
 *
 *  INPUTS
 *     lList *job_list     - JB_Type list 

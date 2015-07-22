@@ -143,14 +143,14 @@ static void   init_categories(void);
 *     int sge_setup_qmaster(char* anArgv[]) 
 *
 *  FUNCTION
-*     Process commandline arguments. Remove qmaster lock file. Write qmaster
+*     Process command line arguments. Remove qmaster lock file. Write qmaster
 *     host to the 'act_qmaster' file. Initialize qmaster and reporting. Write
 *     qmaster PID file.  
 *
 *     NOTE: Before this function is invoked, qmaster must become admin user.
 *
 *  INPUTS
-*     char* anArgv[] - commandline argument vector 
+*     char* anArgv[] - command line argument vector
 *
 *  RESULT
 *     0 - success 
@@ -163,11 +163,11 @@ static void   init_categories(void);
 *     MT-NOTE: invoke this function after any additional thread (directly or
 *     MT-NOTE: indirectly) has been created.
 *
-*     Do *not* write the qmaster pid file, before 'qmaster_init()' did return
+*     Do *not* write the qmaster pid file before 'qmaster_init()' returned
 *     successfully. Otherwise, if we do have a running qmaster and a second
 *     qmaster is started (illegally) on the same host, the second qmaster will
 *     overwrite the pid of the qmaster started first. The second qmaster will
-*     detect it's insubordinate doing and terminate itself, thus leaving behind
+*     detect its insubordinate doing and terminate itself, thus leaving behind
 *     a useless pid.
 *
 *******************************************************************************/
@@ -379,7 +379,7 @@ void sge_process_qmaster_cmdline(char**anArgv) {
 *     Handle command line arguments. Parse argument vector and handle options.
 *
 *  INPUTS
-*     char **anArgv - pointer to agrument vector 
+*     char **anArgv - pointer to argument vector
 *
 *  RESULT
 *     void - none
@@ -686,7 +686,7 @@ static void communication_setup(sge_gdi_ctx_class_t *ctx)
    /* fetching qmaster_params and begin to parse */
    qmaster_params = mconf_get_qmaster_params();
 
-   /* updating the commlib paramterlist with new or changed parameters */
+   /* updating the commlib parameter list with new or changed parameters */
    cl_com_update_parameter_list(qmaster_params);
    DPRINTF(("received qmaster_params are: %s\n", qmaster_params));
    sge_free(&qmaster_params);
@@ -706,7 +706,7 @@ static void communication_setup(sge_gdi_ctx_class_t *ctx)
 *     static bool is_qmaster_already_running(void) 
 *
 *  FUNCTION
-*     Check, whether there is running qmaster already.
+*     Check whether there is a running qmaster already.
 *
 *  INPUTS
 *     void - none 
@@ -719,11 +719,11 @@ static void communication_setup(sge_gdi_ctx_class_t *ctx)
 *     MT-NOTE: is_qmaster_already_running() is not MT safe 
 *
 *  BUGS
-*     This function will only work, if the PID found in the qmaster PID file
+*     This function will only work if the PID found in the qmaster PID file
 *     either does belong to a running qmaster or no process at all.
 *
-*     Of course PID's will be reused. This is, however, not a problem because
-*     of the very specifc situation in which this function is called.
+*     Of course PIDs will be reused. This is, however, not a problem because
+*     of the very specific situation in which this function is called.
 *
 *******************************************************************************/
 static bool is_qmaster_already_running(const char *qmaster_spool_dir)
@@ -967,7 +967,7 @@ static int setup_qmaster(sge_gdi_ctx_class_t *ctx)
          ERROR((SGE_EVENT, SFNMAX, MSG_CONFIG_ADDINGHOSTGLOBALTOEXECHOSTLIST));
    }
 
-   /* add qmaster host to Master_Adminhost_List as an administrativ host */
+   /* add qmaster host to Master_Adminhost_List as an administrative host */
    if (!host_list_locate(*object_base[SGE_TYPE_ADMINHOST].list, qualified_hostname)) {
       if (sge_add_host_of_type(ctx, qualified_hostname, SGE_AH_LIST, &monitor)) {
          DRETURN(-1);
@@ -1157,7 +1157,7 @@ static int setup_qmaster(sge_gdi_ctx_class_t *ctx)
          job_suc_pre_ad(jep);
 
          /* array successor jobs need to have their cache rebuilt. this will
-            do nothing spectacular if the AD reqest list for this job is empty. */
+            do nothing spectacular if the AD request list for this job is empty. */
          sge_task_depend_init(jep, &answer_list);
 
          centry_list_fill_request(lGetList(jep, JB_hard_resource_list), 
@@ -1473,4 +1473,3 @@ static void init_categories(void)
    lFreeList(&p_list);
    lFreeList(&u_list);
 }
-

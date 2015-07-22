@@ -85,7 +85,7 @@ static Output_t Output[MAX_OUTPUT_LINES] = {
                                              {NULL, {0,0}, NO_WARNING, NO_ERROR, 0, NULL, PTHREAD_MUTEX_INITIALIZER},
                                            };
 
-/* global mutex used for mallinfo initialisation and also used to access the Info_Line string */
+/* global mutex used for mallinfo initialization and also used to access the Info_Line string */
 static pthread_mutex_t global_mutex = PTHREAD_MUTEX_INITIALIZER; 
 
 /* a static dstring used as a temporary buffer to build the commlib info string */
