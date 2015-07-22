@@ -59,11 +59,11 @@ typedef struct _s_token {
    bool has_patterns;   /* pattern has patterns switch, to help be more effective */
    int  tt;             /* Type of token */
    int  et;             /* Expected Token type */
-   lList **answer_list; /* Anwser list, or null */
+   lList **answer_list; /* Answer list, or null */
 } s_token;
 
 
-/* Private function deffinitions */
+/* Private function definitions */
 static int OrExpression(s_token *, bool);
 static int AndExpression(s_token *, bool);
 static int SimpleExpression(s_token *, bool);

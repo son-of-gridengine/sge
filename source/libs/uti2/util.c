@@ -256,6 +256,7 @@ static const pair sigtable[] = {
 
 static const int nsig = sizeof(sigtable)/sizeof(pair);
 
+/* see also sge_sys_sig2str */
 char *strsignal(int signo) {
    int n = nsig;
    while (n--) {

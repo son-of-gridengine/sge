@@ -168,9 +168,9 @@ u_long32 sge_map_signal(int sys_sig)
 *     u_long32 sge_str2signal(const char *str) 
 *
 *  FUNCTION
-*     Make a sge signal out of a string. 'str' can be the signal name 
-*     (caseinsensitive) without sig or the signal number (Take care 
-*     numbers are system dependent).
+*     Make an sge signal out of a string. 'str' can be the signal name
+*     (caseinsensitive) without sig or the signal number.  (Take care
+*     numbers are system dependent.)
 *
 *  INPUTS
 *     const char *str - signal string 
@@ -254,16 +254,16 @@ u_long32 sge_sys_str2signal(const char *str)
 
 /****** uti/signal/sge_sig2str() **********************************************
 *  NAME
-*     sge_sig2str() -- Make a string out of a SGE/EE signal 
+*     sge_sig2str() -- Make a string out of an SGE signal
 *
 *  SYNOPSIS
 *     const char* sge_sig2str(u_long32 sge_sig) 
 *
 *  FUNCTION
-*     Make a string out of a SGE/EE signal    
+*     Make a string out of an SGE signal
 *
 *  INPUTS
-*     u_long32 sge_sig - SGE/EE signal
+*     u_long32 sge_sig - SGE signal
 *
 *  RESULT
 *     const char* - signal string
@@ -294,7 +294,8 @@ const char *sge_sig2str(u_long32 sge_sig)
 *     const char* sge_sys_sig2str(u_long32 sys_sig) 
 *
 *  FUNCTION
-*     Make a string out of a system signal 
+*     Make a string out of a system signal.  This isn't the same as strsignal,
+*     e.g. giving "ILL" v. "Illegal instruction".
 *
 *  INPUTS
 *     u_long32 sys_sig - system signal 

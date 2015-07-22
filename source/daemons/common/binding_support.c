@@ -588,8 +588,8 @@ bool account_job(const char* job_topology)
 *     topology_length, const char* job, const int job_length)
 *
 *  FUNCTION
-*     Marks occupied resources from one topology string (job) which
-*     is usually a job on another topology string (topology) which
+*     Marks occupied resources from one topology string (job), which
+*     is usually a job, into another topology string (topology) which
 *     is usually the execution daemon local topology string.
 *
 *  INPUTS
@@ -644,10 +644,10 @@ static bool account_job_on_topology(char** topology, const int topology_length,
 *     topo_used_by_job, int* topo_used_by_job_length)
 *
 *  FUNCTION
-*     Checks if the job can bind to the given by the <socket>,<core> pairs.
-*     If so these cores are marked as used and true is returned. Also an
+*     Checks if the job can bind to the given <socket>,<core> pairs.
+*     If so, these cores are marked as used and true is returned. Also a
 *     topology string is returned where all cores consumed by the job are
-*     marked with smaller case letters.
+*     marked with lower case letters.
 *
 *  INPUTS
 *     const int* list_of_sockets   - List of sockets to be used
