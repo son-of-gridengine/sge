@@ -1031,8 +1031,8 @@ bool sge_gdi2_get_mapping_name(sge_gdi_ctx_class_t *ctx, const char *requestedHo
 *     not reachable)
 * 
 *  SEE ALSO
-*     gdilib/sge_gdi_get_mapping_name()
-*     gdilib/PERM_LOWERBOUND
+*     gdi/sge_gdi2_get_mapping_name()
+*     gdi/PERM_LOWERBOUND
 ******************************************************************************/
 bool sge_gdi2_check_permission(sge_gdi_ctx_class_t *ctx, lList **alpp, int option)
 {
@@ -1154,7 +1154,7 @@ gdi2_send_message(sge_gdi_ctx_class_t *sge_ctx, int synchron, const char *tocomp
    /* CR- TODO: This is for tight integration of qrsh -inherit
     *       
     *       All GDI functions normally connect to qmaster, but
-    *       qrsh -inhert want's to talk to execd. A second handle
+    *       qrsh -inhert wants to talk to execd. A second handle
     *       is created. All gdi functions should accept a pointer
     *       to a cl_com_handle_t* handle and use this handle to
     *       send/receive messages to the correct endpoint.

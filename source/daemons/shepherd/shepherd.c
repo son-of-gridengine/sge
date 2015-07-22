@@ -2025,7 +2025,7 @@ void shepherd_deliver_signal(int sig, int pid, int *postponed_signal,
 
 /****** shepherd/core/shepconf_deliver_signal_or_method() *********************************
 *  NAME
-*     shepherd_find_method() -- find the notify_name for a signal 
+*     shepconf_deliver_signal_or_method() -- deliver a signal to a process or start user-defined method
 *
 *  SYNOPSIS
 *     static void shepconf_deliver_signal_or_method(int sig, int pid, 
@@ -2033,7 +2033,7 @@ void shepherd_deliver_signal(int sig, int pid, int *postponed_signal,
 *
 *  FUNCTION
 *
-*    deliver a signal to a process or start a user defined method
+*    deliver a signal to a process or start a user-defined method
 *    (terminate_method, resume_method or suspend_method) 
 *
 *  INPUTS
@@ -2471,7 +2471,8 @@ int fd_std_err             /* fd of stderr. -1 if not set */
    /* handle qsub -pty */
    if (fd_pty_master != -1) {
       char* job_owner = NULL;
-      /* in case auf qsub -pty, the wait call should not block until the job finishs */
+      /* in case of qsub -pty, the wait call should not block until
+         the job finishes */
       wait_options |= WNOHANG;
 
       /* get and open the right output-files */

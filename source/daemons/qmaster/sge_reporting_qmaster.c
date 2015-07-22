@@ -549,7 +549,7 @@ reporting_create_job_log(lList **answer_list,
 *
 *  FUNCTION
 *     Create an accounting record.
-*     Depending on the cluster configuration, parameter reporting_params,
+*     Depending on the cluster configuration parameter reporting_params,
 *     accounting is written to the accounting file and/or the reporting file.
 *     
 *     During the runtime of jobs, intermediate accounting records can be written

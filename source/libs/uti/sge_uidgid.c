@@ -1209,7 +1209,8 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
 *                          will be written here
 *     size_t lstr        - size of err_str
 *     bool skip_silently - skip silently if setting the group is skipped
-*                          because this would exceed the NGROUPS_MAX limit.
+*                          because this would exceed the _SC_NGROUPS_MAX
+*                          limit.
 *
 *  NOTE
 *     MT-NOTE: sge_add_group() is MT safe

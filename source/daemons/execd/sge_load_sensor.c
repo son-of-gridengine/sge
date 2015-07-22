@@ -665,11 +665,11 @@ void sge_ls_qidle(int qidle)
 *     static void sge_ls_qls(int qls)
 *
 *  FUNCTION
-*     enable/disable qidle loadsensor
+*     enable/disable qloadsensor
 *
 *  INPUTS
-*     qidle: 1 - enable qidle
-*            0 - disable qidle
+*     qidle: 1 - enable qloadsensor
+*            0 - disable qloadsensor
 ******************************************************************************/
 void sge_ls_qls(int qls)
 {
@@ -881,11 +881,10 @@ int sge_ls_stop_if_pid(pid_t pid)
 *     int sge_ls_get(lList **lpp)
 *
 *  FUNCTION
-*     This functions starts/stops/restarts all loadsensors
-*     contained in the global variable 'conf.load_sensor'.
+*     This function starts/stops/restarts all loadsensors
 *
-*     The restart of a loadsensor process will be triggered 
-*     when the modification time of the scriptfile changed.
+*     The restart of a loadsensor process will be triggered
+*     when the modification time of the file changed.
 *
 *     After that it collects load values by reading the
 *     output of each loadsensor process. The last complete

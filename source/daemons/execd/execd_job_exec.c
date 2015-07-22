@@ -556,6 +556,7 @@ static lList *job_get_queue_with_task_about_to_exit(lListElem *jep,
 *  SYNOPSIS
 *     static lList *job_get_queue_for_task(lListElem  *jatep,
 *                                          lListElem  *jatask,
+*                                          const char *qualified_hostname,
 *                                          const char *queuename);
 *
 *  FUNCTION
@@ -563,7 +564,7 @@ static lList *job_get_queue_with_task_about_to_exit(lListElem *jep,
 *        - may be used by job in which new task shall be started
 *        - resides on the host of this execd
 *        - has free slots for the job in which new task shall be started
-*     If a suited queue is found, it is set to be used by the new task.
+*     If a suitable queue is found, it is set to be used by the new task.
 *
 *  INPUTS
 *     jatep     - the actual job (substructure job array task)

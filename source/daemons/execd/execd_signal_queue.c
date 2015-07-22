@@ -193,7 +193,7 @@ int do_signal_queue(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg, sge_pack_buffe
 }
 
 /*************************************************************************
- execds function to deliver a signal to the job. This cant be done direct,
+ execds function to deliver a signal to the job. This can't be done directly
  because there is the shepherd between.
  We do a signal mapping for the shepherd.
 

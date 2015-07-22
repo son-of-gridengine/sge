@@ -389,9 +389,9 @@ int do_ack(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg)
        * delete job's spooling directory may take some time
        * (NFS directory case). We have to trigger communication
        * to be sure not to get communication timeouts when we have
-       * to delete lot's of jobs at once. ( The trigger is done
-       * NOT synchron which means that the commlib will return
-       * when there is nothing to do
+       * to delete lots of jobs at once.  (The trigger is done
+       * NOT synchronously which means that the commlib will return
+       * when there is nothing to do.
        */
       cl_commlib_trigger(cl_com_get_handle("execd", 1) ,0);
    }

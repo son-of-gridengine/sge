@@ -78,8 +78,8 @@
  * 
  * Categories are used to speed up the job dispatching
  * in the scheduler. Before the job dispatching starts,
- * the categories have to be build for new jobs and 
- * reseted for existing jobs. A new job gets a reference 
+ * the categories have to be built for new jobs and
+ * reset for existing jobs. A new job gets a reference
  * to its category regardless if it is existing or not.
  *
  * This is done with:
@@ -88,18 +88,18 @@
  * - int sge_reset_job_category(void)
  *
  * During the dispatch run for a job, the category caches
- * all hosts and queues, which are not suitable for that
- * category. This leads toa speed improvement when other
+ * all hosts and queues which are not suitable for that
+ * category. This leads to a speed improvement when other
  * jobs of the same category are matched. In addition to
- * the host and queues, it has to cach the generated messages
- * as well, since the are not generated again. If a category
+ * the host and queues, it has to cache the generated messages
+ * as well, since they are not generated again. If a category
  * cannot run in the cluster at all, the category is rejected
  * and the messages are added for all jobs in the category.
  *
  * This is done for simple and parallel jobs. In addition it
  * also caches the results of soft request matching. Since
  * a job can only soft request a fixed resource, it is not
- * changing during a scheduling run and the soft request violation
+ * changing during a scheduling run and the soft request violations
  * for a given queue are the same for all jobs in one 
  * category.
  *
