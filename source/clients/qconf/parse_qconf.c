@@ -175,7 +175,6 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
    u_long32 prog_number = ctx->get_who(ctx);
    uid_t uid = ctx->get_uid(ctx);
    gid_t gid = ctx->get_gid(ctx);
-   bool has_binding_param = false;
 
    DENTER(TOP_LAYER, "sge_parse_qconf");
 
@@ -185,32 +184,10 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
       fprintf(stderr, "%s\n", MSG_PARSE_NOOPTIONARGUMENT);
       DRETURN(1);
    }
-   
-   /* 
-    * is there a -cb switch. we have to find that switch now because
-    * the loop handles all switches in specified sequence and
-    * -sep -cb would not be handled correctly.
-    */
-   spp = argv;
-   while (*spp) {
-      if (strcmp("-cb", *spp) == 0) {
-         has_binding_param = true;
-      }
-      spp++;
-   }
 
    /* now start from beginning */
    spp = argv;
    while (*spp) {
-
-/*----------------------------------------------------------------------------*/
-      /* "-cb" */
-
-      if (strcmp("-cb", *spp) == 0) {
-         /* just skip it we have parsed it above */
-         spp++;
-         continue;
-      }
 
 /*----------------------------------------------------------------------------*/
       /* "-acal cal-name" */
@@ -4295,7 +4272,7 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
 /*----------------------------------------------------------------------------*/
       /* "-sep" */
       if (strcmp("-sep", *spp) == 0) {
-         if (show_processors(ctx, has_binding_param))
+         if (show_processors(ctx, true))
             sge_parse_return = 1;
          spp++;
          continue;
