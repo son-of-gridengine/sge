@@ -233,10 +233,13 @@ compatibility and will be removed in the next major release.
 .\"
 .IP "\fB\-pe\fP \fIpe_name\fP,..."
 Displays status information with respect to queues to which are attached
-at least one of the parallel environments listed in the comma-separated
-option argument. Status information for jobs is displayed either for those 
-which execute in one of the selected queues or which are pending and 
-might get scheduled to those queues in principle.
+to at least one of the parallel environments listed in the comma-separated
+option argument.
+\" Status information for jobs is displayed either for those
+\" which execute in one of the selected queues or which are pending and
+\" might get scheduled to those queues in principle.
+Status information is displayed for jobs which are executing in one of
+the selected queues.
 .\"
 .IP "\fB\-pri\fP"
 Displays additional information for each job related to the job priorities in 
@@ -244,7 +247,7 @@ general.
 (see OUTPUT FORMATS below).
 .\"
 .IP "\fB\-q\fP \fIwc_queue_list\fP"
-Specifies a wildcard expression queue list to which job
+Specifies a wildcard expression queue list for which job
 information is to be displayed. Find the definition of \fIwc_queue_list\fP
 in
 .M sge_types 5 .
@@ -268,7 +271,8 @@ output without \fB\-s\fP
 at all. To show recently finished ("zombie") jobs (according to the
 .M sge_conf 5
 .B finished_jobs
-parameter) use \fB\-s z\fP.
+parameter) use \fB\-s z\fP.  (The zombie list is not spooled, and so will be
+lost by a qmaster re-start.)
 To display jobs in user/operator/system/array-dependency hold,
 use
 .B \-s

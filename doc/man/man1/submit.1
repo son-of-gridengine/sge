@@ -1722,14 +1722,21 @@ available in the JSV context.
 .IP "\fB\-S\fP [[\fIhostname\fP]\fB:\fP]\fIpathname\fP\fB,\fP..."
 Available for \fIqsub\fP, \fIqsh\fP and \fIqalter\fP.
 .sp 1
-Specifies the interpreting shell for the job. Only one \fIpathname\fP
+Specifies the interpreting shell for the job.  \fIpathname\fP
+must be an executable file which interprets command-line options
+.B \-c
+and
+.B \-s
+as
+.B /bin/sh
+does.
+.sp 1
+Only one \fIpathname\fP
 component without a \fIhost\fP specifier is valid and only one path name
 for a given host is allowed. Shell paths with host
 assignments define the interpreting shell for the job if the host is the
 execution host. The shell path without host specification is used if the
 execution host matches none of the hosts in the list.
-.\" Fixme:  should it be in login_shells list?  Must support -c, -s,
-.\" per Bourne
 .sp 1
 Furthermore, the pathname can be constructed with pseudo environment
 variables as described for the \fB\-e\fP option above.

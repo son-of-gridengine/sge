@@ -115,9 +115,9 @@ Code@Description@OK@Explanation
 0@no failure@Y@ran and exited normally
 1@assumedly before job@N@failed early in execd
 3@before writing config@N@failed before execd set up local spool
-4@before writing PID@N@shepherd failed to record its pid
+4@before writing PID@N@shepherd failed to record its pid \- filesystem problem?
 .\" 5@on reading config file@N@
-6@setting processor set@N@failed setting up processor set
+6@setting processor set@N@failed setting up processor set (obsolete)
 7@before prolog@N@failed before prolog
 8@in prolog@N@failed in prolog
 9@before pestart@N@failed before starting PE
@@ -136,24 +136,24 @@ ran, but PE stop procedure failed
 T}
 14@before epilog@Y@T{
 .na
-ran, but failed before calling epilog script
+ran, but failed before calling epilog
 T}
 15@in epilog@Y@T{
 .na
-ran, but failed in epilog script
+ran, but failed in epilog
 T}
 16@releasing processor set@Y@T{
 .na
-ran, but processor set could not be released
+ran, but processor set could not be released (obsolete)
 T}
 17@through signal@Y@T{
 .na
 job killed by signal (possibly qdel)
 T}
-18@shepherd returned error@N@shepherd died
+18@shepherd returned error@N@shepherd died somehow
 19@before writing exit_status@N@T{
 .na
-shepherd didn't write reports correctly
+shepherd didn't write reports correctly \- probably program or machine crash
 T}
 20@found unexpected error file@?@T{
 .na
