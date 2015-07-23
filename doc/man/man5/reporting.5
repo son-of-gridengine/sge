@@ -179,7 +179,8 @@ The time when a state change was triggered.
 The new queue state.
 .IP "\fBconsumables\fP"
 Description of consumable values. Information about multiple consumables is separated by space.
-A consumable description has the format <name>=<actual_value>=<configured value>.
+A consumable description has the format
+.IR name = actual_value = configured_value .
 .PP
 Consumables are only logged if
 .B log_consumables=true
@@ -202,7 +203,8 @@ Currently, xxQS_NAMExx doesn't track a host state; the field is reserved for
 future use. Always contains the value X.
 .IP "\fBload values\fP"
 Description of load values. Information about multiple load values is separated by space.
-A load value description has the format <name>=<actual_value>.
+A load value description has the format
+.IR name = actual_value .
 .\"
 .SS host_consumable
 A host_consumable record contains information about hosts and host consumables.
@@ -218,7 +220,8 @@ Currently, xxQS_NAMExx doesn't track a host state; the field is reserved for
 future use. Always contains the value X.
 .IP "\fBconsumables\fP"
 Description of consumable values. Information about multiple consumables is separated by space.
-A consumable description has the format <name>=<actual_value>=<configured value>.
+A consumable description has the format
+.IR name = actual_value = configured_value .
 .PP
 Consumables are only logged if
 .B log_consumables=true

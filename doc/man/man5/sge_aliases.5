@@ -29,6 +29,9 @@
 .de M		\" man page reference
 \\fI\\$1\\fR\\|(\\$2)\\$3
 ..
+.de MO		\" other man page reference
+\\fI\\$1\\fR\\|(\\$2)\\$3
+..
 .TH xxQS_NAME_Sxx_ALIASES 5 "2004-04-19" "xxRELxx" "xxQS_NAMExx File Formats"
 .\"
 .SH NAME
@@ -118,7 +121,7 @@ must match the replaced working directory path to be applied.
 .PP
 The following is a simple example of a path aliasing file resolving
 problems with inhomogeneous paths if
-.M automount 8
+.MO automount 8
 is used:
 .PP
 .nf

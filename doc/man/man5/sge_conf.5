@@ -1690,7 +1690,8 @@ post mortem status information via
 The \fBfinished_jobs\fP parameter defines the
 number of finished ("zombie") jobs stored. If this maximum number is reached, the
 eldest finished job will be discarded for every new job added to the
-finished job list.
+finished job list.  (The zombie list is not spooled, and so will be
+lost by a qmaster re-start.)
 .PP
 Changing \fBfinished_jobs\fP will take immediate effect.
 The default for \fBfinished_jobs\fP is 100.
