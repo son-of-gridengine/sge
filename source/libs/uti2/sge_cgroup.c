@@ -182,7 +182,7 @@ char *
 cgroup_dir(cgroup_t group)
 {
    /*We need to retrieve the cpuset directory part way through the initializtion procedure others can wait*/
-   if (group==cg_cpuset?!half_initialized:!initialized) abort();
+   if (group==cg_cpuset?!half_initialized:!initialized) return "";
    return group_dir[group];
 }
 
