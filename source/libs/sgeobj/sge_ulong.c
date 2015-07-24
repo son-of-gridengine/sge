@@ -189,7 +189,7 @@ const char *double_print_memory_to_string(double value, dstring *string)
 {
    sge_dstring_clear(string);
    double_print_memory_to_dstring(value, string);
-   return sge_dstring_get_string(string);
+   return sge_dstring_append_char(string, 'B');
 }
 
 /****** sgeobj/double_print_int_to_dstring() ***********************************

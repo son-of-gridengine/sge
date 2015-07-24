@@ -1416,17 +1416,18 @@ print_double_to_string(double secs, dstring *string, char *fmt)
 */
 static void showjob(sge_rusage_type *dusage, char **category) {
    dstring string = DSTRING_INIT;
+   const double G = 1024*1024*1024;
 
    printf("==============================================================\n");
    printf("%-13.12s%-20s\n",MSG_HISTORY_SHOWJOB_QNAME, (dusage->qname ? dusage->qname : MSG_HISTORY_SHOWJOB_NULL));
    printf("%-13.12s%-20s\n",MSG_HISTORY_SHOWJOB_HOSTNAME, (dusage->hostname ? dusage->hostname : MSG_HISTORY_SHOWJOB_NULL));
-   printf("%-13.12s%-20s\n",MSG_HISTORY_SHOWJOB_GROUP, (dusage->group ? dusage->group : MSG_HISTORY_SHOWJOB_NULL));    
+   printf("%-13.12s%-20s\n",MSG_HISTORY_SHOWJOB_GROUP, (dusage->group ? dusage->group : MSG_HISTORY_SHOWJOB_NULL));
    printf("%-13.12s%-20s\n",MSG_HISTORY_SHOWJOB_OWNER, (dusage->owner ? dusage->owner : MSG_HISTORY_SHOWJOB_NULL));
    printf("%-13.12s%-20s\n",MSG_HISTORY_SHOWJOB_PROJECT, (dusage->project ? dusage->project : MSG_HISTORY_SHOWJOB_NULL));
    printf("%-13.12s%-20s\n",MSG_HISTORY_SHOWJOB_DEPARTMENT, (dusage->department ? dusage->department : MSG_HISTORY_SHOWJOB_NULL));
    printf("%-13.12s%-20s\n",MSG_HISTORY_SHOWJOB_JOBNAME, (dusage->job_name ? dusage->job_name : MSG_HISTORY_SHOWJOB_NULL));
    printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_JOBNUMBER, dusage->job_number);
-   
+
    if (dusage->task_number) {
       printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_TASKID, dusage->task_number);              /* job-array task number */
    } else {
@@ -1459,15 +1460,15 @@ static void showjob(sge_rusage_type *dusage, char **category) {
 
    printf("%-13.12s%.3fs\n",MSG_HISTORY_SHOWJOB_RUUTIME, dusage->ru_utime);    /* user time used */
    printf("%-13.12s%.3fs\n", MSG_HISTORY_SHOWJOB_RUSTIME, dusage->ru_stime);    /* system time used */
-   printf("%-13.12s%sB\n",MSG_HISTORY_SHOWJOB_RUMAXRSS,
+   printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_RUMAXRSS,
           double_print_memory_to_string(dusage->ru_maxrss, &string)); /* maximum resident set size */
-   printf("%-13.12s%sB\n",MSG_HISTORY_SHOWJOB_RUIXRSS,
+   printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_RUIXRSS,
           double_print_memory_to_string(dusage->ru_ixrss, &string)); /* integral shared text size */
-   printf("%-13.12s%sB\n",MSG_HISTORY_SHOWJOB_RUISMRSS,
+   printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_RUISMRSS,
           double_print_memory_to_string(dusage->ru_ismrss, &string)); /* integral shared memory size*/
-   printf("%-13.12s%sB\n",MSG_HISTORY_SHOWJOB_RUIDRSS,
+   printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_RUIDRSS,
           double_print_memory_to_string(dusage->ru_idrss, &string)); /* integral unshared data "  */
-   printf("%-13.12s%sB\n",MSG_HISTORY_SHOWJOB_RUISRSS,
+   printf("%-13.12s%s\n",MSG_HISTORY_SHOWJOB_RUISRSS,
           double_print_memory_to_string(dusage->ru_isrss, &string)); /* integral unshared stack "  */
    printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUMINFLT,     dusage->ru_minflt);     /* page reclaims */
    printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUMAJFLT,     dusage->ru_majflt);     /* page faults */
@@ -1481,14 +1482,14 @@ static void showjob(sge_rusage_type *dusage, char **category) {
    printf("%-13.12s%-20"sge_fu64"\n",MSG_HISTORY_SHOWJOB_RUNIVCSW,     dusage->ru_nivcsw);     /* involuntary */
 
    printf("%-13.12s%ss\n",   MSG_HISTORY_SHOWJOB_CPU, print_double_to_string(dusage->cpu, &string, "%-13.3f"));
-   printf("%-13.12s%sGBs\n",   MSG_HISTORY_SHOWJOB_MEM,
-          double_print_memory_to_string(dusage->mem, &string));
-   printf("%-13.12s%sGB\n",   MSG_HISTORY_SHOWJOB_IO,
-          double_print_memory_to_string(dusage->io, &string));
+   printf("%-13.12s%ss\n",   MSG_HISTORY_SHOWJOB_MEM,
+          double_print_memory_to_string(dusage->mem * G, &string));
+   printf("%-13.12s%s\n",   MSG_HISTORY_SHOWJOB_IO,
+          double_print_memory_to_string(dusage->io * G, &string));
    printf("%-13.12s%ss\n", MSG_HISTORY_SHOWJOB_IOW,
           print_double_to_string(dusage->iow, &string, "%-18.3f"));
 
-   printf("%-13.12s%sB\n", MSG_HISTORY_SHOWJOB_MAXVMEM,
+   printf("%-13.12s%s\n", MSG_HISTORY_SHOWJOB_MAXVMEM,
           double_print_memory_to_string(dusage->maxvmem, &string));
    if (dusage->ar != 0) {
       printf("%-13.12s%-20"sge_fu32"\n",MSG_HISTORY_SHOWJOB_ARID, dusage->ar); /* advanced reservation id */
