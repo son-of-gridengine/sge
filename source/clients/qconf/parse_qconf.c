@@ -4655,12 +4655,9 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
          spp++;
          continue;
       }
-#endif
-
 
 /*----------------------------------------------------------------------------*/
 
-#ifndef __SGE_NO_USERMAPPING__
       /* "-Mumap user filename" */
       if (strcmp("-Mumap", *spp) == 0) {
          lList *answer_list = NULL;
@@ -4681,11 +4678,9 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
          spp++;
          continue;
       }
-#endif
 
 /*----------------------------------------------------------------------------*/
 
-#ifndef __SGE_NO_USERMAPPING__
       /* "-sumap user"  */
       if (strcmp("-sumap", *spp) == 0) {
          lList *answer_list = NULL;
@@ -4814,11 +4809,9 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
          spp++;
          continue;
       }
-#endif
 
 /*----------------------------------------------------------------------------*/
 
-#ifndef __SGE_NO_USERMAPPING__
       /* "-aumap user"  */
       if (strcmp("-aumap", *spp) == 0) {
          lList *answer_list = NULL;
@@ -4856,52 +4849,8 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
          continue;
       }
 
-#endif
-
 /*----------------------------------------------------------------------------*/
 
-#ifndef __SGE_NO_USERMAPPING__
-      /* "-Mumap user filename" */
-      if (strcmp("-Mumap", *spp) == 0) {
-         lList *answer_list = NULL;
-         char* file = NULL;
-        
-         /* no adminhost/manager check needed here */
-
-         if (!sge_next_is_an_opt(spp)) {
-            spp = sge_parser_get_next(ctx, spp);
-            file = *spp;
-         } else {
-            sge_error_and_exit(ctx, MSG_FILE_NOFILEARGUMENTGIVEN); 
-         }
-         cuser_modify_from_file(ctx, &answer_list, file);
-         sge_parse_return |= show_answer(answer_list);
-         lFreeList(&answer_list);
-         
-         spp++;
-         continue;
-      }
-#endif
-
-/*----------------------------------------------------------------------------*/
-
-#ifndef __SGE_NO_USERMAPPING__
-      /* "-sumap user"  */
-      if (strcmp("-sumap", *spp) == 0) {
-         lList *answer_list = NULL;
-
-         spp = sge_parser_get_next(ctx, spp);
-         cuser_show(ctx, &answer_list, *spp);
-         sge_parse_return |= show_answer(answer_list);
-         lFreeList(&answer_list);
-         spp++;
-         continue;
-      }
-#endif
-
-/*----------------------------------------------------------------------------*/
-
-#ifdef __SGE_CENTRY_DEBUG__
       /* "-sce attribute"  */
       if (strcmp("-sce", *spp) == 0) {
          lList *answer_list = NULL;
@@ -4913,28 +4862,6 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
          spp++;
          continue;
       }
-#endif
-
-/*----------------------------------------------------------------------------*/
-
-#ifndef __SGE_NO_USERMAPPING__
-      /* "-mumap user"  */
-      if (strcmp("-mumap", *spp) == 0) {
-         lList *answer_list = NULL;
-
-         qconf_is_manager(ctx, username);
-
-         spp = sge_parser_get_next(ctx, spp);
-         qconf_is_manager(ctx, username);
-         cuser_modify(ctx, &answer_list, *spp);
-         sge_parse_return |= show_answer(answer_list);
-         lFreeList(&answer_list);
-         spp++;
-         continue;
-      }
-#endif
-
-#ifdef __SGE_CENTRY_DEBUG__
 
 /*----------------------------------------------------------------------------*/
 
@@ -4955,23 +4882,6 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
 
 #endif
 
-         
-/*----------------------------------------------------------------------------*/
-
-#ifndef __SGE_NO_USERMAPPING__
-      /* "-dumap user "  */
-      if (strcmp("-dumap", *spp) == 0) {
-         lList *answer_list = NULL;
-
-         spp = sge_parser_get_next(ctx, spp);
-         qconf_is_manager(ctx, username);
-         cuser_delete(ctx, &answer_list, *spp);
-         sge_parse_return |= show_answer(answer_list);
-         lFreeList(&answer_list);
-         spp++;
-         continue;
-      }
-#endif
       /*
        * Hostgroup parameters
        */
@@ -5283,54 +5193,6 @@ int sge_parse_qconf(sge_gdi_ctx_class_t *ctx, char *argv[])
          spp++;
          continue;
       }
-
-#endif
-
-/*----------------------------------------------------------------------------*/
-
-#ifndef __SGE_NO_USERMAPPING__
-      /* "-Aumap user mapfile"  */
-      if (strcmp("-Aumap", *spp) == 0) {
-         lList *answer_list = NULL;
-         char* file = NULL;
-
-         /* no adminhost/manager check needed here */
-
-         if (!sge_next_is_an_opt(spp)) {
-            spp = sge_parser_get_next(ctx, spp);
-            file = *spp;
-         } else {
-            sge_error_and_exit(ctx, MSG_FILE_NOFILEARGUMENTGIVEN); 
-         }
-   
-         cuser_add_from_file(ctx, &answer_list, file);
-         sge_parse_return |= show_answer(answer_list); 
-         lFreeList(&answer_list);
-         spp++;
-         continue;
-      }
-#endif
-
-/*----------------------------------------------------------------------------*/
-
-#ifndef __SGE_NO_USERMAPPING__
-      /* "-aumap user"  */
-      if (strcmp("-aumap", *spp) == 0) {
-         lList *answer_list = NULL;
-
-         qconf_is_manager(ctx, username);
-
-         spp = sge_parser_get_next(ctx, spp);
-         qconf_is_manager(ctx, username);
-         cuser_add(ctx, &answer_list, *spp);
-         sge_parse_return |= show_answer(answer_list);
-         lFreeList(&answer_list);
-         spp++;
-         continue;
-      }
-#endif
-
-#ifdef __SGE_CENTRY_DEBUG__
 
 /*----------------------------------------------------------------------------*/
 
