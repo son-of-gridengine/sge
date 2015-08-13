@@ -174,8 +174,8 @@ static int sge_calc_tickets (scheduler_all_data_t *lists,
                       double *max_tickets);
 
 static lListElem *get_mod_share_tree(lListElem *node, lEnumeration *what, int seqno);
-static lList *sge_sort_pending_job_nodes(lListElem *root, lListElem *node,
-                           double total_share_tree_tickets);
+static lList *sge_sort_job_nodes(lListElem *root, lListElem *node,
+                      double total_share_tree_tickets, sge_ref_t *job_ref);
 static int sge_calc_node_targets(lListElem *root, lListElem *node, scheduler_all_data_t *lists);
 static int sge_calc_sharetree_targets(lListElem *root, scheduler_all_data_t *lists,
                            lList *decay_list, u_long curr_time,
@@ -1005,7 +1005,7 @@ sge_init_share_tree_node_fields( lListElem *node,
               sn_job_ref_count_pos, sn_active_job_ref_count_pos,
               sn_usage_list_pos, sn_stt_pos, sn_ostt_pos,
               sn_ltt_pos, sn_oltt_pos, sn_shr_pos, sn_ref_pos,
-              sn_actual_proportion_pos;
+              sn_actual_proportion_pos, sn_queued_pos;
 
 
    if (sn_m_share_pos == -1) {
@@ -1025,6 +1025,7 @@ sge_init_share_tree_node_fields( lListElem *node,
       sn_shr_pos = lGetPosViaElem(node, STN_shr, SGE_NO_ABORT);
       sn_ref_pos = lGetPosViaElem(node, STN_ref, SGE_NO_ABORT);
       sn_actual_proportion_pos = lGetPosViaElem(node, STN_actual_proportion, SGE_NO_ABORT);
+      sn_queued_pos = lGetPosViaElem(node, STN_queued, SGE_NO_ABORT);
    }
 
    lSetPosDouble(node, sn_m_share_pos, 0);
@@ -1041,6 +1042,7 @@ sge_init_share_tree_node_fields( lListElem *node,
    lSetPosDouble(node, sn_oltt_pos, 0);
    lSetPosDouble(node, sn_shr_pos, 0);
    lSetPosUlong(node, sn_ref_pos, 0);
+   lSetPosUlong(node, sn_queued_pos, 0);
    return 0;
 }
 
@@ -2995,34 +2997,33 @@ sge_calc_tickets( scheduler_all_data_t *lists,
          for(job_ndx=0; job_ndx<num_jobs; job_ndx++) {
             sge_ref_t *jref = &job_ref[job_ndx];
             lListElem *node = jref->node;
-            if (jref->queued) {
-               if (node) {
-                  /* add each job to the share tree as a temporary sibling node */
-                  char tmpstr[64];
-                  lListElem *child;
+            if (node) {
+               /* add each job to the share tree as a temporary sibling node */
+               char tmpstr[64];
+               lListElem *child;
 
-                  job = jref->job;
-                  sprintf(tmpstr, sge_u32"."sge_u32, lGetUlong(job, JB_job_number),
-                         REF_GET_JA_TASK_NUMBER(jref));
-                  child = lAddSubStr(node, STN_name, tmpstr, STN_children, STN_Type);
-                  lSetUlong(child, STN_jobid, lGetUlong(job, JB_job_number));
-                  lSetUlong(child, STN_taskid, REF_GET_JA_TASK_NUMBER(jref));
-                  lSetUlong(child, STN_temp, 1);
-                  /* save the job reference, so we can refer to it later to set job fields */
-                  lSetUlong(child, STN_ref, job_ndx+1);
-                  if (hierarchy[policy_ndx].dependent) {
-                     /* set the sort value based on tickets of higher level policy */
-                     lSetDouble(child, STN_tickets, jref->tickets);
-                     lSetDouble(child, STN_sort,
-                                jref->tickets + (0.01 * (double)lGetUlong(job, JB_jobshare)));
-                  } else
-                     /* set the sort value based on the priority of the job */
-                     lSetDouble(child, STN_sort, (double)lGetUlong(job, JB_jobshare));
-               }
+               job = jref->job;
+               sprintf(tmpstr, sge_u32"."sge_u32, lGetUlong(job, JB_job_number),
+                      REF_GET_JA_TASK_NUMBER(jref));
+               child = lAddSubStr(node, STN_name, tmpstr, STN_children, STN_Type);
+               lSetUlong(child, STN_jobid, lGetUlong(job, JB_job_number));
+               lSetUlong(child, STN_taskid, REF_GET_JA_TASK_NUMBER(jref));
+               lSetUlong(child, STN_queued, jref->queued);
+               lSetUlong(child, STN_temp, 1);
+               /* save the job reference, so we can refer to it later to set job fields */
+               lSetUlong(child, STN_ref, job_ndx+1);
+               if (hierarchy[policy_ndx].dependent) {
+                  /* set the sort value based on tickets of higher level policy */
+                  lSetDouble(child, STN_tickets, jref->tickets);
+                  lSetDouble(child, STN_sort,
+                             jref->tickets + (0.01 * (double)lGetUlong(job, JB_jobshare)));
+               } else
+                  /* set the sort value based on the priority of the job */
+                  lSetDouble(child, STN_sort, (double)lGetUlong(job, JB_jobshare));
             }
          }
 
-         if ((sorted_job_node_list = sge_sort_pending_job_nodes(root, root, total_share_tree_tickets))) {
+         if ((sorted_job_node_list = sge_sort_job_nodes(root, root, total_share_tree_tickets, job_ref))) {
             lListElem *job_node;
 
             /* 
@@ -3031,10 +3032,12 @@ sge_calc_tickets( scheduler_all_data_t *lists,
              */
             for_each(job_node, sorted_job_node_list) {
                sge_ref_t *jref = &job_ref[lGetUlong(job_node, STN_ref)-1];
-               REF_SET_STICKET(jref, 
+               if (jref->queued) {
+                  REF_SET_STICKET(jref, 
                      lGetDouble(job_node, STN_shr) * total_share_tree_tickets);
-               if (hierarchy[policy_ndx].dependent)
-                  jref->tickets += REF_GET_STICKET(jref);
+                  if (hierarchy[policy_ndx].dependent)
+                     jref->tickets += REF_GET_STICKET(jref);
+               }
             }
             lFreeList(&sorted_job_node_list);
          }
@@ -3388,42 +3391,51 @@ sge_calc_tickets( scheduler_all_data_t *lists,
 }
 
 
-/*--------------------------------------------------------------------
- * sge_sort_pending_job_nodes - return a sorted list of pending job
- * nodes with the pending priority set in STN_sort.
- *--------------------------------------------------------------------*/
+/*---------------------------------------------------
+ * sge_sort_job_nodes - return a sorted list of job
+ * nodes with the priority set in STN_sort.
+ *---------------------------------------------------*/
 
 static lList *
-sge_sort_pending_job_nodes(lListElem *root,
-                           lListElem *node,
-                           double total_share_tree_tickets)
+sge_sort_job_nodes(lListElem *root,
+                   lListElem *node,
+                   double total_share_tree_tickets,
+                   sge_ref_t *job_ref)
 {
-   lList *job_node_list = NULL;
-   lListElem *child, *job_node;
-   double node_stt;
-   double job_count=0;
-   int job_nodes = 0;
-   
+   /* Prune sparsely populated sharetree */
+   /* Dispose of uppermost levels without jobs */
    if(root == node){
       int active_nodes = 0;
+      lListElem *child;
       lListElem *temp_root = NULL;
 
       for_each(child, lGetList(node, STN_children)) {
          if (lGetUlong(child, STN_ref)) {
             active_nodes++;
             break;
-         } else if ((lGetUlong(child, STN_job_ref_count)-lGetUlong(child, STN_active_job_ref_count))>0) {
+         } else if (lGetUlong(child, STN_job_ref_count)) {
             temp_root = child;
-            active_nodes ++; 
+            active_nodes++; 
          }
          if (active_nodes >1)
                break;
       }
-      if (active_nodes == 1 && temp_root)
-         return sge_sort_pending_job_nodes(temp_root, temp_root, total_share_tree_tickets);
-   }
-   /* get the child job nodes in a single list */
 
+      /*
+       * Prune this node if:-
+       * - There are no jobs at higher levels, or in sibling nodes
+       * - It has no jobs
+       * - It has only one child object that contains jobs
+       */
+      if (active_nodes == 1 && temp_root)
+         return sge_sort_job_nodes(temp_root, temp_root, total_share_tree_tickets, job_ref);
+   }
+
+   /* get the child job nodes in a single list */
+   int job_nodes = 0;
+   lList *job_node_list = NULL;
+
+   lListElem *child;
    for_each(child, lGetList(node, STN_children)) {
       if (lGetUlong(child, STN_ref)) {
          /* this is a job node, chain it onto our list */
@@ -3431,10 +3443,10 @@ sge_sort_pending_job_nodes(lListElem *root,
             job_node_list = lCreateList("sorted job node list", STN_Type);
          lAppendElem(job_node_list, lCopyElem(child));
          job_nodes++;
-      } else if ((lGetUlong(child, STN_job_ref_count)-lGetUlong(child, STN_active_job_ref_count))>0) {
+      } else if (lGetUlong(child, STN_job_ref_count)) {
          lList *child_job_node_list;
          /* recursively get all the child job nodes onto our list */
-         if ((child_job_node_list = sge_sort_pending_job_nodes(root, child, total_share_tree_tickets))) {
+         if ((child_job_node_list = sge_sort_job_nodes(root, child, total_share_tree_tickets, job_ref))) {
             if (job_node_list == NULL)
                job_node_list = child_job_node_list;
             else
@@ -3442,40 +3454,56 @@ sge_sort_pending_job_nodes(lListElem *root,
          }
       }
    }
+
    /* free the temporary job nodes */
    if (job_nodes)
       lSetList(node, STN_children, NULL);
 
-   /* sort the job nodes based on the calculated pending priority */
+   /* sort the job nodes based on the calculated priority */
    if (root != node || job_nodes) { 
       lListElem *u;
 
       if (job_node_list && lGetNumberOfElem(job_node_list)>1)
-         lPSortList(job_node_list, "%I- %I+ %I+", STN_sort, STN_jobid, STN_taskid);
+         lPSortList(job_node_list, "%I+ %I- %I+ %I+", STN_queued, STN_sort, STN_jobid, STN_taskid);
 
-      /* calculate a new pending priority -
-         The priority of each pending job associated with this node is the
-         node's short term entitlement (STN_stt) divided by the number of jobs
+      /* calculate a new priority -
+         The priority of each job associated with this node is the node's
+         short term entitlement (STN_stt) divided by the number of job slots
          which are scheduled ahead of this node times the number of share tree
          tickets. If we are dependent on another higher-level policy, we also add
          the tickets from those policies. */
 
-      job_count = lGetUlong(node, STN_active_job_ref_count);
-      if ((u=lGetElemStr(lGetList(node, STN_usage_list), UA_name,
-                         "finished_jobs")))
-         job_count += lGetDouble(u, UA_value);
-      node_stt = lGetDouble(node, STN_stt);
-      for_each(job_node, job_node_list) {
-         job_count++;
-         lSetDouble(job_node, STN_shr, node_stt / job_count);
-         lSetDouble(job_node, STN_sort, lGetDouble(job_node, STN_tickets) +
-                    ((node_stt / job_count) * total_share_tree_tickets));
-      }
+      /* - get entitlement */
+      double node_stt = lGetDouble(node, STN_stt);
 
+      /* - increment job count and dilute entitlement */
+      double dilute_factor = 1;
+
+      lListElem *job_node;
+      for_each(job_node, job_node_list) {
+
+         lSetDouble(job_node, STN_shr, node_stt / dilute_factor);
+         lSetDouble(job_node, STN_sort, lGetDouble(job_node, STN_tickets) +
+                    ((node_stt / dilute_factor) * total_share_tree_tickets));
+
+         /* Determine job's contribution to dilution */
+         int dilution = 1;
+         int job_ndx = lGetUlong(job_node, STN_ref) -1;
+         if (job_ndx >= 0) {
+            /* Use minimum value of first pe slot range */
+            /* (simplistic, but could be worse) */
+            lListElem *pe_range = lFirst(lGetList(job_ref[job_ndx].job, JB_pe_range));
+            if (pe_range) {
+               dilution = MAX(1, lGetUlong(pe_range, RN_min));
+            }
+         }
+
+         /* Dilute priority for next job */
+         dilute_factor += dilution;
+      }
    }
 
    /* return the new list */
-
    return job_node_list;
 }
 
