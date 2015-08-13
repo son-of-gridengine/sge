@@ -132,6 +132,10 @@ enum {
                               * used during scheduling of pending jobs,
                               * set in schedd, not stored to qmaster,
                               * not spooled */
+   STN_queued,               /* Queued state of a temporary job node,
+                              * used during scheduling of pending jobs,
+                              * set in schedd, not stored to qmaster,
+                              * not spooled */
    STN_usage_list,           /* Node usage list used during scheduling
                               * of pending jobs, set in schedd,
                               * not stored to qmaster, not spooled */
@@ -168,6 +172,7 @@ enum {
    STN_tickets_POS,
    STN_jobid_POS, 
    STN_taskid_POS,
+   STN_queued_POS,
    STN_usage_list_POS,  
    STN_version_POS     
 };
@@ -204,6 +209,7 @@ LISTDEF(STN_Type)
    SGE_DOUBLE(STN_tickets, CULL_DEFAULT | CULL_JGDI_HIDDEN)                                                    
    SGE_ULONG(STN_jobid, CULL_DEFAULT | CULL_JGDI_HIDDEN)                                                  
    SGE_ULONG(STN_taskid, CULL_DEFAULT | CULL_JGDI_HIDDEN)                                                 
+   SGE_ULONG(STN_queued, CULL_DEFAULT | CULL_JGDI_HIDDEN)
    SGE_MAP(STN_usage_list,UA_Type, CULL_DEFAULT | CULL_JGDI_HIDDEN)                                     
    SGE_ULONG(STN_version, CULL_DEFAULT | CULL_JGDI_HIDDEN)
 LISTEND 
@@ -237,6 +243,7 @@ NAMEDEF(STNN)
    NAME("STN_tickets")
    NAME("STN_jobid")
    NAME("STN_taskid")
+   NAME("STN_queued")
    NAME("STN_usage_list")
    NAME("STN_version")
 NAMEEND
