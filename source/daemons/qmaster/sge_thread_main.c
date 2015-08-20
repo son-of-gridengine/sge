@@ -97,9 +97,9 @@ bool
 sge_qmaster_do_final_spooling(void) 
 {
    /*
-    * If the exit_state is 100 than another qmaster has taken over!
-    * and final spooling should not be done
+    * If the exit_state is 100 than another qmaster has unexpectedly taken
+    * over! Final spooling should not be done.
     */
-   return (Main_Control.exit_state == 100) ? true : false;
+   return (Main_Control.exit_state == 100) ? false : true;
 }
 
