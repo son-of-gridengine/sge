@@ -61,6 +61,8 @@
 /* max. vmem */
 #define USAGE_ATTR_MAXVMEM "maxvmem"
 
+#define USAGE_ATTR_FINISHED_JOBS "finished_jobs"
+
 u_long64
 usage_list_get_ulong_usage(const lList *usage_list, const char *name, u_long64 def);
 double
@@ -73,6 +75,8 @@ usage_list_set_double_usage(lList *usage_list, const char *name, double value);
 
 void
 usage_list_sum(lList *usage_list, const lList *add_usage_list);
+void
+usage_list_sub(lList *usage_list, const lList *sub_usage_list);
 
 lList *scale_usage(lList *scaling, lList *prev_usage, lList *scaled_usage);
  
