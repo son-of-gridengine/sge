@@ -2696,6 +2696,34 @@ sge_calc_tickets( scheduler_all_data_t *lists,
       calculate_default_decay_constant(sconf_get_halftime());
    }
 
+   /*------------------------------------------------------------------------
+    * First scheduling interval - complete project initialisation:
+    * Project usage can be spooled to user objects as well as project objects.
+    * Now that this has been suitably decayed, add to the project objects.
+    *------------------------------------------------------------------------*/
+
+   if (do_usage && sge_scheduling_run == 1) {
+      lListElem *user;
+      for_each(user, lists->user_list) {
+         lListElem *uu_project;
+         for_each(uu_project, lGetList(user, UU_project)) {
+            /* Add usage held in user object to project */
+            lListElem *project = prj_list_locate(lists->project_list,
+                                             lGetString(uu_project, UPP_name));
+            if (project) {
+               if (lGetList(project, PR_usage)) {
+                  usage_list_sum(lGetList(project, PR_usage),
+                                 lGetList(uu_project, UPP_usage));
+               } else {
+                  lSetList(project, PR_usage,
+                           lCopyList("usage", lGetList(uu_project, UPP_usage)));
+               }
+            }
+         }
+      }
+   }
+
+
    /*-------------------------------------------------------------
     * Init job_ref_count in each share tree node to zero
     *-------------------------------------------------------------*/
