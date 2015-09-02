@@ -182,6 +182,49 @@ usage_list_set_double_usage(lList *usage_list, const char *name, double value)
    lSetDouble(ep, UA_value, value);
 }
 
+/*
+ * usage_list_arith - simple usage arithmetic between two lists
+ * Internal routine used by usage_list_sum and usage_list_sub - check/update
+ * their autodoc comments before/after any change.
+ */
+static void
+usage_list_arith(lList *usage_list1, const lList *usage_list2, const int action)
+{
+   const lListElem *usage;
+
+   for_each(usage, usage_list2) {
+      const char *name = lGetString(usage, UA_name);
+      /* Sum up all usage attributes. */
+      if (strcmp(name, USAGE_ATTR_CPU) == 0 ||
+          strcmp(name, USAGE_ATTR_IO) == 0 ||
+          strcmp(name, USAGE_ATTR_IOW) == 0 ||
+          strcmp(name, USAGE_ATTR_VMEM) == 0 ||
+          strcmp(name, USAGE_ATTR_MEM) == 0 || 
+          strcmp(name, USAGE_ATTR_FINISHED_JOBS) == 0 ||
+          strncmp(name, "acct_", 5) == 0 ||
+          strncmp(name, "ru_", 3) == 0) {
+         lListElem *sum = lGetElemStr(usage_list1, UA_name, name);
+         if (sum == NULL) {
+            lAppendElem(usage_list1, lCopyElem(usage));
+            switch (action) {
+            case (1): /* Subtract */
+               lSetDouble(lGetElemStr(usage_list1, UA_name, name), UA_value, 0);
+               break;
+            }
+         } else {
+            switch (action) {
+            case (0): /* Add */
+               lAddDouble(sum, UA_value, lGetDouble(usage, UA_value));
+               break;
+            case (1): /* Subtract */
+               lSetDouble(sum, UA_value, MAX(0, lGetDouble(sum, UA_value) - lGetDouble(usage, UA_value)));
+               break;
+            }
+         }
+      }
+   }
+}
+
 /****** sge_usage/usage_list_sum() *********************************************
 *  NAME
 *     usage_list_sum() -- sum up usage of two lists
@@ -200,6 +243,7 @@ usage_list_set_double_usage(lList *usage_list, const char *name, double value)
 *        - vmem
 *        - maxvmem
 *        - all ru_* attributes (see man getrusage.2)
+*        - finished_jobs
 *
 *  INPUTS
 *     lList *usage_list           - the usage list to contain all usage
@@ -211,26 +255,41 @@ usage_list_set_double_usage(lList *usage_list, const char *name, double value)
 void
 usage_list_sum(lList *usage_list, const lList *add_usage_list)
 {
-   const lListElem *usage;
+   return usage_list_arith(usage_list, add_usage_list, 0);
+}
 
-   for_each(usage, add_usage_list) {
-      const char *name = lGetString(usage, UA_name);
-      /* Sum up all usage attributes. */
-      if (strcmp(name, USAGE_ATTR_CPU) == 0 ||
-          strcmp(name, USAGE_ATTR_IO) == 0 ||
-          strcmp(name, USAGE_ATTR_IOW) == 0 ||
-          strcmp(name, USAGE_ATTR_VMEM) == 0 ||
-          strcmp(name, USAGE_ATTR_MEM) == 0 || 
-          strncmp(name, "acct_", 5) == 0 ||
-          strncmp(name, "ru_", 3) == 0) {
-         lListElem *sum = lGetElemStr(usage_list, UA_name, name);
-         if (sum == NULL) {
-            lAppendElem(usage_list, lCopyElem(usage));
-         } else {
-            lAddDouble(sum, UA_value, lGetDouble(usage, UA_value));
-         }
-      }
-   }
+/****** sge_usage/usage_list_sub() *********************************************
+*  NAME
+*     usage_list_sub() -- subtract usage of one list from the other
+*
+*  SYNOPSIS
+*     void 
+*     usage_list_sub(lList *usage_list, const lList *sub_usage_list) 
+*
+*  FUNCTION
+*     Subtract the usage reported in sub_usage_list from usage_list.
+*     Values should never drop below 0.
+*     Subtraction of usage will only be done for certain attributes:
+*        - cpu
+*        - io
+*        - iow
+*        - mem
+*        - vmem
+*        - maxvmem
+*        - all ru_* attributes (see man getrusage.2)
+*        - finished_jobs
+*
+*  INPUTS
+*     lList *usage_list           - the usage list to contain all usage
+*     const lList *sub_usage_list - usage to remove from usage_list
+*
+*  NOTES
+*     MT-NOTE: usage_list_sub() is MT safe
+*******************************************************************************/
+void
+usage_list_sub(lList *usage_list, const lList *sub_usage_list)
+{
+   return usage_list_arith(usage_list, sub_usage_list, 1);
 }
 
 /* if the scaled usage list does not yet exist, it is created and returned */
