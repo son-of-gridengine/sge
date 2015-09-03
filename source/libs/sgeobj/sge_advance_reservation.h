@@ -92,4 +92,6 @@ void ar_state2dstring(ar_state_t state, dstring *state_as_string);
 
 bool sge_ar_has_errors(lListElem *ar);
 
+int ar_list_sort(lList *this_list);
+
 #endif /* __SGE_ADVANCE_RESERVATION_H */

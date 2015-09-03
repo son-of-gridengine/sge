@@ -488,3 +488,29 @@ bool sge_ar_has_errors(lListElem *ar) {
 
    DRETURN(ret);
 }
+
+/****** sge_advance_reservation/ar_list_sort() ********************************
+*  NAME
+*     ar_list_sort() -- Sort a AR_Type list
+*
+*  SYNOPSIS
+*     int ar_list_sort(lList *this_list)
+*
+*  FUNCTION
+*     Sort a AR_Type list
+*
+*  INPUTS
+*     lList *this_list - AR_Type list
+*
+*  RESULT
+*     int - error state
+*         0 - OK
+*        -1 - Error
+*******************************************************************************/
+int ar_list_sort(lList *this_list) {
+   DENTER(BASIS_LAYER, "ar_list_sort");
+
+   int ret = lPSortList(this_list, "%I+", AR_id);
+
+   DRETURN(ret);
+}
