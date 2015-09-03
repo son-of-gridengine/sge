@@ -3884,5 +3884,31 @@ job_init_binding_elem(lListElem *jep)
    return ret;
 }
 
+/****** sgeobj/job/job_list_sort() **************************************
+*  NAME
+*     job_list_sort() -- Sort a JB_Type list
+*
+*  SYNOPSIS
+*     int job_list_sort(lList *this_list)
+*
+*  FUNCTION
+*     Sort a JB_Type list
+*
+*  INPUTS
+*     lList *this_list - JB_Type list
+*
+*  RESULT
+*     int - error state
+*         0 - OK
+*        -1 - Error
+*******************************************************************************/
+int
+job_list_sort(lList *this_list)
+{
+   DENTER(BASIS_LAYER, "job_list_sort");
 
+   int ret = lPSortList(this_list, "%I+", JB_job_number);
+
+   DRETURN(ret);
+}
 
