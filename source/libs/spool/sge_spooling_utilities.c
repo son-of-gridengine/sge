@@ -73,6 +73,7 @@
 
 #include "sgeobj/sge_resource_quota.h"
 #include "sgeobj/sge_advance_reservation.h"
+#include "sgeobj/sge_job.h"
 
 #include "msg_common.h"
 
@@ -587,6 +588,7 @@ spool_default_validate_list_func(lList **answer_list,
          ret = sconf_validate_config_(answer_list);
          break;
       case SGE_TYPE_JOB:
+         job_list_sort(*object_type_get_master_list(SGE_TYPE_JOB));
          break;
       case SGE_TYPE_AR:
          ar_list_sort(*object_type_get_master_list(SGE_TYPE_AR));

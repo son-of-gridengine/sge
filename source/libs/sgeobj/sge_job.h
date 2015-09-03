@@ -465,4 +465,7 @@ job_is_requesting_consumable(lListElem *jep, const char *resource_name);
 bool
 job_init_binding_elem(lListElem *jep);
 
+int
+job_list_sort(lList *this_list);
+
 #endif /* __SGE_JOB_H */    
