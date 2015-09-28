@@ -1246,14 +1246,14 @@ static void qmonShareTreeSetValues(ListTreeItem *item)
       
       newdata.id = item->text ? item->text : "";
       newdata.share = data->share;
-      sprintf(buf, "%3.1f %%", 100*data->actual_proportion);
+      snprintf(buf, sizeof buf, "%3.1f %%", 100*data->actual_proportion);
       strcpy(newdata.actual_proportion, buf);
-      sprintf(buf, "%3.1f %%", 100*data->targetted_share);
+      snprintf(buf, sizeof buf, "%3.1f %%", 100*data->targetted_share);
       strcpy(newdata.targetted_share, buf);
       newdata.usage = data->usage;
-      sprintf(buf, "%3.1f %%", 100*calculate_simple_share(item));
+      snprintf(buf, sizeof buf, "%3.1f %%", 100*calculate_simple_share(item));
       strcpy(newdata.l_percentage, buf);
-      sprintf(buf, "%3.1f %%", 100*calculate_share(item));
+      snprintf(buf, sizeof buf, "%3.1f %%", 100*calculate_share(item));
       strcpy(newdata.t_percentage, buf);
 
       XmtDialogSetDialogValues(qmon_sharetree, &newdata);
