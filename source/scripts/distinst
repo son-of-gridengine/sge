@@ -891,7 +891,10 @@ if [ $instcommon = true ]; then
 	  Execute mkdir -p $DEST_SGE_ROOT/bin
 	  for script in $USERSCRIPTS; do
 	      Execute mv $DEST_SGE_ROOT/util/resources/scripts/$script $DEST_SGE_ROOT/bin/$script
-	      Execute chmod 755 $DEST_SGE_ROOT/bin/$script
+              case $script in
+                  README*) ;;
+                  *) Execute chmod 755 $DEST_SGE_ROOT/bin/$script;;
+              esac
 	  done
       fi
 
@@ -946,7 +949,6 @@ if [ $instcommon = true ]; then
                         $DEST_SGE_ROOT/util/resources/pe/* \
                         $DEST_SGE_ROOT/util/resources/schemas/*/* \
                         $DEST_SGE_ROOT/util/resources/usersets/* \
-                        $DEST_SGE_ROOT/util/dl.sh \
                         $DEST_SGE_ROOT/util/resources/jsv/jsv_include*
    fi
    
