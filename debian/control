@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 7.0.50), tcsh | c-shell, libdb-dev, libssl-dev,
  libxmu-dev, default-jdk, ant-optional, junit, javacc, libxft-dev,
  libhwloc-dev (>= 1.1), libpam0g-dev, man-db, libjemalloc-dev, libmunge-dev
 # add quilt if we acquire patches
-Standards-Version: 3.9.1
+Standards-Version: 3.9.3
 Homepage: http://arc.liv.ac.uk/SGE
 Vcs-darcs: http://arc.liv.ac.uk/repos/darcs/sge/
 Vcs-Browser: https://arc.liv.ac.uk/trac/SGE/browser/sge
