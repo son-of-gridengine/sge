@@ -1,6 +1,8 @@
 sge (8.1.9) unstable; urgency=low
 
   * Build with MUNGE
+  * Add trailing newline to sge_common conffiles
+  * Update Standards-Version
 
  -- Dave Love <fx@gnu.org>  Fri, 25 Oct 2013 22:48:29 +0100
 
