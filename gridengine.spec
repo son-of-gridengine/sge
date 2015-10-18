@@ -57,7 +57,7 @@
 }
 
 Name:    gridengine
-Version: 8.1.9pre
+Version: 8.1.9
 
 %if 0%{?fedora}
 Epoch:   1
