@@ -377,8 +377,8 @@ static void unregister_from_ptf(u_long32 job_id, u_long32 ja_task_id,
          }
       }
 
-      WARNING((SGE_EVENT, MSG_JOB_REAPINGJOBXPTFCOMPLAINSY_US,
-               sge_u32c(job_id), ptf_errstr(ptf_error)));
+      WARNING((SGE_EVENT, MSG_JOB_REAPINGJOBXPTFCOMPLAINSY_USS,
+               sge_u32c(job_id), sge_u32c(ja_task_id), ptf_errstr(ptf_error)));
    } else {
       if (usage) {
          lXchgList(jr, JR_usage, &usage);

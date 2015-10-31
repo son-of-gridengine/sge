@@ -2488,7 +2488,7 @@ bool mconf_get_enable_forced_qdel(void) {
 bool mconf_get_enable_enforce_master_limit(void) {
    bool ret;
 
-   DENTER(BASIS_LAYER, "mconf_get_enable_enfoce_master_limit");
+   DENTER(BASIS_LAYER, "mconf_get_enable_enforce_master_limit");
    SGE_LOCK(LOCK_MASTER_CONF, LOCK_READ);
    ret = enable_enforce_master_limit;
    SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_READ);
