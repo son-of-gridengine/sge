@@ -6102,7 +6102,6 @@ static int show_eventclients(sge_gdi_ctx_class_t *ctx)
    answer_exit_if_not_recoverable(ep);
    if (answer_get_status(ep) != STATUS_OK) {
       fprintf(stderr, "%s\n", lGetString(ep, AN_text));
-      fprintf(stderr, "\n");
       DRETURN(-1);
    }
 

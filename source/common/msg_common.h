@@ -249,7 +249,7 @@
 ** complex.c
 */
 #define MSG_COMPLEX_STARTSCOMMENTBUTNOSAVE _MESSAGE(23246, _(">#< starts a comment but comments are not saved across edits --------"))
-#define MSG_CPLX_VALUEMISSING_S       _MESSAGE(23255, _("denied: missing value for request "SFQ))
+#define MSG_CPLX_VALUEMISSING_S       _MESSAGE(23255, _("denied: missing value for resource "SFQ))
 #define MSG_CPLX_WRONGTYPE_SSS        _MESSAGE(23256, _("wrong type in \""SFN"="SFN"\" - "SFN" expected"))
 #define MSG_SGETEXT_INVALIDHOST_S               _MESSAGE(23257, _("invalid hostname "SFQ))
 #define MSG_CPLX_ATTRIBISNEG_S        _MESSAGE(23258, _("attribute "SFQ" is consumable but has a negative value"))
@@ -920,9 +920,6 @@
 
 #define MSG_GDI_USAGE_Aattr_OPT                          "[-Aattr obj_nm fname obj_id_list]"
 #define MSG_GDI_UTEXT_Aattr_OPT                          _MESSAGE(23483, _("add to a list attribute of an object") ) 
-
-#define MSG_GDI_USAGE_show_license_OPT                   "[-show-license]"
-/* #define MSG_GDI_UTEXT_show_license_OPT                   _message(23484, _("show license information")) __TS Removed automatically from testsuite!! TS__*/
 
 #define MSG_GDI_USAGE_sync_OPT_YN                        "[-sync y[es]|n[o]]"
 #define MSG_GDI_UTEXT_sync_OPT_YN                        _MESSAGE(23484, _("wait for job to end and return exit code"))
