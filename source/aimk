@@ -2646,10 +2646,17 @@ if ( "$QTCSH" == 1) then
 
    set SGE_LIBS = "-lsge -lpthread"
 
-   if ( "$COMPILE_ARCH" == "WIN32_X86" ) then
-      set SGE_LIBS = "$SGE_LIBS $WINGRIDLIB"
-   endif
-
+   switch ( $COMPILE_ARCH ) 
+      case WIN32_X86:
+         set SGE_LIBS = "$SGE_LIBS $WINGRIDLIB"
+         breaksw
+      case CYGWIN_X86:
+      case CYGWIN_X86_64:
+      # Cygwin needs the tirpc libs which are defined in the common Cygwin part
+         set SGE_LIBS = "$SGE_LIBS $LIBS"
+         breaksw
+   endsw
+ 
    if ( ! -d $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH || \
 	! -r $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH/Makefile ) then
       mkdir -p $SOURCE/3rdparty/qtcsh/$COMPILE_ARCH
