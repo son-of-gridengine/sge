@@ -457,7 +457,7 @@ u_long32 sge_monitor_status(char **info_message, u_long32 monitor_time)
    }
 
 #if HAVE_JEMALLOC
-   if (get_mconf_print_malloc_info())
+   if (mconf_get_print_malloc_info())
       malloc_stats_print(&write_cb, &Info_Line, "ga");
 #else
 #if defined(LINUX) || defined(AIX43) || defined(AIX51) || defined(IRIX) || defined(SOLARIS) || defined(HP11)

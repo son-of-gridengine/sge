@@ -2528,10 +2528,10 @@ bool mconf_get_ignore_ngroups_max_limit(void) {
 }
 
 #if HAVE_JEMALLOC
-bool get_mconf_print_malloc_info(void) {
+bool mconf_get_print_malloc_info(void) {
    bool ret;
 
-   DENTER(BASIS_LAYER, "get_mconf_print_malloc_info");
+   DENTER(BASIS_LAYER, "mconf_get_print_malloc_info");
    SGE_LOCK(LOCK_MASTER_CONF, LOCK_READ);
    ret = malloc_info;
    SGE_UNLOCK(LOCK_MASTER_CONF, LOCK_READ);
