@@ -112,9 +112,6 @@
 #   include "sge_smf.h"
 #endif
 
-#define ENVIRONMENT_FILE "environment"
-#define CONFIG_FILE "config"
-
 static int ck_login_sh(char *shell);
 static int get_nhosts(lList *gdil_list);
 

@@ -3533,8 +3533,6 @@ sge_sort_job_nodes(lListElem *root,
 
    /* sort the job nodes based on the calculated priority */
    if (root != node || job_nodes) { 
-      lListElem *u;
-
       if (job_node_list && lGetNumberOfElem(job_node_list)>1)
          lPSortList(job_node_list, "%I+ %I- %I+ %I+", STN_queued, STN_sort, STN_jobid, STN_taskid);
 

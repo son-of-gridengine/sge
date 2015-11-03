@@ -116,8 +116,6 @@ int sge_edit(const char *fname, uid_t myuid, gid_t mygid)
       }
    } else {
       const char *cp = NULL;
-      gid_t groups[1] = {getuid()};
-      size_t n = 1;
 
       sge_set_def_sig_mask(NULL, NULL);
       sge_unblock_all_signals();
