@@ -405,7 +405,7 @@ sge_select_parallel_environment(sge_assignment_t *best, lList *pe_list)
    /* make sure our queue list is sorted according to host order (load formula) */
    sequential_update_host_order(best->host_list, best->queue_list);
 
-   /* initialize all taggs */
+   /* initialize all tags */
    for_each(queue, best->queue_list) {
       lSetUlong(queue, QU_tagged4schedule, 2);
    }

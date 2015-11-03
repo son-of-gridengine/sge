@@ -200,7 +200,6 @@ jsv_on_verify()
 
    ac=`jsv_get_param ac`
    if [ "$ac" != "" ]; then
-      context=`jsv_get_param CONTEXT`
       has_ac_a=`jsv_sub_is_param ac a`
       has_ac_b=`jsv_sub_is_param ac b`
 

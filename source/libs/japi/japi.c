@@ -2719,7 +2719,6 @@ int japi_wait(const char *job_id, dstring *waited_job, int *stat,
 *     int wait4any              - 0 any finished job/task is fine
 *     u_long32 jobid            - specifies which job is searched
 *     u_long32 taskid           - specifies which task is searched
-*     bool is_array_task        - true if it is an array taskid
 *     int event_mask            - the events to wait for
 *     u_long32 *wjobidp         - destination for jobid of waited job
 *     u_long32 *wtaskidp        - destination for taskid of waited job
@@ -3864,6 +3863,7 @@ int japi_get_contact(dstring *contact, dstring *diag)
    DRETURN(japi_errno);
 }
 
+#if unused
 /****** japi/japi_version() ****************************************************
 *  NAME
 *     japi_version() -- Return DRMAA version the JAPI library is compliant to.
@@ -3886,8 +3886,10 @@ int japi_get_contact(dstring *contact, dstring *diag)
 *******************************************************************************/
 void japi_version(unsigned int *major, unsigned int *minor)
 {
+   major = 1;
+   minor = 0;
 }
-
+#endif
 
 /****** JAPI/japi_get_drm_system() *********************************************
 *  NAME
