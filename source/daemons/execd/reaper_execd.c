@@ -840,7 +840,8 @@ maybe_add_usage(lListElem *jr, const char *name, const char *val_as_str,
                 double val)
 {
    if (!lGetSubStr(jr, UA_name, name, JR_usage))
-      add_usage(jr, name, val_as_str, val);
+      return add_usage(jr, name, val_as_str, val);
+   return 0;
 }
 
 /* ------------------------- */
