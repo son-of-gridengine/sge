@@ -414,7 +414,7 @@ int reschedule_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep, l
          if (mconf_get_enable_reschedule_kill()) {
             INFO((SGE_EVENT, MSG_RU_REAPING_NOT_RESTARTABLE_SS, 
                   mail_type, mail_ids));
-            sge_commit_job(ctx, jep, this_jatep, NULL, COMMIT_ST_FINISHED_FAILED_EE,
+            sge_commit_job(ctx, jep, this_jatep, NULL, COMMIT_ST_FINISHED_FAILED,
                            COMMIT_DEFAULT | COMMIT_NEVER_RAN, monitor);
             continue;
          } else {
@@ -504,7 +504,7 @@ int reschedule_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep, l
             if (mconf_get_enable_reschedule_kill()) {
                INFO((SGE_EVENT, MSG_RU_REAPING_NOT_RESTARTABLE_SS, 
                      mail_type, mail_ids));
-               sge_commit_job(ctx, jep, this_jatep, NULL, COMMIT_ST_FINISHED_FAILED_EE,
+               sge_commit_job(ctx, jep, this_jatep, NULL, COMMIT_ST_FINISHED_FAILED,
                               COMMIT_DEFAULT | COMMIT_NEVER_RAN, monitor);
                continue;
 

@@ -681,7 +681,7 @@ monitoring_t *monitor
 
          if (lGetSubStr(jatep, JG_qname, qname, JAT_granted_destin_identifier_list) != NULL) {
             /* 3: JOB_FINISH reports aborted */
-            sge_commit_job(ctx, jep, jatep, NULL, COMMIT_ST_FINISHED_FAILED_EE, COMMIT_DEFAULT | COMMIT_NEVER_RAN, monitor);
+            sge_commit_job(ctx, jep, jatep, NULL, COMMIT_ST_FINISHED_FAILED, COMMIT_DEFAULT | COMMIT_NEVER_RAN, monitor);
          }
       }
    }

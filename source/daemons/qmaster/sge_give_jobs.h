@@ -50,8 +50,8 @@ typedef enum {
    COMMIT_ST_SENT = 0,               /* job was sent and is now transfering */
    COMMIT_ST_ARRIVED = 1,            /* job was reported as running by execd */
    COMMIT_ST_RESCHEDULED = 2,        /* job gets rescheduled */             
-   COMMIT_ST_FINISHED_FAILED = 3,    /* GE job finished or failed (FINISH/ABORT) */
-   COMMIT_ST_FINISHED_FAILED_EE = 4, /* GEEE job finished or failed (FINISH/ABORT) */
+   COMMIT_ST_FINISHED_FAILED = 3,    /* job finished or failed (FINISH/ABORT) */
+   /* historical gap */
    COMMIT_ST_DEBITED_EE = 5,         /* remove after GEEE scheduler debited usage */
    COMMIT_ST_NO_RESOURCES = 6,       /* remove interacive job (FINISH/ABORT) */
    COMMIT_ST_DELIVERY_FAILED = 7,    /* delivery failed and rescheduled */

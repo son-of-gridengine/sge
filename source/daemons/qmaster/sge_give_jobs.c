@@ -755,7 +755,7 @@ void sge_job_resend_event_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent, 
 
             lXchgList(jr, JR_usage, lGetListRef(jatep, JAT_usage_list));
             reporting_create_acct_record(ctx, NULL, jr, jep, jatep, false);
-            sge_commit_job(ctx, jep, jatep, jr, COMMIT_ST_FINISHED_FAILED_EE, COMMIT_DEFAULT, monitor);
+            sge_commit_job(ctx, jep, jatep, jr, COMMIT_ST_FINISHED_FAILED, COMMIT_DEFAULT, monitor);
          }
          lFreeElem(&jr); 
       }
@@ -918,13 +918,11 @@ void sge_zombie_job_cleanup_handler(sge_gdi_ctx_class_t *ctx, te_event_t anEvent
 *     order arrives from schedd the job is sent asynchonously to execd and 
 *     sge_commit_job() is called with mode==COMMIT_ST_SENT. When a job report 
 *     arrives from the execd mode is COMMIT_ST_ARRIVED. When the job failed
-*     or finished mode is COMMIT_ST_FINISHED_FAILED or 
-*     COMMIT_ST_FINISHED_FAILED_EE depending on product mode:
+*     or finished mode is COMMIT_ST_FINISHED_FAILED:
 *
-*     A job can be removed immediately when it is finished
-*     (mode==COMMIT_ST_FINISHED_FAILED). A job may not be deleted
-*     (mode==COMMIT_ST_FINISHED_FAILED_EE) before the scheduler has debited 
-*     the jobs resource consumption in the corresponding objects (project/user/..). 
+*     A job may not be deleted (mode==COMMIT_ST_FINISHED_FAILED) before the
+*     scheduler has debited the job's resource consumption in the
+*     corresponding objects (project/user/..).
 *     Only the job script may be deleted at this stage. When an order arrives at 
 *     qmaster telling that debitation was done (mode==COMMIT_ST_DEBITED_EE) the 
 *     job can be deleted.
@@ -1249,19 +1247,6 @@ void sge_commit_job(sge_gdi_ctx_class_t *ctx,
       break;
 
    case COMMIT_ST_FINISHED_FAILED:
-      reporting_create_job_log(NULL, now, JL_FINISHED, MSG_QMASTER, qualified_hostname, jr, jep, 
-                               jatep, NULL, MSG_LOG_EXITED);
-      remove_from_reschedule_unknown_lists(ctx, jobid, jataskid);
-      if (handle_zombies) {
-         sge_to_zombies(jep, jatep);
-      }
-      if (!unenrolled_task) { 
-         sge_clear_granted_resources(ctx, jep, jatep, 1, monitor);
-      }
-      sge_job_finish_event(jep, jatep, jr, commit_flags, NULL); 
-      sge_bury_job(job_spooling, sge_root, jep, jobid, jatep, spool_job, no_events);
-      break;
-   case COMMIT_ST_FINISHED_FAILED_EE:
       reporting_create_job_log(NULL, now, JL_FINISHED, MSG_QMASTER, qualified_hostname, 
                                jr, jep, jatep, NULL, MSG_LOG_WAIT4SGEDEL);
       remove_from_reschedule_unknown_lists(ctx, jobid, jataskid);
