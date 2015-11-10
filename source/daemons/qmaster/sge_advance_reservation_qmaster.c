@@ -1843,7 +1843,7 @@ bool sge_ar_remove_all_jobs(sge_gdi_ctx_class_t *ctx, u_long32 ar_id, int forced
                }
 
                if (forced) {
-                  sge_commit_job(ctx, jep, tmp_task, NULL, COMMIT_ST_FINISHED_FAILED_EE,
+                  sge_commit_job(ctx, jep, tmp_task, NULL, COMMIT_ST_FINISHED_FAILED,
                                  COMMIT_DEFAULT | COMMIT_NEVER_RAN, monitor);
                } else {
                   if (!ISSET(lGetUlong(tmp_task, JAT_state), JDELETED)) {

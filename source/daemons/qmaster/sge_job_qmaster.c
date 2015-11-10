@@ -1026,7 +1026,7 @@ void get_rid_of_job_due_to_qdel(sge_gdi_ctx_class_t *ctx,
    if (sge_signal_queue(ctx, SGE_SIGKILL, qep, j, t, monitor)) {
       if (force) {
          /* 3: JOB_FINISH reports aborted */
-         sge_commit_job(ctx, j, t, NULL, COMMIT_ST_FINISHED_FAILED_EE, COMMIT_DEFAULT | COMMIT_NEVER_RAN, monitor);
+         sge_commit_job(ctx, j, t, NULL, COMMIT_ST_FINISHED_FAILED, COMMIT_DEFAULT | COMMIT_NEVER_RAN, monitor);
          cancel_job_resend(job_number, task_number);
          j = NULL;
 
@@ -1063,7 +1063,7 @@ void get_rid_of_job_due_to_qdel(sge_gdi_ctx_class_t *ctx,
          reporting_create_acct_record(ctx, NULL, dummy_jr, j, t, false);
          reporting_create_job_log(NULL, now, JL_DELETED, MSG_SCHEDD, 
                                   qualified_hostname, NULL, j, t, NULL, MSG_LOG_DELFORCED);
-         sge_commit_job(ctx, j, t, NULL, COMMIT_ST_FINISHED_FAILED_EE, 
+         sge_commit_job(ctx, j, t, NULL, COMMIT_ST_FINISHED_FAILED,
                         COMMIT_DEFAULT | COMMIT_NEVER_RAN, monitor);
          cancel_job_resend(job_number, task_number);
          lFreeElem(&dummy_jr);
@@ -4117,7 +4117,7 @@ static int sge_delete_all_tasks_of_job(sge_gdi_ctx_class_t *ctx, lList **alpp, c
                                              alpp, ruser,
                                              forced, monitor);
                } else {
-                  sge_commit_job(ctx, job, tmp_task, NULL, COMMIT_ST_FINISHED_FAILED_EE, spool_job | COMMIT_NEVER_RAN, monitor);
+                  sge_commit_job(ctx, job, tmp_task, NULL, COMMIT_ST_FINISHED_FAILED, spool_job | COMMIT_NEVER_RAN, monitor);
                   showmessage = 1;
                   if (!*alltasks && showmessage) {
                      range_list_insert_id(&range_list, NULL, task_number);

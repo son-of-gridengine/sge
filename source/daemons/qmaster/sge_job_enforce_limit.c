@@ -449,7 +449,7 @@ sge_job_enfoce_limit_handler(sge_gdi_ctx_class_t *ctx, te_event_t event, monitor
                   /*
                    * Assassinate the job (qdel -f)
                    */
-                  sge_commit_job(ctx, job, ja_task, NULL, COMMIT_ST_FINISHED_FAILED_EE, 
+                  sge_commit_job(ctx, job, ja_task, NULL, COMMIT_ST_FINISHED_FAILED,
                                  COMMIT_DEFAULT | COMMIT_NEVER_RAN, monitor);
                   job = NULL;
                   ja_task = NULL;
