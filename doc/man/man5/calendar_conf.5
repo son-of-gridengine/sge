@@ -45,8 +45,8 @@ appropriate calendar definition for a certain class of jobs can be attached
 to a queue.
 .PP
 .I calendar_conf
-entries can be added, modified and displayed with the \fI\-Acal\fP, 
-\fI\-acal\fP, \fI\-Mcal\fP, \fI\-mcal\fP, \fI\-scal\fP and \fI\-scall\fP
+entries can be added, modified and displayed with the \fB\-Acal\fP,
+\fB\-acal\fP, \fB\-Mcal\fP, \fB\-mcal\fP, \fB\-scal\fP and \fB\-scall\fP
 options to
 .M qconf 1
 or with the calendar configuration dialog of the graphical user interface
@@ -64,122 +64,137 @@ space (" ") character before any interpretation.
 .\"
 .\"
 .SH FORMAT
-.SS "\fBcalendar_name\fP"
+A configuration comprises three lines of this form, whose contents are
+described in the following sections:
+.sp
+.nf
+	\fBcalendar_name\fP  \fIcalendar_name\fP
+	\fByesr\fP  \fIyear\fP
+	\fBday\fP  \fIday\fP
+.fi
+.SS calendar_name
 The name of the calendar to be used when attaching it to queues, or when 
 administering the calendar definition. See \fIcalendar_name\fP in
 .M sge_types 5
 for a precise definition of valid calendar names.  
 .\"
-.SS "\fByear\fP"
+.SS year
 The queue status definition on a day of the year basis. This field generally
 will specify on which days of a year (and optionally at which times on those
 days) a queue, to which the calendar is attached, will change to a certain
 state. The syntax of the
-.B year
+.I year
 field is defined as follows:
 .sp 1
 .nf
 .ta \w'xxxx'u
-\fByear\fP:=
-	{ NONE
-    | \fByear_day_range_list=\fP\fBdaytime_range_list\fP[\fB=state\fP]
-    | \fByear_day_range_list=\fP[\fBdaytime_range_list=\fP]\fBstate\fP
-    | state}
+\fIyear\fP :=
+	\fBNONE\fP
+	| \fIyear_day_range_list\fP\fB=\fP\fIdaytime_range_list\fP[\fB=\fP\fIstate\fP]
+	| \fIyear_day_range_list\fP\fB=\fP[\fIdaytime_range_list\fP\fB=\fP]\fIstate\fP
+	| \fIstate\fP
 .fi
 .sp 1
 Where
 .IP "\(bu" 3n
-NONE means, no definition is made on the year basis;
+\fBNONE\fP means no definition is made on the year basis;
 .IP "\(bu" 3n
-If a definition is made on the year basis, at least one of \fByear_day_range_list\fP, \fBdaytime_range_list\fP and
-\fBstate\fP 
+If a definition is made on the year basis, at least one of \fIyear_day_range_list\fP, \fIdaytime_range_list\fP and
+\fIstate\fP 
 always have to be present;
 .IP "\(bu" 3n
-All day long is assumed if \fBdaytime_range_list\fP is omitted;
+All day long is assumed if \fIdaytime_range_list\fP is omitted;
 .IP "\(bu" 3n
-Switching the queue to "off" (i.e. disabling it) is assumed if \fBstate\fP is
+Switching the queue to "off" (i.e. disabling it) is assumed if \fIstate\fP is
 omitted;
 .IP "\(bu" 3n
 The queue is assumed to be enabled
 for days neither referenced implicitly (by omitting the 
-\fByear_day_range_list\fP) nor explicitly.
+\fIyear_day_range_list\fP) nor explicitly.
 .PP
-and the syntactical components are defined as follows:
+The syntactical components are defined as follows:
 .sp 1
 .nf
 .ta \w'xx'u \w'year_day_range_list :=   'u
-	\fByear_day_range_list\fP := 	{\fByearday\fP-\fByearday\fP|\fByearday\fP},...
-	\fBdaytime_range_list\fP := 	hour[:minute][:second]-
-	 	hour[:minute][:second],...
+	\fIyear_day_range_list\fP := 	{\fIyearday\fP\fB-\fP\fIyearday\fP | \fIyearday\fP},...
+	\fIdaytime_range_list\fP := 	\fIhour\fP[\fB:\fP\fIminute\fP][\fB:\fP\fIsecond\fP]\fB-\fP\fIhour\fP[\fB:\fP\fIminute\fP][\fB:\fP\fIsecond\fP],...
 .ta \w'xx'u \w'month_day :=   'u
-	\fBstate\fP := 	{on|off|suspended}
-	\fByear_day\fP := 	\fBmonth_day.month.year\fP
-	\fBmonth_day\fP := 	{1|2|...|31}
-	\fBmonth\fP := 	{jan|feb|...|dec|1|2|...|12}
-	\fByear\fP := 	{1970|1971|...|2037}
+	\fIstate\fP := 	\fBon\fP | \fBoff\fP | \fBsuspended\fP
+	\fIyear_day\fP :=	\fImonth_day\fP\fB.\fImonth\fP\fB.\fP\fIyear\fP
+	\fImonth_day\fP :=	\fB1\fP | \fB2\fP | ... | \fB31\fP
+	\fImonth\fP :=	\fBjan\fP | \fBfeb\fP | ... | \fBdec\fP | \fB1\fP | \fB2\fP | ... | \fB12\fP
+	\fIyear\fP :=	\fB1970\fP | \fB1971\fP | ... | \fB2037\fP
 .fi
 .\"
-.SS "\fBweek\fP"
+.SS "week"
 The queue status definition on a day of the week basis. This field generally
 will specify on which days of the week (and optionally at which times on those
 days) a queue to which the calendar is attached will change to a certain
 state. The syntax of the
-.B week
+.I week
 field is defined as follows:
 .sp 1
 .nf
 .ta \w'xxxx'u
-\fBweek\fP:=
-	{ NONE 
-    | \fBweek_day_range_list\fP[\fB=daytime_range_list\fP][\fB=state\fP]
-    | [\fBweek_day_range_list=\fP]\fBdaytime_range_list\fP[\fB=state\fP]
-    | [\fBweek_day_range_list=\fP][\fBdaytime_range_list=\fP]\fBstate\fP} ...
+\fIweek\fP:=
+	\fBNONE\fP 
+	| \fIweek_day_range_list\fP[\fB=\fP\fIdaytime_range_list\fP][\fB=\fP\fIstate\fP]
+	| [\fIweek_day_range_list\fP\fB=\fP]\fIdaytime_range_list\fP[\fB=\fP\fIstate\fP]
+	| [\fIweek_day_range_list\fP\fB=\fP][\fIdaytime_range_list\fP\fB=\fP]\fIstate\fP ...
 .fi
 .sp 1
 where
 .IP "\(bu" 3n
 NONE means, no definition is made on the week basis;
 .IP "\(bu" 3n
-If a definition is made on the week basis, at least one of \fBweek_day_range_list\fP, \fBdaytime_range_list\fP and
-\fBstate\fP 
+If a definition is made on the week basis, at least one of \fIweek_day_range_list\fP, \fIdaytime_range_list\fP and
+\fIstate\fP 
 always have to be present;
 .IP "\(bu" 3n
-Every day in the week is assumed if \fBweek_day_range_list\fP is omitted;
+Every day in the week is assumed if \fIweek_day_range_list\fP is omitted;
 .IP "\(bu" 3n
 Syntax and semantics of
-.B daytime_range_list
+.I daytime_range_list
 and
-.B state
+.I state
 are identical to the 
 definition given for the year field above;
 .IP "\(bu" 3n
 The queue is assumed to be enabled for days neither referenced implicitly 
-(by omitting the \fBweek_day_range_list\fP) nor explicitly.
+(by omitting the \fIweek_day_range_list\fP) nor explicitly.
 .PP
 and where
-.B week_day_range_list
+.I week_day_range_list
 is defined as
 .sp 1
 .nf
 .ta \w'xx'u \w'year_day_range_list :=   'u
-	\fBweek_day_range_list\fP := 	{\fBweekday\fP-\fBweekday\fP|\fBweekday\fP},...
+	\fIweek_day_range_list\fP := 	{\fIweekday\fP\fB-\fP\fIweekday\fP | \fIweekday\fP},...
 .ta \w'xx'u \w'month_day :=   'u
-	\fBweek_day\fP := 	{mon|tue|wed|thu|fri|sat|sun}
+	\fIweek_day\fP := 	\fBmon\fP | \fBtue\fP | \fBwed\fP | \fBthu\fP | \fBfri\fP | \fBsat\fP | \fBsun\fP
 .fi
 .sp 1
-With week_day ranges the week_day identifiers must be different.
+With week_day ranges the \fIweek_day\fP identifiers must be different.
 .\"
 .\"
 .SH SEMANTICS
 Successive entries to the
-.B year
+.I year
 and
-.B week
+.I week
 fields (separated by blanks) are combined in accordance with the
 following rule:
 .IP "\(bu" 3n
-"off"-areas are overridden by overlapping "on"- and "suspended"-areas and
-"suspended"-areas are overridden by "on"-areas.
+.B off
+areas are overridden by overlapping 
+.B on
+and
+.B suspended
+areas and
+.B suspended
+areas are overridden by
+.B on
+areas.
 .PP
 Hence an entry of the form
 .sp 1
@@ -199,7 +214,7 @@ account, and no area overriding is done with a possibly conflicting
 week area. 
 .sp 1
 .IP "\(bu" 3n
-The second time specification in a daytime_range_list may be before the 
+The second time specification in a \fIdaytime_range_list\fP may be before the 
 first one and treated as expected. Thus an entry of the form
 
 .nf
@@ -207,7 +222,7 @@ first one and treated as expected. Thus an entry of the form
 	year 	12.03.2004=12\-11=off 
 .fi
 .sp 1
-causes the queue(s) be disabled 12.03.2004 from 00:00:00 \- 10:59:59 and
+causes the queue(s) be disabled on 12.03.2004 from 00:00:00 \- 10:59:59 and
 12:00:00 \- 23:59:59.
 .\"
 .\"
