@@ -112,7 +112,7 @@ quantity by the operating system. Consequently, if a job was started
 very recently, the reported load may not provide a sufficient 
 representation of the load which is already imposed on that host by 
 the job. The reported load will adapt to the real load over time, but 
-the period of time, in which the reported load is too low, may 
+the period of time in which the reported load is too low may
 already lead to an oversubscription of that host. xxQS_NAMExx allows 
 the administrator to specify \fBjob_load_adjustments\fP which are used 
 in the xxQS_NAMExx scheduler to compensate for this problem.
@@ -148,7 +148,7 @@ The load corrections in the "\fBjob_load_adjustments\fP" list above
 are decayed linearly over time from the point of the job start, where
 the corresponding load or consumable parameter is
 raised by the full correction value,
-until after a time period of "\fBload_adjustment_decay_time\fP", where the
+until after a time period of "\fBload_adjustment_decay_time\fP" the
 correction becomes 0. Proper values for "\fBload_adjustment_decay_time\fP"
 greatly depend upon the load or consumable parameters used and the
 specific operating
