@@ -141,7 +141,7 @@
 #define MSG_PARSE_UOPTMUSTHAVEALISTUSERNAMES              _MESSAGE(23099, _("-u option must have a list usernames"))
 #define MSG_PARSE_VOPTMUSTHAVEVARIABLELISTARGUMENT              _MESSAGE(23100, _("-v option must have variable list argument"))
 #define MSG_PARSE_WRONGVARIABLELISTFORMATVORENVIRONMENTVARIABLENOTSET_S              _MESSAGE(23101, _("Wrong variable list format -v "SFQ" or environment variable not set"))
-#define MSG_PARSE_COULDNOTPARSEENVIRIONMENT              _MESSAGE(23102, _("Could not parse environment"))
+#define MSG_PARSE_COULDNOTPARSEENVIRIONMENT              _MESSAGE(23102, _("Could not parse environment (bad \"<name>=\")"))
 #define MSG_PARSE_INVALIDOPTIONARGUMENTWX_S              _MESSAGE(23103, _("invalid option argument \"-w "SFN"\""))
 #define MSG_PARSE_ATSIGNOPTIONMUSTHAVEFILEARGUMENT       _MESSAGE(23104, _("-@ option must have file argument"))
 #define MSG_PARSE_INVALIDOPTIONARGUMENTX_S              _MESSAGE(23105, _("invalid option argument "SFQ))

@@ -800,10 +800,11 @@ var_list_verify(const lList *lp, lList **answer_list)
 *                                    int check_environment) 
 *
 *  FUNCTION
-*     Parse a list of variables ("lpp") from a comma separated 
+*     Parse a list of variables ("lpp") from a comma-separated
 *     string list ("variable_str"). The boolean "check_environment"
-*     defined wether the current value of a variable is taken from
-*     the environment of the calling process.
+*     specifies that the value of a variable is taken from
+*     the environment of the calling process if it's null in the list,
+*     i.e. nothing to the right of the =.
 *
 *  INPUTS
 *     lList **lpp              - VA_Type list 
@@ -818,6 +819,8 @@ var_list_verify(const lList *lp, lList **answer_list)
 *  NOTES
 *     MT-NOTE: var_list_parse_from_string() is MT safe
 *******************************************************************************/
+/* Fixme:  It should be possible to quote values, e.g. if they contain
+   a comma, and space after the comma should be ignored.  */
 int var_list_parse_from_string(lList **lpp, const char *variable_str,
                                int check_environment)
 {
@@ -867,8 +870,16 @@ int var_list_parse_from_string(lList **lpp, const char *variable_str,
       lAppendElem(*lpp, ep);
 
       context = NULL;
-      variable = sge_strtok_r(*pstr, "=", &context);
-      SGE_ASSERT((variable));
+      variable = NULL;
+      if ('=' != **pstr)
+         variable = sge_strtok_r(*pstr, "=", &context);
+      if (!variable) {
+         sge_free_saved_vars(context);
+         sge_free(&va_string);
+         sge_free(&str_str);
+         DRETURN(1);
+      }
+      /* Fixme: check validity of the name */
       var_len=strlen(variable);
       lSetString(ep, VA_variable, variable);
       val_str=*pstr;
