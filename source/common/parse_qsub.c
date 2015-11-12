@@ -2100,7 +2100,7 @@ static int var_list_parse_from_environment(lList **lpp, char **envp)
    }
 
    for (; *envp; envp++) {
-      char *env_name;
+      char *env_name = NULL;
       char *env_description;
       char *env_entry;
       lListElem *ep;
@@ -2110,10 +2110,19 @@ static int var_list_parse_from_environment(lList **lpp, char **envp)
       lAppendElem(*lpp, ep);
 
       env_entry = sge_strdup(NULL, *envp);
-      SGE_ASSERT((env_entry));
+      if (!env_entry) {
+         CRITICAL((SGE_EVENT, SFNMAX, MSG_MEMORY_MALLOCFAILED));
+         DEXIT_;
+         abort();
+      }
 
-      env_name = sge_strtok_r(env_entry, "=", &context);
-      SGE_ASSERT((env_name));
+      if ('=' != *env_entry)
+         env_name = sge_strtok_r(env_entry, "=", &context);
+      if (!env_name) {
+         sge_free(&env_entry);
+         sge_free_saved_vars(context);
+         DRETURN(1);
+      }
       lSetString(ep, VA_variable, env_name);
 
       /* Chop at any null, on the assumption nulls lose elsewhere.  */
