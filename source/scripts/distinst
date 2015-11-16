@@ -424,7 +424,7 @@ touchcommonchanged=false
 
 # Install targets
 #
-instjobs=false
+instjobs=true
 instsharedlibs=false
 instckpt=false
 instdrmaa=false
