@@ -51,7 +51,7 @@
 volatile int should_stop = 0;
 
 /* cpu load profile */
-int working_time = 0;
+int working_time = 100;
 int nproc = 1;
 
 /* mem load profile */
