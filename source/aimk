@@ -873,9 +873,7 @@ while ($#argv >= 1 && $?found)
       breaksw
    case "-with-munge"
       set MUNGE = 1
-      breaksw
-   case "-munge"
-      set MUNGE = 1
+      set LIBS = "$LIBS -lmunge"
       breaksw
    case "-*"
       echo $argv[1] ": Unknown option, aborting"
