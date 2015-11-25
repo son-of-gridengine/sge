@@ -60,7 +60,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Default implementation of the <code>GridCA</ca>
+ * Default implementation of the <code>GridCA</code>
  *
  * Uses the sge_ca script which is delivered with gridengine to perform
  * actions on the gridengine ca.
