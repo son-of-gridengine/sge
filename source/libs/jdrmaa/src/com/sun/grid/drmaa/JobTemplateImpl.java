@@ -680,7 +680,7 @@ public class JobTemplateImpl implements JobTemplate {
      * not explicitly set in the job template, the whereabouts of the job's
      * output stream is not defined.  If the standard output is set, it
      * specifies the network path of the job's output stream file in the form of
-     * <code>[hostname]:file_path<code>
+     * <code>[hostname]:file_path</code>
      *
      * <p>When the transferFiles property is supported and the set
      * TranferFileMode instance's outputStream property is set to
