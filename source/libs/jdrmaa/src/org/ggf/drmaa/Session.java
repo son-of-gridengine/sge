@@ -495,8 +495,8 @@ public abstract interface Session {
      *
      * <p>The <i>timeout</i> value is used to specify the desired behavior when
      * a result is not immediately available.  The value,
-     * <code>TIMEOUT_WAIT_FOREVER<code>, may be specified to wait indefinitely
-     * for a result.  The value, <code>TIMEOUT_NO_WAIT<code>, may be specified
+     * <code>TIMEOUT_WAIT_FOREVER</code>, may be specified to wait indefinitely
+     * for a result.  The value, <code>TIMEOUT_NO_WAIT</code>, may be specified
      * to return immediately if no result is available.  Alternatively, a number
      * of seconds may be specified to indicate how long to wait for a result to
      * become available.</p>

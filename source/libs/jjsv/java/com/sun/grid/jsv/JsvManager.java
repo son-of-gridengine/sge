@@ -67,7 +67,7 @@ import java.util.logging.Logger;
  * TODO: Add main() method
  * TODO: ant script
  * TODO: Wrapper script
- * TODO: correct=>modify in other languages
+ * TODO: correct=&gt;modify in other languages
  * @see JobDescription
  * @since 6.2u5
  */

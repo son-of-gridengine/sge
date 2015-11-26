@@ -68,7 +68,7 @@ import org.ggf.drmaa.UnsupportedAttributeException;
  * jobs will be executed without a wrapper shell, and jobs which are
  * unschedulable will cause a submit error.</p>
  *
- * The sge_request file, found in the $SGE_ROOT/$SGE_CELL/common directory, may
+ * <p>The sge_request file, found in the $SGE_ROOT/$SGE_CELL/common directory, may
  * contain options to be applied to all jobs.  The .sge_request file found in
  * the user's home directory or the current working directory may also contain
  * options to be applied to certain jobs.  See the sge_request(5) man page
@@ -106,7 +106,7 @@ import org.ggf.drmaa.UnsupportedAttributeException;
  * <p>The following DRMAA attributes correspond to the following qsub
  * options:</p>
  *
- * <table>
+ * <table><caption>DRMAA Attributes</caption>
  *  <tr><th>DRMAA Attribute</th><th>qsub Option</th></tr>
  *  <tr><td>remoteCommand</td><td>script file</td>
  *  <tr><td>args</td><td>script file arguments</td>
@@ -1032,7 +1032,7 @@ public class JobTemplateImpl implements JobTemplate {
      * Returns the list of supported properties names.  With the execd param,
      * delegated_file_staging, set to false, this list includes only the list of
      * DRMAA required properties.  With delegated_file_staging set to true, the
-     * list also includes the transferFiles property.</p>
+     * list also includes the transferFiles property.
      * @return {@inheritDoc}
      */
     public Set getAttributeNames() throws DrmaaException {
