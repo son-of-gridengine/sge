@@ -95,6 +95,7 @@ BuildRequires: jemalloc-devel
 
 BuildRequires: /bin/csh, %{sslpkg}-devel, ncurses-devel, pam-devel
 BuildRequires: net-tools, %xmupkg-devel, %hwlocpkg-devel >= 1.1
+BuildRequires: munge-devel
 # The relevant package might be db4-devel or libdb-devel, so simplify
 # by requiring the header.  "zypper install /usr/include/db.h" doesn't work
 # on SuSE, so you have to install the packages explicitly.
@@ -102,7 +103,13 @@ BuildRequires: /usr/include/db.h
 # This could be in lesstif-devel, motif-devel, or openmotif-devel
 BuildRequires: /usr/include/Xm/Xm.h
 %if %{with java}
-BuildRequires: java-devel >= 1.6.0, javacc, ant-junit
+%if 0%{?el6}
+# Something has changed in el6 so that javacc fails with java-devel 1.6.0
+BuildRequires: java7-devel
+%else
+BuildRequires: java-devel
+%endif
+BuildRequires: javacc, ant-junit
 %if ! 0%{?fedora} && 0%{?rhel} < 7
 BuildRequires: ant-nodeps
 %endif
@@ -293,7 +300,10 @@ sh scripts/bootstrap.sh $JAVA_BUILD_OPTIONS
 ./aimk -man $JAVA_BUILD_OPTIONS
 %if %{with java}
 # "-no-gui-inst -no-herd -javadoc" still produces all the javadocs
-ant drmaa.javadoc juti.javadoc jgdi.javadoc jjsv.javadoc gui_inst.javadoc
+ant drmaa.javadoc jjsv.javadoc
+# Fixme:  These have symbol-not-found and other errors, which cause the
+# build to fail with recent javadoc.
+ant juti.javadoc jgdi.javadoc gui_inst.javadoc || true
 %if %{with hadoop}
 ant herd.javadoc
 %endif
@@ -389,9 +399,11 @@ fi
 %config(noreplace) %{sge_home}/util/install_modules/inst_template.conf
 %{sge_home}/utilbin
 %attr(4755,root,root) %{sge_home}/utilbin/*/testsuidroot
-#%attr(4755,root,root) %{sge_home}/utilbin/*/authuser
+%if 0
+%attr(4755,root,root) %{sge_home}/utilbin/*/authuser
 # Avoid this for safety, assuming no MS Windows hosts
-#%attr(4755,root,root) %{sge_home}/utilbin/*/sgepasswd
+%attr(4755,root,root) %{sge_home}/utilbin/*/sgepasswd
+%endif
 %{sge_mandir}/man1/*.1
 %{sge_mandir}/man5/*.5
 %{sge_mandir}/man8/*.8
@@ -446,7 +458,12 @@ fi
 
 
 %changelog
-* Thu Feb  5 2015 Dave Love <d.love@liverpool.ac.uk> 1:8.1.9pre
+* Tue Nov 24 2015 Dave Love <d.love@liverpool.ac.uk> 8.1.9
+- Bump java version required on el6
+- MUNGE support
+- Fixes to build on Fedora 23
+
+* Thu Feb  5 2015 Dave Love <d.love@liverpool.ac.uk> 8.1.9pre
 - Move spool objects back to main package
 
 * Thu Aug 14 2014 Dave Love <d.love@liverpool.ac.uk> 8.1.8
@@ -480,7 +497,7 @@ fi
 - Use bootstrap.sh
 - Don't build-require elfutils-libelf-devel
 - Fix License and Group headers
-- Mark inst_template.conf as %conf(noreplace)
+- Mark inst_template.conf as %%conf(noreplace)
 - Use noarch appropriately
 - Don't require java for qmaster.  (Should fail obviously if jvm thread
   configured.)
@@ -534,7 +551,7 @@ fi
 - Add --without java (adapted from Jesse Becker <hawson@gmail.com>).
 - Use csh -f.  Add Prefix.  Use -fno-strict-aliasing.
 
-* Thu May 25 2011 Dave Love <d.love@liverpool.ac.uk> - 8.0.0a-1
+* Wed May 25 2011 Dave Love <d.love@liverpool.ac.uk> - 8.0.0a-1
 - Heavily re-written from Orion Poplawski's Fedora original for shared
   installation under /opt and not doing any configuration.  Different
   enough that it's probably not worh presevring the changelog.
