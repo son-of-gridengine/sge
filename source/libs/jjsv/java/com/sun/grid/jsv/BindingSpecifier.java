@@ -39,7 +39,7 @@ import java.util.List;
  * for a job.  It contains the binding type, strategy, and strategy
  * parameters.
  * @see JobDescription#getBindingSpecifier()
- * @see JobDescription#setBindingSpecifier()(com.sun.grid.jsv.BindingSpecifier)
+<!-- * @see JobDescription#setBindingSpecifier() --> <!-- javadoc complains -->
  * @since 6.2u5
  */
 public final class BindingSpecifier implements Cloneable, Serializable {
