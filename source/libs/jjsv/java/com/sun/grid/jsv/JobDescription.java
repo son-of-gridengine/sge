@@ -703,7 +703,7 @@ public final class JobDescription implements Cloneable, Serializable {
     }
 
     /**
-     * Get the BindingSpecifier object that represents the core vinding
+     * Get the BindingSpecifier object that represents the core binding
      * settings for the job.
      *
      * The object that is returned will be a copy
@@ -1502,7 +1502,7 @@ public final class JobDescription implements Cloneable, Serializable {
     }
 
     /**
-     * Set the BindingSpecifier object that represent's the job to core binding
+     * Set the BindingSpecifier object that represents the job to core binding
      * settings.
      *
      * See qsub -binding.

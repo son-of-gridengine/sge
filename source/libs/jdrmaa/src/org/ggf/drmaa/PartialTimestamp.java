@@ -371,7 +371,7 @@ public class PartialTimestamp extends Calendar {
 
     // This needs to be completey rewritten to account for modifiers on unset fields
     /**
-     * Adds the given value to the given <i>field</i>.  If the field< is unset, the
+     * Adds the given value to the given <i>field</i>.  If the field is unset, the
      * <i>amount</i> will
      * be added to the field's modifier instead.  If the field is set, but the addition
      * causes changes to another field, which is unset, the unset field will receive
