@@ -317,14 +317,25 @@ the tasks of the parallel application
 requested with the \-pe switch).
 FALSE indicates that the
 job script (and its child processes) is not part of the parallel
-program (e.g. the job is using
-.MO mpirun 1 )
-and the number of slots reserved for the job in the master queue is
+program, just being used to kick off the tasks that do the work;
+then the number of slots reserved for the job in the master queue is
 increased by 1, as indicated by
 .IR qstat / qhost .
 .PP
-If wallclock accounting is used 
-(execd_params ACCT_RESERVED_USAGE and/or SHARETREE_RESERVED_USAGE set to TRUE)
+This should be TRUE for the common modern MPI implementations with
+tight integration.  Consider if the allocation rule is
+.BR $fill_up ,
+and a job is allocated only a single slot on the master host; then one
+of the MPI processes actually runs in that slot, and should be
+accounted as such, so the job is the first task.
+.PP
+If wallclock accounting is used
+.RB ( execd_params
+.B ACCT_RESERVED_USAGE
+ and/or
+.B SHARETREE_RESERVED_USAGE
+Is
+.BR TRUE )
 and 
 .B control_slaves
 is set to FALSE, the
@@ -334,9 +345,7 @@ A value of TRUE means that accounting for CPU and requested memory
 gets multiplied by the number of slots requested with the \-pe switch.
 FALSE means the accounting information gets multiplied by number of
 slots + 1.  Otherwise, the only significant effect of the parameter is
-on the display of the job, but it can be used to indicate, say,
-.IR mpirun -type
-job startup.
+on the display of the job.
 .\"
 .\"
 .SS "\fBurgency_slots\fP"
