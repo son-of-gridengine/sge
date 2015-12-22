@@ -9,7 +9,7 @@ start_proc_args    NONE
 stop_proc_args     NONE
 allocation_rule    $fill_up
 control_slaves     TRUE
-job_is_first_task  FALSE
+job_is_first_task  TRUE
 urgency_slots      min
 accounting_summary FALSE
 qsort_args         NONE
