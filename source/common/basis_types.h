@@ -64,13 +64,17 @@
 #endif
 
 #if !defined(__cplusplus) 
-#  if defined(DARWIN)
+#  if defined(DARWIN) || __STDC_VERSION__ >= 199901L
 #     include <stdbool.h>
 #  else
+/* Avoid possible a clash in c89, e.g. later versions of jemalloc
+   include stdbool.h.  */
+#     if !defined true && !defined false
 typedef enum {
   false = 0,
   true
 } bool;
+#     endif
 #  endif
 #endif
 
