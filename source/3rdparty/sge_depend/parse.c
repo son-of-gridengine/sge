@@ -251,7 +251,9 @@ static int deftype (line, filep, file_red, file, parse_it)
       /*
        * copy the definition back to the beginning of the line.
        */
-      strcpy (line, p);
+      while (*p)
+	*line++ = *p++;
+      *line = '\0';
       break;
    case ELSE:
    case ENDIF:
