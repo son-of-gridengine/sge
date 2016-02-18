@@ -142,12 +142,13 @@ static int path_alias_read_from_file(lList **path_alias_list, lList **alpp,
                                      char *file_name)
 {
    FILE *fd;
-   char buf[10000];
+   char buf[4*CL_MAXHOSTLEN + 4]; /* see use of fmt below */
    char err[MAX_STRING_SIZE];
    char origin[CL_MAXHOSTLEN];
    char submit_host[CL_MAXHOSTLEN];
    char exec_host[CL_MAXHOSTLEN];
    char translation[CL_MAXHOSTLEN];
+   char fmt[50];
    lListElem *pal;
    SGE_STRUCT_STAT sb;
    int ret = 0;
@@ -191,11 +192,11 @@ static int path_alias_read_from_file(lList **path_alias_list, lList **alpp,
       origin[0]      = '\0';
       submit_host[0] = '\0';
       exec_host[0]   = '\0';
-      translation[0] = '\0';   
+      translation[0] = '\0';
 
-      /* See CL_MAXHOSTNAMELEN_LENGTH for width */
-      sscanf(buf, "%256s %256s %256s %256s",
-	     origin, submit_host, exec_host, translation);
+      snprintf(fmt, sizeof fmt, "%%%ds %%%ds %%%ds %%%ds", CL_MAXHOSTLEN-1,
+               CL_MAXHOSTLEN-1, CL_MAXHOSTLEN-1, CL_MAXHOSTLEN-1);
+      sscanf(buf, fmt, origin, submit_host, exec_host, translation);
 
       /*
        * check for correctness of path alias file
