@@ -318,9 +318,14 @@ can be used.
 The type of this parameter is boolean, thus either TRUE or FALSE can
 be specified. The default is FALSE, i.e. do not restart jobs automatically.
 .SS "\fBslots\fP"
-The maximum number of concurrently executing jobs allowed in instances
+The maximum number of slots that may be scheduled concurrently in instances
 of the queue.
 Type is number, valid values are 0 to 9999999.
+.PP
+If there are multiple queues defined on a host and they are not mutually
+suspendable, the host \fBslots\fP value should be set to the processor
+count on the host if you want to avoid potential over-subscription due
+to scheduling to more than one queue at a time.
 .SS "\fBtmpdir\fP"
 The \fBtmpdir\fP parameter specifies the absolute path to the base of the
 temporary directory filesystem. When 
@@ -478,14 +483,14 @@ applications this is not appropriate.
 If no executable path is given, xxQS_NAMExx takes the specified
 parameter entries as the signal to be delivered instead of the default
 signal. A signal must be either a positive number or a signal name with
-\fB"SIG"\fP as prefix and the signal name as printed by
+the \fBSIG\fP prefix, as printed by
 .I kill \-l
-(e.g. SIGTERM).
+(e.g. \fBSIGTERM\fP).
 .PP
 If an executable path is given (it must be an \fIabsolute path\fP starting
-with a "/") then this command, together with its arguments, is started by
+with a "\fB/\fP"); then this command, together with its arguments, is started by
 xxQS_NAMExx to perform the appropriate action. The following special
-variables are expanded at runtime and can be used (besides any other
+variables are expanded at runtime, and can be used (besides any other
 strings which have to be interpreted by the procedures) to compose a
 command line:
 .IP "\fI$host\fP"

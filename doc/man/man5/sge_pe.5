@@ -161,7 +161,8 @@ a detailed description of the layout of the parallel environment to be
 setup by the start-up procedure. Each line of the file refers to a host
 on which parallel processes are to be run. The first entry of each line
 denotes the hostname, the second entry the number of parallel processes
-to be run on the host, the third entry the name of the queue.  If
+to be run on the host, the third entry the name of the queue.  The
+entries are separated by spaces.  If
 .B \-binding pe
 is specified on job submission, the fourth column is the core binding
 specification as colon-separated socket-core pairs, like "0,0:0,1",
