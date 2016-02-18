@@ -219,9 +219,9 @@ static void sge_htable_resize(htable ht, int grow)
 *     Creates an empty hash table and initializes its data structures.
 *
 *  INPUTS
-*     int size            - Initial table size will be 2^n 
-*     int (*hash_func)    - pointer to hash function 
-*     int (*compare_func) - pointer to compare function 
+*     int size            - Initial table size will be 2^n
+*     unsigned int (*hash_func)    - pointer to hash function
+*     int (*compare_func) - pointer to compare function
 *
 *  RESULT
 *     htable - the created hash table
@@ -230,9 +230,9 @@ static void sge_htable_resize(htable ht, int grow)
 *     htable MyHashTable = sge_htable_create(5, hash_func_u_long32, 
 *                                             hash_compare_u_long32);
 ******************************************************************************/
-htable sge_htable_create(int size, 
-                          const void *(*dup_func)(const void *), 
-                          int (*hash_func)(const void *), 
+htable sge_htable_create(int size,
+                          const void *(*dup_func)(const void *),
+                          unsigned int (*hash_func)(const void *),
                           int (*compare_func)(const void *, const void *))
 {
     htable ht = (htable) malloc(sizeof(htable_rec));
@@ -606,36 +606,36 @@ const void *dup_func_string(const void *key)
 *  SEE ALSO
 *     uti/htable/sge_htable_create()
 ******************************************************************************/
-int hash_func_u_long32(const void *key) 
+unsigned int hash_func_u_long32(const void *key)
 {
    u_long32 *cast = (u_long32 *)key;
-   return (int)*cast;
+   return (unsigned int)*cast;
 }
 
-int hash_func_u_long64(const void *key) 
+unsigned int hash_func_u_long64(const void *key)
 {
    u_long64 *cast = (u_long64 *)key;
-   return (int)*cast;
+   return (unsigned int)*cast;
 }
 
-int hash_func_long(const void *key)
+unsigned int hash_func_long(const void *key)
 {
    long *cast = (long*)key;
-   return (int)*cast;
+   return (unsigned int)*cast;
 }
 
-int hash_func_pointer(const void *key)
+unsigned int hash_func_pointer(const void *key)
 {
    char **cast = (char **)key;
    long tmp = (long)*cast;
    tmp = tmp >> 7;
 /*    printf("====> %p -> %lx -> %x\n", cast, tmp, (int)tmp); */
-   return (int)tmp;
+   return (unsigned int)tmp;
 }
 
-int hash_func_string(const void *key)
+unsigned int hash_func_string(const void *key)
 {
-   int hash = 0;
+   unsigned int hash = 0;
    const char *c = key;
 
    if(c != NULL) {
@@ -645,7 +645,7 @@ int hash_func_string(const void *key)
    }
 
    return hash;
-}   
+}
 
 /****** uti/htable/-Compare-Functions() ***************************************
 *  NAME

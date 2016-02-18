@@ -47,7 +47,7 @@ typedef void (*sge_htable_for_each_proc)(
     htable, const void*, const void**
 );
 
-htable sge_htable_create(int size, const void *(*dup_func)(const void *), int (*hash_func)(const void *), int (*compare_func)(const void *, const void *));
+htable sge_htable_create(int size, const void *(*dup_func)(const void *),unsigned int (*hash_func)(const void *), int (*compare_func)(const void *, const void *));
 void sge_htable_destroy(htable ht);
 void sge_htable_store(htable ht, const void* key, const void* data);
 int sge_htable_lookup(htable ht, const void* key, const void** data);
@@ -63,11 +63,11 @@ const void *dup_func_long(const void *key) __attribute__ ((malloc));
 const void *dup_func_pointer(const void *key) __attribute__ ((malloc));
 
 /* fixme:  candidates for inline?  */
-int hash_func_u_long32(const void *key) __attribute__ ((__pure__));
-int hash_func_u_long64(const void *key) __attribute__ ((__pure__));
-int hash_func_string(const void *key) __attribute__ ((__pure__));
-int hash_func_long(const void *key) __attribute__ ((__pure__));
-int hash_func_pointer(const void *key) __attribute__ ((__pure__));
+unsigned int hash_func_u_long32(const void *key) __attribute__ ((__pure__));
+unsigned int hash_func_u_long64(const void *key) __attribute__ ((__pure__));
+unsigned int hash_func_string(const void *key) __attribute__ ((__pure__));
+unsigned int hash_func_long(const void *key) __attribute__ ((__pure__));
+unsigned int hash_func_pointer(const void *key) __attribute__ ((__pure__));
 
 /* fixme:  candidates for inline?  */
 int hash_compare_u_long32(const void *a, const void *b) __attribute__ ((__pure__));
