@@ -786,7 +786,10 @@ job will be put in this directory under the default file name.
 If the pathname contains certain pseudo environment variables,
 their value will be expanded at runtime of the job and will be used
 to constitute the standard error stream path name. The following
-pseudo environment variables are supported currently:
+pseudo environment variables are supported currently; note the lack of
+an
+.B xxQS_NAMExx_
+prefix in this context:
 .sp 1
 .nf
 .ta \w'$JOB_NAME   'u
@@ -896,7 +899,7 @@ An alternate means to assign a hold is provided by the
 .M qhold 1
 facility.
 .sp 1
-If the job is a array job (see the \fB\-t\fP option below), all tasks
+If the job is an array job (see the \fB\-t\fP option below), all tasks
 specified via \fB\-t\fP are affected by the \fB\-h\fP operation
 simultaneously.
 .sp 1
@@ -1819,7 +1822,7 @@ See the corresponding manual pages for further detail.
 .sp 1
 Array jobs are commonly used to execute the same type of operation on
 varying input data sets correlated with the task index number. The number
-of tasks in a array job is unlimited.
+of tasks in an array job is unlimited.
 .sp 1
 STDOUT and STDERR of array job tasks will be written into different files
 with the default location
@@ -1830,7 +1833,7 @@ with the default location
 .sp 1
 In order to change this default, the \fB\-e\fP and \fB\-o\fP options (see
 above) can be used together with the pseudo environment variables $HOME,
-$USER, $JOB_ID, $JOB_NAME, $HOSTNAME, and $xxQS_NAME_Sxx_TASK_ID.
+$USER, $JOB_ID, $JOB_NAME, $HOSTNAME, and $TASK_ID.
 .sp 1
 Note, that you can use the output redirection to divert the output of all
 tasks into the same file, but the result of this is undefined.
