@@ -2287,6 +2287,11 @@ The time zone variable imported from
 if set.
 .IP "\fBUSER\fP" 1.5i
 The user's login name from the passwd database.
+.IP \fBxxQS_NAME_Sxx_JOB_TASK_ID\fP 1.5i
+A combination of JOB_ID and xxQS_NAME_Sxx_TASK_ID as the expansion of
+"$JOB_ID.$xxQS_NAME_Sxx_TASK_ID" for array jobs, or "$JOB_ID.0" for
+non-array jobs.  This is useful with other software that only reads a
+single variable, e.g. Lustre jobstats.
 .PP
 An additional variable,
 .BR xxQS_NAME_Sxx_JOBEXIT_STAT ,
