@@ -180,7 +180,7 @@ Linux)
    i*86)
       lxmachine=x86
       ;;
-   alpha | sparc | parisc | ia64 | ppc | ppc64 | ppc64el | mips64 | s390 | s390x)
+   alpha | sparc | parisc | ia64 | ppc | ppc64 | ppc64le | mips64 | s390 | s390x)
       lxmachine=$osmachine
       ;;
    aarch64)
@@ -212,7 +212,7 @@ Linux)
    powerpc64)
       lxmachine=ppc64
       ;;
-   powerpc64le | powerpc64el | ppc64le)
+   powerpc64le | powerpc64el)
       lxmachine=ppc64el
       ;;
    *)
