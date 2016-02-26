@@ -768,6 +768,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       /* JG: TODO (ENV): shouldn't we better use SGE_JATASK_ID and have an additional SGE_PETASK_ID? */
       if (job_is_array(jep)) {
          u_long32 start, end, step;
+         stringT job_task;
 
          job_get_submit_task_ids(jep, &start, &end, &step);
 
@@ -775,13 +776,18 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
          var_list_set_sge_u32(&environmentList, VAR_PREFIX "TASK_FIRST", start);
          var_list_set_sge_u32(&environmentList, VAR_PREFIX "TASK_LAST", end);
          var_list_set_sge_u32(&environmentList, VAR_PREFIX "TASK_STEPSIZE", step);
+         snprintf(job_task, sizeof job_task, "%d.%d", job_id, ja_task_id);
+         var_list_set_string(&environmentList, VAR_PREFIX "JOB_TASK_ID", job_task);
       } else {
          const char *udef = "undefined";
+         stringT job_task;
 
          var_list_set_string(&environmentList, VAR_PREFIX "TASK_ID", udef);
          var_list_set_string(&environmentList, VAR_PREFIX "TASK_FIRST", udef);
          var_list_set_string(&environmentList, VAR_PREFIX "TASK_LAST", udef);
          var_list_set_string(&environmentList, VAR_PREFIX "TASK_STEPSIZE", udef);
+         snprintf(job_task, sizeof job_task, "%d.%d", job_id, ja_task_id);
+         var_list_set_string(&environmentList, VAR_PREFIX "JOB_TASK_ID", 0);
       }
 
       var_list_set_string(&environmentList, "ENVIRONMENT", "BATCH");
