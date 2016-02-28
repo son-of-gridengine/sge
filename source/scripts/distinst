@@ -1567,7 +1567,7 @@ for i in $ARCH; do
       fi
 
       if [ $instjobs = true ]; then
-         UTILPREFIX="examples/jobsbin"   
+         UTILPREFIX="utilbin"   
          echo "Installing job binaries"
          echo "-----------------------"
          for prog in $JOBBINARIES; do
