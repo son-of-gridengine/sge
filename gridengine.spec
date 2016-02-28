@@ -19,7 +19,11 @@
 # * Build GSS modules?
 
 # Use "rpmbuild --without java" to omit all Java bits
+%ifarch ppc64
+%bcond_with java
+%else
 %bcond_without java
+%endif
 
 # Use "rpmbuild --with hadoop" to build Hadoop support (the herd library)
 # against Cloudera RPMs.
@@ -85,31 +89,27 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %global hwlocpkg libhwloc
 %global xmupkg xorg-x11-libXmu
 %global with_jemalloc %nil
+%global with_munge %nil
 %else
 %global sslpkg openssl
 %global hwlocpkg hwloc
 %global xmupkg libXmu
 %global with_jemalloc -with-jemalloc
-BuildRequires: jemalloc-devel
+%global with_munge -with-munge
+BuildRequires: jemalloc-devel munge-devel
 %endif
 
 BuildRequires: /bin/csh, %{sslpkg}-devel, ncurses-devel, pam-devel
 BuildRequires: net-tools, %xmupkg-devel, %hwlocpkg-devel >= 1.1
-BuildRequires: munge-devel
-# The relevant package might be db4-devel or libdb-devel, so simplify
-# by requiring the header.  "zypper install /usr/include/db.h" doesn't work
-# on SuSE, so you have to install the packages explicitly.
+# The relevant package might be db4-devel, libdb-devel, or
+# libdb-4_8-devel etc., so simplify by requiring the header.  "zypper
+# install /usr/include/db.h" doesn't work on SuSE, so you have to
+# install the packages explicitly.
 BuildRequires: /usr/include/db.h
 # This could be in lesstif-devel, motif-devel, or openmotif-devel
 BuildRequires: /usr/include/Xm/Xm.h
 %if %{with java}
-%if 0%{?el6}
-# Something has changed in el6 so that javacc fails with java-devel 1.6.0
-BuildRequires: java7-devel
-%else
-BuildRequires: java-devel
-%endif
-BuildRequires: javacc, ant-junit
+BuildRequires: java-devel >= 1.6.0, javacc, ant-junit
 %if ! 0%{?fedora} && 0%{?rhel} < 7
 BuildRequires: ant-nodeps
 %endif
@@ -296,7 +296,7 @@ JAVA_BUILD_OPTIONS="-no-herd"
 %endif
 sh scripts/bootstrap.sh $JAVA_BUILD_OPTIONS
 # -no-remote because we have ssh and PAM instead
-./aimk -pam %with_jemalloc -no-remote -with-munge $parallel_flags $JAVA_BUILD_OPTIONS
+./aimk -pam %with_jemalloc -no-remote %with_munge $parallel_flags $JAVA_BUILD_OPTIONS
 ./aimk -man $JAVA_BUILD_OPTIONS
 %if %{with java}
 # "-no-gui-inst -no-herd -javadoc" still produces all the javadocs
@@ -398,8 +398,8 @@ fi
 %config(noreplace) %{sge_home}/util/sgeCA/*cnf
 %config(noreplace) %{sge_home}/util/install_modules/inst_template.conf
 %{sge_home}/utilbin
-%attr(4755,root,root) %{sge_home}/utilbin/*/testsuidroot
 %if 0
+%attr(4755,root,root) %{sge_home}/utilbin/*/testsuidroot
 %attr(4755,root,root) %{sge_home}/utilbin/*/authuser
 # Avoid this for safety, assuming no MS Windows hosts
 %attr(4755,root,root) %{sge_home}/utilbin/*/sgepasswd
@@ -458,6 +458,10 @@ fi
 
 
 %changelog
+* Sun Feb 28 2016 Dave Love <d.love@liverpool.ac.uk> 8.1.9
+- Fix OpenSuSE build
+- Don't install testsuidroot suid
+
 * Tue Nov 24 2015 Dave Love <d.love@liverpool.ac.uk> 8.1.9
 - Bump java version required on el6
 - MUNGE support
