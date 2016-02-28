@@ -2,7 +2,8 @@ Apart from the employees of Genias, Gridware, Sun, and Univa, the following
 community members are known to have contributed to the distribution in
 some way.  Thanks to them all, and please report any omissions.
 Thanks also to the authors of the "3rd party" code and external
-libraries used, particularly hwloc <http://www.open-mpi.org/projects/hwloc/>.
+libraries used, particularly hwloc <http://www.open-mpi.org/projects/hwloc/>
+and MUNGE <https://code.google.com/p/munge/>.
 See the doc/LICENCES directory for information on the "3rd party" code
 and the revision control logs for details of individual contributions,
 including the ones not mentioned in NEWS.
@@ -23,6 +24,7 @@ including the ones not mentioned in NEWS.
   Jon Stahl
   Kevin Buckley
   Kevin Squire
+  Marco Schmidt
   Mark Dixon
   Mark Hymers (and probably reporters of bugs against the Debian version)
   Mark Olesen
@@ -38,12 +40,14 @@ including the ones not mentioned in NEWS.
   Richard Maes
   Rising Sun Pictures
   Ron Chen
+  Sean Dilda
   Shannon V. Davidson
   Stephen Dennis
   Thimo Neubauer
   Thomas Mainka
   Tommy Karlsson
   Uriel Carrasquilla
+  William Hay
 
 The following are only identified by email address or sunsource id.
 Corrections welcome.
@@ -59,5 +63,6 @@ Corrections welcome.
   skeno@foi.se
   tholzer@wetafx.co.nz
 
-Notable bug reports from:  Adam DeConinck, Jesse Becker, William Hay
-(and thanks to other bug-reporters)
+Thanks to everyone who has reported bugs and made suggestions or asked
+questions that prompted changes.  See the issue tracker, mail list,
+and thanks in checkin log messages.
