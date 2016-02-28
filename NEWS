@@ -13,6 +13,68 @@ changes due to Univa/Sun are tagged as "[U]", or "[(U)]" if partially
 due to them or appearing first in this version.
 
 
+Version 8.1.9
+-------------
+
+* Security
+  * Drop setgid privileges correctly (CERT POS36-C); daemons now run
+    with (only) admin user's groups, not root's
+
+* Building
+
+  * MUNGE authentication can be built in (aimk -munge)
+  * Use a minimal autoconf framework
+  * Fix building on recent Darwin and Cygwin [#1516, #1536, #1557]
+  * Drop support for Darwin < 10 and Darwin/PPC
+  * Cope with GNU/Linux ppc64le as well as ppc64el
+  * Fix rpm packaging of spool objects [#1519]
+  * Actually install "work" in utilbin (c.f. 8.1.8)
+  * Rpm spec fixes for Fedora 23, ppc64, and OpenSuSE
+  * Fix build when bool is defined in headers
+
+* Bug fixes
+
+  * Man fixes
+  * Message fixes [#1538, #1539]
+  * Fix RPM packaging of spool files [#1519]
+  * Don't set port and cluster in check_sge.py, and accept memory in T
+  * Fix pam_sge-qrsh-setup for recent PAM
+  * Do a full, not a partial match on GECOS data when selecting certificate
+    in sge_ca [#1517]
+  * Fix checking of admin host in qconf [#1547]
+  * Report the actual exit status of master task in tightly integrated
+    parallel jobs
+  * Fix share tree accounting with array jobs [#435]
+  * Fix doubled multipliers of units in qacct memory reports
+  * Improve job scheduling within a sharetree node [#1550]
+  * Flush spool at qmaster exit [#1551]
+  * Sort jobs and advance reservations when reading from spool [#1552, #1553]
+  * Fix detection of old v. new type of cpuset [#1523]
+  * Fix treatment of some invalid entries in variable lists or the
+    environment on job submission
+
+* Enhancements
+
+  * MUNGE authentication (as above)
+  * qconf -clearusage can act on a specific user
+  * Allow generating load sensor data just before sending them
+  * Add sge_ca "-revoke <cert>" option
+  * Allow running DRMAA jobs as arbitrary user [#492].  (Partially
+    done in v 8.1.0, but not mentioned; now works with CSP.)
+  * Report SSL error numbers in hex [#1539]
+  * Use PVM_VMID environment variable [#44]
+  * rc templates support a "status" argument (for HA usage)
+
+* Potentially incompatible changes
+
+  * Print error messages to stderr and don't print on success with -terse
+    to be consistent with submit(1) saying that error messages go to
+    stderr and to make -terse more useful in cases like
+      cat test.o$(qsub -sync y -terse -cwd -N test ...)
+  * sge_ca -renew and friends no longer revoke old certificates
+  * The qconf -sep and -cb options have been removed finally
+  * A POSIX 2001-compatible library is required
+
 Version 8.1.8
 -------------
 
