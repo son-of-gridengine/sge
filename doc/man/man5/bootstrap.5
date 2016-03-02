@@ -145,7 +145,7 @@ initialize the spooling framework, e.g. to open database files.
 .PP
 The spooling parameters value for spooling method \fIberkeleydb\fP is
 .br
-  [\fIrpc_server\fP\fB:\fP]\fIdatabase directory\fP[\fB;\fP<options>]
+  [\fIrpc_server\fP\fB:\fP]\fIdatabase directory\fP[\fB;\fP\fIoptions\fP]
 .br
 e.g. "/opt/sge/default/spool/qmaster/spooldb" for spooling to a local
 filesystem, or "myhost:sge" for spooling over a Berkeley DB RPC server.
@@ -168,8 +168,8 @@ etc., must not be used while qmaster is running with berkeleydb
 spooling.
 .PP
 For spooling method \fIclassic\fP the spooling parameters take the form
-<common_dir>;<qmaster spool dir>, e.g.
-/sge/default/common;/sge/default/spool/qmaster
+\fIcommon_dir\fP\fB;\fP\fIqmaster spool dir\fP, e.g.
+/sge/default/common;/sge/default/spool/qmaster.
 .\"
 .\"
 .SS "\fBbinary_path\fP"
@@ -216,7 +216,7 @@ cluster is using, as a comma-separated list.
 Possible security mode settings are "none", "afs", "dce", "kerberos",
 "csp", "munge" (no additional security, AFS, DCE/GSSAPI, Kerberos/GSSAPI,
 X.509 certificate-based security, and
-.URL http://munge.googlecode.com/ "MUNGE authentication" ).
+.URL http://dun.github.io/munge/ "MUNGE authentication" ).
 Their availability depends on how xxQS_NAMExx was built/installed.
 .PP
 The "dce" and "kerberos" methods
