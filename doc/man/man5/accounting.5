@@ -157,7 +157,7 @@ The parallel environment which was selected for the job.
 .SS "\fB35. slots\fP"
 The number of slots which were dispatched to the job by the scheduler.
 .SS "\fB36. task_number\fP"
-Array job task index number.
+Array job task index number, or 0 for non-array jobs.
 .SS "\fB37. cpu\fP"
 The CPU time usage in seconds.  The value may be affected by the
 ACCT_RESERVED_USAGE execd parameter (see
@@ -175,7 +175,7 @@ available, otherwise 0).  On Linux, this is summed over calls to
 and
 .MO pwrite 2 ;
 thus it includes i/o via cache, and may not reflect data actually
-written to filing system.
+written to file system.  Your mileage may vary similarly on other systems.
 .SS "\fB40. category\fP"
 A string specifying the job category.
 This contains a space-separated pseudo options list for the job, with
