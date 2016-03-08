@@ -60,7 +60,12 @@
 # This script requires the script $SGE_ROOT/util/arch
 # Customization can be placed in /etc/default/sgeexecd or
 # /etc/sysconfig/sgeexecd (according to OS conventions), which is sourced
-# after other setup.
+# after other setup.  In them you could set:
+#  EXECD_SPOOL_DIR: Should be set to the spool directory if not the
+#    default ($SGE_ROOT/$SGE_CELL/spool), and if this isn't an admin host
+#  SGE_EXECD_PIDFILE: Where execd writes its pid (default
+#    $EXECD_SPOOL_DIR/execd.pid)
+#  export SGE_ENABLE_COREDUMP=1: to enable core dumps if ulimit allows them
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
@@ -271,10 +276,15 @@ GetPathToUtilbin()
 # get the execution daemon spooling dir from configuration
 GetExecdSpoolDir()
 {
-   EXECD_SPOOL_DIR=`$bin_dir/qconf -sconf $UQHOST 2>/dev/null |
-      grep execd_spool_dir | awk '{ print $2 }'`
-   if [ "$EXECD_SPOOL_DIR" = "" ]; then
-      EXECD_SPOOL_DIR=`$bin_dir/qconf -sconf | grep execd_spool_dir | awk '{ print $2 }'`
+   # Could be set in default/sysconfig
+   if [ -z "EXECD_SPOOL_DIR" ]; then
+      EXECD_SPOOL_DIR=`$bin_dir/qconf -sconf $UQHOST 2>/dev/null |
+        awk '/execd_spool_dir/ { print $2 }'`
+      [ -z "$EXECD_SPOOL_DIR" ] &&
+         EXECD_SPOOL_DIR=`$bin_dir/qconf -sconf 2>/dev/null |
+           awk '/execd_spool_dir/ { print $2 }'`
+      [ -z "$EXECD_SPOOL_DIR" -a -d "$SGE_ROOT/$SGE_CELL/spool" ] &&
+         EXECD_SPOOL_DIR="$SGE_ROOT/$SGE_CELL/spool"
    fi
    echo "$EXECD_SPOOL_DIR"
 }
@@ -371,7 +381,11 @@ if [ $stop = true -o $softstop = true ]; then
       #Otherwise we use normal shutdown
       if [ "$usingSMF" != true ]; then
          # Send SIGTERM to execd
-         Shutdown sge_execd $execd_run_dir/execd.pid
+         if [ -n "$SGE_EXECD_PIDFILE" ]; then
+            Shutdown sge_execd "$SGE_EXECD_PIDFILE"
+         else
+            Shutdown sge_execd $execd_run_dir/execd.pid
+         fi
          ret=$?
          if [ -f /var/lock/subsys/sgeexecd ]; then
              uid=`$utilbin_dir/uidgid -uid` 
