@@ -302,16 +302,19 @@ static int handle_io_file(const char* file, const char* owner, bool rw) {
    /* reset egid and euid to the stored values */
    if (sge_seteuid(old_euid) != 0) {
       shepherd_trace("Cannot reset euid %s due to %s", owner, strerror(errno));
-      SGE_CLOSE(fd);
+      CLOSE(fd);
       return -1;
    }
    if (sge_setegid(old_egid) != 0) {
       shepherd_trace("Cannot reset egid %s due to %s", owner, strerror(errno));
-      SGE_CLOSE(fd);
+      CLOSE(fd);
       return -1;
    }
 
    return fd;
+ CLOSE_ERROR:
+   shepherd_trace("handle_io_file: close error: %s", strerror(errno));
+   return -1;
 }
 
 static int wait_until_parent_has_registered_to_server(int fd_pipe_to_child[])
@@ -324,9 +327,10 @@ static int wait_until_parent_has_registered_to_server(int fd_pipe_to_child[])
    /* TODO: Why do we ingore SIGWINCH here? Why do we ignore only SIGWINCH here?*/
    sigignore(SIGWINCH);
 
+   errno = 0;
    /* close parents end of our copy of the pipe */
    shepherd_trace("child: closing parents end of the pipe");
-   close(fd_pipe_to_child[1]);
+   CLOSE(fd_pipe_to_child[1]);
    fd_pipe_to_child[1] = -1;
 
    /* wait until parent has registered at the server */
@@ -349,6 +353,9 @@ static int wait_until_parent_has_registered_to_server(int fd_pipe_to_child[])
       }
    }
    return ret;
+ CLOSE_ERROR:
+   shepherd_trace("child: closing pipe failed: %s", strerror(errno));
+   return -1;
 }
 
 static int map_signal(int sig) 
@@ -765,7 +772,11 @@ int main(int argc, char **argv)
           char name[128];
           if (!sge_uid2user(geteuid(), name, sizeof(name), MAX_NIS_RETRIES)) {
              sge_set_admin_username(name, NULL, 0);
-             sge_switch2admin_user();
+             errno = 0;
+             if (sge_switch2admin_user()) {
+                shepherd_error(1, "can't switch to admin user: %s",
+                               strerror(errno));
+             }
           }
       }
       if (ret == 1) {
@@ -1048,9 +1059,13 @@ int main(int argc, char **argv)
 
    if (coshepherd_pid > 0) {
       shepherd_trace("sending SIGTERM to sge_coshepherd");
-      sge_switch2start_user();
+      errno = 0;
+      if (sge_switch2start_user())
+         shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
       kill(coshepherd_pid, SIGTERM);
-      sge_switch2admin_user();
+      errno = 0;
+      if (sge_switch2admin_user())
+         shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
    }
 
    if (!SGE_STAT("exit_status", &buf) && buf.st_size) {
@@ -1327,10 +1342,11 @@ static int start_child(const char *childname, /* prolog, job, epilog */
       ijs_fds.pipe_to_child = fd_pipe_to_child[1];  /* write end of pipe */
 
       /* close the not used ends of the pipes */
-      close(fd_pipe_in[0]);       fd_pipe_in[0] = -1;
-      close(fd_pipe_out[1]);      fd_pipe_out[1] = -1;
-      close(fd_pipe_err[1]);      fd_pipe_err[1] = -1;
-      close(fd_pipe_to_child[0]); fd_pipe_to_child[0] = -1;
+      shepherd_trace("closing: %d %d %d %d", fd_pipe_in[0], fd_pipe_out[1], fd_pipe_err[1], fd_pipe_to_child[0]);
+      CLOSE(fd_pipe_in[0]);       fd_pipe_in[0] = -1;
+      CLOSE(fd_pipe_out[1]);      fd_pipe_out[1] = -1;
+      CLOSE(fd_pipe_err[1]);      fd_pipe_err[1] = -1;
+      CLOSE(fd_pipe_to_child[0]); fd_pipe_to_child[0] = -1;
 
       /* wait blocking until the child process has ended */
       status = wait_my_builtin_ijs_child(pid, childname, timeout,
@@ -1452,10 +1468,13 @@ static int start_child(const char *childname, /* prolog, job, epilog */
             int qrsh_exit_code = -1;
             int success = 1; 
 
-            sge_switch2start_user();
+            errno = 0;
+            if (sge_switch2start_user())
+               shepherd_error(0, MSG_SWITCH_USER_S, strerror(errno));
             success = get_exit_code_of_qrsh_starter(&qrsh_exit_code);
             delete_qrsh_pid_file();
-            sge_switch2admin_user();
+            if (sge_switch2admin_user())
+               shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
 
             if (success != 0) {
                /* This case should never happen */
@@ -1520,6 +1539,9 @@ static int start_child(const char *childname, /* prolog, job, epilog */
 
    /* All done. Leave the rest to the execd */
    return exit_status;
+ CLOSE_ERROR:
+   shepherd_trace("start_child: close error: %s", strerror(errno));
+   return -1;
 }
 
 /****** shepherd/get_remote_host_and_port_from_config() ************************
@@ -1671,9 +1693,13 @@ dstring       *err_msg       /* OUT: error message - if any */
    }
 
    /*shepherd_signal_job(-pid, SIGKILL);*/
-   sge_switch2start_user();
+   errno = 0;
+   if (sge_switch2start_user())
+      shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
    kill(-pid, SIGKILL);
-   sge_switch2admin_user();
+   errno = 0;
+   if (sge_switch2admin_user())
+      shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
 
    p_ckpt_info->interval = 0;
 
@@ -2309,15 +2335,23 @@ static void handle_signals_and_methods(
                } else if (p_ckpt_info->type & CKPT_TRANS) {
                   shepherd_trace("send checkpointing signal to transparent "
                                  "checkpointing job");
-                  sge_switch2start_user();
+                  errno = 0;
+                  if (sge_switch2start_user())
+                     shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
                   kill(-pid, ckpt_signal);
-                  sge_switch2admin_user();
+                  errno = 0;
+                  if (sge_switch2admin_user())
+                     shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
                } else if (p_ckpt_info->type & CKPT_USER) {
                   shepherd_trace("send checkpointing signal to userdefined "
                                  "checkpointing job");
-                  sge_switch2start_user();
+                  errno = 0;
+                  if (sge_switch2start_user())
+                     shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
                   kill(-pid, ckpt_signal);
-                  sge_switch2admin_user();
+                  errno = 0;
+                  if (sge_switch2admin_user())
+                     shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
                }
             } 
             forward_signal_to_job(pid, timeout, postponed_signal,
@@ -2774,17 +2808,20 @@ int fd_std_err             /* fd of stderr. -1 if not set */
 #endif
 
    if (fdout != -1) {
-      SGE_CLOSE(fdout);
+      CLOSE(fdout);
    }
    if (fderr != -1) {
-      SGE_CLOSE(fderr);
+      CLOSE(fderr);
    }
    if (fdin != -1) {
-      SGE_CLOSE(fdin);
+      CLOSE(fdin);
    }
 
    sge_free(&pty_fds);
    return job_status;
+ CLOSE_ERROR:
+   shepherd_trace("wait_my_child: close error: %s", strerror(errno));
+   return -1;
 }
 
 /*-------------------------------------------------------------------------
@@ -3071,14 +3108,18 @@ shepherd_signal_job(pid_t pid, int sig) {
 
             pid_file_name = get_conf_val("qrsh_pid_file");
 
-            sge_switch2start_user();
+            errno = 0;
+            if (sge_switch2start_user())
+               shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
 
             if (shepherd_read_qrsh_file(pid_file_name, &qrsh_pid)) {
                is_qrsh = true;
                pid = -qrsh_pid;
                shepherd_trace("found pid of qrsh client command: "pid_t_fmt, pid);
             }
-            sge_switch2admin_user();
+            errno = 0;
+            if (sge_switch2admin_user())
+               shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
          }
       }
 
@@ -3091,9 +3132,13 @@ shepherd_signal_job(pid_t pid, int sig) {
       */
       if ((first_kill == 1) || (sge_get_gmt() - first_kill_ts > 10) || (sig != SIGKILL)) {
         shepherd_trace("now sending signal %s to pid "pid_t_fmt, sge_sys_sig2str(sig), pid);
-        sge_switch2start_user();
+        errno = 0;
+        if (sge_switch2start_user())
+           shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
         kill(pid, sig);
-        sge_switch2admin_user();
+        errno = 0;
+        if (sge_switch2admin_user())
+           shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
 
 #if defined(SOLARIS) || defined(LINUX) || defined(ALPHA) || defined(IRIX) || defined(FREEBSD) || defined(DARWIN)
         if (first_kill == 0 || sig != SIGKILL || is_qrsh == false) {
@@ -3110,9 +3155,13 @@ shepherd_signal_job(pid_t pid, int sig) {
                 }
 
                 shepherd_trace("pdc_kill_addgrpid: %d %d", (int) add_grp_id , sig);
-                sge_switch2start_user();
+                errno = 0;
+                if (sge_switch2start_user())
+                   shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
                 pdc_kill_addgrpid(add_grp_id, sig, shepherd_trace);
-                sge_switch2admin_user();
+                errno = 0;
+                if (sge_switch2admin_user())
+                   shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
             }
 #      endif
 #   elif defined(IRIX)

@@ -50,6 +50,7 @@
 #include "sge_uidgid.h"
 #include "sge_os.h"
 #include "sgeobj/sge_conf.h"
+#include "msg_common.h"
 
 #define RLIMIT_STRUCT_TAG rlimit
 #define RLIMIT_INFINITY RLIM_INFINITY
@@ -266,9 +267,12 @@ void setrlimits(int trace_rlimit) {
 
    priority = atoi(get_conf_val("priority"));
    /* had problems doing this with admin user priviledges under HPUX */
-   sge_switch2start_user(); 
+   errno = 0;
+   if (sge_switch2start_user())
+      shepherd_error(0, MSG_FILE_CHDIR_SS, strerror(errno));
    SETPRIORITY(priority);
-   sge_switch2admin_user();  
+   if (sge_switch2admin_user())
+      shepherd_error(0, MSG_FILE_CHDIR_SS, strerror(errno));
 
    /* how many slots do we have at this host */
    if (!(s=search_nonone_conf_val("host_slots")) || !(host_slots=atoi(s)))

@@ -184,7 +184,7 @@ int write_to_qrsh(const char *data)
    */
    if (hp == (struct hostent *) 0) {
       shepherd_trace("%s: unknown host", host);
-      close(sock);
+      CLOSE(sock);
       return 4;
    }
 
@@ -193,7 +193,7 @@ int write_to_qrsh(const char *data)
  
    if (connect(sock, (struct sockaddr *) &server, sizeof server) == -1) {
       shepherd_trace("error connecting stream socket: %s", strerror(errno));
-      close(sock);
+      CLOSE(sock);
       return 5;
    }
 
@@ -201,13 +201,16 @@ int write_to_qrsh(const char *data)
    datalen = strlen(data) + 1;
    if (write(sock, data, datalen) != datalen) {
      shepherd_trace("error writing data to qrsh_control_port");
-     close(sock);
+     CLOSE(sock);
      return 6;
    }
 
    /* close connection */
-   close(sock);
+   CLOSE(sock);
    return 0;
+ CLOSE_ERROR:
+   shepherd_error(1, MSG_FILE_NOCLOSE_SS, "<socket in write_to_qrsh>",
+                  strerror(errno));
 }
 
 /****** shepherd/qrsh/write_exit_code_to_qrsh() *******************************
@@ -482,7 +485,7 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    if (ret != 0) {
       shepherd_trace("cannot bind socket: %s", strerror(errno));
       shutdown(sockfd, 2);
-      close(sockfd);
+      CLOSE(sockfd);
       return 6;
    }
 
@@ -491,7 +494,7 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    if (getsockname(sockfd,(struct sockaddr *) &serv_addr, &length) == -1) {
       shepherd_trace("getting socket name failed: %s", strerror(errno));
       shutdown(sockfd, 2);
-      close(sockfd);
+      CLOSE(sockfd);
       return 7;
    }
    
@@ -499,7 +502,7 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    if (listen(sockfd, 1) != 0) {
       shepherd_trace("listen failed: %s", strerror(errno));
       shutdown(sockfd, 2);
-      close(sockfd);
+      CLOSE(sockfd);
       return 8;
    }
 
@@ -515,7 +518,7 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    if (sge_root == NULL || arch == NULL) {
       shepherd_trace("reading environment SGE_ROOT and ARC failed");
       shutdown(sockfd, 2);
-      close(sockfd);
+      CLOSE(sockfd);
       return 9;
    }
   
@@ -525,7 +528,7 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    if (write_to_qrsh(buffer) != 0) {
       shepherd_trace("communication with qrsh failed");
       shutdown(sockfd, 2);
-      close(sockfd);
+      CLOSE(sockfd);
       return 10;
    }
    
@@ -539,7 +542,7 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    if (select(sockfd+1, &fds, NULL, NULL, &timeout) < 1) {
       shepherd_trace("nobody connected to the socket");
       shutdown(sockfd, 2);
-      close(sockfd);
+      CLOSE(sockfd);
       return 11;
    }
 
@@ -548,7 +551,7 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    if (newsfd == -1) {
       shepherd_trace("error when accepting socket conection");
       shutdown(sockfd, 2);
-      close(sockfd);
+      CLOSE(sockfd);
       return 12;
    }
    shepherd_trace("accepted connection on fd %d", newsfd);
@@ -557,7 +560,7 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
     * free this resource.
     */
    shutdown(sockfd, 2);
-   close(sockfd);
+   CLOSE(sockfd);
 
    /* don't close on exec */
    fcntl( newsfd, F_SETFD, 0 );
@@ -580,7 +583,7 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    
    /* we do not use any FD_SET call it is ok to use _SC_OPEN_MAX */
    for (fd=3; fd<maxfd; fd++) {
-      close(fd);
+      CLOSE(fd);
    }
 
    shepherd_trace("daemon to start: |%s|", daemon);
@@ -609,6 +612,10 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    /* no way to tell anyone, becuase all FDs are closed */
    /* last chance -> tell parent process */
    shutdown(newsfd, 2);
-   close(newsfd);
+   CLOSE(newsfd);
    return 13;
+ CLOSE_ERROR:
+   shepherd_error(1, MSG_FILE_NOCLOSE_SS, "<socket in qlogin_starter>",
+                  strerror(errno));
+   exit(1);                     /* avoid warning */
 }

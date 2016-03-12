@@ -443,9 +443,10 @@ lList *sge_build_load_report(const char* qualified_hostname, const char* binary_
    */
 
    /* build up internal report list */
-   sge_switch2start_user();
-   sge_get_loadavg(qualified_hostname, &lp);
-   sge_switch2admin_user(); 
+   if (sge_switch2start_user() == 0) {
+      sge_get_loadavg(qualified_hostname, &lp);
+      sge_switch2admin_user();   /* fixme: act on return value */
+   }   /* fixme: do something with error */
 
    /* report topology reporting */
    sge_get_topology(qualified_hostname, &lp);

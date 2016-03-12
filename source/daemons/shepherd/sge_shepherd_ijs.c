@@ -69,6 +69,7 @@
 #include "uti/sge_uidgid.h"
 #include "uti/sge_unistd.h"
 #include "uti/sge_signal.h"
+#include "uti/sge_stdio.h"
 
 #include "sge_ijs_comm.h"
 #include "sge_ijs_threads.h"
@@ -956,11 +957,14 @@ parent_loop(int job_pid, const char *childname, int timeout, ckpt_info_t *p_ckpt
    cl_thread_trigger_thread_condition(g_comm_handle->app_condition, 1);
 
 
-   close(g_p_ijs_fds->pty_master);
+   shepherd_trace("closing: %d %d %d %d", g_p_ijs_fds->pty_master,
+                  g_p_ijs_fds->pipe_in, g_p_ijs_fds->pipe_out,
+                  g_p_ijs_fds->pipe_err);
+   CLOSE(g_p_ijs_fds->pty_master);
 
-   close(g_p_ijs_fds->pipe_in);
-   close(g_p_ijs_fds->pipe_out);
-   close(g_p_ijs_fds->pipe_err);
+   CLOSE(g_p_ijs_fds->pipe_in);
+   CLOSE(g_p_ijs_fds->pipe_out);
+   CLOSE(g_p_ijs_fds->pipe_err);
 
    /*
     * Wait until threads have shut down and call cleanup functions
@@ -987,6 +991,9 @@ parent_loop(int job_pid, const char *childname, int timeout, ckpt_info_t *p_ckpt
    sge_dstring_free(err_msg);
    shepherd_trace("parent: leaving main loop. From here on, only the main thread is running.");
    return 0;
+ CLOSE_ERROR:
+   shepherd_trace("error closing fd in parent_loop: %s", strerror(errno));
+   return -1;
 }
 
 int close_parent_loop(int exit_status)

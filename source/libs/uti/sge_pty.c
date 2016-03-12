@@ -60,6 +60,8 @@
 #include "uti/sge_rmon.h"
 #include "uti/sge_unistd.h"
 #include "uti/sge_uidgid.h"
+#include "uti/sge_stdio.h"
+#include "msg_common.h"
 
 extern char *ptsname(int); /* prototype not in any system header */
 
@@ -141,20 +143,22 @@ int ptym_open(char *pts_name)
    }
 
    if (grantpt(fdm) < 0) {    /* grant access to slave */
-      close(fdm);
+      CLOSE(fdm);
       return -2;
    }
    if (unlockpt(fdm) < 0) {   /* clear slave's lock flag */
-      close(fdm);
+      CLOSE(fdm);
       return -3;
    }
    if ((ptr = ptsname(fdm)) == NULL) {   /* get slave's name */
-      close(fdm);
+      CLOSE(fdm);
       return -4;
    }
 
    strcpy(pts_name, ptr);  /* return name of slave */
    return fdm;             /* return fd of master */
+ CLOSE_ERROR:
+   return -5;
 }
 #endif
 
@@ -203,12 +207,14 @@ int ptys_open(int fdm, char *pts_name)
    sge_free(&gr_buffer);
 
    /* following two functions don't work unless we're root */
-   chown(pts_name, getuid(), gid);
-   chmod(pts_name, S_IRUSR | S_IWUSR | S_IWGRP);
+   if (chown(pts_name, getuid(), gid))
+      return -2;
+   if (chmod(pts_name, S_IRUSR | S_IWUSR | S_IWGRP))
+      return -3;
 
    if ((fds = open(pts_name, O_RDWR)) < 0) {
       close(fdm);
-      return -1;
+      return -5;
    }
    return fds;
 }
@@ -294,7 +300,10 @@ pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg, uid_t uid)
     */
    old_euid = geteuid();
    if (getuid() == SGE_SUPERUSER_UID) {
-      sge_seteuid(SGE_SUPERUSER_UID);
+      if (sge_seteuid(SGE_SUPERUSER_UID)) {
+         sge_dstring_sprintf(err_msg, "can't set effective id");
+         return -1;
+      }
    }
    if ((fdm = ptym_open(pts_name)) < 0) {
       sge_dstring_sprintf(err_msg, "can't open master pty \"%s\": %d, %s",
@@ -327,11 +336,16 @@ pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg, uid_t uid)
 
       /* Open pty slave */
       if ((fds = ptys_open(fdm, pts_name)) < 0) {
+         /* probably no point in checking return value */
          sge_seteuid(old_euid);
          sge_dstring_sprintf(err_msg, "can't open slave pty: %d", fds);
          return -1;
       }
-      sge_seteuid(old_euid);
+      errno = 0;
+      if (sge_seteuid(old_euid)) {
+         sge_dstring_sprintf(err_msg, MSG_SWITCH_USER_S, strerror(errno));
+         return -1;
+      }
       close(fdm);  fdm = -1;   /* all done with master in child */
 
       /*
@@ -387,7 +401,11 @@ pid_t fork_pty(int *ptrfdm, int *fd_pipe_err, dstring *err_msg, uid_t uid)
    } else {          /* parent */
       *ptrfdm = fdm; /* return fd of master */
       close(fd_pipe_err[1]); fd_pipe_err[1] = -1;
-      sge_seteuid(old_euid);
+      errno = 0;
+      if (sge_seteuid(old_euid)) {
+         sge_dstring_sprintf(err_msg, MSG_SWITCH_USER_S, strerror(errno));
+         return -1;
+      }
       return pid;    /* parent returns pid of child */
    }
 }

@@ -486,7 +486,10 @@ static JNIEnv* create_vm(const char *libjvm_path, int argc, char** argv)
       /*
       ** need to switch to start user for HP
       */
-      sge_switch2start_user();
+      if (sge_switch2start_user()) {
+         pthread_mutex_unlock(&libjvm_mutex);
+         DRETURN(NULL);
+      }
 #endif   
 
       /* open the shared lib */
