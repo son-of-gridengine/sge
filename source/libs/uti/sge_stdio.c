@@ -387,7 +387,9 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
          }
          ERROR((SGE_EVENT, MSG_SYSTEM_FAILOPENPIPES_SS, command, strerror(errno)));
          if (sge_has_admin_user()) {
-            sge_switch2admin_user();
+            errno = 0;
+            if (sge_switch2admin_user())
+               CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
          }
          DRETURN(-1);
       }
@@ -429,7 +431,9 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
             ERROR((SGE_EVENT, MSG_SYSTEM_NOUSERFOUND_SS, user, strerror(errno)));
             sge_free(&buffer);
             if (sge_has_admin_user()) {
-               sge_switch2admin_user();
+               errno = 0;
+               if (sge_switch2admin_user())
+                  CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
             }
             DRETURN(-1);
          }
@@ -437,7 +441,9 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
          ERROR((SGE_EVENT, SFNMAX, MSG_UTI_MEMPWNAM));
          sge_free(&buffer);
          if (sge_has_admin_user()) {
-            sge_switch2admin_user();
+            errno = 0;
+            if (sge_switch2admin_user())
+               CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
          }
          DRETURN(-1);
       }
@@ -576,7 +582,9 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
       }
 #endif
       if (sge_has_admin_user()) {
-         sge_switch2admin_user();
+         errno = 0;
+         if (sge_switch2admin_user())
+            CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
       }
       DRETURN(-1);
    }
@@ -601,7 +609,9 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
    }
 
    if (sge_has_admin_user()) {
-      sge_switch2admin_user();
+      errno = 0;
+      if (sge_switch2admin_user())
+        CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
    }
    DRETURN(pid);
 }

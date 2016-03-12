@@ -555,7 +555,9 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    } else { /* the job itself */
       if (!is_rsh && g_new_interactive_job_support == true) {
          shell_path = strdup(pw->pw_shell);
-         sge_chdir(pw->pw_dir);
+         errno = 0;
+         if (sge_chdir(pw->pw_dir))
+            shepherd_error(1, MSG_FILE_CHDIR_SS, strerror(errno));
       } else {
          shell_path = get_conf_val("shell_path");
       }

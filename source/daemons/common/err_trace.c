@@ -66,6 +66,7 @@
 #include "basis_types.h"
 #include "err_trace.h"
 #include "qlogin_starter.h"
+#include "msg_common.h"
 
 #if defined(INTERIX)
 #  include "wingrid.h"
@@ -152,7 +153,9 @@ void shepherd_trace_exit(void)
     */
     if (getuid() == SGE_SUPERUSER_UID) {
         old_euid = geteuid();
-        sge_seteuid(SGE_SUPERUSER_UID);
+        errno = 0;
+        if (sge_seteuid(SGE_SUPERUSER_UID))
+           shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
      }
 
     if (shepherd_trace_fp) {
@@ -165,7 +168,9 @@ FCLOSE_ERROR:
     * Switch back to admin user?
     */
     if (old_euid != SGE_SUPERUSER_UID) {
-       sge_seteuid(old_euid);
+       errno = 0;
+       if (sge_seteuid(old_euid))
+          shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
     }
 
     shepherd_error_exit();
@@ -229,7 +234,9 @@ void shepherd_error_exit()
     */
    if (getuid() == SGE_SUPERUSER_UID) {
       old_euid = geteuid();
-      sge_seteuid(SGE_SUPERUSER_UID);
+      errno = 0;
+      if (sge_seteuid(SGE_SUPERUSER_UID))
+         shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
    }
 
    /*
@@ -248,7 +255,9 @@ void shepherd_error_exit()
     * Switch back to admin user?
     */
    if (old_euid != SGE_SUPERUSER_UID) {
-      sge_seteuid(old_euid);
+      errno = 0;
+      if (sge_seteuid(old_euid))
+         shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
    }
 }
 
@@ -426,9 +435,12 @@ void shepherd_error(int do_exit, const char *format, ...)
    }
 
    if (coshepherd_pid > 0) {
-      sge_switch2start_user();
+      errno = 0;
+      if (sge_switch2start_user())
+         shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
       kill(coshepherd_pid, SIGTERM);
-      sge_switch2admin_user();
+      if (sge_switch2admin_user())
+        shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
    }
 
    if (g_new_interactive_job_support == false &&
@@ -488,7 +500,9 @@ void shepherd_write_exit_status(const char *exit_status)
        */
       if (getuid() == SGE_SUPERUSER_UID) {
          old_euid = geteuid();
-         sge_seteuid(SGE_SUPERUSER_UID);
+         errno = 0;
+         if (sge_seteuid(SGE_SUPERUSER_UID))
+            shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
       }
 #endif
       /* File was closed (e.g. by an exec()) but fp was not set to NULL */
@@ -507,7 +521,9 @@ void shepherd_write_exit_status(const char *exit_status)
       }
 #if 1
       if (old_euid != SGE_SUPERUSER_UID) {
-         sge_seteuid(old_euid);
+         errno = 0;
+         if (sge_seteuid(old_euid))
+            shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
       }
 #endif
       /* There are cases where we have to open and close the files
@@ -605,11 +621,14 @@ static void dup_fd(int *src_fd)
    dup_fd[1] = dup(*src_fd);
    dup_fd[2] = dup(*src_fd);
 
-   close(*src_fd);
-   close(dup_fd[0]);
-   close(dup_fd[1]);
+   errno = 0;
+   CLOSE(*src_fd);
+   CLOSE(dup_fd[0]);
+   CLOSE(dup_fd[1]);
 
    *src_fd = dup_fd[2];
+ CLOSE_ERROR:
+   shepherd_error(1, "Error closing socket in dup_fd: %s", strerror(errno));
 }
 
 static int set_cloexec(int fd)
@@ -644,7 +663,9 @@ static int sh_str2file(const char *header_str, const char *str, FILE* fp)
        */
       if (getuid() == SGE_SUPERUSER_UID) {
          old_euid = geteuid();
-         sge_seteuid(SGE_SUPERUSER_UID);
+         errno = 0;
+         if (sge_seteuid(SGE_SUPERUSER_UID))
+            shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
       }
 
       if (!str && !header_str) {
@@ -668,7 +689,9 @@ static int sh_str2file(const char *header_str, const char *str, FILE* fp)
        * Switch back to admin user?
        */
       if (old_euid != SGE_SUPERUSER_UID) {
-         sge_seteuid(old_euid);
+         errno = 0;
+         if (sge_seteuid(old_euid))
+            shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
          old_euid = SGE_SUPERUSER_UID;
       }
 
@@ -790,7 +813,9 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
        */
       if (getuid() == SGE_SUPERUSER_UID) {
          old_euid = geteuid();
-         sge_seteuid(SGE_SUPERUSER_UID);
+         errno = 0;
+         if (sge_seteuid(SGE_SUPERUSER_UID))
+            shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
       }
 
       fd = SGE_OPEN2(tmppath, O_RDWR | O_APPEND);
@@ -806,7 +831,9 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
        * Switch back to admin user?
        */
       if (old_euid != SGE_SUPERUSER_UID) {
-         sge_seteuid(old_euid);
+         errno = 0;
+         if (sge_seteuid(old_euid))
+            shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
       }
    }
 
@@ -883,7 +910,9 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
              * to change the ownership of a file.
              */
             old_euid = geteuid();
-            sge_seteuid(SGE_SUPERUSER_UID);
+            errno = 0;
+            if (sge_seteuid(SGE_SUPERUSER_UID))
+              shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
 
             /* Have to use chown() here, because fchown() has some bugs
              * on True64 and Irix.
@@ -895,7 +924,9 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
                 * other chance than open the file for writing for everyone.
                 * We must do this as file owner = admin user.
                 */
-               sge_seteuid(old_euid);
+               errno = 0;
+               if (sge_seteuid(old_euid))
+                  shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
                if (fchmod(fd, 0666) == -1) {
                   snprintf(buffer, sizeof(buffer),
                           "can't fchmod(fd, 0666): %s\n", strerror(errno));
@@ -916,7 +947,9 @@ static void shepherd_trace_chown_intern(const char* job_owner, FILE* fp,
                   g_keep_files_open = false;
                }
             }
-            sge_seteuid(old_euid);
+            errno = 0;
+            if (sge_seteuid(old_euid))
+               shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
          } else {
             /* Can't get jobuser_id -> grant access for everyone */
             if (fchmod(fd, 0666)==-1) {

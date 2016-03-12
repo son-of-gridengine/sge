@@ -417,7 +417,8 @@ int do_ck_to_do(sge_gdi_ctx_class_t *ctx, bool is_qmaster_down) {
          CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
       } else {
          ptf_update_job_usage();
-         sge_switch2admin_user();
+         if (sge_switch2admin_user())
+            CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
       }
 
       /* check for job limits */

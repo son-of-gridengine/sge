@@ -130,7 +130,10 @@ int do_get_new_conf(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg)
             }
          }
       }
-      sge_switch2admin_user();
+      if (sge_switch2admin_user() != 0) {
+         CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
+         ret = 1;
+      }
    }
 #endif
 

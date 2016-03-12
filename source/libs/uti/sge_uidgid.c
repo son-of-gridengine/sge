@@ -1014,10 +1014,8 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
    struct passwd *pw;
    struct passwd pw_struct;
    gid_t old_grp_id;
- 
-   sge_switch2start_user();
- 
-   if (!sge_is_start_user_superuser()) {
+
+   if (sge_switch2start_user() != 0 || !sge_is_start_user_superuser()) {
       snprintf(err_str, lstr, SFNMAX, MSG_SYSTEM_CHANGEUIDORGIDFAILED);
       return -1;
    }

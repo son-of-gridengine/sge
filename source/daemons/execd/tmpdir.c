@@ -66,8 +66,10 @@ char *sge_make_tmpdir(lListElem *qep, u_long32 jobid, u_long32 jataskid, uid_t u
 
    DPRINTF(("making TMPDIR=%s\n", tmpdir));
 
-   sge_switch2start_user();
-   sge_mkdir(tmpdir, 0755, false, false);
+   if (sge_switch2start_user()
+       || sge_mkdir(tmpdir, 0755, false, false)) {
+      DRETURN(NULL);
+   }
 
    /*
     * chown is considered to be a security flaw, as an attacker might move the 
@@ -84,7 +86,11 @@ char *sge_make_tmpdir(lListElem *qep, u_long32 jobid, u_long32 jataskid, uid_t u
       DRETURN(NULL);
    }
 
-   sge_switch2admin_user();
+   errno = 0;
+   if (sge_switch2admin_user()) {
+      ERROR((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
+      DRETURN(NULL);
+   }
 
    DRETURN(tmpdir);
 }
@@ -106,14 +112,22 @@ int sge_remove_tmpdir(const char *dir, const char *job_owner, u_long32 jobid, u_
 
    PR_DIRNAME(tmpstr, sizeof(tmpstr), dir, jobid, jataskid, cell);
    DPRINTF(("recursively unlinking \"%s\"\n", tmpstr));
-   sge_switch2start_user();
-   if (sge_rmdir(tmpstr, &err_str)) {
-      ERROR((SGE_EVENT, MSG_FILE_RECURSIVERMDIR_SS, 
-             tmpstr, err_str_buffer));
-      sge_switch2admin_user();
+   errno = 0;
+   if (sge_switch2start_user()) {
+      ERROR((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
       DRETURN(-1);
    }
-   sge_switch2admin_user();
+   if (sge_rmdir(tmpstr, &err_str)) {
+      ERROR((SGE_EVENT, MSG_FILE_RECURSIVERMDIR_SS, tmpstr, err_str_buffer));
+      errno = 0;
+      if (sge_switch2admin_user())
+         ERROR((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
+      DRETURN(-1);
+   }
+   if (sge_switch2admin_user() != 0) {
+      CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
+      DRETURN(-1);
+   }
 
    DRETURN(0);
 }

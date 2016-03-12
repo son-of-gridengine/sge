@@ -64,7 +64,10 @@ static void pr(ip, file, base)
 		strcpy(buf+1, ip->i_file);
 		current_len += len;
 	}
-	fwrite(buf, len, 1, stdout);
+	if (fwrite(buf, 1, len, stdout) != len) {
+           fprintf(stderr, "Write failed\n");
+           abort();
+        }
 
 	/*
 	 * If verbose is set, then print out what this file includes.

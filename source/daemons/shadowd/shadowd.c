@@ -373,11 +373,12 @@ char shadow_err_file[SGE_PATH_MAX];
                         DPRINTF(("qmaster_name: "SFN"\n", qmaster_name)); 
 
                         if (sge_switch2start_user()) {
-                           ERROR((SGE_EVENT, SFNMAX, MSG_SHADOWD_CANTSWITCH_USER));
+                           CRITICAL((SGE_EVENT, SFNMAX, MSG_SHADOWD_CANTSWITCH_USER));
                            SGE_EXIT((void**)&ctx, 1);
                         }
                         ret = startprog(NULL, binpath, qmaster_name, NULL);
-                        sge_switch2admin_user();
+                        if (sge_switch2admin_user() != 0)
+                           ERROR((SGE_EVENT, SFNMAX, MSG_SHADOWD_CANTSWITCH_USER));
                         if (ret) {
                            ERROR((SGE_EVENT, SFNMAX, MSG_SHADOWD_CANTSTARTQMASTER));
                         }

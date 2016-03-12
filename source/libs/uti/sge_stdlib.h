@@ -45,10 +45,17 @@ void sge_free(void *cp);
 int sge_putenv(const char *var);
 int sge_setenv(const char *name, const char *value);
 
+#if WARN_UNUSED_RESULT
+int sge_setuid(uid_t) __attribute__ ((__warn_unused_result__));
+int sge_seteuid(uid_t) __attribute__ ((__warn_unused_result__));
+int sge_setgid(gid_t) __attribute__ ((__warn_unused_result__));
+int sge_setegid(gid_t) __attribute__ ((__warn_unused_result__));
+#else
 int sge_setuid(uid_t);
 int sge_seteuid(uid_t);
 int sge_setgid(gid_t);
 int sge_setegid(gid_t);
+#endif
 void sge_maybe_set_dumpable(void);
 
 #endif /* __SGE_STDLIB_H */

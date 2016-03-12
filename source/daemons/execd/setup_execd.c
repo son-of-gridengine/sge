@@ -128,9 +128,12 @@ void sge_setup_sge_execd(sge_gdi_ctx_class_t *ctx)
    sge_mkdir(unqualified_hostname, 0755, true, false);
    DPRINTF(("chdir(\"%s\",me.unqualified_hostname)--------------------------\n",
             unqualified_hostname));
-   sge_chdir_exit(unqualified_hostname, 1); 
-   sge_switch2start_user();
-   sge_switch2admin_user();
+   sge_chdir_exit(unqualified_hostname, 1);
+   errno = 0;
+   if (sge_switch2start_user() || sge_switch2admin_user()) {
+      CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
+      SGE_EXIT((void **)&ctx, 1);
+   }
    log_state_set_log_as_admin_user(1);
    snprintf(execd_messages_file, sizeof(execd_messages_file), "%s/%s/%s",
             spool_dir, unqualified_hostname, ERR_FILE);

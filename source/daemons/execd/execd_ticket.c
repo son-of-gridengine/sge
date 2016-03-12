@@ -99,7 +99,8 @@ int do_ticket(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg)
       if (sge_switch2start_user() == 0) {
          DPRINTF(("ADJUST PRIORITIES\n"));
          ptf_adjust_job_priorities();
-         sge_switch2admin_user();
+         if (sge_switch2admin_user() != 0)
+            CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
       } else {
          CRITICAL((SGE_EVENT, MSG_SWITCH_USER_S, strerror(errno)));
       }

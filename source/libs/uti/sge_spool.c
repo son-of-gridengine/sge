@@ -430,7 +430,9 @@ void sge_write_pid(const char *pid_log_file)
     * Interix has a bug if the file is created on a NFS mapped drive.
     */ 
    /* Flawfinder: ignore */   
-   chown(pid_log_file, geteuid(), -1);
+   if (chown(pid_log_file, geteuid(), -1) != 0) {
+      goto FPRINTF_ERROR;
+   }
 #endif
    if ((fp = fopen(pid_log_file, "w")) == NULL) {
       /* fixme: stop afterwards? */
