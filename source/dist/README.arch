@@ -44,7 +44,6 @@ Content
    darwin-x64	DARWIN_X64      Mac OS X, 64bit (Snow Leopard and newer)
    hp11		HP11		HP HP-UX 11 32bit
    hp11-64	HP1164	        HP HP-UX 11.00 64bit
-   irix65	IRIX65		SGI Irix 6.5,
    lx-amd64     LINUXAMD64_26   GNU/Linux AMD64, Linux 2.6
    lx-x86	LINUX86_26	GNU/Linux x86, Linux 2.6
    sol-sparc	SOLARIS		Sun, Sparc Solaris 7, 8, 9 32bit

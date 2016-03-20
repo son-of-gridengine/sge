@@ -411,55 +411,6 @@ int sge_loadmem(sge_mem_info_t *mem_info)
 
 
 /*--------------------------------------------------------------------------*/
-#if defined(IRIX)
-#include <stdio.h>
-#include <sys/sysinfo.h>
-#include <sys/sysmp.h>
-#include <errno.h>
-#include <sys/swap.h>
-#include <sys/types.h>
-#include <sys/time.h>
-
-#define pagetom(size) ((size)*(((float)pagesize)/1024))
-
-
-int sge_loadmem(sge_mem_info_t *mem_info) 
-{
-   struct rminfo rmi;
-   struct minfo mi;
-   off_t swaptot, swapfree, swaprsrv;
-   static int pagesize = 0;
-
-   if (!pagesize)
-      pagesize = getpagesize()/1024;
-
-   if (swapctl(SC_GETSWAPTOT, &swaptot)<0) 
-      return -1;
-
-   if (swapctl(SC_GETFREESWAP, &swapfree)<0)
-      return -1;
-
-   if (sysmp(MP_SAGET, MPSA_RMINFO, &rmi, sizeof(rmi))<0) 
-      return -1;
-
-   if (sysmp(MP_SAGET, MPSA_MINFO, &mi, sizeof(mi))<0)
-      return -1;
-
-   if (swapctl(SC_GETRESVSWAP, &swaprsrv) < 0)
-      return -1;
-      
-/*    mem_info->mem_total = pagetom(rmi.availrmem); */
-   mem_info->mem_total = pagetom(rmi.physmem);
-   mem_info->mem_free = pagetom(rmi.freemem + rmi.chunkpages);
-   mem_info->swap_total = ((double)swaptot * 512)/(1024.0*1024.0); 
-   mem_info->swap_free = ((double)swapfree * 512)/(1024.0*1024.0);
-   mem_info->swap_rsvd = ((double)swaprsrv * 512)/(1024.0*1024.0);
-   return 0;
-}
-#endif /* IRIX */
-
-
-/*--------------------------------------------------------------------------*/
 #if __linux__ || __CYGWIN__
 #include <stdio.h>
 #include <string.h>

@@ -40,10 +40,6 @@
 #include <signal.h>
 #include <unistd.h>
 
-#ifdef __sgi
-#   include <sys/schedctl.h>
-#endif
-
 #include "uti/sge_rmon.h"
 #include "uti/sge_bootstrap.h"
 #include "uti/sge_log.h"
@@ -1864,13 +1860,6 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       keep_open[2] = 2;
       sge_close_all_fds(keep_open, 3);
    }
-   
-#ifdef __sgi
-
-   /* turn off non-degrading priority */
-   schedctl(NDPRI, 0, 0);
-
-#endif
 
    /*
     * set KRB5CCNAME so shepherd assumes user's identify for

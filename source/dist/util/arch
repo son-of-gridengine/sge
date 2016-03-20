@@ -141,16 +141,6 @@ OpenBSD)
     osprocessor="`$UNAME -p`"
     ARCH=obsd-$osprocessor
     ;;
-IRIX*)
-   case $osrelease in
-   6.5)
-      ARCH=irix65
-      ;;
-   6.*)
-      ARCH=UNSUPPORTED-irix-$osrelease
-      ;;
-   esac
-   ;;
 HP-UX)
    case $osmachine in
    ia64)
@@ -327,10 +317,6 @@ if [ "$1" = "-m" -o "$1" = "-mt" -o "$1" = "-lib" ]; then
    hp*)
       DEFAULTMANPATH=/usr/man:/usr/contrib/man:/usr/local/man
       SHARED_LIBRARY_PATH="SHLIB_PATH"
-      ;;
-   irix65)
-      DEFAULTMANPATH=/usr/share/catman:/usr/share/man:/usr/catman:/usr/man
-      MANTYPE=catman
       ;;
    lx*)
       if [ "`which manpath 2>/dev/null`" != "" ]; then

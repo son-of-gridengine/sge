@@ -40,11 +40,6 @@
 #   include <mach/machine.h>
 #endif
 
-#if defined(__sgi)
-#   include <sys/types.h>
-#   include <sys/sysmp.h>
-#endif
-
 #if defined(ALPHA)
 #   include <sys/sysinfo.h>
 #   include <machine/hal_sysinfo.h>
@@ -109,10 +104,6 @@ int sge_nprocs()
 
 #endif
 
-
-#ifdef __sgi
-   nprocs = sysmp(MP_NPROCS);
-#endif
 
 #if defined(ALPHA)
    int start=0;

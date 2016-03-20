@@ -1084,7 +1084,6 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
       AIX     1            1
       ULTRIX  1            1
       OSF/1   1            1
-      IRIX   -1            1   (returns #groups if successful)
       SUNOS  -1            1
       SOLARIS-1
       UGH!!!

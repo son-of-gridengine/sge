@@ -46,9 +46,6 @@
 *        double mem_free;  
 *        double swap_total; 
 *        double swap_free;   
-*     #ifdef IRIX
-*        double swap_rsvd;   
-*     #endif
 *     } sge_mem_info_t;
 *
 *  FUNCTION
@@ -66,9 +63,6 @@ typedef struct {
    double mem_free;    
    double swap_total;  
    double swap_free; 
-#ifdef IRIX
-   double swap_rsvd;  
-#endif
 } sge_mem_info_t;
 
 int sge_loadmem(sge_mem_info_t *mem_info);
