@@ -51,15 +51,8 @@
 #include "sge_os.h"
 #include "sgeobj/sge_conf.h"
 
-#if defined(IRIX)
-#   define RLIMIT_STRUCT_TAG rlimit64
-#   define RLIMIT_INFINITY RLIM64_INFINITY
-#   define setrlimit(a, b) setrlimit64(a, b)
-#   define setrlimit(a, b) setrlimit64(a, b)
-#else
-#   define RLIMIT_STRUCT_TAG rlimit
-#   define RLIMIT_INFINITY RLIM_INFINITY
-#endif
+#define RLIMIT_STRUCT_TAG rlimit
+#define RLIMIT_INFINITY RLIM_INFINITY
 
 static void pushlimit(int, struct RLIMIT_STRUCT_TAG *, int trace_rlimit);
 
@@ -495,20 +488,6 @@ strip_bs (char *str) {
   return;
 }
 
-/* The following is due to problems with parallel jobs on 5.x IRIXes (and
- * possibly above): On such  systems  the  upper  bounds  for  resource
- * limits are set by the kernel. If  limits  are  set  above  the  kernel
- * boundaries (e.g. unlimited) multiprocessing applications may be aborted
- * ("memory too low to grow stack" was one of the messages we saw).
- *
- * For such systems pushlimit doesn't set limits above the hard limit
- * boundaries retrieved by a preceeding getrlimit call. Note that, as a
- * consequence, the limits must be set appropriately at the start of the
- * daemons calling mkprivileged.
- *
- * For other systems pushlimit just calls setrlimit.
- */
-
 static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp, 
                       int trace_rlimit) 
 {
@@ -525,13 +504,6 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
 
    /* Process limit */
    if ((resource_type & RES_PROC)) {
-#if defined(IRIX6)
-      getrlimit64(resource,&dlp);
-      if (rlp->rlim_cur>dlp.rlim_max)
-         rlp->rlim_cur=dlp.rlim_max;
-      if (rlp->rlim_max>dlp.rlim_max)
-         rlp->rlim_max=dlp.rlim_max;
-#endif
 
       /* hard limit must be greater or equal to soft limit */
       if (rlp->rlim_max < rlp->rlim_cur)

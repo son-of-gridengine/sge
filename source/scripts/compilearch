@@ -144,10 +144,6 @@ case $buildarch in
       BUILDARCH=HP1164
       TARGET_BITS=TARGET_64BIT
       ;;
-   irix65)
-      BUILDARCH=IRIX65
-      TARGET_BITS=TARGET_64BIT
-      ;;
    lx-alpha)
       BUILDARCH=LINUX
       COMPILE_ARCH=LINUX

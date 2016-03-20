@@ -51,14 +51,6 @@
 #ifdef SOLARIS
 #include <link.h>
 #endif /* SOLARIS */
-/*
- * Disable the warning "The variable ... is set but never used."
- * We set a lot of function pointers we don't use currently, but we want
- * to have them ready when we need them.
- */
-#if defined (IRIX65)
-#pragma set woff 1552 
-#endif
 
 #include <openssl/err.h> 
 #include <openssl/bio.h>
@@ -701,13 +693,6 @@ static void cl_com_ssl_locking_callback(int mode, int type, const char *file, in
       }
    } else {
       CL_LOG(CL_LOG_ERROR,"global ssl config object not initalized");
-
-      /* this two debug messages are only used to prevent compiler 
-         warnings on IRIX65 compiler (when -Werror is set) 
-         (unused symbols line and tmp_filename) when the if-endif parts
-         above are disabled */
-      CL_LOG_INT(CL_LOG_DEBUG,"dummy debug:", line);
-      CL_LOG_STR(CL_LOG_DEBUG,"dummy debug:", tmp_filename);
    }
 }
 

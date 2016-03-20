@@ -56,9 +56,6 @@
 #elif defined(ALPHA4) || defined(ALPHA5)
 #  include <nlist.h>
 #  include <sys/table.h>
-#elif defined(IRIX)
-#  include <sys/sysmp.h> 
-#  include <sys/sysinfo.h> 
 #elif defined(HP11) || defined(HP1164)
 #  include <sys/param.h>
 #  include <sys/pstat.h>
@@ -115,11 +112,6 @@
 #  define SGE_FSCALE 1000.0
 #  define KERNEL_AVG_TYPE long
 #  define CPUSTATES 4
-#elif defined(IRIX)
-#  define SGE_FSCALE 1024.0
-#  define KERNEL_AVG_TYPE long
-#  define KERNEL_AVG_NAME "avenrun"
-#  define CPUSTATES 6
 #elif defined(AIX51)
 #  define KERNEL_NAME_FILE "/unix"
 #  define KERNEL_AVG_NAME "avenrun"
@@ -175,15 +167,6 @@ long *address
 
    DENTER(TOP_LAYER, "sge_get_kernel_address");
 
-#if defined(IRIX)
-   if (!strcmp(KERNEL_AVG_NAME, name)) {
-      *address = sysmp(MP_KERNADDR, MPKA_AVENRUN); 
-      ret = 1;
-   } else {
-      *address = 0;
-      ret = 0; 
-   }
-#else
    {
 #  if defined(AIX51)
       struct nlist64 kernel_nlist[2];
@@ -209,7 +192,6 @@ long *address
          ret = 0;
       }
    }
-#endif
    DEXIT;
    return ret;
 }    
@@ -566,36 +548,6 @@ double get_cpu_load() {
       }
    }
    cpu_load += cpu_states[0] + cpu_states[1] + cpu_states[2];
-   if (cpu_load < 0.0) {
-      cpu_load = -1.0;
-   }
-   return cpu_load;
-}
-
-#elif defined(IRIX)
-
-double get_cpu_load() 
-{
-   static long cpu_new[CPUSTATES];
-   static long cpu_old[CPUSTATES];
-   static long cpu_diff[CPUSTATES]; 
-   double cpu_states[CPUSTATES];
-   double cpu_load;
-   struct sysinfo sys_info;
-   int i;
-
-   if (sysmp(MP_SAGET, MPSA_SINFO, &sys_info, sizeof(struct sysinfo)) == -1) {
-      return -1.0;
-   }
-
-   for (i = 0; i < CPUSTATES; i++) {
-      cpu_new[i] = sys_info.cpu[i];
-   }
-
-   percentages(CPUSTATES, cpu_states, cpu_new, cpu_old, cpu_diff);
-
-   cpu_load = cpu_states[1] + cpu_states[2] + cpu_states[3] 
-      + cpu_states[4] + cpu_states[5];
    if (cpu_load < 0.0) {
       cpu_load = -1.0;
    }

@@ -148,15 +148,6 @@ case aix51:
    set LIBS = "$LIBS"
    breaksw
 
-case irix65:
-   set CFLAGS = "-DIRIX6 $DEBUG_FLAG $CFLAGS"
-   set LFLAGS = "$DEBUG_FLAG $LFLAGS"
-   set LIBS = "$LIBS"
-   set DTOR = "/usr/lib/crt1.o"
-   set DTOR = "/usr/lib/crtn.o"
-	set STATIC   = "-nostartfiles"
-   breaksw
-
 case hp11:
    if ( $CC == gcc ) then
       set CFLAGS = "-Wall -Wstrict-prototypes -DHPUX $DEBUG_FLAG $CFLAGS"
