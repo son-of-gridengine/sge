@@ -67,20 +67,6 @@ Sun Microsystems booth at the SC2000 trade show.  There are also javadoc
 comments in the code, along with a Makefile target to generate the javadoc
 documentation.
 <h2>
-<a NAME="jqmon"></a>jqmon</h2>
-Jqmon is a very early prototype of a Java graphical user interface to Grid
-Engine (back then Codine/GRD). It doesn't implement nearly as much functionality
-as the Motif GUI qmon and it is really outdated now. However it uses the
-Java Native Interface, JNI, to communicate with sge_qmaster. We felt it
-might be useful to provide an example of how this can be done in case someone
-would want to try to integrate Grid Engine into an existing Java application.
-We have to stress though that the JNI is quite cumbersome to use for such
-a purpose and we cannot really recommend it.
-<p>The only documentation which exists for it is a diploma thesis describing
-jqmon together with <a href="#qmon_nt">qmon_nt</a> (see below). The diploma
-thesis is in German language and is not completely up-to-date with the
-code. Please let us know whether it makes sense to provide it here.
-<h2>
 <a NAME="jqmon_corba"></a>jqmon_corba</h2>
 Jqmon_corba originally was derived from <a href="#jqmon">jqmon</a> but
 was changed substantially. Most notably, jqmon_corba uses CORBA to communicate
