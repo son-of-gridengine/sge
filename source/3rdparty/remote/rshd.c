@@ -94,10 +94,6 @@
 #define _PATH_NOLOGIN "/etc/nologin"
 #endif
 
-#if defined ALPHA4 || HP10 || IRIX || (SOLARIS && !HAS_SOCKLEN_T) || NECSX5 || CRAY || DARWIN6
-typedef int socklen_t;
-#endif
-
 #if defined HP10 || HP1164 || LINUX || NECSX5 || CRAY 
 #ifndef HAS_IN_PORT_T
 typedef unsigned short in_port_t;
@@ -141,11 +137,7 @@ main(argc, argv)
 {
 	struct linger linger;
 	int ch, on = 1;
-#if defined(ALPHA5) || defined(INTERIX) || defined(HP1164)
-   int fromlen;
-#else   
-   socklen_t fromlen;
-#endif   
+        socklen_t fromlen;
 	struct sockaddr_in from;
 
 	openlog("rshd", LOG_PID | LOG_ODELAY, LOG_DAEMON);
@@ -251,11 +243,7 @@ doit(fromp)
       {
 	u_char optbuf[BUFSIZ/3], *cp;
 	char lbuf[BUFSIZ], *lp;
-#if defined(ALPHA5) || defined(INTERIX) || defined(HP1164)
-	int optsize = sizeof(optbuf); 
-#else   
 	socklen_t optsize = sizeof(optbuf); 
-#endif   
    int ipproto;
 	struct protoent *ip;
 

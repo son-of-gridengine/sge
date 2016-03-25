@@ -445,14 +445,9 @@ int qlogin_starter(const char *cwd, char *daemon, char** env)
    int argc = 0;
    const char *sge_root = NULL;
    const char *arch = NULL;
-   
-#if defined(IRIX65) || defined(INTERIX) || defined(DARWIN6) || defined(ALPHA5) || defined(HP1164)
-   int length;
-   int len;
-#else
+
    socklen_t length;
    socklen_t len;
-#endif
 
    len = sizeof(serv_addr);
    errno = 0;
