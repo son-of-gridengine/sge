@@ -45,11 +45,6 @@
 #define _XOPEN_SOURCE_EXTENDED
 #endif
 
-/*#if defined ALPHA5
-#define _POSIX_PII_SOCKET
-#endif
-*/
-
 #include <sys/param.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>

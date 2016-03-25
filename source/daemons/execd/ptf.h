@@ -65,10 +65,6 @@
    typedef ash_t osjobid_t;
    typedef unsigned long long u_osjobid_t;
 #  define OSJOBID_FMT "%lld"
-/*#elif defined(ALPHA5)
-   typedef unsigned long osjobid_t;
-   typedef unsigned long u_osjobid_t;
-#  define OSJOBID_FMT "%ld"       */
 #else
    typedef pid_t osjobid_t;
    typedef unsigned int u_osjobid_t;

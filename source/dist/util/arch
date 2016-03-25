@@ -212,19 +212,6 @@ Linux)
 
    ARCH=${unsupported}lx-${lxmachine}
    ;;
-OSF1)
-   case $osrelease in
-   V4*)
-      ARCH=osf4
-      ;;
-    V5*|T5*)
-       ARCH=tru64
-       ;;
-    *)
-       ARCH=UNSUPPORTED-osf1-$osrelease
-       ;;
-    esac
-    ;;
 SunOS)
    case $osmachine in
    sun4)

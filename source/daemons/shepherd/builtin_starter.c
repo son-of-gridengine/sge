@@ -334,22 +334,6 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
 #endif
    }
 
-#if defined(ALPHA)
-   /* setlogin() stuff */
-   errno = 0;
-   if (sge_switch2start_user()) {
-      shepherd_error(1, "switch2start_user failed: %s", strerror(errno));
-   }
-   if (!geteuid()) {
-      if (setlogin(target_user)) {
-         sge_switch2admin_user();
-         shepherd_error(1, "setlogin(%s) failed: %s", target_user, strerror(errno));
-      }
-      if (sge_switch2admin_user())
-         shepherd_error(1, "switch2admin_user failed: %s", strerror(errno));
-   }
-#endif
-
    shepherd_trace("pid="pid_t_fmt" pgrp="pid_t_fmt" sid="pid_t_fmt" old pgrp="
                   pid_t_fmt" getlogin()=%s", pid, newpgrp, newpgrp, pgrp, 
                   (cp = getlogin()) ? cp : "<no login set>");

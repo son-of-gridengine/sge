@@ -2095,10 +2095,7 @@ bool sge_daemonize_prepare(sge_gdi_ctx_class_t *ctx) {
    int fd;
 #endif
 
-#if defined(__sgi) || defined(ALPHA) || defined(HP1164)
-#  if defined(ALPHA)
-   extern int getdomainname(char *, int);
-#  endif
+#if __hpux
    char domname[256];
 #endif
 
@@ -2230,7 +2227,7 @@ bool sge_daemonize_prepare(sge_gdi_ctx_class_t *ctx) {
    /* close read pipe */
    close(fd_pipe[0]);
 
-#if defined(__sgi) || defined(ALPHA) || defined(HP1164)
+#if __hpux
    /* The yp library may have open sockets
       when closing all fds also the socket fd of the yp library gets closed
       when called again yp library functions are confused since they
@@ -2352,11 +2349,8 @@ int sge_daemonize(int *keep_open, unsigned long nr_of_fds, sge_gdi_ctx_class_t *
 #if !(defined(__hpux) || defined(WIN32) || defined(INTERIX) || defined(__CYGWIN__))
    int fd;
 #endif
- 
-#if defined(__sgi) || defined(ALPHA) || defined(HP1164)
-#  if defined(ALPHA)
-   extern int getdomainname(char *, int);
-#  endif
+
+#if __hpux
    char domname[256];
 #endif
    pid_t pid;
@@ -2397,8 +2391,8 @@ int sge_daemonize(int *keep_open, unsigned long nr_of_fds, sge_gdi_ctx_class_t *
       }
       exit(0);
    }
- 
-#if defined(__sgi) || defined(ALPHA) || defined(HP1164)
+
+#if __hpux
    /* The yp library may have open sockets
       when closing all fds also the socket fd of the yp library gets closed
       when called again yp library functions are confused since they

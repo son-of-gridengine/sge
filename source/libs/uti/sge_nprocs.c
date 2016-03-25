@@ -40,11 +40,6 @@
 #   include <mach/machine.h>
 #endif
 
-#if defined(ALPHA)
-#   include <sys/sysinfo.h>
-#   include <machine/hal_sysinfo.h>
-#endif
-
 #if defined(__hpux)
     /* needs to be copiled with std C compiler ==> no -Aa switch no gcc */
 #   include <stdlib.h>
@@ -83,6 +78,7 @@ int sge_nprocs (void);
 *  NOTES
 *     MT-NOTE: sge_nprocs() is MT safe (SOLARIS, NEC, IRIX, ALPHA, HPUX, LINUX)
 ******************************************************************************/
+/* fixme: use hwloc if available? */
 int sge_nprocs()
 {
    int nprocs=1; /* default */
@@ -102,13 +98,6 @@ int sge_nprocs()
 
   nprocs =  cpu_load_data.avail_cpus;
 
-#endif
-
-
-#if defined(ALPHA)
-   int start=0;
-
-   getsysinfo(GSI_CPUS_IN_BOX,(char*)&nprocs,sizeof(nprocs),&start);
 #endif
 
 #if defined(__hpux)

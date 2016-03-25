@@ -119,10 +119,6 @@ setup_env() {
                   JAVA_ARCH=""
                   DEBUGGER=gdb
                   ;;
-           tru64) SRC_ARCH=ALPHA5
-                  JAVA_ARCH=alpha
-                  DEBUGGER=dbx
-                  ;;
          hp11-64) SRC_ARCH=HP1164
                   JAVA_ARCH=PA_RISC2.0W
                   DEBUGGER=Unkown

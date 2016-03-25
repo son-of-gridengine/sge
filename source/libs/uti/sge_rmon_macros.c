@@ -51,12 +51,6 @@
 define RMON_USE_CTX
 #endif 
 
-/* ALPHA (osf4 and tru64) have f(un)lockfile, but prototype is missing */
-#if defined (ALPHA)
-extern void flockfile(FILE *);
-extern void funlockfile(FILE *);
-#endif
-
 enum {
    RMON_NONE     = 0,   /* monitoring off */
    RMON_LOCAL    = 1,   /* monitoring on */

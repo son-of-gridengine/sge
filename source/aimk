@@ -875,6 +875,10 @@ while ($#argv >= 1 && $?found)
       set MUNGE = 1
       set LIBS = "$LIBS -lmunge"
       breaksw
+   case "--"
+      unset found
+      continue
+      breaksw
    case "-*"
       echo $argv[1] ": Unknown option, aborting"
       exit 1
@@ -1005,51 +1009,6 @@ case AIX51:
 
    set JAVA_ARCH = "aix"
    set JAVA_LFLAGS = ""
-   breaksw
-
-case ALPHA5:
-   set MAKEWINGRIDLIB   = 0
-   set MAKEWINGRIDAPP   = 0
-   set COMPILE_DC = 1
-   set AUTHLIBS = ""
-   set HWLOC = 1
-
-   if ( $OPTIMIZATION == 1 ) then
-      set OFLAG = "-O3"
-   else
-      set OFLAG = ""
-   endif
-
-   set DLLIB = ""
-
-   # gprof option is superset of debug option
-   # -g3 produces better debugging information than -g1
-   if ( $DEBUGGED == 1) then
-      set DEBUG_FLAG = "-g2 -DSGE_LOCK_DEBUG"
-      set OFLAG      = "-O"
-   endif
-
-   if ( $GPROFFED == 1) then
-      set DEBUG_FLAG = "-g1 -pg -gen_feedback -non_shared"
-   endif
-
-   set NOERR_CFLAG  = "-w"
-   set CFLAGS       = "$OFLAG -w2 -std1 -portable -pthread -warnprotos -DALPHA -D$BUILDARCH $DEBUG_FLAG $CFLAGS -DGETHOSTBYNAME_R3 -DGETHOSTBYADDR_R5 -DUSE_SGE_UNSETENV"
-   set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
-
-   set SHAREDLD      = $CC
-   set SHARED_CFLAGS = ""
-   set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared -pthread"
-
-   set LFLAGS   = "-pthread $DEBUG_FLAG $LFLAGS"
-   set XMTDEF   = ""
-   set XINCD    = "$XMTINCD $XINCD"
-   set XCFLAGS  = "-w -DFUNCPROTO=3 -DSMT $XMTDEF $XINCD"
-   set XLIBD    = ""
-   set XLFLAGS  = "-taso $XLIBD"
-   set XLIBS    = "-lXm -lXt -lXext -lX11 -lSM -lICE -lPW -ldnet_stub"
-   set LIBS     = "-lpset -lmach $LIBS"
-   set JAVA_ARCH = "alpha"
    breaksw
 
 case DARWIN:
@@ -1929,7 +1888,6 @@ if ( $JNI == 1 ) then
              set JAVA_LIB_ARCH = linux
              breaksw
          case darwin-*:
-         case tru64:
          case aix51:
              set JAVA_LIB_ARCH = ""
              breaksw
@@ -1950,8 +1908,6 @@ if ( $JNI == 1 ) then
      set JAVA_LFLAGS="-L$JAVA_HOME/jre/bin/classic"
    else if ( $buildarch == darwin-x86 || $buildarch == darwin-x64 || $buildarch == darwin-ppc ) then
      set JAVA_LFLAGS="-L$JAVA_HOME/../Libraries"
-   else if ( $buildarch == tru64 ) then
-     set JAVA_LFLAGS="-L$JAVA_HOME/jre/lib/alpha/classic"
    endif  
 
 else
