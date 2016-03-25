@@ -1939,13 +1939,6 @@ int main(int argc, char **argv)
    sge_init_language(NULL, NULL);
 #endif /* __SGE_COMPILE_WITH_GETTEXT__  */
 
-
-#if defined(ALPHA) && defined(notdef)
-   if (setsid() < 0) {
-      perror("setsid");
-   }
-#endif
-
    ptf_init();
 
 #ifdef USE_DC
@@ -2021,19 +2014,10 @@ int main(int argc, char **argv)
          char *jobname = lGetString(jte, JB_script_file);
 
          /* schedctl(NDPRI, 0, 0); */
-#if defined(ALPHA)
-         if (setsid() < 0) {
-            perror("setsid");
-            exit(1);
-         }
-#endif
          execl(jobname, jobname, (char *) NULL);
          perror("exec");
          exit(1);
       } else {
-#if defined(ALPHA)
-         os_job_id = pid;
-#endif
          ptf_job_started(os_job_id, jte, 0);
       }
    }
@@ -2081,11 +2065,7 @@ int main(int argc, char **argv)
          sum_of_last_usage += lGetDouble(job, JL_last_usage);
       }
 
-#       if defined(ALPHA)
-#         define XFMT "%20d"
-#       else
-#         define XFMT "%20lld"
-#       endif
+#     define XFMT "%20lld"
 
       puts("                                           adj    total     curr"
            "                      last     next     prev");

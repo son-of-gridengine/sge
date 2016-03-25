@@ -168,16 +168,6 @@ case lx-x86:
    set DTOR = "/usr/lib/crtend.o /usr/lib/crtn.o"
    breaksw
 
-case tru64:
-   if ( $CC == gcc ) then
-      set CFLAGS = "-Wall -Wstrict-prototypes -D_BSD -DALPHA $DEBUG_FLAG $CFLAGS"
-   else
-      set CFLAGS = "-std1 -warnprotos -D_BSD -DALPHA $DEBUG_FLAG $CFLAGS -Olimit 1500"
-   endif
-   set LFLAGS = "$DEBUG_FLAG $LFLAGS"
-   set LIBS = "$LIBS"
-   breaksw
-
 case sol-sparc:
 case sol-sparc64:
 	set CC   = "gcc"

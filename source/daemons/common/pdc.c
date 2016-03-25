@@ -84,15 +84,6 @@ int main(int argc,char *argv[])
 #include <sys/swap.h>
 #endif
 
-#if defined(ALPHA)
-#   include <nlist.h>
-#   include <sys/sysinfo.h>
-#   include <machine/hal_sysinfo.h>
-#   include <mach.h>
-#   include </sys/include/vm/vm_perf.h>
-#   include <paths.h>
-#endif
-
 #if defined(AIX)
 #  if defined(_ALL_SOURCE)
 #     undef _ALL_SOURCE
@@ -132,9 +123,6 @@ int main(int argc,char *argv[])
 #if defined(IRIX)
 #  define F64 "%lld"
 #  define S64 "%lli"
-#elif defined(ALPHA)
-#  define F64 "%ld"
-#  define S64 "%li"
 #elif defined(LINUX) || defined(SOLARIS)
 #  define F64 "%ld"
 #  define S64 "%li"
@@ -434,24 +422,6 @@ int pdc_get_arsess64(pdc_arsess_t *parse, arsess_t *arsein)
    parse->chw = arse->as_counts.ac_chw;
    return 0;
 }
-#elif defined(ALPHA)
-
-static struct nlist mem_nl[] = {
-   { "vm_perfsum" }, /* PERFSUM */
-   { 0 },
-};
-int kmem_fd = -1;
-
-#define PERFSUM      0
-
-int readk(off_t where, char *addr, int size) {
-   if (lseek(kmem_fd, where, SEEK_SET) == -1)
-      return -1;
-   if (read(kmem_fd, addr, size) == -1)
-      return -1;
-   return 0;
-}
-
 #endif
 
 static int
@@ -510,8 +480,6 @@ int psRetrieveSystemData(void)
    double period;
    static uint64 prev_runque, prev_runocc, prev_swpque, prev_swpocc;
    long clock_tick = sysconf(_SC_CLK_TCK);
-#elif defined(ALPHA)
-   struct vm_statistics vmstats;
 #endif
    time_t time_stamp = get_gmt();
    time_t prev_time_stamp;
@@ -704,40 +672,6 @@ int psRetrieveSystemData(void)
    /* characters written */
    sysdata.sys_writech = si.writech;
 
-#elif defined(ALPHA)
-   {
-      struct vm_perf   perf;
-   
-      /* memory information */
-      /* this is possibly bogus - we work out total # pages by */
-      /* adding up the free, active, inactive, wired down, and */
-      /* zero filled. Anyone who knows a better way, TELL ME!  */
-      /* Change: dont use zero filled. */
-
-      if (mem_nl[PERFSUM].n_value) {
-         if (readk((off_t)mem_nl[PERFSUM].n_value,(char *)&perf,sizeof perf))
-         /* Virtual Swap space avail (bytes) */
-         sysdata.sys_swp_free = perf.vpf_swapspace*pagesize;
-      }
-
-      (void) vm_statistics(current_task(),&vmstats);
-
-      /* free mem */
-      sysdata.sys_mem_avail = vmstats.free_count*pagesize; 
-
-      /* Memory in use (bytes) */
-      sysdata.sys_mem_used = (physical_memory*1024) - sysdata.sys_mem_avail;
-
-      /* Swap space reserved (bytes) */
-      sysdata.sys_swp_rsvd = sysdata.sys_swp_used + sysdata.sys_mem_used;
-
-      /* Memory + swap used (bytes) */
-      sysdata.sys_mswp_used = sysdata.sys_swp_used + sysdata.sys_mem_used;
-
-      /* Memory + swap avail (bytes) */
-      sysdata.sys_mswp_avail = sysdata.sys_swp_free + sysdata.sys_mem_avail;
-
-   }
 #endif
    return 0;
 }
@@ -1725,10 +1659,6 @@ int psStartCollector(void)
    int ncpus = 0;
 #endif   
 
-#if defined(ALPHA)
-   int start=0;
-#endif
-
    if (initialized)
       return 0;
 
@@ -1745,36 +1675,7 @@ int psStartCollector(void)
 #  ifdef PDC_STANDALONE
    ncpus = sge_nprocs();
 #  endif
-#elif defined(ALPHA)
-   {
-#ifdef PDC_STANDALONE
-      /* Number of CPUs */
-      ncpus = sge_nprocs();
-      if (getsysinfo(GSI_PHYSMEM, (caddr_t)&physical_memory,sizeof(int),0,NULL)==-1) {
-         return -1;
-      }
-
-      unixname[0] = '/';
-      if ((getsysinfo(GSI_BOOTEDFILE, &unixname[1],
-         sizeof(unixname), NULL, NULL)) <= 0) {
-         sge_strlcpy(unixname, _PATH_UNIX, sizeof(unixname));
-      }
-
-      if (nlist(unixname, mem_nl) == -1) {
-         return -1;
-      }
-      if (mem_nl[PERFSUM].n_value == 0) {
-         return -1;
-      }
-
-      if ((kmem_fd = open(_PATH_KMEM,O_RDONLY,0)) == -1) {
-         return -1;
-      }
-
-#endif  /* PDC_STANDALONE */
-   } 
-
-#endif  /* ALPHA */
+#endif
 #ifdef PDC_STANDALONE
    /* Length of struct (set@run-time) [not actually used?] */
    sysdata.sys_length = sizeof(sysdata);

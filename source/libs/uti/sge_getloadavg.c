@@ -53,9 +53,6 @@
 #  include <sys/loadavg.h> 
 #elif defined(__linux__) || defined(__CYGWIN__)
 #  include <ctype.h>
-#elif defined(ALPHA4) || defined(ALPHA5)
-#  include <nlist.h>
-#  include <sys/table.h>
 #elif defined(HP11) || defined(HP1164)
 #  include <sys/param.h>
 #  include <sys/pstat.h>
@@ -104,14 +101,6 @@
 #  define LINUX_LOAD_SOURCE "/proc/loadavg"
 #  define CPUSTATES 4
 #  define PROCFS "/proc" 
-#elif defined(ALPHA4) || defined(ALPHA5)
-#  define MP_KERNADDR 8
-#  define MPKA_AVENRUN 19
-#  define KERNEL_NAME_FILE "/vmunix"
-#  define KERNEL_AVG_NAME "_avenrun"
-#  define SGE_FSCALE 1000.0
-#  define KERNEL_AVG_TYPE long
-#  define CPUSTATES 4
 #elif defined(AIX51)
 #  define KERNEL_NAME_FILE "/unix"
 #  define KERNEL_AVG_NAME "avenrun"
