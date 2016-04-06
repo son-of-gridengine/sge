@@ -78,8 +78,6 @@
 #   define SETPGRP setpgrp(getpid(),getpid())
 #endif
 
-#define GETPGRP getpgrp()
-
 void sge_exit(void **ctx_ref, int i) __attribute__ ((noreturn));
 
 int sge_chdir_exit(const char *path, int exit_on_error);  

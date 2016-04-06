@@ -267,7 +267,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    }
 
    pid = getpid();
-   pgrp = GETPGRP;
+   pgrp = getpgrp();
 
 #ifdef SOLARIS                  /* ?? */
    if(!is_qlogin_starter || is_rsh)
