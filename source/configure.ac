@@ -24,7 +24,7 @@ AC_DEFINE(_DARWIN_C_SOURCE, 1, [Define to activate all Darwin features])
 AC_CHECK_MEMBERS([struct dirent.d_type],,,[[#include <dirent.h>]])
 
 # Checks for library functions.
-AC_CHECK_FUNCS([getgrouplist])
+AC_CHECK_FUNCS([getgrouplist strsignal])
 
 # Compatibility
 AC_SYS_LARGEFILE
@@ -35,8 +35,8 @@ fi
 
 dnl Allow including it in a number of headers initially.
 dnl Don't clash with sgeobj/sge_config.h.
-AH_TOP([#ifndef _CONFIG_H
-#define _CONFIG_H])
-AH_BOTTOM([#endif /* _CONFIG_H */])
+AH_TOP([#ifndef _SGE_CONFIG_H
+#define _SGE_CONFIG_H])
+AH_BOTTOM([#endif /* _SGE_CONFIG_H */])
 
 AC_OUTPUT
