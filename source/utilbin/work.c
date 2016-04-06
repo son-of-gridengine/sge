@@ -270,9 +270,9 @@ int main(int argc, char *argv[])
    
    if (change_pgrp) {
       u_long old_pgrp, new_pgrp;
-      old_pgrp = GETPGRP;
+      old_pgrp = getpgrp();
       SETPGRP;
-      new_pgrp = GETPGRP;
+      new_pgrp = getpgrp();
       printf("changed pgrp from %d to %d\n", 
          (int)old_pgrp, (int)new_pgrp);
       fflush(stdout);
