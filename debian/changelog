@@ -1,3 +1,9 @@
+sge (8.1.9-1) unstable; urgency=low
+
+  * Don't use aimk -debug
+
+ -- Dave Love <fx@gnu.org>  Sun, 10 Apr 2016 18:41:10 +0100
+
 sge (8.1.9) unstable; urgency=low
 
   * Build with MUNGE
