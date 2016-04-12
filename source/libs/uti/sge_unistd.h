@@ -47,12 +47,6 @@
 #  include "../wingrid/wingrid.h"
 #endif
 
-/* historical reasons */
-#define SGE_OPEN2(filename, oflag)       open(filename, oflag)
-#define SGE_OPEN3(filename, oflag, mode) open(filename, oflag, mode)
-#define SGE_CLOSE(fd) close(fd);
-
-
 #if defined(INTERIX)
 #  define SGE_STAT(filename, buffer) wl_stat(filename, buffer)
 #else

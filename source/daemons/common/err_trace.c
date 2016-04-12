@@ -818,7 +818,7 @@ static FILE* shepherd_trace_init_intern(st_shepherd_file_t shepherd_file)
             shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
       }
 
-      fd = SGE_OPEN2(tmppath, O_RDWR | O_APPEND);
+      fd = open(tmppath, O_RDWR | O_APPEND);
       if (fd<0) {
          sge_dstring_init(&ds, buffer, sizeof(buffer));
          sge_dstring_sprintf(&ds, "open(%s) failed: %s",

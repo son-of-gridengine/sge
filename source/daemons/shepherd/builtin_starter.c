@@ -118,7 +118,7 @@ static void close_fds_from(int first) {
     */
    for (i=first ; i < fdmax; i++) {
       if (!is_shepherd_trace_fd(i)) {
-         SGE_CLOSE(i);
+         close(i);
       }
    }
    foreground = 0;
@@ -702,7 +702,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
 
    in = 0;
    if (!strcasecmp(shell_start_mode, "script_from_stdin")) {
-      in = SGE_OPEN2(script_file, O_RDONLY);
+      in = open(script_file, O_RDONLY);
       if (in == -1) {
          shepherd_error(1, "error: can't open %s script file \"%s\": %s", 
                         childname, script_file, strerror(errno));
@@ -714,7 +714,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
        */
       if (!is_qlogin_starter && pty == 0) {
          /* need to open a file as fd0 for qsub jobs */
-         in = SGE_OPEN2(stdin_path, O_RDONLY); 
+         in = open(stdin_path, O_RDONLY);
 
          if (in == -1) {
             shepherd_state = SSTATE_OPEN_OUTPUT;
@@ -740,9 +740,9 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       /* open stdout - not for qsub -pty yes */
       if (pty == 0) {
          if (truncate_stderr_out) {
-            out = SGE_OPEN3(stdout_path, O_WRONLY | O_CREAT | O_APPEND | O_TRUNC, 0644);
+            out = open(stdout_path, O_WRONLY | O_CREAT | O_APPEND | O_TRUNC, 0644);
          } else {
-            out = SGE_OPEN3(stdout_path, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            out = open(stdout_path, O_WRONLY | O_CREAT | O_APPEND, 0644);
          }
          
          if (out==-1) {
@@ -761,9 +761,9 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
             dup2(1, 2);
          } else {
             if (truncate_stderr_out) {
-               err = SGE_OPEN3(stderr_path, O_WRONLY | O_CREAT | O_TRUNC | O_APPEND, 0644);
+               err = open(stderr_path, O_WRONLY | O_CREAT | O_TRUNC | O_APPEND, 0644);
             } else {
-               err = SGE_OPEN3(stderr_path, O_WRONLY | O_CREAT | O_APPEND, 0644);
+               err = open(stderr_path, O_WRONLY | O_CREAT | O_APPEND, 0644);
             }
 
             if (err == -1) {

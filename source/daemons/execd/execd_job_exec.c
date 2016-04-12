@@ -350,7 +350,7 @@ static int handle_job(sge_gdi_ctx_class_t *ctx, lListElem *jelem, lListElem *jat
 
                /* We are root. Make the scriptfile readable for the jobs submitter,
                   so shepherd can open (execute) it after changing to the user. */
-               fd = SGE_OPEN3(lGetString(jelem, JB_exec_file), O_CREAT | O_WRONLY, 0755);
+               fd = open(lGetString(jelem, JB_exec_file), O_CREAT | O_WRONLY, 0755);
                if (fd < 0) {
                   sge_dstring_sprintf(&err_str, MSG_ERRORWRITINGFILE_SS, 
                                       lGetString(jelem, JB_exec_file), 

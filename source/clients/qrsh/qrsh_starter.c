@@ -117,7 +117,7 @@ static void qrsh_error(const char *fmt, ...)
       snprintf(fileName, SGE_PATH_MAX, "%s/qrsh_error", tmpdir);
    }
 
-   if ((file = SGE_OPEN3(fileName, O_WRONLY | O_APPEND | O_CREAT, 00744)) == -1) {
+   if ((file = open(fileName, O_WRONLY | O_APPEND | O_CREAT, 00744)) == -1) {
       fprintf(stderr, "%s\n", message);
       fprintf(stderr, MSG_QRSH_STARTER_CANNOTOPENFILE_SS, fileName, strerror(errno));
       fprintf(stderr, "\n");
@@ -402,7 +402,7 @@ static int write_pid_file(pid_t pid)
       return 0;
    }
 
-   if((pid_file = SGE_OPEN3(pid_file_name, O_WRONLY | O_APPEND | O_CREAT, 00744)) == -1) {
+   if((pid_file = open(pid_file_name, O_WRONLY | O_APPEND | O_CREAT, 00744)) == -1) {
       dstring ds = DSTRING_INIT;
       qrsh_error(MSG_QRSH_STARTER_CANNOTWRITEPID_SS, pid_file_name, sge_strerror(errno, &ds));
       sge_dstring_free(&ds);
@@ -417,7 +417,7 @@ static int write_pid_file(pid_t pid)
       sge_dstring_free(&ds);
    }
 
-   SGE_CLOSE(pid_file);
+   close(pid_file);
    return 1;
 }
 
@@ -810,7 +810,7 @@ static int writeExitCode(int myExitCode, int programExitCode)
       snprintf(fileName, SGE_PATH_MAX, "%s/qrsh_exit_code", tmpdir);
    }
 
-   if((file = SGE_OPEN3(fileName, O_WRONLY | O_APPEND | O_CREAT, 00744)) == -1) {
+   if((file = open(fileName, O_WRONLY | O_APPEND | O_CREAT, 00744)) == -1) {
       dstring ds = DSTRING_INIT;
       qrsh_error(MSG_QRSH_STARTER_CANNOTOPENFILE_SS, fileName, sge_strerror(errno, &ds));
       sge_dstring_free(&ds);
@@ -823,7 +823,7 @@ static int writeExitCode(int myExitCode, int programExitCode)
       qrsh_error(MSG_FILE_CANNOT_WRITE_SS, fileName, sge_strerror(errno, &ds));
       sge_dstring_free(&ds);
    }
-   SGE_CLOSE(file);
+   close(file);
    
    return EXIT_SUCCESS;
 }

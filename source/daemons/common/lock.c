@@ -50,7 +50,7 @@ char *file
 
    DENTER(TOP_LAYER, "qmaster_lock");
 
-   fd = SGE_OPEN3(file, O_RDWR | O_CREAT | O_EXCL, 0600);
+   fd = open(file, O_RDWR | O_CREAT | O_EXCL, 0600);
    if (fd == -1) {
       DEXIT;
       return -1;
