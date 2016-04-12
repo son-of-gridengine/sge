@@ -183,14 +183,12 @@ usage:
    echo "-cov              -> complile for code coverage analysis"
    echo "-dce              -> enable dce security (obsolete? likely broken)"
    echo "-debug            -> compile with debug information"
-   echo "-efence           -> compile in debug mode and detect memory leaks"
    echo "-f                -> specify other Makefile instead of common/Makefile"
    echo "-gcc              -> use gcc instead of system compiler (where supported)"
    echo "-gprof            -> enable gprof profiling"
    echo "-gss              -> enable gss security (_after_ building core)"
    echo "-help             -> show this help"
    echo "-htmlman          -> generate man and html pages"
-   echo "-insure           -> compile in debug mode and detect memory leaks"
    echo "-intl             -> compile with internationalization library (libintl)"
    echo "-javadoc          -> create source code documentation in Javadoc[TM] tool format"
    echo "-kerberos         -> enable kerberos authentication (currently broken)"
@@ -228,7 +226,6 @@ usage:
    echo "-po               -> merge gridengine .pot with translations (GNU/Linux)"
    echo "-pot              -> extract message template to gridengine .pot file (GNU/Linux)"
    echo "-protected        -> create complete class file documentation"
-   echo "-purify           -> instrument code with purify (implies -debug)"
    echo "-qmake            -> use qmake instead of make"
    echo "-shared-libs      -> create libraries as shared libs"
    echo "-spool-berkeleydb -> use berkeleydb spooling"
@@ -295,7 +292,6 @@ set MAKEPAM          = 0
 set OPTIMIZATION     = 1
 set GPROFFED         = 0
 set COVED            = 0
-set USE_INSURE       = 0
 set DEBUGGED         = 0
 set COMPILE_DC       = 0
 set CC               = cc
@@ -304,7 +300,6 @@ set CORE_INCLUDE     = "-I../common -I../libs -I../libs/uti -I../libs/juti -I../
 set DEBUG_FLAG       = ""
 set HWLOC            = 0
 set NO_HWLOC         = 0
-set INSURE_FLAG      = ""
 set NOERR_CFLAG      = ""
 set NOERR_PROTO      = ""
 set NOERR_SSH        = ""
@@ -325,7 +320,6 @@ set XLFLAGS          = ""
 set XLIBS            = ""
 set LIBS             = "-lm -lpthread"
 set LIBRARY_LIBS     = ""  # used for linking shared objects like drmaa.so or jgdi.so. Overwritten by $LIBS if empty
-set LD_WRAPPER       = ""
 set DLLIB            = "-luti -ldl"
 set LOADAVGLIBS      = ""
 set FSTYPELIBS       = ""
@@ -553,17 +547,6 @@ while ($#argv >= 1 && $?found)
       set BUILDMAN = "1"
       set BUILDHTMLMAN = "1"
       breaksw      
-   case "-insure"
-      set USE_INSURE = 1
-      set INSURE_FLAG = "-Zsl"
-      set LFLAGS     = "-Zsl $LFLAGS"
-      set DEBUGGED   = 1
-      setenv SKIP_NONREENTRANT 1
-      breaksw
-   case "-efence"
-      set LFLAGS     = "-lefence $LFLAGS"
-      set DEBUGGED   = 1
-      breaksw
    case  "-intl"
       set WITH_GETTEXT = 1
       breaksw
@@ -799,10 +782,6 @@ while ($#argv >= 1 && $?found)
       breaksw
    case "-protected":
       set PROTECTED = 1
-      breaksw
-   case "-purify":
-      set LD_WRAPPER = "purify"
-      set DEBUGGED   = 1
       breaksw
    case "-qmake"
       set USE_QMAKE    = 1
@@ -1311,7 +1290,7 @@ case LINUX*:
    endif
 
    if ($DEBUGGED == 1) then
-      set DEBUG_FLAG = "-g $INSURE_FLAG -DSGE_LOCK_DEBUG"
+      set DEBUG_FLAG = "-g -DSGE_LOCK_DEBUG"
    endif
 
    if ($GPROFFED == 1) then
@@ -1440,7 +1419,7 @@ case WIN32_X86:
    endif
 
    if ($DEBUGGED == 1) then
-      set DEBUG_FLAG = "-g $INSURE_FLAG -DSGE_LOCK_DEBUG"
+      set DEBUG_FLAG = "-g -DSGE_LOCK_DEBUG"
       set OFLAG = ""
    endif
 
@@ -1512,7 +1491,7 @@ case CYGWIN_X86_64:
    set COMPILE_DC = 1
    set CC  = gcc
    if ($DEBUGGED == 1) then
-      set DEBUG_FLAG = "-g $INSURE_FLAG -DSGE_LOCK_DEBUG"
+      set DEBUG_FLAG = "-g -DSGE_LOCK_DEBUG"
    endif
    if ($GPROFFED == 1) then
       set DEBUG_FLAG = "$DEBUG_FLAG -pg"
@@ -1599,7 +1578,7 @@ case SOLARISAMD64:
    endif
 
    if ( $DEBUGGED == 1 ) then
-      set DEBUG_FLAG = "-g $INSURE_FLAG -DSGE_LOCK_DEBUG"
+      set DEBUG_FLAG = "-g -DSGE_LOCK_DEBUG"
    endif
 
    if ( $GPROFFED == 1 ) then
@@ -1642,11 +1621,7 @@ case SOLARISAMD64:
       # always get warnings
       set ERR_WARN_ALL = ""  # is set in cc specific section below
       set LFLAGS = "-xildoff $LFLAGS"
-      # the ERR_WARN_ALL breaks insure instrumented builds
-      if ( $USE_INSURE == 0 ) then
-         set CFLAGS = "$CFLAGS $ERR_WARN_ALL"
-      endif
-      set SHARED_CFLAGS = "$INP_CFLAGS -KPIC"
+      set SHARED_CFLAGS = "-KPIC"
 
       # need the compiler version for building the compiler flags
       set compversion = `cc -V | & head -1 | sed 's/[a-zA-Z :]*\([0-9].[0-9]*\).*$/\1/'`
@@ -1954,10 +1929,6 @@ endif
 set GSHARED_CFLAGS = "$SHARED_CFLAGS"
 set GSHARED_LFLAGS = "$SHARED_LFLAGS"
 
-if ($USE_INSURE == 1) then
-   set CC  = "insure $CC"
-endif
-
 if ("$LIBRARY_LIBS" == "") then
    set LIBRARY_LIBS = "$LIBS" 
 endif
@@ -2211,7 +2182,6 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
 
    echo _________C_O_R_E__S_Y_S_T_E_M_____________
    $MAKE $MAKEOPT -f $MAKEFILE "MAKE=$MAKE" "CC=$CC" \
-         "LD_WRAPPER=$LD_WRAPPER" \
          "CFLAGS=$CFLAGS $CORE_INCLUDE" \
          "CORELIB=$CORELIB" \
          "DEPEND_FLAGS=$DEPEND_FLAGS $CORE_INCLUDE" \
@@ -2274,9 +2244,6 @@ if ( "$JAVA" > 0 ) then
    if ( "$CC" == "gcc" ) then
       setenv ANT_AIMK_OPTS "-gcc"
    endif
-   if ( $USE_INSURE == 1 ) then
-      setenv ANT_AIMK_OPTS "$ANT_AMK_OPTS -insure"
-   endif
    if ( $NO_HWLOC == 1 ) then
       setenv ANT_AIMK_OPTS "$ANT_AIMK_OPTS -no-hwloc"
    endif
@@ -2327,7 +2294,6 @@ if ( "$QMON" == 1 ) then
    cd $COMPILE_ARCH
 
    $MAKE $MAKEOPT -f ../Makefile "MAKE=$MAKE" "CC=$CC" \
-         "LD_WRAPPER=$LD_WRAPPER" \
          "CFLAGS=$CFLAGS" "SDIR=$SDIR" "SOURCE=$SOURCE" \
          "COMPILE_ARCH=$COMPILE_ARCH" \
          "XCFLAGS=$XCFLAGS" "XLFLAGS=$XLFLAGS" "KRBLIBS=$KRBLIBS" \
@@ -2348,7 +2314,6 @@ if ( "$QMON" == 1 ) then
 
    $MAKE $MAKEOPT -f $SOURCE/clients/qmon/Makefile \
          "MAKE=$MAKE" "CC=$CC" \
-         "LD_WRAPPER=$LD_WRAPPER" \
          "CFLAGS=$CFLAGS $CORE_INCLUDE" \
          "DEPEND_FLAGS=$DEPEND_FLAGS $CORE_INCLUDE" \
          "SDIR=$SDIR" "SOURCE=$SOURCE" "COMPILE_ARCH=$COMPILE_ARCH" \
@@ -2497,8 +2462,7 @@ if ( "$QTCSH" == 1) then
 
    # with shared libs: qtcsh requires finding libsge.so during build
    # for AIX, we have to pass special options to make
-   set SGE_COPTS = "$DEBUG_FLAG $INSURE_FLAG"
-   set SGE_LOPTS = "$INSURE_FLAG"
+   set SGE_COPTS = "$DEBUG_FLAG"
 
 
    if ( $SHAREDLIBS == 1 ) then
