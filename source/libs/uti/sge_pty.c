@@ -40,17 +40,18 @@
 #include <string.h>
 #include <pwd.h>
 
-#if defined(DARWIN) || defined(INTERIX) || defined __CYGWIN__
+/* fixme: autoconf tests for headers */
+#if __APPLE__ || __INTERIX || defined __CYGWIN__
 #  include <termios.h>
 #  include <sys/ioctl.h>
 #  include <grp.h>
-#elif defined(HP1164) || defined(HP11)
+#elif __hpux
 #  include <termios.h>
 #  include <stropts.h>
-#elif defined(SOLARIS64) || defined(SOLARIS86) || defined(SOLARISAMD64)
+#elif __sun
 #  include <stropts.h>
 #  include <termio.h>
-#elif defined(FREEBSD) || defined(NETBSD)
+#elif __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #  include <sys/ioctl.h>
 #  include <termios.h>
 #else
@@ -93,7 +94,7 @@ int                   g_newpgrp = -1;
 *  SEE ALSO
 *     pty/ptys_open()
 *******************************************************************************/
-#if defined(DARWIN) || defined(__OpenBSD__)
+#if __APPLE__ || defined(__OpenBSD__)
 int ptym_open(char *pts_name)
 {
    char ptr1[] = "pqrstuvwxyzPQRST"; 
@@ -131,7 +132,7 @@ int ptym_open(char *pts_name)
 {
    char *ptr;
    int  fdm;
-#if defined(AIX43) || defined(AIX51)
+#if _AIX
    char default_pts_name[] = "/dev/ptc";
 #else
    char default_pts_name[] = "/dev/ptmx";
@@ -186,7 +187,7 @@ int ptym_open(char *pts_name)
 *  SEE ALSO
 *     pty/ptym_open
 *******************************************************************************/
-#if defined(DARWIN)
+#if __APPLE__
 int ptys_open(int fdm, char *pts_name)
 {
    struct group gr_struct;
@@ -228,7 +229,7 @@ int ptys_open(int fdm, char *pts_name)
       close(fdm);
       return -5;
    }
-#if defined(SOLARIS64) || defined(SOLARIS86) || defined(SOLARISAMD64) || defined(HP11) || defined(HP1164) || defined(IRIX65)
+#if __sun || __hpux
    if (ioctl(fds, I_PUSH, "ptem") < 0) {
       close(fdm);
       close(fds);
@@ -239,7 +240,7 @@ int ptys_open(int fdm, char *pts_name)
       close(fds);
       return -7;
    }
-#if !defined(HP11) && !defined(HP1164) && !defined(IRIX65)
+#if !!__hpux
    if (ioctl(fds, I_PUSH, "ttcompat") < 0) {
       close(fdm);
       close(fds);

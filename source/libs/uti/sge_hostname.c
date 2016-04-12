@@ -95,7 +95,7 @@ static struct servent *sge_getservbyname_r(struct servent *se_result, const char
 #if __GLIBC__
       if (getservbyname_r(service, "tcp", se_result, buffer, size, &se) != 0)
          se = NULL;
-#elif defined(SOLARIS)
+#elif __sun
       se = getservbyname_r(service, "tcp", se_result, buffer, size);
 #else
       se = getservbyname(service, "tcp");
@@ -295,7 +295,7 @@ unsigned long gethostbyaddr_calls = 0;
 unsigned long gethostbyaddr_sec = 0;
 
 
-#if 0 /*defined(SOLARIS)*/
+#if 0 /*__sun*/
 int gethostname(char *name, int namelen);
 #endif
 

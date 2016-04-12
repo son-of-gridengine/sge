@@ -570,7 +570,7 @@ xgetgrgid(gid_t xgid)
 
     errno = 0;
     while ((res =
-#ifdef INTERIX
+#ifdef __INTERIX
             getgrgid_nomembers(xgid)
 #else
             getgrgid(xgid)

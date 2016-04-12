@@ -78,7 +78,7 @@
 #include "msg_qmaster.h"
 #include "setup_qmaster.h"
 
-#if defined(SOLARIS)
+#if __sun
 #   include "sge_smf.h"
 #endif
 
@@ -243,7 +243,7 @@ int main(int argc, char* argv[])
    log_state_set_log_file(ERR_FILE);
    ctx->set_exit_func(ctx, sge_exit_func);
 
-#if defined(SOLARIS)
+#if __sun
    /* Init shared SMF libs if necessary */
    if (sge_smf_used() == 1 && sge_smf_init_libs() != 0) {
        SGE_EXIT((void**)&ctx, 1);
@@ -352,7 +352,7 @@ int main(int argc, char* argv[])
 *******************************************************************************/
 static void init_sig_action_and_mask(void)
 {
-#if !defined(INTERIX) && !defined(__CYGWIN__)
+#if !__INTERIX && !defined(__CYGWIN__)
    struct sigaction sa;
    sigset_t sig_set;
    

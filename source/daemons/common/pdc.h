@@ -179,14 +179,14 @@ typedef struct {
    uint64 rss;             /* resident set size */
    uint64 ru_ioblock;      /* # of block input operations */
    uint64 delta_chars;     /* number of chars to be added to jd_chars this time step */
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
    uint64 iochars;         /* number of chars from previous load interval */
 #endif
 } proc_elem_t;
 
 extern long pagesize;
 
-#if defined(ALPHA) || defined(LINUX) || defined(SOLARIS) || defined(FREEBSD) || defined(DARWIN)
+#if (__linux__ || __CYGWIN__) || __sun || __FreeBSD__ || __APPLE__
    void pdc_kill_addgrpid(gid_t, int, tShepherd_trace);
 #endif
 

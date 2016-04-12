@@ -238,7 +238,7 @@ static int cl_message_list_remove_receive(cl_com_connection_t* c, cl_com_message
  * Prevent these functions made inline by compiler. This is
  * necessary for Solaris 10 dtrace pid provider to work.
  */
-#ifdef SOLARIS
+#ifdef __sun
 #pragma no_inline(cl_message_list_append_send, cl_message_list_remove_send, cl_message_list_append_receive, cl_message_list_remove_receive)
 #endif
 

@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
 			printf("%ld\n", (long)pid );
 			res = 0;
 		} else {
-#if defined(SOLARIS)
+#if __sun
                         /* Init shared SMF libs if necessary */
                         if (sge_smf_used() == 1 && sge_smf_init_libs() != 0) {
                            fprintf(stderr, MSG_COMMAND_SMF_INIT_FAILED);

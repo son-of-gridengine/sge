@@ -287,7 +287,7 @@ sge_jvm_initialize(sge_gdi_ctx_class_t *ctx, lList **answer_list)
 #include <jni.h>
 #include <string.h>
 
-#ifdef SOLARIS
+#ifdef __sun
 #include <link.h>
 #endif
 
@@ -308,7 +308,7 @@ static JNIEnv* create_vm(const char *libjvm_path, int argc, char** argv);
 static int invoke_main(JNIEnv* env, jclass main_class, int argc, char** argv);
 
 
-#ifdef DARWIN
+#ifdef __APPLE__
 int JNI_CreateJavaVM_Impl(JavaVM **pvm, void **penv, void *args);
 #endif
 
@@ -482,7 +482,7 @@ static JNIEnv* create_vm(const char *libjvm_path, int argc, char** argv)
       /* build the full name of the shared lib - append architecture dependent
        * shlib postfix 
        */
-#ifdef HP1164
+#ifdef __hpux
       /*
       ** need to switch to start user for HP
       */
@@ -495,7 +495,7 @@ static JNIEnv* create_vm(const char *libjvm_path, int argc, char** argv)
       /* open the shared lib */
       libjvm_handle = sge_dlopen(libjvm_path, NULL);
 
-#ifdef HP1164
+#ifdef __hpux
       /*
       ** switch back to admin user for HP
       */
@@ -508,7 +508,7 @@ static JNIEnv* create_vm(const char *libjvm_path, int argc, char** argv)
 
       /* retrieve function pointer of get_method function in shared lib */
       if (ok) {
-#ifdef DARWIN
+#ifdef __APPLE__
          /*
          ** for darwin there exists no JNI_CreateJavaVM, Why not maybe a fix in the future ???
          */

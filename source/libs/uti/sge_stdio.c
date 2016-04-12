@@ -56,7 +56,7 @@
 
 #include "msg_common.h"
 
-#if defined(SOLARIS)
+#if __sun
 #   include "sge_smf.h"
 #endif
 
@@ -124,7 +124,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
       }
    }
 
-#if defined(SOLARIS)
+#if __sun
    pid = sge_smf_contract_fork(err_str, 256);
 #else
    pid = fork();
@@ -210,7 +210,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
             if (write(2, err_str, strlen(err_str)) != (int)strlen(err_str)) {
                /* TODO: required protocol step? If sending fails, exit? */
             }
-#if !(defined(WIN32) || defined(INTERIX))  /* initgroups not called */
+#if !(defined(WIN32) || __INTERIX)  /* initgroups not called */
             if (initgroups(pw->pw_name, pw->pw_gid) != 0) {
                sprintf(err_str, MSG_SYSTEM_INITGROUPSFORUSERFAILED_ISS,
                        user, strerror(errno));
@@ -270,7 +270,7 @@ pid_t sge_peopen(const char *shell, int login_shell, const char *command,
          close(pipefds[i][0]);
          close(pipefds[i][1]);
       }
-#if defined(SOLARIS)
+#if __sun
       if (pid < -1) {
           ERROR((SGE_EVENT, MSG_SMF_FORK_FAILED_SS, "sge_peopen()", err_str));
       }
@@ -357,7 +357,7 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
    int pipefds[3][2];
    int i;
    char arg0[256];
-#if defined(SOLARIS)
+#if __sun
    char err_str[256];
 #endif
    struct passwd *pw = NULL;
@@ -463,7 +463,7 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
 
          DPRINTF(("Before initgroups\n"));
 
-#if !(defined(WIN32) || defined(INTERIX))  /* initgroups not called */
+#if !(defined(WIN32) || __INTERIX)  /* initgroups not called */
          if (initgroups(pw->pw_name, pw->pw_gid) != 0) {
             ERROR((SGE_EVENT, MSG_SYSTEM_INITGROUPSFORUSERFAILED_ISS,
                    user, strerror(errno)));
@@ -487,7 +487,7 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
 
    DPRINTF(("Now process will fork\n"));
 
-#if defined(SOLARIS)
+#if __sun
    pid = sge_smf_contract_fork(err_str, 256);
 #else
    pid = fork();
@@ -576,7 +576,7 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
          close(pipefds[i][0]);
          close(pipefds[i][1]);
       }
-#if defined(SOLARIS)
+#if __sun
       if (pid < -1) {
           ERROR((SGE_EVENT, MSG_SMF_FORK_FAILED_SS, "sge_peopen()", err_str));
       }

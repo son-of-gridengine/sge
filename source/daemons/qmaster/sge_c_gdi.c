@@ -154,7 +154,7 @@ static int schedd_mod(sge_gdi_ctx_class_t *ctx,
  * Prevent these functions made inline by compiler. This is
  * necessary for Solaris 10 dtrace pid provider to work.
  */
-#ifdef SOLARIS
+#ifdef __sun
 #pragma no_inline(sge_c_gdi_permcheck, sge_c_gdi_trigger, sge_c_gdi_copy, sge_c_gdi_get, sge_c_gdi_del, sge_c_gdi_mod, sge_c_gdi_add, sge_c_gdi_copy)
 #endif
 

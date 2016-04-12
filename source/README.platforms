@@ -67,22 +67,11 @@ HP-UX
 
 Support present for version 11, 32- or 64-bit.
 
-Tru64
------
-
-Support present for Tru64 5.  Not known to be tested, and expected to
-be removed with final HP support for Tru64 finishing.
-
-Irix
-----
-
-Support present for Irix 6.5.  Not known to be tested, and expected to
-be removed with final SGI support for Irix finishing.
-
 Others
 ------
 
-Support for obsolete NEC SX, ("classic") Cray, and vestigial bits for
-other systems has been removed, but could conceivably be revived from
-the repository.  (SX had possibly-interesting resource management
-features.)
+Support for obsolete NEC SX, ("classic") Cray, Tru64, Irix, and
+vestigial bits for other systems has been removed, but could
+conceivably be revived from the repository.  (SX had
+possibly-interesting resource management features.  Some similar from
+Irix is still in the source.)

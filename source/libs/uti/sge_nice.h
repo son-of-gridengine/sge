@@ -32,11 +32,11 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#ifdef SOLARIS
+#ifdef __SUN
 #   include <sys/resource.h>
 #endif
 
-#if defined(INTERIX) 
+#if __INTERIX
     /* On Interix the nice range goes from 0 to 2*NZERO-1 */
 #   define SETPRIORITY(niceval) setpriority(PRIO_PROCESS, 0, niceval + NZERO)
 #else

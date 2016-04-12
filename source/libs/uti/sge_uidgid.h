@@ -39,7 +39,7 @@
 
 #include "sge_unistd.h"
 
-#if defined(INTERIX) && !defined(INTERIX52)
+#if __INTERIX && !defined(INTERIX52)
 #  define SGE_SUPERUSER_UID wl_get_superuser_id()
 #  define SGE_SUPERUSER_GID wl_get_superuser_gid() 
 #else

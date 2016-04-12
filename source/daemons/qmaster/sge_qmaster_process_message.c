@@ -95,7 +95,7 @@ static void sge_c_job_ack(sge_gdi_ctx_class_t *ctx,
  * Prevent these functions made inline by compiler. This is 
  * necessary for Solaris 10 dtrace pid provider to work.
  */
-#ifdef SOLARIS
+#ifdef __sun
 #pragma no_inline(do_gdi_packet, do_c_ack, do_report_request)
 #endif
 

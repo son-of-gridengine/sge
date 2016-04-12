@@ -104,7 +104,7 @@
 #include "msg_daemons_common.h"
 #include "binding_support.h"
 
-#if defined(SOLARIS)
+#if __sun
 #   include "sge_smf.h"
 #endif
 
@@ -135,7 +135,7 @@ static bool parse_job_accounting_and_create_logical_list(const char* binding_str
 
 
 #if COMPILE_DC
-#if defined(SOLARIS) || defined(ALPHA) || defined(LINUX) || defined(FREEBSD) || defined(FREEBSD)
+#if __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __FreeBSD__
 /* local functions */
 static int addgrpid_already_in_use(long);
 static long get_next_addgrpid(lList *, long);
@@ -166,7 +166,7 @@ lListElem* responsible_queue(lListElem *jatep, lListElem *petep)
 }
 
 #if COMPILE_DC
-#if defined(SOLARIS) || defined(ALPHA) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
+#if __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || !__APPLE__
 static long get_next_addgrpid(lList *rlp, long last_addgrpid)
 {
    lListElem *rep;
@@ -260,7 +260,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
    char dce_wrapper_cmd[SGE_PATH_MAX];
 
 #if COMPILE_DC
-#if defined(SOLARIS) || defined(ALPHA) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
+#if __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __APPLE__
    static gid_t last_addgrpid;
 #endif
 #endif   
@@ -914,7 +914,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
             }
          }
          var_list_set_sharedlib_path(&environmentList);
-#if defined(HP1164)
+#if __hpux
          if (mconf_get_inherit_env() != true) {
             var_list_delete_string(&environmentList, "SHLIB_PATH");
          }
@@ -951,7 +951,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
 
 #ifdef COMPILE_DC
 
-#  if defined(SOLARIS) || defined(ALPHA) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
+#  if __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __APPLE__
 
       {
          lList *rlp = NULL;
@@ -1602,7 +1602,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
    }
    fprintf(fp, "csp=%d\n", (int)csp_mode);
 
-#ifdef INTERIX
+#ifdef __INTERIX
    /* should the job display its gui to the visible desktop? */
    {
       const char *s;
@@ -1814,7 +1814,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       i = -1;
    }
    else {
-#if defined(SOLARIS)
+#if __sun
        i = sge_smf_contract_fork(err_str, err_length);
        if (i == -4) {
            /* Could not load libcontract or libscf */
@@ -1875,7 +1875,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
       putenv(ccname);
    }
 
-#if defined(INTERIX)
+#if __INTERIX
    /*
     * In Interix, we have to start the shepherd as Administrator,
     * because there seems to be some bug with inheriting euid

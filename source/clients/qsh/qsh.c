@@ -44,7 +44,7 @@
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <netinet/in.h>
-#if defined(INTERIX) || defined(HPUX)
+#if __INTERIX || __hpux
 #include <arpa/inet.h>
 #endif
 
@@ -90,16 +90,16 @@
 #include "msg_qsh.h"
 #include "msg_common.h"
 
-#if defined(DARWIN)
+#if __APPLE__
 #  include <termios.h>
 #  include <sys/ttycom.h>
 #  include <sys/ioctl.h>
-#elif defined(HP11) || defined(HP1164)
+#elif __hpux
 #  include <termios.h>
-#elif defined(INTERIX)
+#elif __INTERIX
 #  include <termios.h>
 #  include <sys/ioctl.h>
-#elif defined(FREEBSD) || defined(NETBSD)
+#elif __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #  include <termios.h>
 #else
 #  include <termio.h>

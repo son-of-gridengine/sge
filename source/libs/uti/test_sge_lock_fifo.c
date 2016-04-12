@@ -158,7 +158,7 @@ int validate(int thread_count) {
       } else {
          for (i=0; i < thread_count; i++) {
             if (is_in_tolerance(results[i]*2, maxlocks, 50) != 0) {
-               #if !defined(DARWIN) && !defined(AIX)
+               #if !__APPLE__ && !_AIX
                /* pthreads on darwin and aix scales very bad and this test fail */
                ret = 1;
                break;

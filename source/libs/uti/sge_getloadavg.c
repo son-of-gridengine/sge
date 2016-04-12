@@ -46,33 +46,33 @@
 
 #include "sge.h"
 
-#if defined(SOLARIS) 
+#if __sun
 #  include <nlist.h> 
 #  include <sys/cpuvar.h>
 #  include <kstat.h> 
 #  include <sys/loadavg.h> 
 #elif defined(__linux__) || defined(__CYGWIN__)
 #  include <ctype.h>
-#elif defined(HP11) || defined(HP1164)
+#elif __hpux
 #  include <sys/param.h>
 #  include <sys/pstat.h>
-#elif defined(DARWIN)
+#elif __APPLE__
 # include <mach/host_info.h>
 # include <mach/mach_host.h>
 # include <mach/mach_init.h>
 # include <mach/machine.h>
-#elif defined(FREEBSD)
+#elif __FreeBSD__
 #  if defined(__FreeBSD_version) && __FreeBSD_version < 500101
 #     include <sys/dkstat.h>
 #  endif
 #  include <sys/resource.h>
 #  include <fcntl.h>
 #  include <kvm.h>
-#elif defined(NETBSD)
+#elif (__NetBSD__ || __OpenBSD__)
 #  include <sys/sched.h>
 #  include <sys/param.h>
 #  include <sys/sysctl.h>
-#elif defined(AIX51)
+#elif _AIX
 #  include <sys/sysinfo.h>
 #  include <nlist.h>
 
@@ -85,11 +85,11 @@
 
 #define KERNEL_TO_USER_AVG(x) ((double)x/SGE_FSCALE)
 
-#if defined(SOLARIS) 
+#if __sun
 #  define CPUSTATES 5
 #  define CPUSTATE_IOWAIT 3
 #  define CPUSTATE_SWAP 4    
-#  if SOLARIS64
+#  if __LP64__
 #     define KERNEL_AVG_TYPE long
 #     define KERNEL_AVG_NAME "avenrun"
 #  else
@@ -101,7 +101,7 @@
 #  define LINUX_LOAD_SOURCE "/proc/loadavg"
 #  define CPUSTATES 4
 #  define PROCFS "/proc" 
-#elif defined(AIX51)
+#elif _AIX
 #  define KERNEL_NAME_FILE "/unix"
 #  define KERNEL_AVG_NAME "avenrun"
 #  define KERNEL_AVG_TYPE long long
@@ -109,7 +109,7 @@
 #  define SGE_FSCALE 1024.0
 #endif
 
-#if defined(FREEBSD)
+#if __FreeBSD__
 typedef kvm_t* kernel_fd_type;
 #else 
 typedef int kernel_fd_type;
@@ -119,17 +119,17 @@ typedef int kernel_fd_type;
 static long percentages(int cnt, double *out, long *new, long *old, long *diffs);
 #endif
 
-#if defined(ALPHA4) || defined(ALPHA5) || defined(HPUX) || defined(IRIX) || defined(__linux__) || defined(DARWIN) || defined(HAS_AIX5_PERFLIB) || defined(__CYGWIN__)
+#if __hpux || defined(__linux__) || __APPLE__ || defined(HAS_AIX5_PERFLIB) || defined(__CYGWIN__)
 
 static double get_cpu_load(void);    
 
 #endif
 
-#if __linux__ || __CYGWIN__
+#if (__linux__ || __CYGWIN__)
 static char* skip_token(char *p); 
 #endif
 
-#if defined(ALPHA4) || defined(ALPHA5) || defined(IRIX) || defined(HP10) || defined(FREEBSD)
+#if __FreeBSD__
 
 static int sge_get_kernel_fd(kernel_fd_type *kernel_fd);
 
@@ -139,14 +139,14 @@ static int getkval(unsigned long offset, int *ptr, int size, char *refstr);
 
 #endif 
 
-#if !defined(__linux__) && !defined(SOLARIS) && !defined(__CYGWIN__)
+#if !defined(__linux__) && !__sun && !defined(__CYGWIN__)
 static kernel_fd_type kernel_fd;
 #endif
 
 /* MT-NOTE: code basing on kernel_initialized global variable needs not to be MT safe */
 static int kernel_initialized = 0;
 
-#if defined(ALPHA4) || defined(ALPHA5) || defined(IRIX) || defined(HP10) || defined(FREEBSD)
+#if __FreeBSD__
 
 static int sge_get_kernel_address(
 char *name,
@@ -157,7 +157,7 @@ long *address
    DENTER(TOP_LAYER, "sge_get_kernel_address");
 
    {
-#  if defined(AIX51)
+#  if _AIX
       struct nlist64 kernel_nlist[2];
 #  else
       struct nlist kernel_nlist[2];
@@ -165,9 +165,9 @@ long *address
 
       kernel_nlist[0].n_name = name;
       kernel_nlist[1].n_name = NULL;
-#  if defined(ALPHA4) || defined(ALPHA5) || defined(HPUX)
+#  if __hpux
       if (nlist(KERNEL_NAME_FILE, kernel_nlist) >= 0)
-#  elif defined(AIX51)
+#  elif _AIX
       if (nlist64(KERNEL_NAME_FILE, kernel_nlist) >= 0)
 #  else
       if (kernel_initialized && (kvm_nlist(kernel_fd, kernel_nlist) >= 0)) 
@@ -189,7 +189,7 @@ long *address
 static int sge_get_kernel_fd(
 kernel_fd_type *fd 
 ) {
-#if !(defined(IRIX) || defined(HP10) || defined(ALPHA4) || defined(ALPHA5) || defined(AIX51))
+#if !(_AIX)
    char prefix[256] = "my_error:";
 #endif   
 
@@ -197,7 +197,7 @@ kernel_fd_type *fd
 
    if (!kernel_initialized) {
 
-#if defined(IRIX) || defined(HP10) || defined(ALPHA4) || defined(ALPHA5) || defined(AIX51)
+#if _AIX
       kernel_fd = open("/dev/kmem", 0);
       if (kernel_fd != -1) 
 #else 
@@ -224,7 +224,7 @@ char *refstr
 ) {
    kernel_fd_type kernel_fd;
 
-#if defined(FREEBSD)
+#if __FreeBSD__
    if (sge_get_kernel_fd(&kernel_fd)
        && kvm_read(kernel_fd, offset, (char *)ptr, size) != size) {
       if (*refstr == '!') {
@@ -255,7 +255,7 @@ char *refstr
 
 #endif
 
-#if defined(SOLARIS)
+#if __sun
 /* MT-NOTE kstat is not thread save */
 int get_freemem(
 long *freememp 
@@ -277,7 +277,7 @@ long *freememp
 #endif 
 
 
-#if defined(SOLARIS)
+#if __sun
 
 static kstat_ctl_t *kc = NULL;
 static kstat_t **cpu_ks = NULL;
@@ -449,7 +449,7 @@ double get_cpu_load(void) {
    DPRINTF(("cpu_load %f ( %f %f %f %f )\n", cpu_load,
          cpu_states[1], cpu_states[2], cpu_states[3], cpu_states[4]));
 #if 0
-#if defined(SOLARIS) && !defined(SOLARIS64)
+#if __sun && !__LP64__
    DPRINTF(("avenrun(%d %d %d) -> (%f %f %f)\n", avenrun[0], avenrun[1], avenrun[2],
       KERNEL_TO_USER_AVG(avenrun[0]), KERNEL_TO_USER_AVG(avenrun[1]), KERNEL_TO_USER_AVG(avenrun[2])));
 #endif
@@ -543,7 +543,7 @@ double get_cpu_load() {
    return cpu_load;
 }
 
-#elif defined(HP10) || defined(FREEBSD)
+#elif __FreeBSD__
 
 static double get_cpu_load()
 {
@@ -569,7 +569,7 @@ static double get_cpu_load()
    return cpu_load;
 }    
 
-#elif defined(HP11) || defined(HP1164)
+#elif __hpux
 static long percentages_new(int cnt, double *out, long *new, long *old, long *diffs, bool first)
 {
    int i;
@@ -661,7 +661,7 @@ static double get_cpu_load()
    }
 }
 
-#elif defined(DARWIN)
+#elif __APPLE__
 
 double get_cpu_load()
 {
@@ -698,7 +698,7 @@ double get_cpu_load()
    return cpu_load;
 }
 
-#elif defined(NETBSD)
+#elif (__NetBSD__ || __OpenBSD__)
 
 double get_cpu_load()
 {
@@ -758,7 +758,7 @@ double get_cpu_load()
    }
    return cpu_load;
 }
-#elif defined(INTERIX)
+#elif __INTERIX
 
 double get_cpu_load()
 {
@@ -769,7 +769,7 @@ double get_cpu_load()
 }
 #endif
 
-#if defined(ALPHA4) || defined(ALPHA5) || defined(IRIX) || defined(HP10) || defined(TEST_AIX51)
+#if defined(TEST_AIX51)
 
 static int get_load_avg(
 double loadavg[],
@@ -795,7 +795,7 @@ int nelem
    return elements;
 }
 
-#elif defined(HP11) || defined(HP1164)
+#elif __hpux
 
 static int get_load_avg(
 double loadavg[],
@@ -883,7 +883,7 @@ int nelem
 int get_channel_fd()
 {
    if (kernel_initialized) {
-#if defined(SOLARIS) || defined(__linux__) || defined(HP11) || defined(HP1164) || defined(FREEBSD) || defined(__CYGWIN__)
+#if __sun || defined(__linux__) || __hpux || __FreeBSD__ || defined(__CYGWIN__)
       return -1;
 #else
       return kernel_fd;
@@ -897,10 +897,10 @@ int sge_getloadavg(double loadavg[], int nelem)
 {
    int   elem = 0;   
 
-#if defined(SOLARIS) || defined(FREEBSD) || defined(NETBSD) || defined(DARWIN) || defined(__GLIBC__)
+#if __sun || __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || __APPLE__ || defined(__GLIBC__)
    elem = getloadavg(loadavg, nelem); /* <== library function */
    /* __linux__ here would imply without glibc */
-#elif defined(ALPHA5) || defined(IRIX) || defined(HPUX) || defined(__linux__) || defined(HAS_AIX5_PERFLIB) || defined(__CYGWIN__)
+#elif __hpux || defined(__linux__) || defined(HAS_AIX5_PERFLIB) || defined(__CYGWIN__)
    elem = get_load_avg(loadavg, nelem); 
 #else
    elem = -2;

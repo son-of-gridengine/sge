@@ -713,7 +713,7 @@ main(int argc, char **argv)
 	shtemp = Strspl(tmp2, doldol);	/* For << */
 	xfree(tmp2);
     }
-#elif INTERIX
+#elif __INTERIX
     shtemp = str2short(tmpnam(NULL));  /* For << */
 #else /* !WINNT_NATIVE */
     shtemp = Strspl(STRtmpsh, doldol);	/* For << */

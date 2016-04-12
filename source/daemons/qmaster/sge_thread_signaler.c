@@ -62,7 +62,7 @@
 #include "sge_thread_signaler.h"
 #include "msg_qmaster.h"
 
-#if defined(SOLARIS)
+#if __sun
 #   include "sge_smf.h"
 #   include "sge_string.h"
 #endif
@@ -185,7 +185,7 @@ void* sge_signaler_main(void* arg)
              */
             sge_thread_notify_all_waiting();
 
-#if defined(SOLARIS)
+#if __sun
             if (sge_smf_used() == 1) {
                /* We don't do disable on svcadm restart */
                if (sge_strnullcmp(sge_smf_get_instance_state(), SCF_STATE_STRING_ONLINE) == 0 &&

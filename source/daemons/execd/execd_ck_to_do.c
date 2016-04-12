@@ -855,7 +855,7 @@ lListElem *pe_task
    char id_buffer[MAX_STRING_SIZE]; /* static dstring for job id string */
    dstring id_dstring;
 
-#if defined(SOLARIS) || defined(ALPHA) || defined(LINUX) || defined(HP1164) || defined(AIX) || defined(FREEBSD) || defined(DARWIN)
+#if __sun || (__linux__ || __CYGWIN__) || __hpux || _AIX || __FreeBSD__ || __APPLE__
    gid_t addgrpid;
    dstring addgrpid_path = DSTRING_INIT;
 #else   
@@ -872,7 +872,7 @@ lListElem *pe_task
       pe_task_id = lGetString(pe_task, PET_id);
    }
 
-#if defined(SOLARIS) || defined(ALPHA) || defined(LINUX) || defined(HP1164) || defined(AIX) || defined(FREEBSD) || defined(DARWIN)
+#if __sun || (__linux__ || __CYGWIN__) || __hpux || _AIX || __FreeBSD__ || __APPLE__
    /**
     ** read additional group id and use it as osjobid 
     **/

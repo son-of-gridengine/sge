@@ -7,7 +7,7 @@
 #include <grp.h>
 #include <pwd.h>
 
-#if defined SOLARIS || HPUX || NECSX5 || CRAY
+#if __sun || __hpux
 #define _PATH_NOLOGIN "/etc/nologin"
 #define _PATH_BSHELL "/bin/sh"
 #define _PATH_DEFPATH "/usr/bin:/bin"
@@ -79,11 +79,11 @@ int sgessh_do_setusercontext(struct passwd *pwd)
 
    (void) setgid((gid_t)pwd->pw_gid);
 
-#if !defined(INTERIX) /* EB: TODO: There is no initgroups() in INTERIX */
+#if !__INTERIX /* EB: TODO: There is no initgroups() in INTERIX */
    initgroups(pwd->pw_name, pwd->pw_gid);
 #endif
 
-#if (SOLARIS || ALPHA || LINUX || DARWIN)
+#if (__sun || __linux__ || __CYGWIN__ || __APPLE__)
    /* add Additional group id to current list of groups */
    if (add_grp_id) {
       char err_str[1024];

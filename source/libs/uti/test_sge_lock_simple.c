@@ -45,7 +45,7 @@ int get_thrd_demand(void)
 {
    long p = 2;  /* min num of threads */
 
-#if defined(SOLARIS)
+#if __sun
    p = sysconf(_SC_NPROCESSORS_ONLN);
 #endif
 

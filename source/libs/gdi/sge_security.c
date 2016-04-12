@@ -76,7 +76,7 @@
 #include "msg_common.h"
 #include "msg_qmaster.h"
 
-#ifdef INTERIX
+#ifdef __INTERIX
 #include "wingrid/wingrid.h"
 #endif
 
@@ -161,7 +161,7 @@ int sge_ssl_setup_security_path(const char *progname, const char *user) {
    bool from_services   = false;
    int  qmaster_port    = -1;
    char *user_name = sge_strdup(NULL, user);
-#ifdef INTERIX
+#ifdef __INTERIX
    user_name = wl_strip_hostname(user_name);
 #endif
 
@@ -1348,7 +1348,7 @@ sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
       }
    }
 
-#if defined(INTERIX)
+#if __INTERIX
    /*
     * Map "Administrator" to "root", so the QMaster running on Unix
     * or Linux will accept us as "root"
@@ -1356,7 +1356,7 @@ sge_gdi_packet_initialize_auth_info(sge_gdi_ctx_class_t *ctx,
    if (sge_is_user_superuser(username)==true) {
       strncpy(username, "root", sizeof(username));
    }
-#endif  /* defined(INTERIX) */
+#endif  /* __INTERIX */
   
    DPRINTF(("sge_set_auth_info: username(uid) = %s("uid_t_fmt"), groupname = %s("gid_t_fmt")\n",
             username, uid, groupname, gid));

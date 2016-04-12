@@ -30,7 +30,7 @@
 ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#if defined(SOLARIS)
+#if __sun
 /* Redefines from libscf.h */
 #define	SCF_PG_RESTARTER		((const char *)"restarter")
 #define	SCF_PROPERTY_NEXT_STATE		((const char *)"next_state")

@@ -658,7 +658,7 @@ xgetpass(const char *prm)
 static void
 auto_lock(void)
 {
-#ifdef INTERIX
+#ifdef __INTERIX
    return;
 #else
 

@@ -81,7 +81,7 @@
 #   include "sgedefs.h"
 #endif
 
-#if defined(SOLARIS)
+#if __sun
 #   include "sge_smf.h"
 #   include "sge_string.h"
 #endif
@@ -206,7 +206,7 @@ int main(int argc, char **argv)
    }
    ctx->set_exit_func(ctx, execd_exit_func);
    
-#if defined(SOLARIS)
+#if __sun
    /* Init shared SMF libs if necessary */
    if (sge_smf_used() == 1 && sge_smf_init_libs() != 0) {
        SGE_EXIT((void**)&ctx, 1);
@@ -396,7 +396,7 @@ int main(int argc, char **argv)
        INFO((SGE_EVENT, "SIGPIPE received\n"));
    }
 
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
    free_procList();
 #endif
    lFreeList(master_job_list);
@@ -437,7 +437,7 @@ static void execd_exit_func(void **ctx_ref, int i _UNUSED)
    ptf_stop();
 #endif
    
-#if defined(SOLARIS)
+#if __sun
    if (sge_smf_used() == 1) {
       /* We don't do disable on svcadm restart */
       if (sge_strnullcmp(sge_smf_get_instance_state(), SCF_STATE_STRING_ONLINE) == 0 &&

@@ -425,7 +425,7 @@ void sge_write_pid(const char *pid_log_file)
       ERROR((SGE_EVENT, MSG_FILE_CANNOT_CREATE_SS, pid_log_file,
              strerror(errno)));
    }
-#if defined( INTERIX )
+#if __INTERIX
    /*
     * Interix has a bug if the file is created on a NFS mapped drive.
     */ 

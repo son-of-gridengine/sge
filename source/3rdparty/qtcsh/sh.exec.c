@@ -808,7 +808,7 @@ dohash(Char **vv, struct command *c)
 	is_windir = nt_check_if_windir(short2str(*pv));
 #endif /* WINNT_NATIVE */
 	while ((dp = readdir(dirp)) != NULL) {
-#ifndef INTERIX
+#ifndef __INTERIX
 	    if (dp->d_ino == 0)
 		continue;
 #endif

@@ -45,7 +45,7 @@
 #include "uti/sge_log.h"
 #include "uti/msg_utilib.h"
 
-#if !defined(__linux__) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD)
+#if !defined(__linux__) && !__APPLE__ && !__FreeBSD__ && !(__NetBSD__ || __OpenBSD__)
 
 #include <unistd.h>
 
@@ -132,7 +132,7 @@ char *argv[]
 
  
 /*--------------------------------------------------------------------------*/
-#if defined(SOLARIS)
+#if __sun
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -230,7 +230,7 @@ int sge_loadmem(sge_mem_info_t *mem_info)
 #endif /* SOLARIS */
 
 /*--------------------------------------------------------------------------*/
-#if defined(HPUX)
+#if __hpux
 #include <sys/param.h>
 #include <sys/pstat.h>
 
@@ -347,7 +347,7 @@ int sge_loadmem(sge_mem_info_t *mem_info)
 
 
 /*--------------------------------------------------------------------------*/
-#if __linux__ || __CYGWIN__
+#if (__linux__ || __CYGWIN__)
 #include <stdio.h>
 #include <string.h>
 
@@ -401,7 +401,7 @@ FCLOSE_ERROR:
 }
 #endif /* __linux__ */
 
-#if defined(DARWIN)
+#if __APPLE__
 #include <mach/mach_init.h>
 #include <mach/mach_host.h>
 #include <mach/host_info.h>
@@ -425,9 +425,9 @@ int sge_loadmem(sge_mem_info_t *mem_info)
     return 0;
 }
 
-#endif /* DARWIN */
+#endif /* __APPLE__ */
 
-#if defined(FREEBSD)
+#if __FreeBSD__
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #include <fcntl.h>
@@ -505,7 +505,7 @@ int sge_loadmem(sge_mem_info_t *mem_info)
 }
 #endif /* FREEBSD */
 
-#if defined(NETBSD)
+#if (__NetBSD__ || __OpenBSD__)
 
 #define _KMEMUSER                                                              
 #include <sys/param.h>

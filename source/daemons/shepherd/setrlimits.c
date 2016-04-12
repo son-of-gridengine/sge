@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#if defined(DARWIN) || defined(FREEBSD) || defined(NETBSD)
+#if __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #   include <sys/time.h>
 #endif
 
@@ -515,11 +515,11 @@ static void pushlimit(int resource, struct RLIMIT_STRUCT_TAG *rlp,
 
 #if defined(NETBSD_ALPHA) || defined(NETBSD_X86_64) || defined(NETBSD_SPARC64)
 #  define limit_fmt "%ld%s"
-#elif defined(IRIX) || defined(HPUX) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(INTERIX)
+#elif __hpux || __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || __INTERIX
 #  define limit_fmt "%lld%s"
 #elif __linux__ && !__LP64__
 #  define limit_fmt "%llu%s"
-#elif defined(ALPHA) || defined(SOLARIS) || defined(__linux__) || defined(__CYGWIN__)
+#elif __sun || defined(__linux__) || defined(__CYGWIN__)
 #  define limit_fmt "%lu%s"
 #else
 #  define limit_fmt "%d%s"

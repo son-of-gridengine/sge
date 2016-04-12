@@ -1794,9 +1794,9 @@ static Boolean long_get_value (
    size_t buflen,
    long *value )
 {
-#if !defined(LINUX) && !defined(SOLARIS) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD) && \
-   !defined(AIX51) && !defined(AIX43) && !defined(ALPHA) && !defined(HP1164) && !defined(HPUX) && !defined(IRIX) 
-   int errno = 0; 
+#if !(__linux__ || __CYGWIN__) && !__sun && !__APPLE__ && !__FreeBSD__ && \
+    !(__NetBSD__ || __OpenBSD__) && !_AIX && !__hpux
+   int errno = 0;
 #endif
    *value = strtol ( buffer, NULL, 10 );
    return ( !errno );

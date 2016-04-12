@@ -40,12 +40,12 @@
 #include <rpc/types.h>
 #include <rpc/xdr.h>
 
-#if defined(INTERIX)
+#if __INTERIX
 #include <arpa/inet.h>
 #include "wingrid/wingrid.h"
 #endif
 
-#ifdef HPUX
+#ifdef __hpux
 #include <arpa/inet.h>
 #endif
 
@@ -403,7 +403,7 @@ int packdouble(sge_pack_buffer *pb, double d) {
       }
 
       /* copy in packing buffer */
-#if !(defined(WIN32) || defined(INTERIX))                      /* XDR not called */
+#if !(defined(WIN32) || __INTERIX)                      /* XDR not called */
       xdrmem_create(&xdrs, (caddr_t)buf, sizeof(buf), XDR_ENCODE);
 
       if (!(xdr_double(&xdrs, &d))) {
@@ -420,7 +420,7 @@ int packdouble(sge_pack_buffer *pb, double d) {
          return PACK_FORMAT;
       }
 #endif/* WIN32 || INTERIX */
-#if defined(INTERIX)
+#if __INTERIX
       wl_xdrmem_create(&xdrs, (caddr_t)buf, sizeof(buf), XDR_ENCODE);
 
       if (!(wl_xdr_double(&xdrs, &d))) {
@@ -442,10 +442,10 @@ int packdouble(sge_pack_buffer *pb, double d) {
       /* we have to increment the buffer even through WIN32 will not use it */
       pb->cur_ptr = &(pb->cur_ptr[DOUBLESIZE]);
 
-#if !(defined(WIN32) || defined(INTERIX)) /* XDR not called */
+#if !(defined(WIN32) || __INTERIX) /* XDR not called */
       xdr_destroy(&xdrs);
 #endif
-#if defined(INTERIX)
+#if __INTERIX
       wl_xdr_destroy(&xdrs);
 #endif
    }
@@ -718,7 +718,7 @@ int unpackdouble(sge_pack_buffer *pb, double *dp)
 
    /* copy double */
 
-#if !(defined(WIN32) || defined(INTERIX))                   /* XDR not called */
+#if !(defined(WIN32) || __INTERIX)                   /* XDR not called */
    memcpy(buf, pb->cur_ptr, DOUBLESIZE);
    xdrmem_create(&xdrs, buf, DOUBLESIZE, XDR_DECODE);
    if (!(xdr_double(&xdrs, dp))) {
@@ -729,7 +729,7 @@ int unpackdouble(sge_pack_buffer *pb, double *dp)
       return PACK_FORMAT;
    }
 #endif /* WIN32 || INTERIX */
-#if defined(INTERIX)
+#if __INTERIX
    memcpy(buf, pb->cur_ptr, DOUBLESIZE);
    wl_xdrmem_create(&xdrs, buf, DOUBLESIZE, XDR_DECODE);
    if (!(wl_xdr_double(&xdrs, dp))) {
@@ -745,7 +745,7 @@ int unpackdouble(sge_pack_buffer *pb, double *dp)
    pb->cur_ptr = &(pb->cur_ptr[DOUBLESIZE]);
    pb->bytes_used += DOUBLESIZE;
 
-#if !(defined(WIN32) || defined(INTERIX))                   /* XDR not called */
+#if !(defined(WIN32) || __INTERIX)                   /* XDR not called */
    xdr_destroy(&xdrs);
 #endif /* WIN32 || INTERIX */
 #if defined(INTIERX)

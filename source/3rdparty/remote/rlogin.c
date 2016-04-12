@@ -61,11 +61,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#if defined(INTERIX)
+#if __INTERIX
 #  include <arpa/inet.h>
 #endif
 
-#if !defined(FREEBSD) && !defined(NETBSD) && !defined(DARWIN) && !defined(INTERIX) && !defined(__CYGWIN__)
+#if !__FreeBSD__ && !(__NetBSD__ || __OpenBSD__) && !__APPLE__ && !__INTERIX && !defined(__CYGWIN__)
 #include <values.h>
 #endif
 
@@ -111,7 +111,7 @@ u_char escapechar = '~';
 
 #define	get_window_size(fd, wp)	ioctl(fd, TIOCGWINSZ, wp)
 
-#ifdef SOLARIS
+#ifdef __sun
 #include <sys/rlioctl.h>
 #include <sys/sockio.h>
 #endif
@@ -307,7 +307,7 @@ main(argc, argv)
 		if (len + len2 < sizeof(term)) {
 /*			(void)snprintf(term + len, len2 + 1, "/%d", ospeed); */
          char Buffer[32];
-#if !defined(DARWIN) && !defined(INTERIX)
+#if !__APPLE__ && !__INTERIX
          sprintf(Buffer, "/%d", ospeed);
 #else         
          sprintf(Buffer, "/%ld", (long) ospeed);
@@ -662,7 +662,7 @@ writer()
 			}
 
 /* VDSUSP (delayed suspend job control character) does not exist on LINUX */         
-#if !defined(LINUX) && !defined(INTERIX)
+#if !(__linux__ || __CYGWIN__) && !__INTERIX
 			if (CCEQ(deftty.c_cc[VDSUSP], c)) {
 				bol = 1;
 				echo((int)c);

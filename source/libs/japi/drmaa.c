@@ -116,7 +116,7 @@ extern sge_gdi_ctx_class_t *ctx;
 *******************************************************************************/
 
 /* Defined in rshd.c */
-#if defined(DARWIN)
+#if __APPLE__
 #  include <crt_externs.h>
 #  define environ (*_NSGetEnviron())
 #else

@@ -55,11 +55,11 @@ int verydummyprocfs;
 #include <string.h>
 #include <signal.h>
 
-#if defined(SOLARIS) 
+#if __sun
 #  include <sys/procfs.h>   
 #endif
 
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
 #include "sgeobj/sge_proc.h"
 #include "sgeobj/sge_conf.h"
 #endif
@@ -81,7 +81,7 @@ int verydummyprocfs;
 #include "msg_daemons_common.h"
 #include "procfs.h"
 
-#if defined LINUX || defined ALPHA || defined SOLARIS
+#if __linux__ || __CYGWIN__ || __sun
 #ifdef MONITOR_PDC
 static bool monitor_pdc = true;
 #else
@@ -89,7 +89,7 @@ static bool monitor_pdc = false;
 #endif
 #endif
 
-#ifdef LINUX
+#if __linux__ || __CYGWIN__
 #define BIGLINE 1024
 static int linux_proc_io(char *proc, uint64 *iochars);
 static bool linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
@@ -99,7 +99,7 @@ static bool linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
 
 /*-----------------------------------------------------------------------*/
 static gid_t *list = 0;
-#if defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
+#if (__linux__ || __CYGWIN__) || __sun
 
 #define PROC_DIR "/proc"
 
@@ -176,10 +176,10 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
    int groups=0;
    u_long32 max_groups;
    gid_t *list;
-#if defined(SOLARIS) || defined(ALPHA)
+#if __sun
    int fd;
    prcred_t proc_cred;
-#elif defined(LINUX)
+#elif (__linux__ || __CYGWIN__)
    FILE *fp;
    char buffer[1024];
    uid_t uids[4] = {0,0,0,0};
@@ -216,7 +216,7 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
       if (atoi(dent->d_name) == 0)
          continue;
 
-#if defined(SOLARIS) || defined(ALPHA)
+#if __sun
       snprintf(procnam, sizeof(procnam), "%s/%s", PROC_DIR, dent->d_name);
       if ((fd = open(procnam, O_RDONLY, 0)) == -1) {
          DPRINTF(("open(%s) failed: %s\n", procnam, strerror(errno)));
@@ -235,7 +235,7 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
          continue;
       }
       close(fd);
-#elif defined(LINUX)
+#elif (__linux__ || __CYGWIN__)
       if (!strcmp(dent->d_name, "self"))
          continue;
 
@@ -279,7 +279,7 @@ void procfs_kill_addgrpid(gid_t add_grp_id, int sig, tShepherd_trace shepherd_tr
       }
       FCLOSE(fp);
 FCLOSE_ERROR:
-#endif  /* SOLARIS || ALPHA */
+#endif  /* __sun */
 
       /* send each process a signal which belongs to add_grg_id */
       for (i = 0; i < groups; i++) {
@@ -287,13 +287,13 @@ FCLOSE_ERROR:
             pid_t pid;
             pid = (pid_t) atol(dent->d_name);
 
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
             /* if UID, GID, EUID and EGID == 0
              *  don't kill the process!!! - it could be the rpc.nfs-deamon
              */
             if (!(uids[0] == 0 && gids[0] == 0 &&
                   uids[1] == 0 && gids[1] == 0))
-#elif defined(SOLARIS) || defined(ALPHA)
+#elif __sun
             if (!(proc_cred.pr_ruid == 0 && proc_cred.pr_rgid == 0 &&
                   proc_cred.pr_euid == 0 && proc_cred.pr_egid == 0))
 #endif
@@ -341,7 +341,7 @@ void pt_close(void)
 int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
                             int time_stamp, time_t last_time) {
    int fd = -1;
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
    lListElem *pr = NULL;
    SGE_STRUCT_STAT fst;
    unsigned long utime, stime, vsize, pid;
@@ -358,9 +358,9 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
    char procnam[128];
    prstatus_t pr;
    prpsinfo_t pri;
-#endif  /* LINUX */
+#endif  /* (__linux__ || _CYGWIN__) */
 
-#if defined(SOLARIS) || defined(ALPHA)
+#if __sun
    prcred_t proc_cred;
    int ret;
 #endif
@@ -383,7 +383,7 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
    if (atoi(pidname) == 0)
       goto return0;
 
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
    /* Ignore process known not to be in a GE job.  */
    if ((pr = get_pr(atoi(pidname))) != NULL) {
       lSetPosBool(pr, pos_run, true); /* set process as still running */
@@ -454,7 +454,7 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
       }
    }
 
-#  elif defined(SOLARIS) || defined(ALPHA)
+#  elif __sun
 
    snprintf(procnam, sizeof(procnam), "%s/%s", PROC_DIR, pidname);
    if ((fd = open(procnam, O_RDONLY, 0)) == -1) {
@@ -514,7 +514,7 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
       goto return0;
    }
 
-#  endif  /* LINUX */
+#  endif  /* (__linux__ || _CYGWIN__) */
 
    /* try to find a matching job */
    for (curr=job_list->next; curr != job_list; curr=curr->next) {
@@ -524,7 +524,7 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
       job_elem = LNK_DATA(curr, job_elem_t, link);
       for (group=0; !found_it && group<groups; group++) {
          if (job_elem->job.jd_jid == list[group]) {
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
             lSetPosBool(pr, pos_rel, true); /* mark process as relevant */
 #endif
             found_it = 1;
@@ -537,7 +537,7 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
       goto return0;
 
    /* try to find process in this jobs' proc list */
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
    pid_tmp = lGetPosUlong(pr, pos_pid);
 #else
    pid_tmp = pr.pr_pid;
@@ -559,7 +559,7 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
 
       if (monitor_pdc) {
          double utime, stime;
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
          utime = ((double)lGetPosUlong(pr, pos_utime))/sysconf(_SC_CLK_TCK);
 	 stime = ((double)lGetPosUlong(pr, pos_stime))/sysconf(_SC_CLK_TCK);
 
@@ -573,7 +573,7 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
          INFO((SGE_EVENT, "new process "pid_t_fmt" for job "pid_t_fmt
                " (utime = %f stime = %f)\n",
                pr.pr_pid, job_elem->job.jd_jid, utime, stime)); 
-#endif  /* LINUX */
+#endif  /* (__linux__ || _CYGWIN__) */
       }
    } else {
       /* save previous usage data - needed to build delta usage */
@@ -583,7 +583,7 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
 
    proc_elem->proc.pd_tstamp = time_stamp;
 
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
    proc_elem->proc.pd_pid = lGetPosUlong(pr, pos_pid);
    proc_elem->proc.pd_utime  = ((double)lGetPosUlong(pr, pos_utime)) /
      sysconf(_SC_CLK_TCK);
@@ -611,7 +611,7 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
          }
       }
    }
-#else  /* !LINUX */
+#else  /* !(__linux__ || _CYGWIN__) */
    proc_elem->proc.pd_pid    = pr.pr_pid;
    proc_elem->proc.pd_utime  = pr.pr_utime.tv_sec + pr.pr_utime.tv_nsec*1E-9;
    proc_elem->proc.pd_stime  = pr.pr_stime.tv_sec + pr.pr_stime.tv_nsec*1E-9;
@@ -624,7 +624,7 @@ int pt_dispatch_proc_to_job(char *pidname, lnk_link_t *job_list,
       proc_elem->rss            = pri.pr_rssize * pagesize;
       proc_elem->proc.pd_pstart = pri.pr_start.tv_sec + pri.pr_start.tv_nsec*1E-9;
    }
-#endif  /* LINUX */
+#endif  /* (__linux__ || _CYGWIN__) */
 
    proc_elem->mem = 
          ((proc_elem->proc.pd_stime + proc_elem->proc.pd_utime) - old_time) * 
@@ -648,14 +648,14 @@ pt_dispatch_procs_to_jobs(lnk_link_t *job_list, int time_stamp, time_t last_time
    while ((dent = readdir(cwd)))
       pt_dispatch_proc_to_job(dent->d_name, job_list, time_stamp, last_time);
    last_time = time_stamp;
-#if LINUX
+#if (__linux__ || __CYGWIN__)
    clean_procList();
 #endif
    pt_close();
 }
-#endif  /* LINUX || ALPHA || SOLARIS */
+#endif  /* (__linux__ || _CYGWIN__) || __sun */
 
-#ifdef LINUX
+#if (__linux__ || _CYGWIN__)
 /* Return in IOCHARS the number of characters of i/o (read and write)
    for process PROC.  Function value is zero iff the procfs io file is
    found (which needs CONFIG_TASK_IO_ACCOUNTING=y in the Linux
@@ -836,14 +836,14 @@ linux_read_status(char *proc, int time_stamp, lnk_link_t *job_list,
    }
    DRETURN(true);
 }
-#endif  /* LINUX */
+#endif  /* (__linux__ || _CYGWIN__) */
 
 void
 init_procfs(void)
 {
    DENTER(TOP_LAYER, "init_procfs");
    if (list) DRETURN_VOID;
-#ifdef LINUX
+#if (__linux__ || _CYGWIN__)
    /* Initialize the tests.  */
    (void) pss_in_smaps();
    (void) swap_in_smaps();
@@ -857,7 +857,7 @@ init_procfs(void)
          INFO ((SGE_EVENT, SFNMAX, MSG_NO_SWAP));
    }
 #endif
-#if defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
+#if (__linux__ || __CYGWIN__) || __sun
    max_groups = sysconf(_SC_NGROUPS_MAX);
    if (max_groups <= 0) {
       ERROR((SGE_EVENT, SFNMAX, MSG_SGE_NGROUPS_MAXOSRECONFIGURATIONNECESSARY));

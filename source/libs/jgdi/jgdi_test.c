@@ -37,7 +37,7 @@
 
 #include "uti/sge_stdlib.h"
 
-#ifdef DARWIN
+#ifdef __APPLE__
 int JNI_CreateJavaVM_Impl(JavaVM **pvm, void **penv, void *args);
 #endif
 
@@ -79,7 +79,7 @@ JNIEnv* create_vm(int argc, char** argv) {
 	args.options = options;
 	args.ignoreUnrecognized = JNI_FALSE;
 
-#ifdef DARWIN
+#ifdef __APPLE__
    /*
    ** for darwin there exists no JNI_CreateJavaVM, Why not maybe a fix in the future ???
    */

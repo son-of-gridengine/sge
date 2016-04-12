@@ -398,7 +398,7 @@ retype(void)
     (void) ioctl(SHOUT, TCGETA, (ioctl_t) &tty);
 # endif /* POSIX */
 
-#if ! defined(__QNXNTO__) && ! defined(INTERIX)
+#if ! defined(__QNXNTO__) && ! __INTERIX
     tty.c_lflag |= PENDIN;
 #endif
 

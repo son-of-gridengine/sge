@@ -36,10 +36,10 @@
 #include <errno.h>
 #include <string.h>
 
-#if defined(DARWIN) || defined(FREEBSD) || defined(NETBSD)
+#if __APPLE__ || __FreeBSD__ || __NetBSD__ || __OpenBSD__
 #  include <sys/param.h>
 #  include <sys/mount.h>
-#elif defined(LINUX)
+#elif (__linux__ || __CYGWIN__)
 #  include <sys/vfs.h>
 #  include "sge_string.h"
 #  include <mntent.h>
@@ -48,13 +48,13 @@
 #  include <sys/statvfs.h>
 #endif
 
-#if defined(SOLARIS)
+#if __sun
 #include <kstat.h>
 #include <nfs/nfs.h>
 #include <nfs/nfs_clnt.h>
 #endif
 
-#if defined(INTERIX)
+#if __INTERIX
 #  include "wingrid.h"
 #endif
 
@@ -71,17 +71,17 @@ int main(int argc, char *argv[]) {
       printf("Usage: fstype <directory>\n");
       return 1;
    } else {
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
    struct statfs buf;
    FILE *fd = NULL;
    ret = statfs(argv[1], &buf);
-#elif defined(DARWIN) || defined(FREEBSD) || (defined(NETBSD) && !defined(ST_RDONLY))
+#elif __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__ && !defined(ST_RDONLY))
    struct statfs buf;
    ret = statfs(argv[1], &buf);
-#elif defined(INTERIX)
+#elif __INTERIX
    struct statvfs buf;
    ret = wl_statvfs(argv[1], &buf);
-#elif defined(SOLARIS)
+#elif __sun
    struct statvfs buf;
    struct mntinfo_kstat mnt_info;
    minor_t fsid;
@@ -130,9 +130,9 @@ int main(int argc, char *argv[]) {
       return 2;
    }
 
-#if defined (DARWIN) || defined(FREEBSD) || defined(NETBSD)
+#if __APPLE__ || __FreeBSD__ || __NetBSD__ || __OpenBSD__
    printf("%s\n", buf.f_fstypename);
-#elif defined(LINUX)
+#elif (__linux__ || __CYGWIN__)
    /* 0x6969 is NFS_SUPER_MAGIC (see statfs(2) man page) */
    /* See also more values in linux/magic.h (which we can't include).  */
    if (buf.f_type == 0x6969) {
@@ -191,7 +191,7 @@ int main(int argc, char *argv[]) {
          printf("%lx\n", (long unsigned int)buf.f_type);
       }
    }
-#elif defined(INTERIX)
+#elif __INTERIX
    printf("%s\n", buf.f_fstypename);
 #else
    printf("%s\n", buf.f_basetype);

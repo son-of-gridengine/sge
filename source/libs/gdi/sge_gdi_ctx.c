@@ -44,17 +44,18 @@
 #include <sys/ioctl.h>
 #include <locale.h>
 
-#if defined(DARWIN) || defined(INTERIX)
+/* fixme: autoconf tests for headers */
+#if __APPLE__ || __INTERIX
 #  include <termios.h>
 #  include <sys/ioctl.h>
 #  include <grp.h>
-#elif defined(HP1164) || defined(HP11)
+#elif __hpux
 #  include <termios.h>
 #  include <stropts.h>
-#elif defined(SOLARIS64) || defined(SOLARIS86) || defined(SOLARISAMD64)
+#elif __sun
 #  include <stropts.h>
 #  include <termio.h>
-#elif defined(FREEBSD) || defined(NETBSD)
+#elif __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #  include <termios.h>
 #else
 #  include <termio.h>
@@ -678,7 +679,7 @@ sge_gdi_ctx_setup(sge_gdi_ctx_class_t *thiz, int prog_number, const char* compon
    
    es->username = strdup(username);
 
-#if defined( INTERIX )
+#if __INTERIX
    /* Strip Windows domain name from user name */
    {
       char *plus_sign;
@@ -1948,7 +1949,7 @@ sge_setup2(sge_gdi_ctx_class_t **context, u_long32 progid, u_long32 thread_id,
       DRETURN(AE_ERROR);
    }
 
-#if defined(INTERIX)
+#if __INTERIX
    {
       /*
        * If we are at boot time on Windows Vista, the primary group ID of the
@@ -2091,7 +2092,7 @@ static int reresolve_qualified_hostname(sge_gdi_ctx_class_t *thiz) {
 *******************************************************************************/
 bool sge_daemonize_prepare(sge_gdi_ctx_class_t *ctx) {
    pid_t pid;
-#if !(defined(__hpux) || defined(WIN32) || defined(INTERIX) || defined(__CYGWIN__))
+#if !(defined(__hpux) || defined(WIN32) || __INTERIX || defined(__CYGWIN__))
    int fd;
 #endif
 
@@ -2199,7 +2200,7 @@ bool sge_daemonize_prepare(sge_gdi_ctx_class_t *ctx) {
    /* child */
    SETPGRP;
 
-#if !(defined(__hpux) || defined(WIN32) || defined(INTERIX) || defined(__CYGWIN__))
+#if !(defined(__hpux) || defined(WIN32) || __INTERIX || defined(__CYGWIN__))
    if ((fd = open("/dev/tty", O_RDWR)) >= 0) {
       /* disassociate contolling tty */
       ioctl(fd, TIOCNOTTY, (char *) NULL);
@@ -2346,7 +2347,7 @@ bool sge_daemonize_finalize(sge_gdi_ctx_class_t *ctx)
 int sge_daemonize(int *keep_open, unsigned long nr_of_fds, sge_gdi_ctx_class_t *ctx)
 {
 
-#if !(defined(__hpux) || defined(WIN32) || defined(INTERIX) || defined(__CYGWIN__))
+#if !(defined(__hpux) || defined(WIN32) || __INTERIX || defined(__CYGWIN__))
    int fd;
 #endif
 
@@ -2377,7 +2378,7 @@ int sge_daemonize(int *keep_open, unsigned long nr_of_fds, sge_gdi_ctx_class_t *
  
    SETPGRP;                      
  
-#if !(defined(__hpux) || defined(WIN32) || defined(INTERIX) || defined(__CYGWIN__))
+#if !(defined(__hpux) || defined(WIN32) || __INTERIX || defined(__CYGWIN__))
    if ((fd = open("/dev/tty", O_RDWR)) >= 0) {
       /* disassociate contolling tty */
       ioctl(fd, TIOCNOTTY, (char *) NULL);

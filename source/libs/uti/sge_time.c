@@ -268,8 +268,8 @@ const char *sge_ctime32(u_long32 *i, dstring *buffer)
 {
    const char *s;
    char str[128]; 
-#if SOLARIS64
-   volatile
+#if (__sun && __LP64__)
+   volatile                     /* why? */
 #endif
    time_t temp = (time_t)*i;
 

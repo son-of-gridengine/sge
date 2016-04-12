@@ -105,19 +105,19 @@ typedef gid_t addgrpid_t;
 #    define PTF_OS_MIN_PRIORITY   (TS_PRIO_MIN)
 #    define PTF_OS_MAX_PRIORITY   (TS_PRIO_MAX)
 #    define PTF_BACKGROUND_NICE_VALUE 20
-#  elif defined(SOLARIS) || defined(ALPHA) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD)
+#  elif __sun || __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #    define ENFORCE_PRI_RANGE     1
 #    define PTF_MIN_PRIORITY      20
 #    define PTF_MAX_PRIORITY     -10
 #    define PTF_OS_MIN_PRIORITY   20
 #    define PTF_OS_MAX_PRIORITY  -20
-#  elif defined(LINUX) || defined(INTERIX) || defined(AIX)
+#  elif (__linux__ || __CYGWIN__) || __INTERIX || _AIX
 #    define ENFORCE_PRI_RANGE     1
 #    define PTF_MIN_PRIORITY      20
 #    define PTF_MAX_PRIORITY      0
 #    define PTF_OS_MIN_PRIORITY   20
 #    define PTF_OS_MAX_PRIORITY  -20
-#  elif defined(HP1164)
+#  elif __hpux
 #    define ENFORCE_PRI_RANGE     1
 #    define PTF_MIN_PRIORITY      39
 #    define PTF_MAX_PRIORITY      0

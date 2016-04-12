@@ -344,7 +344,7 @@ static void ignore_signals(void)
    sigaction(SIGTTOU, &act, NULL);
    sigaction(SIGURG, &act, NULL);
 
-#if !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD)
+#if !__APPLE__ && !__FreeBSD__ && !__NetBSD__ || __OpenBSD__
    sigaction(SIGPOLL, &act, NULL);
 #endif
 

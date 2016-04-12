@@ -56,7 +56,7 @@
 #include "msg_common.h"
 #include "msg_daemons_common.h"
 
-#if defined(SOLARIS)
+#if __sun
 #   include "sge_smf.h"
 #endif
 
@@ -134,7 +134,7 @@ static void sge_send_mail(u_long32 progid, const char *mailer_in,
    bool done;
    char *mailer;
 
-#if !defined(INTERIX)
+#if !__INTERIX
    struct rusage rusage;
 #endif
 
@@ -153,7 +153,7 @@ static void sge_send_mail(u_long32 progid, const char *mailer_in,
 
    alarm(0);
 
-#if defined(SOLARIS)
+#if __sun
    char err_str[256];
    i = sge_smf_contract_fork(err_str, 256);
    /* 
@@ -252,7 +252,7 @@ static void sge_send_mail(u_long32 progid, const char *mailer_in,
       sigprocmask(SIG_SETMASK, &io_mask, &omask);
       sigaction(SIGALRM, &sigalrm_vec, &sigalrm_ovec);
 
-#if defined(INTERIX)
+#if __INTERIX
       pid2 = waitpid(pid, &status, 0);
 #else
       pid2 = wait3(&status, 0, &rusage);

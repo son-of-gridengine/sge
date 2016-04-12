@@ -32,7 +32,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#if defined(SOLARIS) || defined(HPUX) || defined(ALPHA) || defined(LINUX) || defined(IRIX) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(HAS_AIX5_PERFLIB)
+#if __sun || __hpux || (__linux__ || __CYGWIN__) || __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || defined(HAS_AIX5_PERFLIB)
 
 #define SGE_LOADMEM
 

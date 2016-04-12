@@ -55,7 +55,7 @@
 
 #include "msg_common.h"
 
-#if defined( INTERIX )
+#if __INTERIX
 #   include "wingrid.h"
 #   include "../../../utilbin/sge_passwd.h"
 #endif
@@ -219,13 +219,13 @@ int sge_set_admin_username(const char *user, char *err_str, size_t lstr)
    int ret, ngroups;
    uid_t uid;
    gid_t gid, *groups;
-#if defined( INTERIX )
+#if __INTERIX
    char fq_name[1024];
 #endif
 
    DENTER(UIDGID_LAYER, "sge_set_admin_username");
 
-#if defined( INTERIX ) 
+#if __INTERIX
    /* For Interix: Construct full qualified admin user name.
     * As admin user is always local, use hostname as domain name.
     * If admin user is "none", it is a special case and 
@@ -300,13 +300,13 @@ bool sge_is_admin_user(const char *username)
 {
    bool       ret = false;
    const char *admin_user;
-#ifdef INTERIX
+#ifdef __INTERIX
    char       fq_name[1024];
 #endif
 
    admin_user = bootstrap_get_admin_user();
    if(admin_user != NULL && username != NULL) {
-#ifdef INTERIX
+#ifdef __INTERIX
       /* For Interix: Construct full qualified admin user name.
        * As admin user is always local, use hostname as domain name.
        * If admin user is "none", it is a special case and
@@ -356,7 +356,7 @@ int sge_switch2admin_user(void)
    int ngroups;
 
    DENTER(UIDGID_LAYER, "sge_switch2admin_user");
-#if !defined(INTERIX)
+#if !__INTERIX
    /*
     * On Windows Vista (and probably later versions) we can't set the effective
     * user ID to somebody else during boot time, because the local Administrator
@@ -433,7 +433,7 @@ exit:
 ******************************************************************************/
 int sge_switch2start_user(void)
 {
-#if !defined(INTERIX)
+#if !__INTERIX
    uid_t uid, start_uid;
    gid_t gid, start_gid;
 #endif
@@ -441,7 +441,7 @@ int sge_switch2start_user(void)
    int ret = 0, ngroups;
 
    DENTER(UIDGID_LAYER, "sge_switch2start_user");
-#if !defined(INTERIX)
+#if !__INTERIX
    /*
     * On Windows Vista (and probably later versions) we can't set the effective
     * user ID to somebody else during boot time, because the local Administrator
@@ -640,7 +640,7 @@ int sge_group2gid(const char *gname, gid_t *gidp, int retries)
          DEXIT;
          return 1;
       }
-#if defined(INTERIX)
+#if __INTERIX
       if (getgrnam_nomembers_r(gname, &grentry, buffer, size, &gr) != 0)
 #else
       if (getgrnam_r(gname, &grentry, buffer, size, &gr) != 0)
@@ -819,7 +819,7 @@ int _sge_gid2group(gid_t gid, gid_t *last_gid, char **groupnamep, int retries)
       buf = sge_malloc(size);
       
      /* max retries that are made resolving group name */
-#if defined (INTERIX)
+#if __INTERIX
       while (getgrgid_nomembers_r(gid, &grentry, buf, size, &gr) != 0)
 #else
       while (getgrgid_r(gid, &grentry, buf, size, &gr) != 0)
@@ -1008,7 +1008,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
                             int use_qsub_gid, gid_t qsub_gid,
                             char *buffer, int size, bool skip_silently)
 {
-#if !(defined(WIN32) || defined(INTERIX)) /* var not needed */
+#if !(defined(WIN32) || __INTERIX) /* var not needed */
    int status;
 #endif
    struct passwd *pw;
@@ -1042,7 +1042,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
       pw->pw_gid = qsub_gid;
    }
  
-#if !defined(INTERIX)
+#if !__INTERIX
    if (!intermediate_user) {
       errno = 0;
       /*
@@ -1069,7 +1069,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
    }
 #endif
 
-#if !(defined(WIN32) || defined(INTERIX)) /* initgroups not called */
+#if !(defined(WIN32) || __INTERIX) /* initgroups not called */
    status = initgroups(pw->pw_name, old_grp_id);
  
    /* Why am I doing it this way?  Good question,
@@ -1100,7 +1100,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
 #endif
 #endif /* WIN32 */
  
-#if defined(SOLARIS) || defined(ALPHA) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
+#if __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __APPLE__
    /* add Additional group id to current list of groups */
    if (add_grp) {
       if (sge_add_group(add_grp, err_str, lstr, skip_silently) == -1) {
@@ -1116,7 +1116,7 @@ static int _sge_set_uid_gid_addgrp(const char *user, const char *intermediate_us
          return 1;
       }
 
-#if defined( INTERIX )
+#if __INTERIX
       /*
        * Do only if windomacc=true is set and user is not the superuser.
        * For non-interactive jobs, user shouldn't be the superuser.
@@ -1269,7 +1269,7 @@ int sge_add_group(gid_t add_grp_id, char *err_str, size_t lstr, bool skip_silent
       sge_free(&list);
       return -1;
    }   
-#if !defined(INTERIX)
+#if !__INTERIX
 
    if (groups < max_groups) {
       list[groups] = add_grp_id;
@@ -1386,7 +1386,7 @@ struct group *sge_getgrgid_r(gid_t gid, struct group *pg,
    DENTER(UIDGID_LAYER, "sge_getgrgid_r");
 
    while(retries-- && !res) {
-#if defined(INTERIX)
+#if __INTERIX
       if (getgrgid_nomembers_r(gid, pg, *buffer, bufsize, &res) != 0)
 #else
       if (getgrgid_r(gid, pg, *buffer, bufsize, &res) != 0)
@@ -1435,7 +1435,7 @@ bool sge_is_user_superuser(const char *name)
 {
    bool ret = false;
 
-#if defined(INTERIX)
+#if __INTERIX
    char buffer[1000];
    char *plus_sign;
 
@@ -2046,7 +2046,7 @@ password_find_entry(char *users[], char *encrypted_pwds[], const char *user)
    return ret;
 }
 
-#if defined(INTERIX)
+#if __INTERIX
 /* Not MT-Safe */
 /* Read password for user from sgepasswd file, decrypt password */
 int uidgid_read_passwd(const char *user, char **pass, char *err_str, size_t lstr)
@@ -2099,4 +2099,4 @@ int uidgid_read_passwd(const char *user, char **pass, char *err_str, size_t lstr
    }
    return ret;
 }
-#endif /* #if defined(INTERIX) */
+#endif /* #if __INTERIX */

@@ -37,16 +37,16 @@
 #include <signal.h>
 #include <string.h>
 
-#if defined(DARWIN)
+#if __APPLE__
 #  include <termios.h>
 #  include <sys/ttycom.h>
 #  include <sys/ioctl.h>
-#elif defined(HP11) || defined(HP1164)
+#elif __hpux
 #  include <termios.h>
-#elif defined(INTERIX) || defined(__CYGWIN__)
+#elif __INTERIX || defined(__CYGWIN__)
 #  include <termios.h>
 #  include <sys/ioctl.h>
-#elif defined(FREEBSD) || defined(NETBSD)
+#elif __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #  include <termios.h>
 #  include <sys/ioctl.h>
 #else

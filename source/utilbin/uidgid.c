@@ -36,7 +36,7 @@
 #include <string.h>
 
 #include "basis_types.h"
-#if defined(INTERIX)
+#if __INTERIX
 #  include "wingrid.h"
 #endif
 
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
  if (!strcmp(argv[1], "-uid"))
     printf(uid_t_fmt"\n", getuid());
  else if (!strcmp(argv[1], "-euid"))
-#if defined(INTERIX)
+#if __INTERIX
     /*
      * In Interix, return 0 instead of Administrator ID,
      * because the Installation script tests always for 0.

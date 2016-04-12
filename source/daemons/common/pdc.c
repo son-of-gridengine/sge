@@ -84,7 +84,7 @@ int main(int argc,char *argv[])
 #include <sys/swap.h>
 #endif
 
-#if defined(AIX)
+#if _AIX
 #  if defined(_ALL_SOURCE)
 #     undef _ALL_SOURCE
 #  endif
@@ -92,7 +92,7 @@ int main(int argc,char *argv[])
 #include <sys/types.h>
 #endif
 
-#if defined(FREEBSD)
+#if __FreeBSD__
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #include <sys/user.h>
@@ -102,7 +102,7 @@ int main(int argc,char *argv[])
 #include <limits.h>
 #endif
 
-#if defined(DARWIN)
+#if __APPLE__
 #include <sys/sysctl.h>
 #include <mach/mach.h>
 #include <mach/task.h>
@@ -110,12 +110,12 @@ int main(int argc,char *argv[])
 #endif
 
 
-#if defined(HP1164)
+#if __hpux
 #include <sys/param.h>
 #include <sys/pstat.h>
 #endif
 
-#if defined(LINUX) || defined(ALPHA) || defined(IRIX) || defined(SOLARIS) || defined(DARWIN) || defined (FREEBSD) || defined(NETBSD) || defined(HP1164) || defined(AIX)
+#if (__linux__ || __CYGWIN__) || __sun || __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || __hpux || _AIX
 
 #include "uti/sge_os.h"
 #endif
@@ -123,7 +123,7 @@ int main(int argc,char *argv[])
 #if defined(IRIX)
 #  define F64 "%lld"
 #  define S64 "%lli"
-#elif defined(LINUX) || defined(SOLARIS)
+#elif (__linux__ || __CYGWIN__) || __sun
 #  define F64 "%ld"
 #  define S64 "%li"
 #else
@@ -135,7 +135,7 @@ int main(int argc,char *argv[])
       static FILE *df = NULL;
 #  endif
 
-#ifdef SOLARIS
+#ifdef __sun
 int getpagesize(void);
 #endif
 
@@ -182,14 +182,14 @@ char unixname[128];      /* the name of the booted kernel          */
 #define INCJOBPTR(ptr, nbyte) INCPTR(struct psJob_s, ptr, nbyte)
 #define INCPROCPTR(ptr, nbyte) INCPTR(struct psProc_s, ptr, nbyte)
 
-#if defined(LINUX) || defined(SOLARIS) || defined(ALPHA) || defined(FREEBSD) || defined(DARWIN)
+#if (__linux__ || __CYGWIN__) || __sun || __FreeBSD__ || __APPLE__
 
 void pdc_kill_addgrpid(gid_t add_grp_id, int sig,
    tShepherd_trace shepherd_trace)
 {
-#if defined(LINUX) || defined(SOLARIS) || defined(ALPHA)
-   procfs_kill_addgrpid(add_grp_id, sig, shepherd_trace);      
-#elif defined(FREEBSD)
+#if (__linux__ || __CYGWIN__) || __sun
+   procfs_kill_addgrpid(add_grp_id, sig, shepherd_trace);
+#elif __FreeBSD__
    kvm_t *kd;
    int i, nprocs;
    struct kinfo_proc *procs;
@@ -232,7 +232,7 @@ void pdc_kill_addgrpid(gid_t add_grp_id, int sig,
       }
    }
    kvm_close(kd);
-#elif defined(DARWIN)
+#elif __APPLE__
    int i, nprocs;
    struct kinfo_proc *procs;
    struct kinfo_proc *procs_begin;
@@ -856,9 +856,9 @@ static int psRetrieveOSJobData(void) {
 
    get_arsess_list(&arsess_list);
 
-#elif defined(LINUX) || defined(ALPHA) || defined(SOLARIS)
+#elif (__linux__ || __CYGWIN__) || __sun
    pt_dispatch_procs_to_jobs(&job_list, time_stamp, last_time);
-#elif defined(AIX)
+#elif _AIX
    {
       #define SIZE 16
 
@@ -938,7 +938,7 @@ static int psRetrieveOSJobData(void) {
         } /* process */
       }
    }
-#elif defined(HP1164)
+#elif __hpux
    {
       #define SIZE 16
       struct pst_status pstat_buffer[SIZE];
@@ -1021,7 +1021,7 @@ static int psRetrieveOSJobData(void) {
         idx = pstat_buffer[count-1].pst_idx + 1;
       }
    }
-#elif defined(FREEBSD)
+#elif __FreeBSD__
    {
       kvm_t *kd;
       int i, nprocs;
@@ -1100,7 +1100,7 @@ static int psRetrieveOSJobData(void) {
       }
       kvm_close(kd);
    }
-#elif defined(DARWIN)
+#elif __APPLE__
    {
       int i, nprocs;
       struct kinfo_proc *procs;
@@ -1590,7 +1590,7 @@ static int psRetrieveOSJobData(void) {
 
       }
 
-#elif defined(ALPHA) || defined(FREEBSD) || defined(LINUX) || defined(SOLARIS) || defined(HP1164) || defined(DARWIN)
+#elif __FreeBSD__ || (__linux__ || __CYGWIN__) || __sun || __hpux || __APPLE__
       {
          lnk_link_t *currp, *nextp;
 
@@ -1613,9 +1613,9 @@ static int psRetrieveOSJobData(void) {
                job->jd_stime_a += proc->pd_stime;    
                job->jd_vmem += proc_elem->vmem;    
                job->jd_rss += proc_elem->rss;    
-               job->jd_mem += (proc_elem->mem/1024.0);    
-#if defined(ALPHA) || defined(LINUX)
-               job->jd_chars += proc_elem->delta_chars;     
+               job->jd_mem += (proc_elem->mem/1024.0);
+#if (__linux__ || __CYGWIN__)
+               job->jd_chars += proc_elem->delta_chars;
 #endif
             } else { 
                /* most likely exited */
@@ -1671,7 +1671,7 @@ int psStartCollector(void)
    pagesize = getpagesize();
 
    /* retrieve static parameters */
-#if defined(LINUX) || defined(IRIX) || defined(SOLARIS) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(HP1164)
+#if (__linux__ || __CYGWIN__) || defined(IRIX) || __sun || __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || __hpux
 #  ifdef PDC_STANDALONE
    ncpus = sge_nprocs();
 #  endif
@@ -1688,10 +1688,6 @@ int psStartCollector(void)
 
 int psStopCollector(void)
 {
-#if defined(ALPHA)
-   close(kmem_fd);
-#endif
-
    return 0;
 }
 
@@ -1852,7 +1848,7 @@ struct psJob_s *psGetAllJobs(void)
    psRetrieveOSJobData();
 
    /* calculate size of return data */
-#ifndef SOLARIS
+#ifndef __sun
    rsize = sizeof(uint64);
 #else
    rsize = 8;
@@ -1875,7 +1871,7 @@ struct psJob_s *psGetAllJobs(void)
    /* fill in return data */
    jobs = rjob;
    *(uint64 *)jobs = jobcount;
-#ifndef SOLARIS
+#ifndef __sun
    INCJOBPTR(jobs, sizeof(uint64));
 #else
    INCJOBPTR(jobs, 8);

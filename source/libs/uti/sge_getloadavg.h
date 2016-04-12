@@ -32,11 +32,11 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#if defined(LINUX) || defined(SOLARIS) || defined(SOLARIS64) || defined(ALPHA5) || defined(IRIX) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(HAS_AIX5_PERFLIB) || defined(INTERIX)
+#if (__linux__ || __CYGWIN__) || __sun || __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || defined(HAS_AIX5_PERFLIB) || __INTERIX
 #  define SGE_LOADAVG
 #endif
 
-#if defined(LINUX) || defined(SOLARIS) || defined(SOLARIS64) || defined(ALPHA4) || defined(ALPHA5) || defined(IRIX) || defined(HPUX) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(TEST_AIX51)
+#if (__linux__ || __CYGWIN__) || __sun || __hpux || __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || defined(TEST_AIX51)
 #  define SGE_LOADCPU
 #endif
 
@@ -46,7 +46,7 @@ int sge_getloadavg(double loadavg[], int nelem);
 
 #endif
 
-#ifdef SOLARIS
+#ifdef __sun
 int get_freemem(long *freememp);
 #endif
 

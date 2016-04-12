@@ -36,7 +36,7 @@
 #include <sys/time.h>
 #include <sys/times.h>
 
-#if defined(FREEBSD) || defined(__OpenBSD__)
+#if __FreeBSD__ || defined(__OpenBSD__)
 #include <pthread.h>
 #endif
 

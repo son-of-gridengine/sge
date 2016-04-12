@@ -55,7 +55,7 @@ void setosjobid(pid_t sid _UNUSED, gid_t *add_grp_id_ptr, struct passwd *pw _UNU
 
    shepherd_trace("setosjobid: uid = "gid_t_fmt", euid = "uid_t_fmt, getuid(), geteuid());
 
-#  if defined(SOLARIS) || defined(ALPHA) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
+#  if __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __APPLE__
       /* Read SgeId from config-File and create Addgrpid-File */
       {  
          char *cp;
@@ -69,7 +69,7 @@ void setosjobid(pid_t sid _UNUSED, gid_t *add_grp_id_ptr, struct passwd *pw _UNU
       }
       fprintf(fp, gid_t_fmt"\n", *add_grp_id_ptr);
       FCLOSE(fp);   
-# elif defined(HP1164) || defined(AIX)
+# elif __hpux || _AIX
     {
       if ((fp = fopen("addgrpid", "w")) == NULL) {
          shepherd_error(1, "can't open \"addgrpid\" file");
