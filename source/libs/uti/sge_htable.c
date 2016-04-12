@@ -56,8 +56,8 @@
 *     htable -- A Hashtable Implementation for Grid Engine 
 *
 *  SYNOPSIS
-*     htable sge_htable_create(int size, 
-*                   int (*hash_func)(const void *), 
+*     htable sge_htable_create(int size,
+*                   unsigned int (*hash_func)(const void *),
 *                   int (*compare_func)(const void *, const void *));
 *
 *     void sge_htable_destroy(htable ht);
@@ -103,7 +103,7 @@ typedef struct _htable_rec {
     long mask;                /* Current size of hash table minus 1. */
     long numentries;          /* Number of entries currently in table. */
     const void *(*dup_func)(const void *); /* pointer to function duplicating key */
-    int (*hash_func)(const void *);        /* pointer to hash function */
+    unsigned int (*hash_func)(const void *); /* pointer to hash function */
     int (*compare_func)(const void *, const void *);   /* pointer to compare function */
 } htable_rec;
 
