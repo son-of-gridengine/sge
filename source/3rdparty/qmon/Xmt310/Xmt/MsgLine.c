@@ -48,7 +48,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#ifdef DARWIN
+#ifdef __APPLE__
 #include <stddef.h>
 size_t wcslen(const wchar_t *s);
 #else
@@ -780,7 +780,7 @@ StringConst s;
     XmtAssertWidgetClass(w, xmtMsgLineWidgetClass, "XmtMsgLineAppend");
     handle_delayed_action(mw);
     mbstowcs(wcs, s, 8*BUFSIZ-1);
-#ifndef DARWIN    
+#ifndef __APPLE__
     mblen = wcslen(wcs);
 #else
     mblen = strlen(s);

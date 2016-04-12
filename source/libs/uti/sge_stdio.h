@@ -208,7 +208,7 @@ pid_t sge_peopen_r(const char *shell, int login_shell, const char *command,
                  const char *user, char **env,  FILE **fp_in, FILE **fp_out,
                  FILE **fp_err, bool null_stderr);
 
-#if defined(SOLARIS)
+#if __sun
 #define SGE_DEFAULT_PATH "/usr/local/bin:/bin:/usr/bin:/usr/ucb"
 #else
 #define SGE_DEFAULT_PATH "/usr/local/bin:/bin:/usr/bin"

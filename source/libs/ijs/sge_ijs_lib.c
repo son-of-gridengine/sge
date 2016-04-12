@@ -1,15 +1,16 @@
 /* Portions of this code are Copyright 2011 Univa Inc. */
-#if defined(DARWIN) || defined(INTERIX)
+/* fixme: autoconf tests for headers */
+#if __APPLE__ || __INTERIX
 #  include <termios.h>
 #  include <sys/ioctl.h>
 #  include <grp.h>
-#elif defined(HP1164) || defined(HP11)
+#elif __hpux
 #  include <termios.h>
 #  include <stropts.h>
-#elif defined(SOLARIS64) || defined(SOLARIS86) || defined(SOLARISAMD64)
+#elif __sun
 #  include <stropts.h>
 #  include <termio.h>
-#elif defined(FREEBSD) || defined(NETBSD)
+#elif __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #  include <termios.h>
 #else
 #  include <termio.h>

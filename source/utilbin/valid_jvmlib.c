@@ -37,7 +37,7 @@
 
 #include <string.h>
 
-#ifdef SOLARIS
+#ifdef __sun
 #include <link.h>
 #endif
 
@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-#ifdef DARWIN
+#ifdef __APPLE__
     /* for darwin there exists no JNI_CreateJavaVM, Why not maybe a fix in the future ??? */
     JNI_CreateJavaVM_FuncName = "JNI_CreateJavaVM_Impl";
     JNI_GetCreatedJavaVMs_FuncName = "JNI_GetCreatedJavaVMs_Impl";

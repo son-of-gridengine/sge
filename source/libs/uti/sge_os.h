@@ -54,9 +54,9 @@ typedef struct fd_set {
 #endif /* FD_SETSIZE */
 #endif /* WIN32NATIVE */
 
-#if defined(LINUX) || defined(FREEBSD) || defined(NETBSD) || defined(DARWIN)
+#if (__linux__ || __CYGWIN__) || __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || __APPLE__
 #  define PSCMD "/bin/ps -axc"
-#elif defined(SOLARIS)
+#elif __sun
 #  define PSCMD "/bin/ps -eo pid,fname"
 #else
 #  define PSCMD "/bin/ps -e"

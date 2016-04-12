@@ -46,16 +46,16 @@
 #include <sys/timeb.h>
 #include <sys/resource.h>
 
-#if defined(DARWIN)
+#if __APPLE__
 #  include <termios.h>
 #  include <sys/ttycom.h>
 #  include <sys/ioctl.h>
-#elif defined(HP11) || defined(HP1164)
+#elif __hpux
 #  include <termios.h>
-#elif defined(INTERIX) || defined(__CYGWIN__)
+#elif __INTERIX || defined(__CYGWIN__)
 #  include <termios.h>
 #  include <sys/ioctl.h>
-#elif defined(FREEBSD) || defined(NETBSD)
+#elif __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #  include <sys/ioctl.h>
 #  include <termios.h>
 #else
@@ -1031,7 +1031,7 @@ int close_parent_loop(int exit_status)
       shepherd_trace("waiting for UNREGISTER_RESPONSE_CTRL_MSG");
       while (count < RESPONSE_MSG_TIMEOUT) {
          memset(&recv_mess, 0, sizeof(recv_message_t));
-#if defined(INTERIX)
+#if __INTERIX
 /*
  * TODO: comm_recv_message() should return immediatley when the server
  *       is not running any more. On Interix, it waits until a timeout

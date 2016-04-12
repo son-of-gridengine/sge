@@ -60,7 +60,7 @@
 #include "basis_types.h"
 #include "msg_common.h"
 
-#if defined(INTERIX)
+#if __INTERIX
 #  include "wingrid.h"
 #endif
 

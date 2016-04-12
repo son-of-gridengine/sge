@@ -78,7 +78,7 @@
 #include "msg_common.h"
 #include "msg_execd.h"
 
-#if defined(INTERIX)
+#if __INTERIX
    #include "wingrid/wingrid.h"
 #endif
 
@@ -137,7 +137,7 @@ int do_job_exec(sge_gdi_ctx_class_t *ctx, struct_msg_t *aMsg, sge_pack_buffer *a
          DRETURN(0);
       }
 
-      #if defined(INTERIX) 
+      #if __INTERIX
          if (strcmp(lGetString(job, JB_owner), "root") == 0) {
             char buffer[1000];
             wl_get_superuser_name(buffer, 1000);

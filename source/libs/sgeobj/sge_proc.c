@@ -81,7 +81,7 @@ void append_pr (lListElem *pr)
 *******************************************************************************/
 void gen_procList()
 {
-#ifdef LINUX
+#if (__linux__ || _CYGWIN__)
    procList = lCreateListHash("procList", PRO_Type, true);
 #endif
 }
@@ -98,7 +98,7 @@ void gen_procList()
 *******************************************************************************/
 void free_procList()
 {
-#ifdef LINUX
+#if (__linux__ || _CYGWIN__)
    lFreeList(&procList);
 #endif
 }
@@ -116,7 +116,7 @@ void free_procList()
 *******************************************************************************/
 void clean_procList()
 {
-#ifdef LINUX
+#if (__linux__ || _CYGWIN__)
    lListElem *next = NULL;
    lListElem *ep = NULL;
    lCondition *cp = lWhere("%T(%I == %b)", PRO_Type, PRO_run, false); 

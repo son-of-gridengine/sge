@@ -133,7 +133,7 @@ parallel_maximize_slots_pe(sge_assignment_t *best, int *available_slots);
 static dispatch_t 
 parallel_assignment(sge_assignment_t *a, category_use_t *use_category, int *available_slots);
 
-#ifdef SOLARIS
+#ifdef __sun
 #pragma no_inline(parallel_assignment)
 #endif
 
@@ -151,7 +151,7 @@ parallel_tag_hosts_queues(sge_assignment_t *a, lListElem *hep, int *slots,
                    int *slots_qend, bool *master_host, category_use_t *use_category,
                    lList **unclear_cqueue_list);
 
-#ifdef SOLARIS
+#ifdef __sun
 #pragma no_inline(parallel_tag_hosts_queues)
 #endif
 

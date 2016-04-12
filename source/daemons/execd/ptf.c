@@ -30,7 +30,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#if defined(ALPHA) || defined(SOLARIS)
+#if __sun
 #  include <sys/param.h>        /* for MAX() macro */
 #endif
 
@@ -38,7 +38,7 @@
 
 #if defined(COMPILE_DC) || defined(MODULE_TEST)
 
-#if defined(IRIX) || defined(ALPHA) || defined(LINUX) || defined(SOLARIS) || !defined(MODULE_TEST) || defined(HP1164) || defined(HP1164) || defined(FREEBSD) || defined(DARWIN)
+#if defined(IRIX) || (__linux__ || __CYGWIN__) || __sun || !defined(MODULE_TEST) || __hpux || __FreeBSD__ || __APPLE__
 #   define USE_DC
 #endif
 
@@ -60,7 +60,7 @@
 #  include <sys/schedctl.h>
 #endif
 
-#if defined(ALPHA) || defined(SOLARIS) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
+#if __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __APPLE__
 #  include <sys/resource.h>
 #endif
 
@@ -68,7 +68,7 @@
 #   include <sys/stat.h>
 #   include <fcntl.h>
 #   include <sys/signal.h>
-#   if ( IRIX || ALPHA || SOLARIS )
+#   if ( __sun )
 #      include <sys/fault.h>
 #   endif
 #   include <sys/syscall.h>
@@ -197,7 +197,7 @@ static void ptf_unregister_registered_jobs(void);
 
 static void ptf_setpriority_ash(lListElem *job, lListElem *osjob, long pri);
 
-#elif defined(ALPHA) || defined(SOLARIS) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
+#elif __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __APPLE__
 
 static void ptf_setpriority_addgrpid(lListElem *job, lListElem *osjob,
                                      long pri);
@@ -236,7 +236,7 @@ static osjobid_t ptf_get_osjobid(lListElem *osjob)
 {
    osjobid_t osjobid;
 
-#if !defined(LINUX) && !defined(SOLARIS) && !defined(ALPHA5) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD) && !defined(INTERIX) && !defined(HP1164) && !defined(AIX)
+#if !(__linux__ || __CYGWIN__) && !__sun && !__APPLE__ && !__FreeBSD__ && !(__NetBSD__ || __OpenBSD__) && !__INTERIX && !__hpux && !_AIX
 
    osjobid = lGetUlong(osjob, JO_OS_job_ID2);
    osjobid = (osjobid << 32) + lGetUlong(osjob, JO_OS_job_ID);
@@ -266,7 +266,7 @@ static osjobid_t ptf_get_osjobid(lListElem *osjob)
 ******************************************************************************/
 static void ptf_set_osjobid(lListElem *osjob, osjobid_t osjobid)
 {
-#if !defined(LINUX) && !defined(SOLARIS) && !defined(ALPHA5) && !defined(DARWIN) && !defined(FREEBSD) && !defined(NETBSD) && !defined(INTERIX) && !defined(HP1164) && !defined(AIX)
+#if !(__linux__ || __CYGWIN__) && !__sun && !__APPLE__ && !__FreeBSD__ && !(__NetBSD__ || __OpenBSD__) && !__INTERIX && !__hpux && !_AIX
 
    lSetUlong(osjob, JO_OS_job_ID2, ((u_osjobid_t) osjobid) >> 32);
    lSetUlong(osjob, JO_OS_job_ID, osjobid & 0xffffffff);
@@ -331,7 +331,7 @@ static lList *ptf_build_usage_list(char *name, lList *old_usage_list)
       lSetDouble(usage, UA_value, 0);
       lAppendElem(usage_list, usage);
 
-#if defined(ALPHA) || defined(LINUX) || defined(SOLARIS) || defined(HP1164) || defined(AIX) || defined(FREEBSD) || defined(DARWIN)
+#if (__linux__ || __CYGWIN__) || __sun || __hpux || _AIX || __FreeBSD__ || __APPLE__
       usage = lCreateElem(UA_Type);
       lSetString(usage, UA_name, USAGE_ATTR_VMEM);
       lSetDouble(usage, UA_value, 0);
@@ -458,7 +458,7 @@ static void ptf_set_native_job_priority(lListElem *job, lListElem *osjob,
 {
 #if defined(__sgi)
    ptf_setpriority_ash(job, osjob, pri);
-#elif defined(ALPHA) || defined(SOLARIS) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
+#elif __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __APPLE__
    ptf_setpriority_addgrpid(job, osjob, pri);
 #endif
 }
@@ -571,7 +571,7 @@ static void ptf_setpriority_ash(lListElem *job, lListElem *osjob, long pri)
    DEXIT;
 }
 
-#elif defined(ALPHA) || defined(SOLARIS) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
+#elif __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __APPLE__
 
 /****** execd/ptf/ptf_setpriority_addgrpid() **********************************
 *  NAME
@@ -601,18 +601,6 @@ static void ptf_setpriority_addgrpid(lListElem *job, lListElem *osjob,
 
    DENTER(TOP_LAYER, "ptf_setpriority_addgrpid");
 
-#  ifdef USE_ALPHA_PGRPS
-
-   /*
-    * set the priority for the entire process group
-    */
-   if (setpriority(PRIO_PGRP, ptf_get_osjobid(osjob), pri) < 0 &&
-       errno != ESRCH) {
-      ERROR((SGE_EVENT, MSG_PRIO_JOBXSETPRIORITYFAILURE_DS,
-             sge_u32c(lGetUlong(job, JL_job_ID)), strerror(errno)));
-   }
-   DEXIT;
-#  else
 
    /*
     * set the priority for each active process
@@ -629,7 +617,6 @@ static void ptf_setpriority_addgrpid(lListElem *job, lListElem *osjob,
       }
    }
    DEXIT;
-#  endif
 }
 
 #endif
@@ -697,7 +684,7 @@ static lListElem *ptf_get_job_os(lList *job_list, osjobid_t os_job_id,
 
    DENTER(TOP_LAYER, "ptf_get_job_os");
 
-#if defined(LINUX) || defined(SOLARIS) || defined(ALPHA5) || defined(DARWIN) || defined(FREEBSD) || defined(NETBSD) || defined(INTERIX) || defined(HP1164) || defined(AIX)
+#if (__linux__ || __CYGWIN__) || __sun || __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || __INTERIX || __hpux || _AIX
    where = lWhere("%T(%I == %u)", JO_Type, JO_OS_job_ID, (u_long32) os_job_id);
 #else
    where = lWhere("%T(%I == %u && %I == %u)", JO_Type,
@@ -849,7 +836,7 @@ static void ptf_get_usage_from_data_collector(void)
    if (jobs) {
       jobcount = *(uint64 *) jobs;
 
-#ifndef SOLARIS
+#ifndef __sun
       INCJOBPTR(jobs, sizeof(uint64));
 #else
       INCJOBPTR(jobs, 8);
@@ -1749,7 +1736,7 @@ int ptf_init(void)
    }
 #if defined(__sgi)
    schedctl(RENICE, 0, 0);
-#elif defined(ALPHA) || defined(SOLARIS) || defined(LINUX) || defined(FREEBSD) || defined(DARWIN)
+#elif __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __APPLE__
    if (getuid() == 0) {
       if (setpriority(PRIO_PROCESS, getpid(), PTF_MAX_PRIORITY) < 0) {
          ERROR((SGE_EVENT, MSG_PRIO_SETPRIOFAILED_S, strerror(errno)));

@@ -62,7 +62,7 @@ void sge_free(void *cp)
 #else
 
 #  include <pwd.h>
-#  if !(defined(DARWIN) || defined(FREEBSD) || defined(NETBSD))
+#  if !(__APPLE__ || __FreeBSD__ || __NetBSD__ || __OpenBSD__)
 #     include <crypt.h>
 #  endif
 #  include <unistd.h>
@@ -72,21 +72,21 @@ void sge_free(void *cp)
 
 
 
-#if defined(IRIX65) || defined(AIX43) || defined(HP1164) || defined(INTERIX) || defined(ALPHA5) || defined(WINDOWS) || defined(__OpenBSD__) || defined(__CYGWIN__)
+#if __hpux || __INTERIX || defined(WINDOWS) || defined(__OpenBSD__) || defined(__CYGWIN__)
 #define JUTI_NO_PAM
-#elif defined(DARWIN) && ! defined(SECURITYPAMAPPL)
+#elif __APPLE__ && ! defined(SECURITYPAMAPPL)
 #include <pam/pam_appl.h>
 #else
 #include <security/pam_appl.h>
 #endif
 
-#if defined(DARWIN) || defined(AIX51) || defined(AIX43) || defined(INTERIX) || defined(FREEBSD) || defined(ALPHA5) || defined(WINDOWS) || defined(NETBSD) || defined(__CYGWIN__)
+#if __APPLE__ || _AIX || __INTERIX || __FreeBSD__ || defined(WINDOWS) || __NetBSD__ || __OpenBSD__ || defined(__CYGWIN__)
 #define JUTI_NO_SHADOW
 #else
 #include <shadow.h>
 #endif
 
-#if defined(AIX51) || defined(AIX43)
+#if _AIX
 #include <userpw.h>
 #endif
 
@@ -373,7 +373,7 @@ static auth_result_t do_system_authentication(const char *username,
 #ifdef DEBUG
    printf("    crypted password: %s\n", crypted_password);
 #endif
-#if !defined(INTERIX)
+#if !__INTERIX
    new_crypted_password = crypt(password, crypted_password);
 #endif
    if (new_crypted_password == NULL) {
@@ -407,7 +407,7 @@ struct app_pam_data {
 };
 
 /* pam conversation function */
-#if defined(SOLARIS) || defined(AIX) || defined(HP11) || defined(HP1164)
+#if __sun || _AIX || __hpux
 static int login_conv(int num_msg, struct pam_message **msgm,
                       struct pam_response **response, void *appdata_ptr);
 #else
@@ -483,7 +483,7 @@ error:
  * to print erro messagae or get user information
  */
 #ifndef JUTI_NO_PAM
-#if defined(SOLARIS) || defined(AIX) || defined(HP11) || defined(HP1164)
+#if __sun || _AIX || __hpux
 static int login_conv(int num_msg, struct pam_message **msgm,
                       struct pam_response **response, void *appdata_ptr)
 #else
@@ -607,8 +607,8 @@ static int login_conv(int num_msg, const struct pam_message **msgm,
 
 static auth_result_t get_crypted_password(const char* username, char* buffer, size_t size,
                                 error_handler_t *error_handler) {
-                     
-#if defined(AIX43) || defined(AIX51)
+
+#if _AIX
 #define BUFSIZE 1024
    char buf[BUFSIZE] = "";
    struct userpw *pw = NULL;

@@ -999,7 +999,7 @@ case AIX51:
       set SHAREDLD = "$SOURCE/scripts/ldAix"
    endif
 
-   set CFLAGS   = "$OFLAG -DAIX -D$BUILDARCH -D_LARGE_FILES -DUSE_STDARG -DUSE_SGE_UNSETENV -DGETHOSTBYADDR_R5 -DGETHOSTBYNAME_R3 $DEBUG_FLAG $CFLAGS -DHAS_AIX_PERFLIB"
+   set CFLAGS   = "$OFLAG -D$BUILDARCH -D_LARGE_FILES -DUSE_STDARG -DUSE_SGE_UNSETENV -DGETHOSTBYADDR_R5 -DGETHOSTBYNAME_R3 $DEBUG_FLAG $CFLAGS -DHAS_AIX_PERFLIB"
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
    set XCFLAGS  = "$XCFLAGS -DNeedFunctionPrototypes -DNeedVarargsPrototypes $XMTDEF $XINCD"
 
@@ -1043,13 +1043,13 @@ case DARWIN_X64:
    set REL = `/usr/bin/sw_vers -productVersion`
    switch ($REL)
    case "10.[1-5].*":
-      set CFLAGS = "$OFLAG -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DHAVE_GETGROUPLIST -D_DARWIN_C_SOURCE -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+      set CFLAGS = "$OFLAG -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DHAVE_GETGROUPLIST -D_DARWIN_C_SOURCE -DDARWIN -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
       set SHARED_CFLAGS = "$SHARED_CFLAGS -arch x86_64"
       set SHARED_LFLAGS = "$SHARED_LFLAGS -arch x86_64"
       set LFLAGS = "$LFLAGS -arch x86_64"
       breaksw
    case "10.*":
-      set CFLAGS = "$OFLAG -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DHAVE_GETGROUPLIST -D_DARWIN_C_SOURCE -DDARWIN -DDARWIN10 -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M -DSECURITYPAMAPPL $DEBUG_FLAG $CFLAGS"
+      set CFLAGS = "$OFLAG -flat_namespace -arch x86_64 -Wall -Wno-format -Wstrict-prototypes -DFD_SETSIZE=8192 -DHAVE_GETGROUPLIST -D_DARWIN_C_SOURCE -DDARWIN -D$BUILDARCH -DGETHOSTBYNAME -DGETHOSTBYADDR_M -DSECURITYPAMAPPL $DEBUG_FLAG $CFLAGS"
       set SHARED_CFLAGS = "$SHARED_CFLAGS -arch x86_64"
       set SHARED_LFLAGS = "$SHARED_LFLAGS -arch x86_64"
       set LFLAGS = "$LFLAGS -arch x86_64"
@@ -1125,8 +1125,7 @@ case FREEBSD_*:
    set CC       = gcc
    set DLLIB	 = ""
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
-   set PTHRDSFLAGS = "-D_REENTRANT -D__USE_REENTRANT"
-   set CFLAGS   = "$OFLAG -Wall -DFREEBSD -D$BUILDARCH -DGETHOSTBYNAME_M -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS -I/usr/X11R6/include"
+   set CFLAGS   = "$OFLAG -Wall -D$BUILDARCH -DGETHOSTBYNAME_M -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS -I/usr/X11R6/include"
    set NOERR_CFLAG = "-Wno-error"
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS -export-dynamic"
    set LIBS     = "$LIBS -lkvm"
@@ -1153,10 +1152,7 @@ case NETBSD_*:
    set ARFLAGS  = rcv
    set CC       = gcc
    set DLLIB    = ""
-   set PTHRDSFLAGS = "-D_REENTRANT -D__USE_REENTRANT"
-   # If replacing NETBSD with __NetBSD__ note it's also used by openbsd in
-   # addition to __OpenBSD__
-   set CFLAGS   = "$OFLAG -Wall -DNETBSD -D_NETBSD_SOURCE -D$BUILDARCH -DGETHOSTBYNAME_M -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
+   set CFLAGS   = "$OFLAG -Wall -D_NETBSD_SOURCE -D$BUILDARCH -DGETHOSTBYNAME_M -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS"
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
    set NOERR_CFLAG = "-Wno-error"
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS -export-dynamic"
@@ -1189,8 +1185,7 @@ case OPENBSD_*:
    set CC       = gcc
    set CXX      = g++
    set DLLIB    = ""
-   set PTHRDSFLAGS = "-D_REENTRANT -D__USE_REENTRANT"
-   set CFLAGS   = "$OFLAG -Wall -DNETBSD -D$BUILDARCH -DGETHOSTBYNAME_M -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS -I/usr/X11R6/include -I/usr/local/include/db4"
+   set CFLAGS   = "$OFLAG -Wall -D$BUILDARCH -DGETHOSTBYNAME_M -DGETHOSTBYADDR_M $DEBUG_FLAG $CFLAGS -I/usr/X11R6/include -I/usr/local/include/db4"
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
    set NOERR_CFLAG = "-Wno-error"
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS -export-dynamic"
@@ -1251,7 +1246,7 @@ case HP1164:
       # unix 98 mode (??)
       # set CFLAGS = "-D_XOPEN_SOURCE_EXTENDED $CFLAGS"
 
-      set CFLAGS = "$MEMFLAG $OFLAG -DHPUX -D$BUILDARCH $HOSTRESOLVEFLAGS $DEBUG_FLAG $CFLAGS"
+      set CFLAGS = "$MEMFLAG $OFLAG -D$BUILDARCH $HOSTRESOLVEFLAGS $DEBUG_FLAG $CFLAGS"
    endif
 
    set DEPEND_FLAGS = "$CFLAGS $XMTINCD"
@@ -1354,7 +1349,7 @@ case LINUX*:
 #       set CFLAGS = "$CFLAGS -Wno-strict-aliasing -U_FORTIFY_SOURCE"
 #    endif
 
-   set CFLAGS = "$OFLAG -Wstrict-prototypes -DLINUX -D$BUILDARCH -D$COMPILE_ARCH -D_GNU_SOURCE -DGETHOSTBYNAME_R6 -DGETHOSTBYADDR_R8 $DEBUG_FLAG $CFLAGS"
+   set CFLAGS = "$OFLAG -Wstrict-prototypes -D$BUILDARCH -D$COMPILE_ARCH -D_GNU_SOURCE -DGETHOSTBYNAME_R6 -DGETHOSTBYADDR_R8 $DEBUG_FLAG $CFLAGS"
 
    if ("$ADOC" == 1) then
       set CFLAGS = "$CFLAGS -Wno-error"
@@ -1442,17 +1437,16 @@ case WIN32_X86:
       set INTERIX6 = 0
       switch (`uname -r`)
       case 3.5:
-         set CFLAGS = "-DINTERIX $CFLAGS"
 	 breaksw
       case 6.*:
-         set CFLAGS = "-DINTERIX -DINTERIX6 $CFLAGS"
+         set CFLAGS = "-DINTERIX6 $CFLAGS"
          set INTERIX6 = 1
 	 # The -m was necessary on 64-bit windows 7 with interix 6.1, else ar
 	 # fails obscurely.  Maybe breaks other versions.
 	 set AR = "ar -m x86"		# only for qmake
 	 breaksw
       default:
-         set CFLAGS = "-DINTERIX -DINTERIX52 $CFLAGS"
+         set CFLAGS = "-DINTERIX52 $CFLAGS"
       endsw
       # _ALL_SOURCE allows compiling qtcsh, in particular
       set CFLAGS = "-D_ALL_SOURCE -D$COMPILE_ARCH -DGETHOSTBYNAME_M -DUSE_SGE_UNSETENV $CFLAGS" 
@@ -1463,7 +1457,7 @@ case WIN32_X86:
       #set LFLAGS = "-Wl,-EL,-b=pe-i1386 $LFLAGS"
    else
       set CC  = cc
-      set CFLAGS = "-X /Wall -X /WX $OFLAG -DINTERIX -D$COMPILE_ARCH -DUSE_SGE_UNSETENV $CFLAGS"
+      set CFLAGS = "-X /Wall -X /WX $OFLAG -D$COMPILE_ARCH -DUSE_SGE_UNSETENV $CFLAGS"
       set CFLAGS = "$DEBUG_FLAG $CFLAGS"
    endif
 
@@ -1550,7 +1544,7 @@ case CYGWIN_X86_64:
    set LIBS = "$LIBS -ltirpc"
    # For now, kludge by treating Cygwin as "LINUX" and special-casing
    # where necessary
-   set CFLAGS = "$OFLAG -Wall -Wstrict-prototypes -DLINUX -D_GNU_SOURCE -DGETHOSTBYNAME -DGETHOSTBYADDR -DHAVE_XDR_H=1 $DEBUG_FLAG $CFLAGS"
+   set CFLAGS = "$OFLAG -Wall -Wstrict-prototypes -D_GNU_SOURCE -DGETHOSTBYNAME -DGETHOSTBYADDR $DEBUG_FLAG $CFLAGS"
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS"
    set SHAREDLD = $CC
    set SONAME_LFLAG_DRMAA10 = "-Wl,-soname,libdrmaa.so.1.0 -Wl,--version-script=drmaa.lds"
@@ -1579,7 +1573,7 @@ case SOLARISAMD64:
    set COMPILE_DC = 1
    set HWLOC = 1
 
-   set CFLAGS = "$CFLAGS -DSOLARIS -D$BUILDARCH -D__EXTENSIONS__ -D_POSIX_C_SOURCE=199506L -DGETHOSTBYNAME_R5 -DGETHOSTBYADDR_R7"
+   set CFLAGS = "$CFLAGS -D$BUILDARCH -D__EXTENSIONS__ -D_POSIX_C_SOURCE=199506L -DGETHOSTBYNAME_R5 -DGETHOSTBYADDR_R7"
    set SHAREDLD = $CC
 
    if ($OPTIMIZATION == 1) then 

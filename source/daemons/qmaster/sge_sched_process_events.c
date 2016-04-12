@@ -32,8 +32,8 @@
 #include <string.h>
 #include <pthread.h>
 
-#ifdef SOLARISAMD64
-#  include <sys/stream.h>
+#ifdef __sun
+#  include <sys/stream.h>       /* fixme: why? */
 #endif  
 
 /* common/ */

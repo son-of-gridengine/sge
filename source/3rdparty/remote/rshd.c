@@ -41,7 +41,7 @@
  *	command\0
  *	data
  */
-#if defined(HP11)
+#if __hpux
 #define _XOPEN_SOURCE_EXTENDED
 #endif
 
@@ -68,7 +68,7 @@
 
 #include <grp.h>
 
-#ifdef SOLARIS
+#ifdef __sun
 #include <sys/filio.h>
 #endif
 
@@ -78,7 +78,7 @@
 #include <config_file.h>
 #include <sge_uidgid.h>
 
-#if defined SOLARIS || HPUX || NECSX5 || CRAY
+#if defined __sun || __hpux || NECSX5 || CRAY
 #define _PATH_NOLOGIN "/etc/nologin"
 #define _PATH_BSHELL "/bin/sh"
 #define _PATH_DEFPATH "/usr/bin:/bin"
@@ -86,7 +86,7 @@
 #include <paths.h>
 #endif
 
-#if defined AIX || ALPHA || IRIX
+#if defined _AIX
 #define _PATH_DEFPATH "/usr/bin:/bin"
 #endif
 
@@ -94,13 +94,13 @@
 #define _PATH_NOLOGIN "/etc/nologin"
 #endif
 
-#if defined HP10 || HP1164 || LINUX || NECSX5 || CRAY 
+#if __hpux || __linux__ || __CYGWIN__
 #ifndef HAS_IN_PORT_T
 typedef unsigned short in_port_t;
 #endif
 #endif
 
-#if defined(IRIX) || defined(INTERIX) || defined(__CYGWIN__)
+#if __INTERIX || defined(__CYGWIN__)
 #  define NCARGS ARG_MAX
 #endif
 
@@ -542,11 +542,11 @@ fail:
    }
 
 	(void) setgid((gid_t)pwd->pw_gid);
-#if !defined(INTERIX) /* EB: TODO: There is no initgroups() in INTERIX */
+#if !__INTERIX /* EB: TODO: There is no initgroups() in INTERIX */
 	initgroups(pwd->pw_name, old_grp_id);
 #endif
-   
-#if (SOLARIS || ALPHA || LINUX || DARWIN)     
+
+#if (__sun || __linux__ || __CYGWIN__ || __APPLE__)
    /* add Additional group id to current list of groups */
    if (add_grp_id) {
       bool skip_silently = false;
@@ -613,7 +613,7 @@ error(const char *fmt, ...)
       len = 1;
    } else
       len = 0;
-#if defined ALPHA4 || HP10 || IRIX || (SOLARIS && ! SOLARIS64) 
+#if defined __sun && !__LP64__
    vsprintf(bp, fmt, ap);
 #else   
    vsnprintf(bp, sizeof(buf) - 1, fmt, ap);

@@ -224,7 +224,7 @@ loop:
     pid = wait3(&w.w_status, WNOHANG, &ru);
 #   endif /* !hpux */
 #  else /* !BSDTIMES */
-#   if defined(INTERIX) || defined(ODT)  /* For Sco Unix 3.2.0 or ODT 1.0 */
+#   if __INTERIX || defined(ODT)  /* For Sco Unix 3.2.0 or ODT 1.0 */
 #    define HAVEwait3
     pid = waitpid(-1, &w,
  	    (setintr && (intty || insource) ? WNOHANG | WUNTRACED : WNOHANG));

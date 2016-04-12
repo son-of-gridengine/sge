@@ -1117,7 +1117,7 @@ update_dspmbyte_vars(void)
 	    iskcode = 0;
 	}
 	else {
-#ifdef INTERIX
+#ifdef __INTERIX
        xprintf(CGETS(18, 2,
           "Warning: unknown multibyte display; using default(sjis)\n"));
        iskcode = 1;

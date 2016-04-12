@@ -43,11 +43,11 @@
 
 #include "sge_dstring.h"
 
-#if defined(INTERIX)
+#if __INTERIX
 #  include "../wingrid/wingrid.h"
 #endif
 
-#if defined(INTERIX)
+#if __INTERIX
 #  define SGE_STAT(filename, buffer) wl_stat(filename, buffer)
 #else
 #  define SGE_STAT(filename, buffer) stat(filename, buffer)
@@ -62,11 +62,11 @@
 #define SGE_SEEKDIR(directory, offset) seekdir(directory, offset)
 #define SGE_STRUCT_DIRENT struct dirent
 
-#if defined(SOLARIS) || defined(__hpux) || defined(LINUX) || defined(AIX) || defined(DARWIN)
+#if __sun || defined(__hpux) || (__linux__ || __CYGWIN__) || _AIX || __APPLE__
 #   define SETPGRP setpgrp()
 #elif defined(__sgi)
 #   define SETPGRP BSDsetpgrp(getpid(),getpid())
-#elif defined(WIN32) || defined(INTERIX)
+#elif defined(WIN32) || __INTERIX
 #   define SETPGRP setsid()
 #else
 #   define SETPGRP setpgrp(getpid(),getpid())

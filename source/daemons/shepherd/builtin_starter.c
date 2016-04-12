@@ -58,7 +58,7 @@
 
 #include "msg_common.h"
 
-#if defined(INTERIX)
+#if __INTERIX
 #  include "wingrid.h"
 #  include "windows_gui.h"
 #endif
@@ -78,7 +78,7 @@ extern bool g_new_interactive_job_support;
 extern int  g_noshell;
 extern int  g_newpgrp;
 
-#if defined(INTERIX)
+#if __INTERIX
 char job_user[MAX_STRING_SIZE];
 static char user_passwd[MAX_STRING_SIZE];
 #endif
@@ -206,7 +206,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    bool skip_silently = false;
    int pty = atoi(get_conf_val("pty"));
 
-#if defined(INTERIX)
+#if __INTERIX
 #  define TARGET_USER_BUFFER_SIZE 1024
    char target_user_buffer[TARGET_USER_BUFFER_SIZE];
 #endif
@@ -250,7 +250,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
       /* must force to run the qlogin starter as root, since it needs
          access to /dev/something */
       if (g_new_interactive_job_support == false) {
-#if defined(INTERIX)
+#if __INTERIX
          if(wl_get_superuser_name(target_user_buffer, TARGET_USER_BUFFER_SIZE)==0) {
             target_user = target_user_buffer;
          }
@@ -269,7 +269,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    pid = getpid();
    pgrp = getpgrp();
 
-#ifdef SOLARIS                  /* ?? */
+#ifdef __sun                    /* ?? */
    if(!is_qlogin_starter || is_rsh)
 #endif
    {
@@ -329,7 +329,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
        *  This workaround doesn't work for Interix - we have to find
        *  another solution here!
        */
-#if !defined(INTERIX)
+#if !__INTERIX
       intermediate_user = get_conf_val("job_owner");
 #endif
    }
@@ -374,7 +374,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    shepherd_trace("Initializing error file");
    shepherd_error_init( );
 
-#if defined(INTERIX)
+#if __INTERIX
    /*
     * Try to read password from sgepasswd file only if target_user 
     * is not superuser
@@ -849,7 +849,7 @@ void son(const char *childname, char *script_file, int truncate_stderr_out, size
    }
 
 
-#if defined(INTERIX)
+#if __INTERIX
    if (strcmp(childname, "job") == 0) {
       sge_strlcpy(job_user, target_user, sizeof(job_user));
    }
@@ -1476,7 +1476,7 @@ int use_starter_method /* If this flag is set the shell path contains the
          
          /* build trace string */
          shepherd_trace("calling qlogin_starter(%s, %s);", shepherd_job_dir, args[1]);
-#if defined (SOLARIS)
+#if __sun
          if (is_rlogin) {
             if (strstr(args[1], "sshd") != NULL) {
                /* workaround for CR 6215730 */ 
@@ -1532,7 +1532,7 @@ int use_starter_method /* If this flag is set the shell path contains the
        * Because this fix could break pre-existing installations, it was made
        * optional. */
 
-#if defined(INTERIX)
+#if __INTERIX
       if(strcmp(childname, "job") == 0 
          && wl_get_GUI_mode(get_conf_val("display_win_gui")) == true) {
          int  ret;
@@ -1613,7 +1613,7 @@ int use_starter_method /* If this flag is set the shell path contains the
       } else 
 #endif
       {
-#if defined(INTERIX)
+#if __INTERIX
          shepherd_trace("not a GUI job, starting directly");
 #endif
          /* Sanitize the environment in case we're executing prolog

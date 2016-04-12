@@ -632,7 +632,7 @@ static int startJob(char *command, char *wrapper, int noshell)
       /* parent */
       int status;
 
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
       int ttyfd;
 #endif
 
@@ -642,7 +642,7 @@ static int startJob(char *command, char *wrapper, int noshell)
 
       /* preserve pseudo terminal */
       /* fixme:  why only Linux? */
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
       ttyfd = open("/dev/tty", O_RDWR);
       if (ttyfd != -1) {
          tcsetpgrp(ttyfd, child_pid);

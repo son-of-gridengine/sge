@@ -65,23 +65,19 @@ static const char rcsid[] =
 #include <string.h>
 #include <unistd.h>
 
-#if defined(INTERIX)
+#if __INTERIX
 #  include <arpa/inet.h>
 #endif
 
-#ifdef SOLARIS
+#ifdef __sun
 #include <sys/filio.h>
 #endif
 
-#if !defined(FREEBSD) && !defined(NETBSD) && !defined(DARWIN) && !defined(INTERIX) && !defined(__CYGWIN__)
+#if !__FreeBSD__ && !(__NetBSD__ || __OpenBSD__) && !__APPLE__ && !__INTERIX && !defined(__CYGWIN__)
 #include <values.h>
 #endif
 
-#if defined(DARWIN6)
-#   define sigignore(x) signal(x,SIG_IGN)
-#endif
-
-#ifndef MAX 
+#ifndef MAX
 #define MAX(a,b) ((a)<(b)?(b):(a))
 #endif
 

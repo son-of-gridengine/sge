@@ -33,7 +33,7 @@
 
 #include <unistd.h>
 
-#if defined(DARWIN)
+#if __APPLE__
 #   include <mach/host_info.h>
 #   include <mach/mach_host.h>
 #   include <mach/mach_init.h>
@@ -46,7 +46,7 @@
 #   include <sys/pstat.h>
 #endif
 
-#if defined(FREEBSD)
+#if __FreeBSD__
 #   include <sys/types.h>
 #   include <sys/sysctl.h>
 #endif
@@ -88,7 +88,7 @@ int sge_nprocs()
    nprocs = sysconf(_SC_NPROCESSORS_ONLN);
 #endif
 
-#if defined(DARWIN)
+#if __APPLE__
   struct host_basic_info cpu_load_data;
 
   mach_msg_type_number_t host_count = sizeof(cpu_load_data)/sizeof(integer_t);
@@ -112,7 +112,7 @@ int sge_nprocs()
    nprocs = dinfo.psd_proc_cnt;
 #endif
 
-#if defined(FREEBSD)
+#if __FreeBSD__
    size_t nprocs_len = sizeof(nprocs);
 
    if (sysctlbyname("hw.ncpu", &nprocs, &nprocs_len, NULL, 0) == -1) {
@@ -120,7 +120,7 @@ int sge_nprocs()
    }
 #endif
 
-#if defined(INTERIX)
+#if __INTERIX
 /* TODO: HP: don't set nprocs==-1 to 0, overwrite it with value from
  *       external load sensor.
  */

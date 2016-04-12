@@ -54,7 +54,7 @@
 #undef NeedWidePrototypes
 #endif
 
-#ifndef SOLARIS
+#ifndef __sun
 #if XmVersion >= 2000
 extern void _XmResizeObject(
                         Widget g,

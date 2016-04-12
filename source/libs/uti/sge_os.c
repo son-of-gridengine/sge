@@ -47,15 +47,11 @@
 #   include <sys/file.h>
 #endif
  
-#if defined(SOLARIS)
+#if __sun
 #   include <sys/termios.h>
 #endif
- 
-#if defined(__sgi) || defined(ALPHA)
-#   include <rpcsvc/ypclnt.h>
-#endif
- 
-#if defined(AIX)
+
+#if _AIX
 #   include <sys/select.h>
 #endif    
 

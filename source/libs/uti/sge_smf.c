@@ -30,7 +30,7 @@
  ************************************************************************/
 /*___INFO__MARK_END__*/
 
-#if defined(SOLARIS)
+#if __sun
 
 #include <string.h>
 #include <stdlib.h>

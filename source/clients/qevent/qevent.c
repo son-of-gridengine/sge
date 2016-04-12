@@ -300,7 +300,7 @@ static void qevent_start_trigger_script(int qevent_event, const char* script_fil
    if (pid > 0) {
       int exit_status;
 
-#if !defined(INTERIX)
+#if !__INTERIX
       struct rusage rusage;
 #endif
 
@@ -309,7 +309,7 @@ static void qevent_start_trigger_script(int qevent_event, const char* script_fil
 #else
       int status;
 #endif
-#if defined(INTERIX)
+#if __INTERIX
       waitpid(pid, &status, 0);
 #else
       wait3(&status, 0, &rusage);

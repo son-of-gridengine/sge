@@ -221,7 +221,7 @@ XmtHelpBoxWidget hb;
 
     /* get the label string and size and query # of lines */
 
-#if defined(SOLARIS64)
+#if (__sun && __LP64__)
     /*
     ** I18N bug for label size under Solaris
     */

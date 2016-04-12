@@ -108,14 +108,14 @@
 ******************************************************************************/
 const char *var_get_sharedlib_path_name(void)
 {
-#if defined(AIX)
+#if _AIX
    return "LIBPATH";
-#elif defined(HP11)
+#elif __hpux
    return "SHLIB_PATH";
-#elif defined(ALPHA) || defined(IRIX) || defined(LINUX) || defined(SOLARIS) || defined(FREEBSD) || defined(NETBSD) || defined(INTERIX) || defined(HP1164)
+#elif (__linux__ || __CYGWIN__) || __sun || __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || __INTERIX || __hpux
    /* Fixme:  LD_LIBRARY_PATH_64 etc.?  */
    return "LD_LIBRARY_PATH";
-#elif defined(DARWIN)
+#elif __APPLE__
    return "DYLD_LIBRARY_PATH";
 #else
 #error "don't know how to set shared lib path on this architecture"

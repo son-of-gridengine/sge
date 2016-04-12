@@ -41,7 +41,7 @@
 
 #include "gdi/version.h"
 
-#if defined(INTERIX)
+#if __INTERIX
 #include <arpa/inet.h>
 #endif
 

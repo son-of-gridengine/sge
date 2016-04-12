@@ -243,7 +243,7 @@ tw_cmd_cmd(void)
 #endif /* _UWIN || __CYGWIN__ */
 	    /* the call to executable() may make this a bit slow */
 	    name = str2short(dp->d_name);
-#ifdef INTERIX
+#ifdef __INTERIX
        if (dp->d_ino == 0 || !executable(dir, name, 0))
 #else
 	    if (dp->d_ino == 0 || (recexec && !executable(dir, name, 0)))
@@ -691,7 +691,7 @@ tw_grpname_next(struct Strbuf *res, struct Strbuf *dir, int *flags)
 #if !defined(_VMS_POSIX) && !defined(_OSD_POSIX) && !defined(WINNT_NATIVE)
     errno = 0;
     while ((gr =
-#ifdef INTERIX
+#ifdef __INTERIX
             getgrent_nomembers()
 #else
             getgrent()

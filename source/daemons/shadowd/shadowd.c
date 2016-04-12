@@ -77,7 +77,7 @@
 #include "msg_daemons_common.h"
 #include "msg_shadowd.h"
 
-#if defined(SOLARIS)
+#if __sun
 #   include "sge_smf.h"
 #   include "sge_string.h"
 #endif
@@ -224,7 +224,7 @@ char shadow_err_file[SGE_PATH_MAX];
    ctx->set_exit_func(ctx, shadowd_exit_func);
    sge_setup_sig_handlers(SHADOWD);
    
-#if defined(SOLARIS)
+#if __sun
    /* Init shared SMF libs if necessary */
    if (sge_smf_used() == 1 && sge_smf_init_libs() != 0) {
        SGE_EXIT((void**)&ctx, 1);
@@ -421,7 +421,7 @@ static void shadowd_exit_func(
 void **ctx_ref,
 int i 
 ) {
-#if defined(SOLARIS)
+#if __sun
    if (sge_smf_used() == 1) {
       /* We don't do disable on svcadm restart */
       if (sge_strnullcmp(sge_smf_get_instance_state(), SCF_STATE_STRING_ONLINE) == 0 &&

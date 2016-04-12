@@ -38,7 +38,7 @@ RCSID("$tcsh: sh.func.c,v 3.153 2009/06/25 21:15:37 christos Exp $")
 #include "tw.h"
 #include "tc.h"
 
-#ifdef INTERIX
+#ifdef __INTERIX
 #include <interix/interix.h>
 #include <paths.h>
 #endif
@@ -1816,7 +1816,7 @@ doumask(Char **v, struct command *c)
 #  if (defined(BSD4_4) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) || (HPUXVERSION >= 1100)) && !defined(__386BSD__)
     typedef rlim_t RLIM_TYPE;
 #  else
-#   if defined(SOLARIS2) || (defined(sgi) && SYSVREL > 3) || defined(INTERIX)
+#   if __sun || __INTERIX
      typedef rlim_t RLIM_TYPE;
 #   else
 #    if defined(_SX)

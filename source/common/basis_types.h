@@ -64,7 +64,7 @@
 #endif
 
 #if !defined(__cplusplus) 
-#  if defined(DARWIN) || __STDC_VERSION__ >= 199901L
+#  if __APPLE__ || __STDC_VERSION__ >= 199901L
 #     include <stdbool.h>
 #  else
 /* Avoid possible a clash in c89, e.g. later versions of jemalloc
@@ -86,7 +86,7 @@ typedef enum {
 #define NONE_STR  "NONE"
 #define NONE_LEN  4
 
-#if defined(FREEBSD) || defined(NETBSD) || _LP64 || __LP64__
+#if __FreeBSD__ || (__NetBSD__ || __OpenBSD__) || _LP64 || __LP64__
 #  define sge_U32CFormat "%u"  
 #  define sge_U32CLetter "u"
 #  define sge_u32c(x)  (unsigned int)(x)
@@ -117,7 +117,7 @@ extern "C" {
 #elif defined(WIN32NATIVE)
 #  define u_long32 unsigned long
 #  define u_long32 u_long
-#elif defined(FREEBSD) || defined(NETBSD)
+#elif __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #  define u_long32 uint32_t
 #  define u_long64 uint64_t
 #else
@@ -130,7 +130,7 @@ extern "C" {
 
 /* set sge_u32 and sge_x32 for 64 or 32 bit machines */
 /* sge_uu32 for strictly unsigned, not nice, but did I use %d for an unsigned? */
-#if defined TARGET_64BIT || defined FREEBSD || defined NETBSD || _LP64 || __LP64__
+#if defined TARGET_64BIT || __FreeBSD__ || __NetBSD__ || __OpenBSD__ || _LP64 || __LP64__
 #  define sge_u64    "%ld"
 #  define sge_u32    "%d"
 #  define sge_uu32   "%u"
@@ -150,7 +150,7 @@ extern "C" {
    solaris (who else - it's IRIX?) uses long 
    variables for uid_t, gid_t and pid_t 
 */
-#if defined(FREEBSD) || defined(NETBSD)
+#if __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #  define uid_t_fmt "%u"
 #elif __CYGWIN__ && \
   (((CYGWIN_VERSION_DLL_MAJOR)*1000 + (CYGWIN_VERSION_DLL_MINOR)) < 1007022)
@@ -161,7 +161,7 @@ extern "C" {
 #  define uid_t_fmt pid_t_fmt
 #endif
 
-#if (defined(SOLARIS) && defined(TARGET_32BIT)) || defined(IRIX) || (defined(INTERIX) && !defined INTERIX6)
+#if (__sun && !__LP64__) || (__INTERIX && !defined INTERIX6)
 #  define pid_t_fmt    "%ld"
 #else
 #  define pid_t_fmt    "%d"
@@ -227,12 +227,12 @@ typedef char stringT[MAX_STRING_SIZE];
 /* non-quoted string not limited intentionally */
 #define SN_UNLIMITED  "%s"
 
-#if defined(HPUX)
+#if __hpux
 #  define seteuid(euid) setresuid(-1, euid, -1)
 #  define setegid(egid) setresgid(-1, egid, -1)
 #endif
 
-#if defined(INTERIX) && !defined(INTERIX52)
+#if __INTERIX && !defined(INTERIX52)
 #  define seteuid(euid) setreuid(-1, euid)
 #  define setegid(egid) setregid(-1, egid)
 #endif

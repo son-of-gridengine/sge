@@ -38,7 +38,7 @@
 
 #include "uti/rmon.h"
 
-#if defined(SOLARIS)
+#if __sun
 #  include <note.h>
 #endif
 

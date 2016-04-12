@@ -39,7 +39,7 @@ typedef unsigned long uint64;   /* This should work on all current machines */
 #define UINT64_FMT "%ld"
 
 /* ?? */
-#if __linux__ || __CYGWIN__ || __osf__ || __sun || __APPLE__ || defined INTERIX6
+#if (__linux__ || __CYGWIN__) || __sun || __APPLE__ || defined INTERIX6
 typedef pid_t JobID_t;
 #define JOBID_T_FMT pid_t_fmt
 #else

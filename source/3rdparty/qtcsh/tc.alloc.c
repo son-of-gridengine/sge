@@ -71,7 +71,7 @@ out_of_memory (void)
 }
 #endif
 
-#if defined(AIX51) || defined(AIX43)
+#if _AIX || defined(AIX43)
 #define SYSMALLOC
 #endif
 

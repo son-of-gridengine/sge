@@ -94,7 +94,7 @@ typedef struct {
 static sge_mirror_error 
 sge_mirror_process_event_list_(sge_evc_class_t *evc, lList *event_list);
 
-#ifdef SOLARIS
+#ifdef __sun
 #pragma no_inline(sge_mirror_process_event_list,sge_mirror_process_event_list_)
 #endif
 

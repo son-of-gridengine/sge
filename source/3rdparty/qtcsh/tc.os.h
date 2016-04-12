@@ -47,7 +47,7 @@
 #  define NOFILE sysconf(_SC_OPEN_MAX)
 #endif
 
-#ifdef INTERIX
+#ifdef __INTERIX
 #  undef NEEDstrerror
 #endif
 

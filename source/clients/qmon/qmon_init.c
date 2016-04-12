@@ -486,9 +486,9 @@ DTRACE;
    */
    XtSetMultiClickTime(XtDisplay(top), MULTI_CLICK_TIME);
 
-#ifdef LINUX                    /* why? */
-   XtSetLanguageProc(*app, NULL, NULL); 
-#endif   
+#if (__linux__ || __CYGWIN__) /* why? */
+   XtSetLanguageProc(*app, NULL, NULL);
+#endif
 
    /*
     * check if qmon_version is set correctly in the app-defaults file

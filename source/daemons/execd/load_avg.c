@@ -694,7 +694,7 @@ static int sge_get_loadavg(const char* qualified_hostname, lList **lpp)
 
    loads = sge_getloadavg(avg, 3);
    nprocs = sge_nprocs();
-#ifndef INTERIX
+#ifndef __INTERIX
    if (loads == -1) {
       static u_long32 next_log = 0;
       u_long32 now;
@@ -781,7 +781,7 @@ static int sge_get_loadavg(const char* qualified_hostname, lList **lpp)
       if (sge_getcpuload(&cpu_percentage) != -1) {
          sge_add_double2load_report(lpp, "cpu", cpu_percentage, qualified_hostname, NULL);
       }
-#ifndef INTERIX
+#ifndef __INTERIX
       else {
          static u_long32 next_log2 = 0;
 
@@ -796,7 +796,7 @@ static int sge_get_loadavg(const char* qualified_hostname, lList **lpp)
    }
 #endif /* SGE_LOADCPU */
 
-#ifdef INTERIX
+#ifdef __INTERIX
    {
       int   svc_running;
       pid_t pids[1];

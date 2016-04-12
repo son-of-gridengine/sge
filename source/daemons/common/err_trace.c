@@ -45,10 +45,10 @@
 #include <signal.h>
 #include <pthread.h>
 
-#if defined(DARWIN) || defined(FREEBSD) || defined(NETBSD)
+#if __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #  include <sys/param.h>
 #  include <sys/mount.h>
-#elif defined(LINUX)
+#elif (__linux__ || __CYGWIN__)
 #  include <sys/vfs.h>
 #else
 #  include <sys/statvfs.h>
@@ -68,7 +68,7 @@
 #include "qlogin_starter.h"
 #include "msg_common.h"
 
-#if defined(INTERIX)
+#if __INTERIX
 #  include "wingrid.h"
 #endif
 
@@ -966,10 +966,10 @@ static bool nfs_mounted(const char *path)
 {
    bool ret=true;
 
-#if defined(LINUX) || defined(DARWIN) || defined(FREEBSD) || (defined(NETBSD) && !defined(ST_RDONLY))
+#if (__linux__ || __CYGWIN__) || __APPLE__ || __FreeBSD__ || ((__NetBSD__ || __OpenBSD__) && !defined(ST_RDONLY))
    struct statfs buf;
    statfs(path, &buf);
-#elif defined(INTERIX)
+#elif __INTERIX
    struct statvfs buf;
    wl_statvfs(path, &buf);
 #else
@@ -977,11 +977,11 @@ static bool nfs_mounted(const char *path)
    statvfs(path, &buf);
 #endif
 
-#if defined (DARWIN) || defined(FREEBSD) || defined(NETBSD)
+#if __APPLE__ || __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
    ret = (strcmp("nfs", buf.f_fstypename) == 0) ? true : false;
-#elif defined(LINUX)
+#elif (__linux__ || __CYGWIN__)
    ret = (buf.f_type == 0x6969);
-#elif defined(INTERIX)
+#elif __INTERIX
    ret = (strncasecmp("nfs", buf.f_fstypename, 3) == 0) ? true : false;
 #else
    ret = (strncmp("nfs", buf.f_basetype, 3) == 0) ? true : false;

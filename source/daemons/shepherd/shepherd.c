@@ -53,7 +53,7 @@
 /* TODO: (SH) get_path.h is a header-file of execd. We have to do a CLEANUP here. */
 #include "get_path.h"
 
-#if defined(LINUX)
+#if (__linux__ || __CYGWIN__)
 #  include <grp.h>
 #endif
 
@@ -83,21 +83,21 @@
 #  include "sge_processes_irix.h"
 #endif
 
-#if defined(INTERIX)
+#if __INTERIX
 #include "../../../utilbin/sge_passwd.h"
 #include "wingrid/windows_gui.h"
 #endif
 
-#if defined(DARWIN)
+#if __APPLE__
 #  include <termios.h>
 #  include <sys/ttycom.h>
 #  include <sys/ioctl.h>    
-#elif defined(HP11) || defined(HP1164)
+#elif __hpux
 #  include <termios.h>
-#elif defined(INTERIX)
+#elif __INTERIX
 #  include <termios.h>
 #  include <sys/ioctl.h>
-#elif defined(FREEBSD) || defined(NETBSD)
+#elif __FreeBSD__ || (__NetBSD__ || __OpenBSD__)
 #  include <termios.h>
 #else
 #  include <termio.h>
@@ -122,7 +122,7 @@
 #include "execution_states.h"
 #include "msg_common.h"
 
-#if defined(FREEBSD) || defined(DARWIN6) || defined(__OpenBSD__)
+#if __FreeBSD__ || defined(__OpenBSD__)
 #   define sigignore(x) signal(x,SIG_IGN)
 #endif
 
@@ -730,7 +730,7 @@ int main(int argc, char **argv)
          return 0;
       }
    }
-#if defined(INTERIX) && defined(SECURE)
+#if __INTERIX && defined(SECURE)
    sge_init_shared_ssl_lib();
 #endif
    shepherd_trace_init( );
@@ -829,8 +829,8 @@ int main(int argc, char **argv)
       }
       config_errfunc = shepherd_error_ptr;
    }
-   
-#if defined( INTERIX )
+
+#if __INTERIX
    wl_set_use_sgepasswd((bool)atoi(get_conf_val("enable_windomacc")));
 #endif
 
@@ -1186,10 +1186,8 @@ static int start_child(const char *childname, /* prolog, job, epilog */
       /* reuse old osjobid for the migrated job and forward this one to ptf */
       shepherd_write_osjobid_file(get_conf_val("ckpt_osjobid"));
 
-#if defined(IRIX)
       sscanf(get_conf_val("ckpt_osjobid"), "%lld", &ash);
       shepherd_trace("reusing old array session handle %lld", ash);
-#endif
 #endif
 
       shepherd_trace("restarting job from checkpoint arena");
@@ -2373,7 +2371,7 @@ static void handle_signals_and_methods(
             *kill_job_after_checkpoint = 1; 
          }
       } else if (received_signal != 0 || *postponed_signal != 0) { /* received any other signal */
-#if defined(INTERIX)
+#if __INTERIX
          sge_set_environment(true);
          if(strcmp(childname, "job") == 0 &&
             wl_get_GUI_mode(get_conf_val("display_win_gui")) == true) {
@@ -2498,7 +2496,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
    int poll_size = 0;
    struct pollfd* pty_fds = NULL;
 
-#if defined(HPUX) || defined(INTERIX)
+#if __hpux || __INTERIX
    struct rusage rusage_hp10;
 #endif
 
@@ -2587,13 +2585,13 @@ int fd_std_err             /* fd of stderr. -1 if not set */
          alarm(rest_ckpt_interval);
       }
 
-#if defined(INTERIX)
+#if __INTERIX
       npid = waitpid(-1, &status, wait_options);
 #else
       npid = wait3(&status, wait_options, rusage);
 #endif
 
-#if defined(INTERIX)
+#if __INTERIX
       /* <Windows_GUI> */
       sge_set_environment(true);
       if (strcmp(childname, "job") == 0 &&
@@ -2619,7 +2617,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
       } else 
       /* </Windows_GUI> */
 #endif
-#if defined(HPUX) || defined(INTERIX)
+#if __hpux || __INTERIX
       {
          /* wait3 doesn't return CPU usage */
          getrusage(RUSAGE_CHILDREN, &rusage_hp10);
@@ -2800,7 +2798,7 @@ int fd_std_err             /* fd of stderr. -1 if not set */
    } while ((job_pid > 0) || (migr_cmd_pid > 0) || (ckpt_cmd_pid > 0) ||
             (ctrl_pid[0] > 0) || (ctrl_pid[1] > 0) || (ctrl_pid[2] > 0));
 
-#if defined(HPUX) || defined(INTERIX)
+#if __hpux || __INTERIX
    rusage->ru_utime.tv_sec = rusage_hp10.ru_utime.tv_sec;
    rusage->ru_utime.tv_usec = rusage_hp10.ru_utime.tv_usec;
    rusage->ru_stime.tv_sec = rusage_hp10.ru_stime.tv_sec;
@@ -3140,9 +3138,9 @@ shepherd_signal_job(pid_t pid, int sig) {
         if (sge_switch2admin_user())
            shepherd_error(1, MSG_SWITCH_USER_S, strerror(errno));
 
-#if defined(SOLARIS) || defined(LINUX) || defined(ALPHA) || defined(IRIX) || defined(FREEBSD) || defined(DARWIN)
+#if __sun || (__linux__ || __CYGWIN__) ||  __FreeBSD__ || __APPLE__
         if (first_kill == 0 || sig != SIGKILL || is_qrsh == false) {
-#   if defined(SOLARIS) || defined(LINUX) || defined(ALPHA) || defined(FREEBSD) || defined(DARWIN)
+#   if __sun || (__linux__ || __CYGWIN__) || __FreeBSD__ || __APPLE__
 #      ifdef COMPILE_DC
             if (atoi(get_conf_val("enable_addgrp_kill")) == 1) {
                 gid_t add_grp_id;

@@ -39,7 +39,7 @@ float work(int mytid, int me, int n, int *tids, int nproc, float *data);
    and is implemented using SIGALRM
    this causes an endless sleep 
    when used with checkpointing */
-#if (LINUX || SUN4)
+#if __linux__
 #define sleep sge_sleep
 void sge_sleep(int seconds)
 {

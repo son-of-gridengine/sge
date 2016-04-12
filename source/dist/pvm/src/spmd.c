@@ -60,7 +60,7 @@
 
 static int dowork __PR__(( int me, int nproc));
 
-#if (SOLARIS)
+#if __sun
 int gethostname __PR__((char *name, int namelen));
 #endif
 
@@ -76,7 +76,7 @@ void stop_work(int signo)
 /* linux sleep() is not a system call 
    and is implemented using SIGALRM 
    this causes an endless sleep */
-#if (LINUX)
+#if __linux__
 #define sleep sge_sleep
 void sge_sleep(int seconds)
 {

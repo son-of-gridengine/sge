@@ -399,7 +399,7 @@ int cl_com_tcp_open_connection(cl_com_connection_t* connection, int timeout) {
 
       CL_LOG(CL_LOG_DEBUG,"connection_sub_state is CL_COM_OPEN_CONNECT_IN_PROGRESS");
 
-#if defined(SOLARIS) && !defined(SOLARIS64)
+#if __sun && !__LP64__
       getsockopt(private->sockfd, SOL_SOCKET, SO_ERROR, (void*)&socket_error, &socklen);
 #else
       getsockopt(private->sockfd, SOL_SOCKET, SO_ERROR, &socket_error, &socklen);
@@ -443,7 +443,7 @@ int cl_com_tcp_open_connection(cl_com_connection_t* connection, int timeout) {
       CL_LOG(CL_LOG_DEBUG,"connection_sub_state is CL_COM_OPEN_CONNECTED");
 
   
-#if defined(SOLARIS) && !defined(SOLARIS64)
+#if __sun && !__LP64__
       if (setsockopt(private->sockfd, IPPROTO_TCP, TCP_NODELAY, (const char *) &on, sizeof(int)) != 0) {
          CL_LOG(CL_LOG_ERROR,"could not set TCP_NODELAY");
       }
@@ -1210,7 +1210,7 @@ int cl_com_tcp_connection_request_handler(cl_com_connection_t* connection, cl_co
 
       fcntl(new_sfd, F_SETFL, O_NONBLOCK);         /* HP needs O_NONBLOCK, was O_NDELAY */
       sso = 1;
-#if defined(SOLARIS) && !defined(SOLARIS64)
+#if __sun && !__LP64__
       if (setsockopt(new_sfd, IPPROTO_TCP, TCP_NODELAY, (const char *) &sso, sizeof(int)) == -1)
 #else
       if (setsockopt(new_sfd, IPPROTO_TCP, TCP_NODELAY, &sso, sizeof(int))== -1)
@@ -1772,7 +1772,7 @@ int cl_com_tcp_open_connection_request_handler(cl_com_poll_t* poll_handle, cl_co
                   connection  = con_elem->connection;
                   con_private = cl_com_tcp_get_private(connection);
                   socket_error = 0;
-#if defined(SOLARIS) && !defined(SOLARIS64) 
+#if __sun && !__LP64__
                   get_sock_opt_error = getsockopt(con_private->sockfd,SOL_SOCKET, SO_ERROR, (void*)&socket_error, &socklen);
 #else
                   get_sock_opt_error = getsockopt(con_private->sockfd,SOL_SOCKET, SO_ERROR, &socket_error, &socklen);
@@ -1867,7 +1867,7 @@ int cl_com_tcp_open_connection_request_handler(cl_com_poll_t* poll_handle, cl_co
                      /* check the connection */
                      con_private = cl_com_tcp_get_private(connection);
                      socket_error = 0;
-#if defined(SOLARIS) && !defined(SOLARIS64) 
+#if __sun && !__LP64__
                      get_sock_opt_error = getsockopt(con_private->sockfd,SOL_SOCKET, SO_ERROR, (void*)&socket_error, &socklen);
 #else
                      get_sock_opt_error = getsockopt(con_private->sockfd,SOL_SOCKET, SO_ERROR, &socket_error, &socklen);
