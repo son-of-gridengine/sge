@@ -186,7 +186,6 @@ usage:
    echo "-efence           -> compile in debug mode and detect memory leaks"
    echo "-f                -> specify other Makefile instead of common/Makefile"
    echo "-gcc              -> use gcc instead of system compiler (where supported)"
-   echo "-gettext          -> build the gettext libraries"
    echo "-gprof            -> enable gprof profiling"
    echo "-gss              -> enable gss security (_after_ building core)"
    echo "-help             -> show this help"
@@ -309,7 +308,6 @@ set INSURE_FLAG      = ""
 set NOERR_CFLAG      = ""
 set NOERR_PROTO      = ""
 set NOERR_SSH        = ""
-set MEMCFLAG         = ""
 set JAVA_ARCH        = ""
 set JAVA_LFLAGS      = ""
 set JAVA             = 1
@@ -347,7 +345,6 @@ set SONAME_LFLAG_DRMAA10 = ""
 # Flags for man page creation stuff and adoc
 set BUILDMAN          = 0
 set BUILDCATMAN       = 0
-set BUILDGETTEXT      = 0
 set BUILDHTMLMAN      = 0
 set BUILDJAVADOC      = 0
 set SGE_PRODUCT_MODE  = sge
@@ -364,7 +361,6 @@ set PARALLEL          = ""
 set USE_QMAKE         = 0
 
 # I18N, L10N stuff
-set GETTEXTBASE       = "$SOURCE/3rdparty/gettext"
 set MESSAGES          = "../dist/locale/gridenginenotuniq.pot"
 set MESSAGES_BIN      = "gridengine.mo"
 set CREATE_MSG        = 0
@@ -514,9 +510,6 @@ while ($#argv >= 1 && $?found)
       breaksw
    case "-gcc"
       set CC       = gcc
-      breaksw
-   case "-gettext"
-      set BUILDGETTEXT = 1
       breaksw
    case "-gprof":
       set DEBUG_FLAG = "$DEBUG_FLAG -pg"
@@ -1641,7 +1634,7 @@ case SOLARISAMD64:
 
    set DEPEND_FLAGS = "$CFLAGS -D$BUILDARCH $XMTINCD"
    if ( "$CC" == "cc" ) then
-      set MEMCFLAG = "-Xa"
+      set CFLAGs = "$CFLAGS -Xa"
    endif
 
    if ( $CC == cc ) then
@@ -2042,22 +2035,6 @@ if ( "$BUILDCATMAN" == 1 ) then
 
 endif
 
-if ( "$BUILDGETTEXT" == 1 ) then
-   echo _________G_E_T_T_E_X_T____________________
-
-   cd $SOURCE/3rdparty/gettext
-   $SOURCE/scripts/install.gridware $COMPILE_ARCH
-   if ( $status != 0 ) then
-      echo not done
-      exit 1
-   else
-      cd $SOURCE
-      echo done
-      exit 0
-   endif
-
-endif   
-
 if ( "$BUILDJAVADOC" == 1 ) then
    echo _______J_A_V_A_D_O_C_S__________
 
@@ -2262,7 +2239,6 @@ if ( "$CORE" == 1 && "$JAVA" != 2 ) then
          "SPOOLLIBEXT=$SPOOLLIBEXT" \
          "BDB_LIB_SUFFIX=${BDB_LIB_SUFFIX}" \
          "DLLIB=$DLLIB" \
-         "MEMCFLAG=$MEMCFLAG" \
          "CORE_INCLUDE=$CORE_INCLUDE" \
          "JAVA_BINDIR=$JAVA_BINDIR" "JAVA_SHAREDEXT=$JAVA_SHAREDEXT" \
          "JNI_TARGET=$JNI_TARGET" \
@@ -2357,7 +2333,6 @@ if ( "$QMON" == 1 ) then
          "XCFLAGS=$XCFLAGS" "XLFLAGS=$XLFLAGS" "KRBLIBS=$KRBLIBS" \
          "XLIBS=$XLIBS" "LFLAGS=$LFLAGS $KLFLAGS" "STRIP=$STRIP" "RANLIB=$RANLIB" \
          "AR=$AR" "ARFLAGS=$ARFLAGS" "TPLIB=$TPLIB" \
-         "MEMCFLAG=$MEMCFLAG"  \
          "SHARED_CFLAGS=$SHARED_CFLAGS" "SHARED_LFLAGS=$SHARED_LFLAGS" \
          "GSHARED_CFLAGS=$GSHARED_CFLAGS" "GSHARED_LFLAGS=$GSHARED_LFLAGS" \
          "SHAREDLD=$SHAREDLD" "SHAREDEXT=$SHAREDEXT" "LIBEXT=$LIBEXT" $argv
@@ -2394,7 +2369,6 @@ if ( "$QMON" == 1 ) then
          "SPOOLLIBEXT=$SPOOLLIBEXT" \
          "SPOOLING_LIBS=$SPOOLING_LIBS" "SPOOLING_DEPS=$SPOOLING_DEPS" \
          "DLLIB=$DLLIB" \
-         "MEMCFLAG=$MEMCFLAG" \
          $argv
    if ( $status != 0 ) then
       echo not done
@@ -2427,7 +2401,7 @@ if ( "$REMOTE" == 1) then
       "AR=$AR" "ARFLAGS=$ARFLAGS" "LIBEXT=$LIBEXT" \
       "WINGRIDLIB=$WINGRIDLIB" "WINGRIDLIB_DEP=$WINGRIDLIB_DEP" \
       "WINGRIDLIB_STATIC=$WINGRIDLIB_A" "WINGRIDLIB_STATIC_DEP=$WINGRIDLIB_A_DEP" \
-      "MEMCFLAG=$MEMCFLAG" "COMPILE_ARCH=$COMPILE_ARCH" $argv
+      "COMPILE_ARCH=$COMPILE_ARCH" $argv
 
    if ( $status != 0 ) then
       echo not done
@@ -2501,7 +2475,7 @@ if ( "$SGESSH" == 1) then
       env REMOTE=sge SGE_ARCH=$buildarch \
       MAKE="${MAKE}" CFLAGS="${CFLAGS} ${NOERR_CFLAG}" CC="${CC}" AR="${AR}" \
       ../configure --prefix=${OPENSSH_PREFIX} --with-grd=${COMPILE_ARCH} --srcdir=.. \
-         --with-cflags="${MEMCFLAG} ${NOERR_SSH} ${NOERR_PROTO} -DSGESSH_INTEGRATION" \
+         --with-cflags="${NOERR_SSH} ${NOERR_PROTO} -DSGESSH_INTEGRATION" \
          --with-ldflags="${LFLAGS}" \
          --with-libs="-L../../../${COMPILE_ARCH} -L../../../3rdparty/remote/${COMPILE_ARCH}/ -lsgeremote -luti -lcommlists ${LIBS} ${SLIBS}"
    endif
@@ -2561,7 +2535,7 @@ if ( "$QTCSH" == 1) then
 
    $MAKE $MAKEOPT -f Makefile "MAKE=$MAKE" "CC=$CC" "COMPILE_ARCH=$COMPILE_ARCH" \
          "SGE_LIBS=$LFLAGS $KLFLAGS $SGE_LIBS $SECLIB $KRBLIB $KLIBS $DLLIB" \
-         "SGE_COPTS=$SGE_COPTS" "SGE_LOPTS=$SGE_LOPTS" "DLLIB=$DLLIB" $argv
+         "SGE_COPTS=$SGE_COPTS" "DLLIB=$DLLIB" $argv
 
    if ( $status != 0 ) then
       echo not done
