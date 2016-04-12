@@ -226,47 +226,20 @@ Linux)
    ;;
 SunOS)
    case $osmachine in
-   sun4)
-      ARCH=UNSUPPORTED-sun4
-      ;;
    i86*)
       ARCH=sol-x86
-      case $osrelease in
-      5.[8]*)
-         ARCH=usol-x86
-         ;;
-      5.[91]*)
-         if [ `isainfo -b` = 64 ]; then
-            ARCH=sol-amd64
-         else
-            ARCH=sol-x86
-         fi
-         ;;
-      *)
-         ARCH=UNSUPPORTED-SunOS-$osrelease
-         ;;
-      esac
+      if [ `isainfo -b` = 64 ]; then
+          ARCH=sol-amd64
+      else
+          ARCH=sol-x86
+      fi
       ;;
    *)
-      case $osrelease in
-      5.[8]*)
-         if [ `isainfo -b` = 64 ]; then
-            ARCH=usol-sparc64
-         else
-            ARCH=usol-sparc
-         fi
-         ;;
-      5.[91]*)
-         if [ `isainfo -b` = 64 ]; then
-            ARCH=sol-sparc64
-         else
-            ARCH=sol-sparc
-         fi
-         ;;
-      *)
-         ARCH=UNSUPPORTED-SunOS-$osrelease
-         ;;
-      esac
+      if [ `isainfo -b` = 64 ]; then
+         ARCH=sol-sparc64
+      else
+         ARCH=sol-sparc
+      fi
       ;;
    esac
    ;;

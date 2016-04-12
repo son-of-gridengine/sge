@@ -113,20 +113,10 @@ while ($i <= $#argv)
       set TARGET_BITS = TARGET_32BIT
       if ($BUILDARCH == SOLARIS64) then
          set BUILDARCH = SOLARIS
-         if ("$buildarch" == "sol-sparc64") then
-            set buildarch = sol-sparc
-         else
-            set buildarch = usol-sparc
-            set COMPILE_ARCH = USOLARIS
-         endif
+         set buildarch = sol-sparc
       else if ($BUILDARCH == SOLARISAMD64) then
          set BUILDARCH = SOLARIS86
-         if ("$buildarch" == "sol-amd64") then
-            set buildarch = sol-x86
-         else
-            set buildarch = usol-x86
-            set COMPILE_ARCH = USOLARIS86
-         endif
+         set buildarch = sol-x86
       else if ($BUILDARCH == HP1164) then
          set BUILDARCH = HP11
          set buildarch = hp11
@@ -209,7 +199,7 @@ usage:
    echo "-no-remote        -> don't compile 3rdparty remote module (rsh, rshd, rlogin)"
    echo "-no-rmon          -> disable rmon debug output"
    echo "-no-secure        -> disable ssl security (enabled by default)"
-   echo "-no-mtmalloc      -> disable mtmalloc (this is needed for dbx debugging)"
+   echo "-no-mtmalloc      -> disable solaris mtmalloc (needed for dbx debugging)"
    echo "-only-core        -> build only the core system"
    echo "-only-depend      -> only compile 3rdparty/sge_depend"
    echo "-only-java        -> only compile Java[TM] class files"
@@ -1605,18 +1595,10 @@ case SOLARISAMD64:
 #      set CFLAGS = "-DFD_SETSIZE=8192 $CFLAGS"
 #   endif
 
-   # INFO: rel is also used later ...
-   set rel = `uname -r | cut -f 2 -d .`
-   if ( $rel < 10 ) then
-      set CFLAGS = "-DUSE_SGE_UNSETENV $CFLAGS"
-   endif
-
    set DEPEND_FLAGS = "$CFLAGS -D$BUILDARCH $XMTINCD"
-   if ( "$CC" == "cc" ) then
-      set CFLAGs = "$CFLAGS -Xa"
-   endif
 
    if ( $CC == cc ) then
+      set CFLAGs = "$CFLAGS -Xa"
       set ERR_WARN_NONE = "-errwarn=%none" # is set in XCFLAGS and for R_E_M_O_T_E target to switch off -errwarn=%all
       # always get warnings
       set ERR_WARN_ALL = ""  # is set in cc specific section below
@@ -1683,22 +1665,7 @@ case SOLARISAMD64:
    endif
    set NOERR_CFLAG = "$ERR_WARN_NONE"
 
-   # This is workaround for not POSIX fork() behaviour of -lthread
-   # library. The man page of fork() tells following:
-   # ...
-   # Note that if a program is  linked  with  both  libraries
-   # (-lthread  and  -lpthread),  the POSIX semantic of fork() pre-
-   # vails.
-   # 
-   # TODO: use -lpthread only when jmx thread supports it!
-   #       
-   if ( $rel < 10 ) then
-      # Solaris version < 10 needs -lpthread
-      set LIBS     = "-lsocket -lnsl -lm -lpthread -lthread -lkstat" 
-   else
-      # Solaris versions >= 10 have posix fork()
-      set LIBS     = "-lsocket -lnsl -lm -lthread -llgrp -lkstat"
-   endif
+   set LIBS     = "-lsocket -lnsl -lm -lthread -llgrp -lkstat"
    set LOADAVGLIBS = "-lkstat"
    set FSTYPELIBS = "-lkstat"
 
@@ -1723,10 +1690,6 @@ case SOLARISAMD64:
 
    set RANLIB   = "echo"
    set JAVA_ARCH = "solaris"
-
-   if ( $COMPILE_ARCH == "USOLARIS64" ) then
-      set MAKEMTMALLOCLIB = 0
-   endif
 
    set LFLAGS   = "$LFLAGS $DEBUG_FLAG"
    set LIBRARY_LIBS = "$LIBS"
@@ -1772,12 +1735,10 @@ if ( $JNI == 1 ) then
          case ulx-x86:
          case nbsd-i386:
          case sol-x86:
-         case usol-x86:
          case obsd-i386:
              set JAVA_LIB_ARCH = i386
              breaksw
          case sol-sparc64:
-         case usol-sparc64:
              if ($FORCE_32BIT == 1) then
                 set JAVA_LIB_ARCH = sparc
              else
@@ -1785,7 +1746,6 @@ if ( $JNI == 1 ) then
              endif
              breaksw
          case sol-sparc:
-         case usol-sparc:
              set JAVA_LIB_ARCH = sparc
              breaksw
          case lx-amd64:
