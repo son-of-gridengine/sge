@@ -285,14 +285,14 @@ static int handle_io_file(const char* file, const char* owner, bool rw) {
 
    if (rw == true) {
       /* create the given file with the credentials of the job-owner */
-      fd = SGE_OPEN3(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+      fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
       if (fd == -1) {
          shepherd_trace("Cannot open %s due to %s", file, strerror(errno));
          return -1;
       }
    } else {
       /* open file as job-owner */
-      fd = SGE_OPEN2(file, O_RDONLY); 
+      fd = open(file, O_RDONLY);
       if (fd == -1) {
          shepherd_trace("Cannot open %s.", file);
          return -1;

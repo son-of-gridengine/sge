@@ -673,8 +673,8 @@ static void sge_do_log(u_long32 me, const char* progname, const char* unqualifie
                                     progname, unqualified_hostname,
                                     aLevel, aMessage);
          syslog(log_level | LOG_USER, "%s", msg2log);
-      } else if ((fd = SGE_OPEN3(logfile, O_WRONLY | O_APPEND | O_CREAT,
-                                 0666)) >= 0) {
+      } else if ((fd = open(logfile, O_WRONLY | O_APPEND | O_CREAT, 0666))
+                 >= 0) {
          int len;
 
          append_time((time_t)sge_get_gmt(), &msg, false);
@@ -687,12 +687,22 @@ static void sge_do_log(u_long32 me, const char* progname, const char* unqualifie
 
          len = strlen(msg2log);
          if (write(fd, msg2log, len) != len) {
-            /* we are in error logging here - the only chance to log this problem
-             * might be to write it to stderr
-             */
-            fprintf(stderr, "can't log to file %s: %s\n", log_state_get_log_file(), sge_strerror(errno, &msg));
+            char err[MAX_STRING_SIZE];
+            /* we are in error logging here - the only chance to log
+             * this problem might be to write it to stderr */
+            snprintf(err, sizeof err, "can't log to file %s: %s\n", logfile,
+                     sge_strerror(errno, &msg));
+            fprintf(stderr, "%s", err);
+            /* actually, we can use syslog too */
+            syslog(LOG_ERR, "%s", err);
          }
          close(fd);
+      } else if (fd < 0) {
+         char err[MAX_STRING_SIZE];
+         snprintf(err, sizeof err, "can't log to file %s: %s\n", logfile,
+                  sge_strerror(errno, &msg));
+         fprintf(stderr, "%s", err);
+         syslog(LOG_ERR, "%s", err);
       }
    }
 

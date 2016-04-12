@@ -697,7 +697,7 @@ static void* commlib_to_pty(void *t_conf)
                 * This is needed for GE-3580
                 */
                shepherd_trace("commlib_to_pty: received stdin_close message");
-               SGE_CLOSE(fd_write);
+               close(fd_write);
                b_was_connected = 1;
                break;
 

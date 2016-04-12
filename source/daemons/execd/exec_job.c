@@ -1717,7 +1717,7 @@ int sge_exec_job(sge_gdi_ctx_class_t *ctx, lListElem *jep, lListElem *jatep,
 
    /* JG: TODO (254) use function sge_get_active_job.... */
       snprintf(fname, sizeof(fname), "%s/%s", active_dir_buffer, TOKEN_FILE);
-      if ((fd = SGE_OPEN3(fname, O_RDWR | O_CREAT | O_TRUNC, 0600)) == -1) {
+      if ((fd = open(fname, O_RDWR | O_CREAT | O_TRUNC, 0600)) == -1) {
          snprintf(err_str, err_length, MSG_EXECD_NOCREATETOKENFILE_S, strerror(errno));
          sge_free(&pag_cmd);
          sge_free(&shepherd_cmd);

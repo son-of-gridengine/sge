@@ -89,7 +89,7 @@ char *sge_read_token(const char *file)
       return NULL;
    }
 
-   if ((fd = SGE_OPEN2(file, O_RDONLY)) == -1) {
+   if ((fd = open(file, O_RDONLY)) == -1) {
       DTRACE;
       return NULL;
    }
