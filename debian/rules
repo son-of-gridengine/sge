@@ -27,8 +27,8 @@ override_dh_auto_build: build-stamp
 build-stamp:
 	cd source && \
 	sh scripts/bootstrap.sh && \
-	SGE_INPUT_CFLAGS="$$CFLAGS $$CPPFLAGS" SGE_INPUT_LDFLAGS="$$LDFLAGS" \
-	  ./aimk $(JEMALLOC) -with-munge -no-remote -debug -DDEFAULT_EDITOR='\"sensible-editor\"' $(NOOPT) $(PARALLEL) && \
+	SGE_INPUT_CFLAGS="$$CFLAGS $$CPPFLAGS -g" SGE_INPUT_LDFLAGS="$$LDFLAGS" \
+	  ./aimk $(JEMALLOC) -with-munge -no-remote -DDEFAULT_EDITOR='\"sensible-editor\"' $(NOOPT) $(PARALLEL) && \
 	./aimk -man && ant drmaa.javadoc juti.javadoc jgdi.javadoc jjsv.javadoc
 	touch build-stamp
 
