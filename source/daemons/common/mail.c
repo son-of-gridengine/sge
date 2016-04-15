@@ -138,11 +138,7 @@ static void sge_send_mail(u_long32 progid, const char *mailer_in,
    struct rusage rusage;
 #endif
 
-#if defined(SVR3) || defined(_BSD)
-   union wait status;
-#else
    int status;
-#endif
 
    DENTER(TOP_LAYER, "sge_send_mail");
 
@@ -277,11 +273,7 @@ static void sge_send_mail(u_long32 progid, const char *mailer_in,
          exit(1);
       }
 
-#if defined(SVR3) || defined(_BSD)
-      exit_status = status.w_retcode;
-#else
       exit_status = status;
-#endif
       DPRINTF(("mailer exited with exit status %d\n", exit_status));
       exit(exit_status);
    }

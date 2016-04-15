@@ -303,10 +303,6 @@ static void qevent_start_trigger_script(int qevent_event, const char* script_fil
 #if !__INTERIX
       struct rusage rusage;
 #endif
-
-#if defined(SVR3) || defined(_BSD)
-      union wait status;
-#else
       int status;
 #endif
 #if __INTERIX
@@ -314,11 +310,7 @@ static void qevent_start_trigger_script(int qevent_event, const char* script_fil
 #else
       wait3(&status, 0, &rusage);
 #endif
-#if defined(SVR3) || defined(_BSD)
-      exit_status = status.w_retcode;
-#else
       exit_status = status;
-#endif
 
       if ( WEXITSTATUS(exit_status) == 0 ) {
          INFO((SGE_EVENT,"exit status of script: "sge_U32CFormat"\n", sge_u32c(WEXITSTATUS(exit_status))));
