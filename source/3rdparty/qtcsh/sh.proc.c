@@ -47,9 +47,9 @@ RCSID("$tcsh: sh.proc.c,v 3.109 2009/06/25 21:15:37 christos Exp $")
 # define HZ 16
 #endif /* aiws */
 
-#if defined(_BSD) || (defined(IRIS4D) && __STDC__) || defined(__lucid) || defined(linux) || defined(__GNU__) || defined(__GLIBC__)
+#if (defined(IRIS4D) && __STDC__) || defined(__lucid)
 # define BSDWAIT
-#endif /* _BSD || (IRIS4D && __STDC__) || __lucid || glibc */
+#endif /* (IRIS4D && __STDC__) || __lucid  */
 #ifndef WTERMSIG
 # define WTERMSIG(w)	(((union wait *) &(w))->w_termsig)
 # ifndef BSDWAIT
