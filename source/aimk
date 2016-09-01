@@ -340,8 +340,8 @@ set FLAGS_OUT        = "false"
 set SHAREDLIBS       = 0
 set SHAREDEXT        = ".so"
 set SHAREDLD         = ""
-set SHARED_CFLAGS    = ""
-set SHARED_LFLAGS    = "$LFLAGS"
+set SHARED_CFLAGS    = "$INP_CFLAGS"
+set SHARED_LFLAGS    = "$INP_LFLAGS"
 
 # linker flag for -ldrmaa name and version
 set SONAME_LFLAG_DRMAA10 = ""
@@ -975,9 +975,9 @@ case AIX51:
       else
          set OFLAG    = ""
       endif
-      set LFLAGS = "-Wl,-brtl -Wl,-bbigtoc -L."
+      set LFLAGS = "$INP_LFLAGS -Wl,-brtl -Wl,-bbigtoc -L."
       set XCFLAGS  = ""
-      set SHARED_CFLAGS = "-fPIC"
+      set SHARED_CFLAGS = "$INP_CFLAGS -fPIC"
       set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared -Wl,-G"
       set SHAREDLD = "gcc"
    else
@@ -994,8 +994,8 @@ case AIX51:
       set CFLAGS = "$CFLAGS -bnoquiet"
       set XCFLAGS  = "-bnodelcsect"
       set LFLAGS   = "-brtl -bmaxdata:0x80000000 $LFLAGS"
-      set SHARED_CFLAGS = ""
-      set SHARED_LFLAGS = "-brtl -bhalt:4 -bM:SRE -bE:lib.exp -H512 -T512 -bnoentry"
+      set SHARED_CFLAGS = "$INP_CFLAGS"
+      set SHARED_LFLAGS = "$INP_LFLAGS -brtl -bhalt:4 -bM:SRE -bE:lib.exp -H512 -T512 -bnoentry"
       set SHAREDLD = "$SOURCE/scripts/ldAix"
    endif
 
@@ -1064,7 +1064,7 @@ case DARWIN_X64:
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS"
 
    set SHAREDLD = "$CC -dynamiclib -flat_namespace -undefined warning"
-   set SHARED_CFLAGS = "-dynamic -fno-common"
+   set SHARED_CFLAGS = "$INP_CFLAGS -dynamic -fno-common"
    set SHARED_LFLAGS = "$SHARED_LFLAGS -L."
 
    set SHAREDEXT = ".dylib"
@@ -1130,7 +1130,7 @@ case FREEBSD_*:
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS -export-dynamic"
    set LIBS     = "$LIBS -lkvm"
    set SHAREDLD = $CC
-   set SHARED_CFLAGS = "-fPIC"
+   set SHARED_CFLAGS = "$INP_CFLAGS -fPIC"
    set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared -export-dynamic"
    set AUTHLIBS = "-lcrypt -lpam"
  
@@ -1158,7 +1158,7 @@ case NETBSD_*:
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS -export-dynamic"
    set LIBS     = "$LIBS -lkvm"
    set SHAREDLD = $CC
-   set SHARED_CFLAGS = "-fPIC"
+   set SHARED_CFLAGS = "$INP_CFLAGS -fPIC"
    set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared -export-dynamic"
    set AUTHLIBS = "-lcrypt -lpam"
 
@@ -1191,7 +1191,7 @@ case OPENBSD_*:
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS -export-dynamic"
    set LIBS     = "$LIBS -lkvm"
    set SHAREDLD = $CC
-   set SHARED_CFLAGS = "-fPIC"
+   set SHARED_CFLAGS = "$INP_CFLAGS -fPIC"
    set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared -export-dynamic"
    set AUTHLIBS = ""
 
@@ -1253,10 +1253,10 @@ case HP1164:
 
    set SHAREDLD = ld
    if ( $CC == gcc ) then
-      set SHARED_CFLAGS = "-fPIC"
+      set SHARED_CFLAGS = "$INP_CFLAGS -fPIC"
       set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared"
    else
-      set SHARED_CFLAGS = "+Z"
+      set SHARED_CFLAGS = "$INP_CFLAGS +Z"
       set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -b +s"
    endif
 
@@ -1350,7 +1350,7 @@ case LINUX*:
    set LFLAGS   = "$DEBUG_FLAG $LFLAGS"
 
    set SHAREDLD = $CC
-   set SHARED_CFLAGS = "-fPIC"
+   set SHARED_CFLAGS = "$INP_CFLAGS -fPIC"
    set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared"
 
    set SONAME_LFLAG_DRMAA10 = "-Wl,-soname,libdrmaa.so.1.0 -Wl,--version-script=drmaa.lds"
@@ -1658,7 +1658,7 @@ case SOLARISAMD64:
       if ( $USE_INSURE == 0 ) then
          set CFLAGS = "$CFLAGS $ERR_WARN_ALL"
       endif
-      set SHARED_CFLAGS = "-KPIC"
+      set SHARED_CFLAGS = "$INP_CFLAGS -KPIC"
 
       # need the compiler version for building the compiler flags
       set compversion = `cc -V | & head -1 | sed 's/[a-zA-Z :]*\([0-9].[0-9]*\).*$/\1/'`
@@ -1697,7 +1697,7 @@ case SOLARISAMD64:
    else if ( $CC == gcc) then
       #set CFLAGS = "-Wall -Werror -Wstrict-prototypes $CFLAGS"
       set CFLAGS = "-Wall -Wstrict-prototypes $CFLAGS $OFLAG"
-      set SHARED_CFLAGS = "-fPIC"
+      set SHARED_CFLAGS = "$INP_CFLAGS -fPIC"
       set SHARED_LFLAGS = "$SHARED_LFLAGS -L. -shared"
       # always get warnings
       set ERR_WARN_NONE = ""
