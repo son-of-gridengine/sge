@@ -190,7 +190,11 @@ Linux)
       lxmachine=sparc
       ;;
    x86_64)
-      lxmachine=amd64
+      if /usr/bin/cpp -dM </dev/null | grep -q __ILP32__; then
+	  lxmachine=x32
+      else
+	  lxmachine=amd64
+      fi
       ;;
    mips)
       lxmachine=mips
