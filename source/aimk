@@ -1880,7 +1880,10 @@ if ( $JNI == 1 ) then
              set JAVA_LIB_ARCH = PA_RISC2.0W
              breaksw
          case fbsd-i386:
-             set JAVA_LIB_ARCH = linux
+             set JAVA_LIB_ARCH = i386
+             breaksw
+         case fbsd-amd64:
+             set JAVA_LIB_ARCH = amd64
              breaksw
          case darwin-*:
          case aix51:
