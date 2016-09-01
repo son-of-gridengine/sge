@@ -130,8 +130,16 @@ Darwin)
       ARCH=darwin-$darwin_machine
    fi
    ;;
-FreeBSD|DragonFly)
-   ARCH=fbsd-$osmachine
+GNU/kFreeBSD|FreeBSD|DragonFly)
+   case $osmachine in
+	x86_64)
+	    fbsdmachine=amd64
+	    ;;
+	*)
+	    fbsdmachine=$osmachine
+	    ;;
+   esac
+   ARCH=fbsd-$fbsdmachine
    ;;
 NetBSD)
     osprocessor="`$UNAME -p`"
