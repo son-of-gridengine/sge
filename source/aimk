@@ -1316,17 +1316,7 @@ case LINUX*:
 #       set CC  = clanga
 #       set CFLAGS = "$CFLAGS -Wno-unused-value"
 
-   if ($BUILDARCH == LINUXPPC) then
-      set CFLAGS = "-m32 $CFLAGS" # fixme: why?
-      set LFLAGS = "-m32 $LFLAGS"
-      set SHARED_LFLAGS = "-m32 $SHARED_LFLAGS"
-   else if ($BUILDARCH == LINUXSPARC64 || $BUILDARCH == LINUXPPC64 || $BUILDARCH == LINUXMIPS64) then
-      if ($FORCE_32BIT != 1) then
-         set CFLAGS = "-m64 $CFLAGS"
-         set LFLAGS = "-m64 $LFLAGS"
-         set SHARED_LFLAGS = "-m64 $SHARED_LFLAGS"
-      endif
-   else if ($BUILDARCH == LINUXS390X && $FORCE_32BIT == 1) then
+   if ($BUILDARCH == LINUXS390X && $FORCE_32BIT == 1) then
       set CFLAGS = "-m31 $CFLAGS"
       set LFLAGS = "-m31 $LFLAGS"
       set SHARED_LFLAGS = "-m31 $SHARED_LFLAGS"
