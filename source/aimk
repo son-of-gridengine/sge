@@ -1856,6 +1856,7 @@ if ( $JNI == 1 ) then
          case lx-ppc:
          case lx-sparc: # debian squeeze; no openjdk in wheezy, but has gcj
          case lx-ppc64le:       # Fedora                                     
+	 case lx-x32:
              set JAVA_LIB_ARCH = `expr substr $buildarch 4 9`
              breaksw
          case lx-ppc64:
