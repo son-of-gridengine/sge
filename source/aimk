@@ -1844,8 +1844,9 @@ if ( $JNI == 1 ) then
          case lx-mips:
          case lx-mipsel:
          case lx-ppc:
-         case lx-sparc: # debian squeeze; no openjdk in wheezy, but has gcj
          case lx-ppc64le:       # Fedora                                     
+	 case ulx-alpha:
+	 case lx-alpha:
 	 case lx-x32:
              set JAVA_LIB_ARCH = `expr substr $buildarch 4 9`
              breaksw
@@ -1860,9 +1861,15 @@ if ( $JNI == 1 ) then
              if ($FORCE_32BIT == 1) then
                 set JAVA_LIB_ARCH = arm
              else
-                set JAVA_LIB_ARCH = arm64
+                set JAVA_LIB_ARCH = aarch64
              endif
              breaksw
+	 case lx-mips64:
+	      set JAVA_LIB_ARCH = mips64el
+	      breaksw
+	 case lx-sparc:
+	      set JAVA_LIB_ARCH = sparcv9
+	      breaksw
          case hp11:
              set JAVA_LIB_ARCH = PA_RISC
              breaksw
