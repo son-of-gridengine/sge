@@ -1106,22 +1106,26 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
 
          sge_mutex_lock("follow_last_update_mutex", SGE_FUNC, __LINE__, &Follow_Control.last_update_mutex);
 
+         /* If still undecided, check if we need to spool */
          if (Follow_Control.is_spooling == NOT_DEFINED) {
 
-            now = Follow_Control.now = sge_get_gmt();
+            Follow_Control.now = sge_get_gmt();
 
             DPRINTF((">>next spooling now: %ld next: %ld\n",
                      (long) Follow_Control.now,
                      (long) Follow_Control.last_update));
 
-            if (now >= Follow_Control.last_update) {
+            if (Follow_Control.now >= Follow_Control.last_update) {
                Follow_Control.is_spooling = DO_SPOOL;
-               is_spool = true;
             } else {
                Follow_Control.is_spooling = DONOT_SPOOL;
             }
-         } else {
-            now =  Follow_Control.now;
+         }
+
+         /* Spool if we need to */
+         now =  Follow_Control.now;
+         if (Follow_Control.is_spooling == DO_SPOOL) {
+            is_spool = true;
          }
 
          sge_mutex_unlock("follow_last_update_mutex", SGE_FUNC, __LINE__, &Follow_Control.last_update_mutex);
@@ -1247,22 +1251,26 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
 
          sge_mutex_lock("follow_last_update_mutex", SGE_FUNC, __LINE__, &Follow_Control.last_update_mutex);
 
+         /* If still undecided, check if we need to spool */
          if (Follow_Control.is_spooling == NOT_DEFINED) {
 
-            now = Follow_Control.now = sge_get_gmt();
+            Follow_Control.now = sge_get_gmt();
 
-            DPRINTF((">>next spooling now:%ld next: %ld\n",
+            DPRINTF((">>next spooling now: %ld next: %ld\n",
                      (long) Follow_Control.now,
                      (long) Follow_Control.last_update));
 
-            if (now >= Follow_Control.last_update) {
+            if (Follow_Control.now >= Follow_Control.last_update) {
                Follow_Control.is_spooling = DO_SPOOL;
-               is_spool = true;
             } else {
                Follow_Control.is_spooling = DONOT_SPOOL;
             }
-         } else {
-            now =  Follow_Control.now;
+         }
+
+         /* Spool if we need to */
+         now =  Follow_Control.now;
+         if (Follow_Control.is_spooling == DO_SPOOL) {
+            is_spool = true;
          }
 
          sge_mutex_unlock("follow_last_update_mutex", SGE_FUNC, __LINE__, &Follow_Control.last_update_mutex);
