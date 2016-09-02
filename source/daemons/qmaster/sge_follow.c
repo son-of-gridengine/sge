@@ -582,7 +582,7 @@ sge_follow_order(sge_gdi_ctx_class_t *ctx,
     * ----------------------------------------------------------------------- */
    case ORT_clear_pri_info:
 
-      DPRINTF(("ORDER ORT_ptickets\n"));
+      DPRINTF(("ORDER ORT_clear_pri_info\n"));
       {
          ja_task_pos_t *ja_pos = NULL;
          job_pos_t   *job_pos = NULL;
