@@ -4036,14 +4036,15 @@ sge_build_sgeee_orders(scheduler_all_data_t *lists, lList *running_jobs, lList *
 
    if (update_usage_and_configuration) {
 
-      /*-----------------------------------------------------------------
-       * build update user usage order
-       *-----------------------------------------------------------------*/
-
       /* NOTE: make sure we get all usage entries which have been decayed
          or have accumulated additional usage */
 
       user_where = lWhere("%T(%I > %u)", UU_Type, UU_usage_seqno, last_seqno);
+      prj_where = lWhere("%T(%I > %u)", PR_Type, PR_usage_seqno, last_seqno);
+
+      /*-----------------------------------------------------------------
+       * build update user usage order
+       *-----------------------------------------------------------------*/
 
       if (lists->user_list) {
          norders = lGetNumberOfElem(order_list); 
@@ -4064,6 +4065,7 @@ sge_build_sgeee_orders(scheduler_all_data_t *lists, lList *running_jobs, lList *
       /*-----------------------------------------------------------------
        * build update project usage order
        *-----------------------------------------------------------------*/
+
       if (lists->project_list) {
          norders = lGetNumberOfElem(order_list); 
          if ((up_list = lSelect("", lists->project_list, prj_where, prj_usage_what))) {
