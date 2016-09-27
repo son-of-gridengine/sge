@@ -172,6 +172,9 @@ case $buildarch in
    lx-x32)
       BUILDARCH=LINUXX32
       COMPILE_ARCH=LINUXX32
+      # not sure what to call this, but this macro needs to defined
+      # in order to avoid a compiler error (passing -D with nothing after it)
+      TARGET_BITS=TARGET_X32
       ;;
    lx-ia64)
       BUILDARCH=LINUXIA64
