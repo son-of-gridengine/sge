@@ -50,13 +50,12 @@ RANDFILE             = $dir/private/.rand       # private random number file
 
 x509_extensions      = usr_cert                 # The extentions to add to the cert
 
-# Extensions to add to a CRL. Note: Netscape communicator chokes on V2 CRLs
-# so this is commented out by default to leave a V1 CRL.
-# crl_extensions     = crl_ext
+# Extensions to add to a CRL.
+crl_extensions     = crl_ext
 
 default_days         = 365                      # how long to certify for
 default_crl_days     = 365                      # how long before next CRL
-default_md           = md5                      # which md to use.
+default_md           = sha256                   # which md to use.
 preserve             = no                       # keep passed DN ordering
 
 # A few difference way of specifying how similar the request should look
