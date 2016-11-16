@@ -106,8 +106,12 @@ BuildRequires: net-tools, %xmupkg-devel, %hwlocpkg-devel >= 1.1
 # install /usr/include/db.h" doesn't work on SuSE, so you have to
 # install the packages explicitly.
 BuildRequires: /usr/include/db.h
-# This could be in lesstif-devel, motif-devel, or openmotif-devel
-BuildRequires: /usr/include/Xm/Xm.h
+%if 0%{?fedora}%{?epel7}
+BuildRequires: motif-devel
+%else
+# el5, el6, openSuSE
+BuildRequires: openmotif-devel
+%endif
 %if %{with java}
 BuildRequires: java-devel >= 1.6.0, javacc, ant-junit
 %if ! 0%{?fedora} && 0%{?rhel} < 7
