@@ -16,7 +16,6 @@ xargs chmod +x <<EOF
 ./scripts/format.sh
 ./scripts/compilearch
 ./scripts/gen_subtype_info.sh
-./scripts/gelint
 ./scripts/link_jnilib.sh
 ./scripts/detab.sh
 ./scripts/ldAix
