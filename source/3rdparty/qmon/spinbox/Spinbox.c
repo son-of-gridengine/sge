@@ -1798,6 +1798,7 @@ static Boolean long_get_value (
     !(__NetBSD__ || __OpenBSD__) && !_AIX && !__hpux
    int errno = 0;
 #endif
+
    *value = strtol ( buffer, NULL, 10 );
    return ( !errno );
 }
