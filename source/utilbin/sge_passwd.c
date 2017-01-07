@@ -280,7 +280,7 @@ buffer_encrypt(const char *buffer_in, size_t buffer_in_length,
                size_t *buffer_out_length)
 {
    unsigned int ebuflen;
-   EVP_CIPHER_CTX ectx;
+   EVP_CIPHER_CTX *ectx = NULL;
    unsigned char iv[EVP_MAX_IV_LENGTH];
    unsigned char *ekey[1]; 
    int ekeylen=0, net_ekeylen=0;
@@ -315,6 +315,8 @@ buffer_encrypt(const char *buffer_in, size_t buffer_in_length,
    ret = sge_ssl_rand_load_file(rand_file, sizeof(rand_file));
 
    if(ret <= 0) {
+      sge_free(&(ekey[0]));
+      EVP_PKEY_free(pubKey[0]); 
       snprintf(err_str, MAX_STRING_SIZE, MSG_PWD_CANTLOADRANDFILE_SSS, 
               "sgepasswd", rand_file, MSG_PWD_NO_SSL_ERR);
 
@@ -325,11 +327,22 @@ buffer_encrypt(const char *buffer_in, size_t buffer_in_length,
       return;
    }
 
+   /* Initialise cipher context */
+   ectx = EVP_CIPHER_CTX_new();
+   if (!ectx) {
+      sge_free(&(ekey[0]));
+      EVP_PKEY_free(pubKey[0]); 
+      fprintf(stderr, MSG_PWD_MALLOC_SS, SGE_PASSWD_PROG_NAME, MSG_PWD_NO_SSL_ERR);
+      fprintf(stderr, "\n");
+      DEXIT;
+      exit(1);
+   }
+
    memset(iv, '\0', sizeof(iv));
 #if 0
-   ret = EVP_SealInit(&ectx, EVP_des_ede3_cbc(), ekey, &ekeylen, iv, pubKey, 1); 
+   ret = EVP_SealInit(ectx, EVP_des_ede3_cbc(), ekey, &ekeylen, iv, pubKey, 1); 
 #else
-   ret = EVP_SealInit(&ectx, EVP_rc4(), ekey, &ekeylen, iv, pubKey, 1); 
+   ret = EVP_SealInit(ectx, EVP_rc4(), ekey, &ekeylen, iv, pubKey, 1); 
 #endif
    if(ret == 0) {
       printf("---> EVP_SealInit\n");
@@ -352,7 +365,7 @@ buffer_encrypt(const char *buffer_in, size_t buffer_in_length,
    buffer_append(buffer_out, buffer_out_size, buffer_out_length,
                  (char*)iv, sizeof(iv));
 
-   EVP_SealUpdate(&ectx, (unsigned char*)ebuf, 
+   EVP_SealUpdate(ectx, (unsigned char*)ebuf, 
                                    (int*)&ebuflen, 
                                    (const unsigned char *) buffer_in, 
                                    buffer_in_length);
@@ -360,11 +373,12 @@ buffer_encrypt(const char *buffer_in, size_t buffer_in_length,
    buffer_append(buffer_out, buffer_out_size, buffer_out_length,
                  ebuf, ebuflen);
 
-   EVP_SealFinal(&ectx, (unsigned char *)ebuf, (int*)&ebuflen);
+   EVP_SealFinal(ectx, (unsigned char *)ebuf, (int*)&ebuflen);
 
    buffer_append(buffer_out, buffer_out_size, buffer_out_length,
                  ebuf, ebuflen);
 
+   EVP_CIPHER_CTX_free(ectx);
    EVP_PKEY_free(pubKey[0]);
    sge_free(&(ekey[0]));
    DEXIT;
@@ -379,7 +393,7 @@ buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
    char buf[520];
    char ebuf[512];
    unsigned int buflen;
-   EVP_CIPHER_CTX ectx;
+   EVP_CIPHER_CTX *ectx = NULL;
    unsigned char iv[EVP_MAX_IV_LENGTH];
    unsigned char *encryptKey; 
    unsigned int ekeylen; 
@@ -455,6 +469,16 @@ buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
       return 1;
    }
 
+   /* Initialise cipher context */
+   ectx = EVP_CIPHER_CTX_new();
+   if (!ectx) {
+      sge_free(&encryptKey);
+      fprintf(stderr, MSG_PWD_MALLOC_SS, SGE_PASSWD_PROG_NAME, MSG_PWD_NO_SSL_ERR);
+      fprintf(stderr, "\n");
+      DEXIT;
+      exit(1);
+   }
+
    memcpy(encryptKey, curr_ptr, ekeylen);
    curr_ptr += ekeylen;
    buffer_in_length -= ekeylen;
@@ -462,9 +486,9 @@ buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
    curr_ptr += sizeof(iv);
    buffer_in_length -= sizeof(iv);
 #if 0
-   ret = EVP_OpenInit(&ectx, EVP_des_ede3_cbc(), encryptKey, ekeylen, iv, privateKey); 	
+   ret = EVP_OpenInit(ectx, EVP_des_ede3_cbc(), encryptKey, ekeylen, iv, privateKey); 	
 #else
-   ret = EVP_OpenInit(&ectx, EVP_rc4(), encryptKey, ekeylen, iv, privateKey); 	
+   ret = EVP_OpenInit(ectx, EVP_rc4(), encryptKey, ekeylen, iv, privateKey); 	
 #endif
    if(ret == 0) {
       printf("----> EVP_OpenInit\n");
@@ -484,12 +508,13 @@ buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
          readlen = sizeof(ebuf);
       }
 
-      ret = EVP_OpenUpdate(&ectx, (unsigned char *)buf, 
+      ret = EVP_OpenUpdate(ectx, (unsigned char *)buf, 
                (int*)&buflen, 
                (const unsigned char *)ebuf, readlen);
       if (ret == 0) {
          error_code = ERR_get_error();
          ERR_error_string(error_code, err_msg);
+         EVP_CIPHER_CTX_free(ectx);
          snprintf(err_str, lstr, MSG_PWD_SSL_ERR_MSG_SS, SGE_PASSWD_PROG_NAME, err_msg);
 #ifdef DEFINE_SGE_PASSWD_MAIN
          fprintf(stderr, "%s\n", err_str);
@@ -502,10 +527,11 @@ buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
          buf, buflen);
    }
 
-   ret = EVP_OpenFinal(&ectx, (unsigned char *)buf, (int*)&buflen);
+   ret = EVP_OpenFinal(ectx, (unsigned char *)buf, (int*)&buflen);
    if (ret == 0) {
       error_code = ERR_get_error();
       ERR_error_string(error_code, err_msg);
+      EVP_CIPHER_CTX_free(ectx);
       snprintf(err_str, lstr, MSG_PWD_SSL_ERR_MSG_SS, SGE_PASSWD_PROG_NAME, err_msg);
 #ifdef DEFINE_SGE_PASSWD_MAIN
       fprintf(stderr, "%s\n", err_str);
@@ -516,6 +542,7 @@ buffer_decrypt(const char *buffer_in, size_t buffer_in_length,
    buffer_append(buffer_out, buffer_out_size, buffer_out_length,
                  buf, buflen);
 
+   EVP_CIPHER_CTX_free(ectx);
    EVP_PKEY_free(privateKey);
    sge_free(&encryptKey);
    error_code = ERR_get_error();
