@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
    object_description *object_base;
 
    DENTER_MAIN(TOP_LAYER, "test_performance");
-
+#if SPOOLING_dynamic
 #define NM10 "%I%I%I%I%I%I%I%I%I%I"
 #define NM5  "%I%I%I%I%I"
 #define NM2  "%I%I"
@@ -387,6 +387,6 @@ int main(int argc, char *argv[])
 
    spool_shutdown_context(&answer_list, spooling_context);
    answer_list_output(&answer_list);
-
+#endif  /* SPOOLING_dynamic */
    DRETURN(EXIT_SUCCESS);
 }

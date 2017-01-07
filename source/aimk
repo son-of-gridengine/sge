@@ -220,7 +220,7 @@ usage:
    echo "-shared-libs      -> create libraries as shared libs"
    echo "-spool-berkeleydb -> use berkeleydb spooling"
    echo "-spool-classic    -> use classic flatfile spooling"
-   echo "-spool-targets    -> only create qmaster, spooldefaults and spoolinit"
+   echo "-classic-targets  -> only create classic spooling targets"
    echo "-tight-ssh        -> compile SSH daemon with tight SGE integration"
    echo "                     (normally obsoleted by sge-sshd-control PAM module)"
 #   echo "-umap             -> compile with usermapping and hostgroup feature (currently broken)"
