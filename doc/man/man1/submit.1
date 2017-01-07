@@ -159,13 +159,13 @@ variable
 .B QRSH_WRAPPER
 is set when
 .I qrsh
-is invoked, the command interpreter pointed to by
-.B QRSH_WRAPPER
-will be executed to run
+is invoked, the executable it names will be executed to run
 .I qrsh
 commands instead of the user's login shell or any shell specified in the
 .I qrsh
-command-line.
+command-line; it is passed the command line arguments, not
+.B \-c
+and a string as for shell invocation.
 The options \fB\-cwd\fP,  \fB\-v\fP,  \fB\-V\fP,  and \fB\-display\fP only 
 apply to batch jobs.
 .PP

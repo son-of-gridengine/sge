@@ -70,10 +70,11 @@ Service Pack 3 using Services for UNIX.  `qmaster`, `qmon`, DRMAA, and
 
 ==== Cygwin
 
-32-bit builds and clients work, but there may be problems with daemons
-(tested on Windows 7), apparently related to threading.  The native
-components as in the Interix build are currently not supported, and
-neither are.  A 64-bit version builds.
+The native components as in the Interix/SUA build are currently not
+supported.  (Some functions from the Interix/SUA library are missing.)
+execd is reported to run under cygrunsrv, but needs SGE_ND set in the
+environment, since cygrunsrv stops on a fork.  inst_sge needs fixing
+for Cygwin.  [See issue #1557.]
 
 === FreeBSD, NetBSD, DragonFly, OpenBSD
 
