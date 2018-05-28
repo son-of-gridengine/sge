@@ -413,12 +413,38 @@ installations, although they will also work with a local installation.
 
 === dpkg
 
-See <http://wiki.debian.org/BuildingAPackage> for general help on
-building Debian packages.  It is intended that the
-http://wiki.debian.org/Hardening#hardening-wrapper[hardening-wrapper]
-package is used, but it isn't required by the build dependencies.
+See <https://wiki.debian.org/BuildingTutorial> for general help on
+building Debian packages. In a security environment it might be needed
+to use https://wiki.debian.org/Hardening[Hardening] to build the binaries, 
+but it isn't required by the build dependencies.
 
-* Ensure the `dpkg-dev` package is installed
+* This is a list of Debian package dependencies for the build process. 
+Depending on your needs, not all packages are needed, e.g. if you only need "classic spool", 
+the `libdb-dev` is not needed.
+
+** basic build dependencies: 
++
+....
+  $ sudo apt-get install dpkg-dev build-essential fakeroot devscripts lintian csh automake autoconf
+....
+
+** developer libraries: 
++
+....
+  $ sudo apt-get install libssl-dev libmunge-dev libjemalloc-dev libncurses-dev libdb-dev libhwloc-dev libpam0g-dev
+....
+
+** developer libraries for X11 applications: 
++
+....
+  $ sudo apt-get install libmotif-dev libxext-dev libxmu-dev libxft-dev 
+....
+
+** dependencies for Java libraries and applications: 
++
+....
+  $ sudo apt-get install default-jdk ant-optional junit javacc
+....
 
 * Run
 +
@@ -468,4 +494,4 @@ avoid the Java components, add `--without java`.
 ------
 Copyright (C) 2013, Dave Love, University of Liverpool
 
-Licence http://arc.liv.ac.uk/repos/darcs/sge/LICENCES/GFDL-1.3[GFDL].
+Licence `LICENCES/GFDL-1.3`
