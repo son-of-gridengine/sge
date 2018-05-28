@@ -45,7 +45,7 @@ installer or Hadoop support, unlike the RPM packaging.
   architectures (`uname -m`) and Java locations.
 
 Some support libraries are available in the
-http://arc.liv.ac.uk/downloads/SGE/support/[distribution area] in case
+https://arc.liv.ac.uk/downloads/SGE/support/[distribution area] in case
 they aren't available from your OS.
 
 === Solaris
@@ -111,8 +111,8 @@ and used in the build and installation processes.
 
 == Prerequisites
 
-For up-to-date source, see <https://arc.liv.ac.uk/trac/SGE>, and for
-more information, see <http://arc.liv.ac.uk/SGE>.
+For up-to-date source, see <https://github.com/son-of-gridengine/sge>, and for
+more information, see <https://arc.liv.ac.uk/SGE>.
 
 The following are requirements for building from source and installing
 the result.  If you are on a Debian- or Red Hat-ish system and aren't
@@ -120,19 +120,19 @@ building packages for some reason, check +gridengine.spec+ and
 +debian/control+ in the sources for the names of packages to satisfy
 build dependencies mentioned below.
 
-* A version of `csh` (e.g. http://www.tcsh.org/Welcome[tcsh]) and the
+* A version of `csh` (e.g. https://github.com/tcsh-org/tcsh[tcsh]) and the
   normal packages for building C source on your system;
 * GNU autoconf if you are building from the repository rather than
   a distribution;
 * It is highly recommended to use CSP security or MUNGE authentication
-  <http://arc.liv.ac.uk/SGE/howto/sge-security.html>.  For CSP you
-  need the http://www.openssl.org/[openSSL library], preferably your OS's
+  <https://arc.liv.ac.uk/SGE/howto/sge-security.html>.  For CSP you
+  need the https://www.openssl.org/[openSSL library], preferably your OS's
   packaged version; without it, build with `aimk -no-secure`.
-  To provide http://munge.googlecode.com/[MUNGE authentication],
+  To provide https://github.com/dun/munge[MUNGE authentication],
   install the library and daemon from OS packages or the MUNGE web
   site.  It needs to   be version 5.9+ to get a compatible licence.
   Use `aimk --with-munge`;
-* The http://www.canonware.com/jemalloc/[jemalloc library] can be
+* The http://jemalloc.net/[jemalloc library] can be
   linked using `aimk -with-jemalloc` to improve qmaster performance if
   that is a concern.
 * For BDB spooling in qmaster, the
@@ -142,28 +142,28 @@ build dependencies mentioned below.
 * Possibly development packages of `ncurses` and (on
   GNU/Linux) `pam`;
 * For the `qmon` GUI,
-  development packages of `lesstif` or `openmotif` (now free
+  development packages of https://sourceforge.net/projects/motif/[motif] (now free
   software, and appearing in distributions), `libXmu`, and `libXpm`;
 * On AIX, `perfstat` (the `bos.perf.libperfstat` and
   `bos.perf.perfstat` filesets);
 * For core binding support,
-  http://www.open-mpi.org/projects/hwloc/[hwloc], at least version
+  https://www.open-mpi.org/projects/hwloc/[hwloc], at least version
   1.1, and possibly later for specific architecture support; otherwise
   build with `aimk -no-hwloc`;
 * For the basic Java targets, as well as a Java 1.6 or 1.7 JDK
   (e.g. OpenJDK) you will need `ant`, `ant-nodeps` (Red Hat) or
   `ant-optional` (Debian), `javacc`, and `junit` packages.  The GUI
   installer requires http://izpack.org[IzPack] and
-  http://swing-layout.dev.java.net[swing-layout].  Izpack 4.1.1 is
+  https://de.wikipedia.org/wiki/Swing_(Java)[swing-layout].  Izpack 4.1.1 is
   known to work, later versions may not; swing-layout 1.0.3 is known
   to work.  Copies are available from
-  <http://arc.liv.ac.uk/downloads/SGE/support/> and are included in
+  <https://arc.liv.ac.uk/downloads/SGE/support/> and are included in
   the source RPM.
 +
 The `herd` library
 requires a basic Hadoop distribution (hadoop-0.20 GNU/Linux
 packages) of a suitable version
-(e.g. <http://archive.cloudera.com/cdh/3/>).  The cdh3u3
+(e.g. <http://www.cloudera.com/documentation/cdh/5-1-x/CDH-Version-and-Packaging-Information/cdhvd_cdh_download_previous.html>).  The cdh3u3
 (0.20.2+923.197) and cdh3u4 (0.20.2+923.256) versions are known to
 work and cdh3u0 is known not to with this version of
 SGE.  (There was an incompatible change in the Hadoop distribution,
@@ -185,7 +185,7 @@ component directory;
   libcrypt-devel, depending on version), libncurses-devel,
   libXm-devel, libXext-devel, libXmu-devel (the last three for qmon);
   also build and install hwloc from
-  <http://www.open-mpi.org/software/hwloc/> or use `aimk -hwloc` (see
+  <https://www.open-mpi.org/software/hwloc/> or use `aimk -hwloc` (see
   below) to avoid core binding support.
 
 If in doubt for other systems, maybe consult and adapt the Red Hat recipe
@@ -368,14 +368,14 @@ Programs'' menu and install it.  You need the GNU utilities
 and SDK components.    To build CSP support, you need openssl.  There isn't
 currently an official distribution for Interix, so either build it
 yourself, or use the somewhat old version from
-<http://arc.liv.ac.uk/downloads/SGE/support/>.  `aimk.site` expects it
+<https://arc.liv.ac.uk/downloads/SGE/support/>.  `aimk.site` expects it
 to be unpacked into `/usr/local/ssl`.
 
 You also need the native compiler from Microsoft Visual C++.  (It may
 be possible to use the free MinGW compiler, but that has not been
 tried.)  You can
 use the gratis ``Express Edition'', which appears to be available from
-<https://www.microsoft.com/visualstudio/eng/products/visual-studio-express-products>.  The tested procedure here was with ``Visual Studio 9.0'' ``2008
+<https://www.visualstudio.com/vs/express/>.  The tested procedure here was with ``Visual Studio 9.0'' ``2008
 Express Edition''.  There's a crucial, obscure step necessary to be
 able to run the compiler;  without it, `cl.exe` won't run (or the
 Interix `/bin/ar`), and you won't see why not (a missing dll) unless you
@@ -413,12 +413,38 @@ installations, although they will also work with a local installation.
 
 === dpkg
 
-See <http://wiki.debian.org/BuildingAPackage> for general help on
-building Debian packages.  It is intended that the
-http://wiki.debian.org/Hardening#hardening-wrapper[hardening-wrapper]
-package is used, but it isn't required by the build dependencies.
+See <https://wiki.debian.org/BuildingTutorial> for general help on
+building Debian packages. In a security environment it might be needed
+to use https://wiki.debian.org/Hardening[Hardening] to build the binaries, 
+but it isn't required by the build dependencies.
 
-* Ensure the `dpkg-dev` package is installed
+* This is a list of Debian package dependencies for the build process. 
+Depending on your needs, not all packages are needed, e.g. if you only need "classic spool", 
+the `libdb-dev` is not needed.
+
+** basic build dependencies: 
++
+....
+  $ sudo apt-get install dpkg-dev build-essential fakeroot devscripts lintian csh automake autoconf
+....
+
+** developer libraries: 
++
+....
+  $ sudo apt-get install libssl-dev libmunge-dev libjemalloc-dev libncurses-dev libdb-dev libhwloc-dev libpam0g-dev
+....
+
+** developer libraries for X11 applications: 
++
+....
+  $ sudo apt-get install libmotif-dev libxext-dev libxmu-dev libxft-dev 
+....
+
+** dependencies for Java libraries and applications: 
++
+....
+  $ sudo apt-get install default-jdk ant-optional junit javacc
+....
 
 * Run
 +
@@ -468,4 +494,4 @@ avoid the Java components, add `--without java`.
 ------
 Copyright (C) 2013, Dave Love, University of Liverpool
 
-Licence http://arc.liv.ac.uk/repos/darcs/sge/LICENCES/GFDL-1.3[GFDL].
+Licence `LICENCES/GFDL-1.3`
