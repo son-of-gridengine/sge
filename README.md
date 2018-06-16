@@ -2,11 +2,10 @@
 - Son of Grid Engine
 
 
-This GitHub repository is the new home for the Son of GridEngine project.
-The project was previously maintained for many years by Dave Love, but recently
-he has become inactive and some of the websites associated with that
-team have stopped working.  Dave Love, if you resurface, we will welcome you
-to this team!
+This GitHub repository was intended as the new home for the Son of GridEngine
+project, as we believed that the principal maintainer, Dave Love, was out of
+contact and had stopped maintaining it.  As Dave Love has surfaced again, this
+repository doesn't currently serve much purpose.
 
 This README is very much a TODO.
 
